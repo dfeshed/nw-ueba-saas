@@ -139,15 +139,9 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the effective date component in the available settings', function(assert) {
     const payload = 'MANUAL';
 
-    const expectedEndState = {
-      availableSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
-      ]
-    };
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.availableSettings[1].isGreyedOut, expectedEndState.availableSettings[1].isGreyedOut, 'Effective date component is greyed out correctly');
+    assert.deepEqual(endState.availableSettings[2].isGreyedOut, true, 'Effective date component is greyed out correctly');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the start-time component in the available settings', function(assert) {
@@ -155,7 +149,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, true, 'start-time component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, true, 'start-time component is greyed out correctly when MANUAL is selected');
   });
 
   test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the start-time component in the available settings', function(assert) {
@@ -163,7 +157,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, false, 'start-time component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, false, 'start-time component lights up correctly when SCHEDULED is selected');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the scan frequency component in the available settings', function(assert) {
@@ -171,7 +165,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, true, 'scan frequency component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[4].isGreyedOut, true, 'scan frequency component is greyed out correctly when MANUAL is selected');
   });
 
   test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the scan frequency component in the available settings', function(assert) {
@@ -179,7 +173,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, false, 'scan frequency component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[4].isGreyedOut, false, 'scan frequency component lights up correctly when SCHEDULED is selected');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the cpu maximum component in the available settings', function(assert) {
@@ -187,7 +181,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, true, 'cpu maximum component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[7].isGreyedOut, true, 'cpu maximum component is greyed out correctly when MANUAL is selected');
   });
 
   test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the cpu maximum component in the available settings', function(assert) {
@@ -195,7 +189,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, false, 'cpu maximum component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[7].isGreyedOut, false, 'cpu maximum component lights up correctly when SCHEDULED is selected');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the virtual machine maximum component in the available settings', function(assert) {
@@ -203,7 +197,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, true, 'virtual machine maximum component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[8].isGreyedOut, true, 'virtual machine maximum component is greyed out correctly when MANUAL is selected');
   });
 
   test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the virtual machine maximum component in the available settings', function(assert) {
@@ -211,61 +205,33 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.equal(endState.availableSettings[2].isGreyedOut, false, 'virtual machine maximum component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[8].isGreyedOut, false, 'virtual machine maximum component lights up correctly when SCHEDULED is selected');
   });
 
   test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {
     const payload = 'SCHEDULED';
 
-    const expectedEndState = {
-      availableSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
-      ]
-    };
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.availableSettings[1].isGreyedOut, expectedEndState.availableSettings[1].isGreyedOut, 'Effective date component is greyed out correctly');
+    assert.deepEqual(endState.availableSettings[2].isGreyedOut, false, 'Effective date component lights up correctly when SCHEDULED is selected');
   });
 
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', function(assert) {
     const payload = 'schedOrManScan';
-    const expectedEndState = {
-      availableSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
-      ],
-      selectedSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
-      ]
-    };
     const action = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.selectedSettings.length, expectedEndState.selectedSettings.length, 'Entry added to Selected settings from Available Settings');
-    assert.deepEqual(endState.availableSettings[0].isEnabled, expectedEndState.availableSettings[0].isEnabled, 'isEnabled flag is changed toggled in availableSettings when it is added to selectedSettings');
+    assert.deepEqual(endState.selectedSettings.length, 1, 'Entry added to Selected settings from Available Settings');
+    assert.deepEqual(endState.availableSettings[1].isEnabled, false, 'isEnabled flag is changed toggled in availableSettings when it is added to selectedSettings');
   });
 
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array and changes the isGreyed flag based on the scanType', function(assert) {
     const payload = 'schedOrManScan';
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
     initialStateCopy.policy.scheduleConfig.scanType = 'SCHEDULED';
-    initialStateCopy.availableSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
-    ];
 
-    const expectedEndState = {
-      availableSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
-      ],
-      selectedSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
-      ]
-    };
     const action = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings[1].isGreyedOut, expectedEndState.availableSettings[1].isGreyedOut, 'isGreyed flag is toggled correctly in availableSettings when it is added to selectedSettings');
+    assert.deepEqual(endState.availableSettings[1].isGreyedOut, false, 'isGreyed flag is toggled correctly in availableSettings when it is added to selectedSettings');
   });
 
   test('REMOVE_FROM_SELECTED_SETTINGS removes an entry from the selectedSettings array', function(assert) {
@@ -278,6 +244,16 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const action = { type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
     assert.deepEqual(endState.selectedSettings.length, 0, 'The entry has been successfully removed from the selectedSettings array');
+  });
+
+  test('ADD_LABEL_TO_SELECTED_SETTINGS adds a label entry to the selectedSettings array', function(assert) {
+    const initialStateCopy = _.cloneDeep(policyWizInitialState);
+    initialStateCopy.selectedSettings = [
+      { index: 1, id: 'schedOrManScan' }
+    ];
+    const action = { type: ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS };
+    const endState = reducers(Immutable.from(initialStateCopy), action);
+    assert.equal(endState.selectedSettings.length, 2, 'An additional label entry has been added to the selectedSettings array');
   });
 
   test('RESET_SCAN_SCHEDULE_TO_DEFAULTS resets state to initial state when id is scanScheduleId', function(assert) {

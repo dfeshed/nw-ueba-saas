@@ -48,9 +48,14 @@ const getPolicy = (id, callbacks = callbacksDefault) => {
  * @public
  */
 const addToSelectedSettings = (id) => {
-  return {
-    type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS,
-    payload: id
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS,
+      payload: id
+    });
+    dispatch({
+      type: ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS
+    });
   };
 };
 

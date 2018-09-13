@@ -3558,8 +3558,16 @@ export default {
       availableSettings: 'Available Settings',
       selectedSettings: 'Selected Settings',
       scanSchedule: 'Scan Schedule',
+      schedOrManScan: 'Scheduled or Manual Scan',
+      effectiveDate: 'Effective Date',
+      scanFrequency: 'Scan Frequency',
+      startTime: 'Start Time',
       recurrenceInterval: 'Recurrence Interval',
       maximumProcessorUsage: 'Maximum Processor Usage',
+      cpuMaximum: 'CPU Maximum',
+      vmMaximum: 'Virtual Machine Maximum',
+      advScanSettings: 'Advanced Scan Settings',
+      invasiveActions: 'Invasive Actions',
       scheduleConfiguration: {
         scanType: {
           title: 'Scheduled or Manual Scan',

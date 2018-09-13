@@ -42,7 +42,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 6, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 8, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -54,6 +54,14 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
+  });
+
+  test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .heading').length, 3, 'All heading labels rendered correctly');
+    assert.equal(findAll('.available-settings .sub-heading').length, 2, 'All sub-heading labels rendered correctly');
+    assert.equal(findAll('.available-settings .title').length, 6, 'All components in available-settings rendered correctly');
+    assert.equal(findAll('.available-settings .rsa-icon').length, 6, 'The plus icon next to the components is rendered correctly');
   });
 
   test('Effective date component should be greyed out by default', async function(assert) {
@@ -111,6 +119,17 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     const minusIcon = document.querySelector('.scan-schedule span .rsa-icon');
     await click(minusIcon);
     assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
+  });
+
+  test('Scan Schedule label should be present if scanScheduleId is added the selected settings', async function(assert) {
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    // simulate a click on the plus icon next to scan schedule.
+    // this triggers 2 reducers ACTION_TYPES.ADD_TO_SELECTED_SETTINGS and ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS
+    const plusIcon = document.querySelector('.schedOrManScan span .rsa-icon');
+    await click(plusIcon);
+    assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
+    assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');
+    assert.equal(findAll('.selected-settings .rsa-icon').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
   });
 
 });

@@ -79,12 +79,17 @@ export const initialState = {
 
   // define-policy-step - available settings to render the left col
   availableSettings: [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
-    { index: 2, id: 'recurrenceInterval', label: 'Scan Frequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
-    { index: 3, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
-    { index: 4, id: 'cpuMax', label: 'CPU Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
-    { index: 5, id: 'vmMax', label: 'Virtual Machine Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' }
+    { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true },
+    { index: 1, id: 'schedOrManScan', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 2, id: 'effectiveDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
+    { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan' },
+    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
+    { index: 5, id: 'startTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
+    { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan' },
+    { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
+    { index: 8, id: 'vmMax', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' },
+    { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
+    { index: 10, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true }
   ],
   // define-policy-step - selected settings to render the right col
   selectedSettings: [],
@@ -96,6 +101,31 @@ export const initialState = {
 };
 
 const scanScheduleId = 'schedOrManScan';
+const scanSchedLabelId = 'scanScheduleLabel';
+
+// Private method used to determine if a top level label like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
+// needs to be shown in the Selected settings vbox on the right.
+// Suppose a child component from "SCAN SCHEDULE" is moved to the right, we need to show the "SCAN SCHEDULE"
+// label on the right too for that child component.
+const _shouldShowLabelInSelSettings = (selectedSettingsIds, matchingIds) => {
+  let showLabel = false;
+  const { length } = selectedSettingsIds;
+  for (let i = 0; i < length; ++i) {
+    if (_.indexOf(selectedSettingsIds, matchingIds[i]) !== -1) {
+      showLabel = true;
+      break;
+    }
+  }
+  return showLabel;
+};
+
+// If determined that a particular label needs to be shown on the right, this method will add that label
+// to the selectedSettings array.
+const _addLabelToSelSettings = (state, labelId) => {
+  const { selectedSettings, availableSettings } = state;
+  const labelToAdd = availableSettings.find((d) => d.id === labelId);
+  return _.uniqBy([ ...selectedSettings, labelToAdd ], 'id');
+};
 
 export default reduxActions.handleActions({
 
@@ -157,6 +187,23 @@ export default reduxActions.handleActions({
     return state.merge({
       availableSettings: newAvailableSettings,
       selectedSettings: _.uniqBy([ ...selectedSettings, newSelectedSettings ], 'id')
+    });
+  },
+
+  // define-policy-step - when stuff gets moved from left col to right col, add appropriate labels to the right col
+  [ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS]: (state) => {
+    const { selectedSettings } = state;
+    let newSelectedSettings = [...selectedSettings];
+
+    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["schedOrManScan", "scanScheduleLabel", ...]
+    const showScanSchedLabelInSelSettings = _shouldShowLabelInSelSettings(selectedSettingsIds, [scanScheduleId]);
+
+    if (showScanSchedLabelInSelSettings) {
+      newSelectedSettings = _addLabelToSelSettings(state, scanSchedLabelId);
+    }
+
+    return state.merge({
+      selectedSettings: newSelectedSettings
     });
   },
 

@@ -12,9 +12,18 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('addToSelectedSettings action creator returns proper type and payload', function(assert) {
-    const action = policyWizardCreators.addToSelectedSettings('id1');
-    assert.equal(action.type, ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, 'action has the correct type');
-    assert.deepEqual(action.payload, 'id1', 'payload has the correct ud');
+    const dispatch = (action) => {
+      // first dispatch has a payload
+      if (action.payload) {
+        assert.equal(action.type, ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, 'action has the correct type');
+        assert.deepEqual(action.payload, 'id1', 'payload has the correct id');
+      } else {
+        // second dispatch does not have a payload
+        assert.equal(action.type, ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS, 'action has the correct type');
+      }
+    };
+    const thunk = policyWizardCreators.addToSelectedSettings('id1');
+    thunk(dispatch);
   });
 
   test('removeFromSelectedSettings action creator returns proper type and payload', function(assert) {

@@ -1,8 +1,6 @@
 .usm-policy-wizard {
-  
   .define-policy-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
-    
     .all-settings {
       .label {
         @include rsa-font(default, larger);
@@ -11,6 +9,22 @@
       }
       .heading {
         @include rsa-font(default, large);
+        &:not(:nth-child(2)) {
+          padding-top: rsa-whitespace();
+          &::before {
+            content: '';
+            display: block;
+            height: 1px;
+            width: 85%;
+            margin: rsa-whitespace() 0 rsa-whitespace() 0;
+            background: background-color(primary);
+          }
+        }
+      }
+
+      .sub-heading {
+        @include rsa-font();
+        padding: rsa-whitespace() rsa-whitespace() 0 0;
       }
       .available-settings {
         margin-right: rsa-whitespace(most);
@@ -26,7 +40,7 @@
       }
       .available-settings .title {
         @include rsa-font();
-        padding: rsa-whitespace() rsa-whitespace() 0 0;
+        padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
       }
       .selected-settings .scan-options {
         @include rsa-font(light,small);
@@ -37,7 +51,5 @@
         }
       }
     }
-    
   }
-  
 }
