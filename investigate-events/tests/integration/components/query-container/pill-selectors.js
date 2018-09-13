@@ -3,6 +3,7 @@ const metaTrigger = '.pill-meta .ember-power-select-trigger';
 const operatorTrigger = '.pill-operator .ember-power-select-trigger';
 const valueInput = '.pill-value input';
 
+const powerSelectDropdown = '.ember-power-select-dropdown';
 const newPillTriggerContainer = '.new-pill-trigger-container';
 
 const triggerMetaPowerSelect = `${newPillTriggerContainer} ${metaTrigger}`;
@@ -50,5 +51,6 @@ export default {
   focusHolderInput: '.focus-holder input',
   activeQueryPill: '.query-pill.is-active',
   focusedPill: '.is-focused',
-  loadingQueryButton: '.execute-query-button .rsa-loader'
+  loadingQueryButton: '.execute-query-button .rsa-loader',
+  powerSelectDropdown
 };

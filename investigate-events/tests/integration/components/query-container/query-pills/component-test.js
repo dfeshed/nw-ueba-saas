@@ -1766,4 +1766,25 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
     });
   });
+
+  test('Creating a pill and hitting enter should remove focus from meta drop-down', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .hasRequiredValuesToQuery(true)
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await createBasicPill();
+
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a drop-down anymore');
+  });
 });

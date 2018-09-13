@@ -176,6 +176,7 @@ export default Component.extend({
         if (selection && selected && selection === selected) {
           this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
         } else {
+          dropFocus();
           next(this, () => {
             // We need to run this check in the next runloop so EPS has time to
             // react to the ENTER press in the first place. For example, to
@@ -184,7 +185,6 @@ export default Component.extend({
             const { value } = event.target;
             if (selection === null && !value) {
               this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
-              dropFocus();
             }
           });
         }
