@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import layout from './template';
 import { connect } from 'ember-redux';
 import { clearSelection, expandStorylineEvent } from 'respond/actions/creators/incidents-creators';
 import { storyDatasheet, expandedStorylineEventId, storylineEventsStatus, incidentSelection } from 'respond/selectors/storyline';
@@ -18,7 +17,6 @@ const dispatchToActions = {
 };
 
 const EventsList = Component.extend({
-  layout,
   classNames: ['events-list'],
   @computed('selection')
   selectionExists({ ids }) {

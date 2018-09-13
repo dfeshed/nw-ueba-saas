@@ -1,0 +1,9 @@
+{{#if (eq itemType 'array')}}
+  {{#each members as |member|}}
+    {{properties-for/key-value member=member item=member.value itemPath=itemPath}}
+  {{/each}}
+{{else}}
+  {{#each keys as |key|}}
+    {{properties-for/key-value member=key item=key.value itemPath=key.fullPath}}
+  {{/each}}
+{{/if}}

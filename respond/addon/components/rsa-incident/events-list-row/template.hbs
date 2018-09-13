@@ -1,5 +1,5 @@
 <td class="events-list-table-cell">
-  {{#rsa-incident/events-list-row/generic item=item as |generic|}}
+  {{#rsa-incident/events-list-row/generic item=item expand=expand as |generic|}}
     {{generic.main}}
     {{#if (eq item.id expandedId)}}
       {{generic.detail}}

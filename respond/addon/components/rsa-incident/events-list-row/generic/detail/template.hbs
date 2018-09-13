@@ -1,5 +1,8 @@
 <vbox>
   <hbox>
-    <centered> event details</centered>
+    {{properties-for
+      item=item
+      order="detector, size, data"
+      hidden="from, to, detected_by, file, indicatorId, id, timestamp, type, description, source, destination, domain, enrichment, related_links"}}
   </hbox>
 </vbox>

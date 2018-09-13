@@ -1,0 +1,18 @@
+.properties-for {
+
+  table {
+    border-spacing: 0;
+  }
+
+  td {
+    @include rsa-font(paragraph, small);
+  }
+
+  .has-context-data {
+    @include rsa-has-context-data();
+  }
+
+  a {
+    color: text-color(secondary, light);
+  }
+}

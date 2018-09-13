@@ -29,7 +29,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
-  test('onclick the table row will expand the event showing any details for the given type', async function(assert) {
+  test('onclick the table row main will expand the event showing any details for the given type', async function(assert) {
     patchReducer(this, Immutable.from(storyLineEvents));
 
     await render(hbs`{{rsa-incident/events-list}}`);
@@ -39,21 +39,28 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 0);
 
-    await click(`${selectors.row}:nth-of-type(1)`);
+    await click(`${selectors.row}:nth-of-type(1) ${selectors.genericMain}`);
 
     assert.equal(findAll(selectors.row).length, 15);
     assert.equal(findAll(selectors.genericRow).length, 15);
     assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 1);
 
-    await click(`${selectors.row}:nth-of-type(2)`);
+    await click(`${selectors.row}:nth-of-type(2) ${selectors.genericMain}`);
 
     assert.equal(findAll(selectors.row).length, 15);
     assert.equal(findAll(selectors.genericRow).length, 15);
     assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 1);
 
-    await click(`${selectors.row}:nth-of-type(2)`);
+    await click(`${selectors.row}:nth-of-type(2) ${selectors.genericDetail}`);
+
+    assert.equal(findAll(selectors.row).length, 15);
+    assert.equal(findAll(selectors.genericRow).length, 15);
+    assert.equal(findAll(selectors.genericMain).length, 15);
+    assert.equal(findAll(selectors.genericDetail).length, 1);
+
+    await click(`${selectors.row}:nth-of-type(2) ${selectors.genericMain}`);
 
     assert.equal(findAll(selectors.row).length, 15);
     assert.equal(findAll(selectors.genericRow).length, 15);
