@@ -40,6 +40,14 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   .certificates-body {
     .rsa-data-table {
       height: 100vh;
+      .rsa-form-checkbox-label .rsa-form-checkbox {
+        position: inherit;
+      }
+      .rsa-data-table-body-row.is-selected {
+        .content-context-menu {
+          background-color: background-color(secondary, dark);
+        }
+      }
     }
   }
 }

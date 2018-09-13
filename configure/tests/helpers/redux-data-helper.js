@@ -262,4 +262,14 @@ export default class DataHelper {
     _set(this.state, 'endpoint.certificates.totalItems', items);
     return this;
   }
+  selectedCertificatesList(items) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.selectedCertificateList', items);
+    return this;
+  }
+  certificateStatusData(status) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.certificateDataStatus', status);
+    return this;
+  }
 }

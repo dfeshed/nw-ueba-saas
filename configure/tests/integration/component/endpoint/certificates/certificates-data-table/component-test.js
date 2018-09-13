@@ -65,6 +65,8 @@ module('Integration | Component | certificates-data-table', function(hooks) {
   test('data table rendering the data', async function(assert) {
     new ReduxDataHelper(setState)
       .certificatesItems(items)
+      .selectedCertificatesList([])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-data-table').length, 1, 'table has rendered.');
@@ -75,6 +77,8 @@ module('Integration | Component | certificates-data-table', function(hooks) {
     new ReduxDataHelper(setState)
       .certificatesItems(items)
       .certificatesLoadingStatus('wait')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-loader').length, 1, 'loader icon appears when certificates are still rendering.');
@@ -84,6 +88,8 @@ module('Integration | Component | certificates-data-table', function(hooks) {
     new ReduxDataHelper(setState)
       .certificatesItems(new Array(200))
       .loadMoreStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-data-table-load-more .rsa-form-button').length, 1, 'Load more button appears for certificates more than 100.');
@@ -95,6 +101,8 @@ module('Integration | Component | certificates-data-table', function(hooks) {
     new ReduxDataHelper(setState)
       .certificatesItems(new Array(100))
       .loadMoreStatus('completed')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-data-table-load-more .rsa-form-button-wrapper').length, 0, 'Load more button disappears when all certificates are loaded.');
@@ -103,6 +111,8 @@ module('Integration | Component | certificates-data-table', function(hooks) {
   test('no result message for no certificated', async function(assert) {
     new ReduxDataHelper(setState)
       .certificatesItems([])
+      .selectedCertificatesList([])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-data-table-body .rsa-panel-message .message')[0].textContent.trim(), 'No certificates were found.', 'No certificate results message is displayed.');

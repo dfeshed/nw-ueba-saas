@@ -18,7 +18,9 @@ module('Unit | Reducers | configure | endpoint/certificates', function(hooks) {
       loadMoreStatus: 'stopped',
       hasMore: false,
       totalCertificates: 0,
-      certificatesLoadingStatus: 'wait'
+      certificatesLoadingStatus: 'wait',
+      selectedCertificateList: [],
+      certificateStatusData: {}
     });
   });
 
@@ -68,5 +70,48 @@ module('Unit | Reducers | configure | endpoint/certificates', function(hooks) {
     });
     const newEndState = reducer(previous, newAction);
     assert.equal(newEndState.pageNumber, 1);
+  });
+
+  test('TOGGLE_SELECTED_CERTIFICATE should toggle the selected driver', function(assert) {
+    const previous = Immutable.from({
+      selectedRowId: '123',
+      selectedCertificateList: []
+    });
+    const certificate = {
+      thumbprint: 0,
+      checksumSha256: 0,
+      signature: '',
+      size: 0 };
+    let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE, payload: certificate });
+    assert.equal(result.selectedCertificateList.length, 1);
+    assert.equal(result.selectedCertificateList[0].thumbprint, 0);
+    const next = Immutable.from({
+      selectedRowId: '123',
+      selectedCertificateList: [certificate]
+    });
+    result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE, payload: certificate });
+    assert.equal(result.selectedCertificateList.length, 0);
+  });
+  test('TOGGLE_ALL_CERTIFICATE_SELECTION should toggle the selected certificate', function(assert) {
+    const previous = Immutable.from({
+      selectedRowId: '123',
+      selectedCertificateList: [],
+      certificatesList: [ { thumbprint: 0 } ]
+    });
+    const certificate = {
+      thumbprint: 0,
+      checksumSha256: 0,
+      signature: '',
+      size: 0 };
+    let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_CERTIFICATE_SELECTION });
+    assert.equal(result.selectedCertificateList.length, 1);
+    assert.equal(result.selectedCertificateList[0].thumbprint, 0);
+    const next = Immutable.from({
+      selectedRowId: '123',
+      selectedCertificateList: [certificate],
+      certificatesList: [certificate]
+    });
+    result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_CERTIFICATE_SELECTION, payload: certificate });
+    assert.equal(result.selectedCertificateList.length, 0);
   });
 });

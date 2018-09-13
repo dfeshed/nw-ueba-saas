@@ -6,7 +6,8 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import {
   certificatesCount,
   certificatesCountForDisplay,
-  certificatesLoading
+  certificatesLoading,
+  isAllSelected
 } from 'configure/reducers/endpoint/certificates/selector';
 
 const STATE = Immutable.from({
@@ -83,5 +84,21 @@ module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
     });
     const result = certificatesLoading(stateNew);
     assert.equal(result, true, 'Certificates loading is set to true.');
+  });
+
+  test('isAllSelected', function(assert) {
+    const stateNew = Immutable.from({
+      configure: {
+        endpoint: {
+          certificates: {
+            certificatesLoadingStatus: 'wait',
+            certificatesList: new Array(3),
+            selectedCertificateList: []
+          }
+        }
+      }
+    });
+    const result = isAllSelected(stateNew);
+    assert.equal(result, false, 'isAllCertificates selected false.');
   });
 });

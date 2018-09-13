@@ -6,7 +6,18 @@ const certificatesList = (state) => state.configure.endpoint.certificates.certif
 
 const _certificatesLoadingStatus = (state) => state.configure.endpoint.certificates.certificatesLoadingStatus;
 
+const _selectedCertificateList = (state) => state.configure.endpoint.certificates.selectedCertificateList || [];
+
 export const certificatesColumns = [
+  {
+    dataType: 'checkbox',
+    width: 20,
+    class: 'rsa-form-row-checkbox',
+    componentClass: 'rsa-form-checkbox',
+    visible: true,
+    disableSort: true,
+    headerComponentClass: 'rsa-form-checkbox'
+  },
   {
     field: 'friendlyName',
     title: 'configure.endpoint.certificates.columns.friendlyName',
@@ -97,3 +108,18 @@ export const certificatesLoading = createSelector(
     return certificatesLoadingStatus === 'wait';
   }
 );
+
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllSelected = createSelector(
+  [certificatesList, _selectedCertificateList],
+  (certificatesList, selectedCertificateList) => {
+    if (certificatesList && selectedCertificateList.length) {
+      return certificatesList.length === selectedCertificateList.length;
+    }
+    return false;
+  }
+);
+
