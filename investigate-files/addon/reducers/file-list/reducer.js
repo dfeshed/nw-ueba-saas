@@ -40,7 +40,7 @@ const _handleAppendFiles = (action) => {
       fileData: { ...fileData, ...file },
       totalItems: data.totalItems,
       pageNumber: data.pageNumber,
-      loadMoreStatus: data.hasNext || data.totalItems >= 1000 ? 'stopped' : 'completed',
+      loadMoreStatus: data.hasNext ? 'stopped' : 'completed',
       hasNext: data.hasNext
     });
   };
