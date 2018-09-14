@@ -1,14 +1,34 @@
 import Route from '@ember/routing/route';
-import { ping } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 export default Route.extend({
-  model() {
-    return ping('endpoint-server-ping')
+  queryParams: {
+    /**
+     * selected serviceId for multi-server endpoint server
+     * @type {string}
+     * @public
+     */
+    sid: {
+      refreshModel: false,
+      replace: true
+    }
+  },
+
+  model(params) {
+    const request = lookup('service:request');
+    const { sid } = params;
+    request.registerPersistentStreamOptions({ 'socketUrlPostfix': sid, 'requiredSocketUrl': 'endpoint/socket' });
+    return request.ping('endpoint-server-ping')
       .then(() => {
         return { endpointServerOffline: false };
       })
       .catch(function() {
         return { endpointServerOffline: true };
       });
+  },
+
+  deactivate() {
+    const request = lookup('service:request');
+    request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
   }
 });
