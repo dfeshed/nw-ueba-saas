@@ -197,8 +197,8 @@ export const getPropertyData = createSelector(
       if (unit === 'DAYS') {
         scanInterval = (interval === 1 ? 'Every Day' : `Every ${interval} Days`);
       } else {
-        const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const weekDay = week[runOnDaysOfWeek[0] + 1];
+        const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const weekDay = week[runOnDaysOfWeek[0]];
         scanInterval = `Every ${interval} week(s) on ${weekDay}`;
       }
       const scheduleConfig = {
