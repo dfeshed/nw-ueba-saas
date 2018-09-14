@@ -10,6 +10,7 @@ import {
   toggleSelectAllEvents,
   toggleEventSelection
  } from 'investigate-events/actions/events-creators';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status,
@@ -40,11 +41,24 @@ const dispatchToActions = {
  * we cannot use the rsa-context-menu component as-is. This extended class captures the right click event, extracts the
  * meta and value from the html span, prepares the contextSelection property before invoking the parent rsa-context-menu action.
  */
+const checkBoxElement = {
+  title: '',
+  class: 'rsa-form-row-checkbox',
+  width: 18,
+  field: 'checkbox',
+  dataType: 'checkbox',
+  componentClass: 'rsa-form-checkbox',
+  visible: true,
+  disableSort: true,
+  headerComponentClass: 'rsa-form-checkbox'
+};
+
 const EventsTableContextMenu = RsaContextMenu.extend({
 
   metaName: null,
   metaValue: null,
   selectEvent: () => {},
+  accessControl: service(),
 
   @computed('metaName', 'metaValue', 'endpointId')
   contextSelection: (metaName, metaValue) => ({ metaName, metaValue }),
@@ -58,19 +72,12 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     language
   }),
 
-  @computed('columns', 'allItemsChecked')
-  extendedColumns: (columns) => {
-    return [{
-      title: '',
-      class: 'rsa-form-row-checkbox',
-      width: 18,
-      field: 'checkbox',
-      dataType: 'checkbox',
-      componentClass: 'rsa-form-checkbox',
-      visible: true,
-      disableSort: true,
-      headerComponentClass: 'rsa-form-checkbox'
-    }].concat(columns);
+  @computed('columns', 'accessControl.hasInvestigateContentExportAccess', 'allItemsChecked')
+  extendedColumns: (columns, hasPermissions) => {
+    if (hasPermissions) {
+      return [checkBoxElement, ...columns];
+    }
+    return columns;
   },
 
   contextMenu({ target: { attributes } }) {

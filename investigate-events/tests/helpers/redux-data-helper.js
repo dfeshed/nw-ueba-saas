@@ -1,5 +1,6 @@
 import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
+import EventColumnGroups from '../data/subscriptions/investigate-columns/data';
 
 export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'a', flags: 2, displayName: 'A', formattedName: 'a (A)' },
@@ -152,6 +153,12 @@ export default class DataHelper {
 
   columnGroups(columnGroups) {
     _set(this.state, 'data.columnGroups', columnGroups);
+    return this;
+  }
+
+  getColumns(columnGroup = EventColumnGroups[0].id, columnGroups = EventColumnGroups) {
+    this.columnGroup(columnGroup);
+    this.columnGroups(columnGroups);
     return this;
   }
 

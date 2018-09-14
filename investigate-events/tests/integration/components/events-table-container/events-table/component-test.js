@@ -2,13 +2,27 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import EventColumnGroups from '../../../../data/subscriptions/investigate-columns/data';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
+
+let setState;
 
 moduleForComponent('events-table-container/events-table', 'Integration | Component | events table context menu', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
-    this.inject.service('redux');
     initialize({ '__container__': this.container });
+    this.inject.service('accessControl');
+
+    setState = (state) => {
+      applyPatch(state);
+      this.inject.service('redux');
+    };
+
+  },
+  afterEach() {
+    revertPatch();
   }
 });
 
@@ -54,4 +68,22 @@ test('context menu is deactivated on right clicking outside the target', functio
 
   // rt-click elsewhere
   this.$('.rsa-data-table-header').contextmenu();
+});
+
+test('renders event selection checkboxes only if permissions are present', function(assert) {
+
+  this.set('accessControl.hasInvestigateContentExportAccess', true);
+  new ReduxDataHelper(setState).getColumns('SUMMARY', EventColumnGroups).eventResults([]).build();
+  this.render(hbs`{{events-table-container/events-table}}`);
+  assert.equal(this.$('.rsa-form-checkbox-label').length, 1, 'Renders event selection checkboxes when permission is present');
+
+});
+
+test('does not render event selection checkboxes if permissions are not present', function(assert) {
+
+  this.set('accessControl.hasInvestigateContentExportAccess', false);
+  new ReduxDataHelper(setState).getColumns('SUMMARY', EventColumnGroups).eventResults([]).build();
+  this.render(hbs`{{events-table-container/events-table}}`);
+  assert.equal(this.$('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when permission is not present');
+
 });

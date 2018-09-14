@@ -41,6 +41,9 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
   beforeEach() {
     initialize({ '__container__': this.container });
     this.registry.injection('component', 'i18n', 'service:i18n');
+
+    this.inject.service('accessControl');
+    this.set('accessControl.hasInvestigateContentExportAccess', true);
     // Mock the route action 'toggleReconSize' on the click of
     // expand/shrink toggle button on events page
     this.routeActions = {
