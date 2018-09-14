@@ -8,6 +8,9 @@ const selectors = {
   genericRow: '[test-id=genericEventRow]',
   genericMain: '[test-id=genericEventMain]',
   genericDetail: '[test-id=genericEventDetail]',
+  endpointRow: '[test-id=endpointEventRow]',
+  endpointMain: '[test-id=endpointEventMain]',
+  endpointDetail: '[test-id=endpointEventDetail]',
   clearButton: '[test-id=clearSelectionBtn]'
 };
 

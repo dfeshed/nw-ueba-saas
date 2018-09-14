@@ -13,16 +13,19 @@ module('Integration | Component | events-list', function(hooks) {
     resolver: engineResolverFor('respond')
   });
 
-  test('renders generic row for each event type', async function(assert) {
+  test('renders both generic and endpoint row templates', async function(assert) {
     patchReducer(this, Immutable.from(storyLineEvents));
 
     await render(hbs`{{rsa-incident/events-list}}`);
 
     assert.equal(findAll(selectors.table).length, 1);
     assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
+    assert.equal(findAll(selectors.genericRow).length, 11);
+    assert.equal(findAll(selectors.genericMain).length, 11);
+    assert.equal(findAll(selectors.endpointRow).length, 4);
+    assert.equal(findAll(selectors.endpointMain).length, 4);
     assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
     assert.equal(findAll(selectors.clear).length, 0);
     assert.equal(find(selectors.count).textContent.trim(), '15');
@@ -35,37 +38,38 @@ module('Integration | Component | events-list', function(hooks) {
     await render(hbs`{{rsa-incident/events-list}}`);
 
     assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
 
     await click(`${selectors.row}:nth-of-type(1) ${selectors.genericMain}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 1);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
+
+    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointMain}`);
+
+    assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointDetail).length, 1);
+
+    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointDetail}`);
+
+    assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointDetail).length, 1);
+
+    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointMain}`);
+
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.genericDetail).length, 0);
 
     await click(`${selectors.row}:nth-of-type(2) ${selectors.genericMain}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 1);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
 
     await click(`${selectors.row}:nth-of-type(2) ${selectors.genericDetail}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
     assert.equal(findAll(selectors.genericDetail).length, 1);
-
-    await click(`${selectors.row}:nth-of-type(2) ${selectors.genericMain}`);
-
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 15);
-    assert.equal(findAll(selectors.genericMain).length, 15);
-    assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
   });
 
   test('loading spinner present when storyline event status not completed', async function(assert) {

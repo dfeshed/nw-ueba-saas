@@ -1,5 +1,6 @@
 export const reEventId = '5b841c880a32bd5a68baeaf3:0';
 export const networkEventId = '5b757f480a32bd36c7609e96:0';
+export const endpointEventId = '5b8554be0a32bd353ad3a167:0';
 
 const storyLineEvents = {
   respond: {
@@ -1012,7 +1013,7 @@ const storyLineEvents = {
               host_dst: '',
               host_src: '',
               hostname: 'INENMENONS4L2C',
-              operating_system: '',
+              operating_system: 'macOS',
               related_links: [
                 {
                   type: 'investigate_original_event',
@@ -1052,21 +1053,24 @@ const storyLineEvents = {
                 }
               },
               source_filename: 'dtf.exe',
+              source_path: '/foo/bar',
               source_hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
               source_parameter: 'dtf.exe  -dll:ioc.dll -testcase:353',
               source_user_account: 'CORP\\menons4',
               target_filename: 'cmd.EXE',
+              target_path: '/bar/baz',
+              target_parameter: 'PowerShell.exe --run',
               target_hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
               timestamp: 1528429212000,
               to: '',
               type: 'Log',
               user: 'CORP\\menons4',
-              user_account: '',
+              user_account: 'foobar',
               user_dst: '',
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
-              id: '5b8554be0a32bd353ad3a167:0'
+              id: endpointEventId
             },
             {
               action: 'openProcess',
@@ -1503,7 +1507,7 @@ const storyLineEvents = {
                 product_name: ''
               },
               device_type: '',
-              domain: '',
+              domain: 'zap',
               domain_dst: 'nist.gov',
               domain_src: '',
               enrichment: '',

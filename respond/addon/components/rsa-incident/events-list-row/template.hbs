@@ -1,8 +1,17 @@
 <td class="events-list-table-cell">
-  {{#rsa-incident/events-list-row/generic item=item expand=expand as |generic|}}
-    {{generic.main}}
-    {{#if (eq item.id expandedId)}}
-      {{generic.detail}}
-    {{/if}}
-  {{/rsa-incident/events-list-row/generic}}
+  {{#if (eq item.device_type "nwendpoint")}}
+    {{#rsa-incident/events-list-row/endpoint item=item expand=expand as |endpoint|}}
+      {{endpoint.main}}
+      {{#if (eq item.id expandedId)}}
+        {{endpoint.detail}}
+      {{/if}}
+    {{/rsa-incident/events-list-row/endpoint}}
+  {{else}}
+    {{#rsa-incident/events-list-row/generic item=item expand=expand as |generic|}}
+      {{generic.main}}
+      {{#if (eq item.id expandedId)}}
+        {{generic.detail}}
+      {{/if}}
+    {{/rsa-incident/events-list-row/generic}}
+  {{/if}}
 </td>

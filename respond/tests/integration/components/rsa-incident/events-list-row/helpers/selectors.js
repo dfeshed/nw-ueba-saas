@@ -28,9 +28,44 @@ export const generic = {
   eventTargetUserValue: '[test-id=eventTargetUserValue]'
 };
 
+export const endpoint = {
+  eventTimeLabel: '[test-id=eventTimeLabel]',
+  eventTimeValue: '[test-id=eventTimeValue]',
+  eventTypeLabel: '[test-id=eventTypeLabel]',
+  eventTypeValue: '[test-id=eventTypeValue]',
+  eventCategoryLabel: '[test-id=eventCategoryLabel]',
+  eventCategoryValue: '[test-id=eventCategoryValue]',
+  eventActionLabel: '[test-id=eventActionLabel]',
+  eventActionValue: '[test-id=eventActionValue]',
+  eventHostnameLabel: '[test-id=eventHostnameLabel]',
+  eventHostnameValue: '[test-id=eventHostnameValue]',
+  eventUserAccountLabel: '[test-id=eventUserAccountLabel]',
+  eventUserAccountValue: '[test-id=eventUserAccountValue]',
+  eventOperatingSystemLabel: '[test-id=eventOperatingSystemLabel]',
+  eventOperatingSystemValue: '[test-id=eventOperatingSystemValue]',
+  eventFileHashLabel: '[test-id=eventFileHashLabel]',
+  eventFileHashValue: '[test-id=eventFileHashValue]',
+  eventTableFileNameLabel: '[test-id=eventTableFileNameLabel]',
+  eventTableLaunchLabel: '[test-id=eventTableLaunchLabel]',
+  eventTablePathLabel: '[test-id=eventTablePathLabel]',
+  eventTableHashLabel: '[test-id=eventTableHashLabel]',
+  eventSourceLabel: '[test-id=eventSourceLabel]',
+  eventSourceFileNameValue: '[test-id=eventSourceFileNameValue]',
+  eventSourceLaunchValue: '[test-id=eventSourceLaunchValue]',
+  eventSourcePathValue: '[test-id=eventSourcePathValue]',
+  eventSourceHashValue: '[test-id=eventSourceHashValue]',
+  eventTargetLabel: '[test-id=eventTargetLabel]',
+  eventTargetFileNameValue: '[test-id=eventTargetFileNameValue]',
+  eventTargetLaunchValue: '[test-id=eventTargetLaunchValue]',
+  eventTargetPathValue: '[test-id=eventTargetPathValue]',
+  eventTargetHashValue: '[test-id=eventTargetHashValue]'
+};
+
 export const selectors = {
   row: '[test-id=eventsListRow]',
   genericRow: '[test-id=genericEventRow]',
   genericMain: '[test-id=genericEventMain]',
+  endpointRow: '[test-id=endpointEventRow]',
+  endpointMain: '[test-id=endpointEventMain]',
   genericDetail: '[test-id=genericEventDetail]'
 };

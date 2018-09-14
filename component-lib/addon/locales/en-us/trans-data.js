@@ -1340,7 +1340,12 @@ export default {
         ua_ratio_score: 'Rare User Agent Score',
         ua_cond_cardinality: 'IPs with Rare User Agent',
         event_source: 'Event Source',
-        event_source_id: 'Event Source ID'
+        event_source_id: 'Event Source ID',
+        agent_id: 'Agent ID',
+        device_type: 'Device Type',
+        category: 'Category',
+        source_user_account: 'Source User Account',
+        destination_parameter: 'Launch Argument'
       },
       periodValue: {
         hours: 'hour(s)',
@@ -1361,6 +1366,22 @@ export default {
         tableHOST: 'HOST',
         tableMAC: 'MAC',
         tableUSER: 'USER',
+        sourceLabel: 'Source',
+        targetLabel: 'Target'
+      },
+      endpoint: {
+        time: 'EVENT TIME',
+        type: 'EVENT TYPE',
+        category: 'CATEGORY',
+        action: 'ACTION',
+        hostname: 'HOSTNAME',
+        userAccount: 'USER ACCOUNT',
+        operatingSystem: 'OPERATING SYSTEM',
+        fileHash: 'FILE HASH',
+        tableFILENAME: 'FILE NAME',
+        tableLAUNCH: 'LAUNCH ARGUMENT',
+        tablePATH: 'PATH',
+        tableHASH: 'HASH',
         sourceLabel: 'Source',
         targetLabel: 'Target'
       }
