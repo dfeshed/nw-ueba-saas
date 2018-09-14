@@ -9,9 +9,17 @@ const adminUsmConfigGen = function(environment) {
   return {
     groups: {
       socketUrl: usmSocketUrl,
-      findAll: {
+      fetchGroups: {
         subscriptionDestination: '/user/queue/usm/groups',
         requestDestination: '/ws/usm/groups'
+      },
+      fetchGroupList: {
+        subscriptionDestination: '/user/queue/usm/groups/list',
+        requestDestination: '/ws/usm/groups/list'
+      },
+      fetchGroup: {
+        subscriptionDestination: '/user/queue/usm/group/get',
+        requestDestination: '/ws/usm/group/get'
       },
       remove: {
         subscriptionDestination: '/user/queue/usm/groups/remove',
@@ -20,10 +28,6 @@ const adminUsmConfigGen = function(environment) {
       publish: {
         subscriptionDestination: '/user/queue/usm/groups/publish',
         requestDestination: '/ws/usm/groups/publish'
-      },
-      getGroup: {
-        subscriptionDestination: '/user/queue/usm/group/get',
-        requestDestination: '/ws/usm/group/get'
       },
       saveGroup: {
         subscriptionDestination: '/user/queue/usm/group/set',
@@ -36,9 +40,17 @@ const adminUsmConfigGen = function(environment) {
     },
     policy: {
       socketUrl: usmSocketUrl,
-      findAll: {
+      fetchPolicies: {
         subscriptionDestination: '/user/queue/usm/policies',
         requestDestination: '/ws/usm/policies'
+      },
+      fetchPolicyList: {
+        subscriptionDestination: '/user/queue/usm/policies/list',
+        requestDestination: '/ws/usm/policies/list'
+      },
+      fetchPolicy: {
+        subscriptionDestination: '/user/queue/usm/policy/get',
+        requestDestination: '/ws/usm/policy/get'
       },
       remove: {
         subscriptionDestination: '/user/queue/usm/policies/remove',
@@ -47,10 +59,6 @@ const adminUsmConfigGen = function(environment) {
       publish: {
         subscriptionDestination: '/user/queue/usm/policies/publish',
         requestDestination: '/ws/usm/policies/publish'
-      },
-      getPolicy: {
-        subscriptionDestination: '/user/queue/usm/policy/get',
-        requestDestination: '/ws/usm/policy/get'
       },
       savePolicy: {
         subscriptionDestination: '/user/queue/usm/policy/set',

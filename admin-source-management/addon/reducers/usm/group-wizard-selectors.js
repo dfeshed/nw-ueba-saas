@@ -92,6 +92,32 @@ export const descriptionValidator = createSelector(
   }
 );
 
+/**
+ * we need the selected policy object, but group.policy has a map of { 'type': 'policyID' } ( ex. { 'edrPolicy': 'id_abc123' } ),
+ * so we'll find the policy object by the type:ID map for the selected policy
+ * @public
+ */
+// export const selectedPolicy = createSelector(
+//   group, policies,
+//   (group, policies) => {
+//     let selected = null;
+//     if (group.assignedPolicies) {
+//       for (let p = 0; p < policies.length; p++) {
+//         const policy = policies[p];
+//         if (group.assignedPolicies.hasOwnProperty(policy.policyType) &&
+//             group.assignedPolicies[policy.policyType]) {
+//           const groupPolicyId = group.assignedPolicies[policy.policyType].referenceId;
+//           if (policy.id === groupPolicyId) {
+//             selected = policy;
+//             break;
+//           }
+//         }
+//       }
+//     }
+//     return selected;
+//   }
+// );
+
 export const isIdentifyGroupStepValid = createSelector(
   nameValidator, descriptionValidator,
   (nameValidator, descriptionValidator) => {

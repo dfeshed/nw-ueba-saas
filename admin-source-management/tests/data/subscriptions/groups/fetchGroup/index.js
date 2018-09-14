@@ -1,4 +1,4 @@
-import groups from '../findAll/data';
+import groups from '../fetchGroups/data';
 
 export default {
   subscriptionDestination: '/user/queue/usm/group/get',

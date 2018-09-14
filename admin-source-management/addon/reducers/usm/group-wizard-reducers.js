@@ -48,11 +48,15 @@ export const initialState = {
     lastPublishedOn: 0,
     assignedPolicies: {}
   },
-  // the policies objects to fill the group select/dropdown
-  policies: [],
-
-  initGroupFetchPoliciesStatus: null, // wait, complete, error
   groupStatus: null, // wait, complete, error
+
+  // the summary list of policies objects to fill the group select/dropdown
+  groupList: [],
+  groupListStatus: null, // wait, complete, error
+
+  // the summary list of policies objects to fill the group select/dropdown
+  policyList: [],
+  policyListStatus: null, // wait, complete, error
 
   // TODO if the reducer doesn't need to modify these, and the selectors aren't doing anything special,
   // then we may want to extract these to a steps.js and add them directly to the group-wizard component,
@@ -98,23 +102,6 @@ export const initialState = {
 
 export default reduxActions.handleActions({
 
-  [ACTION_TYPES.INIT_GROUP_FETCH_POLICIES]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.set('initGroupFetchPoliciesStatus', 'wait');
-      },
-      failure: (state) => {
-        return state.set('initGroupFetchPoliciesStatus', 'error');
-      },
-      success: (state) => {
-        return state.merge({
-          policies: action.payload.data,
-          initGroupFetchPoliciesStatus: 'complete'
-        });
-      }
-    })
-  ),
-
   [ACTION_TYPES.NEW_GROUP]: (state /* , action */) => {
     const newState = state.merge({
       ...initialState,
@@ -123,7 +110,7 @@ export default reduxActions.handleActions({
     return newState;
   },
 
-  [ACTION_TYPES.GET_GROUP]: (state, action) => (
+  [ACTION_TYPES.FETCH_GROUP]: (state, action) => (
     handle(state, action, {
       start: (state) => {
         return state.merge({
@@ -138,6 +125,46 @@ export default reduxActions.handleActions({
         return state.merge({
           group: action.payload.data,
           groupStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.FETCH_GROUP_LIST]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          groupList: [],
+          groupListStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('groupListStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          groupList: action.payload.data,
+          groupListStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.FETCH_POLICY_LIST]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          policyList: [],
+          policyListStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('policyListStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policyList: action.payload.data,
+          policyListStatus: 'complete'
         });
       }
     })

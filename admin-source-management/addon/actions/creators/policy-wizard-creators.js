@@ -10,10 +10,23 @@ const initializePolicy = (policyId) => {
     if (policyId === 'create-new') {
       dispatch(newPolicy());
     } else {
-      dispatch(getPolicy(policyId));
+      dispatch(fetchPolicy(policyId));
     }
+
+    // init policy lists
+    dispatch(fetchPolicyList());
   };
 };
+
+const fetchPolicyList = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_POLICY_LIST,
+      promise: policyAPI.fetchPolicyList()
+    });
+  };
+};
+
 
 /**
  * Replaces any previous policy state with the template for a brand new policy
@@ -25,10 +38,10 @@ const newPolicy = () => ({ type: ACTION_TYPES.NEW_POLICY });
  * Fetches a single policy for edit
  * @public
  */
-const getPolicy = (id, callbacks = callbacksDefault) => {
+const fetchPolicy = (id, callbacks = callbacksDefault) => {
   return {
-    type: ACTION_TYPES.GET_POLICY,
-    promise: policyAPI.getPolicy(id),
+    type: ACTION_TYPES.FETCH_POLICY,
+    promise: policyAPI.fetchPolicy(id),
     meta: {
       onSuccess: (response) => {
         callbacks.onSuccess(response);
@@ -183,8 +196,9 @@ const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
 
 export {
   initializePolicy,
+  fetchPolicyList,
   newPolicy,
-  getPolicy,
+  fetchPolicy,
   addToSelectedSettings,
   removeFromSelectedSettings,
   editPolicy,

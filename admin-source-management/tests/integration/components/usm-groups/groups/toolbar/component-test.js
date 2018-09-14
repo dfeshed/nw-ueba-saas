@@ -53,7 +53,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   test('Button state when no items are selected', async function(assert) {
     assert.expect(4);
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
@@ -65,7 +65,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   test('Button state when non-dirty publish items are selected', async function(assert) {
     assert.expect(4);
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001'])
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
@@ -78,7 +78,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   test('Button state when dirty publish items are selected', async function(assert) {
     assert.expect(4);
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
@@ -93,7 +93,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001', 'group_003'])
       .build();
     await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
@@ -124,7 +124,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001', 'group_003'])
       .build();
     await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
@@ -145,7 +145,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
       .build();
     await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
@@ -176,7 +176,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
+      .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
       .build();
     await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);

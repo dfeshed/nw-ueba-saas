@@ -11,21 +11,34 @@ function fetchPolicies(/* filters, sort */) {
   // const query = buildExplorerQuery(filters, sort, 'name');
   return request.promiseRequest({
     modelName: 'policy',
-    method: 'findAll',
+    method: 'fetchPolicies',
     query: {}
     // query: query.toJSON()
   });
 }
 
 /**
- * Gets a single policy.
+ * Fetches a list of policy summary objects.
  * @public
  */
-function getPolicy(id) {
+function fetchPolicyList() {
   const request = lookup('service:request');
   return request.promiseRequest({
     modelName: 'policy',
-    method: 'getPolicy',
+    method: 'fetchPolicyList',
+    query: {}
+  });
+}
+
+/**
+ * Fetches a single policy.
+ * @public
+ */
+function fetchPolicy(id) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'fetchPolicy',
     query: { data: id }
   });
 }
@@ -97,7 +110,8 @@ function savePublishPolicy(policy) {
 export default {
   deletePolicies,
   fetchPolicies,
-  getPolicy,
+  fetchPolicyList,
+  fetchPolicy,
   publishPolicies,
   savePolicy,
   savePublishPolicy

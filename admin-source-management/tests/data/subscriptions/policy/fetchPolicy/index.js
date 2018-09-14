@@ -1,4 +1,4 @@
-import policies from '../findAll/data';
+import policies from '../fetchPolicies/data';
 
 export default {
   subscriptionDestination: '/user/queue/usm/policy/get',

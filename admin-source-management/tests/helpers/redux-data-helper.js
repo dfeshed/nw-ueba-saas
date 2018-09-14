@@ -91,6 +91,16 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicyList(policyList) {
+    _set(this.state, 'usm.policyWizard.policyList', policyList);
+    return this;
+  }
+
+  policyWizPolicyListStatus(status) {
+    _set(this.state, 'usm.policyWizard.policyListStatus', status);
+    return this;
+  }
+
   policyWizScanStartDate(startDate) {
     _set(this.state, 'usm.policyWizard.policy.scheduleConfig.scheduleOptions.scanStartDate', startDate);
     return this;
@@ -138,7 +148,17 @@ export default class DataHelper {
     return this;
   }
 
-  getGroups() {
+  groupWizGroupList(groupList) {
+    _set(this.state, 'usm.groupWizard.groupList', groupList);
+    return this;
+  }
+
+  groupWizGroupListStatus(status) {
+    _set(this.state, 'usm.groupWizard.groupListStatus', status);
+    return this;
+  }
+
+  fetchGroups() {
     _set(this.state, 'usm.groups.items', groups);
     return this;
   }
@@ -153,7 +173,7 @@ export default class DataHelper {
     return this;
   }
 
-  getPolicies() {
+  fetchPolicies() {
     _set(this.state, 'usm.policies.items', policies);
     return this;
   }

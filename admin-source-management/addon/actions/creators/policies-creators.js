@@ -10,11 +10,11 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializePolicies = () => {
   return (dispatch) => {
-    dispatch(getPolicies());
+    dispatch(fetchPolicies());
   };
 };
 
-const getPolicies = () => {
+const fetchPolicies = () => {
   return (dispatch, getState) => {
     const { itemsFilters, sortField, isSortDescending } = getState().usm.policies;
 
@@ -35,7 +35,7 @@ const deletePolicies = (callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          dispatch(getPolicies());
+          dispatch(fetchPolicies());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.DELETE_POLICIES, response);
@@ -55,7 +55,7 @@ const publishPolicies = (callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          dispatch(getPolicies());
+          dispatch(fetchPolicies());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.PUBLISH_POLICIES, response);
@@ -72,7 +72,7 @@ const resetFilters = () => {
       type: ACTION_TYPES.POLICIES_RESET_FILTERS
     });
 
-    dispatch(getPolicies());
+    dispatch(fetchPolicies());
   };
 };
 
@@ -91,7 +91,7 @@ const updateFilter = (filters) => {
       payload: filters
     });
 
-    dispatch(getPolicies());
+    dispatch(fetchPolicies());
   };
 };
 
@@ -113,7 +113,7 @@ const sortBy = (sortField, isSortDescending) => {
       }
     });
 
-    dispatch(getPolicies());
+    dispatch(fetchPolicies());
   };
 };
 
@@ -125,7 +125,7 @@ const toggleSelectAll = () => ({ type: ACTION_TYPES.POLICIES_TOGGLE_SELECT_ALL }
 
 export {
   initializePolicies,
-  getPolicies,
+  fetchPolicies,
   deletePolicies,
   publishPolicies,
   resetFilters,

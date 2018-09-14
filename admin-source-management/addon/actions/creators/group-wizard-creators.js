@@ -1,6 +1,6 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
-// import policyAPI from 'admin-source-management/actions/api/policy-api';
+import policyAPI from 'admin-source-management/actions/api/policy-api';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -10,24 +10,32 @@ const initializeGroup = (groupId) => {
     if (groupId === 'create-new') {
       dispatch(newGroup());
     } else {
-      dispatch(getGroup(groupId));
+      dispatch(fetchGroup(groupId));
     }
 
-    // init summary lists
-    // dispatch(initGroupFetchPolicies());
+    // init group and policy lists
+    dispatch(fetchGroupList());
+    dispatch(fetchPolicyList());
   };
 };
 
-/**
- * Fetches the policies available to be tied to a group
- * @public
- */
-// const initGroupFetchPolicies = () => {
-//   return {
-//     type: ACTION_TYPES.INIT_GROUP_FETCH_POLICIES,
-//     promise: policyAPI.fetchPolicy()
-//   };
-// };
+const fetchGroupList = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_GROUP_LIST,
+      promise: groupsAPI.fetchGroupList()
+    });
+  };
+};
+
+const fetchPolicyList = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_POLICY_LIST,
+      promise: policyAPI.fetchPolicyList()
+    });
+  };
+};
 
 /**
  * Replaces any previous group state with the template for a brand new group
@@ -39,10 +47,10 @@ const newGroup = () => ({ type: ACTION_TYPES.NEW_GROUP });
  * Fetches a single group for edit
  * @public
  */
-const getGroup = (id, callbacks = callbacksDefault) => {
+const fetchGroup = (id, callbacks = callbacksDefault) => {
   return {
-    type: ACTION_TYPES.GET_GROUP,
-    promise: groupsAPI.getGroup(id),
+    type: ACTION_TYPES.FETCH_GROUP,
+    promise: groupsAPI.fetchGroup(id),
     meta: {
       onSuccess: (response) => {
         callbacks.onSuccess(response);
@@ -116,8 +124,10 @@ const savePublishGroup = (group, callbacks = callbacksDefault) => {
 
 export {
   initializeGroup,
+  fetchGroupList,
+  fetchPolicyList,
   newGroup,
-  getGroup,
+  fetchGroup,
   editGroup,
   saveGroup,
   updateGroupCriteria,

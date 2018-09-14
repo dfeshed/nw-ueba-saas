@@ -10,11 +10,11 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializeGroups = () => {
   return (dispatch) => {
-    dispatch(getGroups());
+    dispatch(fetchGroups());
   };
 };
 
-const getGroups = () => {
+const fetchGroups = () => {
   return (dispatch, getState) => {
     const { itemsFilters, sortField, isSortDescending } = getState().usm.groups;
 
@@ -35,7 +35,7 @@ const deleteGroups = (callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          dispatch(getGroups());
+          dispatch(fetchGroups());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.DELETE_GROUPS, response);
@@ -55,7 +55,7 @@ const publishGroups = (callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          dispatch(getGroups());
+          dispatch(fetchGroups());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.PUBLISH_GROUPS, response);
@@ -72,7 +72,7 @@ const resetFilters = () => {
       type: ACTION_TYPES.GROUPS_RESET_FILTERS
     });
 
-    dispatch(getGroups());
+    dispatch(fetchGroups());
   };
 };
 
@@ -91,7 +91,7 @@ const updateFilter = (filters) => {
       payload: filters
     });
 
-    dispatch(getGroups());
+    dispatch(fetchGroups());
   };
 };
 
@@ -113,7 +113,7 @@ const sortBy = (sortField, isSortDescending) => {
       }
     });
 
-    dispatch(getGroups());
+    dispatch(fetchGroups());
   };
 };
 
@@ -126,7 +126,7 @@ const toggleSelectAll = () => ({ type: ACTION_TYPES.GROUPS_TOGGLE_SELECT_ALL });
 
 export {
   initializeGroups,
-  getGroups,
+  fetchGroups,
   deleteGroups,
   publishGroups,
   resetFilters,

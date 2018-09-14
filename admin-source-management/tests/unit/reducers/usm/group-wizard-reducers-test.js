@@ -226,18 +226,18 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(descEndState2, descExpectedEndState, `group desc is ${descExpected} visited state contains no duplicates`);
   });
 
-  test('on GET_GROUP start, group is reset and itemsStatus is properly set', function(assert) {
-    const getGroupEndState = new ReduxDataHelper()
+  test('on FETCH_GROUP start, group is reset and itemsStatus is properly set', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
       .groupWiz()
       .groupWizGroupStatus('wait')
       .build().usm.groupWizard;
-    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_GROUP });
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUP });
     const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
-    assert.deepEqual(endState, getGroupEndState, 'group is not-set and groupStatus is wait');
+    assert.deepEqual(endState, expectedEndState, 'group is not-set and groupStatus is wait');
   });
 
-  test('on GET_GROUP success, group & itemsStatus are properly set', function(assert) {
-    const getGroupPayload = {
+  test('on FETCH_GROUP success, group & itemsStatus are properly set', function(assert) {
+    const fetchGroupPayload = {
       data: [
         {
           'id': 'group_001',
@@ -248,17 +248,73 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       ]
     };
 
-    const getGroupEndState = new ReduxDataHelper()
+    const expectedEndState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizGroup(getGroupPayload.data)
+      .groupWizGroup(fetchGroupPayload.data)
       .groupWizGroupStatus('complete')
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.GET_GROUP,
-      payload: getGroupPayload
+      type: ACTION_TYPES.FETCH_GROUP,
+      payload: fetchGroupPayload
     });
     const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
-    assert.deepEqual(endState, getGroupEndState, 'group is not-set and groupStatus is complete');
+    assert.deepEqual(endState, expectedEndState, 'group is not-set and groupStatus is complete');
+  });
+
+  test('on FETCH_GROUP_LIST start, groupList is reset and groupListStatus is properly set', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupListStatus('wait')
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUP_LIST });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'groupList is not-set and groupListStatus is wait');
+  });
+
+  test('on FETCH_GROUP_LIST success, groupList & groupListStatus are properly set', function(assert) {
+    const fetchGroupListPayload = {
+      data: [
+        {
+          id: 'group_001',
+          name: 'Zebra 001',
+          description: 'Zebra 001 of group group_001',
+          createdOn: 1523655354337,
+          lastModifiedOn: 1523655354337,
+          lastPublishedOn: 1523655354337,
+          dirty: false
+        },
+        {
+          id: 'group_002',
+          name: 'Awesome! 012',
+          description: 'Awesome! 012 of group group_012',
+          createdOn: 1523655368173,
+          lastModifiedOn: 1523655368173,
+          lastPublishedOn: 1523655368173,
+          dirty: true
+        },
+        {
+          id: 'group_003',
+          name: 'Xylaphone 003',
+          description: 'Xylaphone 003 of group group_003',
+          createdOn: 1523655354337,
+          lastModifiedOn: 1523655354337,
+          lastPublishedOn: 0,
+          dirty: true
+        }
+      ]
+    };
+
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupList(fetchGroupListPayload.data)
+      .groupWizGroupListStatus('complete')
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_GROUP_LIST,
+      payload: fetchGroupListPayload
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'groupList is not-set and groupListStatus is complete');
   });
 
   test('on SAVE_GROUP start, groupStatus is properly set', function(assert) {

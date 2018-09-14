@@ -50,7 +50,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
   test('Button state when no items are selected', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
@@ -61,7 +61,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
   test('Button state when non-dirty publish items are selected', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_014'])
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
@@ -73,7 +73,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
   test('Button state when dirty publish items are selected', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_001'])
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
@@ -85,7 +85,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
   test('Button state when default policy is selected with others', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['__default_edr_policy', 'policy_001', 'policy_002'])
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
@@ -97,7 +97,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
   test('Button state when only default policy is selected', async function(assert) {
     assert.expect(3);
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['__default_edr_policy'])
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
@@ -111,7 +111,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_003'])
       .build();
     await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
@@ -142,7 +142,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_003'])
       .build();
     await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
@@ -163,7 +163,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_002'])
       .build();
     await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
@@ -194,7 +194,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getPolicies()
+      .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_002'])
       .build();
     await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);

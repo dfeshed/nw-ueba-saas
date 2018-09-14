@@ -20,7 +20,7 @@ const initialState = {
   isSortDescending: true
 };
 
-const fetchGroupsPayload = {
+const getGroupsPayload = {
   data: [
     {
       'id': 'group_001',
@@ -53,13 +53,13 @@ test('on FETCH_GROUPS start, group is reset and itemsStatus is properly set', fu
 test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    items: fetchGroupsPayload.data,
+    items: getGroupsPayload.data,
     itemsTotal: 1,
     itemsStatus: 'complete'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_GROUPS,
-    payload: fetchGroupsPayload
+    payload: getGroupsPayload
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'groups populated & itemsStatus is complete');

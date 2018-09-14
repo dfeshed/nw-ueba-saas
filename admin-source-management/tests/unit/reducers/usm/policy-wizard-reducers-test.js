@@ -64,17 +64,17 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(descEndState2, descExpectedEndState, `policy desc is ${descExpected} visited state contains no duplicates`);
   });
 
-  test('on GET_POLICY start, policy is reset and itemsStatus is properly set', function(assert) {
-    const getPolicyEndState = new ReduxDataHelper()
+  test('on FETCH_POLICY start, policy is reset and itemsStatus is properly set', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPolicyStatus('wait')
       .build().usm.policyWizard;
-    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_POLICY });
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICY });
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState, getPolicyEndState, 'policy is not-set and policyStatus is wait');
+    assert.deepEqual(endState, expectedEndState, 'policy is not-set and policyStatus is wait');
   });
 
-  test('on GET_POLICY success, policy & itemsStatus are properly set', function(assert) {
+  test('on FETCH_POLICY success, policy & itemsStatus are properly set', function(assert) {
     const getPolicyPayload = {
       data: [
         {
@@ -86,17 +86,70 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       ]
     };
 
-    const getPolicyEndState = new ReduxDataHelper()
+    const expectedEndState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPolicy(getPolicyPayload.data)
       .policyWizPolicyStatus('complete')
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.GET_POLICY,
+      type: ACTION_TYPES.FETCH_POLICY,
       payload: getPolicyPayload
     });
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState, getPolicyEndState, 'policy is not-set and policyStatus is complete');
+    assert.deepEqual(endState, expectedEndState, 'policy is not-set and policyStatus is complete');
+  });
+
+  test('on FETCH_POLICY_LIST start, policyList is reset and policyListStatus is properly set', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyListStatus('wait')
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICY_LIST });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'policyList is not-set and policyListStatus is wait');
+  });
+
+  test('on FETCH_POLICY_LIST success, policyList & policyListStatus are properly set', function(assert) {
+    const fetchPolicyListPayload = {
+      data: [
+        {
+          id: '__default_edr_policy',
+          name: 'Default EDR Policy',
+          policyType: 'edrPolicy',
+          description: 'Default EDR Policy __default_edr_policy',
+          lastPublishedOn: 1527489158739,
+          dirty: false
+        },
+        {
+          id: 'policy_001',
+          name: 'EMC 001',
+          policyType: 'edrPolicy',
+          description: 'EMC 001 of policy policy_001',
+          lastPublishedOn: 1527489158739,
+          dirty: true
+        },
+        {
+          id: 'policy_002',
+          name: 'EMC Reston! 012',
+          policyType: 'edrPolicy',
+          description: 'EMC Reston 012 of policy policy_012',
+          lastPublishedOn: 0,
+          dirty: true
+        }
+      ]
+    };
+
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyList(fetchPolicyListPayload.data)
+      .policyWizPolicyListStatus('complete')
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_POLICY_LIST,
+      payload: fetchPolicyListPayload
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'policyList is not-set and policyListStatus is complete');
   });
 
   test('on UPDATE_POLICY_PROPERTY policy is updated', function(assert) {

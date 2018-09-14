@@ -31,6 +31,11 @@ export const initialState = {
       }
     }
   },
+  policyStatus: null, // wait, complete, error
+
+  // the summary list of policies objects to fill the group select/dropdown
+  policyList: [],
+  policyListStatus: null, // wait, complete, error
 
   // TODO if the reducer doesn't need to modify these, and the selectors aren't doing anything special,
   //   then we may want to extract these to a steps.js and add them directly to the policy-wizard component,
@@ -94,8 +99,6 @@ export const initialState = {
   // define-policy-step - selected settings to render the right col
   selectedSettings: [],
 
-  policyStatus: null, // wait, complete, error
-
   // keeps track of the form fields visited by the user
   visited: []
 };
@@ -141,7 +144,7 @@ export default reduxActions.handleActions({
     return newState.setIn(fields, scanStartDateToday);
   },
 
-  [ACTION_TYPES.GET_POLICY]: (state, action) => (
+  [ACTION_TYPES.FETCH_POLICY]: (state, action) => (
     handle(state, action, {
       start: (state) => {
         return state.merge({
@@ -156,6 +159,26 @@ export default reduxActions.handleActions({
         return state.merge({
           policy: action.payload.data,
           policyStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.FETCH_POLICY_LIST]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          policyList: [],
+          policyListStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('policyListStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policyList: action.payload.data,
+          policyListStatus: 'complete'
         });
       }
     })

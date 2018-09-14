@@ -10,25 +10,37 @@ function fetchGroups(/* filters, sort */) {
   // const query = buildExplorerQuery(filters, sort, 'name');
   return request.promiseRequest({
     modelName: 'groups',
-    method: 'findAll',
+    method: 'fetchGroups',
     query: {}
     // query: query.toJSON()
   });
 }
 
 /**
- * Gets a single group.
+ * Fetches a list of group summary objects.
  * @public
  */
-function getGroup(id) {
+function fetchGroupList() {
   const request = lookup('service:request');
   return request.promiseRequest({
     modelName: 'groups',
-    method: 'getGroup',
-    query: { data: id }
+    method: 'fetchGroupList',
+    query: {}
   });
 }
 
+/**
+ * Fetches a single group.
+ * @public
+ */
+function fetchGroup(id) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'fetchGroup',
+    query: { data: id }
+  });
+}
 
 /**
  * Deletes one or more groups from list of group IDs.
@@ -97,7 +109,8 @@ function savePublishGroup(group) {
 export default {
   deleteGroups,
   fetchGroups,
-  getGroup,
+  fetchGroupList,
+  fetchGroup,
   publishGroups,
   saveGroup,
   savePublishGroup
