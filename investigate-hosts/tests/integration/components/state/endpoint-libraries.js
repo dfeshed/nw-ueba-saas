@@ -7444,7 +7444,9 @@ export default {
         checksumSha256: 'd60d5dda7a4fb3f349e3e5644147aa62226aff39321703b8d7f1c1097ebd2046',
         parentPid: 556
       }
-    ]
+    ],
+    selectedLibraryList: [],
+    libraryStatusData: {}
   },
   explore: {
     fileSearchResults: [],

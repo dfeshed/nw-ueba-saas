@@ -8,6 +8,7 @@ const _selectedRowId = (state) => state.endpoint.libraries.selectedRowId;
 const _processData = (state) => state.endpoint.libraries.processList;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
+const _selectedLibraryList = (state) => state.endpoint.libraries.selectedLibraryList || [];
 
 const _libraries = createSelector(
   [ _libraryObject, _selectedTab, _sortConfig ],
@@ -39,3 +40,34 @@ export const getLibraries = createSelector(
 
 
 export const selectedLibraryFileProperty = createSelector([ _selectedRowId, _libraries, _libraryObject], getProperties);
+
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllLibrarySelected = createSelector(
+  [_libraries, _selectedLibraryList],
+  (libraries, selectedLibraryList) => {
+    if (selectedLibraryList && selectedLibraryList.length) {
+      return libraries.length === selectedLibraryList.length;
+    }
+    return false;
+  }
+);
+
+/**
+ * selector for get selected row count.
+ * @public
+ */
+export const selectedLibraryCount = createSelector(
+  [_selectedLibraryList],
+  (selectedLibraryList) => selectedLibraryList ? selectedLibraryList.length : 0);
+
+/**
+ * Selector for list of checksums of all selected library.
+ * @public
+ */
+export const libraryChecksums = createSelector(
+  [_selectedLibraryList],
+  (selectedLibraryList) => selectedLibraryList.map((library) => library.checksumSha256)
+);

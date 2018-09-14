@@ -9,5 +9,15 @@
     propertyConfig=propertyConfig
     propertyData=fileProperty
     propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.libraries')
+    toggleOneItemSelectionAction=(action 'toggleLibrarySelection')
+    toggleAllItemSelectionAction=(action 'toggleAllLibrarySelection')
+    selectedFiles=selectedLibraryList
+    isAllSelected=isAllLibrarySelected
+    selectedFileCount=selectedLibraryCount
+    showPivotToInvestigate=false
+    fileStatusData=statusData
+    saveFileStatus = (action 'saveLibraryStatus' checksums)
+    getSavedFileStatus=(action 'getSavedLibraryStatus' selectedLibraryList)
+    fileStatusData=statusData
   )
 }}

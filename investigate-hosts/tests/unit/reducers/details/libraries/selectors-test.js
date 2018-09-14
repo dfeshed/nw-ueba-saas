@@ -9,7 +9,10 @@ module('Unit | Selectors | overview');
 import {
   getLibraries,
   isDataLoading,
-  selectedLibraryFileProperty
+  selectedLibraryFileProperty,
+  isAllLibrarySelected,
+  selectedLibraryCount,
+  libraryChecksums
 } from 'investigate-hosts/reducers/details/libraries/selectors';
 
 test('getLibraries', function(assert) {
@@ -184,4 +187,62 @@ test('selectedLibraryFileProperty when selectedRowId is empty', function(assert)
   }));
   assert.equal(result.fileName, 'imuxsock.so', 'selected file name');
   assert.deepEqual(result.fileProperties.checksumSha256, '45f2c37e4f65bbff8024c8e9e9aee8eadc60cf3b0742f127e9d40f2fd789a0e6', 'selected file hash');
+});
+test('isAllLibrarySelected', function(assert) {
+  const normalizedData = normalize(libraries, fileContextListSchema);
+  let result = isAllLibrarySelected(Immutable.from({
+    endpoint: {
+      libraries: {
+        library: normalizedData.entities.library,
+        selectedRowId: '',
+        selectedLibraryList: []
+      },
+      explore: {},
+      datatable: {}
+    }
+  }));
+  assert.equal(result, false);
+
+  result = isAllLibrarySelected(Immutable.from({
+    endpoint: {
+      libraries: {
+        library: new Array(100),
+        selectedLibraryList: new Array(100)
+      },
+      explore: {},
+      datatable: {}
+    }
+  }));
+  assert.equal(result, true);
+});
+test('selectedLibraryCount', function(assert) {
+  let result = selectedLibraryCount(Immutable.from({
+    endpoint: {
+      libraries: {
+        library: {},
+        selectedFileList: []
+      }
+    }
+  }));
+  assert.equal(result, 0);
+
+  result = selectedLibraryCount(Immutable.from({
+    endpoint: {
+      libraries: {
+        library: new Array(100),
+        selectedLibraryList: new Array(100)
+      }
+    }
+  }));
+  assert.equal(result, 100);
+});
+test('libraryChecksums', function(assert) {
+  const result = libraryChecksums(Immutable.from({
+    endpoint: {
+      libraries: {
+        selectedLibraryList: [{ checksumSha256: 'c1' }, { checksumSha256: 'c2' } ]
+      }
+    }
+  }));
+  assert.equal(result.length, 2);
 });

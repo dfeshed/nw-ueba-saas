@@ -13,7 +13,9 @@ const initialState = Immutable.from({
   library: null,
   libraryLoadingStatus: null,
   selectedRowId: null,
-  processList: null
+  processList: null,
+  selectedLibraryList: [],
+  libraryStatusData: {}
 });
 
 test('should return the initial state', function(assert) {
@@ -75,4 +77,85 @@ test('The GET_LIBRARY_PROCESS_INFO process information to the state', function(a
 
   const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.processList).length, 10);
+});
+test('TOGGLE_SELECTED_LIBRARY should toggle the selected library', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedLibraryList: []
+  });
+  const library = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_LIBRARY, payload: library });
+  assert.equal(result.selectedLibraryList.length, 1);
+  assert.equal(result.selectedLibraryList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedLibraryList: [library]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_LIBRARY, payload: library });
+  assert.equal(result.selectedLibraryList.length, 0);
+});
+test('TOGGLE_ALL_LIBRARY_SELECTION should toggle the selected library', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedLibraryList: [],
+    library: {
+      libraryt_61: {
+        id: '0'
+      }
+    }
+  });
+  const library = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_LIBRARY_SELECTION });
+  assert.equal(result.selectedLibraryList.length, 1);
+  assert.equal(result.selectedLibraryList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedLibraryList: [library]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_LIBRARY_SELECTION, payload: library });
+  assert.equal(result.selectedLibraryList.length, 0);
+});
+test('SAVE_LIBRARY_STATUS ', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedLibraryList: [],
+    library: {
+      library_61: {
+        id: 'library_61',
+        checksumSha256: 1,
+        fileProperties: { fileStatus: 'blacklist' }
+      }
+    }
+  });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SAVE_LIBRARY_STATUS,
+    payload: { request: { data: { fileStatus: 'whitelist', checksums: [ 1, 2] } } }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.library.library_61.fileProperties.fileStatus, 'whitelist');
+});
+test('The GET_LIBRARY_STATUS set server response to state', function(assert) {
+  const previous = Immutable.from({
+    libraryStatusData: {}
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_LIBRARY_STATUS });
+  const startEndState = reducer(previous, startAction);
+
+  assert.deepEqual(startEndState.libraryStatusData, {});
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_LIBRARY_STATUS,
+    payload: { data: [ { resultList: [ { data: 'Whitelist' } ] } ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.libraryStatusData, 'Whitelist');
 });
