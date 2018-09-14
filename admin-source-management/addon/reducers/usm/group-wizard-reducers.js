@@ -180,13 +180,21 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.UPDATE_GROUP_CRITERIA]: (state, action) => {
     const { criteriaPath, value, fieldIndex } = action.payload;
-    const criteriaPathTrimer = Number(criteriaPath.substring(1));
+    const criteriaPathTrimed = Number(criteriaPath.substring(1));
     let editedCriteria = [];
-    if (fieldIndex > 2) {
-      const fieldIndexTemp = 2; // concat to field value array if more then one value
-      editedCriteria = state.group.groupCriteria.criteria[criteriaPathTrimer].map((field, index) => index === fieldIndexTemp ? field.concat(value) : field);
-    } else {
-      editedCriteria = state.group.groupCriteria.criteria[criteriaPathTrimer].map((field, index) => index === fieldIndex ? value : field);
+    if (fieldIndex < 3) { // attribute, operator or single input change
+      editedCriteria = state.group.groupCriteria.criteria[criteriaPathTrimed].map((field, index) => index === fieldIndex ? value : field);
+    } else { // two input change for between operator
+      const criteriaToEdit = state.group.groupCriteria.criteria[criteriaPathTrimed].slice();
+      let editedInput = [];
+      if (fieldIndex === 10) {
+        // first input change for between operator
+        editedInput = Object.assign([], criteriaToEdit[2], { 0: value });
+      } else if (fieldIndex === 11) {
+        // second input change for between operator
+        editedInput = Object.assign([], criteriaToEdit[2], { 1: value });
+      }
+      editedCriteria = Object.assign([], criteriaToEdit, { 2: editedInput });
     }
     let newEditedCriteria = [];
     if (fieldIndex === 0) {
@@ -243,5 +251,4 @@ export default reduxActions.handleActions({
       }
     })
   )
-
 }, Immutable.from(initialState));

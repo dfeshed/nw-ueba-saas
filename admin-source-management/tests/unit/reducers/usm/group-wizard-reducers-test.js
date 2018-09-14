@@ -28,7 +28,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(endState, groupWizInitialState);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct osType operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct osType first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {
@@ -60,7 +60,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct osDescription operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct osDescription first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {
@@ -76,7 +76,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct hostname operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct hostname first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {
@@ -92,7 +92,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct ipv4 operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct ipv4 first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {
@@ -108,13 +108,13 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct ipv4 second input', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to first input', function(assert) {
     const initialState2 = Immutable.from({
       group: {
         name: 'test',
         groupCriteria: {
           criteria: [
-            ['ipv4', 'BETWEEN', ['abc']]
+            ['ipv4', 'BETWEEN', []]
           ]
         }
       }
@@ -123,16 +123,121 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       ...initialState2.group,
       groupCriteria: {
         ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', ['abc', 'def']]]
+        criteria: [['ipv4', 'BETWEEN', ['123']]]
       }
     };
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
-      payload: { criteriaPath: ',0', value: ['def'], fieldIndex: 3 }
+      payload: { criteriaPath: ',0', value: '123', fieldIndex: 10 }
     };
     const result = reducers(initialState2, action);
     assert.deepEqual(result.group, expectedResult);
   });
+
+  test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to second input', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          criteria: [
+            ['ipv4', 'BETWEEN', ['123']]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['ipv4', 'BETWEEN', ['123', 'def']]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+      payload: { criteriaPath: ',0', value: 'def', fieldIndex: 11 }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to second input with empty first input', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          criteria: [
+            ['ipv4', 'BETWEEN', []]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['ipv4', 'BETWEEN', [undefined, 'def']]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+      payload: { criteriaPath: ',0', value: 'def', fieldIndex: 11 }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on UPDATE_GROUP_CRITERIA, ipv4 edit first input', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          criteria: [
+            ['ipv4', 'BETWEEN', ['abc', 'def']]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['ipv4', 'BETWEEN', ['123', 'def']]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+      payload: { criteriaPath: ',0', value: '123', fieldIndex: 10 }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on UPDATE_GROUP_CRITERIA, ipv4 edit second input', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          criteria: [
+            ['ipv4', 'BETWEEN', ['abc', 'def']]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['ipv4', 'BETWEEN', ['abc', '123']]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+      payload: { criteriaPath: ',0', value: '123', fieldIndex: 11 }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
 
   test('on UPDATE_GROUP_CRITERIA, find if clear ipv4 input on operator change', function(assert) {
     const initialState2 = Immutable.from({
@@ -160,7 +265,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct ipv6 operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct ipv6 first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {
@@ -176,7 +281,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct agentMode operator', function(assert) {
+  test('on UPDATE_GROUP_CRITERIA, find correct agentMode first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,
       groupCriteria: {

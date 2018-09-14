@@ -18,8 +18,11 @@ const AttributeInputs = Component.extend({
     handleInputChange(value) {
       this.send('updateGroupCriteria', this.get('criteriaPath'), [value], 2);
     },
-    handleSecondInputChange(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), [value], 3);
+    firstBetweenInput(value) {
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 10);
+    },
+    secondBetweenInput(value) {
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 11);
     }
   }
 });

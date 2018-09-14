@@ -20,13 +20,13 @@
     {{rsa-form-input class='operator-input'
       value=(readonly value.[0])
       maxLength=15
-      focusOut=(action 'handleInputChange' value='target.value')
+      focusOut=(action 'firstBetweenInput' value='target.value')
     }}
-    {{!--second input for between operator--}}
+    <span>and </span>{{!--second input for between operator--}}
     {{rsa-form-input class='operator-input'
       value=(readonly value.[1])
       maxLength=15
-      focusOut=(action 'handleSecondInputChange' value='target.value')
+      focusOut=(action 'secondBetweenInput' value='target.value')
     }}
   </div>
 {{else if (eq inputField 'agentSelector')}}
