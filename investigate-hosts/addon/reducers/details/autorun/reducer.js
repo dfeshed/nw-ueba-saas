@@ -9,6 +9,7 @@ import {
 import { normalize } from 'normalizr';
 import Immutable from 'seamless-immutable';
 import { getValues } from 'investigate-hosts/reducers/details/selector-utils';
+import _ from 'lodash';
 
 const initialState = Immutable.from({
   autorun: null,
@@ -135,6 +136,25 @@ const autoruns = reduxActions.handleActions({
       return state.set('selectedAutorunList', []);
     }
   },
+  [ACTION_TYPES.SAVE_AUTORUN_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const autorun = _.clone(s.autorun);
+        const autoruns = _.values(autorun);
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        for (let i = 0; i < checksums.length; i++) {
+          for (let j = 0; j < autoruns.length; j++) {
+            if (autoruns[j].checksumSha256 == checksums[i]) {
+              const fileProperties = { ...autorun[autoruns[j].id].fileProperties, fileStatus };
+              autorun[autoruns[j].id] = { ...autorun[autoruns[j].id], fileProperties };
+            }
+          }
+        }
+        return s.set('autorun', autorun);
+      }
+    });
+  },
   [ACTION_TYPES.GET_AUTORUN_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s) => {
@@ -156,6 +176,25 @@ const autoruns = reduxActions.handleActions({
     } else {
       return state.set('selectedServiceList', []);
     }
+  },
+  [ACTION_TYPES.SAVE_SERVICE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const service = _.clone(s.service);
+        const services = _.values(service);
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        for (let i = 0; i < checksums.length; i++) {
+          for (let j = 0; j < services.length; j++) {
+            if (services[j].checksumSha256 == checksums[i]) {
+              const fileProperties = { ...service[services[j].id].fileProperties, fileStatus };
+              service[services[j].id] = { ...service[services[j].id], fileProperties };
+            }
+          }
+        }
+        return s.set('service', service);
+      }
+    });
   },
   [ACTION_TYPES.GET_SERVICE_STATUS]: (state, action) => {
     return handle(state, action, {
@@ -179,6 +218,25 @@ const autoruns = reduxActions.handleActions({
       return state.set('selectedTaskList', []);
     }
   },
+  [ACTION_TYPES.SAVE_TASK_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const task = _.clone(s.task);
+        const tasks = _.values(task);
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        for (let i = 0; i < checksums.length; i++) {
+          for (let j = 0; j < tasks.length; j++) {
+            if (tasks[j].checksumSha256 == checksums[i]) {
+              const fileProperties = { ...task[tasks[j].id].fileProperties, fileStatus };
+              task[tasks[j].id] = { ...task[tasks[j].id], fileProperties };
+            }
+          }
+        }
+        return s.set('task', task);
+      }
+    });
+  },
   [ACTION_TYPES.GET_TASK_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s) => {
@@ -190,7 +248,6 @@ const autoruns = reduxActions.handleActions({
       }
     });
   }
-
 }, initialState);
 
 export default autoruns;

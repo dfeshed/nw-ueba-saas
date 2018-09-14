@@ -61,6 +61,27 @@ const hostFilesReducer = handleActions({
 
   [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
 
+  [ACTION_TYPES.SAVE_FILE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const { files } = s;
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        let newData = [];
+        for (let i = 0; i < checksums.length; i++) {
+          newData = Object.values(files).map((file) => {
+            if (file.checksumSha256 == checksums[i]) {
+              const newFileProperties = { ...file.fileProperties, fileStatus };
+              return { ...file, fileProperties: newFileProperties };
+            }
+            return file;
+          });
+        }
+        return s.set('files', newData);
+      }
+    });
+  },
+
   [ACTION_TYPES.GET_FILE_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s) => {

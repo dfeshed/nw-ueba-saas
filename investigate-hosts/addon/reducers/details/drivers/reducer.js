@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 import { fileContextListSchema } from './schemas';
 import { normalize } from 'normalizr';
 import Immutable from 'seamless-immutable';
+import _ from 'lodash';
 import { getValues } from 'investigate-hosts/reducers/details/selector-utils';
 
 
@@ -59,6 +60,25 @@ const drivers = reduxActions.handleActions({
     } else {
       return state.set('selectedDriverList', []);
     }
+  },
+  [ACTION_TYPES.SAVE_DRIVER_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const driver = _.clone(s.driver);
+        const drivers = _.values(driver);
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        for (let i = 0; i < checksums.length; i++) {
+          for (let j = 0; j < drivers.length; j++) {
+            if (drivers[j].checksumSha256 == checksums[i]) {
+              const fileProperties = { ...driver[drivers[j].id].fileProperties, fileStatus };
+              driver[drivers[j].id] = { ...driver[drivers[j].id], fileProperties };
+            }
+          }
+        }
+        return s.set('driver', driver);
+      }
+    });
   },
   [ACTION_TYPES.GET_DRIVER_STATUS]: (state, action) => {
     return handle(state, action, {
