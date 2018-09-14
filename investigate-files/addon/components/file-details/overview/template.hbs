@@ -1,0 +1,20 @@
+{{#rsa-page-layout as |layout|}}
+  {{#layout.center}}
+    <hbox class="file-detail-box scroll-box">
+      <box class="alerts">
+        {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab}}
+      </box>
+      <box>
+        {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
+          {{rsa-icon name='layout-2'}}
+        {{/rsa-form-button}}
+        Events
+      </box>
+    </hbox>
+  {{/layout.center}}
+  {{#layout.right as |right|}}
+    {{right.header}}
+    <vbox class="file-properties-box">
+    </vbox>
+  {{/layout.right}}
+{{/rsa-page-layout}}

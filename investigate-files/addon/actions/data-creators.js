@@ -416,6 +416,7 @@ const fetchAgentId = (hostName, callBack) => {
   };
 };
 
+const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
 
 export {
   getFilter,
@@ -441,5 +442,6 @@ export {
   fetchMachineCount,
   getSavedFileStatus,
   fetchHostNameList,
-  fetchAgentId
+  fetchAgentId,
+  setNewFileTab
 };

@@ -46,7 +46,11 @@
         {{/rsa-data-table/body-cell}}
       {{else}}
         {{#rsa-data-table/body-cell column=column}}
-          {{#if (eq column.field 'size')}}
+          {{#if (eq column.field 'firstFileName')}}
+            <div class="file-name">
+              {{#link-to 'file' (get item 'checksumSha256')}}{{get item column.field}}{{/link-to}}
+            </div>
+          {{else if (eq column.field 'size')}}
             {{rsa-content-memsize size=(get item column.field)}}
           {{else if (eq column.field 'machineCount')}}
             {{file-list/machine-count item=item machineCountMapping=agentCountMapping}}

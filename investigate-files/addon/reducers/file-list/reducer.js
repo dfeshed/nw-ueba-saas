@@ -18,7 +18,6 @@ const fileListState = Immutable.from({
   downloadId: null,
   listOfServices: null,
   activeDataSourceTab: 'RISK_PROPERTIES',
-  activeAlertTab: 'CRITICAL',
   lookupData: [{}],
   contextError: null,
   contextLoadingStatus: 'wait',
@@ -141,8 +140,6 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null),
 
   [ACTION_TYPES.CHANGE_DATASOURCE_TAB]: (state, { payload: { tabName } }) => state.set('activeDataSourceTab', tabName),
-
-  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => state.set('activeAlertTab', tabName),
 
   [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));

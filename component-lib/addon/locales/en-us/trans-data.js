@@ -2167,7 +2167,9 @@ export default {
     },
     tabs: {
       riskProperties: 'Risk Properties',
-      fileDetails: 'File Details'
+      fileDetails: 'File Details',
+      overview: 'Overview',
+      analysis: 'Analysis'
     }
   },
   investigateHosts: {

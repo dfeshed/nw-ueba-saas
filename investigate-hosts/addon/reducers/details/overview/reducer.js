@@ -8,7 +8,8 @@ const initialState = Immutable.from({
   downloadId: null,
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
-  policyDetails: null
+  policyDetails: null,
+  activeAlertTab: 'CRITICAL'
 });
 
 const hostDetails = reduxActions.handleActions({
@@ -36,7 +37,9 @@ const hostDetails = reduxActions.handleActions({
 
   [ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS]: (state, { payload }) => state.set('arrangeSecurityConfigsBy', payload.arrangeBy),
 
-  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('downloadId', null)
+  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('downloadId', null),
+
+  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => state.set('activeAlertTab', tabName)
 
 }, initialState);
 

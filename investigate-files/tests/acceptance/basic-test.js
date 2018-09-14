@@ -6,6 +6,8 @@ import $ from 'jquery';
 import sinon from 'sinon';
 import Service from '@ember/service';
 import { lookup } from 'ember-dependency-lookup';
+import wait from 'ember-test-helpers/wait';
+import { waitForSockets } from '../helpers/wait-for-sockets';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const AccessControlService = Service.extend({
@@ -28,7 +30,22 @@ test('visiting /investigate-files', function(assert) {
   andThen(() => {
     assert.equal(currentURL(), '/investigate-files');
   });
+});
 
+test('visiting /investigate-files/1234', function(assert) {
+  assert.expect(1);
+
+  const done = waitForSockets();
+
+  visit('/investigate-files/1234');
+
+  andThen(function() {
+    assert.equal(currentURL(), '/investigate-files/1234', 'The route loads and we are not redirected');
+  });
+
+  andThen(function() {
+    return wait().then(() => done());
+  });
 });
 
 skip('visiting /investigate-files shows server down message', function(assert) {

@@ -1,0 +1,5 @@
+{{#each fileDetailTabs as |tab|}}
+  {{#rsa-nav-tab isActive=tab.selected click=(action 'setNewFileTab' tab.name)}}
+    <div class="label">{{t tab.label}}</div>
+  {{/rsa-nav-tab}}
+{{/each}}

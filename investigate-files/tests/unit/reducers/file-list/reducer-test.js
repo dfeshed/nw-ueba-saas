@@ -65,7 +65,6 @@ test('should return the initial state', function(assert) {
     downloadId: null,
     listOfServices: null,
     activeDataSourceTab: 'RISK_PROPERTIES',
-    activeAlertTab: 'CRITICAL',
     lookupData: [{}],
     contextError: null,
     contextLoadingStatus: 'wait',

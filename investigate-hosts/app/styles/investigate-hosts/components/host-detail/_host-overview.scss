@@ -20,8 +20,29 @@
   .rsa-icon.is-small{
     padding-right: rsa-whitespace(least);
   }
+  .trends-chart {
+    @include border-top(1px, solid, primary, lightest, nearly-transparent);
+    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    height: 250px;
+
+    .open-right {
+      float: right;
+    }
+  }
+
+  .alerts {
+    min-width: 400px;
+    max-width: 400px;
+    @include border-right(1px, solid, primary, lightest, nearly-transparent);
+    opacity: opacity-value(opaque);
+  }
+
+  .open-properties {
+    button {
+      float: right;
+    }
+  }
   .host-properties-box {
-    @include border-left(1px, solid, primary, dark);
     .rsa-nav-tab  .label{
       color: text-color(primary, lighter);
       @include rsa-font(header, small);

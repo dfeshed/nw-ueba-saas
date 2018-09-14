@@ -12,7 +12,8 @@ const initialState = {
   downloadId: null,
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
-  policyDetails: null
+  policyDetails: null,
+  activeAlertTab: 'CRITICAL'
 };
 
 test('should return the initial state', function(assert) {
@@ -78,4 +79,17 @@ test('The ARRANGE_SECURITY_CONFIGURATIONS will set arrangeSecurityConfigsby to e
       payload: { arrangeBy: 'status' } });
 
   assert.deepEqual(result.arrangeSecurityConfigsBy, 'status');
+});
+
+test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeAlertTab: 'CRITICAL'
+  });
+
+  const expectedEndState = {
+    activeAlertTab: 'HIGH'
+  };
+
+  const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName: 'HIGH' } });
+  assert.deepEqual(endState, expectedEndState);
 });

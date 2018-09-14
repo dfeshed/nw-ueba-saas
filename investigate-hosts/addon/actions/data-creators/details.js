@@ -248,6 +248,8 @@ const setHostDetailsDataTableSortConfig = (sortConfig) => {
   };
 };
 
+const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName } });
+
 export {
   initializeAgentDetails,
   changeDetailTab,
@@ -260,5 +262,6 @@ export {
   loadDetailsWithExploreInput,
   setAutorunsTabView,
   setAnomaliesTabView,
-  setHostDetailsDataTableSortConfig
+  setHostDetailsDataTableSortConfig,
+  setAlertTab
 };

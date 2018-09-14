@@ -1,0 +1,15 @@
+.file-overview {
+  min-height: calc(100vh - 140px);
+
+  .alerts {
+    max-width: 400px;
+    @include border-right(1px, solid, primary, lightest, nearly-transparent);
+    opacity: opacity-value(opaque);
+  }
+
+  .open-properties {
+    button {
+      float: right;
+    }
+  }
+}
