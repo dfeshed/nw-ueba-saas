@@ -9,8 +9,8 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/policy-wizard-reducers';
 
 const policyWizInitialState = new ReduxDataHelper().policyWiz().build().usm.policyWizard;
-const scanScheduleId = 'schedOrManScan';
-const effectiveDateId = 'effectiveDate';
+const scanScheduleId = 'scanType';
+const scanStartDateId = 'scanStartDate';
 
 module('Unit | Reducers | Policy Wizard Reducers', function() {
 
@@ -23,7 +23,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPolicyStatus('complete')
-      .policyWizScanStartDate(moment().format('YYYY-MM-DD'))
+      .policyWizScanStartDate(null)
       .build().usm.policyWizard;
     const action = { type: ACTION_TYPES.NEW_POLICY };
     const endState = reducers(Immutable.from(policyWizInitialState), action);
@@ -75,28 +75,85 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('on FETCH_POLICY success, policy & itemsStatus are properly set', function(assert) {
-    const getPolicyPayload = {
-      data: [
-        {
-          'id': 'policy_001',
-          'name': 'EMC 001',
-          'description': 'EMC 001 of policy policy_001',
-          'dirty': false
-        }
-      ]
+    const fetchPolicyPayload = {
+      data: {
+        'id': 'policy_001',
+        'name': 'EMC 001',
+        'description': 'EMC 001 of policy policy_001',
+        'dirty': false
+      }
     };
 
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizPolicy(getPolicyPayload.data)
+      .policyWizPolicy(fetchPolicyPayload.data)
       .policyWizPolicyStatus('complete')
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.FETCH_POLICY,
-      payload: getPolicyPayload
+      payload: fetchPolicyPayload
     });
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState, expectedEndState, 'policy is not-set and policyStatus is complete');
+    assert.deepEqual(endState, expectedEndState, 'policy is set and policyStatus is complete');
+  });
+
+  test('on FETCH_POLICY success, availableSettings & selectedSettings are properly set', function(assert) {
+    const initialStateCopy = _.cloneDeep(policyWizInitialState);
+    initialStateCopy.availableSettings = [
+      // { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true },
+      { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
+      // { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
+      { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+      { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
+      // { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
+      { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
+      { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+      // { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
+      // { index: 10, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true }
+    ];
+
+    const expectedEndState = {
+      availableSettings: [
+        { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+        { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
+        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+        { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
+        { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
+        { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+      ],
+      selectedSettings: [
+        { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+        { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
+        { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+      ]
+    };
+
+    const fetchPolicyPayload = {
+      data: {
+        id: 'policy_014',
+        policyType: 'edrPolicy',
+        name: 'EMC Reston! 014',
+        description: 'EMC Reston 014 of policy policy_014',
+        scanType: 'SCHEDULED',
+        scanStartDate: null,
+        scanStartTime: null,
+        recurrenceInterval: 1,
+        recurrenceIntervalUnit: 'WEEKS',
+        runOnDaysOfWeek: ['WEDNESDAY'],
+        cpuMaximum: 75,
+        cpuMaximumOnVirtualMachine: 85
+      }
+    };
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_POLICY,
+      payload: fetchPolicyPayload
+    });
+    const endState = reducers(Immutable.from(initialStateCopy), action);
+    assert.deepEqual(endState.availableSettings, expectedEndState.availableSettings, 'availableSettings are properly set');
+    assert.deepEqual(endState.selectedSettings, expectedEndState.selectedSettings, 'selectedSettings are properly set');
   });
 
   test('on FETCH_POLICY_LIST start, policyList is reset and policyListStatus is properly set', function(assert) {
@@ -153,18 +210,17 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('on UPDATE_POLICY_PROPERTY policy is updated', function(assert) {
-    const payload = {
-      scheduleConfig: {
-        scheduleOptions: {
-          recurrenceIntervalUnit: 'WEEKS'
-        }
-      }
-    };
+    const payload = [
+      { field: 'policy.recurrenceIntervalUnit', value: 'WEEKS' },
+      { field: 'policy.recurrenceInterval', value: 1 }
+    ];
 
     const recurrenceIntervalUnitExpected = 'WEEKS';
+    const recurrenceIntervalExpected = 1;
     const action = { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.policy.scheduleConfig.scheduleOptions.recurrenceIntervalUnit, recurrenceIntervalUnitExpected, 'recurrenceIntervalUnit is updated along with recurrenceInterval');
+    assert.deepEqual(endState.policy.recurrenceIntervalUnit, recurrenceIntervalUnitExpected, 'recurrenceIntervalUnit is updated');
+    assert.deepEqual(endState.policy.recurrenceInterval, recurrenceIntervalExpected, 'recurrenceInterval is updated');
   });
 
   test('TOGGLE_SCAN_TYPE sets the scan type correctly', function(assert) {
@@ -173,20 +229,37 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const scanTypeExpected = 'SCHEDULED';
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.policy.scheduleConfig.scanType, scanTypeExpected, 'scan type updated to SCHEDULED correctly');
+    assert.deepEqual(endState.policy.scanType, scanTypeExpected, 'scan type updated to SCHEDULED correctly');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE clears out schedule and scan options', function(assert) {
-    const payload = 'MANUAL';
+    const currentState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('SCHEDULED')
+      .policyWizScanStartDate('2018-09-13')
+      .policyWizScanStartTime('10:00')
+      .policyWizRecurrenceInterval(1)
+      .policyWizRecurrenceIntervalUnit('DAYS')
+      .policyWizRunOnDaysOfWeek(['TUESDAY'])
+      .policyWizCpuMaximum(75)
+      .policyWizCpuMaximumOnVirtualMachine(85)
+      .build().usm.policyWizard;
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('MANUAL')
+      .policyWizScanStartDate(null)
+      .policyWizScanStartTime(null)
+      .policyWizRecurrenceInterval(null)
+      .policyWizRecurrenceIntervalUnit(null)
+      .policyWizRunOnDaysOfWeek(null)
+      .policyWizCpuMaximum(null)
+      .policyWizCpuMaximumOnVirtualMachine(null)
+      .build().usm.policyWizard;
 
-    const scheduleConfigExpected = {
-      scheduleOptions: null,
-      scanOptions: null
-    };
+    const payload = 'MANUAL';
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
-    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.policy.scheduleConfig.scheduleOptions, scheduleConfigExpected.scheduleOptions, 'schedule options cleared out correctly');
-    assert.deepEqual(endState.policy.scheduleConfig.scanOptions, scheduleConfigExpected.scanOptions, 'scan options cleared out correctly');
+    const endState = reducers(Immutable.from(_.cloneDeep(currentState)), action);
+    assert.deepEqual(endState, expectedEndState, 'schedule and scan options cleared out correctly');
   });
 
   test('when MANUAL, TOGGLE_SCAN_TYPE greys out the effective date component in the available settings', function(assert) {
@@ -270,7 +343,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', function(assert) {
-    const payload = 'schedOrManScan';
+    const payload = 'scanType';
     const action = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
     assert.deepEqual(endState.selectedSettings.length, 1, 'Entry added to Selected settings from Available Settings');
@@ -278,21 +351,36 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array and changes the isGreyed flag based on the scanType', function(assert) {
-    const payload = 'schedOrManScan';
+    const payload = 'scanType';
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
-    initialStateCopy.policy.scheduleConfig.scanType = 'SCHEDULED';
+
+    initialStateCopy.policy.scanType = 'SCHEDULED';
+    initialStateCopy.availableSettings = [
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+    ];
+
+    const expectedEndState = {
+      availableSettings: [
+        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+        { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+      ],
+      selectedSettings: [
+        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] }
+      ]
+    };
 
     const action = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings[1].isGreyedOut, false, 'isGreyed flag is toggled correctly in availableSettings when it is added to selectedSettings');
+    assert.deepEqual(endState.availableSettings[1].isGreyedOut, expectedEndState.availableSettings[1].isGreyedOut, 'isGreyed flag is toggled correctly in availableSettings when it is added to selectedSettings');
   });
 
   test('REMOVE_FROM_SELECTED_SETTINGS removes an entry from the selectedSettings array', function(assert) {
-    const payload = effectiveDateId;
+    const payload = scanStartDateId;
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
 
     initialStateCopy.selectedSettings = [
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const action = { type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
@@ -302,7 +390,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('ADD_LABEL_TO_SELECTED_SETTINGS adds a label entry to the selectedSettings array', function(assert) {
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
     initialStateCopy.selectedSettings = [
-      { index: 1, id: 'schedOrManScan' }
+      { index: 1, id: 'scanType' }
     ];
     const action = { type: ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS };
     const endState = reducers(Immutable.from(initialStateCopy), action);
@@ -314,8 +402,8 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
 
     initialStateCopy.selectedSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const action = { type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);

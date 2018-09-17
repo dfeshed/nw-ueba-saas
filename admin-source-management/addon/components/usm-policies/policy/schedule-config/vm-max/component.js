@@ -4,10 +4,10 @@ import {
   updatePolicyProperty,
   removeFromSelectedSettings
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
-import { scanOptions } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+import { cpuMaximumOnVirtualMachine } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 const stateToComputed = (state) => ({
-  scanOptions: scanOptions(state)
+  cpuMaximumOnVirtualMachine: cpuMaximumOnVirtualMachine(state)
 });
 
 const dispatchToActions = {

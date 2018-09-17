@@ -5,12 +5,12 @@
   </h4>
   <vbox class="radio-buttons">
     {{#each radioButtonConfig.items as |item|}}
-      <label class="rsa-form-radio-label {{if (eq item.name schedule.recurrenceIntervalUnit) 'checked'}}">
+      <label class="rsa-form-radio-label {{if (eq item.name intervalType) 'checked'}}">
         {{radio-button
           radioClass='recurrence-type'
           value=item.name
           changed=(action 'updatePolicyProperty' 'recurrenceIntervalUnit' item.name)
-          groupValue=schedule.recurrenceIntervalUnit}}
+          groupValue=(readonly intervalType)}}
         {{t item.label}}
       </label>
     {{/each}}
@@ -23,7 +23,7 @@
       {{#power-select
         triggerClass="inline"
         options=runIntervalConfig.options
-        selected=schedule.recurrenceInterval
+        selected=interval
         onchange=(action 'updatePolicyProperty' 'recurrenceInterval') as |selectedDays|}}
         {{selectedDays}}
       {{/power-select}}

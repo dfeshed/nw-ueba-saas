@@ -4,9 +4,12 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, click } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy/schedule-config/vm-max', function(hooks) {
@@ -17,6 +20,14 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
   hooks.before(function() {
     spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
+  });
+
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   hooks.afterEach(function() {
@@ -33,6 +44,10 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
   });
 
   test('should trigger the updatePolicyProperty ac on slider change', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMaximumOnVirtualMachine(85)
+      .build();
     await render(hbs`{{usm-policies/policy/schedule-config/vm-max}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');
     const sliderDiv = document.querySelector('.vm-max .noUi-tooltip');

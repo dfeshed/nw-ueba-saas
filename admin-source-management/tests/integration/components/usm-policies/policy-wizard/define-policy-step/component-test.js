@@ -47,8 +47,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
@@ -67,7 +67,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('Effective date component should be greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .effectiveDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
+    assert.equal(findAll('.available-settings .scanStartDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
   });
 
   test('Scan frequency component greyed out by default', async function(assert) {
@@ -79,25 +79,25 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('Start Time component greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .startTime')[0].classList.contains('is-greyed-out'), true, 'Start Time component should be greyed out by default');
+    assert.equal(findAll('.available-settings .scanStartTime')[0].classList.contains('is-greyed-out'), true, 'Start Time component should be greyed out by default');
   });
 
   test('CPU Maximum component greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .cpuMax')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
+    assert.equal(findAll('.available-settings .cpuMaximum')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
   });
 
   test('Virtual Machine Maximum component greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .vmMax')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
+    assert.equal(findAll('.available-settings .cpuMaximumOnVirtualMachine')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
   });
 
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, availableSettings: newAvailableSettings });
@@ -107,8 +107,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
@@ -125,7 +125,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     // simulate a click on the plus icon next to scan schedule.
     // this triggers 2 reducers ACTION_TYPES.ADD_TO_SELECTED_SETTINGS and ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS
-    const plusIcon = document.querySelector('.schedOrManScan span .rsa-icon');
+    const plusIcon = document.querySelector('.scanType span .rsa-icon');
     await click(plusIcon);
     assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
     assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');

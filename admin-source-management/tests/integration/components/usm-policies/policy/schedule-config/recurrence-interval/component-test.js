@@ -7,9 +7,12 @@ import wait from 'ember-test-helpers/wait';
 import { clickTrigger } from '../../../../../../helpers/ember-power-select';
 import { patchPowerSelect, restorePowerSelect } from '../../../../../../helpers/patch-power-select';
 import sinon from 'sinon';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let updatePolicyPropertySpy;
+let setState, updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy/schedule-config/recurrence-interval', function(hooks) {
@@ -19,6 +22,14 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
 
   hooks.before(function() {
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
+  });
+
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   hooks.afterEach(function() {
@@ -41,6 +52,11 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   });
 
   test('should display Daily recurrence fields on clicking the Daily radio button', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizRecurrenceInterval(1)
+      .policyWizRecurrenceIntervalUnit('DAYS')
+      .build();
     patchPowerSelect();
     await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
     assert.equal(this.$('.recurrence-interval input:eq(0)').val(), 'DAYS', 'expected to render DAYS as first field');

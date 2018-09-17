@@ -1,11 +1,11 @@
 <h4 class='title'>{{t 'adminUsm.policy.scheduleConfiguration.cpuThrottling.vmMax'}}
-  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'vmMax'}}>
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMaximumOnVirtualMachine'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>
 {{range-slider
   min=5
-  start=[scanOptions.cpuMaximumOnVirtualMachine]
+  start=[cpuMaximumOnVirtualMachine]
   format=format
   step=1
   connect=false

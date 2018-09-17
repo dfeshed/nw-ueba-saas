@@ -9,20 +9,14 @@ export default [
     lastPublishedCopy: null,
     lastPublishedOn: 1527489158739,
     associatedGroups: [],
-    scheduleConfig: {
-      enabledScheduledScan: true,
-      scheduleOptions: {
-        scanStartDate: 1527489158739,
-        scanStartTime: [10, 23],
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: ['TUESDAY']
-      },
-      scanOptions: {
-        cpuMaximum: 75,
-        cpuMaximumOnVirtualMachine: 85
-      }
-    }
+    scanType: 'SCHEDULED',
+    scanStartDate: '2018-09-09',
+    scanStartTime: '10:23',
+    recurrenceInterval: 1,
+    recurrenceIntervalUnit: 'DAYS',
+    runOnDaysOfWeek: null,
+    cpuMaximum: 75,
+    cpuMaximumOnVirtualMachine: 85
   },
   {
     id: 'policy_001',
@@ -43,20 +37,14 @@ export default [
         name: 'Group 02'
       }
     ],
-    scheduleConfig: {
-      enabledScheduledScan: true,
-      scheduleOptions: {
-        scanStartDate: 1527489158739,
-        scanStartTime: [10, 23],
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: ['TUESDAY']
-      },
-      scanOptions: {
-        cpuMaximum: 75,
-        cpuMaximumOnVirtualMachine: 85
-      }
-    }
+    scanType: 'SCHEDULED',
+    scanStartDate: '2018-09-10',
+    scanStartTime: '10:23',
+    recurrenceInterval: 1,
+    recurrenceIntervalUnit: 'DAYS',
+    runOnDaysOfWeek: null,
+    cpuMaximum: 75,
+    cpuMaximumOnVirtualMachine: 85
   },
   {
     id: 'policy_002',
@@ -68,20 +56,14 @@ export default [
     lastPublishedCopy: null,
     lastPublishedOn: 0,
     associatedGroups: [],
-    scheduleConfig: {
-      enabledScheduledScan: true,
-      scheduleOptions: {
-        scanStartDate: 1527489158739,
-        scanStartTime: [10, 23],
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: ['MONDAY']
-      },
-      scanOptions: {
-        cpuMaximum: 60,
-        cpuMaximumOnVirtualMachine: 80
-      }
-    }
+    scanType: 'SCHEDULED',
+    scanStartDate: '2018-09-11',
+    scanStartTime: '10:23',
+    recurrenceInterval: 1,
+    recurrenceIntervalUnit: 'DAYS',
+    runOnDaysOfWeek: null,
+    cpuMaximum: 75,
+    cpuMaximumOnVirtualMachine: 85
   },
   {
     id: 'policy_003',
@@ -93,20 +75,14 @@ export default [
     lastPublishedCopy: null,
     lastPublishedOn: 1527489158739,
     associatedGroups: [],
-    scheduleConfig: {
-      enabledScheduledScan: true,
-      scheduleOptions: {
-        scanStartDate: 1527489158739,
-        scanStartTime: [9, 23],
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: ['MONDAY']
-      },
-      scanOptions: {
-        cpuMaximum: 60,
-        cpuMaximumOnVirtualMachine: 80
-      }
-    }
+    scanType: 'SCHEDULED',
+    scanStartDate: '2018-09-12',
+    scanStartTime: '10:23',
+    recurrenceInterval: 1,
+    recurrenceIntervalUnit: 'WEEKS',
+    runOnDaysOfWeek: ['MONDAY'],
+    cpuMaximum: 75,
+    cpuMaximumOnVirtualMachine: 85
   },
   {
     id: 'policy_014',
@@ -118,19 +94,13 @@ export default [
     lastPublishedCopy: null,
     lastPublishedOn: 1527489158739,
     associatedGroups: [],
-    scheduleConfig: {
-      enabledScheduledScan: true,
-      scheduleOptions: {
-        scanStartDate: 1527489158739,
-        scanStartTime: [11, 23],
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: ['THURSDAY']
-      },
-      scanOptions: {
-        cpuMaximum: 65,
-        cpuMaximumOnVirtualMachine: 90
-      }
-    }
+    scanType: 'SCHEDULED',
+    scanStartDate: null, // '2018-09-13',
+    scanStartTime: null, // '10:23',
+    recurrenceInterval: 1,
+    recurrenceIntervalUnit: 'WEEKS',
+    runOnDaysOfWeek: ['WEDNESDAY'],
+    cpuMaximum: 75,
+    cpuMaximumOnVirtualMachine: 85
   }
 ];

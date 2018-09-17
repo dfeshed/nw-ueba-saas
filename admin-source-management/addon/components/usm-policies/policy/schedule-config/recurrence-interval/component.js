@@ -2,7 +2,8 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
-  scheduleOptions,
+  interval,
+  intervalType,
   runIntervalConfig,
   weekOptions,
   isWeeklyInterval,
@@ -10,7 +11,8 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 const stateToComputed = (state) => ({
-  schedule: scheduleOptions(state),
+  interval: interval(state),
+  intervalType: intervalType(state),
   radioButtonConfig: radioButtonConfig(),
   runIntervalConfig: runIntervalConfig(state),
   weekOptions: weekOptions(state),
@@ -26,8 +28,6 @@ const RecInterval = Component.extend({
   tagName: 'box',
 
   classNames: 'recurrence-interval',
-
-  schedule: null,
 
   actions: {
     selectWeek(index) {

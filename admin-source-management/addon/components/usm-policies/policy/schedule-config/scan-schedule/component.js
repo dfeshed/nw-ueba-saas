@@ -2,12 +2,12 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
-  scheduleConfig,
+  scanType,
   scanScheduleConfig
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 const stateToComputed = (state) => ({
-  scheduleConfig: scheduleConfig(state),
+  scanType: scanType(state),
   scanScheduleConfig: scanScheduleConfig()
 });
 

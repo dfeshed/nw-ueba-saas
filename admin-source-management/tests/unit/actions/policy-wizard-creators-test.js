@@ -32,45 +32,41 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     assert.deepEqual(action.payload, 'id2', 'payload has the correct id');
   });
 
-  test('removeFromSelectedSettings ac returns proper type when id is schedOrManScan', function(assert) {
-    const scanScheduleId = 'schedOrManScan';
+  test('removeFromSelectedSettings ac returns proper type when id is scanType', function(assert) {
+    const scanScheduleId = 'scanType';
     const action = policyWizardCreators.removeFromSelectedSettings(scanScheduleId);
     assert.equal(action.type, ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, 'action has the correct type');
   });
 
-  test('updatePolicyProperty action creator returns proper type and payload when key is scanType', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('scanType', 'foo');
-    assert.equal(action.type, ACTION_TYPES.TOGGLE_SCAN_TYPE, 'action has the correct type');
-    assert.deepEqual(action.payload, 'foo', 'payload has the correct value');
+  test('updatePolicyProperty action creator returns proper type and payload when field is scanType', function(assert) {
+    const expectedAction = {
+      type: ACTION_TYPES.TOGGLE_SCAN_TYPE,
+      payload: 'MANUAL'
+    };
+    const action = policyWizardCreators.updatePolicyProperty('scanType', 'MANUAL');
+    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 
-  test('updatePolicyProperty action creator returns proper type and payload when key is enabledScheduledScan', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('enabledScheduledScan', true);
-    assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type');
-    assert.deepEqual(action.payload.scheduleConfig.enabledScheduledScan, true, 'payload has the correct value');
+  test('updatePolicyProperty action creator returns proper type and payload when field is recurrenceIntervalUnit', function(assert) {
+    const expectedAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
+      payload: [
+        { field: 'policy.recurrenceIntervalUnit', value: 'DAYS' },
+        { field: 'policy.recurrenceInterval', value: 1 }
+      ]
+    };
+    const action = policyWizardCreators.updatePolicyProperty('recurrenceIntervalUnit', 'DAYS');
+    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 
-  test('updatePolicyProperty action creator returns proper type and payload when key is cpuMaximum', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('cpuMaximum', 50);
-    assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type');
-    assert.deepEqual(action.payload.scheduleConfig.scanOptions.cpuMaximum, 50, 'payload has the correct value');
-  });
-
-  test('updatePolicyProperty action creator returns proper type and payload when key is cpuMaximumOnVirtualMachine', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('cpuMaximumOnVirtualMachine', 50);
-    assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type');
-    assert.deepEqual(action.payload.scheduleConfig.scanOptions.cpuMaximumOnVirtualMachine, 50, 'payload has the correct value');
-  });
-
-  test('updatePolicyProperty action creator returns proper type and payload when key is recurrenceIntervalUnit', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('recurrenceIntervalUnit', 2);
-    assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type');
-    assert.deepEqual(action.payload.scheduleConfig.scheduleOptions.recurrenceIntervalUnit, 2, 'payload has the correct value');
-  });
-
-  test('updatePolicyProperty action creator returns proper type and payload when key does not match any if clauses', function(assert) {
-    const action = policyWizardCreators.updatePolicyProperty('bar', 2);
-    assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type');
-    assert.deepEqual(action.payload.scheduleConfig.scheduleOptions, { bar: 2 }, 'payload has the correct value');
+  test('updatePolicyProperty action creator returns proper default type and payload for any other field', function(assert) {
+    const expectedAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
+      payload: [
+        { field: 'policy.anyOtherField', value: 2 }
+      ]
+    };
+    const action = policyWizardCreators.updatePolicyProperty('anyOtherField', 2);
+    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 });

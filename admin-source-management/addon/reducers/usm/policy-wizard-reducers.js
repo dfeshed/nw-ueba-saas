@@ -9,27 +9,23 @@ export const initialState = {
   // the policy object to be created/updated/saved
   policy: {
     id: null,
-    name: '',
-    description: '',
+    policyType: 'edrPolicy',
+    name: null,
+    description: null,
     dirty: true,
     lastPublishedCopy: null,
     lastPublishedOn: 0,
-    policyType: 'edrPolicy',
-    scheduleConfig: {
-      scanType: 'MANUAL',
-      enabledScheduledScan: false,
-      scheduleOptions: {
-        scanStartDate: null, // YYYY-MM-DD
-        scanStartTime: '10:00',
-        recurrenceInterval: 5,
-        recurrenceIntervalUnit: 'DAYS',
-        runOnDaysOfWeek: []
-      },
-      scanOptions: {
-        cpuMaximum: 75,
-        cpuMaximumOnVirtualMachine: 85
-      }
-    }
+    // scheduleConfig
+    scanType: null, // 'MANUAL' | 'SCHEDULED'
+    // scheduleOptions
+    scanStartDate: null, // YYYY-MM-DD
+    scanStartTime: null, // '10:00'
+    recurrenceInterval: null, // 1
+    recurrenceIntervalUnit: null, // 'DAYS' | 'WEEKS'
+    runOnDaysOfWeek: null, // array containing day name (names eventually) ex. ['MONDAY']
+    // scanOptions
+    cpuMaximum: null, // 75
+    cpuMaximumOnVirtualMachine: null // 85
   },
   policyStatus: null, // wait, complete, error
 
@@ -83,16 +79,17 @@ export const initialState = {
   ],
 
   // define-policy-step - available settings to render the left col
+  // * make sure the id is always the same as the policy property name
   availableSettings: [
     { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true },
-    { index: 1, id: 'schedOrManScan', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 2, id: 'effectiveDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
-    { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan' },
-    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
-    { index: 5, id: 'startTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
-    { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan' },
-    { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
-    { index: 8, id: 'vmMax', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' },
+    { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+    { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
+    { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
+    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+    { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
+    { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
+    { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
+    { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] },
     { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
     { index: 10, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true }
   ],
@@ -103,7 +100,7 @@ export const initialState = {
   visited: []
 };
 
-const scanScheduleId = 'schedOrManScan';
+const scanScheduleId = 'scanType';
 const scanSchedLabelId = 'scanScheduleLabel';
 
 // Private method used to determine if a top level label like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
@@ -134,14 +131,10 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.NEW_POLICY]: (state /* , action */) => {
     // reset everything
-    const newState = state.merge({
+    return state.merge({
       ...initialState,
       policyStatus: 'complete'
     });
-    // set default scanStartDate to today
-    const fields = 'policy.scheduleConfig.scheduleOptions.scanStartDate'.split('.');
-    const scanStartDateToday = moment().format('YYYY-MM-DD');
-    return newState.setIn(fields, scanStartDateToday);
   },
 
   [ACTION_TYPES.FETCH_POLICY]: (state, action) => (
@@ -156,8 +149,27 @@ export default reduxActions.handleActions({
         return state.set('policyStatus', 'error');
       },
       success: (state) => {
+        const fetchedPolicy = action.payload.data;
+        const newAvailableSettings = [];
+        const newSelectedSettings = [];
+        for (let i = 0; i < state.availableSettings.length; i++) {
+          const setting = state.availableSettings[i];
+          // settings already set in the fetched policy
+          if (fetchedPolicy[setting.id]) {
+            newAvailableSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
+            newSelectedSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
+          // settings with parent settings already set in the fetched policy
+          } else if (fetchedPolicy[setting.parentId]) {
+            newAvailableSettings.push({ ...setting, isEnabled: true, isGreyedOut: false });
+          // default
+          } else {
+            newAvailableSettings.push({ ...setting });
+          }
+        }
         return state.merge({
-          policy: action.payload.data,
+          policy: fetchedPolicy,
+          availableSettings: newAvailableSettings,
+          selectedSettings: newSelectedSettings,
           policyStatus: 'complete'
         });
       }
@@ -189,9 +201,15 @@ export default reduxActions.handleActions({
     const id = payload;
     const { selectedSettings, availableSettings } = state;
 
+    const policyValues = {};
     const newSelectedSettings = availableSettings.find((d) => d.id === id);
     const newAvailableSettings = availableSettings.map((el) => {
       if (el.id === id) {
+        // add the added setting's defaults to the policy
+        const elDefaults = el.defaults || [];
+        for (let i = 0; i < elDefaults.length; i++) {
+          policyValues[elDefaults[i].field] = elDefaults[i].value;
+        }
         return {
           ...el,
           isEnabled: false
@@ -199,7 +217,7 @@ export default reduxActions.handleActions({
       }
       // if the scan type is "SCHEDULED" in state, nothing should be greyed out
       // in availableSettings
-      if (state.policy.scheduleConfig.scanType === 'SCHEDULED') {
+      if (state.policy.scanType === 'SCHEDULED') {
         return {
           ...el,
           isGreyedOut: false
@@ -208,9 +226,12 @@ export default reduxActions.handleActions({
       return el;
     });
     return state.merge({
+      policy: {
+        ...policyValues
+      },
       availableSettings: newAvailableSettings,
       selectedSettings: _.uniqBy([ ...selectedSettings, newSelectedSettings ], 'id')
-    });
+    }, { deep: true }); // deep merge so we don't reset everything
   },
 
   // define-policy-step - when stuff gets moved from left col to right col, add appropriate labels to the right col
@@ -218,7 +239,7 @@ export default reduxActions.handleActions({
     const { selectedSettings } = state;
     let newSelectedSettings = [...selectedSettings];
 
-    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["schedOrManScan", "scanScheduleLabel", ...]
+    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["scanType", "scanScheduleLabel", ...]
     const showScanSchedLabelInSelSettings = _shouldShowLabelInSelSettings(selectedSettingsIds, [scanScheduleId]);
 
     if (showScanSchedLabelInSelSettings) {
@@ -235,8 +256,14 @@ export default reduxActions.handleActions({
     const id = payload;
     const { selectedSettings, availableSettings } = state;
 
+    const policyValues = {};
     const newAvailableSettings = availableSettings.map((el) => {
       if (el.id === id) {
+        // remove the removed setting's values from the policy
+        const elDefaults = el.defaults || [];
+        for (let i = 0; i < elDefaults.length; i++) {
+          policyValues[elDefaults[i].field] = null;
+        }
         return {
           ...el,
           isEnabled: true
@@ -245,17 +272,17 @@ export default reduxActions.handleActions({
       return el;
     });
     return state.merge({
+      policy: {
+        ...policyValues
+      },
       availableSettings: newAvailableSettings,
       selectedSettings: selectedSettings.filter((el) => el.id !== id)
-    });
+    }, { deep: true }); // deep merge so we don't reset everything
   },
 
   // define-policy-step -
   [ACTION_TYPES.TOGGLE_SCAN_TYPE]: (state, { payload }) => {
     const { availableSettings, selectedSettings } = state;
-    // TODO Flatten out the initialState so that we don't have to deal with split and setIn
-    const scanType = 'policy.scheduleConfig.scanType'.split('.');
-
     if (payload === 'SCHEDULED') {
       const newAvailableSettings = availableSettings.map((el) => {
         // if any of the objects in the array is the child of scanSchedule they should be lit up
@@ -267,13 +294,12 @@ export default reduxActions.handleActions({
         }
         return el;
       });
-      const newState = state.merge({
+      return state.merge({
         policy: {
-          scheduleConfig: { ...initialState.scheduleConfig }
+          scanType: payload
         },
         availableSettings: newAvailableSettings
       }, { deep: true }); // deep merge so we don't reset everything
-      return newState.setIn(scanType, payload);
     } else { // 'MANUAL'
       const newAvailableSettings = availableSettings.map((el) => {
         // if any of the objects in the array is the child of scanSchedule they should be greyed out
@@ -286,16 +312,20 @@ export default reduxActions.handleActions({
         }
         return el;
       });
-      const newState = state.merge({
+      return state.merge({
         policy: {
-          scheduleConfig: { ...initialState.scheduleConfig }
+          scanType: payload,
+          scanStartDate: null,
+          scanStartTime: null,
+          recurrenceInterval: null,
+          recurrenceIntervalUnit: null,
+          runOnDaysOfWeek: null,
+          cpuMaximum: null,
+          cpuMaximumOnVirtualMachine: null
         },
         availableSettings: newAvailableSettings,
         selectedSettings: selectedSettings.filter((el) => el.parentId !== scanScheduleId)
       }, { deep: true }); // deep merge so we don't reset everything
-      const scheduleOptions = 'policy.scheduleConfig.scheduleOptions'.split('.');
-      const scanOptions = 'policy.scheduleConfig.scanOptions'.split('.');
-      return newState.setIn(scanType, payload).setIn(scheduleOptions, null).setIn(scanOptions, null);
     }
   },
 
@@ -306,7 +336,14 @@ export default reduxActions.handleActions({
     // so reset the scheduleConfig & available/selected settings to defaults
     return state.merge({
       policy: {
-        scheduleConfig: { ...initialState.scheduleConfig }
+        scanType: initialState.policy.scanType,
+        scanStartDate: null,
+        scanStartTime: null,
+        recurrenceInterval: null,
+        recurrenceIntervalUnit: null,
+        runOnDaysOfWeek: null,
+        cpuMaximum: null,
+        cpuMaximumOnVirtualMachine: null
       },
       availableSettings: [ ...initialState.availableSettings ],
       selectedSettings: [ ...initialState.selectedSettings ]
@@ -321,7 +358,18 @@ export default reduxActions.handleActions({
     return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
   },
 
-  [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => state.merge({ policy: action.payload }, { deep: true }),
+  [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => {
+    let newState = state;
+    const fieldValuePairs = action.payload;
+    for (let i = 0; i < fieldValuePairs.length; i++) {
+      const { field, value } = fieldValuePairs[i];
+      const fields = field.split('.');
+      // Edit the value in the policy, and keep track of the field as having been visited
+      // Visited fields will show error/validation messages
+      newState = newState.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
+    }
+    return newState;
+  },
 
   [ACTION_TYPES.SAVE_POLICY]: (state, action) => (
     handle(state, action, {

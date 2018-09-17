@@ -61,6 +61,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicy(policy) {
+    _set(this.state, 'usm.policyWizard.policy', policy);
+    return this;
+  }
+
   policyWizSourceType(type) {
     _set(this.state, 'usm.policyWizard.policy.policyType', type);
     return this;
@@ -76,13 +81,48 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizVisited(visitedFieldsArray) {
-    _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
+  policyWizScanType(scanType) {
+    _set(this.state, 'usm.policyWizard.policy.scanType', scanType);
     return this;
   }
 
-  policyWizPolicy(policy) {
-    _set(this.state, 'usm.policyWizard.policy', policy);
+  policyWizScanStartDate(scanStartDate) {
+    _set(this.state, 'usm.policyWizard.policy.scanStartDate', scanStartDate);
+    return this;
+  }
+
+  policyWizScanStartTime(scanStartTime) {
+    _set(this.state, 'usm.policyWizard.policy.scanStartTime', scanStartTime);
+    return this;
+  }
+
+  policyWizRecurrenceInterval(recurrenceInterval) {
+    _set(this.state, 'usm.policyWizard.policy.recurrenceInterval', recurrenceInterval);
+    return this;
+  }
+
+  policyWizRecurrenceIntervalUnit(recurrenceIntervalUnit) {
+    _set(this.state, 'usm.policyWizard.policy.recurrenceIntervalUnit', recurrenceIntervalUnit);
+    return this;
+  }
+
+  policyWizRunOnDaysOfWeek(runOnDaysOfWeekArray) {
+    _set(this.state, 'usm.policyWizard.policy.runOnDaysOfWeek', runOnDaysOfWeekArray);
+    return this;
+  }
+
+  policyWizCpuMaximum(cpuMaximum) {
+    _set(this.state, 'usm.policyWizard.policy.cpuMaximum', cpuMaximum);
+    return this;
+  }
+
+  policyWizCpuMaximumOnVirtualMachine(cpuMaximumOnVirtualMachine) {
+    _set(this.state, 'usm.policyWizard.policy.cpuMaximumOnVirtualMachine', cpuMaximumOnVirtualMachine);
+    return this;
+  }
+
+  policyWizVisited(visitedFieldsArray) {
+    _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
     return this;
   }
 
@@ -98,11 +138,6 @@ export default class DataHelper {
 
   policyWizPolicyListStatus(status) {
     _set(this.state, 'usm.policyWizard.policyListStatus', status);
-    return this;
-  }
-
-  policyWizScanStartDate(startDate) {
-    _set(this.state, 'usm.policyWizard.policy.scheduleConfig.scheduleOptions.scanStartDate', startDate);
     return this;
   }
 

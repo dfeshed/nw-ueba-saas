@@ -31,8 +31,8 @@ export const SCAN_SCHEDULE_CONFIG = {
 };
 
 const ALL_SETTINGS = [
-  { id: 'schedOrManScan', label: 'Scheduled or Manual Scan' },
-  { id: 'effectiveDate', label: 'Effective Date' }
+  { id: 'scanType', label: 'Scheduled or Manual Scan' },
+  { id: 'scanStartDate', label: 'Effective Date' }
 ];
 
 const getById = (id) => ALL_SETTINGS.find((d) => d.id === id);

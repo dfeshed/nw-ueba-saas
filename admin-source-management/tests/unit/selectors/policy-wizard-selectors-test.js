@@ -10,10 +10,16 @@ import {
   selectedSourceType,
   enabledAvailableSettings,
   sortedSelectedSettings,
-  scanOptions,
+  scanType,
   startDate,
   startTime,
+  interval,
+  intervalType,
+  isWeeklyInterval,
+  runOnDaysOfWeek,
   weekOptions,
+  cpuMaximum,
+  cpuMaximumOnVirtualMachine,
   runIntervalConfig,
   nameValidator,
   descriptionValidator,
@@ -77,8 +83,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       usm: {
         policyWizard: {
           availableSettings: [
-            { index: 0, id: 'schedOrManScan', isEnabled: true },
-            { index: 1, id: 'effectiveDate', isEnabled: false }
+            { index: 0, id: 'scanType', isEnabled: true },
+            { index: 1, id: 'scanStartDate', isEnabled: false }
           ]
         }
       }
@@ -93,8 +99,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       usm: {
         policyWizard: {
           selectedSettings: [
-            { index: 3, id: 'schedOrManScan' },
-            { index: 1, id: 'effectiveDate' },
+            { index: 3, id: 'scanType' },
+            { index: 1, id: 'scanStartDate' },
             { index: 2, id: 'cpuFrequency' }
           ]
         }
@@ -104,134 +110,137 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     assert.deepEqual(result[0].index, 1, 'selectedSettingToRender correctly sorted settings based on the index');
   });
 
-  test('scanOptions', function(assert) {
-    const stateNoScanOptions = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              // scanOptions: {
-              //  cpuMaximum: 75,
-              //  cpuMaximumOnVirtualMachine: 85
-              // }
-            }
-          }
-        }
-      }
-    };
-    const result1 = scanOptions(stateNoScanOptions);
-    const expected1 = { cpuMaximum: '80', cpuMaximumOnVirtualMachine: '90' };
-    assert.deepEqual(result1, expected1, 'scanOptions correctly returns a default if state is not set');
-
-    const stateScanOptions = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              scanOptions: {
-                cpuMaximum: 75,
-                cpuMaximumOnVirtualMachine: 85
-              }
-            }
-          }
-        }
-      }
-    };
-    const result2 = scanOptions(stateScanOptions);
-    const expected2 = { cpuMaximum: 75, cpuMaximumOnVirtualMachine: 85 };
-    assert.deepEqual(result2, expected2, 'scanOptions correctly returns options object for cpuMaximum & cpuMaximumOnVirtualMachine');
+  test('scanType', function(assert) {
+    const expectedScanType = 'MANUAL';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType(expectedScanType)
+      .build();
+    const resultScanType = scanType(fullState);
+    assert.deepEqual(resultScanType, expectedScanType, `should return scanType of ${expectedScanType}`);
   });
 
   test('startDate', function(assert) {
-    assert.expect(2);
-    const fullState = new ReduxDataHelper().policyWiz().build();
-    const result = startDate(fullState);
-    const today = moment().startOf('date').toISOString(true);
-    assert.deepEqual(result, today, 'should return today as an ISO 8601 Date String if start date is empty');
-
     const startDateString = '2018-01-10';
-    const state2 = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              scheduleOptions: {
-                scanStartDate: startDateString
-              }
-            }
-          }
-        }
-      }
-    };
-    const result2 = startDate(state2);
-    const expected2 = moment(startDateString, 'YYYY-MM-DD').toISOString();
-    assert.deepEqual(result2, expected2, 'should return an ISO 8601 Date String');
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanStartDate(startDateString)
+      .build();
+    const expectedISO = moment(startDateString, 'YYYY-MM-DD').toISOString();
+    const resultISO = startDate(fullState);
+    assert.deepEqual(resultISO, expectedISO, `should return scanStartDate as an ISO 8601 Date String of ${expectedISO}`);
   });
 
   test('startTime', function(assert) {
-    const state = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              scheduleOptions: {
-                scanStartTime: '10:45'
-              }
-            }
-          }
-        }
-      }
-    };
-    const result2 = startTime(state);
-    assert.deepEqual(result2, '10:45', 'should return time');
+    const expectedStartTime = '10:49';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanStartTime(expectedStartTime)
+      .build();
+    const resultStartTime = startTime(fullState);
+    assert.deepEqual(resultStartTime, expectedStartTime, `should return scanStartTime of ${expectedStartTime}`);
+  });
+
+  test('interval', function(assert) {
+    const expectedInterval = 1;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceInterval(expectedInterval)
+      .build();
+    const resultInterval = interval(fullState);
+    assert.deepEqual(resultInterval, expectedInterval, `should return recurrenceInterval of ${expectedInterval}`);
+  });
+
+  test('intervalType', function(assert) {
+    const expectedIntervalType = 'DAYS';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .build();
+    const resultIntervalType = intervalType(fullState);
+    assert.deepEqual(resultIntervalType, expectedIntervalType, `should return recurrenceIntervalUnit of ${expectedIntervalType}`);
+  });
+
+  test('isWeeklyInterval', function(assert) {
+    assert.expect(2);
+    let expectedIntervalType = 'DAYS';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .build();
+    let expectedBoolean = false;
+    let resultBoolean = isWeeklyInterval(fullState);
+    assert.deepEqual(resultBoolean, expectedBoolean, `isWeeklyInterval(${expectedIntervalType}) should return ${expectedBoolean}`);
+
+    expectedIntervalType = 'WEEKS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .build();
+    expectedBoolean = true;
+    resultBoolean = isWeeklyInterval(fullState);
+    assert.deepEqual(resultBoolean, expectedBoolean, `isWeeklyInterval(${expectedIntervalType}) should return ${expectedBoolean}`);
+  });
+
+  test('runOnDaysOfWeek', function(assert) {
+    const expectedRunOnDaysOfWeek = ['SUNDAY'];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
+      .build();
+    const resultRunOnDaysOfWeek = runOnDaysOfWeek(fullState);
+    assert.deepEqual(resultRunOnDaysOfWeek, expectedRunOnDaysOfWeek, `should return runOnDaysOfWeek of ${expectedRunOnDaysOfWeek}`);
   });
 
   test('weekOptions', function(assert) {
-    assert.expect(1);
-    const state = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              scheduleOptions: {
-                recurrenceIntervalUnit: 'WEEKS',
-                runOnDaysOfWeek: ['SUNDAY']
-              }
-            }
-          }
-        }
-      }
+    const expectedRecurrenceIntervalUnit = 'WEEKS';
+    const expectedRunOnDaysOfWeek = ['SUNDAY'];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceIntervalUnit(expectedRecurrenceIntervalUnit)
+      .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
+      .build();
+    const expectedWeekOptions = {
+      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY',
+      week: 'SUNDAY',
+      isActive: true
     };
-    const result = weekOptions(state);
-    const expected = {
-      'week': 'SUNDAY',
-      'isActive': true,
-      'label': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY'
-    };
-    assert.deepEqual(result[0], expected, 'should add label and isActive');
+    const resultWeekOptions = weekOptions(fullState);
+    assert.deepEqual(resultWeekOptions[0], expectedWeekOptions, 'should add label and isActive');
   });
 
   test('runIntervalConfig', function(assert) {
-    assert.expect(1);
-    const state = {
-      usm: {
-        policyWizard: {
-          policy: {
-            scheduleConfig: {
-              scheduleOptions: {
-                recurrenceIntervalUnit: 'WEEKS'
-              }
-            }
-          }
-        }
-      }
-    };
-    const result = runIntervalConfig(state);
-    const expected = {
+    const expectedRecurrenceIntervalUnit = 'WEEKS';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRecurrenceIntervalUnit(expectedRecurrenceIntervalUnit)
+      .build();
+    const expectedConfig = {
       'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
       'runLabel': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.intervalText.WEEKS'
     };
-    assert.deepEqual(result, expected, 'should return the processed run interval configuration');
+    const resultConfig = runIntervalConfig(fullState);
+    assert.deepEqual(resultConfig, expectedConfig, 'should return the processed run interval configuration');
+  });
+
+  test('cpuMaximum', function(assert) {
+    const expectedCpuMaximum = 75;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCpuMaximum(expectedCpuMaximum)
+      .build();
+    const resultCpuMaximum = cpuMaximum(fullState);
+    assert.deepEqual(resultCpuMaximum, expectedCpuMaximum, `should return cpuMaximum of ${expectedCpuMaximum}`);
+  });
+
+  test('cpuMaximumOnVirtualMachine', function(assert) {
+    const expectedCpuMaximumOnVirtualMachine = 85;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCpuMaximumOnVirtualMachine(expectedCpuMaximumOnVirtualMachine)
+      .build();
+    const resultCpuMaximumOnVirtualMachine = cpuMaximumOnVirtualMachine(fullState);
+    assert.deepEqual(resultCpuMaximumOnVirtualMachine, expectedCpuMaximumOnVirtualMachine, `should return cpuMaximumOnVirtualMachine of ${expectedCpuMaximumOnVirtualMachine}`);
   });
 
   test('nameValidator selector', function(assert) {

@@ -92,44 +92,42 @@ const COUNTER = {
   'WEEKS': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 };
 
-export const scheduleConfig = (state) => state.usm.policyWizard.policy.scheduleConfig || {};
 export const radioButtonConfig = () => RADIO_BUTTONS_CONFIG;
 export const scanScheduleConfig = () => SCAN_SCHEDULE_CONFIG;
 
-export const scheduleOptions = createSelector(
-  scheduleConfig,
-  (scheduleConfig) => _.cloneDeep(scheduleConfig.scheduleOptions) || {}
-);
-
-export const scanOptions = createSelector(
-  scheduleConfig,
-  (scheduleConfig) => scheduleConfig.scanOptions || { cpuMaximum: '80', cpuMaximumOnVirtualMachine: '90' }
+export const scanType = createSelector(
+  policy,
+  (policy) => policy.scanType // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 /**
  * The state stores the scanStartDate as a YYYY-MM-DD formatted string,
  * but the rsa-form-datetime component needs a Date Object, Timestamp, or an ISO 8601 Date String,
- * so we'll convert it to an ISO 8601 Date String here
+ * so we'll convert it to an ISO 8601 Date String here.
  * @public
  */
 export const startDate = createSelector(
-  scheduleOptions,
-  (scheduleOptions) => {
-    const scanStartDate = scheduleOptions.scanStartDate ? moment(scheduleOptions.scanStartDate, 'YYYY-MM-DD') : moment().startOf('date');
-    return scanStartDate.toISOString(true);
+  policy,
+  (policy) => {
+    // only format/return what is in state - the reducer is responsible for the defaults for each setting
+    const scanStartDateISO = policy.scanStartDate ? moment(policy.scanStartDate, 'YYYY-MM-DD').toISOString(true) : policy.scanStartDate; // moment().startOf('date');
+    return scanStartDateISO;
   }
 );
 
 export const startTime = createSelector(
-  scheduleOptions,
-  (scheduleOptions) => {
-    return scheduleOptions.scanStartTime ? scheduleOptions.scanStartTime : '10:00';
-  }
+  policy,
+  (policy) => policy.scanStartTime // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
-const intervalType = createSelector(
-  scheduleOptions,
-  (schedule) => schedule.recurrenceIntervalUnit || 'DAYS'
+export const interval = createSelector(
+  policy,
+  (policy) => policy.recurrenceInterval // only format/return what is in state - the reducer is responsible for the defaults for each setting
+);
+
+export const intervalType = createSelector(
+  policy,
+  (policy) => policy.recurrenceIntervalUnit // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 export const isWeeklyInterval = createSelector(
@@ -137,9 +135,9 @@ export const isWeeklyInterval = createSelector(
   (intervalUnit) => intervalUnit === 'WEEKS'
 );
 
-const runOnDaysOfWeek = createSelector(
-  scheduleOptions,
-  (schedule) => schedule.runOnDaysOfWeek || []
+export const runOnDaysOfWeek = createSelector(
+  policy,
+  (policy) => policy.runOnDaysOfWeek // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 export const weekOptions = createSelector(
@@ -151,7 +149,7 @@ export const weekOptions = createSelector(
         return {
           label,
           week,
-          isActive: runOnDaysOfWeek.includes(week)
+          isActive: runOnDaysOfWeek && runOnDaysOfWeek.includes(week)
         };
       });
       return config;
@@ -167,6 +165,16 @@ export const runIntervalConfig = createSelector(
     const options = COUNTER[intervalType];
     return { runLabel, options };
   }
+);
+
+export const cpuMaximum = createSelector(
+  policy,
+  (policy) => policy.cpuMaximum // only format/return what is in state - the reducer is responsible for the defaults for each setting
+);
+
+export const cpuMaximumOnVirtualMachine = createSelector(
+  policy,
+  (policy) => policy.cpuMaximumOnVirtualMachine // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 /**

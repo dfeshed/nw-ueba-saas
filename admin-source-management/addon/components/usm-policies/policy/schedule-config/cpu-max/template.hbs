@@ -1,10 +1,10 @@
 <h4 class='title'>{{t 'adminUsm.policy.scheduleConfiguration.cpuThrottling.cpuMax'}}
-  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMax'}}>
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMaximum'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>
 {{range-slider
-  start=[scanOptions.cpuMaximum]
+  start=[cpuMaximum]
   format=format
   min=5
   step=1

@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 
-const scanScheduleId = 'schedOrManScan';
+const scanScheduleId = 'scanType';
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializePolicy = (policyId) => {
@@ -117,51 +117,30 @@ const editPolicy = (field, value) => {
 /**
  * Basically the same as editPolicy except the payload here is a nested object
  * TODO - flatten the policy settings so we can merge together with editPolicy eh!
- * @param {*} key
+ * @param {*} field
  * @param {*} value
  * @public
  */
-const updatePolicyProperty = (key, value) => {
-  if (key === 'scanType') {
-    return {
-      type: ACTION_TYPES.TOGGLE_SCAN_TYPE,
-      payload: value
-    };
-  }
+const updatePolicyProperty = (field, value) => {
+  let type = ACTION_TYPES.UPDATE_POLICY_PROPERTY;
   let payload = {};
-  if (key === 'enabledScheduledScan') {
-    payload = {
-      scheduleConfig: {
-        enabledScheduledScan: value
-      }
-    };
-  } else if (key === 'cpuMaximum' || key === 'cpuMaximumOnVirtualMachine') {
-    payload = {
-      scheduleConfig: {
-        scanOptions: {
-          [key]: value
-        }
-      }
-    };
-  } else if (key === 'recurrenceIntervalUnit') {
-    payload = {
-      scheduleConfig: {
-        scheduleOptions: {
-          recurrenceIntervalUnit: value,
-          recurrenceInterval: 1
-        }
-      }
-    };
-  } else {
-    payload = {
-      scheduleConfig: {
-        scheduleOptions: {
-          [key]: value
-        }
-      }
-    };
+  switch (field) {
+    case 'scanType':
+      type = ACTION_TYPES.TOGGLE_SCAN_TYPE;
+      payload = value;
+      break;
+    case 'recurrenceIntervalUnit':
+      payload = [
+        { field: 'policy.recurrenceIntervalUnit', value },
+        { field: 'policy.recurrenceInterval', value: 1 }
+      ];
+      break;
+    default:
+      payload = [
+        { field: `policy.${field}`, value }
+      ];
   }
-  return { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
+  return { type, payload };
 };
 
 const savePolicy = (policy, callbacks = callbacksDefault) => {
