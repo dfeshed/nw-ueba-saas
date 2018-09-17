@@ -136,4 +136,8 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.hostNameList', hosts);
     return this;
   }
+  activeDataSourceTab(tab) {
+    _set(this.state, 'files.fileList.activeDataSourceTab', tab);
+    return this;
+  }
 }

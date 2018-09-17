@@ -11,7 +11,8 @@ import {
   getContext,
   processedFileList,
   isAllSelected,
-  selectedFileStatusHistory
+  selectedFileStatusHistory,
+  hostList
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -211,4 +212,16 @@ test('selectedFileStatusHistory test', function(assert) {
   });
   const result = selectedFileStatusHistory(state);
   assert.equal(result.length, 2, '2 items expected');
+});
+
+test('hostList test', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        hostNameList: [{ value: 'Machine1', count: 5 }]
+      }
+    }
+  });
+  const result = hostList(state);
+  assert.equal(result, 'Machine1');
 });
