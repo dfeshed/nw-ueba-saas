@@ -2,15 +2,15 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import {
-  setAlertTab
+  setDetailAlertTab
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
-  activeAlertTab: state.files.visuals.activeAlertTab
+  activeDetailAlertTab: state.files.visuals.activeDetailAlertTab
 });
 
 const dispatchToActions = {
-  setAlertTab
+  setDetailAlertTab
 };
 
 const Overview = Component.extend({

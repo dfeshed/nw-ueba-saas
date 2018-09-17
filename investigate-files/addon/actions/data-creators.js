@@ -265,6 +265,7 @@ const getAllServices = () => ({
 const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName } });
 
 const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName } });
+const setDetailAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB, payload: { tabName } });
 
 const fetchFileContext = (fileName) => {
   return (dispatch) => {
@@ -432,6 +433,7 @@ export {
   initializeFilesPreferences,
   setDataSourceTab,
   setAlertTab,
+  setDetailAlertTab,
   fetchFileContext,
   toggleFileSelection,
   selectAllFiles,

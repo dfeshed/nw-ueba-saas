@@ -27,7 +27,8 @@ const fileListState = Immutable.from({
   fileStatusData: {},
   hostNameList: [],
   fetchHostNameListError: false,
-  fetchMetaValueLoading: false
+  fetchMetaValueLoading: false,
+  activeAlertTab: 'CRITICAL'
 });
 
 const _handleAppendFiles = (action) => {
@@ -162,7 +163,11 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
 
-  [ACTION_TYPES.META_VALUE_COMPLETE]: (state) => state.set('fetchMetaValueLoading', false)
+  [ACTION_TYPES.META_VALUE_COMPLETE]: (state) => state.set('fetchMetaValueLoading', false),
+
+  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => {
+    return state.set('activeAlertTab', tabName);
+  }
 }, fileListState);
 
 export default fileListReducer;

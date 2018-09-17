@@ -73,7 +73,8 @@ test('should return the initial state', function(assert) {
     fileStatusData: {},
     hostNameList: [],
     fetchHostNameListError: false,
-    fetchMetaValueLoading: false
+    fetchMetaValueLoading: false,
+    activeAlertTab: 'CRITICAL'
   });
 });
 
@@ -419,4 +420,17 @@ test('Fetch Complete will set to false', function(assert) {
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.META_VALUE_COMPLETE });
   assert.equal(newEndState.fetchMetaValueLoading, false);
+});
+
+test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeAlertTab: 'CRITICAL'
+  });
+
+  const expectedEndState = {
+    activeAlertTab: 'HIGH'
+  };
+
+  const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName: 'HIGH' } });
+  assert.deepEqual(endState, expectedEndState);
 });

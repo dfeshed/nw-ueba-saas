@@ -219,6 +219,27 @@ module('Integration | Component | file list', function(hooks) {
     });
   });
 
+  test('File name has link', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files({ a: { firstFileName: 'powershell.exe', checksumSha256: '123' } })
+      .schema([{
+        name: 'firstFileName'
+      },
+      {
+        name: 'checksumSha256'
+      }])
+      .preferences({ filePreference: {
+        visibleColumns: ['firstFileName'],
+        sortField: '{ "sortField": "firstFileName", "isSortDescending": false }'
+      } })
+      .build();
+    await render(hbs`{{file-list}}`);
+    const links = findAll('.file-name a');
+    assert.equal(links.length, 1, 'filename is linked');
+    assert.equal(links[0].textContent.trim(), 'powershell.exe', 'filename is correct');
+    // assert.equal(links[0].href, '', 'href is correct'); //to revisit
+  });
+
   test('Size field displayed correctly', async function(assert) {
     new ReduxDataHelper(initState)
       .files({ a: { size: 8061 } })

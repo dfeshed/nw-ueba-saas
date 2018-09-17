@@ -10,7 +10,7 @@ module('Integration | Component | file-details/overview', function(hooks) {
     resolver: engineResolverFor('investigate-files')
   });
 
-  test('it renders', async function(assert) {
+  test('renders alert tab and file properties', async function(assert) {
     await render(hbs`{{file-details/overview}}`);
     assert.equal(findAll('.file-detail-box .risk-properties').length, 1, 'alert tab is rendered');
     assert.equal(findAll('.file-properties-box').length, 1, 'file properties is present');

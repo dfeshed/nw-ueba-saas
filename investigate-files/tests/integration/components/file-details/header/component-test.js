@@ -10,7 +10,7 @@ module('Integration | Component | file-details/header', function(hooks) {
     resolver: engineResolverFor('investigate-files')
   });
 
-  test('it renders', async function(assert) {
+  test('renders tabs', async function(assert) {
     await render(hbs`{{file-details/header}}`);
     assert.equal(findAll('.file-header .rsa-nav-tab').length, 2, 'Two tabs are rendered');
   });

@@ -1,1 +1,0 @@
-export { default } from 'investigate-files/components/content-filter/component';

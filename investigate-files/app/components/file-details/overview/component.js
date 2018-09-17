@@ -1,1 +1,0 @@
-export { default } from 'investigate-files/components/file-details/overview/component';

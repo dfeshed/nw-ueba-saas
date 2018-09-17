@@ -9,7 +9,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeFileDetailTab: 'OVERVIEW',
-    activeAlertTab: 'CRITICAL'
+    activeDetailAlertTab: 'CRITICAL'
   });
 });
 
@@ -23,5 +23,18 @@ test('The CHANGE_FILE_DETAIL_TAB sets new tab to state', function(assert) {
   };
 
   const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName: 'ANALYSIS' } });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The CHANGE_DETAIL_ALERT_TAB sets new tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeDetailAlertTab: 'CRITICAL'
+  });
+
+  const expectedEndState = {
+    activeDetailAlertTab: 'HIGH'
+  };
+
+  const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB, payload: { tabName: 'HIGH' } });
   assert.deepEqual(endState, expectedEndState);
 });

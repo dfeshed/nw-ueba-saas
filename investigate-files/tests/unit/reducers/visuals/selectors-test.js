@@ -17,14 +17,22 @@ test('getFileDetailTabs', function(assert) {
   assert.equal(result.selected, true, 'OVERVIEW tab should be selected');
 });
 
-test('selectedTabComponent', function(assert) {
+test('selectedTabComponent for default tab', function(assert) {
+  const state = Immutable.from({
+    files: { visuals: { } }
+  });
+  const result = selectedTabComponent(state);
+  assert.equal(result, 'file-details/overview', 'returns the default tab component class');
+});
+
+test('selectedTabComponent for different tab', function(assert) {
   const state = Immutable.from({
     files: {
       visuals: {
-        activeFileDetailTab: 'OVERVIEW'
+        activeFileDetailTab: 'ANALYSIS'
       }
     }
   });
   const result = selectedTabComponent(state);
-  assert.equal(result, 'file-details/overview', 'returns the selected tab component class');
+  assert.equal(result, undefined, 'returns the selected tab component class for ANALYSIS');
 });
