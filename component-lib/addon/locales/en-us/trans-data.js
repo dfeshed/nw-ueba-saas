@@ -2711,7 +2711,8 @@ export default {
         groupPolicy: {
           groups: {
             name: 'Agent Groups'
-          }
+          },
+          policyStatus: 'Group Policy Status'
         },
         machine: {
           machineOsType: 'Operating System',

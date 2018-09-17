@@ -258,6 +258,13 @@ export default {
       'wrapperType': 'STRING'
     },
     {
+      'name': 'groupPolicy.policyStatus',
+      'description': '',
+      'searchable': false,
+      'defaultProjection': false,
+      'wrapperType': 'STRING'
+    },
+    {
       'name': 'machineIdentity.operatingSystem.description',
       'description': 'OS - Description',
       'dataType': 'STRING',
