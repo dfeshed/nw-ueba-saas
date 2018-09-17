@@ -9,7 +9,9 @@ export default {
     const bodyParsed = JSON.parse(body);
     util.sendBatches({
       requestBody: bodyParsed,
-      dataArray: [{}],
+      dataArray: [{
+        value: 'Machine1'
+      }],
       sendMessage,
       delayBetweenBatches: 50
     });

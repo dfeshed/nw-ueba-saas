@@ -2196,6 +2196,7 @@ export default {
     tabs: {
       riskProperties: 'Risk Properties',
       fileDetails: 'File Details',
+      hosts: 'HOSTS',
       overview: 'Overview',
       analysis: 'Analysis'
     }

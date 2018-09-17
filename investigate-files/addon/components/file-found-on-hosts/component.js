@@ -44,7 +44,7 @@ const fileHosts = Component.extend({
 
     openHost(item) {
       this.send('fetchAgentId', item, ([data]) => {
-        window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value}&tabName=OVERVIEW`);
+        window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW`);
       });
     }
   }
