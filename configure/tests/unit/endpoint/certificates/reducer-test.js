@@ -20,7 +20,8 @@ module('Unit | Reducers | configure | endpoint/certificates', function(hooks) {
       totalCertificates: 0,
       certificatesLoadingStatus: 'wait',
       selectedCertificateList: [],
-      certificateStatusData: {}
+      certificateStatusData: {},
+      statusData: {}
     });
   });
 
@@ -113,5 +114,56 @@ module('Unit | Reducers | configure | endpoint/certificates', function(hooks) {
     });
     result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_CERTIFICATE_SELECTION, payload: certificate });
     assert.equal(result.selectedCertificateList.length, 0);
+  });
+
+  test('test for SAVE_CERTIFICATE_STATUS reducer', function(assert) {
+    const previous = Immutable.from({
+      certificatesList: [ {
+        'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033'
+      }]
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_CERTIFICATE_STATUS,
+      payload: {
+        request: {
+          data: {
+            certificateStatus: 'Blacklisted',
+            thumbprints: ['afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033']
+          }
+        }
+      }
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.equal(newEndState.certificatesList.length, 1);
+    assert.equal(newEndState.certificatesList[0].certificateStatus, 'Blacklisted');
+  });
+
+  test('test for GET_CERTIFICATE_STATUS reducer', function(assert) {
+    const previous = Immutable.from({
+      certificatesList: [ {
+        'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033'
+      }]
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_CERTIFICATE_STATUS,
+      payload: {
+        data: [
+          {
+            resultList: [
+              {
+                data: {
+                  certificateStatus: 'Blacklisted',
+                  thumbprints: ['afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033']
+                }
+              }
+            ]
+          }
+        ]
+      }
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.equal(newEndState.statusData.certificateStatus, 'Blacklisted');
   });
 });

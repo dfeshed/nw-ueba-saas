@@ -13,7 +13,8 @@ const initialState = Immutable.from({
   totalCertificates: 0,
   certificatesLoadingStatus: 'wait',
   selectedCertificateList: [],
-  certificateStatusData: {}
+  certificateStatusData: {},
+  statusData: {}
 });
 
 const _handleAppendCertificates = (action) => {
@@ -33,14 +34,14 @@ const _handleAppendCertificates = (action) => {
 
 const _toggleSelectedCertificate = (state, payload) => {
   const { selectedCertificateList } = state;
-  const { id, thumbprint } = payload;
+  const { thumbprint } = payload;
   let selectedList = [];
   // Previously selected certificate
 
-  if (selectedCertificateList.some((certificate) => certificate.id === id)) {
-    selectedList = selectedCertificateList.filter((certificate) => certificate.id !== id);
+  if (selectedCertificateList.some((certificate) => certificate.thumbprint === thumbprint)) {
+    selectedList = selectedCertificateList.filter((certificate) => certificate.thumbprint !== thumbprint);
   } else {
-    selectedList = [...selectedCertificateList, { id, thumbprint }];
+    selectedList = [...selectedCertificateList, { thumbprint }];
   }
   return state.merge({ 'selectedCertificateList': selectedList, 'certificateStatusData': {} });
 
@@ -54,6 +55,33 @@ const CertificateReducers = handleActions({
       failure: (s) => s.set('loadMoreStatus', 'error'),
       success: _handleAppendCertificates(action),
       finish: (s) => s.set('certificatesLoadingStatus', 'completed')
+    });
+  },
+
+  [ACTION_TYPES.SAVE_CERTIFICATE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        let list = s.certificatesList;
+        const { payload: { request: { data } } } = action;
+        const { thumbprints, certificateStatus } = data;
+        for (let i = 0; i < thumbprints.length; i++) {
+          const index = list.findIndex((item) => item.thumbprint === thumbprints[i]);
+          list = list.setIn([index, 'certificateStatus'], certificateStatus);
+        }
+        return s.set('certificatesList', list);
+      }
+    });
+  },
+
+  [ACTION_TYPES.GET_CERTIFICATE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const [payLoadData] = action.payload.data;
+        if (payLoadData && payLoadData.resultList.length) {
+          return s.set('statusData', payLoadData.resultList[0].data);
+        }
+        return s;
+      }
     });
   },
 

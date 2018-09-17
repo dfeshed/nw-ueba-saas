@@ -22,6 +22,43 @@ const getCertificates = (pageNumber, sort, expressionList) => {
   });
 };
 
+
+const setCertificateStatus = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'setCertificateStatus',
+    modelName: 'context-data',
+    query: {
+      data
+    }
+  });
+};
+
+
+const getCertificateStatus = (selections) => {
+  const request = lookup('service:request');
+  const data = {
+    'filter': [
+      { 'field': 'dataSourceType',
+        'value': 'CertificateStatus'
+      },
+      {
+        'field': 'id',
+        'values': selections
+      }
+    ]
+  };
+  return request.promiseRequest({
+    method: 'getCertificateStatus',
+    modelName: 'context-data',
+    streamOptions: { requireRequestId: true },
+    query: data
+  });
+};
+
+
 export default {
-  getCertificates
+  getCertificates,
+  getCertificateStatus,
+  setCertificateStatus
 };

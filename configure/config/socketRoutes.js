@@ -8,6 +8,7 @@ const configureConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/respond/socket');
   const socketUrlLogs = common.determineSocketUrl(environment, '/content/socket');
   const socketUrlEndpoint = common.determineSocketUrl(environment, '/endpoint/socket');
+  const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
 
   return {
     'log-parser-rules': {
@@ -138,7 +139,18 @@ const configureConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/certificate/search',
         requestDestination: '/ws/endpoint/certificate/search'
       }
-    }
+    },
+    'context-data': {
+      socketUrl: contextSocketUrl,
+      setCertificateStatus: {
+        subscriptionDestination: '/user/queue/contexthub/certificate/status/set',
+        requestDestination: '/ws/contexthub/certificate/status/set'
+      },
+      getCertificateStatus: {
+        subscriptionDestination: '/user/queue/contexthub/context/data-source/find',
+        requestDestination: '/ws/contexthub/context/data-source/find'
+      }
+    },
   };
 };
 

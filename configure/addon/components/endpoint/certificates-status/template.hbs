@@ -1,0 +1,52 @@
+{{#rsa-form-button isDisabled=isDisabled class='certificate-status-button' defaultAction=(action 'showStatusModal')}}
+  {{rsa-icon name='pencil-write-2' style='lined' title=(t 'configure.endpoint.certificates.status.edit')}}
+  {{t 'configure.endpoint.certificates.status.edit'}}
+{{/rsa-form-button}}
+{{#if showModal}}
+  {{#rsa-application-modal
+    style='standard file-status-modal'
+    eventId='certificate-status'
+    onClose=(action 'closeModal')
+    autoOpen=true
+    label=(t 'configure.endpoint.certificates.status.edit')}}
+    <div class="modal-content">
+      <box class='radio-controls rsa-form-radio-group' fit>
+        <h4 class='rsa-form-radio-group-label certificate-status-title'>
+          {{t 'configure.endpoint.certificates.status.certificateStatus'}}
+        </h4>
+        {{#each radioButtons as |radio|}}
+          <label class='rsa-form-radio-label certificate-status-radio {{if
+            (eq radio.value data.certificateStatus) 'checked'}}'>
+            {{radio-button
+              radioClass='status-type'
+              value=radio.value
+              groupValue=data.certificateStatus}}
+            {{t radio.label}}
+          </label>
+
+        {{/each}}
+      </box>
+      <box class="comment-box">
+        {{rsa-form-textarea
+          label=(t 'investigateFiles.editFileStatus.commentTitle')
+          value=data.comment
+          maxLength=8000
+        }}
+      </box>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class='close-edit-modal' defaultAction=(action 'closeModal')}}
+          {{t 'investigateFiles.editFileStatus.cancelBtn'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button
+          style='primary'
+          isDisabled=isSaveButtonDisabled
+          class='save-certificate-status'
+          defaultAction=(action 'saveStatus')}}
+          {{t 'investigateFiles.editFileStatus.saveBtn'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

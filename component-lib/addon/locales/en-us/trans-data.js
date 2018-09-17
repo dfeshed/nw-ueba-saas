@@ -840,10 +840,17 @@ export default {
           authorityKey: 'Authority Key',
           thumbprint: 'Thumb Print',
           notValidBeforeUtcDate: 'Not Valid Before UtcDate',
-          notValidAfterUtcDate: 'Not Valid After UtcDate'
+          notValidAfterUtcDate: 'Not Valid After UtcDate',
+          certificateStatus: 'Status'
         },
         noResultsMessage: 'No certificates were found.',
-        footer: '{{count}} of {{total}} {{label}}'
+        footer: '{{count}} of {{total}} {{label}}',
+        status: {
+          edit: 'Edit Certificate Status',
+          certificateStatus: 'Certificate Status',
+          success: 'Certificate status updated successfully',
+          error: 'Certificate status update failed'
+        }
       }
     }
   },

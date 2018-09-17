@@ -5,13 +5,14 @@
   {{/layout.left}}
 
   {{#layout.center}}
-    <section class="certificates-action-bar">
+    <hbox class="certificates-action-bar flexi-fit">
       <h2 class="title-header">
         {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.open 'left')}}
           {{rsa-icon name='filter-2'}}
         {{/rsa-form-button}}
       </h2>
-    </section>
+      {{endpoint/certificates-status}}
+    </hbox>
     <box class="certificates-body">
       {{endpoint/certificates-data-table}}
     </box>

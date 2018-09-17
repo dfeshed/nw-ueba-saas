@@ -11,14 +11,10 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   .main-zone {
     overflow: hidden;
     flex-wrap: nowrap;
-    .certificates-action-bar {
-      min-height: 50px;
-      .title-header {
-        display: inline-block;
-      }
-    }
   }
-
+  .certificates-action-bar {
+    padding: 8px;
+  }
   .certificates-footer {
     max-height: 2rem;
     background-color: background-color(primary, darker, somewhat-opaque);
@@ -34,7 +30,7 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   }
   .show-left-zone {
     .title-header {
-      visibility: hidden;
+      display: none;
     }
   }
   .certificates-body {

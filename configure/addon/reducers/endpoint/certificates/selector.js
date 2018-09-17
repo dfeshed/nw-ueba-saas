@@ -33,6 +33,13 @@ export const certificatesColumns = [
     disableSort: false
   },
   {
+    field: 'certificateStatus',
+    title: 'configure.endpoint.certificates.columns.certificateStatus',
+    label: 'Status',
+    width: 300,
+    disableSort: true
+  },
+  {
     field: 'subjectKey',
     title: 'configure.endpoint.certificates.columns.subjectKey',
     label: 'Subject Key',
