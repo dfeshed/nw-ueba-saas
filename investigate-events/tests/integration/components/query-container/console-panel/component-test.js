@@ -72,7 +72,9 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel}}
     `);
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
+    assert.equal(findAll('.console-panel.has-error .console-content .fatal-error i.rsa-icon-report-problem-triangle-filled').length, 1);
     assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'error');
+    assert.equal(find('.console-panel .console-content .fatal-error .error-text').textContent.trim(), 'error');
   });
 
   test('renders warnings', async function(assert) {

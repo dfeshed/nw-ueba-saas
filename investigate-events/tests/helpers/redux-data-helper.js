@@ -424,45 +424,37 @@ export default class DataHelper {
   }
 
   queryStatsIsPartiallyComplete() {
-    _set(this.state, 'queryStats', {
-      percent: 50
-    });
+    _set(this.state.queryStats, 'percent', 50);
     return this;
   }
 
   queryStatsIsComplete() {
-    _set(this.state, 'queryStats', {
-      percent: 100,
-      devices: [{}]
-    });
+    _set(this.state.queryStats, 'percent', 100);
+    _set(this.state.queryStats, 'devices', [{}]);
     return this;
   }
 
   queryStatsHasWarning() {
-    _set(this.state, 'queryStats', {
-      description: 'warning',
-      warnings: [{
-        serviceId: '1',
-        warning: 'warning'
-      }]
-    });
+    _set(this.state.queryStats, 'description', 'warning');
+    _set(this.state.queryStats, 'warnings', [{
+      serviceId: '1',
+      warning: 'warning'
+    }]);
     return this;
   }
 
   queryIsQueued() {
-    _set(this.state, 'queryStats', {
-      description: 'queued',
-      percent: 0
-    });
+    _set(this.state.queryStats, 'description', 'queued');
+    _set(this.state.queryStats, 'percent', 0);
     return this;
   }
 
   queryStatsHasError() {
-    _set(this.state, 'queryStats', {
-      description: 'error',
-      percent: 100,
-      errors: ['error']
-    });
+    _set(this.state.queryStats, 'description', 'error');
+    _set(this.state.queryStats, 'percent', 100);
+    _set(this.state.queryStats, 'errors', [{
+      error: 'error'
+    }]);
     return this;
   }
 

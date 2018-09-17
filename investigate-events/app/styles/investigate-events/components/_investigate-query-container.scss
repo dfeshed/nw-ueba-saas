@@ -292,6 +292,22 @@
           }
         }
 
+        .fatal-error {
+          display: inline-block;
+
+          strong {
+            font-weight: bold;
+            margin-right: rsa-whitespace(least);
+          }
+
+          i {
+            margin-right: rsa-whitespace(least);
+            position: relative;
+            top: 3px;
+            color: text-color(accentOne);
+          }
+        }
+
         .service,
         .timerange {
           margin: rsa-whitespace();

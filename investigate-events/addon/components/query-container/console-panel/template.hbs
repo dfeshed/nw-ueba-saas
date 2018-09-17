@@ -52,6 +52,13 @@
     {{#unless isComplete}}
       {{query-container/console-panel/progress-bar}}
     {{/unless}}
+
+    {{#if hasError}}
+      <div class="fatal-error">
+        {{rsa-icon title=(t 'investigate.queryStats.error') name='report-problem-triangle' size="large"}}
+        <strong>{{t 'investigate.queryStats.error'}}:</strong> <span class="error-text">{{error.error}}</span>
+      </div>
+    {{/if}}
   </div>
 
 </div>

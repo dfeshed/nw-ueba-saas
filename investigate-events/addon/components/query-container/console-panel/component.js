@@ -8,6 +8,7 @@ import computed from 'ember-computed-decorators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
+  error: state.investigate.queryStats.errors.firstObject,
   filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
   serviceId: state.investigate.queryNode.previousQueryParams.serviceId,
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
