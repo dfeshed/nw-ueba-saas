@@ -98,13 +98,13 @@ export default Route.extend({
   // Pulls stored query params and merges with
   // query hash, then transitions to new URL.
   // Ensures meta filter params are not in the URL
-  transitionToPillHash(newHash) {
+  transitionToPillHash(newHashes) {
     const nextQueryParams = this.get('nextQueryParams') || {};
 
     this.transitionTo({
       queryParams: {
         ...nextQueryParams,
-        pdhash: newHash,
+        pdhash: newHashes.join(','),
         mf: undefined
       }
     });

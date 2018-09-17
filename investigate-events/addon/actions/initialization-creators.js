@@ -180,12 +180,11 @@ const _handleSearchParamsInQueryParams = ({ pillData, pillDataHashes }, hashNavi
           ),
           meta: {
             onSuccess({ data }) {
-              // For now, only dealing with a single hash
-              const hash = data[0].id;
+              const hashIds = data.map((d) => d.id);
 
-              // pass the new hash to the navigation callback
+              // pass the hash ids to the navigation callback
               // so that it can be included in the URL
-              hashNavigateCallback(hash);
+              hashNavigateCallback(hashIds);
             },
             onFailure(response) {
               handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');

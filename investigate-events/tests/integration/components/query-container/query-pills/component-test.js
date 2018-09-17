@@ -23,7 +23,6 @@ const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 const modifiers = { shiftKey: true };
 
-let setState;
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
 const deleteActionSpy = sinon.spy(guidedCreators, 'deleteGuidedPill');
 const editGuidedPillSpy = sinon.spy(guidedCreators, 'editGuidedPill');
@@ -57,8 +56,8 @@ const e = {
   }
 };
 const wormhole = 'wormhole-context-menu';
-const callback = () => {};
-let eventListenerFlag = false;
+
+let setState, contextEventListenerCallback;
 
 module('Integration | Component | query-pills', function(hooks) {
   setupRenderingTest(hooks, {
@@ -77,9 +76,6 @@ module('Integration | Component | query-pills', function(hooks) {
     const wormholeElement = document.querySelector('#wormhole-context-menu');
     if (wormholeElement) {
       document.querySelector('#ember-testing').removeChild(wormholeElement);
-    }
-    if (eventListenerFlag) {
-      document.removeEventListener('contextmenu', callback);
     }
   });
 
@@ -726,13 +722,15 @@ module('Integration | Component | query-pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    assert.expect(4);
+    assert.expect(3);
     const done = assert.async();
     let count = 0;
-    document.addEventListener('contextmenu', () => {
+    contextEventListenerCallback = () => {
       assert.ok('called when right clicked on a selected pill');
       count++;
-    });
+      document.removeEventListener('contextmenu', contextEventListenerCallback);
+    };
+    document.addEventListener('contextmenu', contextEventListenerCallback);
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
@@ -766,8 +764,10 @@ module('Integration | Component | query-pills', function(hooks) {
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
-    document.addEventListener('contextmenu', callback);
-    eventListenerFlag = true;
+    contextEventListenerCallback = () => {
+      document.removeEventListener('contextmenu', contextEventListenerCallback);
+    };
+    document.addEventListener('contextmenu', contextEventListenerCallback);
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>

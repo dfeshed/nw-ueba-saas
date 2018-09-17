@@ -796,11 +796,11 @@ test('RETRIEVE_HASH_FOR_QUERY_PARAMS reducer stores hashes', function(assert) {
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
     payload: {
-      data: [{ id: 'foo' }]
+      data: [{ id: 'foo' }, { id: 'bar' }]
     }
   });
   const result = reducer(stateWithPills, successAction);
 
-  assert.equal(result.pillDataHashes.length, 1, 'pillDataHashes is the correct length');
-  assert.equal(result.pillDataHashes[0], 'foo', 'pillDataHashes is the correct value');
+  assert.equal(result.pillDataHashes.length, 2, 'pillDataHashes is the correct length');
+  assert.deepEqual(result.pillDataHashes, ['foo', 'bar'], 'pillDataHashes is the correct value');
 });
