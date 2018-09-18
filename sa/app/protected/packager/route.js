@@ -20,7 +20,7 @@ export default Route.extend({
     request.registerPersistentStreamOptions({ 'socketUrlPostfix': sid, 'requiredSocketUrl': 'endpoint/socket' });
     return request.ping('endpoint-server-ping')
       .then(() => {
-        return { endpointServerOffline: false };
+        return { endpointServerOffline: false, serverId: sid };
       })
       .catch(function() {
         return { endpointServerOffline: true };

@@ -43,8 +43,8 @@ const getConfig = () => {
  * @public
  * @returns {Object}
  */
-const setConfig = (configData, configType, callback) => {
-  return (dispatch, getState) => {
+const setConfig = (configData, configType, callback, serverId) => {
+  return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
       promise: setPackagerConfig(configData),
@@ -53,7 +53,6 @@ const setConfig = (configData, configType, callback) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
           const { request: { data: { packageConfig } } } = response;
           const agentMode = packageConfig && packageConfig.fullAgent ? 'Full' : 'Insights';
-          const { serverId } = getState().endpointQuery;
           let url = '';
           if (response.data.id) {
             if (serverId) {

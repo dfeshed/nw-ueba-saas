@@ -258,7 +258,7 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('saveUIState', this.get('configData'));
-          this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG', this._getCallbackFunction());
+          this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG', this._getCallbackFunction(), this.get('serverId'));
         } else {
           this._scrollTo('.server-input-group');
         }

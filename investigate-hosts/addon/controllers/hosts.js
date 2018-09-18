@@ -2,7 +2,7 @@ import Controller from '@ember/controller';
 
 export default Controller.extend({
   // Query Params
-  queryParams: ['machineId', 'filterId', 'tabName', 'query'],
+  queryParams: ['machineId', 'filterId', 'tabName', 'query', 'sid'],
 
   machineId: null,
 
@@ -10,5 +10,7 @@ export default Controller.extend({
 
   tabName: null,
 
-  query: null
+  query: null,
+
+  sid: null
 });
