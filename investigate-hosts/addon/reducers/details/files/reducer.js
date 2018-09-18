@@ -68,15 +68,15 @@ const hostFilesReducer = handleActions({
         const { payload: { request: { data } } } = action;
         const { checksums, fileStatus } = data;
         let newData = [];
-        for (let i = 0; i < checksums.length; i++) {
-          newData = Object.values(files).map((file) => {
-            if (file.checksumSha256 == checksums[i]) {
+        newData = Object.values(files).map((file) => {
+          for (let i = 0; i < checksums.length; i++) {
+            if (file.checksumSha256 === checksums[i]) {
               const newFileProperties = { ...file.fileProperties, fileStatus };
               return { ...file, fileProperties: newFileProperties };
             }
-            return file;
-          });
-        }
+          }
+          return file;
+        });
         return s.set('files', newData);
       }
     });

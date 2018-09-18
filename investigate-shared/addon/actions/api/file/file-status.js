@@ -32,7 +32,7 @@ const getFileStatus = (selections) => {
       },
       {
         'field': '_id',
-        'values': selections.mapBy('id')
+        'values': selections.mapBy('checksumSha256')
       }
     ]
   };

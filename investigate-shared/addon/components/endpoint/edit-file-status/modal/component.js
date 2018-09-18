@@ -61,10 +61,15 @@ export default Component.extend({
             onSuccess: () => {
               this._closeModal();
               success('investigateFiles.editFileStatus.successMessage');
+            },
+            onFailure: () => {
+              this.set('isSaveButtonDisabled', true);
+              failure('investigateFiles.editFileStatus.contexthubServerOffline');
             }
           };
           if (!STATUS_WITH_REMEDIATION.includes(this.get('data').fileStatus)) {
             this.set('data.remediationAction', null);
+            this.set('data.category', null);
           }
           this.onSaveFileStatus(this.get('data'), callback);
         })

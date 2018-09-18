@@ -62,7 +62,7 @@ module('Integration | Component | file found on machines', function(hooks) {
     const actionSpy = sinon.spy(window, 'open');
     await render(hbs`{{file-found-on-hosts}}`);
     await click(findAll('.host_details_link a')[0]);
-    await waitUntil(() => !this.owner.lookup('service:redux').getState().files.fileList.fetchMetaValueLoading);
+    await waitUntil(() => !this.owner.lookup('service:redux').getState().files.fileList.fetchMetaValueLoading, { timeout: Infinity });
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
   });
 });
