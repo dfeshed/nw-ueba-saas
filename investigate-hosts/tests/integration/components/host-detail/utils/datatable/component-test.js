@@ -201,7 +201,7 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
       {{host-detail/utils/datatable items=items columnsConfig=columnsConfig status=Status}}`);
 
     assert.equal(
-      find('.rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(3) > div').textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      find('.rsa-data-table-body-cell:nth-child(3)').textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
   });
 
   test('Date&Time displayed correctly', async function(assert) {

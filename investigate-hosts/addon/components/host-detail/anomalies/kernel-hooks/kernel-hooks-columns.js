@@ -12,6 +12,11 @@ export default {
     width: '20%'
   },
   {
+    field: 'fileProperties.score',
+    title: 'score',
+    width: '10%'
+  },
+  {
     field: 'fileProperties.reputationStatus',
     title: 'reputationStatus',
     width: '10%'

@@ -10,6 +10,10 @@
   {{signature-text (get item column.field) (get item column.signer)}}
 {{else if (eq column.field 'status')}}
   {{itemStatus}}
+{{else if (eq column.field 'fileProperties.score')}}
+  <centered>
+    {{rsa-risk-score score=(get item column.field) size='small'}}
+  </centered>
 {{else}}
   {{get item column.field}}
 {{/if}}

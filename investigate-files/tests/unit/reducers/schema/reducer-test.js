@@ -14,6 +14,9 @@ const SCHEMA = [
     name: 'firstFileName'
   },
   {
+    name: 'score'
+  },
+  {
     name: 'firstSeenTime'
   },
   {
@@ -59,6 +62,6 @@ test('The SCHEMA_RETRIEVE action sets all the schema to the state', function(ass
   });
   const newEndState = reducer(previous, newAction);
 
-  assert.equal(newEndState.schema.length, 6, 'expected schema fields present');
+  assert.equal(newEndState.schema.length, 7, 'expected schema fields present');
 
 });

@@ -67,6 +67,13 @@ const defaultColumns = [
     'width': 150
   },
   {
+    'field': 'fileProperties.score',
+    'title': 'Risk Score',
+    'label': 'investigateHosts.files.fields.score',
+    'width': 100,
+    'disableSort': true
+  },
+  {
     'field': 'fileProperties.reputationStatus',
     'title': 'Reputation Status',
     'label': 'investigateHosts.files.fields.reputationStatus',

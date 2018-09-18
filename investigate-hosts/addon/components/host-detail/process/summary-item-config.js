@@ -28,6 +28,10 @@ const defaultSummaryConfig = [
     field: 'path'
   },
   {
+    label: 'investigateHosts.process.score',
+    field: 'fileProperties.score'
+  },
+  {
     label: 'investigateHosts.process.reputationStatus',
     field: 'fileProperties.reputationStatus'
   },

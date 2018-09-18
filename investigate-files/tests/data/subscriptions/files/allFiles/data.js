@@ -18,6 +18,8 @@ export default {
       },
       'entropy': 4.140607913864214,
       'firstFileName': 'xt_conntrack.ko',
+      'score': '70',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.note.gnu.build-id',
@@ -41,6 +43,8 @@ export default {
       },
       'entropy': 4.786090748344753,
       'firstFileName': 'xfs.ko',
+      'score': '5',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.symtab',
@@ -66,6 +70,8 @@ export default {
       },
       'entropy': 4.628110524403021,
       'firstFileName': 'vmxnet3.ko',
+      'score': '10',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.shstrtab'
@@ -88,6 +94,8 @@ export default {
       },
       'entropy': 4.35787565032156,
       'firstFileName': 'vmwgfx.ko',
+      'score': '15',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.rela.gnu.linkonce.this_module',
@@ -115,6 +123,8 @@ export default {
       },
       'entropy': 4.199051623390416,
       'firstFileName': 'vmware-user-suid-wrapper',
+      'score': '100',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.interp',
@@ -132,6 +142,8 @@ export default {
       'checksumSha256': 'b9e2c4736e2c049761d0e7dc0c585b35279533c19069123970afa179e301f4aa',
       'entropy': 4.886896935557427,
       'firstFileName': 'vmware-tools.service',
+      'score': '50',
+      'reputationStatus': 'Known Good',
       'format': 'Script',
       'size': 595
     },
@@ -141,6 +153,8 @@ export default {
       'checksumSha256': '85c3ac6e4c93b4231cf33c2d7ccdd9fbae348e072eda1afcaaa7609fa75583ce',
       'entropy': 4.914375678229713,
       'firstFileName': 'vmware-tools',
+      'score': '35',
+      'reputationStatus': 'Known Good',
       'format': 'Script',
       'size': 39849
     },
@@ -160,6 +174,8 @@ export default {
       },
       'entropy': 4.592726926706834,
       'firstFileName': 'vmw_vmci.ko',
+      'score': '99',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.note.gnu.build-id',
@@ -223,6 +239,8 @@ export default {
       },
       'entropy': 3.9261216711005322,
       'firstFileName': 'vmw_balloon.ko',
+      'score': '25',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.gnu_debuglink',
@@ -246,6 +264,8 @@ export default {
       },
       'entropy': 5.731902367941162,
       'firstFileName': 'vmtoolsd',
+      'score': '45',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.data',
@@ -278,6 +298,8 @@ export default {
       },
       'entropy': 5.731902367941162,
       'firstFileName': 'vmtoolsd1',
+      'score': '55',
+      'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [
         '.data',

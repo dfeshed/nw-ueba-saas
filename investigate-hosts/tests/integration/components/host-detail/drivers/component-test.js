@@ -42,10 +42,11 @@ module('Integration | Component | Drivers', function(hooks) {
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), '', 'Column 1 is checkbox');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Filename', 'Column 2 is Fileame');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Reputation Status', 'Column 3 is Reputation Status');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'File Status', 'Column 4 is File Status');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Signature', 'Column 5 is Signature');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Path', 'Column 6 is Path');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Column 3 is Risk Score');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Reputation Status', 'Column 4 is Reputation Status');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'File Status', 'Column 5 is File Status');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Signature', 'Column 6 is Signature');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Path', 'Column 7 is Path');
   });
   test('Select a driver and check file-action-bar', async function(assert) {
     const selected = [ {}, {}, {} ];

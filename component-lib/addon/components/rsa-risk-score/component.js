@@ -3,7 +3,7 @@ import layout from './template';
 import computed from 'ember-computed';
 
 const CIRCLE_RADIUS = {
-  small: 13,
+  small: 12,
   large: 25
 };
 
@@ -19,7 +19,7 @@ export default Component.extend({
   attributeBindings: ['diameter:width', 'diameter:height'],
   score: null,
   radius: null,
-  size: null,
+  size: 'small',
 
   classNameBindings: [
     'circleStroke',

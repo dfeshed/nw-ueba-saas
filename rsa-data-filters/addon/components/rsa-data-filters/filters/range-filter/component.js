@@ -18,7 +18,7 @@ export default Component.extend({
     pips: {
       mode: 'values',
       values: [],
-      density: 4
+      density: 10
     }
   },
 

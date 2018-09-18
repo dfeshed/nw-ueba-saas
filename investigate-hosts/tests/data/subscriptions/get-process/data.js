@@ -43,6 +43,7 @@ module.exports = {
     'elf': { 'classType': 0, 'data': 0, 'entryPoint': 21556, 'features': ['arch64', 'so'], 'type': 3 },
     'entropy': 6.147272208934346,
     'format': 'elf',
-    'reputationStatus': 'Unknown'
+    'reputationStatus': 'Unknown',
+    'score': 100
   }
 };

@@ -25,6 +25,7 @@ const dataItems = {
   abc: {
     'firstFileName': 'systemd-journald.service',
     'firstSeenTime': '2015-09-15T13:21:10.000Z',
+    'score': 100,
     'signature': {
       'timeStamp': '2016-09-14T09:43:27.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
@@ -36,6 +37,7 @@ const dataItems = {
   def: {
     'firstFileName': 'vmwgfx.ko',
     'firstSeenTime': '2015-08-17T03:21:10.000Z',
+    'score': 20,
     'signature': {
       'timeStamp': '2016-10-14T07:43:39.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
@@ -72,6 +74,13 @@ const config = [
     defaultProjection: false,
     wrapperType: 'STRING',
     disableSort: true
+  },
+  {
+    'name': 'score',
+    'dataType': 'INT',
+    'searchable': true,
+    'defaultProjection': true,
+    'wrapperType': 'NUMBER'
   }
 ];
 
@@ -132,9 +141,9 @@ module('Integration | Component | file list', function(hooks) {
       .preferences({ filePreference })
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 5, 'Returned the number of columns of the datatable');
-    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 4, '4 movable columns present');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 3, '3 sortable columns present');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 5, '5 movable columns present');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
   });
 
   test('Should return the number of cells in datatable body', async function(assert) {
@@ -150,7 +159,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length, 10, 'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 12, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -214,8 +223,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[3].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[7].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[4].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[9].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -262,6 +271,24 @@ module('Integration | Component | file list', function(hooks) {
     return settled().then(() => {
       assert.equal(find('.rsa-data-table-body-cell .size').textContent.trim(), '7.9', 'Size is correct');
       assert.equal(find('.rsa-data-table-body-cell .units').textContent.trim(), 'KB', 'Units is correct');
+    });
+  });
+
+  test('Risk Score Column should display risk-score component with risk score', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{file-list}}`);
+    return settled().then(() => {
+      assert.equal(find('.rsa-risk-score').textContent.trim(), '100', 'Risk Score is correct.');
     });
   });
 
@@ -352,12 +379,12 @@ module('Integration | Component | file list', function(hooks) {
     find('.rsa-icon-cog-filled').click();
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'initial visible column count is 3');
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
       findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
       return waitFor(() => {
-        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 4;
+        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5;
       }).then(() => {
-        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'visible column is 2');
+        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
       });
     });
   });

@@ -22,6 +22,7 @@ const SUPPORTED_SORT_TYPES = [
   'firstFileName',
   'firstSeenTime',
   'reputationStatus',
+  'score',
   'size',
   'format',
   'signature.features',

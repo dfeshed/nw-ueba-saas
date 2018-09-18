@@ -48,6 +48,7 @@ const data = [
     'fileProperties': {
       'id': '7af0577bf8b1bba4763651135bcb6694f99725e29048e6fca8aad38ae4f7dff4',
       'firstFileName': '_heapq.so',
+      'score': 79,
       'machineOsType': 'linux',
       'size': 22864,
       'checksumMd5': '435c84661cbe5fffa1e7d01bfcbc557f',
@@ -180,6 +181,7 @@ const data = [
     'fileProperties': {
       'id': '5728f70c00054e2af29bca4786a65dbd35d06549de1ccd567d4d468fab3a49ea',
       'firstFileName': 'libsmime3.so',
+      'score': 90,
       'machineOsType': 'linux',
       'size': 164048,
       'checksumMd5': '88d24fd016279dbd7902685eb3c5608b',
@@ -286,6 +288,7 @@ const data = [
     'fileProperties': {
       'id': '25d6828a102d895f174f68a7ba7da9dfda1f972723e9b490ed48acafd8ba0579',
       'firstFileName': 'libsoftokn3.so',
+      'score': 100,
       'machineOsType': 'linux',
       'size': 261416,
       'checksumMd5': 'a67dc6aa44b1075e6329eacc79a28670',
@@ -424,6 +427,7 @@ const data = [
     'fileProperties': {
       'id': '01b7b83cb70d47ca0335e2fcbd7755ce11210d924b4372590abe89af5b571938',
       'firstFileName': 'libkrb5support.so.0.1',
+      'score': 100,
       'machineOsType': 'linux',
       'size': 62744,
       'checksumMd5': '365620fc68fd50006a131b3618f49fd4',
@@ -535,6 +539,7 @@ const data = [
     'fileProperties': {
       'id': 'd3358d715303a933219eb89861300c0990eecf1dd922e5e4b69a7eb00d939a3e',
       'firstFileName': 'libgio-2.0.so.0.4600.2',
+      'score': 90,
       'machineOsType': 'linux',
       'size': 1595056,
       'checksumMd5': '4b8abed842aee28caff6adf15654ee3b',
@@ -651,6 +656,7 @@ const data = [
     'fileProperties': {
       'id': '9ee6f17becd84af5070def9237affd9ec21a45365048952bdf69f5a9fe798908',
       'firstFileName': 'vmwgfx.ko',
+      'score': 30,
       'machineOsType': 'linux',
       'size': 399989,
       'checksumMd5': 'eeb276261c3e18ddcf4ef16f16f0e23e',
@@ -765,6 +771,7 @@ const data = [
     'fileProperties': {
       'id': '939b00c2149ba3d7951da7ec917b299c27dbd878f1473a6d2121da2751e3c415',
       'firstFileName': 'vmw_balloon.ko',
+      'score': 50,
       'machineOsType': 'linux',
       'size': 23189,
       'checksumMd5': '0b3eb734f5ea4ee8e58d50f4ec7138c2',
@@ -15082,6 +15089,7 @@ const data = [
       'checksumSha1': '93aafdf31462cab7b9c41edbcab238d663d39ba7',
       'checksumSha256': '2d870a8bb193fb55bebffccd2ff8202487c4cf94524c92c6589f75a9bb6b33cc',
       'reputationStatus': 'Suspicious',
+      'score': 100,
       'elf': {
         'classType': 0,
         'data': 0,
@@ -21378,6 +21386,7 @@ const data = [
       'checksumSha1': 'c1e0626238a8c0c4afce6224064f81e2dc0ed155',
       'checksumSha256': '81e4e3487e70d8211bcddd5d70b705e9f9875c053f8e04ad4a2f49f68b002147',
       'reputationStatus': 'Malicious',
+      'score': 45,
       'elf': {
         'classType': 0,
         'data': 0,
@@ -23881,6 +23890,7 @@ const data = [
       'id': '4040cf29a55fd8eaa7ef2a40f8508988b10bacedc49e589aa1d1eb2cd7f02eed',
       'firstFileName': 'vmware-user-suid-wrapper',
       'reputationStatus': 'Unknown',
+      'score': 15,
       'machineOsType': 'linux',
       'size': 10224,
       'checksumMd5': 'e2f3995d9218f16df453e0c6043f07c3',
@@ -24054,6 +24064,7 @@ const data = [
     'fileProperties': {
       'id': '9f869aad13f402b5236720c807d1a062e162b6fabf2c9332a4aaaf8b23e1f6fd',
       'firstFileName': 'libpcre.so.1.2.0',
+      'score': 70,
       'machineOsType': 'linux',
       'size': 398264,
       'checksumMd5': 'c6fb562888ec7247cc966295b87d54fa',
@@ -24163,6 +24174,7 @@ const data = [
     'fileProperties': {
       'id': '9d473c606da23e32d639a8cb55604e0aec431d127dd7b6f14edbdeebe52782b3',
       'firstFileName': 'syscopyarea.ko',
+      'score': 60,
       'machineOsType': 'linux',
       'size': 6997,
       'checksumMd5': '1924536fcc8a9c0738310f0621a34f11',
@@ -24266,6 +24278,7 @@ const data = [
     'fileProperties': {
       'id': '2c069fbb7829f94e46c89d6a990a051f65f139335a643832f516d6a84874041d',
       'firstFileName': 'libtinfo.so.5.9',
+      'score': 85,
       'machineOsType': 'linux',
       'size': 174520,
       'checksumMd5': 'df292280fd1900dd385ec97ee5cbac82',
@@ -24364,6 +24377,7 @@ const data = [
     'fileProperties': {
       'id': '7acd4fed74740a2c9bae6487b9ca9664cabd0549ac328576ae52100f4f4174bd',
       'firstFileName': 'math.so',
+      'score': 75,
       'machineOsType': 'linux',
       'size': 37352,
       'checksumMd5': '78d390a23601dac8b7dff449727513ff',
@@ -24472,6 +24486,7 @@ const data = [
     'fileProperties': {
       'id': 'b9d5f3b85829bc49d8ae2f3edbe2ed9f9d09563da3193ec1a31c5489731bff74',
       'firstFileName': 'sd_mod.ko',
+      'score': 51,
       'machineOsType': 'linux',
       'size': 78909,
       'checksumMd5': '61752ebb0f10df98a29a0b8df1040ff6',
@@ -24568,6 +24583,7 @@ const data = [
     'fileProperties': {
       'id': '1dc7feefdd51b5c48d95fac3b1dbdece495b25b017bef32639a80cd6a23f4f5f',
       'firstFileName': '_hashlib.so',
+      'score': 12,
       'machineOsType': 'linux',
       'size': 22808,
       'checksumMd5': '6f300fa515d2ceed968665e92b3b3f06',
@@ -24679,6 +24695,7 @@ const data = [
     'fileProperties': {
       'id': 'ac0597ed8a54afc7e7e462868aca5813ff9d9deacf52c63163d398c3e213b507',
       'firstFileName': 'ata_generic.ko',
+      'score': 23,
       'machineOsType': 'linux',
       'size': 13797,
       'checksumMd5': '82ee3ac68189e20a90414b0e3166282e',
@@ -24772,6 +24789,7 @@ const data = [
     'fileProperties': {
       'id': '367193af9919038d6b19a5588f5e1563b2c3f8da1d5d644557b914e04d20d15d',
       'firstFileName': 'libauparse.so.0.0.0',
+      'score': 33,
       'machineOsType': 'linux',
       'size': 99240,
       'checksumMd5': '64004a592e46da1a5d665f1d8838a8fb',
@@ -24880,6 +24898,7 @@ const data = [
     'fileProperties': {
       'id': '716452b3732a31cdad7c091b1ad0711a7bc2285c9bf7b8d137609660e043046f',
       'firstFileName': 'libudev.so.1.6.2',
+      'score': 35,
       'machineOsType': 'linux',
       'size': 83208,
       'checksumMd5': '237a188e1e555903b7ecf6735c9ab9f4',
@@ -25033,6 +25052,7 @@ const data = [
     'fileProperties': {
       'id': '564c26163b21453b5ddc61c0a703ee78d8a145956616e66f0dde5c9de72cd4e2',
       'firstFileName': 'libnspr4.so',
+      'score': 78,
       'machineOsType': 'linux',
       'size': 251784,
       'checksumMd5': 'be27e06af134d0585585dc0d3deb835a',

@@ -6,9 +6,10 @@ import hbs from 'htmlbars-inline-precompile';
 module('Integration | Component | rsa-risk-score', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it includes the proper class', async function(assert) {
+  test('it should not display risk score when risk score is not specified', async function(assert) {
     await render(hbs`{{rsa-risk-score}}`);
     assert.equal(this.$('.rsa-risk-score').length, 1);
+    assert.notOk(this.element.textContent.trim(), 'Should not display risk score');
   });
 
   test('it sets the low circle stroke and class when size is small', async function(assert) {

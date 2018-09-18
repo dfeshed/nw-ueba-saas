@@ -88,6 +88,14 @@ const FileList = Component.extend({
       dataType: 'string',
       width: 100,
       visible: true,
+      field: 'score',
+      searchable: false,
+      title: 'investigateFiles.fields.score'
+    },
+    {
+      dataType: 'string',
+      width: 100,
+      visible: true,
       field: 'machineCount',
       searchable: false,
       disableSort: true,

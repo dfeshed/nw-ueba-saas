@@ -43,9 +43,10 @@ module('Integration | Component | Anomalies/Hooks', function(hooks) {
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Type', 'Column 1 is Type');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'DLL Name', 'Column 2 is DLL Name');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Reputation Status', 'Column 3 is Reputation Status');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Hooked Process', 'Column 4 is Hooked Process');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Signature', 'Column 5 is Signature');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Hooked Symbol', 'Column 6 is Hooked Symbol');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Column 3 is Risk Score');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Reputation Status', 'Column 4 is Reputation Status');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Hooked Process', 'Column 5 is Hooked Process');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Signature', 'Column 6 is Signature');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Hooked Symbol', 'Column 7 is Hooked Symbol');
   });
 });

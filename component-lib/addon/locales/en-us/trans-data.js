@@ -1024,7 +1024,7 @@ export default {
         createdDate: 'Created',
         status: 'Status',
         priority: 'Priority',
-        riskScore: 'Risk Score',
+        score: 'Risk Score',
         assignee: 'Assignee',
         alertCount: 'Alerts',
         sources: 'Source',
@@ -2089,6 +2089,7 @@ export default {
       checksumSha256: 'SHA256',
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation Status',
+      score: 'Risk Score',
       machineCount: 'Machine Count',
       elf: {
         classType: 'ELF.Class Type',
@@ -2330,7 +2331,8 @@ export default {
           entropy: 'Entropy',
           size: 'Size',
           format: 'Format',
-          reputationStatus: 'Reputation Status'
+          reputationStatus: 'Reputation Status',
+          score: 'Risk Score'
         },
         inlinePatch: {
           currentAsm: 'Current Assembly',
@@ -2368,6 +2370,7 @@ export default {
       path: 'Path',
       launchArguments: 'Launch Arguments',
       reputationStatus: 'Reputation Status',
+      score: 'Risk Score',
       message: {
         noResultsMessage: 'No process information was found.'
       },
@@ -2411,6 +2414,7 @@ export default {
         type: 'Type',
         dllFileName: 'DLL Name',
         reputationStatus: 'Reputation Status',
+        score: 'Risk Score',
         hookedProcess: 'Hooked Process',
         hookedSymbol: 'Hooked Symbol',
         signature: 'Signature',
@@ -2424,6 +2428,7 @@ export default {
         tid: 'Thread ID',
         dllFileName: 'DLL Name',
         reputationStatus: 'Reputation Status',
+        score: 'Risk Score',
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
         process: 'Process',
@@ -2436,6 +2441,7 @@ export default {
         driverFileName: 'Driver Name',
         hookedFileName: 'Hooked FileName',
         reputationStatus: 'Reputation Status',
+        score: 'Risk Score',
         signature: 'Signature',
         title: 'Kernel Hooks',
         objectFunction: 'Object Function',

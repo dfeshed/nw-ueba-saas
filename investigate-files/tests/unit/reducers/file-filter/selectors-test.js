@@ -42,12 +42,12 @@ module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
 
   test('filters', function(assert) {
     const result = filters(STATE);
-    assert.equal(result.length, 11, 'filters result should be 10');
+    assert.equal(result.length, 12, 'filters result should be 12');
   });
 
   test('listWithoutDefault', function(assert) {
     const result = listWithoutDefault(STATE);
-    assert.equal(result.length, 11, ' should be 10 as there are no defaults');
+    assert.equal(result.length, 12, ' should be 12 as there are no defaults');
   });
 
 });

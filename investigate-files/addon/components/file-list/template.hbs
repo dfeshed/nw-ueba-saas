@@ -39,13 +39,13 @@
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}
       {{#if column.componentClass}}
-        {{#rsa-data-table/body-cell item=item column=column}}
+        {{#file-list/body-cell item=item column=column}}
           <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
             {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
           </label>
-        {{/rsa-data-table/body-cell}}
+        {{/file-list/body-cell}}
       {{else}}
-        {{#rsa-data-table/body-cell column=column}}
+        {{#file-list/body-cell column=column}}
           {{#if (eq column.field 'firstFileName')}}
             <div class="file-name">
               {{#link-to 'file' (get item 'checksumSha256')}}{{get item column.field}}{{/link-to}}
@@ -72,10 +72,14 @@
             {{rsa-content-datetime timestamp=(get item column.field)}}
           {{else if (eq column.field 'fileStatus')}}
             {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
+          {{else if (eq column.field 'score')}}
+            <centered>
+              {{rsa-risk-score score=(get item column.field) size='small'}}
+            </centered>
           {{else}}
             {{get item column.field}}
           {{/if}}
-        {{/rsa-data-table/body-cell}}
+        {{/file-list/body-cell}}
       {{/if}}
     {{/file-list/body}}
       {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}

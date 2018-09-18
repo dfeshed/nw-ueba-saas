@@ -45,10 +45,11 @@ module('Integration | Component | Anomalies/Threads', function(hooks) {
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Start Address', 'Column 1 is Start Address');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'DLL Name', 'Column 2 is DLL Name');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Reputation Status', 'Column 3 is Reputation Status');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Process', 'Column 4 is Process');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Signature', 'Column 5 is Signature');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Thread ID', 'Column 6 is Thread ID');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Thread Environment Block', 'Column 7 is Thread Environment Block');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Column 3 is Risk Score');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Reputation Status', 'Column 4 is Reputation Status');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Process', 'Column 5 is Process');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Signature', 'Column 6 is Signature');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Thread ID', 'Column 7 is Thread ID');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(8)').textContent.trim(), 'Thread Environment Block', 'Column 8 is Thread Environment Block');
   });
 });

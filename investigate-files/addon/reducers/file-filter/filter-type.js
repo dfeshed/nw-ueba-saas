@@ -48,6 +48,14 @@ const FILTER_TYPES = [
     ]
   },
   {
+    'name': 'score',
+    'label': 'investigateFiles.fields.score',
+    'min': 0,
+    'max': 100,
+    'step': 1,
+    'type': 'range'
+  },
+  {
     'name': 'machineOsType',
     'label': 'investigateFiles.filter.osType',
     'listOptions': [

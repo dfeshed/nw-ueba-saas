@@ -15,6 +15,10 @@ const defaultColumns = [
     title: 'Filename'
   },
   {
+    field: 'fileProperties.score',
+    title: 'Risk Score'
+  },
+  {
     field: 'fileProperties.reputationStatus',
     title: 'Reputation Status'
   },

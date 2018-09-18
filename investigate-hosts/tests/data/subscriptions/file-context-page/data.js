@@ -48,7 +48,8 @@ module.exports = {
         'checksumSha256': 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33',
         'entropy': 5.197017123035716,
         'format': 'script',
-        'reputationStatus': 'Known'
+        'reputationStatus': 'Known',
+        'score': 75
       }
     },
     {
@@ -93,7 +94,8 @@ module.exports = {
         'elf': { 'classType': 0, 'data': 0, 'entryPoint': 0, 'features': ['arch64', 'lkm'], 'type': 1 },
         'entropy': 3.5172264322543323,
         'format': 'elf',
-        'reputationStatus': 'Unknown'
+        'reputationStatus': 'Unknown',
+        'score': 40
       }
     },
     {
@@ -137,7 +139,8 @@ module.exports = {
         'checksumSha256': '29772d95b2488a5a7715a96270f827fbf2b2e1e0a627ae041a54a6faddd2686c',
         'entropy': 4.682791635812802,
         'format': 'script',
-        'reputationStatus': 'Suspicious'
+        'reputationStatus': 'Suspicious',
+        'score': 100
       }
     },
     {
@@ -182,7 +185,8 @@ module.exports = {
         'elf': { 'classType': 0, 'data': 0, 'entryPoint': 0, 'features': ['arch64', 'lkm'], 'type': 1 },
         'entropy': 3.8188263802458438,
         'format': 'elf',
-        'reputationStatus': 'Malicious'
+        'reputationStatus': 'Malicious',
+        'score': 100
       }
     },
     {
@@ -225,7 +229,8 @@ module.exports = {
         'checksumSha1': '08883946c3e0de4e879d4598c206f4ff9acd024a',
         'checksumSha256': '1217fa0aca70a546e80497a00f4aabaee9f282740b2f0dc823b1d69a5392e2ca',
         'entropy': 5.108615774151603,
-        'format': 'script'
+        'format': 'script',
+        'score': 70
       }
     },
     {
@@ -269,7 +274,8 @@ module.exports = {
         'checksumSha256': '3621db9f17a28b4d921b75dab20a970a6b312da246b74aa77452194c09c50f48',
         'elf': { 'classType': 0, 'data': 0, 'entryPoint': 0, 'features': ['arch64', 'lkm'], 'type': 1 },
         'entropy': 4.817198900068834,
-        'format': 'elf'
+        'format': 'elf',
+        'score': 90
       }
     }
   ],
