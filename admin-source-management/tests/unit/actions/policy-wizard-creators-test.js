@@ -47,15 +47,16 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 
-  test('updatePolicyProperty action creator returns proper type and payload when field is recurrenceIntervalUnit', function(assert) {
+  test('updatePolicyProperty action creator returns proper type and payload when field is recurrenceUnit', function(assert) {
     const expectedAction = {
       type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
       payload: [
-        { field: 'policy.recurrenceIntervalUnit', value: 'DAYS' },
-        { field: 'policy.recurrenceInterval', value: 1 }
+        { field: 'policy.recurrenceUnit', value: 'DAYS' },
+        { field: 'policy.recurrenceInterval', value: 1 },
+        { field: 'policy.runOnDaysOfWeek', value: null }
       ]
     };
-    const action = policyWizardCreators.updatePolicyProperty('recurrenceIntervalUnit', 'DAYS');
+    const action = policyWizardCreators.updatePolicyProperty('recurrenceUnit', 'DAYS');
     assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 

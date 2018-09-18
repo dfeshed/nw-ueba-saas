@@ -46,7 +46,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
   test('should trigger the updatePolicyProperty ac on slider change', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizCpuMaximumOnVirtualMachine(85)
+      .policyWizCpuMaxVm(85)
       .build();
     await render(hbs`{{usm-policies/policy/schedule-config/vm-max}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');

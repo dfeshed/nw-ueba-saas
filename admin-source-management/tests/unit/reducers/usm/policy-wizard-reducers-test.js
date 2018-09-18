@@ -104,11 +104,11 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
       { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
       // { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-      { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+      { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
       { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
       // { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-      { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
-      { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+      { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
+      { index: 8, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] }
       // { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
       // { index: 10, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true }
     ];
@@ -117,16 +117,16 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       availableSettings: [
         { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
         { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
-        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
         { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
-        { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
-        { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+        { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
+        { index: 8, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] }
       ],
       selectedSettings: [
         { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
-        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
-        { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
-        { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] }
+        { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
+        { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
+        { index: 8, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: false, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] }
       ]
     };
 
@@ -140,10 +140,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: 1,
-        recurrenceIntervalUnit: 'WEEKS',
+        recurrenceUnit: 'WEEKS',
         runOnDaysOfWeek: ['WEDNESDAY'],
-        cpuMaximum: 75,
-        cpuMaximumOnVirtualMachine: 85
+        cpuMax: 75,
+        cpuMaxVm: 85
       }
     };
 
@@ -211,15 +211,15 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('on UPDATE_POLICY_PROPERTY policy is updated', function(assert) {
     const payload = [
-      { field: 'policy.recurrenceIntervalUnit', value: 'WEEKS' },
+      { field: 'policy.recurrenceUnit', value: 'WEEKS' },
       { field: 'policy.recurrenceInterval', value: 1 }
     ];
 
-    const recurrenceIntervalUnitExpected = 'WEEKS';
+    const recurrenceUnitExpected = 'WEEKS';
     const recurrenceIntervalExpected = 1;
     const action = { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
-    assert.deepEqual(endState.policy.recurrenceIntervalUnit, recurrenceIntervalUnitExpected, 'recurrenceIntervalUnit is updated');
+    assert.deepEqual(endState.policy.recurrenceUnit, recurrenceUnitExpected, 'recurrenceUnit is updated');
     assert.deepEqual(endState.policy.recurrenceInterval, recurrenceIntervalExpected, 'recurrenceInterval is updated');
   });
 
@@ -239,10 +239,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .policyWizScanStartDate('2018-09-13')
       .policyWizScanStartTime('10:00')
       .policyWizRecurrenceInterval(1)
-      .policyWizRecurrenceIntervalUnit('DAYS')
+      .policyWizRecurrenceUnit('DAYS')
       .policyWizRunOnDaysOfWeek(['TUESDAY'])
-      .policyWizCpuMaximum(75)
-      .policyWizCpuMaximumOnVirtualMachine(85)
+      .policyWizCpuMax(75)
+      .policyWizCpuMaxVm(85)
       .build().usm.policyWizard;
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
@@ -250,10 +250,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .policyWizScanStartDate(null)
       .policyWizScanStartTime(null)
       .policyWizRecurrenceInterval(null)
-      .policyWizRecurrenceIntervalUnit(null)
+      .policyWizRecurrenceUnit(null)
       .policyWizRunOnDaysOfWeek(null)
-      .policyWizCpuMaximum(null)
-      .policyWizCpuMaximumOnVirtualMachine(null)
+      .policyWizCpuMax(null)
+      .policyWizCpuMaxVm(null)
       .build().usm.policyWizard;
 
     const payload = 'MANUAL';

@@ -9,7 +9,7 @@
         {{radio-button
           radioClass='recurrence-type'
           value=item.name
-          changed=(action 'updatePolicyProperty' 'recurrenceIntervalUnit' item.name)
+          changed=(action 'updatePolicyProperty' 'recurrenceUnit' item.name)
           groupValue=(readonly intervalType)}}
         {{t item.label}}
       </label>

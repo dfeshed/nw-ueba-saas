@@ -101,8 +101,8 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizRecurrenceIntervalUnit(recurrenceIntervalUnit) {
-    _set(this.state, 'usm.policyWizard.policy.recurrenceIntervalUnit', recurrenceIntervalUnit);
+  policyWizRecurrenceUnit(recurrenceUnit) {
+    _set(this.state, 'usm.policyWizard.policy.recurrenceUnit', recurrenceUnit);
     return this;
   }
 
@@ -111,13 +111,13 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizCpuMaximum(cpuMaximum) {
-    _set(this.state, 'usm.policyWizard.policy.cpuMaximum', cpuMaximum);
+  policyWizCpuMax(cpuMax) {
+    _set(this.state, 'usm.policyWizard.policy.cpuMax', cpuMax);
     return this;
   }
 
-  policyWizCpuMaximumOnVirtualMachine(cpuMaximumOnVirtualMachine) {
-    _set(this.state, 'usm.policyWizard.policy.cpuMaximumOnVirtualMachine', cpuMaximumOnVirtualMachine);
+  policyWizCpuMaxVm(cpuMaxVm) {
+    _set(this.state, 'usm.policyWizard.policy.cpuMaxVm', cpuMaxVm);
     return this;
   }
 

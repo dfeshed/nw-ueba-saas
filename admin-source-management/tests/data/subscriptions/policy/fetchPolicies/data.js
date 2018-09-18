@@ -13,10 +13,10 @@ export default [
     scanStartDate: '2018-09-09',
     scanStartTime: '10:23',
     recurrenceInterval: 1,
-    recurrenceIntervalUnit: 'DAYS',
+    recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
-    cpuMaximum: 75,
-    cpuMaximumOnVirtualMachine: 85
+    cpuMax: 75,
+    cpuMaxVm: 85
   },
   {
     id: 'policy_001',
@@ -41,10 +41,10 @@ export default [
     scanStartDate: '2018-09-10',
     scanStartTime: '10:23',
     recurrenceInterval: 1,
-    recurrenceIntervalUnit: 'DAYS',
+    recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
-    cpuMaximum: 75,
-    cpuMaximumOnVirtualMachine: 85
+    cpuMax: 75,
+    cpuMaxVm: 85
   },
   {
     id: 'policy_002',
@@ -60,10 +60,10 @@ export default [
     scanStartDate: '2018-09-11',
     scanStartTime: '10:23',
     recurrenceInterval: 1,
-    recurrenceIntervalUnit: 'DAYS',
+    recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
-    cpuMaximum: 75,
-    cpuMaximumOnVirtualMachine: 85
+    cpuMax: 75,
+    cpuMaxVm: 85
   },
   {
     id: 'policy_003',
@@ -79,10 +79,10 @@ export default [
     scanStartDate: '2018-09-12',
     scanStartTime: '10:23',
     recurrenceInterval: 1,
-    recurrenceIntervalUnit: 'WEEKS',
+    recurrenceUnit: 'WEEKS',
     runOnDaysOfWeek: ['MONDAY'],
-    cpuMaximum: 75,
-    cpuMaximumOnVirtualMachine: 85
+    cpuMax: 75,
+    cpuMaxVm: 85
   },
   {
     id: 'policy_014',
@@ -98,9 +98,9 @@ export default [
     scanStartDate: null, // '2018-09-13',
     scanStartTime: null, // '10:23',
     recurrenceInterval: 1,
-    recurrenceIntervalUnit: 'WEEKS',
+    recurrenceUnit: 'WEEKS',
     runOnDaysOfWeek: ['WEDNESDAY'],
-    cpuMaximum: 75,
-    cpuMaximumOnVirtualMachine: 85
+    cpuMax: 75,
+    cpuMaxVm: 85
   }
 ];

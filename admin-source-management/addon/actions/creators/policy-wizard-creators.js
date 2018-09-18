@@ -129,10 +129,12 @@ const updatePolicyProperty = (field, value) => {
       type = ACTION_TYPES.TOGGLE_SCAN_TYPE;
       payload = value;
       break;
-    case 'recurrenceIntervalUnit':
+    case 'recurrenceUnit':
       payload = [
-        { field: 'policy.recurrenceIntervalUnit', value },
-        { field: 'policy.recurrenceInterval', value: 1 }
+        { field: 'policy.recurrenceUnit', value },
+        // reset recurrenceInterval & runOnDaysOfWeek when toggling recurrenceUnit
+        { field: 'policy.recurrenceInterval', value: 1 },
+        { field: 'policy.runOnDaysOfWeek', value: null }
       ];
       break;
     default:

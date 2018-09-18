@@ -55,7 +55,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
     new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizRecurrenceInterval(1)
-      .policyWizRecurrenceIntervalUnit('DAYS')
+      .policyWizRecurrenceUnit('DAYS')
       .build();
     patchPowerSelect();
     await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);

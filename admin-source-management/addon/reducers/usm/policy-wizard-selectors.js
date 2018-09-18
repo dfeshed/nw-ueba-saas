@@ -127,7 +127,7 @@ export const interval = createSelector(
 
 export const intervalType = createSelector(
   policy,
-  (policy) => policy.recurrenceIntervalUnit // only format/return what is in state - the reducer is responsible for the defaults for each setting
+  (policy) => policy.recurrenceUnit // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 export const isWeeklyInterval = createSelector(
@@ -167,14 +167,14 @@ export const runIntervalConfig = createSelector(
   }
 );
 
-export const cpuMaximum = createSelector(
+export const cpuMax = createSelector(
   policy,
-  (policy) => policy.cpuMaximum // only format/return what is in state - the reducer is responsible for the defaults for each setting
+  (policy) => policy.cpuMax // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
-export const cpuMaximumOnVirtualMachine = createSelector(
+export const cpuMaxVm = createSelector(
   policy,
-  (policy) => policy.cpuMaximumOnVirtualMachine // only format/return what is in state - the reducer is responsible for the defaults for each setting
+  (policy) => policy.cpuMaxVm // only format/return what is in state - the reducer is responsible for the defaults for each setting
 );
 
 /**

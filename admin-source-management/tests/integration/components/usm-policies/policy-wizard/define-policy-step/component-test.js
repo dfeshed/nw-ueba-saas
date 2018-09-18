@@ -85,13 +85,13 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('CPU Maximum component greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .cpuMaximum')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
+    assert.equal(findAll('.available-settings .cpuMax')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
   });
 
   test('Virtual Machine Maximum component greyed out by default', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .cpuMaximumOnVirtualMachine')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
+    assert.equal(findAll('.available-settings .cpuMaxVm')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
   });
 
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {

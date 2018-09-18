@@ -21,11 +21,11 @@ export const initialState = {
     scanStartDate: null, // YYYY-MM-DD
     scanStartTime: null, // '10:00'
     recurrenceInterval: null, // 1
-    recurrenceIntervalUnit: null, // 'DAYS' | 'WEEKS'
+    recurrenceUnit: null, // 'DAYS' | 'WEEKS'
     runOnDaysOfWeek: null, // array containing day name (names eventually) ex. ['MONDAY']
     // scanOptions
-    cpuMaximum: null, // 75
-    cpuMaximumOnVirtualMachine: null // 85
+    cpuMax: null, // 75
+    cpuMaxVm: null // 85
   },
   policyStatus: null, // wait, complete, error
 
@@ -85,11 +85,11 @@ export const initialState = {
     { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
     { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
     { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceIntervalUnit', value: 'DAYS' }] },
+    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
     { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
     { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-    { index: 7, id: 'cpuMaximum', label: 'adminUsm.policy.cpuMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMaximum', value: 75 }] },
-    { index: 8, id: 'cpuMaximumOnVirtualMachine', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaximumOnVirtualMachine', value: 85 }] },
+    { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
+    { index: 8, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] },
     { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
     { index: 10, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true }
   ],
@@ -318,10 +318,10 @@ export default reduxActions.handleActions({
           scanStartDate: null,
           scanStartTime: null,
           recurrenceInterval: null,
-          recurrenceIntervalUnit: null,
+          recurrenceUnit: null,
           runOnDaysOfWeek: null,
-          cpuMaximum: null,
-          cpuMaximumOnVirtualMachine: null
+          cpuMax: null,
+          cpuMaxVm: null
         },
         availableSettings: newAvailableSettings,
         selectedSettings: selectedSettings.filter((el) => el.parentId !== scanScheduleId)
@@ -340,10 +340,10 @@ export default reduxActions.handleActions({
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: null,
-        recurrenceIntervalUnit: null,
+        recurrenceUnit: null,
         runOnDaysOfWeek: null,
-        cpuMaximum: null,
-        cpuMaximumOnVirtualMachine: null
+        cpuMax: null,
+        cpuMaxVm: null
       },
       availableSettings: [ ...initialState.availableSettings ],
       selectedSettings: [ ...initialState.selectedSettings ]

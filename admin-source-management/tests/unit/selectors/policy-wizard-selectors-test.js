@@ -18,8 +18,8 @@ import {
   isWeeklyInterval,
   runOnDaysOfWeek,
   weekOptions,
-  cpuMaximum,
-  cpuMaximumOnVirtualMachine,
+  cpuMax,
+  cpuMaxVm,
   runIntervalConfig,
   nameValidator,
   descriptionValidator,
@@ -155,10 +155,10 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     const expectedIntervalType = 'DAYS';
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .policyWizRecurrenceUnit(expectedIntervalType)
       .build();
     const resultIntervalType = intervalType(fullState);
-    assert.deepEqual(resultIntervalType, expectedIntervalType, `should return recurrenceIntervalUnit of ${expectedIntervalType}`);
+    assert.deepEqual(resultIntervalType, expectedIntervalType, `should return recurrenceUnit of ${expectedIntervalType}`);
   });
 
   test('isWeeklyInterval', function(assert) {
@@ -166,7 +166,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     let expectedIntervalType = 'DAYS';
     let fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .policyWizRecurrenceUnit(expectedIntervalType)
       .build();
     let expectedBoolean = false;
     let resultBoolean = isWeeklyInterval(fullState);
@@ -175,7 +175,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     expectedIntervalType = 'WEEKS';
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizRecurrenceIntervalUnit(expectedIntervalType)
+      .policyWizRecurrenceUnit(expectedIntervalType)
       .build();
     expectedBoolean = true;
     resultBoolean = isWeeklyInterval(fullState);
@@ -193,11 +193,11 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
   });
 
   test('weekOptions', function(assert) {
-    const expectedRecurrenceIntervalUnit = 'WEEKS';
+    const expectedRecurrenceUnit = 'WEEKS';
     const expectedRunOnDaysOfWeek = ['SUNDAY'];
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizRecurrenceIntervalUnit(expectedRecurrenceIntervalUnit)
+      .policyWizRecurrenceUnit(expectedRecurrenceUnit)
       .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
       .build();
     const expectedWeekOptions = {
@@ -210,10 +210,10 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
   });
 
   test('runIntervalConfig', function(assert) {
-    const expectedRecurrenceIntervalUnit = 'WEEKS';
+    const expectedRecurrenceUnit = 'WEEKS';
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizRecurrenceIntervalUnit(expectedRecurrenceIntervalUnit)
+      .policyWizRecurrenceUnit(expectedRecurrenceUnit)
       .build();
     const expectedConfig = {
       'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
@@ -223,24 +223,24 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     assert.deepEqual(resultConfig, expectedConfig, 'should return the processed run interval configuration');
   });
 
-  test('cpuMaximum', function(assert) {
-    const expectedCpuMaximum = 75;
+  test('cpuMax', function(assert) {
+    const expectedCpuMax = 75;
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizCpuMaximum(expectedCpuMaximum)
+      .policyWizCpuMax(expectedCpuMax)
       .build();
-    const resultCpuMaximum = cpuMaximum(fullState);
-    assert.deepEqual(resultCpuMaximum, expectedCpuMaximum, `should return cpuMaximum of ${expectedCpuMaximum}`);
+    const resultCpuMax = cpuMax(fullState);
+    assert.deepEqual(resultCpuMax, expectedCpuMax, `should return cpuMax of ${expectedCpuMax}`);
   });
 
-  test('cpuMaximumOnVirtualMachine', function(assert) {
-    const expectedCpuMaximumOnVirtualMachine = 85;
+  test('cpuMaxVm', function(assert) {
+    const expectedCpuMaxVm = 85;
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizCpuMaximumOnVirtualMachine(expectedCpuMaximumOnVirtualMachine)
+      .policyWizCpuMaxVm(expectedCpuMaxVm)
       .build();
-    const resultCpuMaximumOnVirtualMachine = cpuMaximumOnVirtualMachine(fullState);
-    assert.deepEqual(resultCpuMaximumOnVirtualMachine, expectedCpuMaximumOnVirtualMachine, `should return cpuMaximumOnVirtualMachine of ${expectedCpuMaximumOnVirtualMachine}`);
+    const resultCpuMaxVm = cpuMaxVm(fullState);
+    assert.deepEqual(resultCpuMaxVm, expectedCpuMaxVm, `should return cpuMaxVm of ${expectedCpuMaxVm}`);
   });
 
   test('nameValidator selector', function(assert) {
