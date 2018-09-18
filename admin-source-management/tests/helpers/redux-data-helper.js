@@ -106,6 +106,36 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizCaptureFloatingCode(captureFloatingCode) {
+    _set(this.state, 'usm.policyWizard.policy.captureFloatingCode', captureFloatingCode);
+    return this;
+  }
+
+  policyWizDownloadMbr(downloadMbr) {
+    _set(this.state, 'usm.policyWizard.policy.downloadMbr', downloadMbr);
+    return this;
+  }
+
+  policyWizFilterSignedHooks(filterSignedHooks) {
+    _set(this.state, 'usm.policyWizard.policy.filterSignedHooks', filterSignedHooks);
+    return this;
+  }
+
+  policyWizRequestScanOnRegistration(requestScanOnRegistration) {
+    _set(this.state, 'usm.policyWizard.policy.requestScanOnRegistration', requestScanOnRegistration);
+    return this;
+  }
+
+  policyWizBlockingEnabled(blockingEnabled) {
+    _set(this.state, 'usm.policyWizard.policy.blockingEnabled', blockingEnabled);
+    return this;
+  }
+
+  policyWizAgentMode(agentMode) {
+    _set(this.state, 'usm.policyWizard.policy.agentMode', agentMode);
+    return this;
+  }
+
   policyWizRunOnDaysOfWeek(runOnDaysOfWeekArray) {
     _set(this.state, 'usm.policyWizard.policy.runOnDaysOfWeek', runOnDaysOfWeekArray);
     return this;

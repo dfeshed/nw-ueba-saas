@@ -20,6 +20,8 @@ import {
   weekOptions,
   cpuMax,
   cpuMaxVm,
+  radioButtonValue,
+  radioButtonOption,
   runIntervalConfig,
   nameValidator,
   descriptionValidator,
@@ -31,6 +33,15 @@ import {
   // TODO when implemented isWizardValid,
   isPolicyLoading
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+import {
+  SCAN_SCHEDULE_CONFIG,
+  CAPTURE_CODE_CONFIG,
+  DOWNLOAD_MBR_CONFIG,
+  FILTER_SIGNED_CONFIG,
+  REQUEST_SCAN_CONFIG,
+  BLOCKING_ENABLED_CONFIG,
+  AGENT_MODE_CONFIG
+} from 'admin-source-management/utils/settings';
 
 module('Unit | Selectors | Policy Wizard Selectors', function() {
 
@@ -118,6 +129,83 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     const resultScanType = scanType(fullState);
     assert.deepEqual(resultScanType, expectedScanType, `should return scanType of ${expectedScanType}`);
+  });
+
+  test('captureFloatingCode', function(assert) {
+    const expectedState = false;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCaptureFloatingCode(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'captureFloatingCode');
+    assert.deepEqual(result, expectedState, `should return captureFloatingCode of ${expectedState}`);
+  });
+
+  test('downloadMbr', function(assert) {
+    const expectedState = true;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizDownloadMbr(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'downloadMbr');
+    assert.deepEqual(result, expectedState, `should return downloadMbr of ${expectedState}`);
+  });
+
+  test('filterSignedHooks', function(assert) {
+    const expectedState = true;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizFilterSignedHooks(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'filterSignedHooks');
+    assert.deepEqual(result, expectedState, `should return filterSignedHooks of ${expectedState}`);
+  });
+
+  test('requestScanOnRegistration', function(assert) {
+    const expectedState = true;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizRequestScanOnRegistration(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'requestScanOnRegistration');
+    assert.deepEqual(result, expectedState, `should return requestScanOnRegistration of ${expectedState}`);
+  });
+
+  test('blockingEnabled', function(assert) {
+    const expectedState = true;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizBlockingEnabled(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'blockingEnabled');
+    assert.deepEqual(result, expectedState, `should return blockingEnabled of ${expectedState}`);
+  });
+
+  test('agentMode', function(assert) {
+    const expectedState = false;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizAgentMode(expectedState)
+      .build();
+    const result = radioButtonValue(fullState, 'agentMode');
+    assert.deepEqual(result, expectedState, `should return agentMode of ${expectedState}`);
+  });
+
+  test('radioButtonOption returns the right radio button options based on the id', function(assert) {
+    const result1 = radioButtonOption('scanType');
+    assert.deepEqual(result1, SCAN_SCHEDULE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanType id');
+    const result2 = radioButtonOption('captureFloatingCode');
+    assert.deepEqual(result2, CAPTURE_CODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for captureFloatingCode id');
+    const result3 = radioButtonOption('downloadMbr');
+    assert.deepEqual(result3, DOWNLOAD_MBR_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for downloadMbr id');
+    const result4 = radioButtonOption('filterSignedHooks');
+    assert.deepEqual(result4, FILTER_SIGNED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for filterSignedHooks id');
+    const result5 = radioButtonOption('requestScanOnRegistration');
+    assert.deepEqual(result5, REQUEST_SCAN_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for requestScanOnRegistration id');
+    const result6 = radioButtonOption('blockingEnabled');
+    assert.deepEqual(result6, BLOCKING_ENABLED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for blockingEnabled id');
+    const result7 = radioButtonOption('agentMode');
+    assert.deepEqual(result7, AGENT_MODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for agentMode id');
   });
 
   test('startDate', function(assert) {

@@ -3,7 +3,10 @@ import { isBlank, isPresent } from '@ember/utils';
 import _ from 'lodash';
 import moment from 'moment';
 import { exceedsLength } from './util/selector-helpers';
-import { RADIO_BUTTONS_CONFIG, SCAN_SCHEDULE_CONFIG } from 'admin-source-management/utils/settings';
+import {
+  RADIO_BUTTONS_CONFIG,
+  ALL_RADIO_OPTIONS
+} from 'admin-source-management/utils/settings';
 
 const { createSelector } = reselect;
 
@@ -85,6 +88,22 @@ export const sortedSelectedSettings = createSelector(
   }
 );
 
+/**
+ * It returns the appropriate radio button value based on the selectedSettingId
+ * @public
+ */
+export const radioButtonValue = (state, selectedSettingId) => state.usm.policyWizard.policy[selectedSettingId];
+
+/**
+ * It returns the appropriate radio button option based on the selectedSettingId
+ * @public
+ */
+export const radioButtonOption = (selectedSettingId) => {
+  const getOptionsById = ALL_RADIO_OPTIONS.find((d) => d.id === selectedSettingId);
+  const { options } = getOptionsById;
+  return options;
+};
+
 const weeks = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 // Key is type
 const COUNTER = {
@@ -93,7 +112,6 @@ const COUNTER = {
 };
 
 export const radioButtonConfig = () => RADIO_BUTTONS_CONFIG;
-export const scanScheduleConfig = () => SCAN_SCHEDULE_CONFIG;
 
 export const scanType = createSelector(
   policy,

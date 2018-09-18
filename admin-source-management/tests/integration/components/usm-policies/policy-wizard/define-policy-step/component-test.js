@@ -42,12 +42,12 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 8, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 16, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/usm-radios' },
       { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
@@ -58,10 +58,10 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .heading').length, 3, 'All heading labels rendered correctly');
-    assert.equal(findAll('.available-settings .sub-heading').length, 2, 'All sub-heading labels rendered correctly');
-    assert.equal(findAll('.available-settings .title').length, 6, 'All components in available-settings rendered correctly');
-    assert.equal(findAll('.available-settings .rsa-icon').length, 6, 'The plus icon next to the components is rendered correctly');
+    assert.equal(findAll('.available-settings .heading').length, 4, 'All heading labels rendered correctly');
+    assert.equal(findAll('.available-settings .sub-heading').length, 4, 'All sub-heading labels rendered correctly');
+    assert.equal(findAll('.available-settings .title').length, 12, 'All components in available-settings rendered correctly');
+    assert.equal(findAll('.available-settings .rsa-icon').length, 12, 'The plus icon next to the components is rendered correctly');
   });
 
   test('Effective date component should be greyed out by default', async function(assert) {
@@ -94,6 +94,17 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.available-settings .cpuMaxVm')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
   });
 
+  test('All the components driven by usm-radios component is shown in the available settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz().build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .captureFloatingCode').length, 1, 'Capture Floating code component is shown in the available settings');
+    assert.equal(findAll('.available-settings .downloadMbr').length, 1, 'Download Master Boot Record component is shown in the available settings');
+    assert.equal(findAll('.available-settings .filterSignedHooks').length, 1, 'Signed Modules component is shown in the available settings');
+    assert.equal(findAll('.available-settings .requestScanOnRegistration').length, 1, 'New System added component is shown in the available settings');
+    assert.equal(findAll('.available-settings .blockingEnabled').length, 1, 'Blocking Action component is shown in the available settings');
+    assert.equal(findAll('.available-settings .agentMode').length, 1, 'Monitoring Mode component is shown in the available settings');
+  });
+
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
       { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
@@ -107,7 +118,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/usm-radios' },
       { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
@@ -116,7 +127,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
     // simulate a click on the minus icon next to scan schedule.
     // this triggers RESET_SCAN_SCHEDULE_TO_DEFAULTS reducer and clears out all selected settings
-    const minusIcon = document.querySelector('.scan-schedule span .rsa-icon');
+    const minusIcon = document.querySelector('.scanType span .rsa-icon-remove-circle-1-lined');
     await click(minusIcon);
     assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
   });

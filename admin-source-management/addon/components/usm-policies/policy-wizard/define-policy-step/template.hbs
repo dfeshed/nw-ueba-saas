@@ -30,7 +30,9 @@
           <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
           <div class="selected-setting">
-            {{component sortedSelectedSetting.callback}}
+            {{component sortedSelectedSetting.callback
+              selectedSettingId=sortedSelectedSetting.id
+            }}
           </div>
         {{/if}}
       {{/each}}

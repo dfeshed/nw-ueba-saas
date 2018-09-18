@@ -16,7 +16,13 @@ export default [
     recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
     cpuMax: 75,
-    cpuMaxVm: 85
+    cpuMaxVm: 85,
+    captureFloatingCode: false,
+    downloadMbr: false,
+    filterSignedHooks: false,
+    requestScanOnRegistration: false,
+    blockingEnabled: false,
+    agentMode: 'NO_MONITORING'
   },
   {
     id: 'policy_001',
@@ -44,7 +50,13 @@ export default [
     recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
     cpuMax: 75,
-    cpuMaxVm: 85
+    cpuMaxVm: 85,
+    captureFloatingCode: true,
+    downloadMbr: true,
+    filterSignedHooks: false,
+    requestScanOnRegistration: false,
+    blockingEnabled: false,
+    agentMode: 'FULL_MONITORING'
   },
   {
     id: 'policy_002',
@@ -63,7 +75,13 @@ export default [
     recurrenceUnit: 'DAYS',
     runOnDaysOfWeek: null,
     cpuMax: 75,
-    cpuMaxVm: 85
+    cpuMaxVm: 85,
+    captureFloatingCode: true,
+    downloadMbr: true,
+    filterSignedHooks: false,
+    requestScanOnRegistration: false,
+    blockingEnabled: true,
+    agentMode: 'NO_MONITORING'
   },
   {
     id: 'policy_003',
@@ -82,7 +100,13 @@ export default [
     recurrenceUnit: 'WEEKS',
     runOnDaysOfWeek: ['MONDAY'],
     cpuMax: 75,
-    cpuMaxVm: 85
+    cpuMaxVm: 85,
+    captureFloatingCode: false,
+    downloadMbr: true,
+    filterSignedHooks: false,
+    requestScanOnRegistration: false,
+    blockingEnabled: false,
+    agentMode: 'FULL_MONITORING'
   },
   {
     id: 'policy_014',
@@ -101,6 +125,12 @@ export default [
     recurrenceUnit: 'WEEKS',
     runOnDaysOfWeek: ['WEDNESDAY'],
     cpuMax: 75,
-    cpuMaxVm: 85
+    cpuMaxVm: 85,
+    captureFloatingCode: true,
+    downloadMbr: false,
+    filterSignedHooks: false,
+    requestScanOnRegistration: true,
+    blockingEnabled: false,
+    agentMode: 'FULL_MONITORING'
   }
 ];
