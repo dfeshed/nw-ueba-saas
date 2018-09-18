@@ -8,6 +8,20 @@ const exceedsLength = (name, maxLength) => {
   }
 };
 
+const isNameInList = (list, id, name) => {
+  if (list && name) {
+    const lowerCaseName = name.toLocaleLowerCase();
+    for (let l = 0; l < list.length; l++) {
+      const listItem = list[l];
+      if ((!id || (listItem.id !== id)) && (listItem.name.toLocaleLowerCase() === lowerCaseName)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 export {
-  exceedsLength
+  exceedsLength,
+  isNameInList
 };

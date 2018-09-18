@@ -36,7 +36,6 @@ export const initialState = {
     createdOn: null,
     lastModifiedBy: null,
     lastModifiedOn: null,
-    group: null,
     groupCriteria: {
       conjunction: 'AND',
       criteria: [

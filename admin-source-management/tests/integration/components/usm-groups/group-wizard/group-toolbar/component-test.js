@@ -89,7 +89,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     throwSocket();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.group.saveFailure');
+      const expectedMessage = translation.t('adminUsm.groupWizard.saveFailure');
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMessage);
     });
@@ -116,7 +116,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     const done = assert.async();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.group.saveSuccess');
+      const expectedMessage = translation.t('adminUsm.groupWizard.saveSuccess');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();

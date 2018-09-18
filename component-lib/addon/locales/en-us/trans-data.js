@@ -3533,28 +3533,6 @@ export default {
         }
       }
     },
-    group: {
-      identify: 'Identify',
-      name: 'Group Name',
-      namePlaceholder: 'Enter a unique group name',
-      description: 'Group Description',
-      descPlaceholder: 'Enter a description',
-      define: 'Define',
-      ipRange: 'IP Range',
-      ipRangeStartPlaceholder: 'Beginning IP',
-      ipRangeTo: 'to',
-      ipRangeEndPlaceholder: 'End IP',
-      osType: 'OS Type',
-      osTypePlaceholder: 'Choose OS Type(s)',
-      osDescription: 'OS Description',
-      osDescriptionPlaceholder: 'Choose OS Description(s)',
-      applyPolicy: 'Apply Policy',
-      applyPolicyOptional: '(Optional)',
-      policy: 'Policy',
-      policyPlaceholder: 'Choose a policy',
-      saveFailure: 'A problem occurred while trying to save the group.',
-      saveSuccess: 'The group has been saved successfully.'
-    },
     policies: {
       title: 'Policies',
       list: {
@@ -3688,6 +3666,10 @@ export default {
       defineGroup: 'Define Group',
       // apply-policy-step
       applyPolicy: 'Apply Policy(ies)',
+      applyPolicyTitle: 'Apply Policy',
+      applyPolicyOptional: '(Optional)',
+      policyPlaceholder: 'Choose a policy',
+
       // review-group-step
       reviewGroup: 'Review',
       // common toolbar
@@ -3696,6 +3678,8 @@ export default {
       publishGroup: 'Publish Group',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
+      saveFailure: 'A problem occurred while trying to save the group.',
+      saveSuccess: 'The group has been saved successfully.',
       savePublishFailure: 'A problem occurred while trying to save and publish the group.',
       savePublishSuccess: 'The group has been saved and published successfully.'
     },

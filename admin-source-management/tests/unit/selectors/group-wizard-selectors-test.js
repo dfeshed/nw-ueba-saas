@@ -13,7 +13,9 @@ import {
   // TODO when implemented isApplyPolicyStepvalid,
   // TODO when implemented isReviewGroupStepvalid,
   // TODO when implemented isWizardValid
-  isGroupLoading
+  isGroupLoading,
+  policyList,
+  selectedPolicy
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -72,6 +74,66 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     };
     nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & visited) returned value from the nameValidator selector is as expected');
+
+    // nameExists
+    nameExpected = 'existingName';
+    visitedExpected = ['group.name'];
+    const groupListPayload = [
+      {
+        id: 'group_000',
+        name: 'existingName',
+        description: '',
+        createdOn: 1523655354337,
+        lastModifiedOn: 1523655354337,
+        lastPublishedOn: 1523655354337,
+        dirty: false
+      }
+    ];
+
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizName(nameExpected)
+      .groupWizVisited(visitedExpected)
+      .groupWizGroupList(groupListPayload)
+      .build();
+    nameValidatorExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.groupWizard.nameExists'
+    };
+    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExists) returned value from the nameValidator selector is as expected');
+
+    // nameExists for self check
+    nameExpected = 'existingName';
+    const idExpected = 'group_000';
+    visitedExpected = ['group.name'];
+    const groupListPayload2 = [
+      {
+        id: 'group_000',
+        name: 'existingName',
+        description: '',
+        createdOn: 1523655354337,
+        lastModifiedOn: 1523655354337,
+        lastPublishedOn: 1523655354337,
+        dirty: false
+      }
+    ];
+
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizId(idExpected)
+      .groupWizName(nameExpected)
+      .groupWizVisited(visitedExpected)
+      .groupWizGroupList(groupListPayload2)
+      .build();
+    nameValidatorExpected = {
+      isError: false,
+      showError: false,
+      errorMessage: ''
+    };
+    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExists) returned value from the nameValidator selector is as expected');
 
     // no error & visited
     nameExpected = 'test name';
@@ -263,6 +325,115 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     isGroupLoadingExpected = false;
     isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is false when groupStatus is complete');
+  });
+
+  const policyListPayload = [
+    {
+      id: '__default_edr_policy',
+      name: 'Default EDR Policy',
+      policyType: 'edrPolicy',
+      description: 'Default EDR Policy __default_edr_policy',
+      lastPublishedOn: 1527489158739,
+      dirty: false
+    },
+    {
+      id: 'policy_001',
+      name: 'Policy 001',
+      policyType: 'edrPolicy',
+      description: 'EMC 001 of policy policy_001',
+      lastPublishedOn: 1527489158739,
+      dirty: true
+    },
+    {
+      id: 'policy_002',
+      name: 'Policy 002',
+      policyType: 'edrPolicy',
+      description: 'EMC Reston 012 of policy policy_012',
+      lastPublishedOn: 0,
+      dirty: true
+    },
+    {
+      id: 'policy_003',
+      name: 'Policy 003',
+      policyType: 'WindowsPolicy',
+      description: 'EMC Reston 012 of policy policy_012',
+      lastPublishedOn: 0,
+      dirty: true
+    }
+  ];
+
+  const groupPayload1 = {
+    'id': 'group_001',
+    'name': 'Zebra 001',
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'Policy 001'
+      }
+    }
+  };
+
+  // const groupPayload2 = {
+  //   'id': 'group_001',
+  //   'name': 'Zebra 001',
+  //   'assignedPolicies': {
+  //     'edrPolicy': {
+  //       'referenceId': 'policy_001',
+  //       'name': 'EMC 001'
+  //     },
+  //     'windowsPolicy': {
+  //       'referenceId': 'policy_003',
+  //       'name': 'Policy 003'
+  //     }
+  //   }
+  // };
+
+  test('policyList selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload1)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyListSelected = policyList(Immutable.from(fullState));
+    assert.deepEqual(policyListSelected, policyListPayload, 'The returned value from the policies selector is as expected');
+  });
+
+  test('selectedPolicy selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload1)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyListSelected = selectedPolicy(Immutable.from(fullState));
+    assert.deepEqual(policyListSelected, policyListPayload[1], 'The selectedPolicy selector value is as expected for single value');
+
+    // MULTIPLE NOT IN PLACE YET
+    // const expectedMultipleValues = [
+    //   {
+    //     id: 'policy_001',
+    //     name: 'Policy 001',
+    //     policyType: 'edrPolicy',
+    //     description: 'EMC 001 of policy policy_001',
+    //     lastPublishedOn: 1527489158739,
+    //     dirty: true
+    //   },
+    //   {
+    //     id: 'policy_003',
+    //     name: 'Policy 003',
+    //     policyType: 'WindowsPolicy',
+    //     description: 'EMC Reston 012 of policy policy_012',
+    //     lastPublishedOn: 0,
+    //     dirty: true
+    //   }
+    // ];
+
+    // fullState = new ReduxDataHelper()
+    //   .groupWiz()
+    //   .groupWizGroup(groupPayload2)
+    //   .groupWizPolicyList(policyListPayload)
+    //   .build();
+    // policyListSelected = selectedPolicy(Immutable.from(fullState));
+    // assert.deepEqual(policyListSelected, expectedMultipleValues, 'The selectedPolicy selector value is as expected for multiple values');
   });
 
 });

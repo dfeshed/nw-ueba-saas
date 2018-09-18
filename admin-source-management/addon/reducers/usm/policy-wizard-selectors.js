@@ -1,54 +1,25 @@
 import reselect from 'reselect';
-import { isBlank, isPresent } from '@ember/utils';
+import { isBlank } from '@ember/utils';
 import _ from 'lodash';
 import moment from 'moment';
-import { exceedsLength } from './util/selector-helpers';
 import {
   RADIO_BUTTONS_CONFIG,
   ALL_RADIO_OPTIONS
 } from 'admin-source-management/utils/settings';
+import { exceedsLength, isNameInList } from './util/selector-helpers';
 
 const { createSelector } = reselect;
 
-const policyWizardState = (state) => state.usm.policyWizard;
-
-const isExistingName = (name) => {
-  if (isPresent(name)) {
-    // This will be added when backend api is in master. Separate PR
-    // return isPresent(policySummaries) && !!policySummaries.findBy('name', name);
-    return false;
-  }
-};
-
-/**
- * the policy object to be created/updated/saved
- * @public
- */
-export const policy = createSelector(
-  policyWizardState,
-  (policyWizardState) => policyWizardState.policy
-);
+const _policyWizardState = (state) => state.usm.policyWizard;
+export const policy = (state) => _policyWizardState(state).policy;
+export const policyList = (state) => _policyWizardState(state).policyList;
+export const visited = (state) => _policyWizardState(state).visited;
+export const steps = (state) => _policyWizardState(state).steps;
+export const sourceTypes = (state) => _policyWizardState(state).sourceTypes;
 
 export const isPolicyLoading = createSelector(
-  policyWizardState,
+  _policyWizardState,
   (policyWizardState) => policyWizardState.policyStatus === 'wait'
-);
-/**
- * form fields visited by the user
- * @public
- */
-export const visited = createSelector(
-  policyWizardState,
-  (policyWizardState) => policyWizardState.visited
-);
-
-/**
- * all available policy sourceType objects
- * @public
- */
-export const sourceTypes = createSelector(
-  policyWizardState,
-  (policyWizardState) => policyWizardState.sourceTypes
 );
 
 /**
@@ -201,8 +172,8 @@ export const cpuMaxVm = createSelector(
  * @public
  */
 export const nameValidator = createSelector(
-  policy, visited,
-  (policy, visited) => {
+  policyList, policy, visited,
+  (policyList, policy, visited) => {
     let error = false;
     let enableMessage = false;
     let message = '';
@@ -217,7 +188,7 @@ export const nameValidator = createSelector(
       error = true;
       enableMessage = true;
       message = 'adminUsm.policyWizard.nameExceedsMaxLength';
-    } else if (isExistingName(policy.name)) {
+    } else if (isNameInList(policyList, policy.id, policy.name)) {
       error = true;
       enableMessage = true;
       message = 'adminUsm.policyWizard.nameExists';
@@ -252,11 +223,6 @@ export const descriptionValidator = createSelector(
       errorMessage: message
     };
   }
-);
-
-export const steps = createSelector(
-  policyWizardState,
-  (policyWizardState) => policyWizardState.steps
 );
 
 export const isIdentifyPolicyStepValid = createSelector(

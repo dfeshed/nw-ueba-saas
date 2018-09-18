@@ -13,13 +13,21 @@ export default [
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
-        'name': 'My Edr Policy'
+        'name': 'EMC 001'
       }
     },
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'osType',
+          'IN',
+          [
+            'Linux'
+          ]
+        ]
+      ]
+    }
   },
   {
     id: 'group_002',
@@ -33,10 +41,7 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {}
   },
   {
     'id': 'group_003',
@@ -50,10 +55,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_004',
@@ -67,10 +74,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_005',
@@ -84,10 +93,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_006',
@@ -101,10 +112,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_007',
@@ -118,10 +131,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_008',
@@ -135,10 +150,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_009',
@@ -152,10 +169,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_010',
@@ -169,10 +188,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_011',
@@ -191,10 +212,12 @@ export default [
         'name': 'policy_02'
       }
     },
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_012',
@@ -214,9 +237,12 @@ export default [
         'name': 'EDR Policy 001'
       }
     },
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_013',
@@ -230,10 +256,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   },
   {
     'id': 'group_014',
@@ -247,10 +275,12 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
+    'groupCriteria': {
+      'conjunction': 'AND',
+      'criteria': [
+        ['osType', 'IN', []]
+      ]
+    }
   }
 
 ];

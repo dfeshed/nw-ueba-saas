@@ -3,8 +3,8 @@
     {{rsa-form-input 
       class='group-name'
       tabIndex='1'
-      label=(t 'adminUsm.group.name')
-      placeholder=(t 'adminUsm.group.namePlaceholder')
+      label=(t 'adminUsm.groupWizard.name')
+      placeholder=(t 'adminUsm.groupWizard.namePlaceholder')
       value=(readonly group.name)
       maxLength=256
       isError=nameValidator.showError
@@ -17,8 +17,8 @@
       {{rsa-form-textarea 
         class='group-description'
         tabIndex='2'
-        label=(t 'adminUsm.group.description')
-        placeholder=(t 'adminUsm.group.descPlaceholder')
+        label=(t 'adminUsm.groupWizard.description')
+        placeholder=(t 'adminUsm.groupWizard.descPlaceholder')
         value=(readonly group.description)
         maxLength=8000
         isError=descriptionValidator.showError

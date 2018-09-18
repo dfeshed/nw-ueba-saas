@@ -188,6 +188,11 @@ export default class DataHelper {
     return this;
   }
 
+  groupWizId(id) {
+    _set(this.state, 'usm.groupWizard.group.id', id);
+    return this;
+  }
+
   groupWizName(name) {
     _set(this.state, 'usm.groupWizard.group.name', name);
     return this;
@@ -220,6 +225,21 @@ export default class DataHelper {
 
   groupWizGroupListStatus(status) {
     _set(this.state, 'usm.groupWizard.groupListStatus', status);
+    return this;
+  }
+
+  groupWizPolicyList(policyList) {
+    _set(this.state, 'usm.groupWizard.policyList', policyList);
+    return this;
+  }
+
+  groupWizPolicyListStatus(status) {
+    _set(this.state, 'usm.groupWizard.policyListStatus', status);
+    return this;
+  }
+
+  groupWizAssignedPolicies(policies) {
+    _set(this.state, 'usm.groupWizard.group.assignedPolicies', policies);
     return this;
   }
 

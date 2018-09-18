@@ -1,1 +1,18 @@
-apply-policy-step
+<vbox>
+  <span style="color:Tomato;"><br>TEMPORARY LOGIC TO ASSIGN AN EDR POLICY FOR END-TO-END TESTING (Sprint 3)<br><br></span>
+  <label class="control-label">{{t 'adminUsm.groupWizard.applyPolicyTitle'}}
+    <span class="apply-policy-optional">{{t 'adminUsm.groupWizard.applyPolicyOptional'}}</span>
+  </label>
+  <hbox class="control policy-assignment">
+    <label class="rsa-form-label power-select">
+      {{#power-select
+        placeholder=(t 'adminUsm.groupWizard.policyPlaceholder')
+        options=policyList
+        selected=selectedPolicy
+        searchField='name'
+        onchange=(action 'handlePolicyAssignment') as |option|}}
+          {{option.name}}
+      {{/power-select}}
+    </label>
+  </hbox>
+</vbox>

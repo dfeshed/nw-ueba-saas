@@ -1,0 +1,37 @@
+.usm-group-wizard {
+  
+  .apply-policy-step {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+
+    .control-label {
+      margin-top: rsa-whitespace(more);
+      @include rsa-font(header);
+    }
+  
+    .control {
+      flex: none;
+      padding-bottom: rsa-whitespace(more);
+      > label {
+        width: 45%;
+        margin-bottom: rsa-whitespace(least);
+      }
+    }
+
+    .control-with-error {
+      flex: none;
+      > label {
+        width: 45%;
+        margin-bottom: rsa-whitespace(least);
+      }
+    }
+
+    .control-input-error {
+      @include rsa-font(paragraph, small);
+      color: text-color(primary, lightest);
+      padding-left: rsa-whitespace(less);
+      padding-bottom: rsa-whitespace(more);
+    }
+    
+  }
+  
+}

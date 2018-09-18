@@ -4,26 +4,17 @@ import { isPresent } from '@ember/utils';
 const { createSelector } = reselect;
 
 const _policiesState = (state) => state.usm.policies;
-const _allItems = (state) => state.usm.policies.items;
-const _selectedItems = (state) => state.usm.policies.itemsSelected;
-
-export const policies = createSelector(
-  _allItems,
-  (_allItems) => _allItems
-);
+export const policies = (state) => state.usm.policies.items;
+export const selectedPolicies = (state) => state.usm.policies.itemsSelected;
+export const focusedPolicy = (state) => state.usm.policies.focusedItem;
 
 export const isPoliciesLoading = createSelector(
   _policiesState,
   (_policiesState) => _policiesState.itemsStatus === 'wait'
 );
 
-export const focusedPolicy = createSelector(
-  _policiesState,
-  (_policiesState) => _policiesState.focusedItem
-);
-
 export const selectedEditItem = createSelector(
-  _selectedItems,
+  selectedPolicies,
   (items) => {
     if (isPresent(items) && items.length == 1) {
       const [item] = items;
@@ -42,7 +33,7 @@ export const hasSelectedEditItem = createSelector(
 );
 
 export const selectedDeleteItems = createSelector(
-  _selectedItems, _allItems,
+  selectedPolicies, policies,
   (items, all) => {
     if (items && all) {
       return items.filter((selected) => !all.findBy('id', selected).defaultPolicy);
@@ -60,7 +51,7 @@ export const hasSelectedDeleteItems = createSelector(
 );
 
 export const selectedPublishItems = createSelector(
-  _selectedItems, _allItems,
+  selectedPolicies, policies,
   (items, all) => {
     if (items && all) {
       return items.filter((selected) => all.findBy('id', selected).dirty);

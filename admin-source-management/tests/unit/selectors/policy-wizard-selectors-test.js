@@ -364,6 +364,35 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & visited) returned value from the nameValidator selector is as expected');
 
+    // nameExists
+    nameExpected = 'existingName';
+    visitedExpected = ['policy.name'];
+    const policyListPayload = [
+      {
+        id: 'policy_000',
+        name: 'existingName',
+        description: '',
+        createdOn: 1523655354337,
+        lastModifiedOn: 1523655354337,
+        lastPublishedOn: 1523655354337,
+        dirty: false
+      }
+    ];
+
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .policyWizPolicyList(policyListPayload)
+      .build();
+    nameValidatorExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.nameExists'
+    };
+    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExists) returned value from the nameValidator selector is as expected');
+
     // no error & visited
     nameExpected = 'test name';
     visitedExpected = ['policy.name'];

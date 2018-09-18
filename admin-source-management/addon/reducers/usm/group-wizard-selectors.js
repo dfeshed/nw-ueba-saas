@@ -1,22 +1,17 @@
 import reselect from 'reselect';
-import { isBlank, isPresent } from '@ember/utils';
-import { exceedsLength } from './util/selector-helpers';
+import { isBlank } from '@ember/utils';
+import { exceedsLength, isNameInList } from './util/selector-helpers';
 
 const { createSelector } = reselect;
 
 const _groupWizardState = (state) => state.usm.groupWizard;
 export const group = (state) => _groupWizardState(state).group;
-export const groupCriteria = (state) => _groupWizardState(state).group.groupCriteria.criteria;
+export const groupList = (state) => _groupWizardState(state).groupList;
+export const policyList = (state) => _groupWizardState(state).policyList;
 export const visited = (state) => _groupWizardState(state).visited;
 export const steps = (state) => _groupWizardState(state).steps;
+export const groupCriteria = (state) => _groupWizardState(state).group.groupCriteria.criteria;
 export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
-const isExistingName = (name) => {
-  if (isPresent(name)) {
-    // This will be added when backend api is in master. Separate PR
-    // return isPresent(groupSummaries) && !!groupSummaries.findBy('name', name);
-    return false;
-  }
-};
 
 export const isGroupLoading = createSelector(
   _groupWizardState,
@@ -26,21 +21,14 @@ export const isGroupLoading = createSelector(
   }
 );
 
-export const hasMissingRequiredData = createSelector(
-  group,
-  (group) => {
-    return isBlank(group.name);
-  }
-);
-
 /**
  * returns a name validator object with values set for
  * - isError, errorMessage, isVisited
  * @public
  */
 export const nameValidator = createSelector(
-  group, visited,
-  (group, visited) => {
+  groupList, group, visited,
+  (groupList, group, visited) => {
     let error = false;
     let enableMessage = false;
     let message = '';
@@ -55,7 +43,7 @@ export const nameValidator = createSelector(
       error = true;
       enableMessage = true;
       message = 'adminUsm.groupWizard.nameExceedsMaxLength';
-    } else if (isExistingName(group.name)) {
+    } else if (isNameInList(groupList, group.id, group.name)) {
       error = true;
       enableMessage = true;
       message = 'adminUsm.groupWizard.nameExists';
@@ -92,31 +80,26 @@ export const descriptionValidator = createSelector(
   }
 );
 
-/**
- * we need the selected policy object, but group.policy has a map of { 'type': 'policyID' } ( ex. { 'edrPolicy': 'id_abc123' } ),
- * so we'll find the policy object by the type:ID map for the selected policy
- * @public
- */
-// export const selectedPolicy = createSelector(
-//   group, policies,
-//   (group, policies) => {
-//     let selected = null;
-//     if (group.assignedPolicies) {
-//       for (let p = 0; p < policies.length; p++) {
-//         const policy = policies[p];
-//         if (group.assignedPolicies.hasOwnProperty(policy.policyType) &&
-//             group.assignedPolicies[policy.policyType]) {
-//           const groupPolicyId = group.assignedPolicies[policy.policyType].referenceId;
-//           if (policy.id === groupPolicyId) {
-//             selected = policy;
-//             break;
-//           }
-//         }
-//       }
-//     }
-//     return selected;
-//   }
-// );
+export const selectedPolicy = createSelector(
+  group, policyList,
+  (group, policyList) => {
+    let selected = null;
+    if (group.assignedPolicies) {
+      for (let p = 0; p < policyList.length; p++) {
+        const policy = policyList[p];
+        if (group.assignedPolicies.hasOwnProperty(policy.policyType) &&
+            group.assignedPolicies[policy.policyType]) {
+          const groupPolicyId = group.assignedPolicies[policy.policyType].referenceId;
+          if (policy.id === groupPolicyId) {
+            selected = policy;
+            break;
+          }
+        }
+      }
+    }
+    return selected;
+  }
+);
 
 export const isIdentifyGroupStepValid = createSelector(
   nameValidator, descriptionValidator,

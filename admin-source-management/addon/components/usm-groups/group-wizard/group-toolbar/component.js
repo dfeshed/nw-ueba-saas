@@ -62,8 +62,8 @@ const GroupWizardToolbar = Component.extend(Notifications, {
       this.get('transitionToStep')(this.get('step').nextStepId);
     },  // save changes to the group
     save(publish) {
-      let successMessage = 'adminUsm.group.saveSuccess';
-      let failureMessage = 'adminUsm.group.saveFailure';
+      let successMessage = 'adminUsm.groupWizard.saveSuccess';
+      let failureMessage = 'adminUsm.groupWizard.saveFailure';
       let dispatchAction = 'saveGroup';
 
       if (publish) {
