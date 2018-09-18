@@ -2713,7 +2713,7 @@ export default {
           groups: {
             name: 'Agent Groups'
           },
-          policyStatus: 'Group Policy Status'
+          policyStatus: 'Policy Status'
         },
         machine: {
           machineOsType: 'Operating System',

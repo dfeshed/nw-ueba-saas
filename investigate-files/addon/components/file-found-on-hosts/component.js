@@ -7,7 +7,8 @@ import { getAllServices, fetchAgentId } from 'investigate-files/actions/data-cre
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   itemList: state.files.fileList.selectedFileList,
-  items: hostList(state)
+  items: hostList(state),
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {
@@ -44,7 +45,8 @@ const fileHosts = Component.extend({
 
     openHost(item) {
       this.send('fetchAgentId', item, ([data]) => {
-        window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW`);
+        const serverId = this.get('serverId');
+        window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
       });
     }
   }
