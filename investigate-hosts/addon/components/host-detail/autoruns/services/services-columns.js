@@ -34,8 +34,7 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE',
-      width: '10%'
+      format: 'DATE'
     }
   ],
   windows: [
@@ -52,8 +51,7 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE',
-      width: '15%'
+      format: 'DATE'
     }
   ],
   linux: [
@@ -70,8 +68,7 @@ let columnsConfig = {
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      width: '15%',
-      format: 'DATE'
+      width: '15%'
     },
     {
       field: 'type',

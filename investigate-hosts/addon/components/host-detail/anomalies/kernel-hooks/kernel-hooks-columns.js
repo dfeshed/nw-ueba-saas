@@ -4,12 +4,12 @@ export default {
   windows: [{
     field: 'type',
     title: 'type',
-    width: '15%'
+    width: 100
   },
   {
     field: 'driverFileName',
     title: 'driverFileName',
-    width: '20%'
+    width: 100
   },
   {
     field: 'fileProperties.score',
@@ -19,13 +19,13 @@ export default {
   {
     field: 'fileProperties.reputationStatus',
     title: 'reputationStatus',
-    width: '10%'
+    width: 100
   },
   {
     field: 'signature',
     title: 'signature',
     format: 'SIGNATURE',
-    width: '15%'
+    width: 100
   },
   {
     field: 'objectFunction',
@@ -34,7 +34,6 @@ export default {
   },
   {
     field: 'hookedFileName',
-    title: 'hookedFileName',
-    width: '15%'
+    title: 'hookedFileName'
   }]
 };

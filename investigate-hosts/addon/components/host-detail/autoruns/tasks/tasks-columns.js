@@ -10,13 +10,11 @@ const defaultColumns = [
   },
   {
     field: 'fileName',
-    title: 'NAME',
-    width: '15%'
+    title: 'NAME'
   },
   {
     field: 'checksumSha256',
-    title: 'HASH',
-    width: '10%'
+    title: 'HASH'
   },
   {
     field: 'fileProperties.fileStatus',
@@ -28,32 +26,31 @@ let columnsConfig = {
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      width: '10%'
+      width: '15%'
     }
   ],
   windows: [
     {
       field: 'lastRunTime',
       title: 'Last Run Time',
-      format: 'DATE',
-      width: '15%'
+      format: 'DATE'
     },
     {
       field: 'nextRunTime',
       title: 'Next Run Time',
-      format: 'DATE',
-      width: '15%'
+      format: 'DATE'
     },
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      width: '10%'
+      width: '15%'
     }
   ],
   linux: [
     {
       field: 'triggerString',
-      title: 'TRIGGER'
+      title: 'TRIGGER',
+      width: '15%'
     }
   ]
 };

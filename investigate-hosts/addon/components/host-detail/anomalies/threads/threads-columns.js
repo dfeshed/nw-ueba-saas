@@ -4,12 +4,12 @@ export default {
   windows: [{
     field: 'startAddress',
     title: 'startAddress',
-    width: '10%'
+    width: 100
   },
   {
     field: 'fileName',
     title: 'dllFileName',
-    width: '15%'
+    width: 100
   },
   {
     field: 'fileProperties.score',
@@ -19,27 +19,26 @@ export default {
   {
     field: 'fileProperties.reputationStatus',
     title: 'reputationStatus',
-    width: '10%'
+    width: 100
   },
   {
     field: 'process',
     title: 'process',
-    width: '20%'
+    width: 100
   },
   {
     field: 'signature',
     title: 'signature',
     format: 'SIGNATURE',
-    width: '10%'
+    width: 100
   },
   {
     field: 'tid',
     title: 'tid',
-    width: '5%'
+    width: '15%'
   },
   {
     field: 'teb',
-    title: 'teb',
-    width: '23%'
+    title: 'teb'
   }]
 };

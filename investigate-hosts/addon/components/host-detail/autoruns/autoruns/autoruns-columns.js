@@ -24,29 +24,27 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.fileStatus',
-    title: 'File Status'
+    title: 'File Status',
+    width: '15%'
   }
 ];
 let columnsConfig = {
   mac: [
     {
       field: 'path',
-      title: 'Path',
-      width: '80%'
+      title: 'Path'
     }
   ],
   windows: [
     {
       field: 'registryPath',
-      title: 'REGISTRY PATH',
-      width: '80%'
+      title: 'REGISTRY PATH'
     }
   ],
   linux: [
     {
       field: 'path',
-      title: 'Path',
-      width: '80%'
+      title: 'Path'
     }
   ]
 };

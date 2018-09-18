@@ -19,6 +19,20 @@
 }
 .host-detail-wrapper {
   background-color: $host-detail-background;
+
+  .rsa-data-table-header-cell:first-child {
+    padding-left: 0.5rem;
+  }
+  .rsa-data-table-body-row{
+    left: 0;
+    width: fit-content;
+    min-width: 98%;
+    > span {
+      min-width: 98%;
+      width: fit-content;
+      display: inline-block;
+    }
+  }
   .rsa-content-definition {
     .label {
       @include rsa-font(header, small);
