@@ -1,20 +1,10 @@
 {{#if hostDetails }}
   {{#rsa-page-layout as |layout|}}
     {{#layout.center}}
-      <hbox class="trends-chart">
-        {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
-          {{rsa-icon name='layout-2'}}
-        {{/rsa-form-button}}
-      </hbox>
-      <hbox class="host-detail-box scroll-box">
-        <box class="alerts">
-          {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab}}
-        </box>
-        <box>
-          Events
-        </box>
-      </hbox>
-
+      {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
+        {{rsa-icon name='layout-2'}}
+      {{/rsa-form-button}}
+      {{host-detail/overview/summary}}
     {{/layout.center}}
     {{#layout.right as |right|}}
       {{right.header}}
