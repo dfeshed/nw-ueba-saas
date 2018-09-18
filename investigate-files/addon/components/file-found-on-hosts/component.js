@@ -8,7 +8,8 @@ const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   itemList: state.files.fileList.selectedFileList,
   items: hostList(state),
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  isHostListLoading: state.files.fileList.fetchMetaValueLoading
 });
 
 const dispatchToActions = {

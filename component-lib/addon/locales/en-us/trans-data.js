@@ -1999,7 +1999,8 @@ export default {
       cancel: 'Cancel'
     },
     message: {
-      noResultsMessage: 'No matching files were found'
+      noResultsMessage: 'No matching files were found',
+      noResultsFoundMessage: 'No results found'
     },
     errorPage: {
       serviceDown: 'Endpoint Server is offline',

@@ -366,7 +366,7 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
         if (description === 'Queued' || (description === 'Executing' || percent < 100 && payload.length === 0)) {
           return;
         } else {
-          if (response.data && response.data.length) {
+          if (response.data) {
             dispatch({ type: ACTION_TYPES.META_VALUE_COMPLETE });
             onComplete(response.data);
           }

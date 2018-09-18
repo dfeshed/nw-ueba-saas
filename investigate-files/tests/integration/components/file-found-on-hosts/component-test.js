@@ -65,4 +65,18 @@ module('Integration | Component | file found on machines', function(hooks) {
     await waitUntil(() => !this.owner.lookup('service:redux').getState().files.fileList.fetchMetaValueLoading, { timeout: Infinity });
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
   });
+
+  test('when file, is not active on any host', async function(assert) {
+    await render(hbs`{{file-found-on-hosts}}`);
+    assert.equal(findAll('.files-host-list .rsa-panel-message .message')[0].textContent.trim(), 'No results found', 'No result message, when file is not found on any host.');
+  });
+
+  test('loader icon when list is loading', async function(assert) {
+    new ReduxDataHelper(initState)
+      .fetchMetaValueLoading(true)
+      .hostNameList(hosts)
+      .build();
+    await render(hbs`{{file-found-on-hosts}}`);
+    assert.equal(findAll('.rsa-loader').length, 1, 'loader icon is present.');
+  });
 });

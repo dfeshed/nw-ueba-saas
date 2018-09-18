@@ -1,19 +1,30 @@
 <vbox class='files-host-list'>
-  {{#each items as |item|}}
-    <div class='host_details_link'>
-      <a class='host_list_content navigate_host_details' href="#" target="_blank" {{action "openHost" item}}> {{item}} </a>
-    </div>
-    <span class='host_list_content divider'></span>
-      {{endpoint/pivot-to-investigate
-        itemList=itemList
-        metaName=metaName
-        metaValue=item
-        serviceList=serviceList
-        showOnlyIcons=showOnlyIcons
-        getAllServices=getAllServices
-        disabled=false}}
-      {{#rsa-form-button isIconOnly=true}}
-        {{rsa-icon name='download-2'}}
-      {{/rsa-form-button}}
-  {{/each}}
+  {{#if isHostListLoading}}
+    <centered class='loader_icon'>
+      {{rsa-loader size='large'}}
+    </centered>
+  {{else}}
+    {{#if items}}
+      {{#each items as |item|}}
+        <div class='host_details_link'>
+          <a class='host_list_content navigate_host_details' href="#" target="_blank" {{action "openHost" item}}> {{item}} </a>
+        </div>
+        <span class='host_list_content divider'></span>
+        {{endpoint/pivot-to-investigate
+          itemList=itemList
+          metaName=metaName
+          metaValue=item
+          serviceList=serviceList
+          showOnlyIcons=showOnlyIcons
+          getAllServices=getAllServices
+          disabled=false}}
+        {{#rsa-form-button isIconOnly=true}}
+          {{rsa-icon name='download-2'}}
+        {{/rsa-form-button}}
+      {{/each}}
+    {{else}}
+      {{rsa-panel-message message=(t 'investigateFiles.message.noResultsFoundMessage') messageType='no-results-message'}}
+    {{/if}}
+  {{/if}}
+
 </vbox>
