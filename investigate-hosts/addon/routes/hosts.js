@@ -36,6 +36,14 @@ export default Route.extend({
     },
     tabName: {
       refreshModel: true
+    },
+    /**
+     * selected serviceId for multi-server endpoint server
+     * @type {string}
+     * @public
+     */
+    sid: {
+      refreshModel: true
     }
   },
 
@@ -52,12 +60,14 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     const { serverId } = redux.getState().endpointQuery;
+    const { sid } = params;
     const request = lookup('service:request');
     run.next(() => {
-      if (!serverId) {
+      // refreshing host details page or routing using url
+      if (!sid && !serverId) {
         redux.dispatch(getEndpointServers());
       } else {
-        request.registerPersistentStreamOptions({ socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' });
+        request.registerPersistentStreamOptions({ socketUrlPostfix: serverId || sid, requiredSocketUrl: 'endpoint/socket' });
         return request.ping('endpoint-server-ping')
         .then(() => {
           const { machineId, tabName = 'OVERVIEW' } = params;
@@ -67,9 +77,7 @@ export default Route.extend({
             this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
           }
           redux.dispatch(isEndpointServerOffline(false));
-          run.next(() => {
-            redux.dispatch(initializeHostPage(params));
-          });
+          redux.dispatch(initializeHostPage(params));
         })
         .catch(function() {
           redux.dispatch(isEndpointServerOffline(true));

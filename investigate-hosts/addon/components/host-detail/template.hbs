@@ -1,12 +1,18 @@
-{{host-detail/header}}
-<box class="host-detail-wrapper">
-  {{#if showSnapshotEmptyMessage}}
-    {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
-  {{else if hostDetailsLoading}}
-    <centered>
-      {{rsa-loader size='larger'}}
-    </centered>
-  {{else}}
-    {{component selectedTabComponent}}
-  {{/if}}
-</box>
+{{#if isEndpointServerOnline}}
+  {{host-detail/header}}
+  <box class="host-detail-wrapper">
+    {{#if showSnapshotEmptyMessage}}
+      {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
+    {{else if hostDetailsLoading}}
+      <centered>
+        {{rsa-loader size='larger'}}
+      </centered>
+    {{else}}
+      {{component selectedTabComponent}}
+    {{/if}}
+  </box>
+{{else}}
+  {{error-page
+    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
+    title=(t 'investigateFiles.errorPage.serviceDown')}}
+{{/if}}

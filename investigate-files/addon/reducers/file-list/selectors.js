@@ -28,6 +28,7 @@ const _activeDataSourceTab = (state) => state.files.fileList.activeDataSourceTab
 const _selectedFileList = (state) => state.files.fileList.selectedFileList || [];
 const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileStatusHistory || [];
 const _hostList = (state) => state.files.fileList.hostNameList;
+const _serverId = (state) => state.endpointQuery.serverId;
 
 export const fileCount = createSelector(
   files,
@@ -44,9 +45,12 @@ export const hasFiles = createSelector(
 );
 
 export const fileExportLink = createSelector(
-  _fileExportLinkId,
-  (fileExportLinkId) => {
+  [ _fileExportLinkId, _serverId ],
+  (fileExportLinkId, serverId) => {
     if (fileExportLinkId) {
+      if (serverId) {
+        return `${location.origin}/rsa/endpoint/${serverId}/file/property/download?id=${fileExportLinkId}`;
+      }
       return `${location.origin}/rsa/endpoint/file/property/download?id=${fileExportLinkId}`;
     }
     return null;

@@ -66,3 +66,24 @@ test('no snapshot message for OVERVIEW and SYSTEM tab', function(assert) {
   this.render(hbs`{{host-detail}}`);
   assert.equal(this.$('.rsa-panel-message').length, 0, 'no message panel is rendered');
 });
+
+test('it renders error page when endpointserver is offline', function(assert) {
+  new ReduxDataHelper(setState)
+  .isEndpointServerOffline(true)
+  .build();
+  this.render(hbs`{{host-detail}}`);
+  assert.equal(this.$('.host-header').length, 0, 'host detail is not rendered');
+  assert.equal(this.$('.error-page').length, 1, 'endpoint server is offline');
+});
+
+test('it renders host detail when endpointserver is online', function(assert) {
+  new ReduxDataHelper(setState)
+    .hostDetailsLoading(false)
+    .isSnapshotsAvailable(false)
+    .selectedTabComponent('OVERVIEW')
+    .isEndpointServerOffline(false)
+    .build();
+  this.render(hbs`{{host-detail}}`);
+  assert.equal(this.$('.error-page').length, 0, 'endpoint server is online');
+  assert.equal(this.$('.host-header').length, 1, 'host detail is rendered');
+});

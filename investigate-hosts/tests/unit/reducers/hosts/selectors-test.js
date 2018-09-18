@@ -55,7 +55,8 @@ const STATE = Immutable.from({
         }
       ]
     }
-  }
+  },
+  endpointQuery: {}
 });
 test('areSomeScanning', function(assert) {
   const result = areSomeScanning(STATE);
@@ -65,6 +66,11 @@ test('areSomeScanning', function(assert) {
 test('hostExportLink', function(assert) {
   const result = hostExportLink(STATE);
   assert.equal(result, `${location.origin}/rsa/endpoint/machine/property/download?id=123`, 'should return the export link');
+});
+
+test('hostExportLink when serverId is defined', function(assert) {
+  const result = hostExportLink({ ...STATE, endpointQuery: { serverId: '1234' } });
+  assert.equal(result, `${location.origin}/rsa/endpoint/1234/machine/property/download?id=123`, 'should return the export link which includes serverId');
 });
 
 test('isAllHostSelected', function(assert) {

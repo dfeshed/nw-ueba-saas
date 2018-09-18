@@ -18,9 +18,6 @@ import {
   getListOfDevices
 } from './fetch';
 
-const downloadURL = '/rsa/endpoint/packager/download';
-const downloadURLLogConfig = '/rsa/endpoint/logconfig/download';
-
 /**
  * Action creator for fetching packager config information.
  * @method getConfig
@@ -47,7 +44,7 @@ const getConfig = () => {
  * @returns {Object}
  */
 const setConfig = (configData, configType, callback) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
       promise: setPackagerConfig(configData),
@@ -56,10 +53,20 @@ const setConfig = (configData, configType, callback) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
           const { request: { data: { packageConfig } } } = response;
           const agentMode = packageConfig && packageConfig.fullAgent ? 'Full' : 'Insights';
+          const { serverId } = getState().endpointQuery;
+          let url = '';
           if (response.data.id) {
-            let url = `${downloadURL}?id=${response.data.id}&agentMode=${agentMode}`;
+            if (serverId) {
+              url = `/rsa/endpoint/${serverId}/packager/download?id=${response.data.id}&agentMode=${agentMode}`;
+            } else {
+              url = `/rsa/endpoint/packager/download?id=${response.data.id}&agentMode=${agentMode}`;
+            }
             if (configType === 'LOG_CONFIG') {
-              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
+              if (serverId) {
+                url = `/rsa/endpoint/${serverId}/logconfig/download?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
+              } else {
+                url = `/rsa/endpoint/logconfig/download?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
+              }
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }

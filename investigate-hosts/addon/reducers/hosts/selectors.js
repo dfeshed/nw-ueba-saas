@@ -14,6 +14,7 @@ const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.de
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _totalItems = (state) => state.endpoint.machines.totalItems;
 const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
+const _serverId = (state) => state.endpointQuery.serverId;
 
 const _agentVersion = createSelector(
   [ _hostDetailId, _hostList ],
@@ -67,9 +68,12 @@ export const areSomeScanning = createSelector(
 );
 
 export const hostExportLink = createSelector(
-  _hostExportLinkId,
-  (hostExportLinkId) => {
+  [ _hostExportLinkId, _serverId ],
+  (hostExportLinkId, serverId) => {
     if (hostExportLinkId) {
+      if (serverId) {
+        return `${location.origin}/rsa/endpoint/${serverId}/machine/property/download?id=${hostExportLinkId}`;
+      }
       return `${location.origin}/rsa/endpoint/machine/property/download?id=${hostExportLinkId}`;
     }
     return null;

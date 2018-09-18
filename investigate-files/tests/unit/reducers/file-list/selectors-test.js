@@ -40,7 +40,8 @@ const STATE = Immutable.from({
       downloadId: 123,
       listOfServices: []
     }
-  }
+  },
+  endpointQuery: {}
 });
 
 test('fileExportLink', function(assert) {
@@ -212,6 +213,11 @@ test('selectedFileStatusHistory test', function(assert) {
   });
   const result = selectedFileStatusHistory(state);
   assert.equal(result.length, 2, '2 items expected');
+});
+
+test('fileExportLink when serverId is defined', function(assert) {
+  const result = fileExportLink({ ...STATE, endpointQuery: { serverId: '123' } });
+  assert.equal(result, `${location.origin}/rsa/endpoint/123/file/property/download?id=123`, 'should return the export link inlcuding serverId');
 });
 
 test('hostList test', function(assert) {

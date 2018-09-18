@@ -22,7 +22,8 @@ const stateToComputed = (state) => ({
   columns: getHostTableColumns(state),
   hostTotal: hostCountForDisplay(state), // Total number of hosts in search result
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
-  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus
+  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus,
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {
