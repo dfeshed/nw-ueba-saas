@@ -516,5 +516,67 @@ export default [
     'receivedTime': 1535051457068,
     'status': 'GROUPED_IN_INCIDENT',
     'timestamp': 1353069839000
+  },
+  {
+    'alert': {
+      'destination_country': [
+        'Unavailable'
+      ],
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '7d708f247cc6a7364b873c029bbdf459',
+      'groupby_destination_country': 'Unavailable',
+      'groupby_destination_ip': 'qaspectrum2.netwitness.local',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '10.25.51.142',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_filename': 'card.gif.exe',
+      'groupby_host_dst': '',
+      'groupby_host_src': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '10.25.51.142',
+      'groupby_source_username': '',
+      'groupby_type': 'Resubmit',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': [
+        '10.25.51.142'
+      ],
+      'name': 'Malware Found in Uploaded File(Miss secondary hit)',
+      'numEvents': 1,
+      'related_links': [
+        {
+          'type': 'investigate_malware',
+          'url': '/investigation/undefined/malware/event/3328608'
+        }
+      ],
+      'risk_score': 90.0,
+      'severity': 90.0,
+      'signature_id': 'Suspicious Event',
+      'source': 'Malware Analysis',
+      'source_country': [],
+      'timestamp': 1407801720000,
+      'type': [
+        'Resubmit'
+      ],
+      'user_summary': []
+    },
+    'errorMessage': null,
+    'id': '5b9bb59dbcde8d385474a70a',
+    'incidentCreated': 1536853112331,
+    'incidentId': 'INC-7',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1536931229901,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1407801720000
   }
 ];

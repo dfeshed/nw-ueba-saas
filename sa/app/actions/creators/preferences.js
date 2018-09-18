@@ -26,12 +26,14 @@ export function updateLocale(locale) {
   const request = lookup('service:request');
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale });
+    const requiresTransform = !['en_US', 'es_MX'].includes(locale.id);
+    const userLocale = requiresTransform ? locale.langCode : locale.id;
     return request.promiseRequest({
       method: 'setPreference',
       modelName: 'preferences',
       query: {
         data: {
-          userLocale: locale.id
+          userLocale
         }
       }
     }).catch(() => {
@@ -42,13 +44,14 @@ export function updateLocale(locale) {
   };
 }
 
-export function updateLocaleByKey(userLocale) {
+export function updateLocaleByKey(localeString) {
   return (dispatch, getState) => {
     const state = getState();
     const locale = getLocale(state);
+    const userLocale = localeString && localeString.replace(/_(.*)/, '');
     if (userLocale && locale && locale.id !== userLocale) {
       const locales = getLocales(state);
-      const localeFound = locales && locales.filter((loc) => loc.id === userLocale);
+      const localeFound = locales && locales.filter((loc) => loc.langCode === userLocale);
       if (localeFound && localeFound.length === 1) {
         dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: localeFound[0] });
       } else {

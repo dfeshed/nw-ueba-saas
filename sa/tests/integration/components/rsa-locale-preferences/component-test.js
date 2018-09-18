@@ -65,7 +65,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       assert.equal(modelName, 'preferences');
       assert.deepEqual(query, {
         data: {
-          userLocale: 'ja_JP'
+          userLocale: 'ja'
         }
       });
     });

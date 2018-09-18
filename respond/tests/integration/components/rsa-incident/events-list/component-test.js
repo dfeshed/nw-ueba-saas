@@ -19,16 +19,16 @@ module('Integration | Component | events-list', function(hooks) {
     await render(hbs`{{rsa-incident/events-list}}`);
 
     assert.equal(findAll(selectors.table).length, 1);
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericRow).length, 11);
-    assert.equal(findAll(selectors.genericMain).length, 11);
+    assert.equal(findAll(selectors.row).length, 16);
+    assert.equal(findAll(selectors.genericRow).length, 12);
+    assert.equal(findAll(selectors.genericMain).length, 12);
     assert.equal(findAll(selectors.endpointRow).length, 4);
     assert.equal(findAll(selectors.endpointMain).length, 4);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
     assert.equal(findAll(selectors.clear).length, 0);
-    assert.equal(find(selectors.count).textContent.trim(), '15');
+    assert.equal(find(selectors.count).textContent.trim(), '16');
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
@@ -37,7 +37,7 @@ module('Integration | Component | events-list', function(hooks) {
 
     await render(hbs`{{rsa-incident/events-list}}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
+    assert.equal(findAll(selectors.row).length, 16);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
 
@@ -78,7 +78,7 @@ module('Integration | Component | events-list', function(hooks) {
 
     await render(hbs`{{rsa-incident/events-list}}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
+    assert.equal(findAll(selectors.row).length, 16);
     assert.equal(findAll(selectors.loader).length, 1);
   });
 

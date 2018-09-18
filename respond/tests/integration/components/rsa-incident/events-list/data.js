@@ -541,6 +541,69 @@ const storyLineEvents = {
           status: 'GROUPED_IN_INCIDENT',
           timestamp: 1353069839000,
           storylineId: 'INC-108'
+        },
+        {
+          alert: {
+            destination_country: [
+              'Unavailable'
+            ],
+            groupby_analysis_file: '',
+            groupby_analysis_service: '',
+            groupby_analysis_session: '',
+            groupby_c2domain: '',
+            groupby_data_hash: '7d708f247cc6a7364b873c029bbdf459',
+            groupby_destination_country: 'Unavailable',
+            groupby_destination_ip: 'qaspectrum2.netwitness.local',
+            groupby_destination_port: '',
+            groupby_detector_ip: '10.25.51.142',
+            groupby_device_type: '',
+            groupby_domain: '',
+            groupby_domain_dst: '',
+            groupby_domain_src: '',
+            groupby_filename: 'card.gif.exe',
+            groupby_host_dst: '',
+            groupby_host_src: '',
+            groupby_source_country: '',
+            groupby_source_ip: '10.25.51.142',
+            groupby_source_username: '',
+            groupby_type: 'Resubmit',
+            groupby_user_dst: '',
+            groupby_user_src: '',
+            groupby_username: '',
+            host_summary: [
+              '10.25.51.142'
+            ],
+            name: 'Malware Found in Uploaded File(Miss secondary hit)',
+            numEvents: 1,
+            related_links: [
+              {
+                type: 'investigate_malware',
+                url: '/investigation/undefined/malware/event/3328608'
+              }
+            ],
+            risk_score: 90,
+            severity: 90,
+            signature_id: 'Suspicious Event',
+            source: 'Malware Analysis',
+            source_country: [],
+            timestamp: 1407801720000,
+            type: [
+              'Resubmit'
+            ],
+            user_summary: []
+          },
+          errorMessage: null,
+          id: '5b9bb59dbcde8d385474a70a',
+          incidentCreated: 1536853112331,
+          incidentId: 'INC-7',
+          originalAlert: null,
+          originalHeaders: null,
+          originalRawAlert: null,
+          partOfIncident: true,
+          receivedTime: 1536931229901,
+          status: 'GROUPED_IN_INCIDENT',
+          timestamp: 1407801720000,
+          storylineId: 'INC-108'
         }
       ],
       storylineStatus: 'completed',
@@ -1867,6 +1930,150 @@ const storyLineEvents = {
               user: '',
               indicatorId: '5b7f06c10a32bd5a68baea84',
               id: '5b7f06c10a32bd5a68baea84:0'
+            }
+          ]
+        },
+        {
+          indicatorId: '5b9bb59dbcde8d385474a70a',
+          events: [
+            {
+              communityScore: 100,
+              data: [
+                {
+                  av_aliases: {
+                    AVG: 'IRC/BackDoor.Flood',
+                    AegisLab: '',
+                    Agnitum: '',
+                    Ahnlab: '',
+                    Antiy: '',
+                    Avira: 'TR/Patched.Ren.Gen',
+                    BitDefender: '',
+                    ByteHero: '',
+                    ClamWin: '',
+                    Commtouch: 'IRC/Zapchast.AK',
+                    ESET: '',
+                    Emsisoft: '',
+                    'F-prot': '',
+                    'F-secure': '',
+                    Filseclab: '',
+                    Fortinet: 'W32/Inject.8A2F!tr',
+                    GFI: 'Trojan.Win32.Generic!BT',
+                    Hauri: '',
+                    Ikarus: 'Trojan.IRC.Zapchast',
+                    Jiangmin: '',
+                    K7: '',
+                    Kaspersky: '',
+                    Kingsoft: '',
+                    Lavasoft: 'Trojan.Script.39573',
+                    'McAfee-Gateway': 'Artemis!7D708F247CC6',
+                    Microsoft: '',
+                    NANO: 'Trojan.Script.Zapchast.yexdu',
+                    Norman: 'winpe/Script_Gen.GR',
+                    QuickHeal: '',
+                    SUPERAntiSpyware: '',
+                    Sophos: '',
+                    Symantec: '',
+                    TotalDefense: '',
+                    TrendMicro: 'Mal_Zap',
+                    TrendMicroHouseCall: 'Mal_Zap',
+                    VirIT: '',
+                    VirusBlokAda: '',
+                    'Zillya!': '',
+                    Zoner: '',
+                    nProtect: ''
+                  },
+                  av_hit: null,
+                  communityScore: 100,
+                  extension: 'exe',
+                  filename: 'card.gif.exe',
+                  hash: '7d708f247cc6a7364b873c029bbdf459',
+                  mime_type: 'application/x-dosexec',
+                  original_path: '/var/lib/rsamalware/spectrum/repository/files/7d/7d708f247cc6a7364b873c029bbdf459/card.gif.exe',
+                  sandboxScore: 18,
+                  size: 63302,
+                  staticScore: 100
+                }
+              ],
+              description: 'Malware Found in Uploaded File(Miss secondary hit)',
+              destination: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: 'Unavailable',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: 'qaspectrum2.netwitness.local',
+                  mac_address: '',
+                  netbios_name: '',
+                  port: ''
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              detected_by: '10.25.51.142',
+              detector: {
+                ip_address: '10.25.51.142'
+              },
+              event_source: '',
+              event_source_id: '0',
+              file: [
+                'card.gif.exe'
+              ],
+              networkScore: 0,
+              related_links: [
+                {
+                  type: 'investigate_malware',
+                  url: '/investigation/undefined/malware/event/3328608'
+                }
+              ],
+              sandboxScore: 18,
+              size: [
+                63302
+              ],
+              source: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.25.51.142',
+                  mac_address: '',
+                  netbios_name: '',
+                  port: ''
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              staticScore: 100,
+              timestamp: 1407801720000,
+              type: 'Resubmit',
+              indicatorId: '5b9bb59dbcde8d385474a70a',
+              id: '5b9bb59dbcde8d385474a70a:0'
             }
           ]
         }

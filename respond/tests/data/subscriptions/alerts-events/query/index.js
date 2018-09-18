@@ -5,6 +5,7 @@ import wtd from './wtd';
 import ecat from './ecat';
 import network from './network';
 import log from './log';
+import ma from './ma';
 
 export default {
   delay: 1,
@@ -21,6 +22,7 @@ export default {
     const networkOneAlertId = '5b757f480a32bd36c7609e96';
     const networkTwoAlertId = '5b757f480a32bd36c7609e97';
     const logAlertId = '5b89f97d0a32bd26fdf4507d';
+    const maAlertId = '5b9bb59dbcde8d385474a70a';
     if (filters.length > 0 && filters[0].value === uebaAlertId) {
       return {
         data: ueba
@@ -48,6 +50,10 @@ export default {
     } else if (filters.length > 0 && filters[0].value === networkOneAlertId || filters[0].value === networkTwoAlertId) {
       return {
         data: network
+      };
+    } else if (filters.length > 0 && filters[0].value === maAlertId) {
+      return {
+        data: ma
       };
     }
   }
