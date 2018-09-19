@@ -16,7 +16,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
-    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 5, 'five buttons have been rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 3, 'five buttons have been rendered.');
   });
 
   test('presence of priority buttons', async function(assert) {
@@ -29,8 +29,8 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   test('presence of buttons with icons only', async function(assert) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
-    assert.equal(findAll('.file-actionbar .watch-button')[0].classList.contains('is-icon-only'), true, 'Button is icon only.');
-    assert.equal(findAll('.file-actionbar .watch-button')[0].textContent.trim(), '', 'Icon only buttons do not have any text to display.');
+    assert.equal(findAll('.file-actionbar .download-button')[0].classList.contains('is-icon-only'), true, 'Button is icon only.');
+    assert.equal(findAll('.file-actionbar .download-button')[0].textContent.trim(), '', 'Icon only buttons do not have any text to display.');
   });
 
   test('when component is used to show only icons', async function(assert) {

@@ -45,9 +45,9 @@ const CertificateStatus = Component.extend({
     return selections && !selections.length;
   },
 
-  @computed('data.comment')
-  isSaveButtonDisabled(comment) {
-    return isEmpty(comment);
+  @computed('data.comment', 'data.certificateStatus')
+  isSaveButtonDisabled(comment, certificateStatus) {
+    return isEmpty(comment) || isEmpty(certificateStatus);
   },
 
   @computed('statusData', 'selections')
@@ -67,7 +67,7 @@ const CertificateStatus = Component.extend({
     showStatusModal() {
       const selections = this.get('selections');
       if (selections && selections.length === 1) {
-        this.send('getSavedCertificateStatus', selections);
+        this.send('getSavedCertificateStatus', selections.mapBy('thumbprint'));
       }
       this.set('showModal', true);
     },

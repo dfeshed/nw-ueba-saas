@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { next } from '@ember/runloop';
 import { serviceList, hostList } from 'investigate-files/reducers/file-list/selectors';
 import { getAllServices, fetchAgentId } from 'investigate-files/actions/data-creators';
 
@@ -31,23 +30,21 @@ const fileHosts = Component.extend({
 
   init() {
     this._super(arguments);
-    next(() => {
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.send('getAllServices');
-      }
-    });
   },
 
   actions: {
 
     pivotToInvestigate() {
+      this.send('getAllServices');
       this.set('showServiceModal', true);
     },
 
     openHost(item) {
       this.send('fetchAgentId', item, ([data]) => {
-        const serverId = this.get('serverId');
-        window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
+        if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+          const serverId = this.get('serverId');
+          window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
+        }
       });
     }
   }

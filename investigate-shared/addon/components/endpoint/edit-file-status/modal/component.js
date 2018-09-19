@@ -47,9 +47,9 @@ export default Component.extend({
     }
   },
 
-  @computed('data.comment')
-  isSaveButtonDisabled(comment) {
-    return isEmpty(comment);
+  @computed('data.comment', 'data.fileStatus')
+  isSaveButtonDisabled(comment, fileStatus) {
+    return isEmpty(comment) || isEmpty(fileStatus);
   },
 
   actions: {

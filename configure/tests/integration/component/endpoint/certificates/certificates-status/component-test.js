@@ -38,7 +38,7 @@ module('Integration | Component | certificates-container', function(hooks) {
 
   test('it should render modal window on click of button', async function(assert) {
     new ReduxDataHelper(setState)
-      .selectedCertificatesList(new Array(1))
+      .selectedCertificatesList([{ thumbprint: '123' }])
       .build();
     await render(hbs`{{endpoint/certificates-status}}`);
     await click('.certificate-status-button button');
@@ -47,7 +47,7 @@ module('Integration | Component | certificates-container', function(hooks) {
 
   test('it should render radio buttons', async function(assert) {
     new ReduxDataHelper(setState)
-      .selectedCertificatesList(new Array(1))
+      .selectedCertificatesList([{ thumbprint: '123' }])
       .build();
     await render(hbs`{{endpoint/certificates-status}}`);
     await click('.certificate-status-button button');
@@ -79,6 +79,7 @@ module('Integration | Component | certificates-container', function(hooks) {
       assert.equal(modelName, 'context-data');
       done();
     });
+    await click(document.querySelectorAll('.certificate-status-radio')[0]);
     await fillIn('.comment-box textarea', 'test');
     assert.equal(document.querySelectorAll('#modalDestination .modal-content').length, 1, 'Expecting to render modal');
     await click('.save-certificate-status button');

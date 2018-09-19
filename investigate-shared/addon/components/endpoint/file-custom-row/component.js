@@ -30,18 +30,8 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         }
       },
       {
-        label: 'Watch',
-        icon: 'binoculars',
-        iconStyle: 'lined'
-      },
-      {
         label: 'Download',
         icon: 'download-2',
-        iconStyle: 'lined'
-      },
-      {
-        label: 'More',
-        icon: 'navigation-show-more-1',
         iconStyle: 'lined'
       }
     ];

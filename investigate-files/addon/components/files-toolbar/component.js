@@ -65,7 +65,7 @@ const ToolBar = Component.extend({
 
   @computed('fileStatusData')
   data(fileStatusData) {
-    return fileStatusData ? fileStatusData.asMutable() : {};
+    return { ...fileStatusData };
   },
 
   @computed('filesFilters')

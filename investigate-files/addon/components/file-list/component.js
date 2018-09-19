@@ -117,7 +117,7 @@ const FileList = Component.extend({
 
   @computed('fileStatusData')
   data(fileStatusData) {
-    return fileStatusData ? fileStatusData.asMutable() : {};
+    return { ...fileStatusData };
   },
 
   _sortList(columnList) {
