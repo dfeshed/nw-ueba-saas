@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import { isBlank } from '@ember/utils';
 import moment from 'moment';
 import _ from 'lodash';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
@@ -169,12 +170,12 @@ export default reduxActions.handleActions({
         const newSelectedSettings = [];
         for (let i = 0; i < state.availableSettings.length; i++) {
           const setting = state.availableSettings[i];
-          // settings already set in the fetched policy
-          if (fetchedPolicy[setting.id]) {
+          // settings already set in the fetched policy are added to selectedSettings
+          if (!isBlank(fetchedPolicy[setting.id])) {
             newAvailableSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
             newSelectedSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
-          // settings with parent settings already set in the fetched policy
-          } else if (fetchedPolicy[setting.parentId]) {
+          // settings dependent on scanType of 'SCHEDULED' must be enabled
+          } else if (setting.parentId === scanScheduleId && fetchedPolicy[setting.parentId] === 'SCHEDULED') {
             newAvailableSettings.push({ ...setting, isEnabled: true, isGreyedOut: false });
           // default
           } else {
