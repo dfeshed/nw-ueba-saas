@@ -1,12 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { next } from '@ember/runloop';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
 import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import {
-  fetchSchemaInfo,
   resetDownloadId,
   setDataSourceTab,
   setAlertTab,
@@ -30,7 +28,6 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  fetchSchemaInfo,
   resetDownloadId,
   setDataSourceTab,
   setAlertTab,
@@ -50,15 +47,6 @@ const Files = Component.extend({
 
   willDestroyElement() {
     this.send('resetDownloadId');
-  },
-
-  init() {
-    this._super(...arguments);
-    next(() => {
-      if (!this.get('hasFiles') && !this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.send('fetchSchemaInfo');
-      }
-    });
   },
 
   actions: {
