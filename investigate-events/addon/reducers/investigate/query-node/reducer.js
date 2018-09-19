@@ -309,6 +309,14 @@ export default handleActions({
       const newRange = {};
       newRange[queryParams.serviceId] = queryParams.selectedTimeRangeId;
 
+      // if initializing and have no hashes and no incoming pill data
+      // then set pillsData to empty array. This handles back/forward
+      // case where pills data is full, but when going back/forward
+      // pillsData should clear out
+      if (!queryParams.pillDataHashes && !queryParams.pillData) {
+        state = state.set('pillsData', []);
+      }
+
       return state.merge({
         endTime: queryParams.endTime && parseInt(queryParams.endTime, 10) || 0,
         eventMetas: undefined,

@@ -165,27 +165,6 @@ test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer be
   assert.equal(result.pillsData[0].isEditing, false);
 });
 
-test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
-  /* INTENT- overwrites queryView */
-  const prevState = Immutable.from({
-    queryView: 'freeForm',
-    previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
-    queryPills: []
-  });
-  const action = {
-    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-    payload: {
-      queryParams: {
-        metaFilter: [],
-        selectedTimeRangeId: 'ALL_DATA'
-      }
-    }
-  };
-  const result = reducer(prevState, action);
-
-  assert.equal(result.queryView, 'freeForm');
-});
-
 test('ADD_GUIDED_PILL adds pill to empty list', function(assert) {
   const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.queryNode;
 
@@ -619,6 +598,37 @@ test('OPEN_GUIDED_PILL_FOR_EDIT removes focus from that pill', function(assert) 
   assert.ok(result.pillsData[0].isFocused === false, 'Removes focus from the pill');
 });
 
+test('INITIALIZE_INVESTIGATE clears free form text pill state', function(assert) {
+  const emptyState = new ReduxDataHelper()
+    .hasRequiredValuesToQuery()
+    .updatedFreeFormTextPill()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      queryParams: {
+        serviceId: '1',
+        startTime: 'early',
+        endTime: 'late',
+        metaFilter: []
+      },
+      hardReset: false
+    }
+  };
+
+  const result = reducer(emptyState, action);
+
+  assert.equal(
+    result.updatedFreeFormTextPill,
+    undefined,
+    'text pill data cleared out'
+  );
+});
+
 test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
@@ -635,6 +645,56 @@ test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(asser
   const result = reducer(state, action);
 
   assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
+});
+
+test('INITIALIZE_INVESTIGATE clears out existing pills if no pillData or hashes passed in', function(assert) {
+  const initialState = new ReduxDataHelper()
+    .hasRequiredValuesToQuery()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      queryParams: {
+        serviceId: '1',
+        startTime: 'early',
+        endTime: 'late',
+        metaFilter: undefined,
+        pillDataHashes: undefined
+      },
+      hardReset: false
+    }
+  };
+
+  assert.equal(initialState.pillsData.length, 2, 'pillsData is the correct length');
+
+  const result = reducer(initialState, action);
+
+  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
+});
+
+test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
+  /* INTENT- overwrites queryView */
+  const prevState = Immutable.from({
+    queryView: 'freeForm',
+    previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
+    queryPills: []
+  });
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      queryParams: {
+        metaFilter: [],
+        selectedTimeRangeId: 'ALL_DATA'
+      }
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryView, 'freeForm');
 });
 
 test('REPLACE_ALL_GUIDED_PILLS replaces all pills', function(assert) {
@@ -684,37 +744,6 @@ test('UPDATE_FREE_FORM_TEXT sets free form text pill', function(assert) {
 
   // should end up with two pills
   assert.deepEqual(result.updatedFreeFormTextPill, state.pillsData[0], 'ids have changed');
-});
-
-test('INITIALIZE_INVESTIGATE clears free for text pill state', function(assert) {
-  const emptyState = new ReduxDataHelper()
-    .hasRequiredValuesToQuery()
-    .updatedFreeFormTextPill()
-    .pillsDataEmpty()
-    .build()
-    .investigate
-    .queryNode;
-
-  const action = {
-    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-    payload: {
-      queryParams: {
-        serviceId: '1',
-        startTime: 'early',
-        endTime: 'late',
-        metaFilter: []
-      },
-      hardReset: false
-    }
-  };
-
-  const result = reducer(emptyState, action);
-
-  assert.equal(
-    result.updatedFreeFormTextPill,
-    undefined,
-    'text pill data cleared out'
-  );
 });
 
 test('RESET_GUIDED_PILL resets the pill', function(assert) {

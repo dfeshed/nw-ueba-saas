@@ -101,10 +101,16 @@ export default Route.extend({
   transitionToPillHash(newHashes) {
     const nextQueryParams = this.get('nextQueryParams') || {};
 
+    // Let hash be undefined if not passed in
+    let pdhash;
+    if (newHashes) {
+      pdhash = newHashes.join(',');
+    }
+
     this.transitionTo({
       queryParams: {
         ...nextQueryParams,
-        pdhash: newHashes.join(','),
+        pdhash,
         mf: undefined
       }
     });
@@ -159,6 +165,13 @@ export default Route.extend({
         this.send('reconClose');
         this.set('nextQueryParams', qp);
         this.runInvestigateQuery(qp, true);
+
+        // If there are no meta at all, and the user has executed
+        // the query, then there will be no pill hash, can/should
+        // transition now with no hash passed in
+        if (qp.mf === undefined) {
+          this.transitionToPillHash();
+        }
       }
     },
 
