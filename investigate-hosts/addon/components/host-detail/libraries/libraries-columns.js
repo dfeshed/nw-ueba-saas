@@ -46,7 +46,7 @@ const defaultColumns = [
   {
     field: 'checksumSha256',
     title: 'HASH',
-    width: '30%'
+    width: '20%'
   }
 ];
 let columnsConfig = {

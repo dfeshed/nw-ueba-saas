@@ -8,23 +8,19 @@ export default {
   },
   {
     field: 'dllFileName',
-    title: 'dllFileName',
-    width: 100
+    title: 'dllFileName'
   },
   {
     field: 'fileProperties.score',
-    title: 'score',
-    width: '10%'
+    title: 'score'
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus',
-    width: 100
+    title: 'reputationStatus'
   },
   {
     field: 'hookedProcess',
-    title: 'hookedProcess',
-    width: 100
+    title: 'hookedProcess'
   },
   {
     field: 'signature',

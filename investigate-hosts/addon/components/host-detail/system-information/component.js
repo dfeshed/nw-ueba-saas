@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import TABS from './tabsConfig';
 import {
-  hostFileEntries,
   machineOsType,
   selectedSystemInformationData,
   bashHistories } from 'investigate-hosts/reducers/details/system-information/selectors';
@@ -14,7 +13,6 @@ import {
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
-  hostFileEntries: hostFileEntries(state),
   machineOsType: machineOsType(state),
   systemInformationData: selectedSystemInformationData(state),
   selectedTab: state.endpoint.visuals.activeSystemInformationTab,

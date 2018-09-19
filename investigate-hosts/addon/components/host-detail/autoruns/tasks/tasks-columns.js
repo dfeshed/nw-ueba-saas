@@ -18,15 +18,15 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.fileStatus',
-    title: 'File Status'
+    title: 'File Status',
+    width: '15%'
   }
 ];
 let columnsConfig = {
   mac: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
-      width: '15%'
+      title: 'TRIGGER'
     }
   ],
   windows: [
@@ -38,19 +38,18 @@ let columnsConfig = {
     {
       field: 'nextRunTime',
       title: 'Next Run Time',
-      format: 'DATE'
+      format: 'DATE',
+      width: '15%'
     },
     {
       field: 'triggerString',
-      title: 'TRIGGER',
-      width: '15%'
+      title: 'TRIGGER'
     }
   ],
   linux: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
-      width: '15%'
+      title: 'TRIGGER'
     }
   ]
 };

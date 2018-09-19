@@ -8,24 +8,20 @@ export default {
   },
   {
     field: 'driverFileName',
-    title: 'driverFileName',
-    width: 100
+    title: 'driverFileName'
   },
   {
     field: 'fileProperties.score',
-    title: 'score',
-    width: '10%'
+    title: 'score'
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus',
-    width: 100
+    title: 'reputationStatus'
   },
   {
     field: 'signature',
     title: 'signature',
-    format: 'SIGNATURE',
-    width: 100
+    format: 'SIGNATURE'
   },
   {
     field: 'objectFunction',

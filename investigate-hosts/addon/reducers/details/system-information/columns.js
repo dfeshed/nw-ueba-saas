@@ -5,12 +5,12 @@ const COLUMNS = {
       {
         field: 'ip',
         title: 'investigateHosts.systemInformation.ipAddress',
-        width: '10%'
+        width: 100
       },
       {
         field: 'hosts',
         title: 'investigateHosts.systemInformation.dnsName',
-        width: '80%'
+        width: 300
       }
     ]
   },
@@ -20,22 +20,20 @@ const COLUMNS = {
       {
         field: 'path',
         title: 'investigateHosts.systemInformation.path',
-        width: '20%'
+        width: 100
       },
       {
         field: 'fileSystem',
-        title: 'investigateHosts.systemInformation.fileSystem',
-        width: '10%'
+        title: 'investigateHosts.systemInformation.fileSystem'
       },
       {
         field: 'remotePath',
         title: 'investigateHosts.systemInformation.remotePath',
-        width: '20%'
+        width: '15%'
       },
       {
         field: 'options',
-        title: 'investigateHosts.systemInformation.options',
-        width: '45%'
+        title: 'investigateHosts.systemInformation.options'
       }
     ]
   },
@@ -45,38 +43,33 @@ const COLUMNS = {
       {
         field: 'name',
         title: 'investigateHosts.systemInformation.name',
-        width: '10%'
+        width: 100
       },
       {
         field: 'description',
-        title: 'investigateHosts.systemInformation.description',
-        width: '10%'
+        title: 'investigateHosts.systemInformation.description'
       },
       {
         field: 'path',
-        title: 'investigateHosts.systemInformation.path',
-        width: '20%'
+        title: 'investigateHosts.systemInformation.path'
       },
       {
         field: 'permissions',
-        title: 'investigateHosts.systemInformation.permissions',
-        width: '20%'
+        title: 'investigateHosts.systemInformation.permissions'
       },
       {
         field: 'type',
-        title: 'investigateHosts.systemInformation.type',
-        width: '10%'
+        title: 'investigateHosts.systemInformation.type'
       },
       {
         field: 'maxUses',
         title: 'investigateHosts.systemInformation.maxUses',
-        width: '5%'
+        width: '15%'
       },
 
       {
         field: 'currentUses',
-        title: 'investigateHosts.systemInformation.currentUses',
-        width: '8%'
+        title: 'investigateHosts.systemInformation.currentUses'
       }
     ]
   },
@@ -86,12 +79,12 @@ const COLUMNS = {
       {
         field: 'userName',
         title: 'investigateHosts.systemInformation.userName',
-        width: '20%'
+        width: 100
       },
       {
         field: 'command',
         title: 'investigateHosts.systemInformation.command',
-        width: '70%'
+        width: 300
       }
     ]
   },
@@ -111,17 +104,15 @@ const COLUMNS = {
       {
         field: 'displayName',
         title: 'investigateHosts.systemInformation.securityProducts.displayName',
-        width: '20%'
+        width: 100
       },
       {
         field: 'instance',
-        title: 'investigateHosts.systemInformation.securityProducts.instance',
-        width: '20%'
+        title: 'investigateHosts.systemInformation.securityProducts.instance'
       },
       {
         field: 'features',
-        title: 'investigateHosts.systemInformation.securityProducts.features',
-        width: '20%'
+        title: 'investigateHosts.systemInformation.securityProducts.features'
       },
       {
         field: 'type',
@@ -130,8 +121,7 @@ const COLUMNS = {
       },
       {
         field: 'version',
-        title: 'investigateHosts.systemInformation.securityProducts.version',
-        width: '10%'
+        title: 'investigateHosts.systemInformation.securityProducts.version'
       }
     ]
   }

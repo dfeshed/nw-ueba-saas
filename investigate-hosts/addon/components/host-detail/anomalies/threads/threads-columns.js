@@ -8,29 +8,24 @@ export default {
   },
   {
     field: 'fileName',
-    title: 'dllFileName',
-    width: 100
+    title: 'dllFileName'
   },
   {
     field: 'fileProperties.score',
-    title: 'score',
-    width: '10%'
+    title: 'score'
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus',
-    width: 100
+    title: 'reputationStatus'
   },
   {
     field: 'process',
-    title: 'process',
-    width: 100
+    title: 'process'
   },
   {
     field: 'signature',
     title: 'signature',
-    format: 'SIGNATURE',
-    width: 100
+    format: 'SIGNATURE'
   },
   {
     field: 'tid',

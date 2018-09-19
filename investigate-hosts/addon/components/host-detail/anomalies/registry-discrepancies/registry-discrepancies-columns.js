@@ -8,23 +8,19 @@ export default {
   },
   {
     field: 'reason',
-    title: 'reason',
-    width: 100
+    title: 'reason'
   },
   {
     field: 'registryPath',
-    title: 'registryPath',
-    width: 100
+    title: 'registryPath'
   },
   {
     field: 'rawType',
-    title: 'rawType',
-    width: 100
+    title: 'rawType'
   },
   {
     field: 'rawData',
-    title: 'rawData',
-    width: 100
+    title: 'rawData'
   },
   {
     field: 'apiType',

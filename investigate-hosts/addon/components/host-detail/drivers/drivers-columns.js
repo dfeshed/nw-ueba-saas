@@ -26,14 +26,12 @@ const defaultColumns = [
     'field': 'fileProperties.fileStatus',
     'title': 'File Status',
     'label': 'investigateHosts.files.fields.fileStatus',
-    'disableSort': true,
-    'width': 53
+    'disableSort': true
   },
   {
     field: 'signature',
     title: 'Signature',
-    format: 'SIGNATURE',
-    width: '10%'
+    format: 'SIGNATURE'
   },
   {
     field: 'path',
@@ -47,7 +45,6 @@ const machineOsBasedConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      width: '20%',
       format: 'DATE'
     }
   ],
@@ -55,7 +52,6 @@ const machineOsBasedConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      width: '20%',
       format: 'DATE'
     }
   ],

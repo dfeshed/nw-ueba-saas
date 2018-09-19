@@ -11,8 +11,7 @@ const defaultColumns = [
   {
     field: 'signature',
     title: 'SIGNATURE',
-    format: 'SIGNATURE',
-    width: '10%'
+    format: 'SIGNATURE'
   },
   {
     field: 'fileProperties.fileStatus',
@@ -20,8 +19,7 @@ const defaultColumns = [
   },
   {
     field: 'path',
-    title: 'FILE PATH',
-    width: '20%'
+    title: 'FILE PATH'
   }
 ];
 let columnsConfig = {
@@ -40,8 +38,7 @@ let columnsConfig = {
   windows: [
     {
       field: 'serviceName',
-      title: 'SERVICE NAME',
-      width: '10%'
+      title: 'SERVICE NAME'
     },
     {
       field: 'state',
@@ -57,13 +54,11 @@ let columnsConfig = {
   linux: [
     {
       field: 'fileName',
-      title: 'SERVICE NAME',
-      width: '10%'
+      title: 'SERVICE NAME'
     },
     {
       field: 'status',
-      title: 'RUNNING STATUS',
-      width: '15%'
+      title: 'RUNNING STATUS'
     },
     {
       field: 'timeModified',
