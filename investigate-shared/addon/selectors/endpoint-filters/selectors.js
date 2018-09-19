@@ -1,11 +1,9 @@
 import { createSelector } from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 
-import { FILTER_TYPES } from './filter-type';
-
-
 // Contains all the expression saved + newly added expression from the UI
-export const savedFilter = (state) => state.files.filter.selectedFilter;
+export const savedFilter = (state) => state.filter.selectedFilter;
+const _filterTypes = (state) => state.filterTypes;
 
 /**
  * Converts entered value and unit to bytes
@@ -68,10 +66,10 @@ export const selectedFilterId = createSelector(
  * @public
  */
 export const filters = createSelector(
-  [expressionList],
-  (expressionList) => {
+  [expressionList, _filterTypes],
+  (expressionList, filterTypes) => {
     const i18n = lookup('service:i18n');
-    return FILTER_TYPES.map((item) => {
+    return filterTypes.map((item) => {
       const { label, name, type } = item;
       const expression = expressionList.findBy('propertyName', name); // check if column is searchable
       if (expression) { // Add the config only if it's searchable

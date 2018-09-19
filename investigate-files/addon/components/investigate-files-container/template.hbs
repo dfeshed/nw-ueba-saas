@@ -1,7 +1,12 @@
 {{#rsa-page-layout showRightZone=false as |layout|}}
   {{#layout.left as |leftPanel|}}
     {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
-    {{filters-wrapper}}
+    {{endpoint/filters-wrapper
+      filterState=filter
+      applyFilters=(action 'applyFilters' (action 'getFirstPageOfFiles'))
+      createCustomSearch=(action 'createCustomSearch')
+      filterType='FILE'
+      filterTypes=filterTypes }}
   {{/layout.left}}
   {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">

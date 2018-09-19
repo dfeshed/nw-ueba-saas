@@ -3046,7 +3046,8 @@ export default {
         },
         update: {
           success: 'Search query updated successfully.'
-        }
+        },
+        error: 'A problem occurred while trying to create/update filter.'
       },
       initiateScan: {
         modal: {

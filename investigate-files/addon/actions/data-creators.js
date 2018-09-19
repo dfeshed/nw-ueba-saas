@@ -15,7 +15,7 @@ import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
-
+import { getFilter } from './filter-creators';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -65,7 +65,7 @@ const getPageOfFiles = () => {
  * @returns {function(*)}
  * @private
  */
-const _getFirstPageOfFiles = () => {
+const getFirstPageOfFiles = () => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.RESET_FILES });
     dispatch(getPageOfFiles());
@@ -119,49 +119,7 @@ const initializeFilesPreferences = () => {
       const storedState = json ? JSON.parse(json) : null;
       // *****/
       dispatch({ type: ACTION_TYPES.SET_QUERY_INPUT, payload: storedState || {} });
-      dispatch(getFilter());
-    });
-  };
-};
-
-
-/**
- * An action creator for getting the saved filter information
- * @returns {function(*)}
- * @public
- */
-const getFilter = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.GET_FILTER,
-      promise: File.getSavedFilters(),
-      meta: {
-        onSuccess: (response) => {
-          dispatch(getPageOfFiles());
-          const debugResponse = JSON.stringify(response);
-          debug(`onSuccess: ${ACTION_TYPES.GET_FILTER} ${debugResponse}`);
-        }
-      }
-    });
-  };
-};
-
-const deleteFilter = (id, callbacks = callbacksDefault) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.DELETE_FILTER,
-      promise: File.deleteFilter(id),
-      meta: {
-        onSuccess: (response) => {
-          const debugResponse = JSON.stringify(response);
-          debug(`onSuccess: ${ACTION_TYPES.DELETE_FILTER} ${debugResponse}`);
-          callbacks.onSuccess(response);
-        },
-        onFailure: (response) => {
-          _handleError(ACTION_TYPES.DELETE_FILTER, response);
-          callbacks.onFailure(response);
-        }
-      }
+      dispatch(getFilter(getFirstPageOfFiles));
     });
   };
 };
@@ -219,7 +177,7 @@ const updateColumnVisibility = (column) => {
 const sortBy = (sortField, isSortDescending) => {
   return (dispatch, getState) => {
     dispatch({ type: ACTION_TYPES.SET_SORT_BY, payload: { sortField, isSortDescending } });
-    dispatch(_getFirstPageOfFiles());
+    dispatch(getFirstPageOfFiles());
     _setPreferences(getState);
   };
 };
@@ -229,29 +187,6 @@ const sortBy = (sortField, isSortDescending) => {
  * @public
  */
 const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
-
-/**
- * Action for creating custom search
- * @method createCustomSearch
- * @public
- */
-const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDefault) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.SAVE_FILTER,
-      promise: File.createCustomSearch(filter, schemas, filterType),
-      meta: {
-        onSuccess: (response) => {
-          callbacks.onSuccess(response);
-        },
-        onFailure: (response) => {
-          _handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
-          callbacks.onFailure(response);
-        }
-      }
-    });
-  };
-};
 
 
 const getAllServices = () => ({
@@ -318,21 +253,6 @@ const getSavedFileStatus = (selections) => ({
   promise: getFileStatus(selections)
 });
 
-// Filters
-
-const applyFilters = (expressions) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
-
-const applySavedFilters = (filter) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter });
-    dispatch(applyFilters(filter.criteria.expressionList));
-  };
-};
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
 
@@ -420,15 +340,12 @@ const fetchAgentId = (hostName, callBack) => {
 const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
 
 export {
-  getFilter,
-  deleteFilter,
   getPageOfFiles,
   sortBy,
   fetchSchemaInfo,
   exportFileAsCSV,
   updateColumnVisibility,
   resetDownloadId,
-  createCustomSearch,
   getAllServices,
   initializeFilesPreferences,
   setDataSourceTab,
@@ -439,11 +356,10 @@ export {
   selectAllFiles,
   deSelectAllFiles,
   saveFileStatus,
-  applyFilters,
-  applySavedFilters,
   fetchMachineCount,
   getSavedFileStatus,
   fetchHostNameList,
   fetchAgentId,
-  setNewFileTab
+  setNewFileTab,
+  getFirstPageOfFiles
 };

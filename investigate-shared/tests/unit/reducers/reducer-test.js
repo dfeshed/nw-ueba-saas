@@ -1,8 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
-import reducer from 'investigate-files/reducers/file-filter/reducer';
-import * as ACTION_TYPES from 'investigate-files/actions/types';
-import makePackAction from '../../../helpers/make-pack-action';
+import reducer from 'investigate-shared/reducers/endpoint-filter/reducer';
+import * as ACTION_TYPES from 'investigate-shared/actions/types';
+import makePackAction from '../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import { setupTest } from 'ember-qunit';
 
@@ -23,6 +23,10 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     });
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      name: 'FILE',
+      meta: {
+        name: 'FILE'
+      },
       type: ACTION_TYPES.GET_FILTER,
       payload: { data: [ { filterType: 'FILE' }, { filterType: 'MACHINE' }] }
     });
@@ -36,6 +40,9 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     });
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      meta: {
+        name: 'FILE'
+      },
       type: ACTION_TYPES.SAVE_FILTER,
       payload: { data: { filterType: 'FILE' } }
     });
@@ -52,6 +59,9 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     });
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      meta: {
+        name: 'FILE'
+      },
       type: ACTION_TYPES.DELETE_FILTER,
       payload: { data: { id: 1 } }
     });

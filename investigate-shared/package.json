@@ -71,7 +71,8 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
-      "../rsa-context-menu"
+      "../rsa-context-menu",
+      "../rsa-data-filters"
     ]
   }
 }

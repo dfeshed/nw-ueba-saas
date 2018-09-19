@@ -3,16 +3,16 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { fileCountForDisplay, serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
-import { selectedFilterId, savedFilter } from 'investigate-files/reducers/file-filter/selectors';
+import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
   saveFileStatus,
-  deleteFilter,
-  applySavedFilters,
-  getSavedFileStatus
+  getSavedFileStatus,
+  getFirstPageOfFiles
 } from 'investigate-files/actions/data-creators';
 
+import { applySavedFilters, deleteFilter } from 'investigate-files/actions/filter-creators';
 import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
 
 const stateToComputed = (state) => ({
@@ -26,8 +26,8 @@ const stateToComputed = (state) => ({
   filesFilters: state.files.filter.savedFilterList,
   servers: state.endpointServer,
   serverId: state.endpointQuery.serverId,
-  selectedFilterId: selectedFilterId(state),
-  savedFilter: savedFilter(state),
+  selectedFilterId: selectedFilterId(state.files),
+  savedFilter: savedFilter(state.files),
   fileStatusData: state.files.fileList.fileStatusData
 });
 
@@ -38,7 +38,8 @@ const dispatchToActions = {
   deleteFilter,
   applySavedFilters,
   setEndpointServer,
-  getSavedFileStatus
+  getSavedFileStatus,
+  getFirstPageOfFiles
 };
 /**
  * Toolbar that provides search filtering.
@@ -81,7 +82,9 @@ const ToolBar = Component.extend({
   actions: {
 
     applyCustomFilter(filter) {
-      this.send('applySavedFilters', filter);
+      this.send('applySavedFilters', filter, () => {
+        this.send('getFirstPageOfFiles');
+      });
     },
 
     deleteSelectedFilter(id) {

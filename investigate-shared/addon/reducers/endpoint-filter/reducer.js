@@ -2,7 +2,7 @@ import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
 import { handle } from 'redux-pack';
 
-import * as ACTION_TYPES from 'investigate-files/actions/types';
+import * as ACTION_TYPES from 'investigate-shared/actions/types';
 
 const fileListState = Immutable.from({
   selectedFilter: null,
@@ -19,7 +19,7 @@ const filterReducer = handleActions({
     return handle(state, action, {
       success: (s) => {
         const { payload: { data } } = action;
-        const filters = data.filter((filter) => (filter.filterType === 'FILE'));
+        const filters = data.filter((filter) => (filter.filterType === action.meta.name));
         let expressionList = [];
         let filter;
         if (state.selectedFilterId && filters.length) {
@@ -28,11 +28,11 @@ const filterReducer = handleActions({
             expressionList = filter.criteria.expressionList;
           }
         }
+
         return s.merge({
           selectedFilter: filter,
           savedFilterList: filters,
-          expressionList,
-          areFilesLoading: 'completed'
+          expressionList
         });
       }
     });
