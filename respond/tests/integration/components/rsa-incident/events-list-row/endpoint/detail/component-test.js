@@ -47,19 +47,13 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
       column: 1,
       row: 2,
       label: 'Detector',
-      value: '',
-      childKeys: 2,
-      childValues: 2,
-      nestedColumns: 1
+      value: ''
     });
 
     endpoint.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
       label: 'Product Name',
-      value: 'nwendpoint',
-      childKeys: 1,
-      childValues: 1,
-      nestedColumns: 0
+      value: 'nwendpoint'
     });
 
     endpoint.assertDetailRow(assert, {
@@ -73,28 +67,19 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
       column: 1,
       row: 4,
       label: 'Data',
-      value: '',
-      childKeys: 3,
-      childValues: 3,
-      nestedColumns: 2
+      value: ''
     });
 
     const dataRowChildOneElement = endpoint.assertDetailRowChild(assert, {
       parentElement: dataRowElement,
       label: '',
-      value: '',
-      childKeys: 2,
-      childValues: 2,
-      nestedColumns: 1
+      value: ''
     });
 
     endpoint.assertDetailRowChild(assert, {
       parentElement: dataRowChildOneElement,
       label: 'Size',
-      value: '41',
-      childKeys: 1,
-      childValues: 1,
-      nestedColumns: 0
+      value: '41'
     });
 
     endpoint.assertDetailRow(assert, {
