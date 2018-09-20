@@ -81,7 +81,8 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
-      "../context"
+      "../context",
+      "../investigate-shared"
     ]
   },
   "private": true

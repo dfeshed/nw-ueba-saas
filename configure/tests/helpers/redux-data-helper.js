@@ -272,4 +272,8 @@ export default class DataHelper {
     _set(this.state, 'endpoint.certificates.certificateDataStatus', status);
     return this;
   }
+  isEndpointServerOffline(status) {
+    _set(this.state, 'endpoint.server.isSummaryRetrieveError', status);
+    return this;
+  }
 }

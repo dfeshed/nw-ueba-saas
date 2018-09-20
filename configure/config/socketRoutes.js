@@ -151,6 +151,13 @@ const configureConfigGen = function(environment) {
         requestDestination: '/ws/contexthub/context/data-source/find'
       }
     },
+    'endpoint-server': {
+      socketUrl: socketUrlEndpoint,
+      findAll: {
+        subscriptionDestination: '/user/queue/endpoint/server/get-all',
+        requestDestination: '/ws/endpoint/server/get-all'
+      }
+    }
   };
 };
 

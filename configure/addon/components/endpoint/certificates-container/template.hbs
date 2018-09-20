@@ -11,13 +11,20 @@
           {{rsa-icon name='filter-2'}}
         {{/rsa-form-button}}
       </h2>
+      {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
       {{endpoint/certificates-status}}
     </hbox>
-    <box class="certificates-body">
-      {{endpoint/certificates-data-table}}
-    </box>
-    <box class="certificates-footer">
-      {{endpoint/certificates-pager}}
-    </box>
+    {{#if isEndpointServerOnline}}
+      <box class="certificates-body">
+        {{endpoint/certificates-data-table}}
+      </box>
+      <box class="certificates-footer">
+        {{endpoint/certificates-pager}}
+      </box>
+    {{else}}
+      {{error-page
+        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
+        title=(t 'investigateFiles.errorPage.serviceDown')}}
+    {{/if}}
   {{/layout.center}}
 {{/rsa-page-layout}}
