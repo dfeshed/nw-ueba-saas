@@ -28,6 +28,46 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(endState, groupWizInitialState);
   });
 
+  test('on ADD_CRITERIA, find if new Criteria is added', function(assert) {
+    const expectedResult = {
+      ...initialState.group,
+      groupCriteria: {
+        ...initialState.group.groupCriteria,
+        criteria: [['osType', 'IN', ['abc']], ['osType', 'IN', []]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.ADD_CRITERIA
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on ADD_CRITERIA, update attribute input to ipv4 in added criteria', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [['osType', 'IN', ['abc']], ['osType', 'IN', []]]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['osType', 'IN', ['abc']], ['ipv4', 'BETWEEN', []]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+      payload: { criteriaPath: ',1', value: 'ipv4', fieldIndex: 0 }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
   test('on UPDATE_GROUP_CRITERIA, find correct osType first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,

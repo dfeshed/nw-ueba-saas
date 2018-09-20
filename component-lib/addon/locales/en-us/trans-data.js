@@ -3682,7 +3682,8 @@ export default {
       saveFailure: 'A problem occurred while trying to save the group.',
       saveSuccess: 'The group has been saved successfully.',
       savePublishFailure: 'A problem occurred while trying to save and publish the group.',
-      savePublishSuccess: 'The group has been saved and published successfully.'
+      savePublishSuccess: 'The group has been saved and published successfully.',
+      addCondition: 'Add Condition'
     },
     policyWizard: {
       // identify-policy-step
@@ -3726,6 +3727,27 @@ export default {
       unpublished: 'UnPublished',
       unpublishedEdits: 'UnPublished Edits',
       published: 'Published'
+    },
+    groupCriteria: {
+      attribute: {
+        osType: 'OS Type',
+        osDescription: 'OS description',
+        hostname: 'Host Name',
+        ipv4: 'IPv4',
+        ipv6: 'IPv6',
+        agentMode: 'Agent Mode'
+      },
+      operator: {
+        IN: 'in',
+        EQUALS: 'is equal to',
+        CONTAINS: 'contains',
+        STARTS_WITH: 'starts with',
+        ENDS_WITH: 'ends with',
+        NOT_IN: 'not in',
+        BETWEEN: 'between',
+        NOT_BETWEEN: 'not between',
+        NOT_EQUALS: 'is not equal to'
+      }
     }
   },
   // end admin-source-management (a.k.a USM)

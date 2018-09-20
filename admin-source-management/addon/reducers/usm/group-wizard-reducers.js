@@ -6,7 +6,7 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 
 const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6', 'agentMode'];
-const OPRTR = ['IN', 'EQUALS', 'CONTAINS', 'STARTS_WITH', 'EMDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN', 'NOT_EQUALS'];
+const OPRTR = ['IN', 'EQUALS', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN', 'NOT_EQUALS'];
 const INPT = ['textInput', 'osSelector', '2textInputs', 'agentSelector', 'textarea'];
 const VLDTR = ['none', '256max', 'validHostname', 'validHostnameList', 'validHostnameChars', 'ipv4', 'ipv4Pair', 'ipv4List', 'ipv6', 'ipv6Pair', 'ipv6List'];
 // In the future the _GROUP_ATTRIBUTES_MAP may be initialize with an API call
@@ -206,12 +206,28 @@ export default reduxActions.handleActions({
     } else { // field input value change
       newEditedCriteria = editedCriteria.slice();
     }
-    // TODO support for nessted groupCriteria
+    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const newCriterias = oldCriterias.map((criteria, index) => index === criteriaPathTrimed ? newEditedCriteria : criteria);
+
+    // TODO support for nested group of criterias
     const editedGroup = {
       ...state.group,
       groupCriteria: {
         ...state.group.groupCriteria,
-        criteria: [newEditedCriteria]
+        criteria: newCriterias
+      }
+    };
+    return state.set('group', editedGroup);
+  },
+
+  [ACTION_TYPES.ADD_CRITERIA]: (state) => {
+    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const newCriterias = oldCriterias.concat([['osType', 'IN', []]]);
+    const editedGroup = {
+      ...state.group,
+      groupCriteria: {
+        ...state.group.groupCriteria,
+        criteria: newCriterias
       }
     };
     return state.set('group', editedGroup);

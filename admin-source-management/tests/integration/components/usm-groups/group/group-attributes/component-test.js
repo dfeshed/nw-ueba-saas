@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, click, settled } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -30,6 +30,7 @@ module('Integration | Component | group-attributes', function(hooks) {
     assert.equal(findAll('.group-attributes').length, 1, 'The component group-attributes appears in the DOM');
     assert.equal(findAll('.attribute').length, 1, 'The selector attribute appears in the DOM');
     assert.equal(findAll('.operator').length, 1, 'The selector operator appears in the DOM');
+    assert.equal(findAll('.add-criteria-button').length, 1, 'The add-criteria-button button appears in the DOM');
     // default attribute is osSelector
     assert.equal(findAll('.osSelector').length, 1, 'The osSelector appears in the DOM');
   });
@@ -64,5 +65,19 @@ module('Integration | Component | group-attributes', function(hooks) {
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 5);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUALS', 'agentMode operator field value is not showing or value is not "EQUALS"');
+  });
+
+  test('Add Criteria', async function(assert) {
+    new ReduxDataHelper(setState).groupWiz().build();
+    let state = this.owner.lookup('service:redux').getState();
+    this.set('groupCriteria', state.usm.groupWizard.group.groupCriteria.criteria);
+    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=',0'}}`);
+    assert.equal(findAll('.add-criteria-button button').length, 1, 'The add-criteria-button button appears in the DOM');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 1, 'A single criteria is present');
+    await click('.add-criteria-button button');
+    state = this.owner.lookup('service:redux').getState();
+    return settled().then(() => {
+      assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 2, 'A new criteria was added');
+    });
   });
 });

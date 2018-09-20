@@ -17,7 +17,7 @@
                     options=groupAttributesMap.attribute
                     selected=criteria.[0]
                     onchange=(action 'handleAttributeChange' (concat criteriaPath ',' index)) as |option|}}
-                    {{option}}
+                     {{t (concat 'adminUsm.groupCriteria.attribute.' option)}}
                   {{/power-select}}
                 </label>
               </span>
@@ -28,7 +28,7 @@
                     options=attribute.[1]
                     selected=operator
                     onchange=(action 'handleOperatorChange' (concat criteriaPath ',' index)) as |option|}}
-                    {{option.[0]}}
+                     {{t (concat 'adminUsm.groupCriteria.operator.' option.[0])}}
                   {{/power-select}}
                 </label>
               </span>
@@ -52,3 +52,11 @@
     </div>
   {{/if}}
 {{/each}}
+
+{{#rsa-form-button
+  class='add-criteria-button'
+  style='standard'
+  defaultAction='addCriteria'
+}}
+  {{t 'adminUsm.groupWizard.addCondition'}}
+{{/rsa-form-button}}

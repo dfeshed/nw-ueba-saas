@@ -11,6 +11,7 @@
     vertical-align: text-bottom;
   }
   .group-criteria {
+    margin-top: rsa-whitespace(); 
     vertical-align: text-bottom;
     label {
       display: inline-block;
@@ -28,5 +29,9 @@
   .textarea-input textarea {
     width: 300px;
     min-height: 8rem;
+  }
+  .add-criteria-button {
+    margin-top: rsa-whitespace(more);
+    margin-left: rsa-whitespace();
   }
 }

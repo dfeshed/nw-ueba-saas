@@ -5,7 +5,8 @@ import {
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
-  updateGroupCriteria
+  updateGroupCriteria,
+  addCriteria
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -13,7 +14,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updateGroupCriteria
+  updateGroupCriteria,
+  addCriteria
 };
 
 const GroupAttributes = Component.extend({

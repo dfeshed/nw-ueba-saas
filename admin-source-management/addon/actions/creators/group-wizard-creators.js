@@ -92,6 +92,12 @@ const updateGroupCriteria = (criteriaPath, value, fieldIndex) => {
   };
 };
 
+const addCriteria = () => {
+  return {
+    type: ACTION_TYPES.ADD_CRITERIA
+  };
+};
+
 const saveGroup = (group, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.SAVE_GROUP,
@@ -131,5 +137,6 @@ export {
   editGroup,
   saveGroup,
   updateGroupCriteria,
-  savePublishGroup
+  savePublishGroup,
+  addCriteria
 };
