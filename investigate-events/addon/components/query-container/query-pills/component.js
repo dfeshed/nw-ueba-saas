@@ -16,6 +16,7 @@ import {
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addGuidedPill,
+  addGuidedPillFocus,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -42,6 +43,7 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   addGuidedPill,
+  addGuidedPillFocus,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   editGuidedPill,
@@ -163,16 +165,18 @@ const QueryPills = RsaContextMenu.extend({
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
+      [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
-      [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
-      [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
+      [MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL]: (position) => this._addFocusToLeftPill(position),
+      [MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
@@ -348,6 +352,21 @@ const QueryPills = RsaContextMenu.extend({
    */
   _enterPressedOnFocusedPill(pillData) {
     this._pillOpenForEdit(pillData);
+  },
+
+  _addFocusToLeftPill(position) {
+    if (position !== 0) {
+      this.send('addGuidedPillFocus', position - 1);
+      this._pillAddCancelled();
+    }
+  },
+
+  _addFocusToRightPill(position) {
+    const pillsData = this.get('pillsData');
+    if (position < pillsData.length) {
+      this.send('addGuidedPillFocus', position);
+      this._pillAddCancelled();
+    }
   },
 
   /**

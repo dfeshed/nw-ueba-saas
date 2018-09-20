@@ -8,10 +8,11 @@
 {{/if}}
 
 {{query-container/pill-meta
-  metaOptions=metaOptions
   isActive=(readonly isMetaActive)
-  isExpanded=(readonly shouldMetaExpand)
   isAutoFocused=(readonly isMetaAutoFocused)
+  isExpanded=(readonly shouldMetaExpand)
+  isFirstPill=(eq position 0)
+  metaOptions=metaOptions
   selection=(readonly selectedMeta)
   sendMessage=(action 'handleMessage')
 }}

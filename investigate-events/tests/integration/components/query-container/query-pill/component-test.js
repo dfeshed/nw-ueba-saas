@@ -1091,4 +1091,63 @@ module('Integration | Component | query-pill', function(hooks) {
     // Choose the third operator option which does not require a value
     selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
   });
+
+  test('if no meta/operator/value is selected and ARROW_LEFT is pressed, message is sent up', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+    .pillsDataEmpty()
+    .language()
+    .build();
+
+    this.set('pillData', []);
+    this.set('metaOptions', META_OPTIONS);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, 'Message sent to add focus on the relevant pill');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+  });
+
+  test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, message is sent up', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+    .pillsDataEmpty()
+    .language()
+    .build();
+
+    this.set('pillData', []);
+    this.set('metaOptions', META_OPTIONS);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, 'Message sent to add focus on the relevant pill');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+  });
+
 });

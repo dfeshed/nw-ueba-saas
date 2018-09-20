@@ -488,6 +488,19 @@ export default handleActions({
     return _removeFocus(deletedPillsState);
   },
 
+  [ACTION_TYPES.ADD_FOCUS_GUIDED_PILL]: (state, { payload }) => {
+    const { position } = payload;
+    const { pillsData } = state;
+    const pill = pillsData[position];
+
+    const newPill = {
+      ...pill,
+      isFocused: true
+    };
+    const newPillsData = _replacePill(state, newPill);
+    return state.set('pillsData', newPillsData);
+  },
+
   [ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL]: (state, { payload }) => {
     const { pillData } = payload;
     const newPill = {

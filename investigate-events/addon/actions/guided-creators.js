@@ -118,6 +118,16 @@ export const deleteSelectedGuidedPills = (pillData) => {
   };
 };
 
+export const addGuidedPillFocus = (position) => {
+  return (dispatch) => {
+    dispatch(removeGuidedPillFocus());
+    dispatch({
+      type: ACTION_TYPES.ADD_FOCUS_GUIDED_PILL,
+      payload: { position }
+    });
+  };
+};
+
 export const removeGuidedPillFocus = () => {
   return (dispatch, getState) => {
     const pillData = focusedPill(getState());

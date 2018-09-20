@@ -68,6 +68,16 @@ export default Component.extend({
    */
   swallowNextFocusOut: false,
 
+  /**
+   * If this is the first empty pill?
+   * We will use this flag to close meta dropdown if ARROW_LEFT is pressed
+   * from an right most empty pill. If it's the first pill, we do not
+   * need to close the dropdown, as there would be no pill on the left.
+   * @type {boolean}
+   * @public
+   */
+  isFirstPill: false,
+
   @computed('isActive', 'metaOptions')
   isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
 
@@ -195,10 +205,24 @@ export default Component.extend({
         // want to move forward if there's a selection.
         if (selected && event.target.selectionStart === selected.metaName.length) {
           next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY));
+        } else if (event.target.selectionStart === 0) {
+          // If there is no selection, we use this event to propogate up to
+          // query-pills so that, if applicable, focus can be moved to the
+          // pill on the right
+          next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION));
         }
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
         // Move to the left of this pill
-        next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY));
+        next(this, () => {
+          this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY);
+          // If you press ARROW_LEFT from the rightmost empty pill, we should close
+          // the dropdown
+          // If you press ARROW_LEFT from the leftmost empty pill, the dropdown should
+          // remain open
+          if (!this.get('isFirstPill')) {
+            powerSelectAPI.actions.close();
+          }
+        });
       }
     },
     onOptionMouseDown() {

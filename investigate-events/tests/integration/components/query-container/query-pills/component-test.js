@@ -1787,4 +1787,117 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a drop-down anymore');
   });
+
+  test('Focus moves to left pill if ARROW-LEFT is pressed from a new pill(end of list) with no meta/operator/value selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    const pillText = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillText, 'b = \'y\'', 'The second pill is the focused pill');
+  });
+
+  test('Nothing happens if ARROW-RIGHT is pressed from a new pill(end of the list) with no meta/operator/value selected with no pill on the right', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+  });
+
+  test('Focus moves to left pill if ARROW-LEFT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+
+    // click on the second trigger to place cursor in between the 2 pills
+    await click(triggers[1]);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a meta drop-down available');
+
+    // The first pill should now be focused
+    const pillText = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillText, 'a = \'x\'', 'The first pill is the focused pill');
+  });
+
+  test('Focus moves to right pill if ARROW-RIGHT is pressed from a new pill(in between pills) with no meta/operator/value selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+
+    // click on the second trigger to place cursor in between the 2 pills
+    await click(triggers[1]);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 0, 'Should not have a meta drop-down available');
+
+    // The second pill should now be focused
+    const pillText = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillText, 'b = \'y\'', 'The second pill is the focused pill');
+  });
+
+  test('Nothing happens if ARROW-LEFT is pressed from a new pill(start of the list) with no meta/operator/value selected with no pill on the left', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+
+    // click on the first trigger to place cursor at the very start of the list
+    await click(triggers[0]);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+  });
 });

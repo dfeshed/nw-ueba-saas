@@ -193,6 +193,7 @@ export default Component.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.META_ARROW_LEFT_KEY]: () => this._metaArrowLeft(),
       [MESSAGE_TYPES.META_ARROW_RIGHT_KEY]: () => this._metaArrowRight(),
+      [MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION]: () => this._metaArrowRightWithNoSelection(),
       [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
       [MESSAGE_TYPES.META_ENTER_KEY]: () => this._checkToSubmitQuery(),
       [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPill(),
@@ -415,21 +416,19 @@ export default Component.extend({
    */
   _pillLostFocus(focusEvent) {
     const {
-      selectedMeta,
-      selectedOperator,
       valueString,
       isExistingPill
-    } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString', 'isExistingPill');
+    } = this.getProperties('valueString', 'isExistingPill');
     let isSubmit;
     const el = focusEvent.relatedTarget;
     if (el) {
       const queryEvents = this.get('i18n').t('queryBuilder.queryEvents').string;
       isSubmit = el.textContent.trim() === queryEvents;
     }
-    if (!selectedMeta && !selectedOperator && !valueString) {
+    if (this._isPillDataEmpty()) {
       // Treat this like an ESC was keyed
       this._cancelPillCreation();
-    } else if (isSubmit && !isExistingPill && selectedMeta && selectedOperator && valueString) {
+    } else if (isSubmit && !isExistingPill && !(this._isPillDataEmpty())) {
       // If it's not an existing pill, create new pill
       this._createPill(valueString);
       // Exit out of pill creation so that the post-pill-creation dropdown is
@@ -445,7 +444,22 @@ export default Component.extend({
    * @private
    */
   _metaArrowLeft() {
-    // TODO - Move control to the pill to the left.
+    if (this._isPillDataEmpty()) {
+      this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, this.get('position'));
+    }
+  },
+
+  /**
+   * Handles when ARROW_RIGHT is pressed when no meta/operator/value is
+   * selected. Shall be used to move focus to adjacent pill.
+   * @private
+   */
+
+  _metaArrowRightWithNoSelection() {
+    if (this._isPillDataEmpty()) {
+      this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, this.get('position'));
+    }
+
   },
 
   /**
@@ -664,6 +678,20 @@ export default Component.extend({
 
   // ************************ PILL FUNCTIONALITY **************************** //
   /**
+   * Are there no meta/operator/value selected?
+   * @private
+   *
+   */
+  _isPillDataEmpty() {
+    const {
+      selectedMeta,
+      selectedOperator,
+      valueString
+    } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
+    return !selectedMeta && !selectedOperator && !valueString;
+  },
+
+  /**
    * Cancel pill creation. If this pill has `pillData`, then we were editing an
    * existing pill. We don't want to reset all the data back to defaults in this
    * case.
@@ -701,12 +729,7 @@ export default Component.extend({
    * @private
    */
   _checkToSubmitQuery() {
-    const {
-      selectedMeta,
-      selectedOperator,
-      valueString
-     } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
-    if (selectedMeta === null && selectedOperator === null && valueString === null) {
+    if (this._isPillDataEmpty()) {
       this._broadcast(MESSAGE_TYPES.PILL_INTENT_TO_QUERY);
     }
   },

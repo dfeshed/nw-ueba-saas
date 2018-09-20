@@ -19,6 +19,7 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
 // const { log } = console;
 
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
+const ARROW_LEFT = KEY_MAP.arrowLeft.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
@@ -99,11 +100,13 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);// option b
   });
 
-  test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
-    assert.expect(0);
+  test('it broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
+    assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
-    this.set('handleMessage', () => {
-      assert.notOk('message dispatched');
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION) {
+        assert.ok('message dispatched');
+      }
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -113,6 +116,25 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT);
+    return settled();
+  });
+
+  test('it broadcasts a message when the ARROW_LEFT key is pressed and there is no selection', async function(assert) {
+    assert.expect(1);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.META_ARROW_LEFT_KEY) {
+        assert.ok('message dispatched');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT);
     return settled();
   });
 

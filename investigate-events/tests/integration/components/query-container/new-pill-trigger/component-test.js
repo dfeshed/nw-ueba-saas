@@ -17,6 +17,8 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
 );
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 let setState;
 
 module('Integration | Component | new-pill-trigger', function(hooks) {
@@ -149,5 +151,47 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill();
+  });
+
+  test('if no meta/operator/value is selected and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, 'Correct message type');
+      assert.equal(position, 0, 'Correct position of the pill');
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+  });
+
+  test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, 'Correct message type');
+      assert.equal(position, 0, 'Correct position of the pill');
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
   });
 });

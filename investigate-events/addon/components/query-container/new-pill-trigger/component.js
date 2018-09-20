@@ -62,6 +62,12 @@ export default Component.extend({
         case MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW:
           // append is actually an insert to the new pill trigger
           this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW);
+          break;
+        case MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL:
+          this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, this.get('newPillPosition'));
+          break;
+        case MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL:
+          this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, this.get('newPillPosition'));
       }
     }
   },

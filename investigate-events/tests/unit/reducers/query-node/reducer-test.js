@@ -833,3 +833,15 @@ test('RETRIEVE_HASH_FOR_QUERY_PARAMS reducer stores hashes', function(assert) {
   assert.equal(result.pillDataHashes.length, 2, 'pillDataHashes is the correct length');
   assert.deepEqual(result.pillDataHashes, ['foo', 'bar'], 'pillDataHashes is the correct value');
 });
+
+test('ADD_FOCUS_GUIDED_PILL adds focus to a pill at the provided position', function(assert) {
+  const action = {
+    type: ACTION_TYPES.ADD_FOCUS_GUIDED_PILL,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(stateWithPills, action);
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[1].isFocused === true, 'Correct pill has been focused');
+});
