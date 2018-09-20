@@ -28,7 +28,9 @@ const fileListState = Immutable.from({
   hostNameList: [],
   fetchHostNameListError: false,
   fetchMetaValueLoading: false,
-  activeAlertTab: 'CRITICAL'
+  activeAlertTab: 'critical',
+  alertsData: null,
+  alertsError: null
 });
 
 const _handleAppendFiles = (action) => {
@@ -114,6 +116,13 @@ const fileListReducer = handleActions({
         }
         return s;
       }
+    });
+  },
+
+  [ACTION_TYPES.GET_ALERTS_DATA]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('alertsData', action.payload.data),
+      failure: (s) => s.set('alertsError', action.payload.meta)
     });
   },
 

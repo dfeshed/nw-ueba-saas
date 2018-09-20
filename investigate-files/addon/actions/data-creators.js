@@ -201,6 +201,19 @@ const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TA
 
 const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName } });
 const setDetailAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB, payload: { tabName } });
+const prepareQuery = (checksum) => {
+  return {
+    filter: [
+      { field: 'meta', value: 'CHECKSUM' },
+      { field: 'value', value: checksum }
+    ]
+  };
+};
+
+const getAlerts = (checksum) => ({
+  type: ACTION_TYPES.GET_ALERTS_DATA,
+  promise: File.getAlertsData(prepareQuery(checksum))
+});
 
 const fetchFileContext = (fileName) => {
   return (dispatch) => {
@@ -361,5 +374,6 @@ export {
   fetchHostNameList,
   fetchAgentId,
   setNewFileTab,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  getAlerts
 };

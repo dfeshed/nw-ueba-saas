@@ -122,6 +122,15 @@ const getContext = (query, handlers) => {
   });
 };
 
+const getAlertsData = (query) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'stream',
+    modelName: 'scoring-server',
+    query
+  });
+};
+
 
 export default {
   fetchFiles,
@@ -130,5 +139,6 @@ export default {
   getSavedFilters,
   deleteFilter,
   getAllServices,
-  getContext
+  getContext,
+  getAlertsData
 };

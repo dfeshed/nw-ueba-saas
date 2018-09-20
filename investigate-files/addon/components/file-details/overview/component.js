@@ -6,7 +6,8 @@ import {
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
-  activeDetailAlertTab: state.files.visuals.activeDetailAlertTab
+  activeDetailAlertTab: state.files.visuals.activeDetailAlertTab,
+  alertsData: state.files.fileList.alertsData
 });
 
 const dispatchToActions = {

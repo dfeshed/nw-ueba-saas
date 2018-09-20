@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 
 const visualsInitialState = Immutable.from({
   activeFileDetailTab: 'OVERVIEW',
-  activeDetailAlertTab: 'CRITICAL'
+  activeDetailAlertTab: 'critical'
 });
 
 const visuals = handleActions({

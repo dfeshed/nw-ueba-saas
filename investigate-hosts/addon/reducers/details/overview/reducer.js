@@ -9,7 +9,7 @@ const initialState = Immutable.from({
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
   policyDetails: null,
-  activeAlertTab: 'CRITICAL'
+  activeAlertTab: 'critical'
 });
 
 const hostDetails = reduxActions.handleActions({

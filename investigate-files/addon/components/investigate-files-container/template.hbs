@@ -43,7 +43,7 @@
       {{/rsa-form-button}}
     {{/rightPanel.header}}
     {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
-      {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab}}
+      {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab alertsData=alertsData}}
     {{else if (eq activeDataSourceTab 'HOSTS')}}
       {{file-found-on-hosts}}
     {{else}}

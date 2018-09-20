@@ -22,7 +22,8 @@ import {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  fetchHostNameList
+  fetchHostNameList,
+  getAlerts
 } from 'investigate-files/actions/data-creators';
 
 import { failure } from 'investigate-shared/utils/flash-messages';
@@ -53,7 +54,8 @@ const dispatchToActions = {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  fetchHostNameList
+  fetchHostNameList,
+  getAlerts
 };
 
 /**
@@ -156,6 +158,7 @@ const FileList = Component.extend({
         if (!isSameRowClicked && openRiskPanel) {
           this.send('fetchFileContext', item.firstFileName);
           this.send('fetchHostNameList', item.checksumSha256);
+          this.send('getAlerts', item.checksumSha256);
           next(() => {
             this.openRiskPanel();
           });

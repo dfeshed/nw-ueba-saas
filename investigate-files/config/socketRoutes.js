@@ -10,6 +10,7 @@ const filesConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
   const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
+  const scoringSocketUrl = common.determineSocketUrl(environment, '/scoring/socket');
 
 
   return {
@@ -90,6 +91,13 @@ const filesConfigGen = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/server/get-all',
         requestDestination: '/ws/endpoint/server/get-all'
+      }
+    },
+    'scoring-server': {
+      socketUrl: scoringSocketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/scoring/scoring-server',
+        requestDestination: '/user/queue/scoring/scoring-server'
       }
     }
   };

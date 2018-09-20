@@ -9,7 +9,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeFileDetailTab: 'OVERVIEW',
-    activeDetailAlertTab: 'CRITICAL'
+    activeDetailAlertTab: 'critical'
   });
 });
 
@@ -28,7 +28,7 @@ test('The CHANGE_FILE_DETAIL_TAB sets new tab to state', function(assert) {
 
 test('The CHANGE_DETAIL_ALERT_TAB sets new tab to state', function(assert) {
   const previous = Immutable.from({
-    activeDetailAlertTab: 'CRITICAL'
+    activeDetailAlertTab: 'critical'
   });
 
   const expectedEndState = {

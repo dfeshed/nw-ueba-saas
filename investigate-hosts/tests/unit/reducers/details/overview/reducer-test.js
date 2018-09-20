@@ -13,7 +13,7 @@ const initialState = {
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
   policyDetails: null,
-  activeAlertTab: 'CRITICAL'
+  activeAlertTab: 'critical'
 };
 
 test('should return the initial state', function(assert) {
@@ -83,7 +83,7 @@ test('The ARRANGE_SECURITY_CONFIGURATIONS will set arrangeSecurityConfigsby to e
 
 test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
   const previous = Immutable.from({
-    activeAlertTab: 'CRITICAL'
+    activeAlertTab: 'critical'
   });
 
   const expectedEndState = {

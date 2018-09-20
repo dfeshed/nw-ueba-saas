@@ -5,37 +5,20 @@ import computed from 'ember-computed-decorators';
 const ALERT_TABS = [
   {
     label: 'investigateShared.endpoint.riskProperties.alerts.critical',
-    name: 'CRITICAL',
+    name: 'critical',
     color: 'red'
   },
   {
     label: 'investigateShared.endpoint.riskProperties.alerts.high',
-    name: 'HIGH',
+    name: 'high',
     color: 'orange'
   },
   {
     label: 'investigateShared.endpoint.riskProperties.alerts.medium',
-    name: 'MEDIUM',
+    name: 'medium',
     color: 'yellow'
-  },
-  {
-    label: 'investigateShared.endpoint.riskProperties.alerts.low',
-    name: 'LOW',
-    color: 'green'
   }
 ];
-
-// Alert counts will come from parent soon, hardcoding for now
-
-const ALERT_COUNT =
-  {
-    CRITICAL: 2,
-    HIGH: 8,
-    MEDIUM: 20,
-    LOW: 30,
-    TOTAL: 60
-  };
-
 
 export default Component.extend({
 
@@ -43,8 +26,13 @@ export default Component.extend({
 
   classNames: ['risk-properties'],
 
-  @computed('activeAlertTab')
-  tabs(activeAlertTab) {
-    return ALERT_TABS.map((tab) => ({ ...tab, selected: tab.name === activeAlertTab, count: ALERT_COUNT[tab.name] }));
+  @computed('activeAlertTab', 'alertsData')
+  tabs(activeAlertTab, alertsData) {
+    const alertCount = alertsData ? alertsData.alertCount : [];
+    return ALERT_TABS.map((tab) => ({
+      ...tab,
+      selected: tab.name === activeAlertTab,
+      count: alertCount[tab.name] ? alertCount[tab.name] : 0
+    }));
   }
 });

@@ -29,7 +29,8 @@ const stateToComputed = (state) => ({
   activeAlertTab: state.files.fileList.activeAlertTab,
   contextLoadingStatus: state.files.fileList.contextLoadingStatus,
   isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError,
-  filter: state.files.filter
+  filter: state.files.filter,
+  alertsData: state.files.fileList.alertsData
 });
 
 const dispatchToActions = {

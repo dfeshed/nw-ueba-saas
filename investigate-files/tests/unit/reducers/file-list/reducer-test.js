@@ -74,7 +74,9 @@ test('should return the initial state', function(assert) {
     hostNameList: [],
     fetchHostNameListError: false,
     fetchMetaValueLoading: false,
-    activeAlertTab: 'CRITICAL'
+    activeAlertTab: 'critical',
+    alertsData: null,
+    alertsError: null
   });
 });
 
@@ -359,7 +361,8 @@ test('The GET_FILE_STATUS_HISTORY update to state', function(assert) {
 
 test('The GET_FILE_STATUS update to state when valid response', function(assert) {
   const previous = Immutable.from({
-    fileStatusData: {}
+    fileStatusData: {},
+    alertsData: null
   });
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_FILE_STATUS,
@@ -424,13 +427,41 @@ test('Fetch Complete will set to false', function(assert) {
 
 test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
   const previous = Immutable.from({
-    activeAlertTab: 'CRITICAL'
+    activeAlertTab: 'critical',
+    alertsData: null
   });
 
   const expectedEndState = {
-    activeAlertTab: 'HIGH'
+    activeAlertTab: 'HIGH',
+    alertsData: null
   };
 
   const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName: 'HIGH' } });
   assert.deepEqual(endState, expectedEndState);
+});
+
+test('The GET_ALERTS_DATA stes the alertData ', function(assert) {
+  // Initial state
+  const initialResult = reducer(undefined, {});
+  assert.equal(initialResult.alertsData, null, 'original alertsData value');
+
+  const response = [{
+    hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+    alertCount: {
+      critical: 1,
+      high: 10,
+      medium: 20
+    },
+    categorizedAlerts: {}
+  }
+  ];
+
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_ALERTS_DATA,
+    payload: { data: response }
+  });
+
+  const result = reducer(initialResult, newAction);
+  assert.deepEqual(result.alertsData, response, 'alertsData value is set');
+
 });
