@@ -23,7 +23,7 @@ const dispatchToActions = {
 const EffectiveDate = Component.extend({
   tagName: 'box',
 
-  classNames: 'effective-date',
+  classNames: 'scan-start-date',
 
   actions: {
     onDateChange(selectedDates) {

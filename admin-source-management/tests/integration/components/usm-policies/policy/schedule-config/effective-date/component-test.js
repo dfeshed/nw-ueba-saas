@@ -29,7 +29,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/effective-
 
   test('should render the effective date component', async function(assert) {
     await render(hbs`{{usm-policies/policy/schedule-config/effective-date}}`);
-    assert.equal(findAll('.effective-date').length, 1, 'expected to have root element in DOM');
+    assert.equal(findAll('.scan-start-date').length, 1, 'expected to have root element in DOM');
   });
 
   test('should trigger the updatePolicyProperty action creator on date change', async function(assert) {
@@ -37,13 +37,13 @@ module('Integration | Component | usm-policies/policy/schedule-config/effective-
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');
     const inputEl = document.querySelector('.date-time input');
     await fillIn(inputEl, '2020');
-    await click('.effective-date .datetime-picker-icon');
+    await click('.scan-start-date .datetime-picker-icon');
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called on the date change');
   });
 
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy/schedule-config/effective-date}}`);
-    const minusIcon = document.querySelector('.effective-date span .rsa-icon');
+    const minusIcon = document.querySelector('.scan-start-date span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
   });
