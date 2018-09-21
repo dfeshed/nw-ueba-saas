@@ -1,13 +1,13 @@
 {{!--loop all criterias and nested group criterias--}}
 {{#each criterias as |criteria index|}}
-  {{!--if criteria is an array, the criteria is a single criteria and not a group of criterias. Need to find the list of 
+  {{!--if criteria is an array, the criteria is a single criteria and not a group of criterias. Need to find the list of
   attributes, operators, input and validator--}}
   {{#if (is-array criteria)}}
     {{!--find operators in groupAttributesMap--}}
     {{#each groupAttributesMap.map as |attribute|}}
       {{#if (eq criteria.[0] attribute.[0])}}
         {{#each attribute.[1] as |operator|}}
-        {{!--then find input field/s and validation in groupAttributesMap--}}
+          {{!--then find input field/s and validation in groupAttributesMap--}}
           {{#if (eq criteria.[1] operator.[0])}}
             <div class='group-criteria'>
               <span class="attribute">
@@ -17,7 +17,7 @@
                     options=groupAttributesMap.attribute
                     selected=criteria.[0]
                     onchange=(action 'handleAttributeChange' (concat criteriaPath ',' index)) as |option|}}
-                     {{t (concat 'adminUsm.groupCriteria.attribute.' option)}}
+                    {{t (concat 'adminUsm.groupCriteria.attribute.' option)}}
                   {{/power-select}}
                 </label>
               </span>
@@ -28,13 +28,13 @@
                     options=attribute.[1]
                     selected=operator
                     onchange=(action 'handleOperatorChange' (concat criteriaPath ',' index)) as |option|}}
-                     {{t (concat 'adminUsm.groupCriteria.operator.' option.[0])}}
+                    {{t (concat 'adminUsm.groupCriteria.operator.' option.[0])}}
                   {{/power-select}}
                 </label>
               </span>
               {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
               {{#usm-groups/group/group-attributes/attribute-inputs
-                inputField=operator.[1] 
+                inputField=operator.[1]
                 value=criteria.[2]
                 value2=criteria.[3]
                 validation=operator.[2]

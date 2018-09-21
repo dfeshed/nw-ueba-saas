@@ -1,17 +1,17 @@
-<!-- side wizard nav -->
 <box xs="4" class="sidebar">
   <centered fit>
     <h2>Wizard Nav...</h2>
   </centered>
 </box>
 
-<!-- form -->
 <box class="form">
   <hbox class="toolbar">
-    {{#rsa-form-button style='primary' class='confirm-button'
-                       tabIndex="3"
-                       defaultAction="save"
-                       isDisabled=hasMissingRequiredData
+    {{#rsa-form-button
+      style='primary'
+      class='confirm-button'
+      tabIndex="3"
+      defaultAction="save"
+      isDisabled=hasMissingRequiredData
     }}
       {{t 'adminUsm.button.save'}}
     {{/rsa-form-button}}
@@ -21,20 +21,20 @@
   </hbox>
   <hbox class="control">
     {{rsa-form-input
-                label=(t 'adminUsm.policy.name')
-                placeholder=(t 'adminUsm.policy.namePlaceholder')
-                value=(readonly policy.name)
-                maxLength=256
-                focusOut=(action "handleNameChange" value="target.value")
+      label=(t 'adminUsm.policy.name')
+      placeholder=(t 'adminUsm.policy.namePlaceholder')
+      value=(readonly policy.name)
+      maxLength=256
+      focusOut=(action "handleNameChange" value="target.value")
      }}
   </hbox>
   <hbox class="control">
     {{rsa-form-textarea
-                label=(t 'adminUsm.policy.description')
-                placeholder=(t 'adminUsm.policy.descPlaceholder')
-                value=(readonly policy.description)
-                maxLength=8000
-                focusOut=(action 'handleDescriptionChange' value='target.value')
+      label=(t 'adminUsm.policy.description')
+      placeholder=(t 'adminUsm.policy.descPlaceholder')
+      value=(readonly policy.description)
+      maxLength=8000
+      focusOut=(action 'handleDescriptionChange' value='target.value')
     }}
   </hbox>
 

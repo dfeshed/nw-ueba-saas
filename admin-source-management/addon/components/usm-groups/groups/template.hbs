@@ -25,7 +25,7 @@
             <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
           {{else}}
             {{#if item.dirty}}
-              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p> 
+              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p>
             {{else}}
               {{t 'adminUsm.publishStatus.published'}}
             {{/if}}
@@ -47,7 +47,7 @@
     {{/row.cell}}
   {{/explorer.table}}
 
- {{#explorer.inspector
+  {{#explorer.inspector
     inspectorHeaderComponent='usm-groups/groups/inspector/header'
     inspectorContentComponent='usm-groups/groups/inspector'
     hasInspectorToolbar=false as |inspector|}}

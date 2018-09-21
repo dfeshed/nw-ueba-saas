@@ -16,12 +16,12 @@
   </h2>
 </box>
 {{#if hasInspectorToolbar}}
-<hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
-  <span class="rsa-tab text-only is-active">
-    {{t 'rsaExplorer.inspector.overview'}}
-  </span>
-  {{yield 'inspector-toolbar' (get this 'viewMode')}}
-</hbox>
+  <hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
+    <span class="rsa-tab text-only is-active">
+      {{t 'rsaExplorer.inspector.overview'}}
+    </span>
+    {{yield 'inspector-toolbar' (get this 'viewMode')}}
+  </hbox>
 {{/if}}
 <box class="rsa-explorer-inspector__body">
   {{yield (hash

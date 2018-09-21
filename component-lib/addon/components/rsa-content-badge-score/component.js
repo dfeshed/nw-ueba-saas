@@ -42,6 +42,7 @@ export default Component.extend({
   isDanger: computed.equal('style', 'danger'),
 
   isSmaller: computed.equal('size', 'smaller'),
+  isNotSmaller: computed.not('isSmaller'),
   isSmall: computed.equal('size', 'small'),
   isLarge: computed.equal('size', 'large'),
   isLarger: computed.equal('size', 'larger'),

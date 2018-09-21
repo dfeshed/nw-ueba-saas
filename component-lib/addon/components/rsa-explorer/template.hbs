@@ -110,11 +110,11 @@
     {{#if confirmationData.warnings}}
       <span test-id='test-warnings' class="text">
         <ul class="rsa-disc">
-           {{#each confirmationData.warnings as |warning|}}
-             <li>{{warning}}</li>
-           {{/each}}
+          {{#each confirmationData.warnings as |warning|}}
+            <li>{{warning}}</li>
+          {{/each}}
         </ul>
-     </span>
+      </span>
     {{/if}}
     {{#if confirmationData.warning}}
       <p test-id='test-warning'>{{confirmationData.warning}}</p>

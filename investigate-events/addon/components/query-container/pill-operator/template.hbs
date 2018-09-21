@@ -26,12 +26,12 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |operator|
   }}
-  {{!--
-    The icon will be there for inexpensive operators too, but will
-    be hidden, styled by class names. This was required to align
-    operator display names
-  --}}
-    {{rsa-icon 
+    {{!--
+      The icon will be there for inexpensive operators too, but will
+      be hidden, styled by class names. This was required to align
+      operator display names
+    --}}
+    {{rsa-icon
       name='stopwatch'
       style='lined'
       class=(if operator.isExpensive 'is-expensive expensive-indicator' 'expensive-indicator')

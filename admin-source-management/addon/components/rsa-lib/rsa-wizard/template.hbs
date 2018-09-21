@@ -12,9 +12,9 @@
           {{!-- onclick={{action 'transitionToStep' step.id}} --}}
         >
           {{t step.title}}
-          {{#unless (eq currentStepId step.id)}}
+          {{#if (not-eq currentStepId step.id)}}
             {{rsa-icon name='arrow-right-12' style='lined'}}
-          {{/unless}}
+          {{/if}}
         </a>
       </li>
     {{/each}}

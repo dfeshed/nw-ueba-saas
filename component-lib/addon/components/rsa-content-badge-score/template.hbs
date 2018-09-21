@@ -4,21 +4,19 @@
   </div>
   <div class="progress-bar"></div>
 {{else}}
-  {{#unless isSmaller}}
+  {{#if isNotSmaller}}
     <svg viewBox="-50 -50 100 100">
       <circle r="49" />
     </svg>
-  {{/unless}}
+  {{/if}}
   <div class="details">
     <div class="score">
       {{score}}
     </div>
-    {{#unless (and isSmaller isSmall)}}
-      {{#if label}}
-        <div class="label">
-          {{label}}
-        </div>
-      {{/if}}
-    {{/unless}}
+    {{#if label}}
+      <div class="label">
+        {{label}}
+      </div>
+    {{/if}}
   </div>
 {{/if}}

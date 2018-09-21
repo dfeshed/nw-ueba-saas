@@ -1,5 +1,8 @@
  /* eslint-env node */
 const os = require('os');
+const existsSync = require('exists-sync');
+const { WatchedDir } = require('broccoli-source');
+
 const featureFlagDefaultHash = require('./feature-flags');
 
 let featureFlagConfig;
@@ -223,9 +226,33 @@ const addFeatureFlags = function(environment) {
   return featureFlagConfig;
 };
 
+const commonBuildOptions = function(projectDir) {
+  const templatesPath = `${projectDir}/addon/components`;
+  let templatesTree = null;
+  if (existsSync(templatesPath)) {
+    templatesTree = new WatchedDir(templatesPath);
+  }
+
+  return {
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
+    },
+    'ember-cli-babel': {
+      includePolyfill: true
+    },
+    trees: {
+      templates: templatesTree
+    }
+  };
+};
+
 module.exports = {
   isDevelopingAddon,
   determineSocketUrl,
   mergeSocketConfigs,
-  addFeatureFlags
+  addFeatureFlags,
+  commonBuildOptions
 };

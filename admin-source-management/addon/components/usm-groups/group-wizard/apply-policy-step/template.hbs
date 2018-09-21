@@ -1,6 +1,7 @@
 <vbox>
   <span style="color:Tomato;"><br>TEMPORARY LOGIC TO ASSIGN AN EDR POLICY FOR END-TO-END TESTING (Sprint 3)<br><br></span>
-  <label class="control-label">{{t 'adminUsm.groupWizard.applyPolicyTitle'}}
+  <label class="control-label">
+    {{t 'adminUsm.groupWizard.applyPolicyTitle'}}
     <span class="apply-policy-optional">{{t 'adminUsm.groupWizard.applyPolicyOptional'}}</span>
   </label>
   <hbox class="control policy-assignment">
@@ -11,7 +12,7 @@
         selected=selectedPolicy
         searchField='name'
         onchange=(action 'handlePolicyAssignment') as |option|}}
-          {{option.name}}
+        {{option.name}}
       {{/power-select}}
     </label>
   </hbox>

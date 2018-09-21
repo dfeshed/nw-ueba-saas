@@ -14,40 +14,40 @@
   {{#explorer.table as |row|}}
     {{#row.cell as |item index column|}}
       <span class="{{concat 'usm-policy-column-' column.field}} {{if item.defaultPolicy 'usm-default-policy-row'}}">
-      {{#if (eq column.dataType 'checkbox') }}
-        {{#if (not item.defaultPolicy) }}
-          <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
-            {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
-          </label>
-        {{/if}}
-      {{else if (eq column.field "sourceType")}}
-        {{t (concat 'adminUsm.policyTypes.' item.policyType)}}
-      {{else if (eq column.field "name")}}
+        {{#if (eq column.dataType 'checkbox') }}
+          {{#if (not item.defaultPolicy) }}
+            <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+              {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+            </label>
+          {{/if}}
+        {{else if (eq column.field "sourceType")}}
+          {{t (concat 'adminUsm.policyTypes.' item.policyType)}}
+        {{else if (eq column.field "name")}}
           {{get item column.field}}
         {{else if (eq column.field "published")}}
           {{#if (eq item.lastPublishedOn 0)}}
             <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
           {{else}}
             {{#if item.dirty}}
-              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p> 
+              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p>
             {{else}}
               {{t 'adminUsm.publishStatus.published'}}
             {{/if}}
           {{/if}}
-      {{else if (eq column.field "groups")}}
-        {{#each item.associatedGroups as |group index|}}
-          {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
-        {{/each}}
-      {{else if (eq column.field "numSources")}}
+        {{else if (eq column.field "groups")}}
+          {{#each item.associatedGroups as |group index|}}
+            {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+          {{/each}}
+        {{else if (eq column.field "numSources")}}
           <span>----</span>
-      {{else}}
-        {{get item column.field}}
-      {{/if}}
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
       </span>
     {{/row.cell}}
   {{/explorer.table}}
 
- {{#explorer.inspector
+  {{#explorer.inspector
     inspectorHeaderComponent='usm-policies/policies/inspector/header'
     inspectorContentComponent='usm-policies/policies/inspector'
     hasInspectorToolbar=false as |inspector|}}

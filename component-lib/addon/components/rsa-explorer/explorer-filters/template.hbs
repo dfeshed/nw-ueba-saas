@@ -1,41 +1,41 @@
 <h2 class="header">{{rsa-icon name='filter-2'}}{{t 'rsaExplorer.filters.label'}}</h2>
 <section class="body">
   {{#if hasTimeFilter}}
-  <section class="filter-option created-filter">
-    <hbox class="time-range-label">
-      <h2>{{ t 'rsaExplorer.filters.timeRange'}}</h2>
-      {{#x-toggle
-        showLabels=true
-        onLabel=(t 'rsaExplorer.filters.customDateRange')
-        value=(readonly hasCustomDate)
-        onToggle=(action 'toggleCustomDate') as |toggle|}}
-        {{toggle.switch}}
-        {{toggle.onLabel value=(readonly (not hasCustomDate))}}
-      {{/x-toggle}}
-    </hbox>
-    {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
-      {{#if currentIsCustomRange}}
-        {{rsa-form-datetime
-          label=(t 'rsaExplorer.filters.customStartDate')
-          isError=hasCustomDateError
-          value=(unbound customDateRangeStart)
-          onChange=(action 'customStartDateChanged')
-          errorMessage=customDateErrorMessage}}
-        {{rsa-form-datetime
-          label=(t 'rsaExplorer.filters.customEndDate')
-          value=(unbound customDateRangeEnd)
-          onChange=(action 'customEndDateChanged')}}
-      {{else}}
-        {{#power-select
-          options=timeframes
-          selected=selectedTimeframe
-          searchEnabled=false
-          onchange=(action "onChangeTimeframe") as |time|}}
-          {{t (concat 'rsaExplorer.timeframeOptions.' time.name) }}
-        {{/power-select}}
-      {{/if}}
-    {{/liquid-bind}}
-  </section>
+    <section class="filter-option created-filter">
+      <hbox class="time-range-label">
+        <h2>{{ t 'rsaExplorer.filters.timeRange'}}</h2>
+        {{#x-toggle
+          showLabels=true
+          onLabel=(t 'rsaExplorer.filters.customDateRange')
+          value=(readonly hasCustomDate)
+          onToggle=(action 'toggleCustomDate') as |toggle|}}
+          {{toggle.switch}}
+          {{toggle.onLabel value=(readonly (not hasCustomDate))}}
+        {{/x-toggle}}
+      </hbox>
+      {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
+        {{#if currentIsCustomRange}}
+          {{rsa-form-datetime
+            label=(t 'rsaExplorer.filters.customStartDate')
+            isError=hasCustomDateError
+            value=(unbound customDateRangeStart)
+            onChange=(action 'customStartDateChanged')
+            errorMessage=customDateErrorMessage}}
+          {{rsa-form-datetime
+            label=(t 'rsaExplorer.filters.customEndDate')
+            value=(unbound customDateRangeEnd)
+            onChange=(action 'customEndDateChanged')}}
+        {{else}}
+          {{#power-select
+            options=timeframes
+            selected=selectedTimeframe
+            searchEnabled=false
+            onchange=(action "onChangeTimeframe") as |time|}}
+            {{t (concat 'rsaExplorer.timeframeOptions.' time.name) }}
+          {{/power-select}}
+        {{/if}}
+      {{/liquid-bind}}
+    </section>
   {{/if}}
   {{yield (hash filterControls=(component filterControlsComponent updateFilter=updateFilter))}}
 </section>
