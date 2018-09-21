@@ -3,7 +3,7 @@
   {{t 'context.addToList.title'}}
 </li>
 {{#if pivotToInvestigateUrl}}
-  <a href="{{pivotToInvestigateUrl}}" target="_blank">
+  <a href="{{pivotToInvestigateUrl}}" target="_blank" rel="noopener noreferrer">
     <li class="action js-test-pivot-to-investigate-link">
       {{rsa-icon name="search" size="small"}}
       <span>
@@ -14,7 +14,7 @@
 {{/if}}
 {{#if showArcherLink}}
   <span title="{{unless pivotToArcherUrl (t 'context.tooltip.archerToolTip')}}">
-    <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank">
+    <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank" rel="noopener noreferrer">
       <li class="action js-test-pivot-to-archer-link">
         {{rsa-icon name="search" size="small"}}
         <span>
@@ -25,7 +25,7 @@
   </span>
 {{/if}}
 {{#if showEndpointLink}}
-  <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank">
+  <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank" rel="noopener noreferrer">
     <li class="action js-test-endpoint-link">
       {{rsa-icon name="search" size="small"}}
       {{t 'context.tooltip.ecat'}}

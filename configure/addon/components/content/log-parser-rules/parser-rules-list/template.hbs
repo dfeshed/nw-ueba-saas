@@ -30,19 +30,19 @@
   <div class='parser-table-container'>
     <table class='parserTable'>
       {{#each parserRules as |parserRule index|}}
-      <tr>
-        <td class="{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}} {{if (contains parserRule.name invalidRules) 'invalid-rule'}} {{if (contains parserRule.name highlightedRuleNames) 'has-matches'}}" {{action "selectParserRule" index}}>
-          <div>
-            {{#if parserRule.dirty}}
-              <p class="deploy-icon">{{rsa-icon name="synchronize-3"}}</p>   
-            {{/if}}
-            <span class="parser-rule-name">{{parserRule.name}}</span>
-            {{#if parserRule.outOfBox}}
-              <span class="outOfBox-indicator">&nbsp;[RSA]</span>
-            {{/if}}
-          </div>
-        </td>
-      </tr>
+        <tr>
+          <td class="{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}} {{if (contains parserRule.name invalidRules) 'invalid-rule'}} {{if (contains parserRule.name highlightedRuleNames) 'has-matches'}}" {{action "selectParserRule" index}}>
+            <div>
+              {{#if parserRule.dirty}}
+                <p class="deploy-icon">{{rsa-icon name="synchronize-3"}}</p>
+              {{/if}}
+              <span class="parser-rule-name">{{parserRule.name}}</span>
+              {{#if parserRule.outOfBox}}
+                <span class="outOfBox-indicator">&nbsp;[RSA]</span>
+              {{/if}}
+            </div>
+          </td>
+        </tr>
       {{/each}}
     </table>
   </div>

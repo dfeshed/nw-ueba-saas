@@ -1,7 +1,8 @@
 <div class="black-list-options">
   <box>
-    <h4 class='rsa-form-radio-group-label blacklist-category-title'>{{t
-      'investigateFiles.editFileStatus.blacklistCategory'}}</h4>
+    <h4 class='rsa-form-radio-group-label blacklist-category-title'>
+      {{t 'investigateFiles.editFileStatus.blacklistCategory'}}
+    </h4>
     {{#power-select
       searchEnabled=false
       triggerClass="inline"
@@ -12,8 +13,9 @@
     {{/power-select}}
   </box>
   <box class='radio-controls rsa-form-radio-group' fit>
-    <h4 class='rsa-form-radio-group-label remediation-action-title'>{{t
-      'investigateFiles.editFileStatus.remediationActionTitle'}}</h4>
+    <h4 class='rsa-form-radio-group-label remediation-action-title'>
+      {{t 'investigateFiles.editFileStatus.remediationActionTitle'}}
+    </h4>
     <p class='remediation-action-note'>{{t 'investigateFiles.editFileStatus.remediationActionNote'}}</p>
     {{#if errorDecorator.remediationAlert}}
       <span class='remediation-alert'>
@@ -29,6 +31,5 @@
         change=(action "toggleBlocking")}}
       {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockFile'}}
     </label>
-
   </box>
 </div>

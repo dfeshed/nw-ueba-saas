@@ -1,9 +1,9 @@
 {{#rsa-context-menu contextItems=contextItems contextSelection=item beforeContextMenuShow=beforeContextMenuShow}}
   {{#if table.columnsDefinedDeclaratively}}
-  {{!assume the consumer provided a block that includes an individual table cell for each column; no need to iterate}}
+    {{!assume the consumer provided a block that includes an individual table cell for each column; no need to iterate}}
     {{yield item index null}}
   {{else}}
-  {{!assume the consumer provided a block with a single table cell; iterate it for each column}}
+    {{!assume the consumer provided a block with a single table cell; iterate it for each column}}
     {{#each table.visibleColumns as |column|}}
       {{yield item index column}}
     {{/each}}

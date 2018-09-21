@@ -5,11 +5,11 @@
         {{t 'context.addToList.title'}}
       {{/rsa-form-button}}
     {{else if (eq componentName 'endpoint')}}
-      <a href="ecatui://{{lookupKey}}" target="_blank" class='rsa-context-panel__linkButton' title= {{t 'context.hostSummary.endpoint'}}>
+      <a href="ecatui://{{lookupKey}}" target="_blank" rel="noopener noreferrer" class='rsa-context-panel__linkButton' title= {{t 'context.hostSummary.endpoint'}}>
         {{t 'context.tooltip.ecat'}}
       </a>
     {{else if (eq componentName 'investigate')}}
-      <a href="{{investigateUrl}}" target="_blank" class='rsa-context-panel__linkButton'>
+      <a href="{{investigateUrl}}" target="_blank" rel="noopener noreferrer" class='rsa-context-panel__linkButton'>
         {{t 'context.tooltip.navigate'}}
       </a>
     {{else if (eq componentName 'archer')}}

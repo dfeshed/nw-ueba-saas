@@ -1,17 +1,20 @@
 {{#each data as |item|}}
   <box class="status-history__item">
-    <div>{{rsa-content-datetime timestamp=item.lastModifiedOn}}<span class="status-history__by">by</span> {{item.lastModifiedBy}}</div>
-    <div>{{item.fileStatus}} -
+    <div>
+      {{rsa-content-datetime timestamp=item.lastModifiedOn}}<span class="status-history__by">by</span> {{item.lastModifiedBy}}
+    </div>
+    <div>
+      {{item.fileStatus}} -
       {{#if item.category}}
-          {{item.category}}
+        {{item.category}}
       {{else}}
-          N/A
+        N/A
       {{/if}}
     </div>
     <div class="status-history__comments-label">{{t 'investigateShared.endpoint.fileDetailsPanel.comment'}}</div>
     <div>{{item.comment}}</div>
     <div>
-        <label class="status-history__more" >More</label>
+      <label class="status-history__more" >More</label>
     </div>
   </box>
 {{/each}}

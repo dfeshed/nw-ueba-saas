@@ -7,11 +7,7 @@ as |hideAction model|
     <h2 class="rsa-context-tooltip__header">{{model.id}}</h2>
     <hbox nowrap class="rsa-context-tooltip__body">
       <vbox fill class="rsa-context-tooltip__content">
-        {{#unless model.type}}
-          <centered class="rsa-context-tooltip__content-error">
-            <h3>{{t 'context.tooltip.contextUnavailable'}}</h3>
-          </centered>
-        {{else}}
+        {{#if model.type}}
           <box fit class="rsa-context-tooltip__content-header">
             {{t 'context.tooltip.contextHighlights'}}
           </box>
@@ -30,7 +26,11 @@ as |hideAction model|
               {{t 'context.tooltip.viewOverview'}}
             {{/rsa-form-button}}
           </centered>
-        {{/unless}}
+        {{else}}
+          <centered class="rsa-context-tooltip__content-error">
+            <h3>{{t 'context.tooltip.contextUnavailable'}}</h3>
+          </centered>
+        {{/if}}
       </vbox>
       <vbox fit class="rsa-context-tooltip__aside">
         <h3 class="rsa-context-tooltip__aside-header">
