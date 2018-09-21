@@ -24,7 +24,7 @@
               {{/power-select}}
             </label>
           </div>
-          
+
           <div class="bottom-margin">
             {{rsa-form-input label="Custom Parameter Name" placeholder="Paramater Name" value=pendingCustomParameter.name focusOut=(action 'updateDisplayName')}}
           </div>
@@ -45,7 +45,7 @@
     {{#if operationHelp}}
       <h1 class="small-header">Help for "{{selectedOperation.name}}"</h1>
       <div class="scroll-box border-panel help-box bottom-margin padding">
-        <p>{{{operationHelp}}}</p>
+        <p>{{operationHelpText}}</p>
       </div>
     {{/if}}
   </vbox>

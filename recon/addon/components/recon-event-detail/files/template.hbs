@@ -7,7 +7,7 @@
       items=files
       fitToWidth=false
       columnsConfig=columnsConfig}}
-      {{#rsa-data-table/header as |column index|}}
+      {{#rsa-data-table/header as |column|}}
         {{#if column.isCheckboxColumn}}
           {{#if hasMultipleSessionFiles}}
             <label class="rsa-form-checkbox-label {{if allSelected 'checked'}}">
@@ -22,11 +22,11 @@
 
         {{#rsa-data-table/body-cell columnWidth=column.width}}
           {{#if column.isCheckboxColumn}}
-            {{#unless (eq item.type "link")}}
+            {{#if (not-eq item.type "link")}}
               <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
                 {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
               </label>
-            {{/unless}}
+            {{/if}}
           {{else if (eq column.field "hashes")}}
             {{#if (eq item.type "link")}}
               <div class="recon-file-linkfile">
@@ -40,11 +40,11 @@
               {{/each}}
             {{/if}}
           {{else if (eq column.field "fileSize")}}
-            {{#unless (eq item.type "link")}}
+            {{#if (not-eq item.type "link")}}
               <div class="recon-file-ellipsis">
                 {{rsa-content-memsize size=(get item column.field)}}
               </div>
-            {{/unless}}
+            {{/if}}
           {{else if (eq column.field "fileName")}}
             {{#if (eq item.type "link")}}
               <div class="recon-file-ellipsis recon-file-link" title="{{get item column.field}}"

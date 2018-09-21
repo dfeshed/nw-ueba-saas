@@ -10,9 +10,9 @@
   {{/if}}
 {{else}}
   {{#if logsLoading}}<div>{{rsa-loader}}</div>{{/if}}
-    {{#each logs key="id" as |log|}}
-      <div>
-        {{log-item log=log}}
-      </div>
-    {{/each}}
+  {{#each logs key="id" as |log|}}
+    <div>
+      {{log-item log=log}}
+    </div>
+  {{/each}}
 {{/if}}

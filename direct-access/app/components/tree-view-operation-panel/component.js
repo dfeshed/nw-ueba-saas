@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
+import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import { deselectOperation, sendOperation, updateOperationParams, updateCustomParameter } from 'direct-access/actions/actions';
 import { selectedOperation, selectedOperationHelp } from 'direct-access/reducers/selectors';
@@ -23,6 +24,11 @@ const treeViewOperationPanel = Component.extend({
   operationTypes: [
     'text', 'boolean', 'date-time'
   ],
+
+  @computed('operationHelp')
+  operationHelpText(helpText) {
+    return htmlSafe(helpText);
+  },
 
   @computed('params', 'selectedOperation')
   operationMessageObject: (params, selectedOperation) => ({
