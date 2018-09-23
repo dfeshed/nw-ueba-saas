@@ -57,7 +57,6 @@
 .host-table__toolbar {
   background-color: background-color(primary, darkest, somewhat-opaque);
   color: text-color(primary, lightest);
-  padding: rsa-whitespace();
   label {
     @include rsa-font(header, larger);
     line-height: 2rem;
@@ -66,7 +65,7 @@
 }
 
 .host-table__toolbar-buttons {
-  float: right;
+  padding: rsa-whitespace(less);
   .rsa-form-button-wrapper {
     margin-right: rsa-whitespace(less);
   }
@@ -107,4 +106,7 @@
 }
 .rsa-data-table-column-selector-panel section {
   position: relative;
+}
+.rsa-investigate-query-container__service-selector {
+  height: auto;
 }

@@ -27,6 +27,17 @@ module('Integration | Component | host-container', function(hooks) {
     assert.equal(findAll('.host-container').length, 1, 'host container rendered');
   });
 
+  test('it renders filter panel and center container', async function(assert) {
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.rsa-data-filters').length, 1, 'filters rendered');
+    assert.equal(findAll('.center-zone').length, 1, 'center content rendered');
+  });
+
+  test('it renders host container', async function(assert) {
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.host-container').length, 1, 'host container rendered');
+  });
+
   test('it renders host container detail', async function(assert) {
     new ReduxDataHelper(setState)
       .hasMachineId(true)

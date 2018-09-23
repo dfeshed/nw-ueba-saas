@@ -11,11 +11,12 @@ import anomalies from './details/anomalies/reducer';
 import drivers from './details/drivers/reducer';
 import libraries from './details/libraries/reducer';
 import schema from './schema/reducer';
-import filter from './filters/reducer';
+import filter from 'investigate-shared/reducers/endpoint-filter/reducer';
 import preferences from './preferences/reducer';
 import datatable from './details/datatable/reducer';
 import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
+import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
 export default combineReducers({
   endpoint: combineReducers({
@@ -31,7 +32,7 @@ export default combineReducers({
     drivers,
     libraries,
     schema,
-    filter,
+    filter: createFilteredReducer(filter, (action) => action.meta && action.meta.name === 'MACHINE'),
     datatable
   }),
   preferences,

@@ -8,10 +8,8 @@ import {
   resetHostDownloadLink
 } from 'investigate-hosts/actions/ui-state-creators';
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
-import {
-  initializeAgentDetails,
-  changeDetailTab
-} from 'investigate-hosts/actions/data-creators/details';
+import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
+import { getFilter } from 'investigate-hosts/actions/data-creators/filter-creators';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
@@ -71,31 +69,6 @@ const getPageOfMachines = () => {
 };
 
 /**
- * Action creator for fetching all filters
- * @method getAllFilters
- * @private
- * @returns {Object}
- */
-const _getAllFilters = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.FETCH_ALL_FILTERS,
-      promise: Machines.getAllFilters(),
-      meta: {
-        onSuccess: (response) => {
-          debug(`ACTION_TYPES.FETCH_ALL_FILTERS ${_stringifyObject(response)}`);
-          dispatch({ type: ACTION_TYPES.EXECUTE_QUERY });
-          dispatch(getPageOfMachines());
-        },
-        onFailure: (response) => {
-          handleError(ACTION_TYPES.FETCH_ALL_FILTERS, response);
-        }
-      }
-    });
-  };
-};
-
-/**
  * Action creator for fetching all the schemas
  * @method getAllSchemas
  * @public
@@ -109,7 +82,7 @@ const getAllSchemas = () => {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
           dispatch(initializeHostsPreferences());
-          dispatch(_getAllFilters());
+          dispatch(getFilter(getPageOfMachines));
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);

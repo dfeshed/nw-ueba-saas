@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { find, render } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
@@ -17,6 +17,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     resolver: engineResolver('investigate-hosts')
   });
   hooks.beforeEach(function() {
+    initialize(this.owner);
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };

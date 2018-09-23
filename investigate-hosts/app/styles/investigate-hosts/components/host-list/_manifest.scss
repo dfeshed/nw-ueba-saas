@@ -12,38 +12,8 @@ $filter-panel-width: 250px;
     @include border-bottom(1px, solid, primary, dark);
     padding: rsa-whitespace(less);
   }
-  .filter-zone {
-    @include border-right(1px, solid, primary, dark);
-    min-width: $filter-panel-width;
-    max-width: $filter-panel-width;
-    overflow: auto;
-    overflow-x: hidden;
-    opacity: 1;
-    color: text-color(primary, lightest);
-    float: left;
-    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-
-    .body {
-      max-width: none;
-    }
-
-    hr {
-      margin: rsa-whitespace() 0;
-      font-style: normal;
-      font-size: 1.725rem;
-      font-weight: 100;
-    }
-
-    h2 {
-      @include rsa-font(header, larger);
-      line-height: 2rem;
-      color: text-color(primary, lightest);
-    }
-  }
-
   .machine-zone {
     min-height: calc(100vh - 135px);
-    width: calc(100vw - #{$filter-panel-width});
     height: 100vh;
   }
 

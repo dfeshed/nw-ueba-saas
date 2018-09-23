@@ -2015,6 +2015,7 @@ export default {
       Neutral: 'Neutral'
     },
     filter: {
+      allFiles: 'All Files',
       filter: 'Filters',
       filters: 'Saved Filters',
       newFilter: 'New Filter',
@@ -2051,6 +2052,7 @@ export default {
         },
         delete: {
           successMessage: 'Query deleted successfully.',
+          errorMessage: 'Failed to delete the saved search',
           confirmMessage: 'Are you sure you want to delete the selected query?'
         }
       },

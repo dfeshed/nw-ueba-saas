@@ -43,6 +43,5 @@ module('Integration | Component | host-list', function(hooks) {
     .build();
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
-    assert.equal(findAll('.host-list-items').length, 1, 'host list is rendered');
   });
 });

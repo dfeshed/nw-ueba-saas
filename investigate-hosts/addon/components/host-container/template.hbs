@@ -4,7 +4,23 @@
   </vbox>
 {{else}}
   <vbox class="host-container-list">
-    {{host-list}}
+    {{#rsa-page-layout showRightZone=false as |layout|}}
+      {{#layout.left as |leftPanel|}}
+        {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
+        {{endpoint/filters-wrapper
+          filterState=filter
+          applyFilters=(action 'applyFilters' (action 'getPageOfMachines'))
+          createCustomSearch=(action 'createCustomSearch')
+          filterType='MACHINE'
+          filterTypes=filterTypes }}
+      {{/layout.left}}
+      {{#layout.center}}
+        {{host-list}}
+      {{/layout.center}}
+      {{#layout.right as |rightPanel|}}
+       Right content
+      {{/layout.right}}
+    {{/rsa-page-layout}}
   </vbox>
 {{/liquid-if}}
 

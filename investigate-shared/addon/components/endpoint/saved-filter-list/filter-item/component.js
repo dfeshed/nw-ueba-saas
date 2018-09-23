@@ -1,6 +1,6 @@
 import Component from '@ember/component';
-import layout from './template';
 import computed from 'ember-computed-decorators';
+import layout from './template';
 
 export default Component.extend({
   layout,
@@ -13,14 +13,12 @@ export default Component.extend({
 
   filter: null,
 
-  activeFilter: null,
+  selectedFilterId: null,
 
-  applyFilter: '',
+  applyCustomFilter: null,
 
-  deleteFilter: '',
-
-  @computed('filter', 'activeFilter', 'reset')
-  isActive: (filter, activeFilter, reset) => filter.id === activeFilter && !reset,
+  @computed('filter', 'selectedFilterId')
+  isActive: (filter, selectedFilterId) => filter.id === selectedFilterId,
 
   mouseEnter() {
     this.set('isHovering', true);

@@ -7,19 +7,30 @@ import {
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
-import { deleteHosts } from 'investigate-hosts/actions/data-creators/host';
-
+import { deleteHosts, getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
+import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
+import { applySavedFilters, deleteFilter } from 'investigate-hosts/actions/data-creators/filter-creators';
 
 const stateToComputed = (state) => ({
   totalItems: hostCountForDisplay(state),
   noHostsSelected: noHostsSelected(state),
   allAreEcatAgents: allAreEcatAgents(state),
-  selectedHostList: state.endpoint.machines.selectedHostList
+  selectedHostList: state.endpoint.machines.selectedHostList,
+  serverId: state.endpointQuery.serverId,
+  servers: state.endpointServer,
+  selectedFilterId: selectedFilterId(state.endpoint),
+  savedFilter: savedFilter(state.endpoint),
+  hostFilters: state.endpoint.filter.savedFilterList
 });
 
 const dispatchToActions = {
   toggleDeleteHostsModal,
-  deleteHosts
+  deleteHosts,
+  setEndpointServer,
+  applySavedFilters,
+  deleteFilter,
+  getPageOfMachines
 };
 
 const ActionBar = Component.extend({
@@ -33,6 +44,13 @@ const ActionBar = Component.extend({
   i18n: service(),
 
   actions: {
+
+    applyCustomFilter(filter) {
+      this.send('applySavedFilters', filter, () => {
+        this.send('getPageOfMachines');
+      });
+    },
+
     handleDeleteHosts() {
       const callBackOptions = {
         onSuccess: () => {

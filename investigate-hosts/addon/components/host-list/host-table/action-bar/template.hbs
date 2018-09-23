@@ -1,14 +1,14 @@
-<label>
-  {{t 'investigateHosts.hosts.title'}} {{#if totalItems }} ({{totalItems}}) {{/if}}
-</label>
 <hbox class='host-table__toolbar-buttons'>
-
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
+  {{endpoint/saved-filter-list
+    selectedFilterId=selectedFilterId
+    savedFilter=savedFilter
+    savedFilters=hostFilters
+    applyFilter=(action 'applyCustomFilter')
+    deleteFilter=(action 'deleteFilter')}}
   {{host-scan/scan-command command='START_SCAN'}}
   {{host-scan/scan-command command='STOP_SCAN'}}
-
-
   {{host-list/host-table/action-bar/export-button}}
-
   {{#rsa-button-with-confirmation
     isDisabled=noHostsSelected
     class='delete-host-button'
@@ -17,7 +17,6 @@
     onConfirm=( action 'handleDeleteHosts')}}
     {{t 'investigateHosts.hosts.button.delete'}}
   {{/rsa-button-with-confirmation}}
-
 </hbox>
 
 
