@@ -12,7 +12,7 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
  * @public
  * @returns {Object}
  */
-const getFileContext = (name, categories) => {
+const getFileContext = (belongsTo, categories) => {
   return (dispatch, getState) => {
     // Get selected agentId and scan time from the state
     const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
@@ -21,29 +21,29 @@ const getFileContext = (name, categories) => {
       scanTime,
       categories
     };
-    dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { name } });
+    dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo } });
     dispatch({
       type: ACTION_TYPES.FETCH_FILE_CONTEXT,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        name,
+        belongsTo,
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT, response)
       }
     });
   };
 };
 
-const setRowSelection = (name, { id }) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id }, meta: { name } });
+const setRowSelection = (belongsTo, { id }) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id }, meta: { belongsTo } });
 
-const toggleRowSelection = (name, item) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: item, meta: { name } });
+const toggleRowSelection = (belongsTo, item) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: item, meta: { belongsTo } });
 
-const toggleAllSelection = (name) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { name } });
+const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
 
-const setFileContextFileStatus = (name, checksums, data, callbacks = callbacksDefault) => ({
+const setFileContextFileStatus = (belongsTo, checksums, data, callbacks = callbacksDefault) => ({
   type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
   promise: setFileStatus({ ...data, checksums }),
   meta: {
-    name,
+    belongsTo,
     onSuccess: (response) => {
       callbacks.onSuccess(response);
     },
@@ -53,20 +53,20 @@ const setFileContextFileStatus = (name, checksums, data, callbacks = callbacksDe
   }
 });
 
-const getFileContextFileStatus = (name, selections) => ({
+const getFileContextFileStatus = (belongsTo, selections) => ({
   type: ACTION_TYPES.GET_FILE_CONTEXT_FILE_STATUS,
   promise: getFileStatus(selections),
   meta: {
-    name
+    belongsTo
   }
 });
 
-const setFileContextSort = (name, config) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_COLUMN_SORT, payload: config, meta: { name } });
+const setFileContextSort = (belongsTo, config) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_COLUMN_SORT, payload: config, meta: { belongsTo } });
 
 
 const getPaginatedFileContext = () => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER, meta: { name: 'FILE' } });
+    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER, meta: { belongsTo: 'FILE' } });
     dispatch(_fetchHostFiles());
   };
 };
@@ -84,7 +84,7 @@ const _fetchHostFiles = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
       promise: HostFiles.getHostFiles(pageNumber, agentId, scanTime, checksumSha256, key, descending),
       meta: {
-        name: 'FILE',
+        belongsTo: 'FILE',
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, response)
       }
     });

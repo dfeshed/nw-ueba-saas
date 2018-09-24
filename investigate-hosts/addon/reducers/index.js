@@ -21,7 +21,7 @@ import fileContext from './details/file-context/reducer';
 
 const reducerPredicate = (type) => {
   return (action) => {
-    return action.meta && action.meta.name === type;
+    return action.meta && action.meta.belongsTo === type;
   };
 };
 

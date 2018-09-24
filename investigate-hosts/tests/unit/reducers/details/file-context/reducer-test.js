@@ -69,7 +69,7 @@ test('The FETCH_FILE_CONTEXT sets the host details information', function(assert
     type: ACTION_TYPES.FETCH_FILE_CONTEXT,
     payload: { data: driversData },
     meta: {
-      name: 'DRIVER'
+      belongsTo: 'DRIVER'
     }
   });
 
@@ -93,14 +93,14 @@ test('TOGGLE_FILE_CONTEXT_ROW_SELECTION should toggle the selected driver', func
     checksumSha256: 0,
     signature: '',
     size: 0 };
-  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { name: 'DRIVER' } });
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
   assert.equal(result.fileContextSelections.length, 1);
   assert.equal(result.fileContextSelections[0].id, 0);
   const next = Immutable.from({
     selectedRowId: '123',
     fileContextSelections: [driver]
   });
-  result = reducer(next, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { name: 'DRIVER' } });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
   assert.equal(result.fileContextSelections.length, 0);
 });
 test('TOGGLE_FILE_CONTEXT_ALL_SELECTION should toggle the selected driver', function(assert) {
@@ -190,14 +190,14 @@ test('The FETCH_FILE_CONTEXT_PAGINATED sets normalized server response to state'
     contextLoadMoreStatus: null
   });
 
-  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { name: 'FILE' } });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { belongsTo: 'FILE' } });
   const startEndState = reducer(previous, startAction);
   assert.deepEqual(startEndState.contextLoadMoreStatus, 'streaming');
 
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
     payload: { data: filesData },
-    meta: { name: 'FILE' }
+    meta: { belongsTo: 'FILE' }
   });
   const endState = reducer(previous, action);
 
@@ -208,7 +208,7 @@ test('The FETCH_FILE_CONTEXT_PAGINATED sets normalized server response to state'
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
     payload: { data },
-    meta: { name: 'FILE' }
+    meta: { belongsTo: 'FILE' }
   });
 
   const newEndState = reducer(previous, newAction);

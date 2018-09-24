@@ -21,10 +21,10 @@ const initialState = Immutable.from({
 
 const _handleAppendFiles = (action) => {
   return (state) => {
-    const { payload: { data }, meta: { name } } = action;
+    const { payload: { data }, meta: { belongsTo } } = action;
     const { fileContext } = state;
-    const normalizedData = normalize(action.payload.data.items, [getSchema(name)]);
-    const newData = normalizedData.entities[name];
+    const normalizedData = normalize(action.payload.data.items, [getSchema(belongsTo)]);
+    const newData = normalizedData.entities[belongsTo];
     return state.merge({
       fileContext: { ...fileContext, ...newData },
       totalItems: data.totalItems,
@@ -65,7 +65,7 @@ const fileContext = reduxActions.handleActions({
     return handle(state, action, {
       start: (s) => s.set('contextLoadingStatus', 'wait'),
       success: (s) => {
-        const contextType = action.meta.name;
+        const contextType = action.meta.belongsTo;
         const normalizedData = normalize(action.payload.data, getSchema(contextType));
         const fileContext = normalizedData.entities[contextType];
         return s.merge({
