@@ -19,7 +19,7 @@ const dispatchToActions = {
   setColumnGroup
 };
 
-const EventsTable = Component.extend({
+const HeaderContainer = Component.extend({
   classNames: 'rsa-investigate-events-table__header',
   tagName: 'hbox',
   i18n: service(),
@@ -57,4 +57,4 @@ const EventsTable = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(EventsTable);
+export default connect(stateToComputed, dispatchToActions)(HeaderContainer);

@@ -6,7 +6,7 @@
         {{events-table-container/event-counter}}
       </h2>
     </div>
-    <div class="rsa-investigate-events-table__header__coloumGroup">
+    <div class="rsa-investigate-events-table__header__columnGroup">
       <label class="is-small power-select">
         {{#power-select
           options=localizedColumnGroups
@@ -21,6 +21,7 @@
         {{/power-select}}
       </label>
     </div>
+    {{events-table-container/header-container/download-dropdown}}
   </div>
   <div class="events-table-control">
     {{rsa-icon

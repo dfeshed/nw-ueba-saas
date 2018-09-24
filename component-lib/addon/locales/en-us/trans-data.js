@@ -492,6 +492,10 @@ export default {
         default: 'Default Column Groups',
         searchPlaceholder: 'Type to filter column group'
       },
+      download: {
+        selected: 'Download',
+        all: 'Download All'
+      },
       error: 'An unexpected error occurred when executing this query.',
       fatalSummaryError: 'The service is unavailable',
       shrink: 'Shrink Events Panel',

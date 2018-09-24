@@ -1,4 +1,4 @@
-import { moduleForComponent, skip, test } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -8,31 +8,29 @@ import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import { later } from '@ember/runloop';
-import RSVP from 'rsvp';
-import { patchPowerSelect, restorePowerSelect } from '../../../helpers/patch-power-select';
 
 let setState;
+
+const columnSelector = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
+
+const renderDefaultEventTable = (assert, _this) => {
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).build();
+  _this.render(hbs`{{events-table-container}}`);
+  assert.equal(_this.$('.rsa-investigate-events-table').length, 1);
+  assert.equal(_this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
+};
 
 const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCount, count, selectedOption, isNotEmptyRow) => {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', selectedOption);
-  return waitFor('.ember-power-select-selected-item').then(() => {
+  return waitFor(columnSelector).then(() => {
     assert.equal($('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
-    assert.equal($('.ember-power-select-selected-item').text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
+    assert.equal($(columnSelector).text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
     $('.rsa-icon-cog-filled').trigger('click');
     return waitFor('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label', { count }).then(() => {
       assert.equal($('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
     });
   });
-};
-const renderDefaultEventTable = (assert, _this) => {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
-  _this.render(hbs`{{events-table-container}}`);
-  assert.equal(_this.$('.rsa-investigate-events-table').length, 1);
-  assert.equal(_this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
-  assert.equal(_this.$('.rsa-investigate-event-counter').text().trim(), '55');
-  assert.equal(_this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
 };
 
 moduleForComponent('events-table-container', 'Integration | Component | events table', {
@@ -44,13 +42,7 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
 
     this.inject.service('accessControl');
     this.set('accessControl.hasInvestigateContentExportAccess', true);
-    // Mock the route action 'toggleReconSize' on the click of
-    // expand/shrink toggle button on events page
-    this.routeActions = {
-      toggleReconSize(arg) {
-        return RSVP.resolve({ arg });
-      }
-    };
+
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
@@ -59,42 +51,10 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
   },
   afterEach() {
     revertPatch();
-    restorePowerSelect();
   }
 });
 
-test('render the events header with required fields ', function(assert) {
-  renderDefaultEventTable(assert, this);
-  assert.equal(this.$('.rsa-investigate-events-table__header__container').length, 1, 'render event header container');
-  assert.equal(this.$('.rsa-investigate-events-table__header__container')[0].childElementCount, 2, 'rendered with two elements');
-  assert.equal(this.$('.rsa-investigate-events-table__header__eventLabel')[0].textContent.trim().replace(/\s+/g, ''), 'Events55', 'rendered event header title');
-});
-
-// Skipping this because the `later()` part is garbage. Needs to be refactored
-skip('it provides option to select column groups', function(assert) {
-  patchPowerSelect();
-  renderDefaultEventTable(assert, this);
-  assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Summary List', 'Default Column group is Summary List.');
-  clickTrigger();
-  assert.equal($('.ember-power-select-option').text().trim().replace(/\s+/g, ''), 'Custom1Custom2SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
-  assert.equal($('.ember-power-select-group').length, 2, 'render two column groups');
-  assert.equal($('.ember-power-select-group-name')[0].textContent, 'Custom Column Groups', 'render custom column group');
-  assert.equal($('.ember-power-select-group-name')[1].textContent, 'Default Column Groups', 'render default column group');
-  const done = assert.async();
-  later(() => {
-    assert.equal($('.ember-power-select-group-name').first().attr('title'), 'Manage Custom Column Groups in Events View');
-    done();
-  }, 300);
-});
-
-test('it provides option for search filter', function(assert) {
-  patchPowerSelect();
-  renderDefaultEventTable(assert, this);
-  clickTrigger();
-  assert.equal($('.ember-power-select-search').length, 1, 'Show search filter option in drop down');
-});
-
-test('it should show columns for Event Analysis', function(assert) {
+test('it should show columns for Email Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
   return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 41, 'Email Analysis');
 });
@@ -117,14 +77,6 @@ test('it should show columns for Web Analysis', function(assert) {
 test('it should show columns for Endpoint Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
   return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 32, 'Endpoint Analysis');
-});
-
-test('persisted column group is preselected in the drop down', function(assert) {
-  new ReduxDataHelper(setState).columnGroup('MALWARE').columnGroups(EventColumnGroups).build();
-  this.render(hbs`{{events-table-container}}`);
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');
-  });
 });
 
 test('it should show "no results" message only if there are zero results', function(assert) {
