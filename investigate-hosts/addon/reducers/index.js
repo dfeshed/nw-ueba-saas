@@ -17,6 +17,13 @@ import datatable from './details/datatable/reducer';
 import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
+import fileContext from './details/file-context/reducer';
+
+const reducerPredicate = (type) => {
+  return (action) => {
+    return action.meta && action.meta.name === type;
+  };
+};
 
 export default combineReducers({
   endpoint: combineReducers({
@@ -32,6 +39,8 @@ export default combineReducers({
     drivers,
     libraries,
     schema,
+    fileContextAutoruns: createFilteredReducer(fileContext, reducerPredicate('AUTORUN')),
+    fileContextDrivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
     filter: createFilteredReducer(filter, (action) => action.meta && action.meta.name === 'MACHINE'),
     datatable
   }),
