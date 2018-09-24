@@ -63,11 +63,11 @@ export default Component.extend({
           // append is actually an insert to the new pill trigger
           this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW);
           break;
-        case MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL:
-          this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, this.get('newPillPosition'));
+        case MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT:
+          this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, this.get('newPillPosition'));
           break;
-        case MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL:
-          this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, this.get('newPillPosition'));
+        case MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT:
+          this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('newPillPosition'));
       }
     }
   },

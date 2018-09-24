@@ -56,6 +56,8 @@ export default Component.extend({
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._focusedShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._focusedShiftUpLeftArrowPressed()
     });
@@ -181,6 +183,18 @@ export default Component.extend({
     if (!this.get('isActive')) {
       const pillData = this.get('pillData');
       this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, pillData);
+    }
+  },
+
+  _focusedLeftArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, this.get('position'));
+    }
+  },
+
+  _focusedRightArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, this.get('position'));
     }
   },
 

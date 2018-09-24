@@ -160,7 +160,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, 'Correct message type');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, 'Correct message type');
       assert.equal(position, 0, 'Correct position of the pill');
     });
     await render(hbs`
@@ -181,7 +181,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, 'Correct message type');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Correct message type');
       assert.equal(position, 0, 'Correct position of the pill');
     });
     await render(hbs`

@@ -207,6 +207,8 @@ export default Component.extend({
       [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
       [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._focusedShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._focusedShiftUpLeftArrowPressed(),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
@@ -445,7 +447,7 @@ export default Component.extend({
    */
   _metaArrowLeft() {
     if (this._isPillDataEmpty()) {
-      this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, this.get('position'));
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, this.get('position'));
     }
   },
 
@@ -457,7 +459,7 @@ export default Component.extend({
 
   _metaArrowRightWithNoSelection() {
     if (this._isPillDataEmpty()) {
-      this.get('sendMessage')(MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, this.get('position'));
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('position'));
     }
 
   },
@@ -837,6 +839,18 @@ export default Component.extend({
     if (!this.get('isActive')) {
       const pillData = this._createPillData(this.get('valueString'));
       this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, pillData);
+    }
+  },
+
+  _focusedLeftArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, this.get('position'));
+    }
+  },
+
+  _focusedRightArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, this.get('position'));
     }
   },
 

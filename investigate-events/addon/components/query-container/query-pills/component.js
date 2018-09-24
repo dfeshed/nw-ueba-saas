@@ -170,16 +170,18 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
+      [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
+      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT]: (position) => this._openNewPillTriggerLeft(position),
+      [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT]: (position) => this._openNewPillTriggerRight(position),
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
-      [MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL]: (position) => this._addFocusToLeftPill(position),
-      [MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
-      [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
+      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (position) => this._addFocusToLeftPill(position),
+      [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position)
     });
@@ -326,6 +328,43 @@ const QueryPills = RsaContextMenu.extend({
     }
 
     this.send('deleteGuidedPill', { pillData: [pillData] });
+  },
+
+  /**
+   * Will need to open a new pill trigger on the right of position that's
+   * being passed in. This event is triggered when you press ARROW_RIGHT
+   * from a focused pill.
+   * In the case of the pill trigger on the left side, it gets re-rendered
+   * because of focus changes in state, so setting 'startTriggeredPosition'
+   * for it should just work without any click().
+   * @private
+   */
+  _openNewPillTriggerLeft(position) {
+    this._pillEnteredForInsert(position);
+  },
+
+   /**
+   * Will need to open a new pill trigger on the right of position that's
+   * being passed in. This event is triggered when you press ARROW_RIGHT
+   * from a focused pill.
+   * In the case of the pill trigger on the right side, it doesn't get
+   * re-rendered (because the triggers are rendered on the left side within the loop).
+   * In that case the click() will work and startTriggeredPosition wouldn't do anything
+   * because it only effects on init and that component should not get re-rendered.
+   * @private
+   */
+  _openNewPillTriggerRight(position) {
+    const pillsData = this.get('pillsData');
+    if (pillsData.length === position + 1) {
+      // if this is the last pill in the list, no need for click().
+      // Can just set takeFocus which opens the meta dropdown for new-pill-template
+      this.set('takeFocus', true);
+    } else {
+      // otherwise, open the trigger on it's right
+      const newPillTriggers = document.querySelectorAll('.new-pill-trigger');
+      const triggerToOpen = newPillTriggers[position + 1];
+      triggerToOpen.click();
+    }
   },
 
   /**

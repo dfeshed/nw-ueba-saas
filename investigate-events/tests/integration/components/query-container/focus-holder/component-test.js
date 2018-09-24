@@ -122,4 +122,26 @@ module('Integration | Component | focus-holder', function(hooks) {
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DownArrowKey, modifiers);
   });
+
+  test('it sends a message when left is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED, 'the correct message type is sent when left arrow is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', LeftArrowKey);
+  });
+
+  test('it sends a message when right is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED, 'the correct message type is sent when right arrow is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', RightArrowKey);
+  });
 });

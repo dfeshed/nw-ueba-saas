@@ -1106,7 +1106,7 @@ module('Integration | Component | query-pill', function(hooks) {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_LEFT_PILL, 'Message sent to add focus on the relevant pill');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT, 'Message sent to add focus on the relevant pill');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });
 
@@ -1135,7 +1135,7 @@ module('Integration | Component | query-pill', function(hooks) {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
-      assert.equal(messageType, MESSAGE_TYPES.ADD_FOCUS_TO_RIGHT_PILL, 'Message sent to add focus on the relevant pill');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, 'Message sent to add focus on the relevant pill');
       assert.equal(position, 0, 'Message sent contains correct pill position');
     });
 
@@ -1150,4 +1150,65 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
   });
 
+  test('If on a focused pill and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markFocused(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_LEFT, 'Message sent to open a new pill trigger on left');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+  });
+
+  test('If on a focused pill and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markFocused(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT, 'Message sent to open a new pill trigger on right');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+  });
 });

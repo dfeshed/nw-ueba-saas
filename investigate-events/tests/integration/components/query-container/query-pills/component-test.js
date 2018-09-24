@@ -1900,4 +1900,83 @@ module('Integration | Component | query-pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
   });
+
+  test('Navigate from right most pill to the start of the list by pressing ARROW_LEFT', async function(assert) {
+    assert.expect(7);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The second(last) pill should be focused');
+    const pillTextOne = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillTextOne, 'b = \'y\'', 'The second pill is the focused pill');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The first pill should be focused');
+    const pillTextTwo = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillTextTwo, 'a = \'x\'', 'The first pill is the focused pill');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_LEFT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have a meta drop-down available');
+  });
+
+  test('Navigate from left most pill to the end of the list by pressing ARROW_RIGHT', async function(assert) {
+    assert.expect(8);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    // click on the first trigger to place cursor at the very start of the list
+    await click(triggers[0]);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The first pill should be focused');
+    const pillTextTwo = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillTextTwo, 'a = \'x\'', 'The first pill is the focused pill');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have a meta drop-down available');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'The second(last) pill should be focused');
+    const pillTextOne = find(PILL_SELECTORS.focusedPill).title;
+    assert.equal(pillTextOne, 'b = \'y\'', 'The second pill is the focused pill');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Should have the new pill template meta open');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have the new pill template meta open');
+  });
 });

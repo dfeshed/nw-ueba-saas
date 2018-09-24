@@ -29,6 +29,10 @@ export default Component.extend({
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED);
     } else if ((isArrowUp(evtobj) || isArrowLeft(evtobj)) && evtobj.shiftKey) {
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED);
+    } else if (isArrowLeft(evtobj)) {
+      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED);
+    } else if (isArrowRight(evtobj)) {
+      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED);
     }
     return false;
   },
