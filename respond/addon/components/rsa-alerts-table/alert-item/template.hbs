@@ -7,7 +7,7 @@
       </div>
       {{#if item.isEnrichment}}
 
-      {{!Render a row of enrichment text}}
+        {{!Render a row of enrichment text}}
         <div class="enrichment">
           <span class="body" title="{{t item.i18nKey}}">{{t item.i18nKey}}</span>
           {{#if (eq item.key 'whois.age_score')}}
@@ -19,7 +19,7 @@
 
       {{else}}
 
-      {{!Render a row of meta values from the event}}
+        {{!Render a row of meta values from the event}}
         <div class="event">
           <hbox nowrap class="event-header">
             <vbox fit class="timestamp">

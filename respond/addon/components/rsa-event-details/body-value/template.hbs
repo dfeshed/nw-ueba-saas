@@ -12,9 +12,9 @@
     {{#with period.minutes as |minutes|}}
       {{minutes}} {{t 'respond.eventDetails.periodValue.minutes'}}
     {{/with}}
-    {{#unless (eq period.seconds null)}}
+    {{#if (not-eq period.seconds null)}}
       {{period.seconds}} {{t 'respond.eventDetails.periodValue.seconds'}}
-    {{/unless}}
+    {{/if}}
   {{/with}}
 {{else}}
   {{value}}

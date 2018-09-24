@@ -5,8 +5,8 @@
       onLabel=(t 'packager.fullAgent')
       value=isFullAgentEnabled
       onToggle=(action 'enableFullAgent') as |fullAgent|}}
-        {{fullAgent.switch}}
-        {{fullAgent.onLabel value=(not isFullAgentEnabled)}}
+      {{fullAgent.switch}}
+      {{fullAgent.onLabel value=(not isFullAgentEnabled)}}
     {{/x-toggle}}
   </div>
   <div class="field">
@@ -182,18 +182,18 @@
         <h4 class='rsa-form-radio-group-label'>{{t 'packager.statusLabel'}}</h4>
         <label class="rsa-form-radio-label {{if (eq 'enabled' status) 'checked'}}">
           {{radio-button
-          radioClass='status-type'
-          value='enabled'
-          groupValue=status}}
+            radioClass='status-type'
+            value='enabled'
+            groupValue=status}}
           {{t 'packager.enabled'}}
         </label>
 
         <label class="rsa-form-radio-label {{if (eq 'disabled' status) 'checked'}}" title={{t 'packager.tooltip'}}>
-        {{radio-button
-        radioClass='status-type'
-        value='disabled'
-        groupValue=status}}
-        {{t 'packager.disabled'}}
+          {{radio-button
+            radioClass='status-type'
+            value='disabled'
+            groupValue=status}}
+          {{t 'packager.disabled'}}
         </label>
       </div>
 

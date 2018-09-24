@@ -1,41 +1,40 @@
 <hbox nowrap class="recon-container__main" style={{resolvedWidth}}>
   <vbox class="recon-container__main__inner" nowrap fill>
+    <header class="recon-container__header">
+      <hbox class="recon-container__header__inner">
+        <vbox xs="10">
+          <div class="recon-respond-header">{{t 'respond.investigation.eventAnalysis'}}</div>
+        </vbox>
+        <vbox xs="2" class="recon-container__header-icons">
+          <div>
+            <span class="recon-container__header-close-icon">
+              <button test-id="eventReconContextualHelp" class="rsa-form-button event-recon-contextual-help" onclick={{action 'goToHelp' 'investigation' 'invEventAnalysis'}}>
+                {{rsa-icon name="help-circle" style="lined"}}
+              </button>
+              <button test-id="reconRespondCloseBtn" onclick={{action "close"}} class="recon-container__header-close" title={{t 'respond.close'}}>
+                {{rsa-icon style='filled' name='close'}}
+              </button>
+            </span>
+          </div>
+        </vbox>
+      </hbox>
+    </header>
 
-  <header class="recon-container__header">
-    <hbox class="recon-container__header__inner">
-      <vbox xs="10">
-        <div class="recon-respond-header">{{t 'respond.investigation.eventAnalysis'}}</div>
-      </vbox>
-      <vbox xs="2" class="recon-container__header-icons">
-        <div>
-          <span class="recon-container__header-close-icon">
-            <button test-id="eventReconContextualHelp" class="rsa-form-button event-recon-contextual-help" onclick={{action 'goToHelp' 'investigation' 'invEventAnalysis'}}>
-              {{rsa-icon name="help-circle" style="lined"}}
-            </button>
-            <button test-id="reconRespondCloseBtn" onclick={{action "close"}} class="recon-container__header-close" title={{t 'respond.close'}}>
-              {{rsa-icon style='filled' name='close'}}
-            </button>
-          </span>
+    {{#if loadingRecon}}
+      <vbox class="recon-container loading">
+        <div class="recon-loader">
+          <div class="rsa-loader is-larger">
+            <div class="rsa-loader__wheel"></div>
+            <div class="rsa-loader__text"></div>
+          </div>
         </div>
       </vbox>
-    </hbox>
-  </header>
-
-  {{#if loadingRecon}}
-    <vbox class="recon-container loading">
-      <div class="recon-loader">
-        <div class="rsa-loader is-larger">
-          <div class="rsa-loader__wheel"></div>
-          <div class="rsa-loader__text"></div>
-        </div>
-      </div>
-    </vbox>
-  {{else}}
-    {{recon-container
-       endpointId=endpointId
-       eventId=eventId
-       aliases=aliases
-       language=language}}
-  {{/if}}
+    {{else}}
+      {{recon-container
+        endpointId=endpointId
+        eventId=eventId
+        aliases=aliases
+        language=language}}
+    {{/if}}
   </vbox>
 </hbox>

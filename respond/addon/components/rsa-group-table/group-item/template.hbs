@@ -1,7 +1,7 @@
 <table class="rsa-group-table-group-item__table">
   <tr class="rsa-group-table-group-item__row">
     {{#each table.visibleColumns as |column columnIndex|}}
-      <td class="rsa-group-table-group-item__cell" style="{{column.styleText}}">
+      <td class="rsa-group-table-group-item__cell" style={{column.styleText}}>
         {{yield (hash
           item=item
           index=index

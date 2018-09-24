@@ -25,11 +25,11 @@
           <h3>{{t 'respond.storyline.error'}}</h3>
         </fill>
       {{else}}
-        {{#unless storyline.length}}
+        {{#if (not storyline.length)}}
           <fill justify="center" align="center">
             <h3 class="rsa-incident-container__no-storyline">No Results</h3>
           </fill>
-        {{/unless}}
+        {{/if}}
       {{/if}}
     </box>
   </vbox>

@@ -1,5 +1,5 @@
 {{#rsa-events-sheet items=items totalCount=totalCount throttleInterval=0 as |sheet|}}
-  {{#sheet.tableHeader as |tableHeader|}}
+  {{#sheet.tableHeader}}
     <span class="event-count-and-label">
       <span class="event-count">
         {{items.length}}

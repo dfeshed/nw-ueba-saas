@@ -1,7 +1,7 @@
 <div class="rsa-group-table-body__scroller js-scroll-element">
   <div class="rsa-group-table-body__scroller-child js-size-element">
   </div>
-  <div class="rsa-group-table-body__placeholder js-placeholder" style="{{placeholderStyle}}">
+  <div class="rsa-group-table-body__placeholder js-placeholder" style={{placeholderStyle}}>
     {{yield (hash
       group=(component groupComponentClass
         isSample=true
@@ -21,8 +21,8 @@
     {{/each}}
   </div>
 </div>
-<div class="rsa-group-table-body__sticky-header js-sticky-header" style="{{stickyHeaderContainerStyle}}">
-  <div class="rsa-group-table-body__sticky-header-scroller js-sticky-header-scroller" style="{{stickyHeaderScrollerStyle}}">
+<div class="rsa-group-table-body__sticky-header js-sticky-header" style={{stickyHeaderContainerStyle}}>
+  <div class="rsa-group-table-body__sticky-header-scroller js-sticky-header-scroller" style={{stickyHeaderScrollerStyle}}>
     {{yield (hash
       stickyHeader=(component stickyHeaderComponentClass
         group=table.groupAtTop.group

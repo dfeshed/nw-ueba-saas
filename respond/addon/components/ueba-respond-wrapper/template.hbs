@@ -1,35 +1,35 @@
 <hbox nowrap class="ueba-container__main" style={{resolvedWidth}}>
   <vbox class="ueba-container__main__inner" nowrap fill>
 
-  <header class="ueba-container__header">
-    <hbox class="ueba-container__header__inner">
-      <vbox xs="10">
-        <div class="ueba-respond-header">{{t 'respond.ueba.label'}}</div>
-      </vbox>
-      <vbox xs="2" class="ueba-container__header-icons">
-        <div>
-          <span class="ueba-container__header-close-icon">
-            <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="ueba-container__header-close" title={{t 'respond.close'}}>
-              {{rsa-icon style='filled' name='close'}}
-            </button>
-          </span>
-        </div>
-      </vbox>
-    </hbox>
-  </header>
+    <header class="ueba-container__header">
+      <hbox class="ueba-container__header__inner">
+        <vbox xs="10">
+          <div class="ueba-respond-header">{{t 'respond.ueba.label'}}</div>
+        </vbox>
+        <vbox xs="2" class="ueba-container__header-icons">
+          <div>
+            <span class="ueba-container__header-close-icon">
+              <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="ueba-container__header-close" title={{t 'respond.close'}}>
+                {{rsa-icon style='filled' name='close'}}
+              </button>
+            </span>
+          </div>
+        </vbox>
+      </hbox>
+    </header>
 
-  {{#ueba-iframe-container ueba=ueba as |iframeUrl hasUEBAError iframeVisible iframeLoad|}}
-    {{#if hasUEBAError}}
-      <div class="ueba-error" test-id="uebaError">
-        {{rsa-panel-message class="ueba-error" message=(t 'respond.ueba.error')}}
-      </div>
-    {{else}}
-      {{#unless iframeVisible}}
-        {{ueba-loader}}
-      {{/unless}}
-      {{ueba-iframe iframeUrl=iframeUrl iframeVisible=iframeVisible testId="uebaIframe" class="ueba-iframe" handleOnLoad=iframeLoad}}
-    {{/if}}
-  {{/ueba-iframe-container}}
+    {{#ueba-iframe-container ueba=ueba as |iframeUrl hasUEBAError iframeVisible iframeLoad|}}
+      {{#if hasUEBAError}}
+        <div class="ueba-error" test-id="uebaError">
+          {{rsa-panel-message class="ueba-error" message=(t 'respond.ueba.error')}}
+        </div>
+      {{else}}
+        {{#if (not iframeVisible)}}
+          {{ueba-loader}}
+        {{/if}}
+        {{ueba-iframe iframeUrl=iframeUrl iframeVisible=iframeVisible testId="uebaIframe" class="ueba-iframe" handleOnLoad=iframeLoad}}
+      {{/if}}
+    {{/ueba-iframe-container}}
 
   </vbox>
 </hbox>

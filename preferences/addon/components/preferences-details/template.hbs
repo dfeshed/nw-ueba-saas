@@ -1,5 +1,5 @@
 {{#if (and preferencesSchema preferences)}}
-  {{#each preferencesSchema as |item index|}}
+  {{#each preferencesSchema as |item|}}
     <div class="rsa-preferences-field-content">
       {{#if (eq item.type 'dropdown')}}
         <label class="rsa-form-label power-select">

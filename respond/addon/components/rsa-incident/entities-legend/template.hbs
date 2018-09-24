@@ -2,11 +2,11 @@
   {{#each resolvedData as |datum|}}
     <span class="datum {{datum.cssClass}}">
       <label class="rsa-form-checkbox-label {{if (contains datum.key visibleEntityTypes) 'checked'}}">
-      {{rsa-form-checkbox
-        checked=(contains datum.key visibleEntityTypes)
-        change=(action 'toggleEntityVisibility' datum.key)}}
+        {{rsa-form-checkbox
+          checked=(contains datum.key visibleEntityTypes)
+          change=(action 'toggleEntityVisibility' datum.key)}}
         <span>{{datum.value}}</span>
-    </label>
+      </label>
       <label>{{t datum.i18nKey}}</label>
     </span>
   {{/each}}

@@ -15,11 +15,11 @@
             </button>
           </span>
         {{/if}}
-        {{#unless (eq loadingStatus 'completed')}}
+        {{#if (not-eq loadingStatus 'completed')}}
           <span class="event-fetch-loader" test-id="eventFetchLoader">
             {{rsa-loader size="small"}}
           </span>
-        {{/unless}}
+        {{/if}}
       </span>
     </h2>
   </box>
