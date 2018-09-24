@@ -11,24 +11,34 @@
     vertical-align: text-bottom;
   }
   .group-criteria {
+    position: relative;
     margin-top: rsa-whitespace(); 
     vertical-align: text-bottom;
+    width: 800px;
     label {
       display: inline-block;
-      margin-right: rsa-whitespace(more);
-      width: 150px;
+      margin-right: rsa-whitespace(less);
+      width: 170px;
       vertical-align: text-bottom;
     }
   }
+  .remove-criteria {
+    cursor: pointer;
+    position: absolute;
+    right: 0px;
+    top: 10px;
+  }
   .between-inputs {
-    width: 450px;
+    width: 400px;
     span {
-      margin-right: rsa-whitespace(more); 
+      margin-right: rsa-whitespace(less); 
     }
   }
   .textarea-input textarea {
-    width: 300px;
     min-height: 8rem;
+  }
+  .textarea-input textarea, .osSelector, .text-input-field label, div.agent-selector {
+    width: 385px;
   }
   .add-criteria-button {
     margin-top: rsa-whitespace(more);

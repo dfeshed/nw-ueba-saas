@@ -23,6 +23,9 @@ const AttributeInputs = Component.extend({
     },
     secondBetweenInput(value) {
       this.send('updateGroupCriteria', this.get('criteriaPath'), value, 11);
+    },
+    onChangeOSSelector(value) {
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 2);
     }
   }
 });

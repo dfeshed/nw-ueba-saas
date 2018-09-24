@@ -68,6 +68,56 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
+  test('on REMOVE_CRITERIA, remove first criteria', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [['osType', 'IN', ['abc']], ['ipv4', 'BETWEEN', []]]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['ipv4', 'BETWEEN', []]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.REMOVE_CRITERIA,
+      payload: { criteriaPath: ',0' }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on REMOVE_CRITERIA, remove second criteria', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [['osType', 'IN', ['abc']], ['ipv4', 'BETWEEN', []]]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        criteria: [['osType', 'IN', ['abc']]]
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.REMOVE_CRITERIA,
+      payload: { criteriaPath: ',1' }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
   test('on UPDATE_GROUP_CRITERIA, find correct osType first operator', function(assert) {
     const expectedResult = {
       ...initialState.group,

@@ -1,17 +1,15 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import _ from 'lodash';
 
 import {
   groupCriteria
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
+// cloneDeep is needed for OS Type power-selector-multiple as it is directly mutating the selected items
 const stateToComputed = (state) => ({
-  groupCriteria: groupCriteria(state)
+  groupCriteria: _.cloneDeep(groupCriteria(state))
 });
-
-const dispatchToActions = {
-  // selectParserRule
-};
 
 const DefineGroupStep = Component.extend({
   tagName: 'vbox',
@@ -20,4 +18,4 @@ const DefineGroupStep = Component.extend({
   actions: {
   }
 });
-export default connect(stateToComputed, dispatchToActions)(DefineGroupStep);
+export default connect(stateToComputed)(DefineGroupStep);

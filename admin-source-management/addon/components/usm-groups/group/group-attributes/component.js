@@ -6,7 +6,8 @@ import {
 
 import {
   updateGroupCriteria,
-  addCriteria
+  addCriteria,
+  removeCriteria
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -15,7 +16,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   updateGroupCriteria,
-  addCriteria
+  addCriteria,
+  removeCriteria
 };
 
 const GroupAttributes = Component.extend({

@@ -233,6 +233,21 @@ export default reduxActions.handleActions({
     return state.set('group', editedGroup);
   },
 
+  [ACTION_TYPES.REMOVE_CRITERIA]: (state, action) => {
+    const { criteriaPath } = action.payload;
+    const criteriaPathTrimed = Number(criteriaPath.substring(1));
+    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const newCriterias = oldCriterias.filter((criteria, index) => index !== criteriaPathTrimed ? criteria : '');
+    const editedGroup = {
+      ...state.group,
+      groupCriteria: {
+        ...state.group.groupCriteria,
+        criteria: newCriterias
+      }
+    };
+    return state.set('group', editedGroup);
+  },
+
   [ACTION_TYPES.SAVE_GROUP]: (state, action) => (
     handle(state, action, {
       start: (state) => {

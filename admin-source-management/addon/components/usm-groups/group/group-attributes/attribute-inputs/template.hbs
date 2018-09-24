@@ -1,18 +1,19 @@
 {{#if (eq inputField 'textInput')}}
-  {{rsa-form-input class='operator-input textInput'
-    value=(readonly value.[0])
-    maxLength=15
-    focusOut=(action 'handleInputChange' value='target.value')
-  }}
+  <span class='text-input-field'>
+    {{rsa-form-input class='operator-input'
+      value=(readonly value.[0])
+      maxLength=15
+      focusOut=(action 'handleInputChange' value='target.value')
+    }}
+  </span>
 {{else if (eq inputField 'osSelector')}}
   <div class="osSelector">
-    {{#power-select
-      searchEnabled=false
+    {{#power-select-multiple
       options=osSelector
-      selected=value.[0]
-      onchange=(action 'handleInputChange') as |option|}}
+      selected=value
+      onchange=(action 'onChangeOSSelector') as |option|}}
       {{option}}
-    {{/power-select}}
+    {{/power-select-multiple}}
   </div>
 {{else if (eq inputField '2textInputs')}}
   {{!--Need to pass criteriaPath to payload in order to edit state. I was not ebled to pass two arguments in focusOut when using value='target.value'--}}
@@ -22,7 +23,7 @@
       maxLength=15
       focusOut=(action 'firstBetweenInput' value='target.value')
     }}
-    <span>and </span>{{!--second input for between operator--}}
+    <span>and</span>{{!--second input for between operator--}}
     {{rsa-form-input class='operator-input'
       value=(readonly value.[1])
       maxLength=15
@@ -30,7 +31,7 @@
     }}
   </div>
 {{else if (eq inputField 'agentSelector')}}
-  <div class="agentSelector">
+  <div class="agent-selector">
     {{#power-select
       searchEnabled=false
       options=agentSelector

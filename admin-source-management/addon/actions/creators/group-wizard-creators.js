@@ -97,6 +97,15 @@ const addCriteria = () => {
     type: ACTION_TYPES.ADD_CRITERIA
   };
 };
+const removeCriteria = (criteriaPath) => {
+  const payload = {
+    criteriaPath
+  };
+  return {
+    type: ACTION_TYPES.REMOVE_CRITERIA,
+    payload
+  };
+};
 
 const saveGroup = (group, callbacks = callbacksDefault) => {
   return {
@@ -138,5 +147,6 @@ export {
   saveGroup,
   updateGroupCriteria,
   savePublishGroup,
-  addCriteria
+  addCriteria,
+  removeCriteria
 };

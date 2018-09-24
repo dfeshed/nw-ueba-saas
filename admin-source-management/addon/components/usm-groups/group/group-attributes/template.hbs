@@ -40,7 +40,10 @@
                 validation=operator.[2]
                 criteriaPath=(concat criteriaPath ',' index)}}
               {{/usm-groups/group/group-attributes/attribute-inputs}}
-            </div>
+              <span class="remove-criteria" {{action 'removeCriteria' (concat criteriaPath ',' index)}}>
+                {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+              </span>
+            </div> 
           {{/if}}
         {{/each}}
       {{/if}}
