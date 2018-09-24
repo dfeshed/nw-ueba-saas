@@ -274,7 +274,14 @@
           }
         }
 
+        .status-summary {
+          display: flex;
+          margin-bottom: rsa-whitespace();
+        }
+
         .progress {
+          position: relative;
+          top: 3px;
           display: inline-block;
         }
 
@@ -292,8 +299,12 @@
           }
         }
 
-        .fatal-error {
+        .fatal-errors {
           display: inline-block;
+
+          li:first-of-type {
+            margin-bottom: rsa-whitespace(least);
+          }
 
           strong {
             font-weight: bold;

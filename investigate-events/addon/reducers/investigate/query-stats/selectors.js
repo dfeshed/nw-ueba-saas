@@ -87,18 +87,34 @@ export const isComplete = createSelector(
   }
 );
 
+const _formatErrorsAndWarnings = (list, services) => {
+  if (!list || !services) {
+    return;
+  } else {
+    return list.map((w) => {
+      const service = services.findBy('id', w.serviceId);
+      if (service) {
+        return {
+          ...w,
+          serviceName: service.displayName
+        };
+      } else {
+        return w;
+      }
+    });
+  }
+};
+
 export const warningsWithServiceName = createSelector(
   [_warnings, _services],
   (warnings, services) => {
-    if (!warnings || !services) {
-      return;
-    } else {
-      return warnings.map((w) => {
-        return {
-          ...w,
-          serviceName: services.findBy('id', w.serviceId).displayName
-        };
-      });
-    }
+    return _formatErrorsAndWarnings(warnings, services);
+  }
+);
+
+export const errorsWithServiceName = createSelector(
+  [_errors, _services],
+  (errors, services) => {
+    return _formatErrorsAndWarnings(errors, services);
   }
 );

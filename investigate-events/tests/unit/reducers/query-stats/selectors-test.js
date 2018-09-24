@@ -9,6 +9,7 @@ import {
   serviceshasErrorOrWarning,
   isConsoleEmpty,
   warningsWithServiceName,
+  errorsWithServiceName,
   isComplete
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
@@ -239,4 +240,29 @@ test('warningsWithServiceName', function(assert) {
   assert.equal(decoratedWarnings[0].serviceName, 'foo');
   assert.equal(decoratedWarnings[0].warning, 'warning');
   assert.equal(decoratedWarnings[0].serviceId, 'foo');
+});
+
+test('errorsWithServiceName', function(assert) {
+  const decoratedErrors = errorsWithServiceName({
+    investigate: {
+      queryStats: {
+        errors: [{
+          serviceId: 'foo',
+          error: 'error'
+        }]
+      },
+      services: {
+        serviceData: [{
+          id: 'foo',
+          displayName: 'foo'
+        }]
+      }
+
+    }
+  });
+
+  assert.equal(decoratedErrors.length, 1);
+  assert.equal(decoratedErrors[0].serviceName, 'foo');
+  assert.equal(decoratedErrors[0].error, 'error');
+  assert.equal(decoratedErrors[0].serviceId, 'foo');
 });

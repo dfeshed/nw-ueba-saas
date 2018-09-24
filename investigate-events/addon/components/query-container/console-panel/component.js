@@ -1,6 +1,12 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { hasError, hasWarning, warningsWithServiceName, isComplete } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import {
+  hasError,
+  hasWarning,
+  warningsWithServiceName,
+  errorsWithServiceName,
+  isComplete
+} from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { selectedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
@@ -8,13 +14,13 @@ import computed from 'ember-computed-decorators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
-  error: state.investigate.queryStats.errors.firstObject,
   filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
   serviceId: state.investigate.queryNode.previousQueryParams.serviceId,
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
   endTime: state.investigate.queryNode.previousQueryParams.endTime,
   description: state.investigate.queryStats.description,
   warnings: warningsWithServiceName(state),
+  errors: errorsWithServiceName(state),
   hasError: hasError(state),
   hasWarning: hasWarning(state),
   selectedService: selectedService(state),
@@ -37,7 +43,10 @@ const ConsolePanel = Component.extend({
 
   @computed('dateFormat.selected.format', 'timeFormat.selected.format')
   format: (dateFormat, timeFormat) => {
-    return `${dateFormat} ${timeFormat}`;
+    if (!dateFormat || !timeFormat) {
+      return;
+    }
+    return `${dateFormat} ${timeFormat.replace(/.SSS/, '')}`;
   }
 });
 

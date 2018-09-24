@@ -29,7 +29,7 @@
     <code>{{filters}}</code>
   {{/if}}
 
-  {{#if warnings.length}}
+  {{#if hasWarning}}
     <ul class="warnings">
       {{#each warnings as |w|}}
         {{query-container/console-panel/warning message=w.warning service=w.serviceName}}
@@ -37,7 +37,7 @@
     </ul>
   {{/if}}
 
-  <div>
+  <div class="status-summary">
     <div class="progress">
       <span class="label">{{t 'investigate.queryStats.progress'}}</span>
       <span class="value">
@@ -54,10 +54,14 @@
     {{/unless}}
 
     {{#if hasError}}
-      <div class="fatal-error">
-        {{rsa-icon title=(t 'investigate.queryStats.error') name='report-problem-triangle' size="large"}}
-        <strong>{{t 'investigate.queryStats.error'}}:</strong> <span class="error-text">{{error.error}}</span>
-      </div>
+      <ul class="fatal-errors">
+        {{#each errors as |error|}}
+          <li>
+            {{rsa-icon title=(t 'investigate.queryStats.error') name='report-problem-triangle' size="large"}}
+            <strong>{{error.serviceName}}:</strong> <span class="error-text">{{error.error}}</span>
+          </li>
+        {{/each}}
+      </ul>
     {{/if}}
   </div>
 

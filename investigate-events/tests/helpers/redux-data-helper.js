@@ -451,8 +451,8 @@ export default class DataHelper {
 
   queryStatsHasError() {
     _set(this.state.queryStats, 'description', 'error');
-    _set(this.state.queryStats, 'percent', 100);
     _set(this.state.queryStats, 'errors', [{
+      serviceId: '1',
       error: 'error'
     }]);
     return this;
