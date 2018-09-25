@@ -166,4 +166,15 @@ module('Unit | Reducers | configure | endpoint/certificates', function(hooks) {
     const newEndState = reducer(previous, newAction);
     assert.equal(newEndState.statusData.certificateStatus, 'Blacklisted');
   });
+
+  test('reset certificate data', function(assert) {
+    const previous = Immutable.from({
+      certificatesList: [ {
+        'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033'
+      }]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.RESET_CERTIFICATES });
+
+    assert.deepEqual(result, reducer(undefined, {}), 'initial state');
+  });
 });

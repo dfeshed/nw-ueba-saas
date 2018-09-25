@@ -6,7 +6,8 @@ import { getCertificates } from 'configure/actions/creators/endpoint/certificate
 
 const _initializeEndpoint = () => {
   return (dispatch, getState) => {
-    const server = getState().configure.endpoint.server.serviceData ? getState().configure.endpoint.server.serviceData[0] : {};
+    const [serverData] = getState().configure.endpoint.server.serviceData || [];
+    const server = serverData || {};
     dispatch(setEndpointServer(server));
   };
 };
@@ -29,6 +30,7 @@ export const setEndpointServer = (server) => {
       return request.ping('endpoint-server-ping')
       .then(function() {
         dispatch(isEndpointServerOffline(false));
+        dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
         dispatch(getCertificates());
       })
       .catch(function() {

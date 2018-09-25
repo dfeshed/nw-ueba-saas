@@ -96,7 +96,9 @@ const CertificateReducers = handleActions({
     } else {
       return state.set('selectedCertificateList', []);
     }
-  }
+  },
+
+  [ACTION_TYPES.RESET_CERTIFICATES]: (state) => state.merge(initialState)
 
 }, initialState);
 
