@@ -37,17 +37,13 @@ export default Route.extend({
    * @public
    */
   queryParams: {
-    // pill data hash, if pdhash is wiped out
-    // then we are reverting to using params
-    // so need to re-run
-    // TODO: at least for now
-    pdhash: { refreshModel: true },
+    pdhash: { refreshModel: true }, // pill data hashes
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime
     mf: { refreshModel: true },  // pillData
-    mps: { replace: true },      // metaPanelSize
-    rs: { replace: true }        // reconSize
+    mps: { refreshModel: false }, // metaPanelSize
+    rs: { refreshModel: false }   // reconSize
   },
 
   // Params used to update URL when hash comes in.
@@ -58,7 +54,6 @@ export default Route.extend({
   activate() {
     this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
     this.set('contextualHelp.topic', this.get('contextualHelp.invEventAnalysis'));
-    this.set('contextualHelp.topic', this.get('contextualHelp.invEventPreferences'));
     // Scheduler for retrieving latest summaryData.
     // Helps in cases where the service hasn't been re-selected or the page has not been refreshed
     // in a long time.
@@ -126,7 +121,7 @@ export default Route.extend({
       } = state.investigate;
 
       // We've started the querying process. Notify the UI.
-      this.get('redux').dispatch(queryIsRunning(true));
+      redux.dispatch(queryIsRunning(true));
 
       // If we're in the middle of validating the pill, let's defer processing
       // the request to execute the query. If validation has completed, check to
@@ -135,7 +130,7 @@ export default Route.extend({
         later(this, this.send, 'executeQuery', externalLink, 50);
         return;
       } else if (hasInvalidPill(state)) {
-        this.get('redux').dispatch(queryIsRunning(false));
+        redux.dispatch(queryIsRunning(false));
         return;
       }
 
@@ -162,7 +157,11 @@ export default Route.extend({
           window.open(path, '_blank');
         }
       } else {
-        this.send('reconClose');
+        // Will be closing recon, so set meta
+        // panel back to default size
+        qp.mps = META_PANEL_SIZES.DEFAULT;
+
+        redux.dispatch(setReconClosed());
         this.set('nextQueryParams', qp);
         this.runInvestigateQuery(qp, true);
 
