@@ -1,7 +1,7 @@
 <box>
   {{#rsa-data-table
     lazy=true
-    items=fileContext
+    items=listOfFiles
     columnsConfig=columnsConfig
     onRowClick=(action 'onRowClick')}}
     {{#rsa-data-table/header as |column|}}
@@ -47,27 +47,26 @@
           {{host-detail/utils/table-cell item=item column=column}}
         {{/if}}
       {{/rsa-data-table/body}}
-    {{/if}}
-
-    {{#if isPaginated}}
-      {{rsa-data-table/load-more status=contextLoadMoreStatus click=(action 'getPaginatedFileContext' tabName)}}
+      {{#if isPaginated}}
+        {{rsa-data-table/load-more status=contextLoadMoreStatus click=(action 'getPaginatedFileContext' tabName)}}
+      {{/if}}
     {{/if}}
   {{/rsa-data-table}}
 </box>
 <box class="files-footer" fit>
-  {{host-table-footer index=fileContext.length total=total label=(t (concat 'investigateHosts.hosts.footerLabel.' storeName))}}
+  {{host-table-footer index=listOfFiles.length total=totalItems label=(t (concat 'investigateHosts.hosts.footerLabel.' storeName))}}
 </box>
 {{#if showServiceModal}}
   {{endpoint/pivot-to-investigate/modal
     serviceList=serviceList
     metaName='checksumSha256'
-    itemList=rowItem
+    itemList=itemList
     closeModal=(action 'onCloseServiceModal')}}
 {{/if}}
 {{#if showFileStatusModal}}
   {{endpoint/edit-file-status/modal
     itemList=fileContextSelections
-    onSaveFileStatus=(action 'setFileContextFileStatus' tabName checksums)
-    data=statusData
+    onSaveFileStatus=(action 'setFileContextFileStatus' tabName selectedFileChecksums)
+    data=fileStatus
     closeModal=(action 'onCloseEditFileStatus')}}
 {{/if}}

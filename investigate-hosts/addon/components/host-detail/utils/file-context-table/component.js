@@ -1,18 +1,17 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 
 import {
-  fileContext,
+  listOfFiles,
   fileContextSelections,
   isAllSelected,
   isDataLoading,
   selectedRowId,
   fileStatus,
-  checksums,
+  selectedFileChecksums,
   totalItems,
   contextLoadMoreStatus
 } from 'investigate-hosts/reducers/details/file-context/selectors';
@@ -29,14 +28,14 @@ import {
 
 
 const stateToComputed = (state, { storeName }) => ({
-  fileContext: fileContext(state, storeName),
+  listOfFiles: listOfFiles(state, storeName),
   fileContextSelections: fileContextSelections(state, storeName),
   isAllSelected: isAllSelected(state, storeName),
   selectedRowId: selectedRowId(state, storeName),
   isDataLoading: isDataLoading(state, storeName),
   serviceList: serviceList(state, storeName),
   fileStatus: fileStatus(state, storeName),
-  checksums: checksums(state, storeName),
+  selectedFileChecksums: selectedFileChecksums(state, storeName),
   totalItems: totalItems(state, storeName),
   contextLoadMoreStatus: contextLoadMoreStatus(state, storeName)
 });
@@ -64,16 +63,6 @@ const FileContextTable = Component.extend({
   showServiceModal: false,
 
   showFileStatusModal: false,
-
-  @computed('fileStatus')
-  statusData(fileStatus) {
-    return fileStatus ? { ...fileStatus } : {};
-  },
-
-  @computed('fileContext', 'totalItems')
-  total(items, totalItems) {
-    return totalItems ? totalItems : items.length;
-  },
 
   _isAlreadySelected(selections, item) {
     let selected = false;
@@ -112,7 +101,7 @@ const FileContextTable = Component.extend({
     },
 
     beforeContextMenuShow(item) {
-      this.set('rowItem', [item]);
+      this.set('itemList', [item]);
       const tabName = this.get('tabName');
       if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {
         this.send('toggleRowSelection', tabName, item);
@@ -124,7 +113,7 @@ const FileContextTable = Component.extend({
     },
 
     showServiceList(item) {
-      this.set('rowItem', [item]);
+      this.set('itemList', [item]);
       this.set('showServiceModal', true);
     },
 
@@ -134,7 +123,7 @@ const FileContextTable = Component.extend({
 
 
     showEditFileStatus(item) {
-      this.set('rowItem', [item]);
+      this.set('itemList', [item]);
       if (this.get('accessControl.endpointCanManageFiles')) {
         this.set('showFileStatusModal', true);
       } else {

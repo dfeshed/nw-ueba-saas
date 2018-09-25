@@ -8,7 +8,7 @@ const _contextLoadingStatus = (state, name) => state.endpoint[name].contextLoadi
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _tabName = (state, name) => name;
 
-export const fileStatus = (state, name) => state.endpoint[name].fileStatus;
+export const fileStatus = (state, name) => ({ ...state.endpoint[name].fileStatus });
 export const selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
 export const fileContextSelections = (state, name) => state.endpoint[name].fileContextSelections || [];
 export const totalItems = (state, name) => state.endpoint[name].totalItems;
@@ -32,13 +32,13 @@ const _getProperties = (rowId, list, data) => {
 };
 
 
-export const checksums = createSelector(
+export const selectedFileChecksums = createSelector(
   fileContextSelections,
   (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );
 
 
-export const fileContext = createSelector(
+export const listOfFiles = createSelector(
   [ _fileContext, _sortConfig, _selectedTab, _tabName],
   (fileContext, sortConfig, selectedTab, tabName) => {
     let data = _.values(fileContext);
@@ -59,7 +59,7 @@ export const fileContext = createSelector(
 );
 
 export const isAllSelected = createSelector(
-  [fileContext, fileContextSelections],
+  [listOfFiles, fileContextSelections],
   (fileContext, fileContextSelections) => {
     if (fileContextSelections && fileContextSelections.length) {
       return fileContext.length === fileContextSelections.length;
@@ -68,6 +68,6 @@ export const isAllSelected = createSelector(
   }
 );
 
-export const fileContextFileProperty = createSelector([selectedRowId, fileContext, _fileContext], _getProperties);
+export const fileContextFileProperty = createSelector([selectedRowId, listOfFiles, _fileContext], _getProperties);
 
 export const isDataLoading = createSelector([_contextLoadingStatus], (contextLoadingStatus) => contextLoadingStatus === 'wait');

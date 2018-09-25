@@ -6,7 +6,7 @@ import {
   fileContextFileProperty,
   fileContextSelections,
   fileStatus,
-  checksums
+  selectedFileChecksums
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
@@ -14,14 +14,13 @@ import {
   getFileContextFileStatus
 } from 'investigate-hosts/actions/data-creators/file-context';
 
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state, { storeName }) => ({
   fileProperty: fileContextFileProperty(state, storeName),
   fileContextSelections: fileContextSelections(state, storeName),
   serviceList: serviceList(state, storeName),
   fileStatus: fileStatus(state, storeName),
-  checksums: checksums(state, storeName)
+  selectedFileChecksums: selectedFileChecksums(state, storeName)
 });
 
 const dispatchToActions = {
@@ -31,16 +30,19 @@ const dispatchToActions = {
 
 
 const ContextWrapper = Component.extend({
-  classNames: ['file-context-wrapper'],
-
   tagName: 'hbox',
 
-  showServiceModal: false,
+  classNames: ['file-context-wrapper'],
 
-  @computed('fileStatus')
-  statusData(fileStatus) {
-    return fileStatus ? { ...fileStatus } : {};
-  }
+  isPaginated: false,
+
+  storeName: '',
+
+  columnsConfig: null,
+
+  propertyConfig: null,
+
+  tabName: ''
 
 });
 

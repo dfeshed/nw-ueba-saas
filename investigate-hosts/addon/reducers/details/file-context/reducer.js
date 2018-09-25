@@ -6,14 +6,14 @@ import { normalize } from 'normalizr';
 import Immutable from 'seamless-immutable';
 
 const initialState = Immutable.from({
-  fileContext: {},
-  contextLoadingStatus: null,
-  contextLoadMoreStatus: null,
-  selectedRowId: null,
-  fileContextSelections: [],
-  sortConfig: null,
-  fileStatus: {},
-  totalItems: null,
+  fileContext: {}, // File context object , which holds the file information
+  contextLoadingStatus: null, // Indicates the files loading status
+  contextLoadMoreStatus: null, // Status for paginated data
+  selectedRowId: null, // Selected file context
+  fileContextSelections: [], // file context selections, which includes, id, signature and size
+  sortConfig: null, // Column sort configuration
+  fileStatus: {}, // File status for selected file
+  totalItems: null, // Total number of file context items
   pageNumber: -1,
   hasNext: false
 });
@@ -68,7 +68,9 @@ const fileContext = reduxActions.handleActions({
         const contextType = action.meta.belongsTo;
         const normalizedData = normalize(action.payload.data, getSchema(contextType));
         const fileContext = normalizedData.entities[contextType];
+        const totalItems = normalizedData.result ? normalizedData.result.length : 0;
         return s.merge({
+          totalItems,
           fileContext,
           contextLoadingStatus: 'completed',
           selectedRowId: null
