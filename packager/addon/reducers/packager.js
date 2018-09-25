@@ -7,7 +7,7 @@ import Immutable from 'seamless-immutable';
 const initialState = Immutable.from({
   defaultPackagerConfig: { packageConfig: {} },
   error: null,
-  loading: false,
+  loading: true,
   downloadLink: null,
   updating: false,
   devices: {},
