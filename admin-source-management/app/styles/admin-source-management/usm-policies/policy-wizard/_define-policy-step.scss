@@ -2,13 +2,18 @@
   .define-policy-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     .all-settings {
+      .rsa-icon {
+        font-size: 16px;
+      }
       .label {
         @include rsa-font(default, larger);
+        font-weight: 700;
         padding-bottom: rsa-whitespace(more);
         letter-spacing: .05rem;
       }
       .heading {
         @include rsa-font(default, large);
+        font-weight: 700;
         &:not(:nth-child(2)) {
           padding-top: rsa-whitespace();
           &::before {
@@ -49,6 +54,10 @@
         .rsa-icon {
           margin-right: rsa-whitespace();
         }
+      }
+      .selected-settings .sub-heading {
+        font-weight: 600;
+        padding: rsa-whitespace(more) rsa-whitespace() 0 0;
       }
     }
   }

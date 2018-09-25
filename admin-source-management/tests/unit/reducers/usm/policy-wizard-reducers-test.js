@@ -424,18 +424,28 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.equal(endState.selectedSettings.length, 2, 'An additional label entry has been added to the selectedSettings array');
   });
 
-  test('RESET_SCAN_SCHEDULE_TO_DEFAULTS resets state to initial state when id is scanScheduleId', function(assert) {
+  test('RESET_SCAN_SCHEDULE_TO_DEFAULTS resets scan schedule state to initial state when id is scanScheduleId', function(assert) {
     const payload = scanScheduleId;
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
 
     initialStateCopy.selectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date' },
+      { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios' }
     ];
+
+    const expectedEndState = {
+      selectedSettings: [
+        { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios' }
+      ]
+    };
+
     const action = { type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.selectedSettings.length, 0, 'All other entries in selected settings are cleared out when id is scanScheduleId');
-    assert.deepEqual(endState, policyWizInitialState, 'RESET_SCAN_SCHEDULE_TO_DEFAULTS should reset the state to the initial state');
+
+    assert.deepEqual(endState.selectedSettings, expectedEndState.selectedSettings, 'All entries related to scan schedule in selected settings are cleared out when id is scanScheduleId');
+    assert.deepEqual(endState.availableSettings[0].isEnabled, true, 'RESET_SCAN_SCHEDULE_TO_DEFAULTS should move scan schedule to the left and set its defaults');
+    assert.deepEqual(endState.availableSettings[1].isEnabled, true, 'RESET_SCAN_SCHEDULE_TO_DEFAULTS should move all the children of scan schedule to the left and set its defaults');
   });
 
   test('on SAVE_POLICY start, policyStatus is properly set', function(assert) {

@@ -88,7 +88,7 @@ export const initialState = {
   // define-policy-step - available settings to render the left col
   // * make sure the id is always the same as the policy property name
   availableSettings: [
-    { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true },
+    { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
     { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
     { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
     { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
@@ -345,8 +345,36 @@ export default reduxActions.handleActions({
     }
   },
 
-  // define-policy-step -
+  // define-policy-step - When RESET_SCAN_SCHEDULE is dispatched, everything under Scan Schedule
+  // should be set to default state and moved to the left. Other selected settings will remain as it is.
   [ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS]: (state) => {
+    const { availableSettings, selectedSettings } = state;
+
+    // remove scan schedule and it's children from the selected settings if present
+    const newSelectedSettings = selectedSettings.filter((el) => {
+      if (el.parentId === scanScheduleId || el.id === scanScheduleId) {
+        return false;
+      }
+      return true;
+    });
+    // set scan schedule to default values in available settings (children greyed out and enabled)
+    const newAvailableSettings = availableSettings.map((el) => {
+      if (el.parentId === scanScheduleId) {
+        return {
+          ...el,
+          isEnabled: true,
+          isGreyedOut: true
+        };
+      }
+      if (el.id === scanScheduleId) {
+        return {
+          ...el,
+          isEnabled: true,
+          isGreyedOut: false
+        };
+      }
+      return el;
+    });
     // when scan schedule is removed from selected settings, all it's child components
     // (effective date, recurrence interval, processor usage) should be removed.
     // so reset the scheduleConfig & available/selected settings to defaults
@@ -361,8 +389,8 @@ export default reduxActions.handleActions({
         cpuMax: null,
         cpuMaxVm: null
       },
-      availableSettings: [ ...initialState.availableSettings ],
-      selectedSettings: [ ...initialState.selectedSettings ]
+      availableSettings: newAvailableSettings,
+      selectedSettings: newSelectedSettings
     }, { deep: true }); // deep merge so we don't reset everything
   },
 

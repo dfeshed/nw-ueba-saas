@@ -118,8 +118,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/usm-radios' },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
