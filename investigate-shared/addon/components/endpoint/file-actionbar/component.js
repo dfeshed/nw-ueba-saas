@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
+import { externalLookup } from 'investigate-shared/utils/file-external-lookup';
 import computed from 'ember-computed-decorators';
 
 export default Component.extend({
@@ -21,6 +22,23 @@ export default Component.extend({
 
   selectedFileCount: null,
 
+  fileActionConf: [
+    { panelId: 'panel1', name: 'Download to server', title: 'Download to server' },
+    { panelId: 'panel2', name: 'Google Lookup', title: 'Google Lookup',
+      subItems: [
+      { title: 'File name', name: 'fileName', type: 'google' },
+      { title: 'MD5', name: 'md5', type: 'google' },
+      { title: 'SHA1', name: 'sha1', type: 'google' },
+      { title: 'SHA256', name: 'sha256', type: 'google' }
+      ] },
+    { panelId: 'panel3', name: 'VirusTotal Lookup', title: 'VirusTotal Lookup',
+      subItems: [
+      { title: 'MD5', name: 'md5', type: 'VirusTotal' },
+      { title: 'SHA1', name: 'sha1', type: 'VirusTotal' },
+      { title: 'SHA256', name: 'sha256', type: 'VirusTotal' }
+      ] }
+  ],
+
   @computed('selectedFileCount')
   isEditStatusButtonDisabled(selectedFileCount) {
     return !selectedFileCount > 0;
@@ -37,6 +55,12 @@ export default Component.extend({
       return selectedFileList[0].fileStatusData || {};
     }
     return {};
+  },
+  actions: {
+    onFileAction(action) {
+      const selectedList = this.get('itemList');
+      externalLookup(action, selectedList);
+    }
   }
 
 });

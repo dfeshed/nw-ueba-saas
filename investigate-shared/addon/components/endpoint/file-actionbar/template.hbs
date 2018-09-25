@@ -14,7 +14,62 @@
   getAllServices=getAllServices
   disabled=pivotInvestigateDisabled}}
 
-{{#rsa-form-button isIconOnly=true isDisabled=true class='download-button'}}
-  {{rsa-icon name='download-2' title=(t 'investigateShared.endpoint.fileActions.download')}}
-{{/rsa-form-button}}
-
+{{#rsa-content-tethered-panel-trigger
+  panel='file-status-more-actions'
+  triggerEvent='click'
+}}
+  {{#rsa-form-button
+    isIconOnly=false
+    title=(t 'investigateShared.endpoint.fileActions.moreActions')
+    withDropdown=true
+    isDisabled=false
+    class='watch-button more-action-button'}}
+    {{rsa-icon name='navigation-show-more-1'}}
+    {{#unless showOnlyIcons}}
+      {{t 'investigateShared.endpoint.fileActions.moreActions'}}
+    {{/unless}}
+  {{/rsa-form-button}}
+{{/rsa-content-tethered-panel-trigger}}
+{{#rsa-content-tethered-panel
+  panelClass="file-action-selector-panel"
+  displayCloseButton=false
+  isPopover=true
+  panelId='file-status-more-actions'
+  position='bottom-right'
+  as |hideTooltip|
+}}
+  <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
+    {{#each fileActionConf as |fileAction|}}
+      {{#if fileAction.subItems}}
+        <li class="{{if isEditStatusButtonDisabled 'disabled'}}">
+          {{#rsa-content-tethered-panel-trigger
+            panel=fileAction.panelId
+            isDisabled=isEditStatusButtonDisabled
+          }}
+            <div>
+              {{fileAction.title}}
+              {{rsa-icon name='arrow-right-12'}}
+            </div>
+          {{/rsa-content-tethered-panel-trigger}}
+        
+          {{#rsa-content-tethered-panel
+            panelClass="file-action-selector-panel"
+            displayCloseButton=false
+            isPopover=true
+            panelId=fileAction.panelId
+            position='right-bottom'
+            as |hideTooltip|
+          }}
+            <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
+              {{#each fileAction.subItems as |subItem|}}
+                <li {{action 'onFileAction' subItem}}>{{subItem.title}}</li>
+              {{/each}}
+            </ul>
+          {{/rsa-content-tethered-panel}}
+        </li>
+      {{else}}
+        <li class="disabled" {{action 'onFileAction' fileAction}}>{{fileAction.title}}</li>
+      {{/if}}
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}

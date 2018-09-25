@@ -3,6 +3,7 @@ import computed from 'ember-computed-decorators';
 import layout from './template';
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
 import { inject as service } from '@ember/service';
+import { externalLookup } from 'investigate-shared/utils/file-external-lookup';
 
 export default DataTableBodyRow.extend(contextMenuMixin, {
   layout,
@@ -16,6 +17,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
   selections: null,
 
   showFileStatusModal: false,
+
 
   @computed('item')
   contextItems() {
@@ -33,6 +35,51 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         label: 'Download',
         icon: 'download-2',
         iconStyle: 'lined'
+      },
+      {
+        label: 'Google Lookup',
+        subActions: [
+          { label: 'Filename',
+            action() {
+              externalLookup({ name: 'fileName', type: 'google' }, cntx.get('selections'));
+            }
+          },
+          { label: 'MD5',
+            action() {
+              externalLookup({ name: 'md5', type: 'google' }, cntx.get('selections'));
+            }
+          },
+          { label: 'SHA1',
+            action() {
+              externalLookup({ name: 'sha1', type: 'google' }, cntx.get('selections'));
+            }
+          },
+          { label: 'SHA256',
+            action() {
+              externalLookup({ name: 'sha256', type: 'google' }, cntx.get('selections'));
+            }
+          }
+        ]
+      },
+      {
+        label: 'VirusTotal Lookup',
+        subActions: [
+          { label: 'MD5',
+            action() {
+              externalLookup({ name: 'md5', type: 'VirusTotal' }, cntx.get('selections'));
+            }
+          },
+          { label: 'SHA1',
+            action() {
+              externalLookup({ name: 'sha1', type: 'VirusTotal' }, cntx.get('selections'));
+            }
+          },
+          { label: 'SHA256',
+            action() {
+              externalLookup({ name: 'sha256', type: 'VirusTotal' }, cntx.get('selections'));
+            }
+          }
+        ]
       }
     ];
 

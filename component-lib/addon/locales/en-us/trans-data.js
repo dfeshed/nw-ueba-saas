@@ -3276,7 +3276,8 @@ export default {
         pivotToInvestigate: 'Pivot to Investigate',
         watch: 'Watch',
         download: 'Download',
-        more: 'More'
+        more: 'More',
+        moreActions: 'More Actions'
       }
     }
   },

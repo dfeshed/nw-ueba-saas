@@ -9,4 +9,26 @@
       padding-right: rsa-whitespace(less);
     }
   }
+  .watch-button {
+    padding-left: 7px;
+  }
+}
+
+.file-action-selector-panel {
+  .rsa-dropdown-action-list {
+    .disabled {
+      color: text-color(primary);
+      .rsa-content-tethered-panel-trigger {
+        color: text-color(primary);
+      }
+    }
+  }
+  .rsa-content-tethered-panel-trigger {
+    div {
+      width: 140px;
+      .rsa-icon {
+        float: right;
+      }
+    }
+  }
 }

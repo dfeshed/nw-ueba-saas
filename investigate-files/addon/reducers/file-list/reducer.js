@@ -51,14 +51,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, checksumSha256, signature, size } = payload;
+  const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5 } = payload;
   let selectedList = [];
   // Previously selected file
 
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, checksumSha256, signature, size }];
+    selectedList = [...selectedFileList, { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size }];
   }
   return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {} });
 
@@ -168,7 +168,13 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_SELECTED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
 
-  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', Object.values(state.fileData).map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
+  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => {
+    const selectedList = Object.values(state.fileData).map((file) => {
+      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5 } = file;
+      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size };
+    });
+    return state.set('selectedFileList', selectedList);
+  },
 
   [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
 

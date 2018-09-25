@@ -50,6 +50,7 @@
     "ember-dependency-lookup": "2.0.0",
     "ember-engines": "0.5.22",
     "ember-exam": "0.7.0",
+    "ember-sinon": "0.6.0",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
     "ember-lodash-shim": "2.0.5",
