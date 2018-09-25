@@ -125,6 +125,11 @@ test('hasInvestigateEmberAccess is set when required roles are included', functi
   service.get('roles').clear().addObject('investigate-server.content.reconstruct');
   assert.equal(service.get('hasInvestigateEmberAccess'), true);
   service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.predicate.read');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
 });
 
 test('hasInvestigateContentExportAccess is set when required roles are included', function(assert) {
@@ -145,6 +150,10 @@ test('hasInvestigateEventsAccess is set when required roles are included', funct
   const service = this.subject();
   assert.equal(service.get('hasInvestigateEventsAccess'), false);
   service.set('roles', ['investigate-server.event.read']);
+  assert.equal(service.get('hasInvestigateEventsAccess'), false);
+  service.set('roles', ['investigate-server.predicate.read']);
+  assert.equal(service.get('hasInvestigateEventsAccess'), false);
+  service.set('roles', ['investigate-server.event.read', 'investigate-server.predicate.read']);
   assert.equal(service.get('hasInvestigateEventsAccess'), true);
 });
 
