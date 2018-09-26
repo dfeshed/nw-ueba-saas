@@ -1,8 +1,9 @@
 {{endpoint/edit-file-status/button
   showOnlyIcons=showOnlyIcons
   isDisabled=isDisabled
+  retrieveRemediationStatus=retrieveRemediationStatus
   defaultAction=(action 'showEditFileStatusModal')}}
 
 {{#if showFileStatusModal}}
-  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus itemList=itemList data=fileStatusData closeModal=(action 'closeModal')}}
+  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus remediationStatus=remediationStatus itemList=itemList data=fileStatusData closeModal=(action 'closeModal')}}
 {{/if}}

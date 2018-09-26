@@ -30,7 +30,8 @@ const fileListState = Immutable.from({
   fetchMetaValueLoading: false,
   activeAlertTab: 'critical',
   alertsData: null,
-  alertsError: null
+  alertsError: null,
+  isRemediationAllowed: true
 });
 
 const _handleAppendFiles = (action) => {
@@ -51,14 +52,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5 } = payload;
+  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5 } = payload;
   let selectedList = [];
   // Previously selected file
 
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size }];
+    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size }];
   }
   return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {} });
 
@@ -170,8 +171,8 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SELECT_ALL_FILES]: (state) => {
     const selectedList = Object.values(state.fileData).map((file) => {
-      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5 } = file;
-      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size };
+      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5, machineOsType } = file;
+      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size, machineOsType };
     });
     return state.set('selectedFileList', selectedList);
   },
@@ -182,6 +183,14 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeAlertTab', tabName);
+  },
+
+  [ACTION_TYPES.FETCH_REMEDIATION_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        return s.set('isRemediationAllowed', action.payload.data);
+      }
+    });
   }
 }, fileListState);
 

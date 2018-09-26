@@ -36,12 +36,15 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   });
 
   test('it should call the external function when single selection', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     this.set('itemList', new Array(1));
     this.set('getSavedFileStatus', function(selections) {
       assert.equal(selections.length, 1);
     });
-    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList getSavedFileStatus=(action getSavedFileStatus)}}`);
+    this.set('retrieveRemediationStatus', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
     await click('.file-status-button button');
   });
 });

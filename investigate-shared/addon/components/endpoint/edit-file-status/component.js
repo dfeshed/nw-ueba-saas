@@ -23,8 +23,9 @@ export default Component.extend({
   actions: {
     showEditFileStatusModal() {
       if (this.get('accessControl.endpointCanManageFiles')) {
-        this.set('showFileStatusModal', true);
         const selections = this.get('itemList');
+        this.retrieveRemediationStatus(selections);
+        this.set('showFileStatusModal', true);
         if (selections && selections.length === 1) {
           this.getSavedFileStatus(selections);
         }

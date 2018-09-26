@@ -9,7 +9,8 @@ import {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  retrieveRemediationStatus
 } from 'investigate-files/actions/data-creators';
 
 import { applySavedFilters, deleteFilter } from 'investigate-files/actions/filter-creators';
@@ -28,7 +29,8 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   selectedFilterId: selectedFilterId(state.files),
   savedFilter: savedFilter(state.files),
-  fileStatusData: state.files.fileList.fileStatusData
+  fileStatusData: state.files.fileList.fileStatusData,
+  remediationStatus: state.files.fileList.isRemediationAllowed
 });
 
 const dispatchToActions = {
@@ -39,7 +41,8 @@ const dispatchToActions = {
   applySavedFilters,
   setEndpointServer,
   getSavedFileStatus,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  retrieveRemediationStatus
 };
 /**
  * Toolbar that provides search filtering.

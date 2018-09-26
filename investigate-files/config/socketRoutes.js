@@ -67,6 +67,10 @@ const filesConfigGen = function(environment) {
       deleteFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
+      },
+      getRemediation: {
+        subscriptionDestination: '/user/queue/endpoint/certificate/remediation/allowed',
+        requestDestination: '/ws/endpoint/certificate/remediation/allowed'
       }
     },
     'context-service': {

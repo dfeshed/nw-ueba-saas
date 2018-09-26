@@ -23,7 +23,8 @@ import {
   saveFileStatus,
   getSavedFileStatus,
   fetchHostNameList,
-  getAlerts
+  getAlerts,
+  retrieveRemediationStatus
 } from 'investigate-files/actions/data-creators';
 
 import { failure } from 'investigate-shared/utils/flash-messages';
@@ -41,7 +42,8 @@ const stateToComputed = (state) => ({
   selections: state.files.fileList.selectedFileList,
   checksums: checksums(state),
   agentCountMapping: state.files.fileList.agentCountMapping,
-  fileStatusData: state.files.fileList.fileStatusData
+  fileStatusData: state.files.fileList.fileStatusData,
+  remediationStatus: state.files.fileList.isRemediationAllowed
 });
 
 const dispatchToActions = {
@@ -55,7 +57,8 @@ const dispatchToActions = {
   saveFileStatus,
   getSavedFileStatus,
   fetchHostNameList,
-  getAlerts
+  getAlerts,
+  retrieveRemediationStatus
 };
 
 /**

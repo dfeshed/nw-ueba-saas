@@ -35,6 +35,7 @@
         editFileStatus=(action 'showEditFileStatus')
         pivotToInvestigate=(action 'showServiceList')
         onSaveFileStatus = (action 'saveFileStatus' checksums)
+        retrieveRemediationStatus=(action 'retrieveRemediationStatus')
       )
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}
@@ -98,6 +99,7 @@
 {{#if showFileStatusModal}}
   {{endpoint/edit-file-status/modal
     itemList=selections
+    remediationStatus=remediationStatus
     onSaveFileStatus=(action 'saveFileStatus' checksums)
     data=data
     closeModal=(action 'onCloseEditFileStatus')}}

@@ -131,6 +131,14 @@ const getAlertsData = (query) => {
   });
 };
 
+const fetchRemediation = (thumbprints) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getRemediation',
+    modelName: 'files',
+    query: { data: thumbprints }
+  });
+};
 
 export default {
   fetchFiles,
@@ -140,5 +148,6 @@ export default {
   deleteFilter,
   getAllServices,
   getContext,
-  getAlertsData
+  getAlertsData,
+  fetchRemediation
 };

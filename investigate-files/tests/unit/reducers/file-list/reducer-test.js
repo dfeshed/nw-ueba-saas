@@ -76,7 +76,8 @@ test('should return the initial state', function(assert) {
     fetchMetaValueLoading: false,
     activeAlertTab: 'critical',
     alertsData: null,
-    alertsError: null
+    alertsError: null,
+    isRemediationAllowed: true
   });
 });
 
@@ -464,4 +465,17 @@ test('The GET_ALERTS_DATA stes the alertData ', function(assert) {
   const result = reducer(initialResult, newAction);
   assert.deepEqual(result.alertsData, response, 'alertsData value is set');
 
+});
+
+test('FETCH_REMEDIATION_STATUS', function(assert) {
+  const previous = Immutable.from({
+    isRemediationAllowed: true
+  });
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
+    payload: { data: false }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.isRemediationAllowed, false);
 });

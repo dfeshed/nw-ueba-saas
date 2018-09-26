@@ -352,6 +352,16 @@ const fetchAgentId = (hostName, callBack) => {
 
 const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
 
+const retrieveRemediationStatus = (selections) => {
+  const thumbprints = selections.mapBy('signature.thumbprint').compact();
+  if (thumbprints && thumbprints.length) {
+    return {
+      type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
+      promise: File.fetchRemediation({ thumbprints })
+    };
+  }
+};
+
 export {
   getPageOfFiles,
   sortBy,
@@ -375,5 +385,7 @@ export {
   fetchAgentId,
   setNewFileTab,
   getFirstPageOfFiles,
-  getAlerts
+  getAlerts,
+  retrieveRemediationStatus
 };
+

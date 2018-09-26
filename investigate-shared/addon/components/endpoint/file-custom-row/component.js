@@ -28,6 +28,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         icon: 'pencil-write-2',
         iconStyle: 'lined',
         action() {
+          cntx.retrieveRemediationStatus(cntx.get('selections'));
           cntx.editFileStatus(cntx.get('item'));
         }
       },

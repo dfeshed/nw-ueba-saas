@@ -26,31 +26,29 @@ export default Component.extend({
     'Unidentified'
   ],
 
-  _isKnownSigner(signer) {
-    if (signer) {
-      return signer.includes('Microsoft') || signer.includes('RSA');
-    }
-    return false;
-  },
-
   _isSizeExceeded(size) {
     return size > 104857600;
   },
 
-  @computed('itemList')
-  errorDecorator(itemList) {
-    const signer = itemList.mapBy('signature.signer');
-    const isSigned = signer.some(this._isKnownSigner);
+  _isWindowsAgent(item) {
+    return item.machineOsType === 'windows';
+  },
+
+  @computed('itemList', 'remediationStatus')
+  errorDecorator(itemList, isRemediationAllowed) {
     const size = itemList.mapBy('size');
     const sizeExceeds = size.some(this._isSizeExceeded);
+    const isNotWindowsAgent = !itemList.every(this._isWindowsAgent);
     let message;
-    if (isSigned) {
+    if (isNotWindowsAgent) {
+      message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.osNotToBlock');
+    } else if (!isRemediationAllowed) {
       message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.isSigned');
     } else if (sizeExceeds) {
       message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.sizeExceeds');
     }
     return {
-      disableBlocking: isSigned || sizeExceeds,
+      disableBlocking: isNotWindowsAgent || !isRemediationAllowed || sizeExceeds,
       remediationAlert: message
     };
   },
