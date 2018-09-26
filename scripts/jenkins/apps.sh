@@ -219,7 +219,7 @@ buildEmberApp packager false true true
 buildEmberApp rsa-data-filters false true true
 buildEmberApp recon false true true
 buildEmberApp context false true true
-buildEmberApp investigate-shared false true true
+buildEmberApp investigate-shared false true false
 buildEmberApp preferences false true true
 buildEmberApp test-helpers false false false
 buildEmberApp ember-route-action-helper false false false

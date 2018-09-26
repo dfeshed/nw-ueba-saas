@@ -1,6 +1,6 @@
  /* eslint-env node */
 const os = require('os');
-const existsSync = require('exists-sync');
+const fs = require('fs');
 const { WatchedDir } = require('broccoli-source');
 
 const featureFlagDefaultHash = require('./feature-flags');
@@ -229,7 +229,7 @@ const addFeatureFlags = function(environment) {
 const commonBuildOptions = function(projectDir) {
   const templatesPath = `${projectDir}/addon/components`;
   let templatesTree = null;
-  if (existsSync(templatesPath)) {
+  if (fs.existsSync(templatesPath)) {
     templatesTree = new WatchedDir(templatesPath);
   }
 
