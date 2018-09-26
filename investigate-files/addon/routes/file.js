@@ -10,7 +10,7 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     next(() => {
-      redux.dispatch(getAlerts(params));
+      redux.dispatch(getAlerts(params.id));
     });
   }
 });

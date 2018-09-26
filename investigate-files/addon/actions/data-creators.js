@@ -201,18 +201,20 @@ const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TA
 
 const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName } });
 const setDetailAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB, payload: { tabName } });
-const prepareQuery = (checksum) => {
+
+const prepareQuery = (checksum, severity = 'Critical') => {
+  const categoryValue = severity.charAt(0).toUpperCase() + severity.slice(1);
   return {
     filter: [
-      { field: 'meta', value: 'CHECKSUM' },
-      { field: 'value', value: checksum }
+      { field: 'hash', value: checksum },
+      { field: 'category', value: categoryValue }
     ]
   };
 };
 
-const getAlerts = (checksum) => ({
+const getAlerts = (checksum, severity) => ({
   type: ACTION_TYPES.GET_ALERTS_DATA,
-  promise: File.getAlertsData(prepareQuery(checksum))
+  promise: File.getAlertsData(prepareQuery(checksum, severity))
 });
 
 const fetchFileContext = (fileName) => {

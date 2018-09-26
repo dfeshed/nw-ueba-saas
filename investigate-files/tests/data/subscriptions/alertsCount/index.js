@@ -1,7 +1,7 @@
 import data from './data';
 export default {
-  subscriptionDestination: '/user/queue/scoring/scoring-server',
-  requestDestination: '/user/queue/scoring/scoring-server',
+  subscriptionDestination: '/user/queue/scoring/file/context/get',
+  requestDestination: '/ws/scoring/file/context/get',
   message(/* frame */) {
     return {
       meta: {

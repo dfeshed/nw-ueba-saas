@@ -125,7 +125,7 @@ const getContext = (query, handlers) => {
 const getAlertsData = (query) => {
   const request = lookup('service:request');
   return request.promiseRequest({
-    method: 'stream',
+    method: 'getFileContext',
     modelName: 'scoring-server',
     query
   });

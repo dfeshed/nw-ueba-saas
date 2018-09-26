@@ -99,9 +99,9 @@ const filesConfigGen = function(environment) {
     },
     'scoring-server': {
       socketUrl: scoringSocketUrl,
-      stream: {
-        subscriptionDestination: '/user/queue/scoring/scoring-server',
-        requestDestination: '/user/queue/scoring/scoring-server'
+      getFileContext: {
+        subscriptionDestination: '/user/queue/scoring/file/context/get',
+        requestDestination: '/ws/scoring/file/context/get'
       }
     }
   };
