@@ -56,6 +56,8 @@ export default Component.extend({
     const isReset = this.get('isReset');
     if (isReset) {
       this.notifyPropertyChange('filterValue');
+      this.set('isError', false);
+      this.set('errorMessage', '');
     }
   },
 

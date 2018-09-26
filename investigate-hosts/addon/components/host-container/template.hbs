@@ -15,7 +15,7 @@
           filterTypes=filterTypes }}
       {{/layout.left}}
       {{#layout.center}}
-        {{host-list}}
+        {{host-list openFilterPanel=(action layout.open 'left')}}
       {{/layout.center}}
       {{#layout.right as |rightPanel|}}
        Right content

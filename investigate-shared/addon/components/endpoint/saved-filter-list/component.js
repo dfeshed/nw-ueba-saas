@@ -23,7 +23,7 @@ export default Component.extend({
 
   allFiles: {
     id: 1,
-    name: 'All Files',
+    name: 'All',
     systemFilter: true,
     criteria: {
       expressionList: []

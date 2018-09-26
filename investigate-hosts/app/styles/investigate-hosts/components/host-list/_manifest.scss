@@ -48,4 +48,11 @@ $filter-panel-width: 250px;
       min-width: 98%
     }
   }
+
+  .show-left-zone {
+    .title-header {
+      display: none;
+    }
+  }
+
 }

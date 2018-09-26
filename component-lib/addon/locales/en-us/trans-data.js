@@ -2019,7 +2019,7 @@ export default {
       Neutral: 'Neutral'
     },
     filter: {
-      allFiles: 'All Files',
+      allFiles: 'All',
       filter: 'Filters',
       filters: 'Saved Filters',
       newFilter: 'New Filter',

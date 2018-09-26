@@ -21,7 +21,7 @@ const getFilter = (callback) => {
       type: ACTION_TYPES.GET_FILTER,
       promise: Machines.getAllFilters(),
       meta: {
-        name: 'MACHINE',
+        belongsTo: 'MACHINE',
         onSuccess: () => {
           dispatch(callback());
         }
@@ -36,7 +36,7 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
       type: ACTION_TYPES.DELETE_FILTER,
       promise: Machines.deleteSearch(id),
       meta: {
-        name: 'MACHINE',
+        belongsTo: 'MACHINE',
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },
@@ -52,14 +52,14 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
 
 const applyFilters = (reload, expressions) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { name: 'MACHINE' } });
+    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { belongsTo: 'MACHINE' } });
     dispatch(reload());
   };
 };
 
 const applySavedFilters = (filter, reload) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { name: 'MACHINE' } });
+    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo: 'MACHINE' } });
     dispatch(applyFilters(reload, filter.criteria.expressionList));
   };
 };
@@ -76,7 +76,7 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
       type: ACTION_TYPES.SAVE_FILTER,
       promise: Machines.createCustomSearch(filter, schemas, filterType),
       meta: {
-        name: 'MACHINE',
+        belongsTo: 'MACHINE',
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },
