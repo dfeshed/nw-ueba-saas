@@ -31,5 +31,10 @@
     .usm-groups-inspector, .usm-policies-inspector {
       height: 100%;
     }
+
+    .table-cell-text {
+      @include rsa-font(body, small);
+    }
+
   }
 }

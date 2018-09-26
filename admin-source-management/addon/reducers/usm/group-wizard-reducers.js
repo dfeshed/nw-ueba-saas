@@ -6,14 +6,14 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 
 const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6', 'agentMode'];
-const OPRTR = ['IN', 'EQUALS', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN', 'NOT_EQUALS'];
+const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
 const INPT = ['textInput', 'osSelector', '2textInputs', 'agentSelector', 'textarea'];
 const VLDTR = ['none', '256max', 'validHostname', 'validHostnameList', 'validHostnameChars', 'ipv4', 'ipv4Pair', 'ipv4List', 'ipv6', 'ipv6Pair', 'ipv6List'];
 // In the future the _GROUP_ATTRIBUTES_MAP may be initialize with an API call
 // _GROUP_ATTRIBUTES_MAP is derived from https://wiki.na.rsa.net/display/RPA/Cycle+9+Attributes
 // The _GROUP_ATTRIBUTES_MAP is used to draw dynamically the selectors for attributes and operators and also the associated input/s
 // Consider __GROUP_ATTRIBUTES_MAP.map[0] = [osType, [IN, osSelector, none]], here the 'osType' attribute has one operator 'IN", has selector type input 'osSelector' and has no validation
-// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUALS, textInput, 256max], ... plus three other operators with associated input/s and validation ]
+// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUAL, textInput, 256max], ... plus three other operators with associated input/s and validation ]
 const _GROUP_ATTRIBUTES_MAP = {
   attribute: ATTRBT,
   map: [

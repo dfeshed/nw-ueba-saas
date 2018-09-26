@@ -40,6 +40,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('The component appears in the DOM', async function(assert) {
+    assert.expect(1);
     const state = new ReduxDataHelper(setState).policyWiz().build();
     this.set('step', state.usm.policyWizard.steps[0]);
     await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
@@ -47,6 +48,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Toolbar appearance for Identify Policy step with invalid data', async function(assert) {
+    assert.expect(5);
     const state = new ReduxDataHelper(setState).policyWiz().build();
     this.set('step', state.usm.policyWizard.steps[0]);
     await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
@@ -58,6 +60,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Toolbar appearance for Identify Policy step valid data', async function(assert) {
+    assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
@@ -72,6 +75,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Toolbar closure actions for Identify Policy step with valid data', async function(assert) {
+    const done = assert.async(2);
     assert.expect(2);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -92,6 +96,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     // update transitionToStep for next-button
     this.set('transitionToStep', (stepId) => {
       assert.equal(stepId, this.get('step').nextStepId, `transitionToStep(${stepId}) was called with the correct stepId by Next`);
+      done();
     });
     const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
@@ -100,13 +105,15 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     // update transitionToClose for cancel-button
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
+      done();
     });
     const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
     await click(cancelBtnEl);
   });
 
   test('Toolbar save action for Identify Policy step with valid data', async function(assert) {
-    assert.expect(2);
+    const done = assert.async();
+    assert.expect(3);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
@@ -123,16 +130,19 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     // skip prev-button & publish-button since they aren't rendered
 
     // clicking the save-button should dispatch the savePolicy action
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
     return settled().then(() => {
       assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
       // only checking first arg as second arg will be a Function that lives in the Component
       assert.equal(savePolicySpy.getCall(0).args[0], state.usm.policyWizard.policy);
+      done();
     });
   });
 
   test('On failing to save a policy, an error flash message is shown', async function(assert) {
+    const done = assert.async();
     assert.expect(2);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -144,9 +154,11 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     throwSocket();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.policyWizard.saveFailure');
+      const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
+      const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
 
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
@@ -154,6 +166,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('On successfully saving a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
+    const done = assert.async();
     assert.expect(3);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -168,10 +181,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       transitionToClose=(action transitionToClose)}}`
     );
 
-    const done = assert.async();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.policyWizard.saveSuccess');
+      const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveSuccess');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();
@@ -182,6 +194,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('On failing to save and publish a policy, an error flash message is shown', async function(assert) {
+    const done = assert.async();
     assert.expect(3);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -194,9 +207,11 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     throwSocket();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.policyWizard.savePublishFailure');
+      const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
+      const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.savePublishFailure', { errorType: codeResponse });
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
 
     const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
@@ -204,6 +219,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('On successfully saving and publishing a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
+    const done = assert.async();
     assert.expect(4);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -219,10 +235,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     );
     assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
 
-    const done = assert.async();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.policyWizard.savePublishSuccess');
+      const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.savePublishSuccess');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();
@@ -233,6 +248,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Name and description errors do not enable Next and Save buttons', async function(assert) {
+    assert.expect(5);
     let testDesc = '';
     for (let index = 0; index < 220; index++) {
       testDesc += 'the-description-is-greater-than-8000-';

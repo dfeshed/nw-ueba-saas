@@ -155,7 +155,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       ...initialState.group,
       groupCriteria: {
         ...initialState.group.groupCriteria,
-        criteria: [['osDescription', 'EQUALS', []]]
+        criteria: [['osDescription', 'EQUAL', []]]
       }
     };
     const action = {
@@ -171,7 +171,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       ...initialState.group,
       groupCriteria: {
         ...initialState.group.groupCriteria,
-        criteria: [['hostname', 'EQUALS', []]]
+        criteria: [['hostname', 'EQUAL', []]]
       }
     };
     const action = {
@@ -376,7 +376,7 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       ...initialState.group,
       groupCriteria: {
         ...initialState.group.groupCriteria,
-        criteria: [['agentMode', 'EQUALS', []]]
+        criteria: [['agentMode', 'EQUAL', []]]
       }
     };
     const action = {

@@ -19,7 +19,13 @@
             {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
           </label>
         {{else if (eq column.field "name")}}
-          {{get item column.field}}
+          {{#rsa-text-with-tooltip value=(get item column.field)}}
+            <div class="table-cell-text">{{get item column.field}}</div>
+          {{/rsa-text-with-tooltip}}
+        {{else if (eq column.field "description")}}
+          {{#rsa-text-with-tooltip value=(get item column.field)}}
+            <div class="table-cell-text">{{get item column.field}}</div>
+          {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "published")}}
           {{#if (eq item.lastPublishedOn 0)}}
             <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>

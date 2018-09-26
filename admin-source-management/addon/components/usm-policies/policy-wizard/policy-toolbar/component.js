@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
+import { inject } from '@ember/service';
 
 import {
   policy,
@@ -34,6 +35,7 @@ const dispatchToActions = {
 const PolicyWizardToolbar = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['policy-wizard-toolbar'],
+  i18n: inject(),
 
   // step object required to be passed in
   step: null,
@@ -65,13 +67,13 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
     },
 
     save(publish) {
-      let successMessage = 'adminUsm.policyWizard.saveSuccess';
-      let failureMessage = 'adminUsm.policyWizard.saveFailure';
+      let successMessage = 'adminUsm.policyWizard.actionMessages.saveSuccess';
+      let failureMessage = 'adminUsm.policyWizard.actionMessages.saveFailure';
       let dispatchAction = 'savePolicy';
 
       if (publish) {
-        successMessage = 'adminUsm.policyWizard.savePublishSuccess';
-        failureMessage = 'adminUsm.policyWizard.savePublishFailure';
+        successMessage = 'adminUsm.policyWizard.actionMessages.savePublishSuccess';
+        failureMessage = 'adminUsm.policyWizard.actionMessages.savePublishFailure';
         dispatchAction = 'savePublishPolicy';
       }
 
@@ -82,9 +84,12 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
             this.get('transitionToClose')();
           }
         },
-        onFailure: () => {
+        onFailure: (response = {}) => {
           if (!this.isDestroyed) {
-            this.send('failure', failureMessage);
+            const { code } = response;
+            const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
+            const codeResponse = this.get('i18n').t(codeKey);
+            this.send('failure', failureMessage, { errorType: codeResponse });
           }
         }
       };

@@ -3685,11 +3685,13 @@ export default {
       publishGroup: 'Publish Group',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
-      saveFailure: 'A problem occurred while trying to save the group.',
-      saveSuccess: 'The group has been saved successfully.',
-      savePublishFailure: 'A problem occurred while trying to save and publish the group.',
-      savePublishSuccess: 'The group has been saved and published successfully.',
-      addCondition: 'Add Condition'
+      addCondition: 'Add Condition',
+      actionMessages: {
+        saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
+        saveSuccess: 'The group has been saved successfully.',
+        savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
+        savePublishSuccess: 'The group has been saved and published successfully.'
+      }
     },
     policyWizard: {
       // identify-policy-step
@@ -3719,11 +3721,12 @@ export default {
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
-      // flash messages
-      saveFailure: 'A problem occurred while trying to save the policy.',
-      saveSuccess: 'The policy has been saved successfully.',
-      savePublishFailure: 'A problem occurred while trying to save and publish the policy.',
-      savePublishSuccess: 'The policy has been saved and published successfully.'
+      actionMessages: {
+        saveFailure: 'A problem occurred while trying to save the policy: {{errorType}}',
+        saveSuccess: 'The policy has been saved successfully.',
+        savePublishFailure: 'A problem occurred while trying to save and publish the policy: {{errorType}}',
+        savePublishSuccess: 'The policy has been saved and published successfully.'
+      }
     },
     policyTypes: {
       edrPolicy: 'EndPointScan',
@@ -3745,15 +3748,57 @@ export default {
       },
       operator: {
         IN: 'in',
-        EQUALS: 'is equal to',
+        EQUAL: 'is equal to',
         CONTAINS: 'contains',
         STARTS_WITH: 'starts with',
         ENDS_WITH: 'ends with',
         NOT_IN: 'not in',
         BETWEEN: 'between',
-        NOT_BETWEEN: 'not between',
-        NOT_EQUALS: 'is not equal to'
+        NOT_BETWEEN: 'not between'
+      },
+      inputValidations: {
+        none: '',
+        notEmpty: 'Value can not be empty',
+        lessThan256Char: 'Value can not be empty and must be less than 256 characters',
+        validHostname: 'Invalid host name',
+        validHostnameList: 'One or more of the the hostnames are invalid',
+        validHostnameChars: 'NA',
+        validIPv4: 'Invalid IPv4 address',
+        validIPv4Pair: 'One or both of the the IPv4 addresses are invalid',
+        validIPv4List: 'One or more of the the IPv4 addresses are invalid',
+        validIPv6: 'Invalid IPv6 address',
+        validIPv6Pair: 'One or both of the the IPv6 addresses are invalid',
+        validIPv6List: 'One or more of the the IPv6 addresses are invalid'
       }
+    },
+    errorCodeResponse: {
+      default: 'Unknown response error code',
+      601: '(601) Policy with same name already exists',
+      602: '(602) Group with same name already exists',
+      603: '(603) Unable to delete a default policy type',
+      604: '(604) Group criteria is invalid',
+      605: '(605) Group criteria is empty',
+      606: '(606) Group criteria conjunction operator is invalid',
+      607: '(607) Group criteria condition is empty',
+      608: '(608) Group criteria condition is invalid',
+      609: '(609) Group criteria attribute name is empty',
+      610: '(610) Group criteria attribute name is too long',
+      611: '(611) Group criteria attribute operator is invalid',
+      612: '(612) Group criteria attribute value is empty',
+      613: '(613) Group criteria attribute value is unknown',
+      614: '(614) Group criteria attribute description value is empty',
+      615: '(615) Group criteria attribute description value is too long',
+      616: '(616) Group criteria attribute hostname value is empty',
+      617: '(617) Group criteria attribute hostname value is invalid',
+      618: '(618) Group criteria attribute hostname value is too long',
+      619: '(619) Group criteria attribute IPv4 address value is empty',
+      620: '(620) Group criteria attribute IPv4 address range value is missing',
+      621: '(621) Group criteria attribute IPv4 address range value is invalid',
+      622: '(622) Group criteria attribute IPv4 address value is invalid',
+      623: '(619) Group criteria attribute IPv6 address value is empty',
+      624: '(620) Group criteria attribute IPv6 address range value is missing',
+      625: '(621) Group criteria attribute IPv6 address range value is invalid',
+      626: '(622) Group criteria attribute IPv6 address value is invalid'
     }
   },
   // end admin-source-management (a.k.a USM)

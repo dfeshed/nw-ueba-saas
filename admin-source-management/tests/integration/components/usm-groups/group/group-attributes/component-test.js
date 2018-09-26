@@ -48,23 +48,23 @@ module('Integration | Component | group-attributes', function(hooks) {
     await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 1);
     state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUALS', 'osDescription operator field value is not showing or value is not "EQUALS"');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUAL', 'osDescription operator field value is not showing or value is not "EQUAL"');
     // hostname
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 2);
     state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUALS', 'hostname operator field value is not showing or value is not "EQUALS"');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUAL', 'hostname operator field value is not showing or value is not "EQUAL"');
     // ipv4
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 3);
     state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'BETWEEN', 'ipv4 operator field value is not showing or value is not "EQUALS"');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'BETWEEN', 'ipv4 operator field value is not showing or value is not "EQUAL"');
     // ipv6
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 4);
     state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'BETWEEN', 'ipv6 operator field value is not showing or value is not "EQUALS"');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'BETWEEN', 'ipv6 operator field value is not showing or value is not "EQUAL"');
     // agentMode
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 5);
     state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUALS', 'agentMode operator field value is not showing or value is not "EQUALS"');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUAL', 'agentMode operator field value is not showing or value is not "EQUAL"');
   });
 
   test('Add Criteria', async function(assert) {

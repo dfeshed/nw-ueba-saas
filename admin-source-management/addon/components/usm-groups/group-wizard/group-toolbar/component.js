@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
+import { inject } from '@ember/service';
 
 import {
   group,
@@ -34,6 +35,7 @@ const dispatchToActions = {
 const GroupWizardToolbar = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['group-wizard-toolbar'],
+  i18n: inject(),
 
   // step object required to be passed in
   step: undefined,
@@ -55,37 +57,45 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   },
 
   actions: {
+
     transitionToPrevStep() {
       this.get('transitionToStep')(this.get('step').prevStepId);
     },
+
     transitionToNextStep() {
       this.get('transitionToStep')(this.get('step').nextStepId);
-    },  // save changes to the group
+    },
+
     save(publish) {
-      let successMessage = 'adminUsm.groupWizard.saveSuccess';
-      let failureMessage = 'adminUsm.groupWizard.saveFailure';
+      let successMessage = 'adminUsm.groupWizard.actionMessages.saveSuccess';
+      let failureMessage = 'adminUsm.groupWizard.actionMessages.saveFailure';
       let dispatchAction = 'saveGroup';
 
       if (publish) {
-        successMessage = 'adminUsm.groupWizard.savePublishSuccess';
-        failureMessage = 'adminUsm.groupWizard.savePublishFailure';
+        successMessage = 'adminUsm.groupWizard.actionMessages.savePublishSuccess';
+        failureMessage = 'adminUsm.groupWizard.actionMessages.savePublishFailure';
         dispatchAction = 'savePublishGroup';
       }
 
-      const onSuccess = () => {
-        if (!this.isDestroyed) {
-          this.send('success', successMessage);
-          this.get('transitionToClose')();
+      const saveCallbacks = {
+        onSuccess: () => {
+          if (!this.isDestroyed) {
+            this.send('success', successMessage);
+            this.get('transitionToClose')();
+          }
+        },
+        onFailure: (response = {}) => {
+          if (!this.isDestroyed) {
+            const { code } = response;
+            const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
+            const codeResponse = this.get('i18n').t(codeKey);
+            this.send('failure', failureMessage, { errorType: codeResponse });
+          }
         }
       };
-      const onFailure = () => {
-        if (!this.isDestroyed) {
-          this.send('failure', failureMessage);
-        }
-      };
-      this.send(dispatchAction, this.get('group'), { onSuccess, onFailure });
+      this.send(dispatchAction, this.get('group'), saveCallbacks);
     },
-    // cancel changes to the group
+
     cancel() {
       this.get('transitionToClose')();
     }

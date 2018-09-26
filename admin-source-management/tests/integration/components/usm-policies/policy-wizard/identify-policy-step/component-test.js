@@ -50,6 +50,7 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
   });
 
   test('The component appears in the DOM with correct values', async function(assert) {
+    assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     const sourceTypeText = translation.t('adminUsm.policyWizard.edrSourceType');
     const testName = 'test name';
@@ -70,8 +71,11 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
   });
 
   test('Typing in the policy name control dispatches the editPolicy action creator', async function(assert) {
+    const done = assert.async();
+    assert.expect(3);
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    assert.equal(findAll('.control .policy-name input').length, 1, 'Policy Name input control appears in the DOM');
     const [el] = findAll('.control .policy-name input');
     await focus(el);
     const testName = el.value = 'test name';
@@ -79,14 +83,18 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
-      assert.ok((editPolicySpy.calledOnce), 'The editPolicy action was called once');
+      assert.ok((editPolicySpy.callCount >= 1), 'The editPolicy action was called');
       assert.ok(editPolicySpy.calledWith('policy.name', expectedTestName), `The editPolicy action was called with trimmed "${testName}"`);
+      done();
     });
   });
 
   test('Typing in the policy description control dispatches the editPolicy action creator', async function(assert) {
+    const done = assert.async();
+    assert.expect(3);
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    assert.equal(findAll('.control-with-error .policy-description textarea').length, 1, 'Policy Description input control appears in the DOM');
     const [el] = findAll('.control-with-error .policy-description textarea');
     await focus(el);
     const testDesc = el.value = 'test description';
@@ -94,8 +102,9 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
-      assert.ok((editPolicySpy.callCount == 2), 'The editPolicy action was called twice');
+      assert.ok((editPolicySpy.callCount >= 1), 'The editPolicy action was called');
       assert.ok(editPolicySpy.calledWith('policy.description', expectedTestDesc), `The editPolicy action was called with trimmed "${testDesc}"`);
+      done();
     });
   });
 
