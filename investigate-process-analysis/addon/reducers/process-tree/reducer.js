@@ -25,7 +25,7 @@ export default reduxActions.handleActions({
     return state.set('filterApplied', false);
   },
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
-    return state.merge({ streaming: true, error: null });
+    return state.merge({ streaming: true, error: null, rawData: [] });
   },
 
   [ACTION_TYPES.COMPLETED_EVENTS_STREAMING]: (state) => {

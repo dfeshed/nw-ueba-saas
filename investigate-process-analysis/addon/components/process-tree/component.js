@@ -141,8 +141,8 @@ const TreeComponent = Component.extend({
     return treeInstance;
   },
 
-  @computed('element')
-  svg(element) {
+
+  getSVG: (element) => {
     if (element) {
       const height = element.clientHeight || 0;
       const el = select(element);
@@ -360,7 +360,7 @@ const TreeComponent = Component.extend({
 
     nodeUpdate.select('circle.process')
       .attr('cursor', 'pointer')
-      .attr('r', '1.643rem');
+      .attr('r', '1.643em');
 
     if (ieEdgeDetection()) { // icon is positioned according to the browser
       nodeUpdate.select('text.process-icon')
@@ -435,10 +435,10 @@ const TreeComponent = Component.extend({
       return;
     }
     // clear the tree
-    select('.tree-layer').selectAll('*').remove();
     this.set('rootNode', null);
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
+      selectAll('.tree-layer > *').remove();
       const { checksum, pn, vid } = this.get('queryInput');
       const onComplete = () => {
 
@@ -470,8 +470,8 @@ const TreeComponent = Component.extend({
 
 
         document.title = this._documentTitle(pn);
-        this._initializeChart();
         this.send('selectedProcessEvents', this.get('selectedProcessId'), {});
+        this._initializeChart();
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
 
@@ -488,7 +488,9 @@ const TreeComponent = Component.extend({
    */
   buildChart(source) {
 
-    const { rootNode, svg, treeInstance } = this.getProperties('rootNode', 'svg', 'treeInstance');
+    const { rootNode, getSVG, treeInstance, element } = this.getProperties('rootNode', 'getSVG', 'treeInstance', 'element');
+
+    const svg = getSVG(element);
 
     // Re calculate the tree layout
     const tree = treeInstance(rootNode);

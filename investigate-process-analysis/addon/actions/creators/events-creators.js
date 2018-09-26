@@ -6,7 +6,6 @@ import { constructFilterQueryString } from 'investigate-process-analysis/reducer
 
 const callbacksDefault = { onComplete() {} };
 
-let data = [];
 let done = false;
 let eventsListDone = false;
 // Common functions.
@@ -96,7 +95,7 @@ export const selectedProcessEvents = (pid, callbacks = callbacksDefault) => {
  * Once we got the response setting process id and parentId to the event, this will be used for building the tree.
  * @public
  */
-export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
+export const getParentAndChildEvents = (pid, callbacks = callbacksDefault, eventsData = []) => {
   return (dispatch) => {
     const onResponse = function(response) {
       const { data: _payload, meta } = response || {};
@@ -105,11 +104,11 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
         return;
       } else {
         payload.forEach(hasherizeEventMeta);
-        data = data.concat(payload);
+        eventsData = eventsData.concat(payload);
         const parent = payload.filter((item) => item.processVidDst === pid);
         if (parent && parent.length) {
           dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: parent[0].processVidDst });
-          dispatch(getParentAndChildEvents(parent[0].processVidSrc, callbacks));
+          dispatch(getParentAndChildEvents(parent[0].processVidSrc, callbacks, eventsData));
         } else {
           if (payload && payload.length) {
             // If there is no parent make current event as parent node taking the first node if duplicate
@@ -119,7 +118,7 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
               processId: node.processVidSrc,
               parentId: 0
             };
-            const newData = data.map((item) => {
+            const newData = eventsData.map((item) => {
               return _getNode(item);
             });
             newData.push(root);
