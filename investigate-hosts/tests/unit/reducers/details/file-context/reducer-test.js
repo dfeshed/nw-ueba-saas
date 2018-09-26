@@ -9,7 +9,7 @@ import _ from 'lodash';
 
 const initialState = {
   fileContext: {},
-  contextLoadingStatus: null,
+  contextLoadingStatus: 'wait',
   contextLoadMoreStatus: null,
   selectedRowId: null,
   fileContextSelections: [],

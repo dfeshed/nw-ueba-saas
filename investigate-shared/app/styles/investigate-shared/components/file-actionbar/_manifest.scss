@@ -1,4 +1,6 @@
 .file-actionbar {
+  flex: none;
+  padding: rsa-whitespace() 0 rsa-whitespace() 0;
   .file-status-button {
     padding: 0 rsa-whitespace(less) 0 rsa-whitespace();
   }

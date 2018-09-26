@@ -1,12 +1,5 @@
-{{yield (hash
-  localeNameSpace='investigateHosts.property.file'
-  status=status
-  tableItems=(readonly hooks)
-  type=(t 'investigateHosts.hosts.footerLabel.anomalies.hooks')
-  columnsConfig=columnsConfigWithTitle
-  selectRowAction=(action 'setSelectedRow')
+{{host-detail/utils/file-context-wrapper
   propertyConfig=propertyConfig
-  propertyData=fileProperties
-  propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.anomalies.hooks')
-  )
-}}
+  storeName='imageHooks'
+  tabName='IMAGEHOOK'
+  columnsConfig=columnsConfigWithTitle}}

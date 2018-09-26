@@ -43,8 +43,8 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   });
 
   test('Buttons enabling/disabling for multiple files selection', async function(assert) {
-    this.set('itemList', [{ machineOSType: 'windows' }]);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=2}}`);
+    this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
   });

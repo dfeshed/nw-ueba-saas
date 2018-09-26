@@ -1,21 +1,5 @@
-{{yield (hash
-  localeNameSpace='investigateHosts.property.file'
-  status=status
-  tableItems=(readonly tasks)
-  type=(t 'investigateHosts.hosts.footerLabel.autoruns.tasks')
-  columnsConfig=columnsConfig
-  selectRowAction=(action 'setSelectedRow')
+{{host-detail/utils/file-context-wrapper
   propertyConfig=propertyConfig
-  propertyData=fileProperties
-  propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.autoruns.tasks')
-  isAllSelected=isAllTaskSelected
-  toggleAllItemSelectionAction=(action 'toggleAllTaskSelection')
-  toggleOneItemSelectionAction=(action 'toggleTaskSelection')
-  saveFileStatus = (action 'saveTaskStatus' checksums)
-  selectedFiles=selectedTaskList
-  selectedFileCount=selectedTaskCount
-  getSavedFileStatus=(action 'getSavedTaskStatus' selectedTaskList)
-  fileStatusData=statusData
-  )
-}}
-
+  storeName='tasks'
+  tabName='TASK'
+  columnsConfig=columnsConfig}}

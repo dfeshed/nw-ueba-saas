@@ -1,20 +1,5 @@
-{{yield (hash
-  localeNameSpace='investigateHosts.property.file'
-  status=status
-  tableItems=(readonly services)
-  type=(t 'investigateHosts.hosts.footerLabel.autoruns.services')
-  columnsConfig=columnsConfig
-  selectRowAction=(action 'setSelectedRow')
+{{host-detail/utils/file-context-wrapper
   propertyConfig=propertyConfig
-  propertyData=fileProperties
-  propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.autoruns.services')
-  isAllSelected=isAllServiceSelected
-  toggleAllItemSelectionAction=(action 'toggleAllServiceSelection')
-  toggleOneItemSelectionAction=(action 'toggleServiceSelection')
-  saveFileStatus = (action 'saveServiceStatus' checksums)
-  selectedFiles=selectedServiceList
-  selectedFileCount=selectedServiceCount
-  getSavedFileStatus=(action 'getSavedServiceStatus' selectedAutorunList)
-  fileStatusData=statusData
-  )
-}}
+  storeName='services'
+  tabName='SERVICE'
+  columnsConfig=columnsConfig}}

@@ -1,12 +1,5 @@
-{{yield (hash
-  localeNameSpace='investigateHosts.property.file'
-  status=status
-  tableItems=(readonly threads)
-  type=(t 'investigateHosts.hosts.footerLabel.anomalies.threads')
-  columnsConfig=columnsConfigWithTitle
-  selectRowAction=(action 'setSelectedRow')
+{{host-detail/utils/file-context-wrapper
   propertyConfig=propertyConfig
-  propertyData=fileProperties
-  propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.anomalies.threads')
-  )
-}}
+  storeName='threads'
+  tabName='THREAD'
+  columnsConfig=columnsConfigWithTitle}}

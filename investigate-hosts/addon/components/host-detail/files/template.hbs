@@ -1,27 +1,6 @@
- {{host-detail/utils/simple-detail-display
-  detailDisplayInputs=(hash
-    localeNameSpace='investigateHosts.property.file'
-    status=status
-    tableItems=files
-    type=(t 'investigateHosts.hosts.footerLabel.files')
-    columnsConfig=columnsConfig
-    selectRowAction=(action 'setSelectedFile')
-    propertyConfig=filePropertyConfig
-    propertyData=fileProperty
-    propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.files')
-    isPaginated=true
-    totalItems=totalItems
-    loadMoreStatus=filesLoadMoreStatus
-    isAllSelected=isAllSelected
-    getPagedItems=(action 'getHostFiles')
-    toggleAllItemSelectionAction=(action 'toggleAllSelection')
-    toggleOneItemSelectionAction=(action 'toggleFileSelection')
-    customSort=(action 'sort')
-    saveFileStatus = (action 'saveFileStatus' checksums)
-    onCloseEditFileStatus=(action 'onCloseEditFileStatus')
-    selectedFiles=selectedFileList
-    selectedFileCount=selectedFileCount
-    getSavedFileStatus=(action 'getSavedFileStatus' selectedFileList)
-    fileStatusData=statusData
-  )
-}}
+{{host-detail/utils/file-context-wrapper
+  propertyConfig=filePropertyConfig
+  storeName='hostFiles'
+  tabName='FILE'
+  isPaginated=true
+  columnsConfig=columnsConfig}}

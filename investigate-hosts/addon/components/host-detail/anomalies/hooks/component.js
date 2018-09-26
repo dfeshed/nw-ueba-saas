@@ -1,29 +1,22 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import { setSelectedRow } from 'investigate-hosts/actions/data-creators/anomalies';
 import hooksPropertyConfig from './hooks-property-config';
 import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './hooks-columns';
 import computed from 'ember-computed-decorators';
-import { isImageHooksDataLoading, imageHooksData, selectedImageHooksFileProperties } from 'investigate-hosts/reducers/details/anomalies/selectors';
 
 
 const stateToComputed = (state) => ({
-  hooks: imageHooksData(state),
-  status: isImageHooksDataLoading(state),
   machineOsType: machineOsType(state),
-  fileProperties: selectedImageHooksFileProperties(state),
   columnsConfig: getColumnsConfig(state, columnsConfig)
 });
 
-const dispatchToActions = {
-  setSelectedRow
-};
-
 const Hooks = Component.extend({
+  tagName: '',
+
   i18n: service('i18n'),
 
   @computed('machineOsType')
@@ -42,10 +35,8 @@ const Hooks = Component.extend({
         title
       };
     });
-  },
-
-  tagName: ''
+  }
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(Hooks);
+export default connect(stateToComputed)(Hooks);

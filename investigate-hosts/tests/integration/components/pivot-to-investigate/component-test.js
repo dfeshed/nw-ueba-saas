@@ -22,7 +22,8 @@ test('it renders', function(assert) {
 });
 
 test('on clicking the icon renders the service modal', function(assert) {
-  this.render(hbs`{{pivot-to-investigate}}`);
+  this.set('serviceList', new Array(5));
+  this.render(hbs`{{pivot-to-investigate serviceList=serviceList}}`);
   this.$('.rsa-icon').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .service-modal').length, 1, 'Expected to render service modal');

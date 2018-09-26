@@ -39,14 +39,20 @@ export default Component.extend({
       ] }
   ],
 
-  @computed('selectedFileCount')
-  isEditStatusButtonDisabled(selectedFileCount) {
-    return !selectedFileCount > 0;
+  @computed('itemList')
+  isEditStatusButtonDisabled(itemList) {
+    if (!itemList) {
+      return true;
+    }
+    return !(itemList.length > 0);
   },
 
-  @computed('selectedFileCount')
-  pivotInvestigateDisabled(selectedFilesList) {
-    return !(selectedFilesList === 1);
+  @computed('itemList')
+  pivotInvestigateDisabled(itemList) {
+    if (!itemList) {
+      return true;
+    }
+    return !(itemList.length === 1);
   },
 
   @computed('itemList')

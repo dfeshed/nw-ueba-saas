@@ -2607,18 +2607,14 @@ export default {
         }
       },
       footerLabel: {
-        autoruns: {
-          autoruns: 'autoruns',
-          services: 'services',
-          tasks: 'tasks'
-        },
-        anomalies: {
-          hooks: 'image hooks',
-          threads: 'suspicious threads',
-          kernelHooks: 'kernel hooks',
-          registryDiscrepancies: 'Registry Discrepancies'
-        },
-        files: 'files',
+        autoruns: 'autoruns',
+        services: 'services',
+        tasks: 'tasks',
+        imageHooks: 'image hooks',
+        threads: 'suspicious threads',
+        kernelHooks: 'kernel hooks',
+        registryDiscrepancies: 'Registry Discrepancies',
+        hostFiles: 'files',
         drivers: 'drivers',
         libraries: 'libraries'
       },

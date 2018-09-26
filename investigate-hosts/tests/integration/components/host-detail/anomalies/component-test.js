@@ -21,6 +21,5 @@ module('Integration | Component | Anomalies', function(hooks) {
     await render(hbs`{{host-detail/anomalies}}`);
     assert.equal(findAll('.host-anomalies').length, 1, 'Anomalies tab loaded');
     assert.equal(find('.label').textContent.trim(), 'Image Hooks', 'Image Hooks tab present');
-    assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'simple-detail-display-wrapper present within Hooks component call');
   });
 });

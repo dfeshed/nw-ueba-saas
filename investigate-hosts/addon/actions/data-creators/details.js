@@ -2,20 +2,8 @@ import * as ACTION_TYPES from '../types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
-import {
-  getFileContextAutoruns,
-  getFileContextServices,
-  getFileContextTasks
-} from './autoruns';
-import {
-  getFileContextHooks,
-  getFileContextThreads,
-  getFileContextKernelHooks
-} from './anomalies';
-import { getFileContextDrivers } from './drivers';
-import { getProcessAndLib } from './libraries';
-import { getHostFiles } from './files';
-import { fetchHostContext } from './host';
+import { getFileContext, getPaginatedFileContext } from './file-context';
+import { fetchHostContext, getAllServices } from './host';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
 
@@ -73,6 +61,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
+            dispatch(getAllServices());
             dispatch(fetchHostContext(response.data.machine.machineName));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
@@ -88,16 +77,16 @@ const _getHostDetails = (forceRefresh) => {
 
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
-    const { endpoint: { drivers, autoruns, libraries, hostFiles, process, visuals, anomalies } } = getState();
+    const { endpoint: { drivers, autoruns, libraries, process, visuals } } = getState();
     const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
     switch (activeHostDetailTab) {
       case 'ANOMALIES':
-        if ((activeAnomaliesTab === 'IMAGEHOOKS') && (!anomalies.imageHooks)) {
-          dispatch(getFileContextHooks());
-        } else if ((activeAnomaliesTab === 'THREADS') && (!anomalies.threads)) {
-          dispatch(getFileContextThreads());
-        } else if ((activeAnomaliesTab === 'KERNELHOOKS') && (!anomalies.kernelHooks)) {
-          dispatch(getFileContextKernelHooks());
+        if ((activeAnomaliesTab === 'IMAGEHOOKS')) {
+          dispatch(getFileContext('IMAGEHOOK', ['IMAGE_HOOKS']));
+        } else if ((activeAnomaliesTab === 'THREADS')) {
+          dispatch(getFileContext('THREAD', ['THREADS']));
+        } else if ((activeAnomaliesTab === 'KERNELHOOKS')) {
+          dispatch(getFileContext('KERNELHOOK', ['KERNEL_HOOKS']));
         }
         break;
       case 'PROCESS':
@@ -107,26 +96,25 @@ const _fetchDataForSelectedTab = () => {
         break;
       case 'AUTORUNS':
         if (activeAutorunTab === 'AUTORUNS' && !autoruns.autorun) {
-          dispatch(getFileContextAutoruns());
+          dispatch(getFileContext('AUTORUN', ['AUTORUNS']));
         } else if (activeAutorunTab === 'SERVICES' && !autoruns.service) {
-          dispatch(getFileContextServices());
+          dispatch(getFileContext('SERVICE', ['SERVICES']));
         } else if (activeAutorunTab === 'TASKS' && !autoruns.task) {
-          dispatch(getFileContextTasks());
+          dispatch(getFileContext('TASK', ['TASKS']));
         }
         break;
       case 'FILES':
-        if (!hostFiles.files.length) {
-          dispatch(getHostFiles());
-        }
+        dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo: 'FILE' } });
+        dispatch(getPaginatedFileContext());
         break;
       case 'DRIVERS':
         if (!drivers.driver) {
-          dispatch(getFileContextDrivers());
+          dispatch(getFileContext('DRIVER', ['DRIVERS']));
         }
         break;
       case 'LIBRARIES':
         if (!libraries.library) {
-          dispatch(getProcessAndLib());
+          dispatch(getFileContext('LIBRARY', ['LOADED_LIBRARIES']));
         }
         break;
     }

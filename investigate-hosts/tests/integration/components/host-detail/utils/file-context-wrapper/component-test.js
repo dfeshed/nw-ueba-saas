@@ -39,7 +39,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
-    this.set('storeName', 'fileContextDrivers');
+    this.set('storeName', 'drivers');
     this.set('tabName', 'DRIVER');
     this.set('columnConfig', config);
   });

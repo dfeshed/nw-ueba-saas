@@ -70,4 +70,8 @@ export const isAllSelected = createSelector(
 
 export const fileContextFileProperty = createSelector([selectedRowId, listOfFiles, _fileContext], _getProperties);
 
-export const isDataLoading = createSelector([_contextLoadingStatus], (contextLoadingStatus) => contextLoadingStatus === 'wait');
+export const isDataLoading = createSelector(
+  [_contextLoadingStatus], (contextLoadingStatus) => {
+    return ['wait', 'streaming'].includes(contextLoadingStatus);
+  }
+);

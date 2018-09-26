@@ -4,12 +4,7 @@ import machines from './hosts/reducer';
 import explore from './details/explore/reducer';
 import process from './details/process/reducer';
 import detailsInput from './details/reducer';
-import hostFiles from './details/files/reducer';
 import overview from './details/overview/reducer';
-import autoruns from './details/autorun/reducer';
-import anomalies from './details/anomalies/reducer';
-import drivers from './details/drivers/reducer';
-import libraries from './details/libraries/reducer';
 import schema from './schema/reducer';
 import filter from 'investigate-shared/reducers/endpoint-filter/reducer';
 import preferences from './preferences/reducer';
@@ -32,17 +27,19 @@ export default combineReducers({
     visuals,
     explore,
     process,
-    hostFiles,
     overview,
-    autoruns,
-    anomalies,
-    drivers,
-    libraries,
+    datatable,
     schema,
-    fileContextAutoruns: createFilteredReducer(fileContext, reducerPredicate('AUTORUN')),
-    fileContextDrivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
-    filter: createFilteredReducer(filter, (action) => action.meta && action.meta.name === 'MACHINE'),
-    datatable
+    hostFiles: createFilteredReducer(fileContext, reducerPredicate('FILE')),
+    autoruns: createFilteredReducer(fileContext, reducerPredicate('AUTORUN')),
+    services: createFilteredReducer(fileContext, reducerPredicate('SERVICE')),
+    tasks: createFilteredReducer(fileContext, reducerPredicate('TASK')),
+    threads: createFilteredReducer(fileContext, reducerPredicate('THREAD')),
+    imageHooks: createFilteredReducer(fileContext, reducerPredicate('IMAGEHOOK')),
+    kernelHooks: createFilteredReducer(fileContext, reducerPredicate('KERNELHOOK')),
+    drivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
+    libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
+    filter: createFilteredReducer(filter, reducerPredicate('MACHINE'))
   }),
   preferences,
   endpointServer,

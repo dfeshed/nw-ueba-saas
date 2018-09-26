@@ -1,12 +1,5 @@
-{{yield (hash
-  localeNameSpace='investigateHosts.property.file'
-  status=status
-  tableItems=(readonly kernelHooks)
-  type=(t 'investigateHosts.hosts.footerLabel.anomalies.kernelHooks')
-  columnsConfig=columnsConfigWithTitle
-  selectRowAction=(action 'setSelectedRow')
+{{host-detail/utils/file-context-wrapper
   propertyConfig=propertyConfig
-  propertyData=fileProperties
-  propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.anomalies.kernelHooks')
-  )
-}}
+  storeName='kernelHooks'
+  tabName='KERNELHOOK'
+  columnsConfig=columnsConfigWithTitle}}

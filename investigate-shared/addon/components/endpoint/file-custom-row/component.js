@@ -99,17 +99,5 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
     }
 
     return contextConf;
-  },
-
-  actions: {
-
-    onCloseServiceModal() {
-      this.set('showServiceModal', false);
-    },
-
-    onCloseEditFileStatus() {
-      this.set('showFileStatusModal', false);
-    }
-
   }
 });

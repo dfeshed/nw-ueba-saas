@@ -73,7 +73,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
-    this.set('storeName', 'fileContextDrivers');
+    this.set('storeName', 'drivers');
     this.set('tabName', 'DRIVER');
     this.set('columnConfig', config);
   });
@@ -82,7 +82,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('should show loading indicator', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           contextLoadingStatus: 'wait'
         }
       }
@@ -94,7 +94,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('Should return the length of items in the file context table', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           contextLoadingStatus: 'completed'
         }
@@ -115,7 +115,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('Check that no results message rendered if no data items', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext: {},
           contextLoadingStatus: 'completed'
         }
@@ -134,7 +134,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('row click action select the row', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           contextLoadingStatus: 'completed'
         }
@@ -157,7 +157,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     assert.expect(2);
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           contextLoadingStatus: 'completed'
         }
@@ -179,7 +179,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     this.set('isPaginated', true);
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           contextLoadingStatus: 'completed'
         }
@@ -198,7 +198,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('clicking the checkbox will update the state', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           fileContextSelections: [],
           contextLoadingStatus: 'completed'
@@ -222,7 +222,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('footer is displayed with count', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           totalItems: 3,
           fileContextSelections: [],
@@ -243,7 +243,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('it opens the service list modal', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           fileContextSelections: [],
           contextLoadingStatus: 'completed'
@@ -264,7 +264,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
   test('it opens edit status modal', async function(assert) {
     initState({
       endpoint: {
-        fileContextDrivers: {
+        drivers: {
           fileContext,
           fileContextSelections: [],
           contextLoadingStatus: 'completed'

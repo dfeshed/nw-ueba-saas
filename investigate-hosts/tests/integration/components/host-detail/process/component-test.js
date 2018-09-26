@@ -8,8 +8,8 @@ import {
   processList,
   processTree
 } from '../../../../integration/components/state/process-data';
-import { patchSocket } from '../../../../helpers/patch-socket';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -17,6 +17,7 @@ moduleForComponent('host-detail/process', 'Integration | Component | endpoint ho
   integration: true,
   resolver: engineResolver('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
     setState = (state) => {
       applyPatch(state);
@@ -104,21 +105,7 @@ test('it should toggle the tree view to list view', function(assert) {
 });
 
 test('it should toggle the list view to tree view', function(assert) {
-  assert.expect(5);
-
-  patchSocket((method, modelName, query) => {
-    assert.equal(method, 'getProcess');
-    assert.equal(modelName, 'endpoint');
-    assert.deepEqual(query,
-      {
-        'data': {
-          'agentId': 1,
-          'pid': 1,
-          'scanTime': 123456789
-        }
-      });
-  });
-
+  assert.expect(2);
   new ReduxDataHelper(setState)
     .agentId(1)
     .scanTime(123456789)

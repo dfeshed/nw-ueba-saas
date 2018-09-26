@@ -133,7 +133,10 @@ const PivotToInvestigate = Component.extend({
   actions: {
 
     toggleServiceSelection() {
-      this.send('getAllServices');
+      const serviceList = this.get('serviceList');
+      if (!(serviceList && serviceList.length)) {
+        this.send('getAllServices');
+      }
       this.set('showServiceModal', true);
     },
 

@@ -7,7 +7,7 @@ import Immutable from 'seamless-immutable';
 
 const initialState = Immutable.from({
   fileContext: {}, // File context object , which holds the file information
-  contextLoadingStatus: null, // Indicates the files loading status
+  contextLoadingStatus: 'wait', // Indicates the files loading status
   contextLoadMoreStatus: null, // Status for paginated data
   selectedRowId: null, // Selected file context
   fileContextSelections: [], // file context selections, which includes, id, signature and size
@@ -125,7 +125,7 @@ const fileContext = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ 'contextLoadingStatus': 'streaming', contextLoadMoreStatus: 'streaming' }),
+      start: (s) => s.merge({ contextLoadMoreStatus: 'streaming' }),
       finish: (s) => s.set('contextLoadingStatus', 'completed'),
       failure: (s) => s.merge({ contextLoadingStatus: 'error' }),
       success: _handleAppendFiles(action)

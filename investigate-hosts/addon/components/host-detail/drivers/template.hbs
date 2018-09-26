@@ -1,23 +1,5 @@
-{{host-detail/utils/simple-detail-display
-  detailDisplayInputs=(hash
-    localeNameSpace='investigateHosts.property.file'
-    status=status
-    tableItems=drivers
-    type=(t 'investigateHosts.hosts.footerLabel.drivers')
-    columnsConfig=columnsConfig
-    selectRowAction=(action 'setSelectedRow')
-    propertyConfig=propertyConfig
-    propertyData=fileProperty
-    propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.drivers')
-    toggleOneItemSelectionAction=(action 'toggleDriverSelection')
-    toggleAllItemSelectionAction=(action 'toggleAllDriverSelection')
-    selectedFiles=selectedDriverList
-    isAllSelected=isAllSelected
-    selectedFileCount=selectedDriverCount
-    onSaveFileStatus = (action 'saveDriverStatus' checksums)
-    showPivotToInvestigate=false
-    fileStatusData=statusData
-    saveFileStatus = (action 'saveDriverStatus' checksums)
-    getSavedFileStatus=(action 'getSavedDriverStatus' selectedDriverList)
-  )
-}}
+{{host-detail/utils/file-context-wrapper
+  propertyConfig=propertyConfig
+  storeName='drivers'
+  tabName='DRIVER'
+  columnsConfig=columnsConfig}}

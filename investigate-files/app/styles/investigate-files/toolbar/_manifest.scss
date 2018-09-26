@@ -13,7 +13,9 @@
   .selection-count {
     padding-right: rsa-whitespace();
   }
-
+   .file-actionbar {
+     padding: 0;
+   }
   .toolbar-button {
     padding: rsa-whitespace(less);
     font-size: 20px;

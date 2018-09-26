@@ -56,7 +56,7 @@ const FileContextTable = Component.extend({
 
   accessControl: service(),
 
-  classNames: ['file-context-table'],
+  classNames: ['file-context-table', 'host-detail__datatable'],
 
   customSort: null,
 

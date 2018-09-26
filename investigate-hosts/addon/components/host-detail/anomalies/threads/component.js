@@ -8,14 +8,9 @@ import { machineOsType } from 'investigate-hosts/reducers/details/overview/selec
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './threads-columns';
 import computed from 'ember-computed-decorators';
-import { isThreadsDataLoading, suspiciousThreadsData, selectedThreadsFileProperties } from 'investigate-hosts/reducers/details/anomalies/selectors';
-
 
 const stateToComputed = (state) => ({
-  threads: suspiciousThreadsData(state),
-  status: isThreadsDataLoading(state),
   machineOsType: machineOsType(state),
-  fileProperties: selectedThreadsFileProperties(state),
   columnsConfig: getColumnsConfig(state, columnsConfig)
 });
 
@@ -25,6 +20,7 @@ const dispatchToActions = {
 
 const Threads = Component.extend({
   tagName: '',
+
   i18n: service('i18n'),
 
   @computed('machineOsType')
