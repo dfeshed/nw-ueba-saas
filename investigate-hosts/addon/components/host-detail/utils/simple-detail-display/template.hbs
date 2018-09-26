@@ -1,5 +1,4 @@
 <box class="{{datatableWidth}}">
-  <box class="host-details-file-actionbar">
   {{endpoint/file-actionbar
     onSaveFileStatus = detailDisplayInputs.saveFileStatus
     getSavedFileStatus = detailDisplayInputs.getSavedFileStatus
@@ -8,7 +7,7 @@
     itemList=detailDisplayInputs.selectedFiles
     fileStatusData=detailDisplayInputs.fileStatusData
     selectedFileCount=detailDisplayInputs.selectedFileCount}}
-  </box>
+
   {{host-detail/utils/datatable
     status=detailDisplayInputs.status
     items=detailDisplayInputs.tableItems

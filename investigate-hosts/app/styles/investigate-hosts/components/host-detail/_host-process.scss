@@ -48,6 +48,7 @@
   .process-content-box-wrapper{
     padding: rsa-whitespace() rsa-whitespace(more);
     position: absolute;
+    max-width: 100%;
     .value hbox{
       max-width: 80%
     }

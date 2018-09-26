@@ -38,7 +38,7 @@ const defaultSummaryConfig = [
   {
     label: 'investigateHosts.process.launchArguments',
     field: 'process.launchArguments',
-    cssClass: 'col-xs-8 col-md-8'
+    cssClass: 'col-xs-6 col-md-6'
   }
 ];
 

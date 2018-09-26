@@ -23,6 +23,7 @@ export default Service.extend({
   invHostsFiles: 'Fileshosts',
   invHostsDrivers: 'Drivershosts',
   invHostsLibraries: 'Librarieshosts',
+  invHostsAnomalies: 'Anomalieshosts',
   invHostsSysInfo: 'SysInfohosts',
 
   respondModule: 'respond',

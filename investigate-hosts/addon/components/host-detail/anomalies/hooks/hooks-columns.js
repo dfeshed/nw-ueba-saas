@@ -11,6 +11,11 @@ export default {
     title: 'dllFileName'
   },
   {
+    field: 'signature',
+    title: 'signature',
+    format: 'SIGNATURE'
+  },
+  {
     field: 'fileProperties.score',
     title: 'score'
   },
@@ -20,13 +25,12 @@ export default {
   },
   {
     field: 'hookedProcess',
-    title: 'hookedProcess'
+    title: 'hookedProcess',
+    width: '15%'
   },
   {
-    field: 'signature',
-    title: 'signature',
-    format: 'SIGNATURE',
-    width: '15%'
+    field: 'hookedFileName',
+    title: 'hookFileName'
   },
   {
     field: 'symbol',

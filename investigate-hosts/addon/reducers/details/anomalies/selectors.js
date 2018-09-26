@@ -106,7 +106,8 @@ const _getImageHooksObjs = (hooksDataSource) => {
       ...item,
       dllFileName,
       hookedProcess: `${fileName} : ${pid}`,
-      symbol: `${hookedFileName}!${symbol}`
+      hookedFileName,
+      symbol
     };
   });
 };

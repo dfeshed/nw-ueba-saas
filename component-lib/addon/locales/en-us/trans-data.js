@@ -2098,6 +2098,7 @@ export default {
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
       machineCount: 'Machine Count',
+      remediationaction: 'Remediationaction',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',
@@ -2409,7 +2410,7 @@ export default {
         signature: 'Signature',
         type: 'Type',
         dllFileName: 'DLL Name',
-        hookFileName: 'Hooked dll',
+        hookFileName: 'Hooked FileName',
         symbol: 'Symbol',
         title: 'Image Hooks',
         message: {
@@ -2420,9 +2421,10 @@ export default {
     anomalies: {
       imageHooks: {
         type: 'Type',
-        dllFileName: 'DLL Name',
+        dllFileName: 'File Name',
         reputationStatus: 'Reputation Status',
         score: 'Risk Score',
+        hookFileName: 'Hooked FileName',
         hookedProcess: 'Hooked Process',
         hookedSymbol: 'Hooked Symbol',
         signature: 'Signature',
