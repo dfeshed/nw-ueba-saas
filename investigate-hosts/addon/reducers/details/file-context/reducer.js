@@ -37,14 +37,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
-  const { id, checksumSha256, signature, size } = payload;
+  const { id, fileName, signature, size, fileProperties: { checksumSha256, checksumSha1, checksumMd5 } } = payload;
   let selectedList = [];
   // Previously selected driver
 
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { id, checksumSha256, signature, size }];
+    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {} });
 
@@ -85,14 +85,15 @@ const fileContext = reduxActions.handleActions({
     const { fileContext, fileContextSelections } = state;
     const contexts = Object.values(fileContext);
     if (fileContextSelections.length < contexts.length) {
-      return state.set('fileContextSelections', contexts.map((driver) => ({
-        id: driver.id,
-        checksumSha256: driver.checksumSha256
-      })));
+      return state.set('fileContextSelections', contexts.map((driver) => {
+        const { id, fileName, signature, size, fileProperties: { checksumSha256, checksumSha1, checksumMd5 } } = driver;
+        return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size };
+      }));
     } else {
       return state.set('fileContextSelections', []);
     }
   },
+  [ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION]: (state) => state.set('fileContextSelections', []),
 
   [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {
     return handle(state, action, {

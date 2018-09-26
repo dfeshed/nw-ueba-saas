@@ -208,6 +208,7 @@ const FileList = Component.extend({
 
     beforeContextMenuShow(item) {
       if (!this.isAlreadySelected(this.get('selections'), item)) {
+        this.send('deSelectAllFiles');
         this.send('toggleFileSelection', item);
       }
       const selections = this.get('selections');

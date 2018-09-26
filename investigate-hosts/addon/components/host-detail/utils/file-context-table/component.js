@@ -23,7 +23,8 @@ import {
   setRowSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
-  getPaginatedFileContext
+  getPaginatedFileContext,
+  resetSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 
@@ -47,7 +48,8 @@ const dispatchToActions = {
   setRowSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
-  getPaginatedFileContext
+  getPaginatedFileContext,
+  resetSelection
 };
 
 const FileContextTable = Component.extend({
@@ -104,6 +106,7 @@ const FileContextTable = Component.extend({
       this.set('itemList', [item]);
       const tabName = this.get('tabName');
       if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {
+        this.send('resetSelection', tabName);
         this.send('toggleRowSelection', tabName, item);
       }
       const selections = this.get('fileContextSelections');

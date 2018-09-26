@@ -92,7 +92,13 @@ module('Unit | Reducers | File Context', function() {
       id: 0,
       checksumSha256: 0,
       signature: '',
-      size: 0 };
+      size: 0,
+      fileProperties: {
+        checksumSha256: 'test',
+        checksumSha1: 'test',
+        checksumMd5: 'test'
+      }
+    };
     let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
     assert.equal(result.fileContextSelections.length, 1);
     assert.equal(result.fileContextSelections[0].id, 0);
@@ -109,7 +115,12 @@ module('Unit | Reducers | File Context', function() {
       fileContextSelections: [],
       fileContext: {
         drivers_61: {
-          id: '0'
+          id: '0',
+          fileProperties: {
+            checksumSha256: 'test',
+            checksumSha1: 'test',
+            checksumMd5: 'test'
+          }
         }
       }
     });
@@ -117,7 +128,13 @@ module('Unit | Reducers | File Context', function() {
       id: 0,
       checksumSha256: 0,
       signature: '',
-      size: 0 };
+      size: 0,
+      fileProperties: {
+        checksumSha256: 'test',
+        checksumSha1: 'test',
+        checksumMd5: 'test'
+      }
+    };
     let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION });
     assert.equal(result.fileContextSelections.length, 1);
     assert.equal(result.fileContextSelections[0].id, 0);
@@ -225,6 +242,25 @@ module('Unit | Reducers | File Context', function() {
 
     const newEndState = reducer(previous, newAction);
     assert.equal(newEndState.contextLoadMoreStatus, 'completed');
+  });
+  test('FILE_CONTEXT_RESET_SELECTION should selected all drivers', function(assert) {
+    const driver = {
+      id: 0,
+      checksumSha256: 0,
+      signature: '',
+      size: 0,
+      fileProperties: {
+        checksumSha256: 'test',
+        checksumSha1: 'test',
+        checksumMd5: 'test'
+      }
+    };
+    const previous = Immutable.from({
+      selectedRowId: '123',
+      fileContextSelections: [driver]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo: 'DRIVER' } });
+    assert.equal(result.fileContextSelections.length, 0);
   });
 
 });

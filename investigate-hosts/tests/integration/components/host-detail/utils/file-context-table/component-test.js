@@ -14,6 +14,11 @@ const fileContext = {
     timeModified: 12313221,
     signature: {
       features: ['microsoft', 'valid']
+    },
+    fileProperties: {
+      checksumSha256: 'test',
+      checksumSha1: 'test',
+      checksumMd5: 'test'
     }
   },
   2: {
@@ -22,6 +27,11 @@ const fileContext = {
     timeModified: 12313221,
     signature: {
       features: ['microsoft', 'valid']
+    },
+    fileProperties: {
+      checksumSha256: 'test',
+      checksumSha1: 'test',
+      checksumMd5: 'test'
     }
   },
   3: {
@@ -30,6 +40,11 @@ const fileContext = {
     timeModified: 12313221,
     signature: {
       features: ['microsoft', 'valid']
+    },
+    fileProperties: {
+      checksumSha256: 'test',
+      checksumSha1: 'test',
+      checksumMd5: 'test'
     }
   }
 };

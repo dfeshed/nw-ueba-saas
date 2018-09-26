@@ -13,7 +13,7 @@ test('externalLookup test google', function(assert) {
     { title: 'SHA1', name: 'sha1', type: 'google' },
     { title: 'SHA256', name: 'sha256', type: 'google' }
   ];
-  const selectedList = [{ fileName: 'abc', md5: 'abc', sha1: 'abc', sha256: 'abc' }];
+  const selectedList = [{ fileName: 'abc', checksumMd5: 'abc', checksumSha1: 'abc', checksumSha256: 'abc' }];
   action.map((a) => {
     const result = externalLookup(a, selectedList);
     assert.equal(result, true, 'External google lookup should true');
@@ -25,11 +25,13 @@ test('externalLookup test VirusTotal', function(assert) {
     { title: 'SHA1', name: 'sha1', type: 'VirusTotal' },
     { title: 'SHA256', name: 'sha256', type: 'VirusTotal' }
   ];
-  const selectedList = [{ fileName: 'abc', md5: 'abc', sha1: 'abc', sha256: 'abc' }];
+  const selectedList = [{ fileName: 'abc', checksumMd5: 'abc', checksumSha1: 'abc', checksumSha256: 'abc' }];
   action.map((a) => {
     const actionSpy = sinon.spy(window, 'open');
     const result = externalLookup(a, selectedList);
     assert.ok(actionSpy.calledOnce);
+    assert.equal(actionSpy.args[0][0], 'https://www.virustotal.com/latest-scan/abc');
+    assert.equal(actionSpy.args[0][1], '_blank');
     actionSpy.reset();
     actionSpy.restore();
     assert.equal(result, true, 'External virusTotal lookup should true');

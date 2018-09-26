@@ -39,6 +39,8 @@ const toggleRowSelection = (belongsTo, item) => ({ type: ACTION_TYPES.TOGGLE_FIL
 
 const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
 
+const resetSelection = (belongsTo) => ({ type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo } });
+
 const setFileContextFileStatus = (belongsTo, checksums, data, callbacks = callbacksDefault) => ({
   type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
   promise: setFileStatus({ ...data, checksums }),
@@ -100,5 +102,6 @@ export {
   setFileContextFileStatus,
   getFileContextFileStatus,
   setFileContextSort,
-  getPaginatedFileContext
+  getPaginatedFileContext,
+  resetSelection
 };
