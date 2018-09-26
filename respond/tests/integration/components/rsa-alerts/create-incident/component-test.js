@@ -13,7 +13,7 @@ import {
 import Immutable from 'seamless-immutable';
 import { patchSocket, throwSocket } from '../../../../helpers/patch-socket';
 import { patchFlash } from '../../../../helpers/patch-flash';
-import { selectChoose, clickTrigger } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 let init, setState;
 
@@ -131,14 +131,11 @@ module('Integration | Component | Respond Alerts Create Incident', function(hook
     });
     await render(hbs`{{rsa-alerts/create-incident name="Suspected C&C"}}`);
 
-    clickTrigger('.create-incident-priority');
-    selectChoose('.create-incident-priority', 'Critical');
+    await selectChoose('.create-incident-priority', 'Critical');
 
-    clickTrigger('.create-incident-assignee');
-    selectChoose('.create-incident-assignee', 'Sim Boyd');
+    await selectChoose('.create-incident-assignee', 'Sim Boyd');
 
-    clickTrigger('.create-incident-categories');
-    selectChoose('.create-incident-categories', 'Environmental: Earthquake');
+    await selectChoose('.create-incident-categories', 'Environmental: Earthquake');
 
     await click('.apply .rsa-form-button');
   });

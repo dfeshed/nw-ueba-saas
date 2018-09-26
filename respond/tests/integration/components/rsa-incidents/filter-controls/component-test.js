@@ -1,19 +1,18 @@
-import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import Immutable from 'seamless-immutable';
-import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import hbs from 'htmlbars-inline-precompile';
+import { click, fillIn, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+import Immutable from 'seamless-immutable';
 import {
   getAllEnabledUsers,
   getAllPriorityTypes,
   getAllStatusTypes,
   getAllCategories } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
-import wait from 'ember-test-helpers/wait';
-import { patchReducer } from '../../../../helpers/vnext-patch';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let init, setState;
 
@@ -83,7 +82,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     });
     await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.assignee-filter';
-    clickTrigger(selector);
+    await clickTrigger(selector);
     const $options = findAll('.ember-power-select-options li.ember-power-select-option');
     const assigneeNames = $options.length && $options.map((item) => {
       const optionText = item.textContent.trim();
@@ -91,7 +90,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     });
     assert.equal($options.length, 6, 'There are 6 assignee options');
     assert.equal(assigneeNames.length, 6, 'Each assignee option has a text value');
-    selectChoose(selector, '.ember-power-select-option', 1);
+    await selectChoose(selector, '.ember-power-select-option', 1);
   });
 
   test('All of the parent categories appear in the dropdown, and selecting one calls dispatch', async function(assert) {
@@ -103,9 +102,9 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     });
     await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.category-filter';
-    clickTrigger(selector);
+    await clickTrigger(selector);
     assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 7, 'There are 7 parent categories available');
-    selectChoose(selector, '.ember-power-select-option', 1);
+    await selectChoose(selector, '.ember-power-select-option', 1);
   });
 
   test('The incident id filter field is rendered to the DOM', async function(assert) {
@@ -125,7 +124,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     const $input = find('.filter-option.id-filter input');
     await fillIn($input, 'blah blah');
     await triggerKeyEvent($input, 'keyup', 13);
-    return wait().then(() => {
+    await settled().then(() => {
       assert.equal(find('label').classList.contains('is-error'), true, 'The id filter control has an error class');
     });
   });
@@ -141,7 +140,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     const $input = find('.filter-option.id-filter input');
     await fillIn($input, 'inc-123');
     await triggerKeyEvent($input, 'keyup', 13);
-    return wait().then(() => {
+    await settled().then(() => {
       assert.equal(find('label').classList.contains('is-error'), false, 'The id filter control has no error class');
     });
   });

@@ -7,7 +7,7 @@ import { waitForRedux } from '../helpers/wait-for-redux';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 import { visit, currentURL, settled, waitUntil } from '@ember/test-helpers';
-import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 const english = { id: 'en_US', key: 'en-us', label: 'english' };
 const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' };
@@ -127,8 +127,7 @@ module('Acceptance | locales', function(hooks) {
     });
 
     const powerSelect = '[test-id=locale-preferences] .power-select';
-    clickTrigger(powerSelect);
-    selectChoose(`${powerSelect} .ember-power-select-trigger`, 'Japanese');
+    await selectChoose(`${powerSelect} .ember-power-select-trigger`, 'Japanese');
 
     await waitUntil(() => get(headData, 'title').toString() === 'Incidents - JA_Respond - NetWitness Platform', { timeout: 5000 });
     assert.equal(get(headData, 'title').toString(), 'Incidents - JA_Respond - NetWitness Platform');

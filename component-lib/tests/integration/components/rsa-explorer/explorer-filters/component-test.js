@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { click, find, findAll, render } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | RSA Explorer Filters', function(hooks) {
@@ -47,9 +47,9 @@ module('Integration | Component | RSA Explorer Filters', function(hooks) {
     });
     await render(hbs`{{rsa-explorer/explorer-filters updateFilter=updateFilter}}`);
     const selector = '.filter-option.created-filter';
-    clickTrigger(selector);
+    await clickTrigger(selector);
     assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 15, 'There are 15 time range options available in the dropdown');
-    selectChoose(selector, '.ember-power-select-option', 1);
+    await selectChoose(selector, '.ember-power-select-option', 1);
   });
 
   test('Dates appear as expected in the date picker inputs', async function(assert) {

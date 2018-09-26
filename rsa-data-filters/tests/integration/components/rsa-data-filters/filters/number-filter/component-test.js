@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | rsa-data-filters/filters/number-filter', function(hooks) {
   setupRenderingTest(hooks);
@@ -24,9 +24,9 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     this.set('filterOptions', { filterOnBlur: true, name: 'size', units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }] });
     await render(hbs`{{rsa-data-filters/filters/number-filter filterOptions=filterOptions}}`);
     assert.equal(findAll('.operators').length, 1, 'It renders operators');
-    clickTrigger('.number-filter .operators');
+    await clickTrigger('.number-filter .operators');
     assert.equal(document.querySelectorAll('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
-    selectChoose('.operators', '.ember-power-select-option', 3);
+    await selectChoose('.operators', '.ember-power-select-option', 3);
     assert.equal(document.querySelectorAll('.number-input').length, 2, 'Two text boxes');
   });
 

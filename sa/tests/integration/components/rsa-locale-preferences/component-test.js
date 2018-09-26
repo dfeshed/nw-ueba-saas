@@ -49,7 +49,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     await render(hbs `{{rsa-locale-preferences}}`);
     assert.equal(findAll(powerSelector).length, 1);
     assert.equal(trim(find(powerSelector).textContent), englishLocale);
-    clickTrigger(powerSelect);
+    await clickTrigger(powerSelect);
     assert.equal(findAll(optionsSelector).length, 2);
     assert.equal(trim(find(`${optionsSelector}:nth-of-type(1)`).textContent), englishLocale);
     assert.equal(trim(find(`${optionsSelector}:nth-of-type(2)`).textContent), japaneseLocale);
@@ -70,8 +70,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       });
     });
 
-    clickTrigger(powerSelect);
-    selectChoose(powerSelector, japaneseLocale);
+    await selectChoose(powerSelector, japaneseLocale);
 
     return settled().then(async () => {
       const powerSelect = find(powerSelector);
@@ -93,8 +92,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       assert.equal(flash.message.string, expectedError);
     });
 
-    clickTrigger(powerSelect);
-    selectChoose(powerSelector, japaneseLocale);
+    await selectChoose(powerSelector, japaneseLocale);
 
     return settled().then(async () => {
       const powerSelect = find(powerSelector);

@@ -1,16 +1,15 @@
-import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
 import { click, findAll, render, fillIn, triggerEvent } from '@ember/test-helpers';
-import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { applyPatch, revertPatch } from '../../../../../../helpers/patch-reducer';
-import Immutable from 'seamless-immutable';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import ruleInfo from '../../../../../../data/subscriptions/incident-rules/queryRecord/data';
 import fields from '../../../../../../data/subscriptions/incident-fields/findAll/data';
 import * as aggregationRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 import sinon from 'sinon';
-import { clickTrigger, selectChoose } from '../../../../../../helpers/ember-power-select';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const initialState = {
   ruleInfo,
@@ -33,12 +32,8 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       const fullState = { configure: { respond: { incidentRule: state } } };
-      applyPatch(Immutable.from(fullState));
+      patchReducer(this, fullState);
     };
-  });
-
-  hooks.afterEach(function() {
-    revertPatch();
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -70,8 +65,7 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     });
     this.set('conditionInfo', conditions['0']);
     await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo}}`);
-    clickTrigger('.field');
-    selectChoose('.field', 'Alert Type');
+    await selectChoose('.field', 'Alert Type');
     assert.ok(actionSpy.calledOnce, 'The updateCondition action was called once');
     assert.equal(actionSpy.args[0][0], 0, 'The first argument is the condition id of zero');
     assert.deepEqual(actionSpy.args[0][1], { property: 'alert.type', operator: '=', value: null },
@@ -88,8 +82,7 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     });
     this.set('conditionInfo', conditions['0']);
     await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo}}`);
-    clickTrigger('.operator');
-    selectChoose('.operator', 'is equal to');
+    await selectChoose('.operator', 'is equal to');
     assert.ok(actionSpy.calledOnce, 'The updateCondition action was called once');
     actionSpy.restore();
   });
@@ -101,8 +94,7 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     });
     this.set('conditionInfo', initialState.conditions['0']);
     await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo}}`);
-    clickTrigger('.value');
-    selectChoose('.value', 'Manual Upload');
+    await selectChoose('.value', 'Manual Upload');
     assert.ok(actionSpy.calledOnce, 'The updateCondition action was called once');
     actionSpy.restore();
   });
@@ -153,7 +145,7 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     this.set('conditionInfo', conditions['0']);
     await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo}}`);
 
-    await fillIn(inputSelector, '    ');
+    await fillIn(inputSelector, '');
     await triggerEvent(inputSelector, 'blur');
     assert.deepEqual(actionSpy.args[0][1], { value: null },
       'An empty string results in a null value in the arguments');

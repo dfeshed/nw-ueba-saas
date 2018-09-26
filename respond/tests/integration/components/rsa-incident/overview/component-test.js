@@ -1,14 +1,15 @@
-import { set } from '@ember/object';
 import { module, test } from 'qunit';
-import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render, settled } from '@ember/test-helpers';
-import Immutable from 'seamless-immutable';
-import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { incidentDetails } from '../../../../data/data';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import hbs from 'htmlbars-inline-precompile';
+import { find, render, settled } from '@ember/test-helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
+import Immutable from 'seamless-immutable';
+import { incidentDetails } from '../../../../data/data';
 
 let setState;
 const trim = (text) => text && text.replace(/\s\s+/g, ' ').trim() || undefined;
@@ -19,10 +20,11 @@ module('Integration | Component | Incident Overview', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   test('it renders', async function(assert) {
@@ -61,8 +63,7 @@ module('Integration | Component | Incident Overview', function(hooks) {
       assert.equal(updatedValue, null, 'When unassigning an incident, the updatedValue is null');
     });
     await render(hbs`{{rsa-incident/overview info=info infoStatus='completed' updateItem=updateItem}}`);
-    clickTrigger('.assignee');
-    selectChoose('.assignee', '(Unassigned)');
+    await selectChoose('.assignee', '(Unassigned)');
   });
 
   test('The unassigned option from the assigne dropdown properly updates when locale is changed', async function(assert) {

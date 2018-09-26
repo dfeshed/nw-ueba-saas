@@ -1,151 +1,124 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger } from '../../../../helpers/ember-power-select';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import hbs from 'htmlbars-inline-precompile';
+import RSVP from 'rsvp';
+import { findAll, render } from '@ember/test-helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import {
   getAllEnabledUsers,
   getAllPriorityTypes,
   getAllStatusTypes } from 'respond/actions/creators/dictionary-creators';
-import triggerNativeEvent from '../../../../helpers/trigger-native-event';
-import RSVP from 'rsvp';
-import $ from 'jquery';
-import wait from 'ember-test-helpers/wait';
 import { getAssigneeOptions } from 'respond/selectors/users';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let setup;
+let redux, setup;
 
-moduleForComponent('rsa-incidents/toolbar-controls', 'Integration | Component | Respond Incidents Toolbar Controls', {
-  integration: true,
-  resolver: engineResolverFor('respond'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-
-    // inject and handle redux
-    this.inject.service('redux');
-    const redux = this.get('redux');
-
-    initialize(this);
-
-    // setup all of the required data into redux app state
-    setup = RSVP.allSettled([
-      redux.dispatch(getAllEnabledUsers()),
-      redux.dispatch(getAllPriorityTypes()),
-      redux.dispatch(getAllStatusTypes())
-    ]);
-  }
-});
-
-// convenience function for selecting the first option in an ember power select dropdown
-// this can be replaced on the next version of ember-power-select, which provides a helper for selections
-function selectFirstOption() {
-  const [ option ] = $('.ember-power-select-option').first();
-  triggerNativeEvent(option, 'mouseover');
-  triggerNativeEvent(option, 'mousedown');
-  triggerNativeEvent(option, 'mouseup');
-  triggerNativeEvent(option, 'click');
-}
-
-test('The Incidents Toolbar component renders to the DOM', function(assert) {
-  assert.expect(1);
-  return setup.then(() => {
-    this.on('updateItem', function() {});
-    this.render(hbs`{{rsa-incidents/toolbar-controls updateItem=(action 'updateItem')}}`);
-    assert.equal(this.$('.action-control').length, 4, 'The Incidents Toolbar component should be found in the DOM with 4 buttons/controls');
+module('Integration | Component | Respond Incidents Toolbar Controls', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('respond')
   });
-});
 
-test('The Incidents Toolbar buttons are disabled when no itemsSelected exist ', function(assert) {
-  assert.expect(1);
-  return setup.then(() => {
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    redux = this.owner.lookup('service:redux');
+    // initialize all of the required data into redux app state
+    setup = () => {
+      return RSVP.allSettled([
+        redux.dispatch(getAllEnabledUsers()),
+        redux.dispatch(getAllPriorityTypes()),
+        redux.dispatch(getAllStatusTypes())
+      ]);
+    };
+  });
+
+  test('The Incidents Toolbar component renders to the DOM', async function(assert) {
+    assert.expect(1);
+    await setup();
+    this.set('updateItem', function() {});
+    await render(hbs`{{rsa-incidents/toolbar-controls updateItem=(action updateItem)}}`);
+    assert.equal(findAll('.action-control').length, 4, 'The Incidents Toolbar component should be found in the DOM with 4 buttons/controls');
+  });
+
+  test('The Incidents Toolbar buttons are disabled when no itemsSelected exist ', async function(assert) {
+    assert.expect(1);
+    await setup();
     this.set('itemsSelected', []);
-    this.render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
-    assert.equal(this.$('.action-control .rsa-form-button-wrapper.is-disabled').length, 4,
+    await render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
+    assert.equal(findAll('.action-control .rsa-form-button-wrapper.is-disabled').length, 4,
       'When itemsSelected is empty, the buttons are all disabled');
   });
-});
 
-test('The Incidents Toolbar buttons are enabled when at least one itemsSelected object exist ', function(assert) {
-  assert.expect(1);
-  return setup.then(() => {
+  test('The Incidents Toolbar buttons are enabled when at least one itemsSelected object exist ', async function(assert) {
+    assert.expect(1);
+    await setup();
     this.set('itemsSelected', [{ id: 'test' }]);
-    this.render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
-    assert.equal(this.$('.action-control .rsa-form-button-wrapper:not(.is-disabled)').length, 4,
+    await render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
+    assert.equal(findAll('.action-control .rsa-form-button-wrapper:not(.is-disabled)').length, 4,
       'When itemsSelected has at least one item, the buttons are all enabled');
   });
-});
 
-test('All of the statuses appear in the dropdown button, and clicking one dispatches an action', function(assert) {
-  assert.expect(2);
-  return setup.then(() => {
-    const redux = this.get('redux');
+  test('All of the statuses appear in the dropdown button, and clicking one dispatches an action', async function(assert) {
+    assert.expect(2);
+    await setup();
     const { respond: { dictionaries: { statusTypes } } } = redux.getState();
     this.set('statusTypes', statusTypes);
     this.set('itemsSelected', [{}]); // ensure that buttons are not disabled
-    this.on('updateItem', function() {
+    this.set('updateItem', function() {
       assert.ok(true);
     });
-    this.render(hbs`
+    await render(hbs`
       {{rsa-incidents/toolbar-controls
         itemsSelected=itemsSelected
         statusTypes=statusTypes
-        updateItem=(action 'updateItem')}}`);
-    clickTrigger('.action-control.bulk-update-status');
-    return wait().then(() => {
-      assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 7, 'There should be 7 status options');
-      selectFirstOption();
-    });
+        updateItem=(action updateItem)}}`);
+    await clickTrigger('.action-control.bulk-update-status');
+    assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 7, 'There should be 7 status options');
+    await selectChoose('.action-control.bulk-update-status', '.ember-power-select-option', 0);
   });
-});
 
-test('All of the priorities appear in the dropdown button, and clicking one dispatches an action', function(assert) {
-  assert.expect(2);
-  return setup.then(() => {
-    const redux = this.get('redux');
+  test('All of the priorities appear in the dropdown button, and clicking one dispatches an action', async function(assert) {
+    assert.expect(2);
+    await setup();
     const { respond: { dictionaries: { priorityTypes } } } = redux.getState();
     this.set('priorityTypes', priorityTypes);
     this.set('itemsSelected', [{}]); // ensure that buttons are not disabled
-    this.on('updateItem', function() {
+    this.set('updateItem', function() {
       assert.ok(true);
     });
-    this.render(hbs`
+    await render(hbs`
       {{rsa-incidents/toolbar-controls
         itemsSelected=itemsSelected
         priorityTypes=priorityTypes
-        updateItem=(action 'updateItem')}}`);
-    clickTrigger('.action-control.bulk-update-priority');
-    return wait().then(() => {
-      assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 4, 'There should be 4 priority options');
-      selectFirstOption();
-    });
+        updateItem=(action updateItem)}}`);
+    await clickTrigger('.action-control.bulk-update-priority');
+    assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 4, 'There should be 4 priority options');
+    await selectChoose('.action-control.bulk-update-priority', '.ember-power-select-option', 0);
   });
-});
 
-test('All of the assignee options appear in the dropdown button, and clicking one dispatches an action', function(assert) {
-  assert.expect(3);
-  return setup.then(() => {
-    const redux = this.get('redux');
+  test('All of the assignee options appear in the dropdown button, and clicking one dispatches an action', async function(assert) {
+    assert.expect(3);
+    await setup();
     const state = redux.getState();
     this.set('users', getAssigneeOptions(state));
     this.set('itemsSelected', [{}]); // ensure that buttons are not disabled
-    this.on('updateItem', function(entityIds, field, value) {
+    this.set('updateItem', function(entityIds, field, value) {
       assert.equal(value, null, 'The first value selected is (Unassigned) which must be null');
     });
-    this.render(hbs`
+    await render(hbs`
       {{rsa-incidents/toolbar-controls
         itemsSelected=itemsSelected
         users=users
-        updateItem=(action 'updateItem')}}`);
-    clickTrigger('.action-control.bulk-update-assignee');
-    return wait().then(() => {
-      const $options = $('.ember-power-select-options li.ember-power-select-option');
-      const assigneeNames = $options.length && $options.map((index, item) => {
-        const optionText = $(item).text().trim();
-        return optionText.length ? optionText : null;
-      });
-      assert.equal($options.length, 7, 'There are 7 assignee options: 6 users plus 1 (unassigned) value');
-      assert.equal(assigneeNames.length, 7, 'Each assignee option has a text value'); // ensure no empty options
-      selectFirstOption();
+        updateItem=(action updateItem)}}`);
+    await clickTrigger('.action-control.bulk-update-assignee');
+    const options = findAll('.ember-power-select-options li.ember-power-select-option');
+    const assigneeNames = options.length && options.map((item) => {
+      const optionText = item.textContent.trim();
+      return optionText.length ? optionText : null;
     });
+    assert.equal(options.length, 7, 'There are 7 assignee options: 6 users plus 1 (unassigned) value');
+    assert.equal(assigneeNames.length, 7, 'Each assignee option has a text value'); // ensure no empty options
+    await selectChoose('.action-control.bulk-update-assignee', '.ember-power-select-option', 0);
   });
 });

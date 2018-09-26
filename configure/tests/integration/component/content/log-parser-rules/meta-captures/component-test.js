@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 let setState;
 
@@ -35,8 +35,7 @@ module('Integration | Component | value mapping', function(hooks) {
     const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).metaOptions().build();
     await render(hbs`{{content/log-parser-rules/meta-captures}}`);
-    clickTrigger('.meta-captures .firstItem');
-    selectChoose('.meta-captures .firstItem', 'domain.src');
+    await selectChoose('.meta-captures .firstItem', 'domain.src');
     assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'domain.src', 'The appropriate option is selected in dropdown');
     await settled();
   });

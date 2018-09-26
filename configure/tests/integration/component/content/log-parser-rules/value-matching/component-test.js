@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 
 let setState;
@@ -36,8 +36,7 @@ module('Integration | Component | value matching', function(hooks) {
     const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', regex: '\\s*([\\w_.@-]*)', captures: [{ index: '1' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    clickTrigger('.value-matching');
-    selectChoose('.value-matching', 'Regex Pattern');
+    await selectChoose('.value-matching', 'Regex Pattern');
     assert.equal(find('.ruleType input').value, 'regex', 'Show type field value is not showing or not ipv4');
     assert.equal(find('.ruleMatches input').value, 'This matches Regex', 'Show matching field value is not showing or not correct');
     assert.ok(find('.ruleRegex textarea'), 'Pattern field is not showing');

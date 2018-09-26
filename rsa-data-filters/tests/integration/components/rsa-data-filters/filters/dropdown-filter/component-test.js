@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | rsa-data-filters/filters/dropdown-filter', function(hooks) {
   setupRenderingTest(hooks);
@@ -20,7 +20,7 @@ module('Integration | Component | rsa-data-filters/filters/dropdown-filter', fun
     ];
     this.set('options', { name: 'signature', listOptions: options });
     await render(hbs`{{rsa-data-filters/filters/dropdown-filter filterOptions=options}}`);
-    clickTrigger('.dropdown-filter');
+    await clickTrigger('.dropdown-filter');
     assert.equal(document.querySelectorAll('.ember-power-select-options li.ember-power-select-option').length, 3, 'There are 3 options available');
   });
 
@@ -36,8 +36,7 @@ module('Integration | Component | rsa-data-filters/filters/dropdown-filter', fun
     this.set('options', { name: 'fileStatus', listOptions: options, filterValue: ['two'] });
 
     await render(hbs`{{rsa-data-filters/filters/dropdown-filter onChange=(action onChange) filterOptions=options}}`);
-    clickTrigger('.dropdown-filter');
-    selectChoose('.dropdown-filter', '.ember-power-select-option', 0);
+    await selectChoose('.dropdown-filter', '.ember-power-select-option', 0);
   });
 
   test('it should set the query on selecting drowdown value', async function(assert) {
@@ -52,7 +51,6 @@ module('Integration | Component | rsa-data-filters/filters/dropdown-filter', fun
     this.set('options', { multiSelect: true, name: 'fileStatus', listOptions: options, filterValue: ['two'] });
 
     await render(hbs`{{rsa-data-filters/filters/dropdown-filter onChange=(action onChange) filterOptions=options}}`);
-    clickTrigger('.dropdown-filter');
-    selectChoose('.dropdown-filter', '.ember-power-select-option', 0);
+    await selectChoose('.dropdown-filter', '.ember-power-select-option', 0);
   });
 });

@@ -1,142 +1,114 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger } from '../../../../helpers/ember-power-select';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import hbs from 'htmlbars-inline-precompile';
+import RSVP from 'rsvp';
+import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import {
   getAllUsers,
   getAllPriorityTypes,
   getAllRemediationStatusTypes } from 'respond/actions/creators/dictionary-creators';
-import triggerNativeEvent from '../../../../helpers/trigger-native-event';
-import RSVP from 'rsvp';
-import $ from 'jquery';
-import wait from 'ember-test-helpers/wait';
 
-let setup;
+let redux, setup;
 
-moduleForComponent('rsa-remediation-tasks/filter-controls', 'Integration | Component | Respond Remediation Tasks Filters', {
-  integration: true,
-  resolver: engineResolverFor('respond'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-
-    // inject and handle redux
-    this.inject.service('redux');
-    const redux = this.get('redux');
-    initialize(this);
-
+module('Integration | Component | Respond Remediation Tasks Filters', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('respond')
+  });
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    redux = this.owner.lookup('service:redux');
     // initialize all of the required data into redux app state
-    setup = RSVP.allSettled([
-      redux.dispatch(getAllUsers()),
-      redux.dispatch(getAllPriorityTypes()),
-      redux.dispatch(getAllRemediationStatusTypes())
-    ]);
-  }
-});
-
-// convenience function for selecting the first option in an ember power select dropdown
-// this is currently used in lieu of adding a dependency on https://github.com/cibernox/ember-native-dom-helpers,
-// which will likely be the long term solution, since this is what ember-power-select and related components use
-function selectFirstOption() {
-  const [ option ] = $('.ember-power-select-option').first();
-  triggerNativeEvent(option, 'mouseover');
-  triggerNativeEvent(option, 'mousedown');
-  triggerNativeEvent(option, 'mouseup');
-  triggerNativeEvent(option, 'click');
-}
-
-test('The Remediation Tasks Filters component renders to the DOM', function(assert) {
-  assert.expect(1);
-  return setup.then(() => {
-    this.on('updateFilter', function() {});
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-    assert.ok(this.$('.filter-option').length >= 1, 'The Remediation Tasks Filters component should be found in the DOM');
+    setup = () => {
+      return RSVP.allSettled([
+        redux.dispatch(getAllUsers()),
+        redux.dispatch(getAllPriorityTypes()),
+        redux.dispatch(getAllRemediationStatusTypes())
+      ]);
+    };
   });
-});
 
-test('All of the statuses appear as checkboxes, and clicking one dispatches an action', function(assert) {
-  assert.expect(2);
-  return setup.then(() => {
-    this.on('updateFilter', function() {
+  test('The Remediation Tasks Filters component renders to the DOM', async function(assert) {
+    assert.expect(1);
+    await setup();
+    this.set('updateFilter', function() {});
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
+    assert.ok(findAll('.filter-option').length >= 1, 'The Remediation Tasks Filters component should be found in the DOM');
+  });
+
+  test('All of the statuses appear as checkboxes, and clicking one dispatches an action', async function(assert) {
+    assert.expect(2);
+    await setup();
+    this.set('updateFilter', function() {
       assert.ok(true);
     });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.status-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 6, 'There should be 6 remediation status filter options');
-    this.$('.filter-option.status-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
+    assert.equal(findAll(selector).length, 6, 'There should be 6 remediation status filter options');
+    await click('.filter-option.status-filter .rsa-form-checkbox-label input.rsa-form-checkbox');
   });
-});
 
-test('All of the priorities appear as checkboxes, and clicking one dispatches an action', function(assert) {
-  assert.expect(2);
-  return setup.then(() => {
-    this.on('updateFilter', function() {
+  test('All of the priorities appear as checkboxes, and clicking one dispatches an action', async function(assert) {
+    assert.expect(2);
+    await setup();
+    this.set('updateFilter', function() {
       assert.ok(true);
     });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.priority-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 4, 'There should be 4 priority filter options');
-    this.$('.filter-option.priority-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
+    assert.equal(findAll(selector).length, 4, 'There should be 4 priority filter options');
+    await click('.filter-option.priority-filter .rsa-form-checkbox-label input.rsa-form-checkbox');
   });
-});
 
-test('All of the createdBy users appear in the dropdown, and selecting one calls dispatch', function(assert) {
-  assert.expect(3);
-  return setup.then(() => {
-    this.on('updateFilter', function() {
+  test('All of the createdBy users appear in the dropdown, and selecting one calls dispatch', async function(assert) {
+    assert.expect(3);
+    await setup();
+    this.set('updateFilter', function() {
       assert.ok(true);
     });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.createdby-filter';
-    clickTrigger(selector);
-    const $options = $('.ember-power-select-options li.ember-power-select-option');
-    const createdByNames = $options.length && $options.map((index, item) => {
-      const optionText = $(item).text().trim();
+    await clickTrigger(selector);
+    const options = findAll('.ember-power-select-options li.ember-power-select-option');
+    const createdByNames = options.length && options.map((item) => {
+      const optionText = item.textContent.trim();
       return optionText.length ? optionText : null;
     });
-    assert.equal($options.length, 6, 'There are 6 createdBy options');
+    assert.equal(options.length, 6, 'There are 6 createdBy options');
     assert.equal(createdByNames.length, 6, 'Each createdBy option has a text value');
-    selectFirstOption();
+    await selectChoose(selector, '.ember-power-select-option', 0);
   });
-});
 
-
-test('The task id filter field is rendered to the DOM', function(assert) {
-  return setup.then(() => {
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls}}`);
-    assert.equal(this.$('.filter-option.id-filter input').length, 1, 'The ID filter input appears in the DOM');
+  test('The task id filter field is rendered to the DOM', async function(assert) {
+    await setup();
+    await render(hbs`{{rsa-remediation-tasks/filter-controls}}`);
+    assert.ok(find('.filter-option.id-filter input'), 'The ID filter input appears in the DOM');
   });
-});
 
-test('If the task id filter does not match the REM-# format, an error message is shown and no update is made', function(assert) {
-  return setup.then(() => {
-    this.on('updateFilter', function() {
+  test('If the task id filter does not match the REM-# format, an error message is shown and no update is made', async function(assert) {
+    await setup();
+    this.set('updateFilter', function() {
       assert.ok(false);
     });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-    const $input = this.$('.filter-option.id-filter input');
-    $input.val('blah blah');
-    $input.trigger('keyup');
-    return wait().then(() => {
-      assert.equal(this.$('label').hasClass('is-error'), true, 'The id filter control has an error class');
-    });
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
+    await fillIn('.filter-option.id-filter input', 'blah blah');
+    await triggerKeyEvent('.filter-option.id-filter input', 'keyup', 13);
+    assert.ok(find('label.is-error'), 'The id filter control has an error class');
   });
-});
 
-test('If the task id filter is provided a valid input, the updateFilter function is called', function(assert) {
-  assert.expect(2);
-  return setup.then(() => {
-    this.on('updateFilter', function() {
+  test('If the task id filter is provided a valid input, the updateFilter function is called', async function(assert) {
+    assert.expect(2);
+    await setup();
+    this.set('updateFilter', function() {
       assert.ok(true);
     });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-    const $input = this.$('.filter-option.id-filter input');
-    $input.val('rem-123');
-    $input.trigger('keyup');
-    return wait().then(() => {
-      assert.equal(this.$('label').hasClass('is-error'), false, 'The id filter control has no error class');
-    });
+    await render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action updateFilter)}}`);
+    await fillIn('.filter-option.id-filter input', 'rem-123');
+    await triggerKeyEvent('.filter-option.id-filter input', 'keyup', 13);
+    // $input.trigger('keyup');
+    assert.notOk(find('label.is-error'), 'The id filter control has no error class');
   });
 });

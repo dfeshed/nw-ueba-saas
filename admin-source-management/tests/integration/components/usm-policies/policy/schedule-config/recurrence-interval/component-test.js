@@ -4,8 +4,7 @@ import { click, render, findAll, settled } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import { clickTrigger } from '../../../../../../helpers/ember-power-select';
-import { patchPowerSelect, restorePowerSelect } from '../../../../../../helpers/patch-power-select';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
@@ -33,7 +32,6 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   });
 
   hooks.afterEach(function() {
-    restorePowerSelect();
     spys.forEach((s) => s.reset());
   });
 
@@ -57,7 +55,6 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
       .policyWizRecurrenceInterval(1)
       .policyWizRecurrenceUnit('DAYS')
       .build();
-    patchPowerSelect();
     await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
     assert.equal(this.$('.recurrence-interval input:eq(0)').val(), 'DAYS', 'expected to render DAYS as first field');
     assert.equal(findAll('.recurrence-run-interval').length, 1, 'expected to render dropdown for run interval');
@@ -72,7 +69,6 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
   skip('should trigger the updatePolicyProperty action creator on clicking the Daily or Weekly radio button', async function(assert) {
     assert.expect(2);
-    patchPowerSelect();
     await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no click is registered');
     await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
@@ -99,7 +95,6 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
   skip('should trigger the updatePolicyProperty action creator when clicking the week schedule', async function(assert) {
     assert.expect(2);
-    patchPowerSelect();
     await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no week is selected');
     // change toggle to weeks. This would bring up a div of buttons for each day of the week (S, M, T, W etc)

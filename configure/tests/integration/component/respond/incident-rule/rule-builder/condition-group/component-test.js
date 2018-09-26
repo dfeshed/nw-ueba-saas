@@ -3,11 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { applyPatch, revertPatch } from '../../../../../../helpers/patch-reducer';
-import Immutable from 'seamless-immutable';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import rule from '../../../../../../data/subscriptions/incident-rules/queryRecord/data';
 import fields from '../../../../../../data/subscriptions/incident-fields/findAll/data';
-import { clickTrigger, selectChoose } from '../../../../../../helpers/ember-power-select';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import * as incidentRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 import sinon from 'sinon';
@@ -33,12 +32,8 @@ module('Integration | Component | Respond Rule Builder Condition Group', functio
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       const fullState = { configure: { respond: { incidentRule: state } } };
-      applyPatch(Immutable.from(fullState));
+      patchReducer(this, fullState);
     };
-  });
-
-  hooks.afterEach(function() {
-    revertPatch();
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -106,8 +101,7 @@ module('Integration | Component | Respond Rule Builder Condition Group', functio
     });
     this.set('groupInfo', initialState.conditionGroups['0']);
     await render(hbs`{{respond/incident-rule/rule-builder/condition-group info=groupInfo}}`);
-    clickTrigger('.group-operator');
-    selectChoose('.group-operator', 'None of these');
+    await selectChoose('.group-operator', 'None of these');
     assert.ok(actionSpy.calledOnce, 'The updateGroup action was called once');
     assert.equal(actionSpy.args[0][1].logicalOperator, 'nor', 'The logical operatator for "none of thse" is "nor"');
     actionSpy.restore();

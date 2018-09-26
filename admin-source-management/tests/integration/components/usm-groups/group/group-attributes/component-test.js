@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { selectChoose } from '../../../../../helpers/ember-power-select';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 let setState;
 

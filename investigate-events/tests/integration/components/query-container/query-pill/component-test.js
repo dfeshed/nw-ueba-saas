@@ -4,7 +4,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
-import { patchPowerSelect, restorePowerSelect } from '../../../../helpers/patch-power-select';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -56,10 +55,6 @@ module('Integration | Component | query-pill', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
-  });
-
-  hooks.afterEach(function() {
-    restorePowerSelect();
   });
 
   test('contains proper class when expensive', async function(assert) {
@@ -145,7 +140,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it allows you to select a meta value', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
@@ -153,13 +147,12 @@ module('Integration | Component | query-pill', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option a
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option a
     await waitUntil(() => !find(PILL_SELECTORS.metaTrigger));
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
@@ -167,15 +160,14 @@ module('Integration | Component | query-pill', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
-    selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
     await waitUntil(() => find(PILL_SELECTORS.operator));
     assert.equal(trim(find(PILL_SELECTORS.operator).textContent), '=');
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
@@ -183,15 +175,14 @@ module('Integration | Component | query-pill', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
-    selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
     await waitUntil(() => find(PILL_SELECTORS.operator));
     assert.equal(findAll(PILL_SELECTORS.valueInput).length, 1, 'Missing value input field');
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
@@ -246,7 +237,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
-    patchPowerSelect();
     const done = assert.async();
     this.set('metaOptions', META_OPTIONS);
 
@@ -272,11 +262,11 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
 
     // Choose the first meta option
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
 
     // Choose the third operator option which does not require a value
-    selectChoose(PILL_SELECTORS.operatorTrigger, 'exists'); // option exists
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'exists'); // option exists
   });
 
   test('presents a delete icon when not active and pill created', async function(assert) {
@@ -465,7 +455,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('When something (meta) is chosen and component loses focus the component does not message up', async function(assert) {
-    patchPowerSelect();
     assert.expect(0);
     this.set('handleMessage', (messageType) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -486,7 +475,7 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
 
     // Choose the first meta option
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
     await blur(PILL_SELECTORS.operatorTrigger);
   });
@@ -516,7 +505,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('If in value and user clicks away, the pill remains in creation state where no data entered is changed or removed', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
@@ -526,10 +514,10 @@ module('Integration | Component | query-pill', function(hooks) {
       }}
     `);
     // Choose first meta option
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
     // Choose the first operator option
-    selectChoose(PILL_SELECTORS.operatorTrigger, '='); // option =
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '='); // option =
     await waitUntil(() => find(PILL_SELECTORS.valueInput));
     // Fill in the value, to properly simulate the event we need to fillIn AND
     // triggerKeyEvent for the "x" character.
@@ -699,7 +687,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it quotes pill value when meta is type "Text"', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
@@ -721,7 +708,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it does not quote the pill value when meta is type "UInt"', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
@@ -755,7 +741,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('replace double quotes with single quotes', async function(assert) {
-    patchPowerSelect();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
@@ -1089,7 +1074,7 @@ module('Integration | Component | query-pill', function(hooks) {
     // Delete selected option to bring up full list
     await fillIn(PILL_SELECTORS.operatorSelectInput, '');
     // Choose the third operator option which does not require a value
-    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
   });
 
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, message is sent up', async function(assert) {

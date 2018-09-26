@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | rsa-data-filters/filters/text-filter', function(hooks) {
   setupRenderingTest(hooks);
@@ -29,9 +29,9 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     });
     this.set('options', { name: 'fileName', filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
-    clickTrigger('.text-filter .operators');
+    await clickTrigger('.text-filter .operators');
     assert.equal(document.querySelectorAll('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
-    selectChoose('.operators', 'Contains');
+    await selectChoose('.operators', 'Contains');
   });
 
   test('input text will set to query on focus out', async function(assert) {

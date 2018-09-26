@@ -7,10 +7,9 @@ import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import RSVP from 'rsvp';
 import { fetchLogParsers, fetchDeviceTypes, fetchDeviceClasses } from 'configure/actions/creators/content/log-parser-rule-creators';
-import Immutable from 'seamless-immutable';
 import { patchSocket, throwSocket } from '../../../../../../helpers/patch-socket';
 import { patchFlash } from '../../../../../../helpers/patch-flash';
-import { selectChoose, clickTrigger } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 let init, setState;
 
@@ -32,7 +31,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
           }
         }
       };
-      patchReducer(this, Immutable.from(fullState));
+      patchReducer(this, fullState);
       // initialize all of the required data into redux app state
       const redux = this.owner.lookup('service:redux');
       init = RSVP.allSettled([
@@ -57,10 +56,8 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
   async function fillInForm(assert) {
     await fillIn(selectors.displayNameInput, 'Percival');
     await fillIn(selectors.nameInput, 'percival');
-    clickTrigger('.device-class');
-    selectChoose('.device-class', 'Intrusion');
-    clickTrigger('.clone-from');
-    selectChoose('.clone-from', 'builtin');
+    await selectChoose('.device-class', 'Intrusion');
+    await selectChoose('.clone-from', 'builtin');
     assert.equal(find(selectors.displayNameInput).value, 'Percival', 'The Display Name field has a value');
     assert.equal(find(selectors.nameInput).value, 'percival', 'The name field has a value');
     assert.equal(find(selectors.deviceClassItem).textContent.trim(), 'Intrusion', 'The device class has a selected value');
@@ -89,8 +86,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
     setState();
     await init;
     await render(hbs`{{content/log-parser-rules/log-parsers/add-log-parser}}`);
-    clickTrigger('.log-parser');
-    selectChoose('.log-parser', 'Accurev');
+    await selectChoose('.log-parser', 'Accurev');
     assert.equal(find(selectors.selectedLogParserItem).textContent.trim(), 'Accurev', 'The power-select shows the newly selected parser');
     assert.equal(find(selectors.displayNameInput).value, 'Accurev', 'The Accurev display name appears in the display name field');
     assert.equal(find(selectors.displayNameInput).disabled, true, 'The Accurev display name input is disabled since this is an existing (not new) device type');
@@ -154,8 +150,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
     await init;
     await render(hbs`{{content/log-parser-rules/log-parsers/add-log-parser}}`);
     await fillInForm(assert);
-    clickTrigger('.log-parser');
-    selectChoose('.log-parser', 'Accurev');
+    await selectChoose('.log-parser', 'Accurev');
     assert.equal(find(selectors.selectedLogParserItem).textContent.trim(), 'Accurev', 'The power-select shows the newly selected parser');
     assert.equal(find(selectors.displayNameInput).value, 'Accurev', 'The Accurev display name appears in the display name field');
     assert.equal(find(selectors.displayNameInput).disabled, true, 'The Accurev display name input is disabled since this is an existing (not new) device type');
