@@ -200,27 +200,10 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 	@Test
 	public void testCalculateAggrFeatureWithFilteredMultiKeys(){
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-
-		Map<MultiKeyFeature, Double> histogram1 = new HashMap<>();
-		Map<String, String> featureNameToValue1 = new HashMap<>();
-		featureNameToValue1.put("operationType","open");
-		featureNameToValue1.put("result","SUCCESS");
-		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1),10.0);
-
-		Map<String, String> featureNameToValue3 = new HashMap<>();
-		featureNameToValue3.put("operationType","open");
-		featureNameToValue3.put("result","FAILURE");
-		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3),2.0);
-
-		Map<String, String> featureNameToValue4 = new HashMap<>();
-		featureNameToValue4.put("operationType","close");
-		featureNameToValue4.put("result","SUCCESS");
-		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue4),3.0);
-		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(histogram1, 0.0);
+		MultiKeyHistogram multiKeyHistogram1 = createMultiKeyHistogram();
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<>("feature1", multiKeyHistogram1),
-				new ImmutablePair<>("feature2", new MultiKeyHistogram())
+				new ImmutablePair<>("feature1", multiKeyHistogram1)
 		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
@@ -241,5 +224,60 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
 		AggrFeatureValue expectedAggrFeatureValue = createExpected(2L, multiKeyHistogram1);
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
+	}
+
+	/**
+	 * Test zero AggrFeature creation, where no key were met
+	 */
+	@Test
+	public void testCalculateAggrFeatureWithNoAppropriateKey(){
+		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+		MultiKeyHistogram multiKeyHistogram1 = createMultiKeyHistogram();
+
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<>("feature1", multiKeyHistogram1)
+		);
+
+		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+		listOfFeatureMaps.add(bucket1FeatureMap);
+
+		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
+
+		Set<Map<String, String>> keys = new HashSet<>();
+		Map<String, String> featureNameToValueKey = new HashMap<>();
+		featureNameToValueKey.put("result","noValue");
+		keys.add(featureNameToValueKey);
+		function.setKeys(keys);
+
+		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Assert.assertNotNull(actual1);
+		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
+		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
+		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
+		AggrFeatureValue expectedAggrFeatureValue = createExpected(0L, multiKeyHistogram1);
+		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
+	}
+
+	/**
+	 * Help func that create MultiKeyHistogram
+	 * @return MultiKeyHistogram
+	 */
+	private MultiKeyHistogram createMultiKeyHistogram(){
+		Map<MultiKeyFeature, Double> histogram1 = new HashMap<>();
+		Map<String, String> featureNameToValue1 = new HashMap<>();
+		featureNameToValue1.put("operationType","open");
+		featureNameToValue1.put("result","SUCCESS");
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1),10.0);
+
+		Map<String, String> featureNameToValue3 = new HashMap<>();
+		featureNameToValue3.put("operationType","open");
+		featureNameToValue3.put("result","FAILURE");
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3),2.0);
+
+		Map<String, String> featureNameToValue4 = new HashMap<>();
+		featureNameToValue4.put("operationType","close");
+		featureNameToValue4.put("result","SUCCESS");
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue4),3.0);
+		return new MultiKeyHistogram(histogram1, 0.0);
 	}
 }

@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * Created by amira on 18/06/2015.
- */
 public class AggrFeatureMultiKeyHistogramFuncTest {
 
     @Test

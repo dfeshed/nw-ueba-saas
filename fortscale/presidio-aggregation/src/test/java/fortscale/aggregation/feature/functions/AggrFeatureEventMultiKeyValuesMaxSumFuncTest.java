@@ -144,5 +144,49 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
         Assert.assertEquals(((AggrFeatureValue)res.getValue()).getValue(),max3 + max2);
     }
 
+    /**
+     * Test zero AggrFeatureValue creation, where no key were met
+     */
+    @Test
+    public void testCalculateAggrFeatureWithNoAppropriateKey() {
+        Double max1 = 10.0;
+        Double max2 = 20.0;
+        Double max3 = 20.0;
+        String pickFeatureName = "source_machine_and_operation_type_to_highest_score_map";
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        Map<String,String> featureNameToValue1 = new HashMap<>();
+        featureNameToValue1.put("machine","host_123");
+        featureNameToValue1.put("operationType","open");
+
+        Map<String,String> featureNameToValue2 = new HashMap<>();
+        featureNameToValue2.put("machine","host_456");
+        featureNameToValue2.put("operationType","open");
+
+        Map<String,String> featureNameToValue3 = new HashMap<>();
+        featureNameToValue3.put("machine","host_456");
+        featureNameToValue3.put("operationType","close");
+
+        listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
+                pickFeatureName,
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
+
+        String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
+        Set<Map<String, String>> keys = new HashSet<>();
+        Map<String, String> featureNameToValue = new HashMap<>();
+        featureNameToValue.put("operationType","noValue");
+        keys.add(featureNameToValue);
+
+        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc();
+        func.setKeys(keys);
+
+        Feature res = func.calculateAggrFeature(
+                AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, pickFeatureName),
+                listOfMaps);
+        Assert.assertNotNull(res);
+        Assert.assertEquals(((AggrFeatureValue)res.getValue()).getValue(),0D);
+    }
+
 
 }
