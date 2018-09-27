@@ -36,13 +36,13 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
         return featuresGroupToMax == null ? null : calculateFeaturesGroupToMaxValue(featuresGroupToMax);
     }
 
-    protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram aggrFeatureValue);
+    protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram multiKeyHistogram);
 
     @SuppressWarnings("unchecked")
     private MultiKeyHistogram calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         String featureToPick = getFeatureToPick(aggrFeatureEventConf);
         Map<MultiKeyFeature, Double> featuresGroupToMax = new HashMap<>();
-        long total = 0;
+        double total = 0.0;
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             Feature aggrFeature = aggrFeatures.get(featureToPick);
             if (aggrFeature == null) {

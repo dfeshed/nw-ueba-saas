@@ -56,10 +56,10 @@ public class AbstractAggrFeatureEventFeatureToMaxFuncTest {
         featureNameToValue.put(featureName,featureValue);
         final int max = 10;
         Map<MultiKeyFeature, Integer> expectedFeaturesGroupToMax = new HashMap<>();
-        expectedFeaturesGroupToMax.put(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue), max);
+        expectedFeaturesGroupToMax.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue), max);
         assertBucketsAggregatedCorrectly(
                 expectedFeaturesGroupToMax,
-                new Pair[]{new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue), max)});
+                new Pair[]{new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue), max)});
     }
 
     @Test
@@ -75,19 +75,19 @@ public class AbstractAggrFeatureEventFeatureToMaxFuncTest {
         final int max1 = 10;
         final int max2 = 20;
         Map<MultiKeyFeature, Integer> expectedFeaturesGroupToMax = new HashMap<>();
-        expectedFeaturesGroupToMax.put(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1);
-        expectedFeaturesGroupToMax.put(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2);
+        expectedFeaturesGroupToMax.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1);
+        expectedFeaturesGroupToMax.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2);
         assertBucketsAggregatedCorrectly(
                 expectedFeaturesGroupToMax,
                 new Pair[]{
-                        new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1),
-                        new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2 - 1)
+                        new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1),
+                        new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2 - 1)
                 },
                 new Pair[]{
-                        new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2)
+                        new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2)
                 },
                 new Pair[]{
-                        new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1 - 1)
+                        new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1 - 1)
                 });
     }
 }

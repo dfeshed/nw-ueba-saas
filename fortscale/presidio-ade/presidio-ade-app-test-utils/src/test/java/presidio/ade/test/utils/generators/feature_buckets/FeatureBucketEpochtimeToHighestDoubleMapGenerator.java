@@ -32,7 +32,7 @@ public class FeatureBucketEpochtimeToHighestDoubleMapGenerator extends FeatureBu
             map.put(multiKeyFeature, entry.getValue());
         }
 
-        MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(map, 0L);
+        MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(map, 0d);
         feature.setValue(multiKeyHistogram1);
         return next;
     }

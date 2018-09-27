@@ -62,7 +62,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -85,7 +85,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?('USER_MANAGEMENT' in @['operationTypeCategories'] && 'SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
@@ -111,7 +111,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?('OBJECT_MANAGEMENT' in @['operationTypeCategories'])]"

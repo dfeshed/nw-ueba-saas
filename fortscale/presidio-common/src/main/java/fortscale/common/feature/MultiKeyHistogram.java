@@ -8,8 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document
@@ -19,12 +18,14 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     @Transient
     private Map<MultiKeyFeature, Double> histogram;
-    private Long total;
+    private double total = 0.0; //todo: long instead double?
+    private Object maxObject = null;
 
     public MultiKeyHistogram() {
+        this.histogram = new HashMap<>();
     }
 
-    public MultiKeyHistogram(Map<MultiKeyFeature, Double> histogram, Long total) {
+    public MultiKeyHistogram(Map<MultiKeyFeature, Double> histogram, double total) {
         this.histogram = histogram;
         this.total = total;
     }
@@ -32,13 +33,66 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
     public void setMax(MultiKeyFeature multiKeyFeature, Double potentialMax) {
         Double max = histogram.get(multiKeyFeature);
         histogram.put(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+        this.total++;
     }
 
-    public void setTotal(Long total) {
-        this.total = total;
+    public void add(MultiKeyFeature multiKeyFeature, Double count) {
+        Double oldCount = histogram.get(multiKeyFeature);
+        Double newValCount = oldCount != null ? count + oldCount : count;
+        histogram.put(multiKeyFeature, newValCount);
+
+        if (maxObject == null) {
+            maxObject = multiKeyFeature;
+        } else {
+            Double maxCount = histogram.get(maxObject);
+            if (maxCount == null) {
+                maxObject = multiKeyFeature;
+            } else if (maxCount < newValCount) {
+                maxObject = multiKeyFeature;
+            }
+        }
+        this.total += count;
     }
 
-    public Long getTotal() {
+    public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram) {
+        for (MultiKeyFeature key : multiKeyHistogram.getHistogram().keySet()) {
+            Double count = multiKeyHistogram.getHistogram().get(key);
+            add(key, count);
+        }
+        return this;
+    }
+
+    public Object getMaxObject() {
+        return maxObject;
+    }
+
+    public void remove(FeatureValue val) {
+        if (val == null) {
+            return;
+        }
+
+        histogram.entrySet().removeIf(e -> {
+            boolean contains = e.getKey().containsValue(val);
+            if (contains) {
+                if (e.getValue() != null) {
+                    this.total -= e.getValue();
+                }
+            }
+            return contains;
+        });
+
+        if (histogram.size() > 0) {
+            maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        } else {
+            maxObject = null;
+        }
+    }
+
+    public long getN() {
+        return histogram.size();
+    }
+
+    public double getTotal() {
         return total;
     }
 

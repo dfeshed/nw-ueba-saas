@@ -56,7 +56,7 @@ public class AggregationRecordsCreatorImplTest {
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
         Map<MultiKeyFeature, Double> histogram = new HashMap<>();
         histogram.put(multiKeyFeature, 14.0);
-        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram(histogram, 1L);
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram(histogram, 1d);
         Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", multiKeyHistogram);
 
         HashMap<String, Feature> aggregatedFeatures = new HashMap<>();

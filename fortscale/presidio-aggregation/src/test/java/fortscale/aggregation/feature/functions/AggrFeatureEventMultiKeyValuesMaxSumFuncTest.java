@@ -22,8 +22,8 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
         featureNameToValue2.put("machine","host_456");
         listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
                 pickFeatureName,
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue())));
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
         Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc().calculateAggrFeature(
@@ -45,8 +45,8 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
         featureNameToValue2.put("machine","host_456");
         listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
                 pickFeatureName,
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2)));
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2)));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
         Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc().calculateAggrFeature(
@@ -76,9 +76,9 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
 
         listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
                 pickFeatureName,
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue()),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
         Set<Map<String, String>> keys = new HashSet<>();
@@ -117,9 +117,9 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
 
         listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
                 pickFeatureName,
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue()),
-                new ImmutablePair<>(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1), max1.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue()),
+                new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
         Set<Map<String, String>> keys = new HashSet<>();

@@ -1,7 +1,10 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureValue;
+import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.common.feature.*;
+import fortscale.utils.data.Pair;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
@@ -27,4 +30,39 @@ public class AggrFeatureTestUtils {
 		}
 		return featureMap;
 	}
+
+	public static AggregatedFeatureConf createAggrFeatureConf(int num) {
+		List<String> featureNames = new ArrayList<>();
+		for (int i = 1; i <= num; i++) {
+			featureNames.add(String.format("feature%d", i));
+		}
+		Map<String, List<String>> featureNamesMap = new HashMap<>();
+		featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
+		return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+	}
+
+	public static AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
+		List<String> list = new ArrayList<>();
+		for (int i = 1; i <= num; i++) {
+			list.add(String.format("feature%d", i));
+		}
+		Map<String, List<String>> map = new HashMap<>();
+		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
+		return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, new JSONObject());
+	}
+
+	public static MultiKeyFeature createMultiKeyFeatureWithOneFeature(String featureName, String featureValue){
+		Map<String, FeatureValue> featureNameToValue = new HashMap<>();
+		featureNameToValue.put(featureName,new FeatureStringValue(featureValue));
+		return new MultiKeyFeature(featureNameToValue);
+	}
+
+	public static MultiKeyFeature createMultiKeyFeature(Map<String,String> featureNameToValues){
+		Map<String, FeatureValue> featureNameToValue = new HashMap<>();
+		featureNameToValues.forEach((k,v) -> {
+			featureNameToValue.put(k,new FeatureStringValue(v));
+		});
+		return new MultiKeyFeature(featureNameToValue);
+	}
+
 }

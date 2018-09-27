@@ -18,7 +18,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?('FILE_PERMISSION_CHANGE' in @['operationTypeCategories'])]"
@@ -40,11 +40,12 @@
           "name": "fileActionHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "result"
+              "result",
+              "userId"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?('FILE_ACTION' in @['operationTypeCategories'])]"
@@ -70,7 +71,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?(@.operationType == 'FILE_OPENED')]"
@@ -96,7 +97,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?(@.operationType == 'FOLDER_OPENED')]"
@@ -144,7 +145,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
             "jsonPath": "[?(@.operationType == 'FILE_RENAMED')]"

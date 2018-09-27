@@ -124,7 +124,7 @@ public class EpochtimeToHighestDoubleMapRetrieverTest {
                 currentBucketStartInstant = currentBucketStartInstant.plus(epochtimeResolution);
             }
 
-            Feature feature = new Feature(FEATURE_NAME, new MultiKeyHistogram(epochtimeToHighestDoubleMap, 0L));
+            Feature feature = new Feature(FEATURE_NAME, new MultiKeyHistogram(epochtimeToHighestDoubleMap, 0d));
             FeatureBucket featureBucket = new FeatureBucket();
             featureBucket.setStartTime(currentStartInstant);
             featureBucket.setEndTime(currentEndInstant);

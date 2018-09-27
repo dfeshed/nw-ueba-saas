@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.functions;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureStringValue;
+import fortscale.common.feature.MultiKeyHistogram;
 import fortscale.common.util.GenericHistogram;
 
 import java.util.Collections;
@@ -15,25 +17,30 @@ public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeat
 
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
-        GenericHistogram histogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        removeNaValues(histogram);
+        MultiKeyHistogram multiKeyHistogram = AggrFeatureMultiKeyHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        removeNaValues(multiKeyHistogram);
         AggrFeatureValue aggrFeatureValue = null;
-        if (!histogram.getHistogramMap().isEmpty()) {
-            aggrFeatureValue = calculateHistogramAggrFeatureValue(histogram);
+        if (!multiKeyHistogram.getHistogram().isEmpty()) {
+            aggrFeatureValue = calculateHistogramAggrFeatureValue(multiKeyHistogram);
         }
         return aggrFeatureValue;
     }
 
-    private void removeNaValues(GenericHistogram histogram) {
+    private void removeNaValues(MultiKeyHistogram histogram) {
         if (removeNA) {
-            AggGenericNAFeatureValues.getNAValues().forEach(histogram::remove);
+            AggGenericNAFeatureValues.getNAValues().forEach(value -> {
+                histogram.remove(new FeatureStringValue(value));
+            });
+
             if (additionalNAValues.size() > 0) {
-                additionalNAValues.forEach(histogram::remove);
+                additionalNAValues.forEach(value -> {
+                    histogram.remove(new FeatureStringValue(value));
+                });
             }
         }
     }
 
-    protected abstract AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram);
+    protected abstract AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram);
 
     public boolean getRemoveNA() {
         return this.removeNA;

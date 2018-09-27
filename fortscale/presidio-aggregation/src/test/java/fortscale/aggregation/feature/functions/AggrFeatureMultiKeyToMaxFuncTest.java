@@ -38,7 +38,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         featureNameToValue.put(groupByFeatureName,featureGroupedByValue);
 
         int max = 10;
-        MultiKeyFeature multiKeyFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue);
+        MultiKeyFeature multiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature, max));
         Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
@@ -62,7 +62,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         Map<String,String> featureNameToValue = new HashMap<>();
         featureNameToValue.put(groupByFeatureName,featureGroupedByValue);
 
-        MultiKeyFeature multiKeyFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue);
+        MultiKeyFeature multiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature, max));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<>(groupByFeatureName, featureGroupedByValue),
@@ -90,7 +90,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         Map<String,String> featureNameToValue = new HashMap<>();
         featureNameToValue.put(groupByFeatureName,featureGroupedByValue);
 
-        MultiKeyFeature multiKeyFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue);
+        MultiKeyFeature multiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature, max - 1));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<>(groupByFeatureName, featureGroupedByValue),
@@ -117,12 +117,12 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         final String featureGroupedByValue1 = "host_123";
         Map<String,String> featureNameToValue1 = new HashMap<>();
         featureNameToValue1.put(groupByFeatureName,featureGroupedByValue1);
-        MultiKeyFeature multiKeyFeature1 = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1);
 
         final String featureGroupedByValue2 = "host_456";
         Map<String,String> featureNameToValue2 = new HashMap<>();
         featureNameToValue2.put(groupByFeatureName,featureGroupedByValue2);
-        MultiKeyFeature multiKeyFeature2 = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValue2);
+        MultiKeyFeature multiKeyFeature2 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature1, max));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<>(groupByFeatureName, featureGroupedByValue2),
@@ -177,13 +177,13 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         Map<String,String> featureNameToValueA = new HashMap<>();
         featureNameToValueA.put(groupByFeatureName1,featureGroupedByValue1A);
         featureNameToValueA.put(groupByFeatureName2,featureGroupedByValue2A);
-        MultiKeyFeature multiKeyFeatureA = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValueA);
+        MultiKeyFeature multiKeyFeatureA = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValueA);
         final String featureGroupedByValue1B = "dest_host_123_B";
         final String featureGroupedByValue2B = "src_host_456_B";
         Map<String,String> featureNameToValueB = new HashMap<>();
         featureNameToValueB.put(groupByFeatureName1,featureGroupedByValue1B);
         featureNameToValueB.put(groupByFeatureName2,featureGroupedByValue2B);
-        MultiKeyFeature multiKeyFeatureB = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValueB);
+        MultiKeyFeature multiKeyFeatureB = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValueB);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
                 "MyAggrFeature",
                 new ImmutablePair<>(multiKeyFeatureA, maxA),
@@ -221,11 +221,11 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
             Map<String,String> featureNameToValueA = new HashMap<>();
             featureNameToValueA.put(groupByFeatureName1,featureGroupedByValue1A);
             featureNameToValueA.put(groupByFeatureName2,featureGroupedByValue2A);
-            MultiKeyFeature multiKeyFeatureA = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValueA);
+            MultiKeyFeature multiKeyFeatureA = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValueA);
             Map<String,String> featureNameToValueB = new HashMap<>();
             featureNameToValueB.put(groupByFeatureName1,featureGroupedByValue1B);
             featureNameToValueB.put(groupByFeatureName2,featureGroupedByValue2B);
-            MultiKeyFeature multiKeyFeatureB = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createMultiKeyFeature(featureNameToValueB);
+            MultiKeyFeature multiKeyFeatureB = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValueB);
             Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
                     "MyAggrFeature",
                     new ImmutablePair<>(multiKeyFeatureA, max),

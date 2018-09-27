@@ -23,6 +23,10 @@ public class MultiKeyFeature {
         return this.featureNameToValue.entrySet().containsAll(featureNameToFeatureValue.entrySet());
     }
 
+    public boolean containsValue(FeatureValue featureValue){
+        return featureNameToValue.containsValue(featureValue);
+    }
+
 
     @Override
     public boolean equals(Object o) {

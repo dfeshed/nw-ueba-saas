@@ -29,7 +29,7 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
             MultiKeyFeature multiKeyFeature = featureValuesAndNumber.getLeft();
             featuresGroupToMax.put(multiKeyFeature, featureValuesAndNumber.getRight().doubleValue());
         }
-        return new Feature(featureName, new MultiKeyHistogram(featuresGroupToMax, (long) featuresGroupToMax.size()));
+        return new Feature(featureName, new MultiKeyHistogram(featuresGroupToMax, featuresGroupToMax.size()));
     }
 
     public static Map<String, Feature> createBucketAggrFeaturesMap(String featureName, Pair<MultiKeyFeature, Integer>... featureValuesAndNumbers) {
@@ -45,14 +45,5 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
             multipleBucketsAggrFeaturesMapList.add(bucketAggrFeaturesMap);
         }
         return multipleBucketsAggrFeaturesMapList;
-    }
-
-
-    public static MultiKeyFeature createMultiKeyFeature(Map<String,String> featureNameToFeatureValueMap){
-        Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-        featureNameToFeatureValueMap.forEach((featureName,featureValue) -> {
-            featureNameToValue.put(featureName, new FeatureStringValue(featureValue));
-        });
-        return new MultiKeyFeature(featureNameToValue);
     }
 }

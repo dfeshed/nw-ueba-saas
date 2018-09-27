@@ -52,17 +52,15 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
     }
 
     @Override
-    protected AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram aggrFeatureValue) {
+    protected AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram multiKeyHistogram) {
         @SuppressWarnings("unchecked")
         double sum = 0;
-        double total = 0;
 
-        Map<MultiKeyFeature, Double> histogram = aggrFeatureValue.getHistogram();
+        Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
 
         //sum all if no keys were defined
         if (keys.isEmpty()) {
             sum = histogram.values().stream().mapToDouble(Double::doubleValue).sum();
-            total = aggrFeatureValue.getTotal();
         } else {
             //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
@@ -70,13 +68,13 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
                     if (multiKeyRecordEntry.getKey().contains(key.getFeatureNameToValue())) {
                         Double max = multiKeyRecordEntry.getValue();
                         sum += max;
-                        total++;
+                        //todo: recalculate total?
                         break;
                     }
                 }
             }
         }
 
-        return new AggrFeatureValue(sum, (long) total);
+        return new AggrFeatureValue(sum, (long) multiKeyHistogram.getTotal());
     }
 }

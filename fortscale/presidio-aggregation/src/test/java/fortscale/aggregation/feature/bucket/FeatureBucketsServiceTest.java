@@ -177,7 +177,7 @@ public class FeatureBucketsServiceTest {
         FeatureBucket featureBucket1 = new FeatureBucket();
         featureBucket1.setBucketId(BUCKET_ID1);
         Map<String, Feature> aggregatedFeatures = new HashMap<>();
-        long total = 1;
+        double total = 1d;
         MultiKeyHistogram multiKeyHistogram = createMultiKeyHistogram(new HashMap<>(), 80.0, total);
         Feature feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
@@ -211,7 +211,7 @@ public class FeatureBucketsServiceTest {
         return featureBuckets;
     }
 
-    private MultiKeyHistogram createMultiKeyHistogram(Map<String, FeatureValue> featureNameToValue, double count, long total){
+    private MultiKeyHistogram createMultiKeyHistogram(Map<String, FeatureValue> featureNameToValue, double count, double total){
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
         Map<MultiKeyFeature, Double> histogram = new HashMap<>();
         histogram.put(multiKeyFeature, count);
@@ -220,7 +220,7 @@ public class FeatureBucketsServiceTest {
 
 
     public boolean isEqual(MultiKeyHistogram m1, MultiKeyHistogram m2) {
-        if (!m1.getTotal().equals(m2.getTotal()) ||
+        if (m1.getTotal() != m2.getTotal() ||
                 m1.getHistogram().size() != m1.getHistogram().size()) {
             return false;
         }

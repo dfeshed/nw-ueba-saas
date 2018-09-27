@@ -1,8 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,56 +18,51 @@ import java.util.Map;
  */
 public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 
-	private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
-		List<String> list = new ArrayList<>();
-		for (int i = 1; i <= num; i++) {
-			list.add(String.format("feature%d", i));
-		}
-		Map<String, List<String>> map = new HashMap<>();
-		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, new JSONObject());
+	private AggrFeatureValue createExpected(MultiKeyFeature maxHistogramKey, MultiKeyHistogram ...multiKeyHistograms){
+		return createExpected(maxHistogramKey, true, multiKeyHistograms);
 	}
 
-	private AggrFeatureValue createExpected(String maxHistogramKey, GenericHistogram ...genericHistograms){
-		return createExpected(maxHistogramKey, true, genericHistograms);
-	}
-
-	private AggrFeatureValue createExpected(String maxHistogramKey, boolean removeNa, GenericHistogram ...genericHistograms){
+	private AggrFeatureValue createExpected(MultiKeyFeature maxHistogramKey, boolean removeNa, MultiKeyHistogram ...multiKeyHistograms){
 		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey,0L);
-		GenericHistogram sumGenericHistogram = new GenericHistogram();
-		for(GenericHistogram hist: genericHistograms){
-			sumGenericHistogram.add(hist);
+		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
+		for(MultiKeyHistogram hist: multiKeyHistograms){
+			sumMultiKeyHistogram.add(hist);
 		}
-		sumGenericHistogram.remove(AggGenericNAFeatureValues.NOT_AVAILABLE);
-		ret.setTotal((long)sumGenericHistogram.getTotalCount());
+		sumMultiKeyHistogram.remove(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
+		ret.setTotal((long)sumMultiKeyHistogram.getTotal());
 		return ret;
 	}
 
 	@Test
 	public void testCalculateAggrFeature() {
 		String maxHistogramKey = "hasBiggestvalue";
+		Map<MultiKeyFeature, Double> histogram1 = new HashMap<>();
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
+		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(histogram1, 0.0);
 
-		GenericHistogram histogram1 = new GenericHistogram();
-		histogram1.add("first", 1.0);
-		histogram1.add("second", 2.0);
-		histogram1.add("third", 3.0);
 
-		GenericHistogram notListedHistogram = new GenericHistogram();
-		notListedHistogram.add("first", 1.0);
-		notListedHistogram.add("fifths", 5.0);
-		notListedHistogram.add("tenth", 10.0);
+		Map<MultiKeyFeature, Double> notListedHistogram = new HashMap<>();
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram(notListedHistogram, 0.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram1),
-				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram1),
+				new ImmutablePair<String, Object>("feature2", multiKeyNotListedHistogram)
 		);
 
-		GenericHistogram histogram2 = new GenericHistogram();
-		histogram2.add("eleventh", 11.0);
-		histogram2.add("thirteenth", 13.0);
-		histogram2.add(maxHistogramKey, 17.0);
+		Map<MultiKeyFeature, Double> histogram2 = new HashMap<>();
+		histogram2.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
+		histogram2.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
+		MultiKeyFeature maxMultiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature(maxHistogramKey + "Name",maxHistogramKey);
+		histogram2.put(maxMultiKeyFeature,17.0);
+		MultiKeyHistogram multiKeyHistogram2 = new MultiKeyHistogram(histogram2, 0.0);
+
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram2),
 				new ImmutablePair<String, Object>("feature2", 42)
 		);
 
@@ -79,39 +73,44 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
 
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Feature actual1 = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
-		Assert.assertEquals(createExpected(maxHistogramKey, histogram1, histogram2), actual1.getValue());
+		Assert.assertEquals(createExpected(maxMultiKeyFeature, multiKeyHistogram1, multiKeyHistogram2), actual1.getValue());
 	}
 
 	@Test
 	public void testCalculateAggrFeatureWithNaValues() {
 		String maxHistogramKey = "hasBiggestvalue";
 
-		GenericHistogram histogram1 = new GenericHistogram();
-		histogram1.add("first", 1.0);
-		histogram1.add("second", 2.0);
-		histogram1.add("third", 3.0);
-		histogram1.add(AggGenericNAFeatureValues.NOT_AVAILABLE, 3.0);
+		Map<MultiKeyFeature, Double> histogram1 = new HashMap<>();
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
+		histogram1.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NAName",AggGenericNAFeatureValues.NOT_AVAILABLE),3.0);
+		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(histogram1, 0.0);
 
-		GenericHistogram notListedHistogram = new GenericHistogram();
-		notListedHistogram.add("first", 1.0);
-		notListedHistogram.add("fifths", 5.0);
-		notListedHistogram.add("tenth", 10.0);
+		Map<MultiKeyFeature, Double> notListedHistogram = new HashMap<>();
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		notListedHistogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram(notListedHistogram, 0.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram1),
-				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram1),
+				new ImmutablePair<String, Object>("feature2", multiKeyNotListedHistogram)
 		);
 
-		GenericHistogram histogram2 = new GenericHistogram();
-		histogram2.add("eleventh", 11.0);
-		histogram2.add("thirteenth", 13.0);
-		histogram2.add(maxHistogramKey, 17.0);
-		histogram2.add(AggGenericNAFeatureValues.NOT_AVAILABLE, 30.0);
+		Map<MultiKeyFeature, Double> histogram2 = new HashMap<>();
+		histogram2.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
+		histogram2.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
+		MultiKeyFeature maxMultiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature(maxHistogramKey + "Name",maxHistogramKey);
+		histogram2.put(maxMultiKeyFeature,17.0);
+		histogram2.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NAName",AggGenericNAFeatureValues.NOT_AVAILABLE),30.0);
+		MultiKeyHistogram multiKeyHistogram2 = new MultiKeyHistogram(histogram2, 0.0);
+
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram2),
 				new ImmutablePair<String, Object>("feature2", 42)
 		);
 
@@ -123,29 +122,30 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		function.setRemoveNA(true);
 
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Feature actual1 = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNotNull(actual1);
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
-		Assert.assertEquals(createExpected(maxHistogramKey, histogram1, histogram2), actual1.getValue());
+		Assert.assertEquals(createExpected(maxMultiKeyFeature, multiKeyHistogram1, multiKeyHistogram2), actual1.getValue());
 	}
 
 	@Test
 	public void testCalculateAggrFeatureWhenHistogramsEmpty() {
-		GenericHistogram histogram1 = new GenericHistogram();
+		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram();
 
-		GenericHistogram notListedHistogram = new GenericHistogram();
-		notListedHistogram.add("first", 1.0);
-		notListedHistogram.add("fifths", 5.0);
-		notListedHistogram.add("tenth", 10.0);
+		Map<MultiKeyFeature, Double> histogram = new HashMap<>();
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		MultiKeyHistogram notListedMultiKeyHistogram = new MultiKeyHistogram(histogram, 16.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram1),
-				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram1),
+				new ImmutablePair<String, Object>("feature2", notListedMultiKeyHistogram)
 		);
 
-		GenericHistogram histogram2 = new GenericHistogram();
+		MultiKeyHistogram multiKeyHistogram2 = new MultiKeyHistogram();
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature1", multiKeyHistogram2),
 				new ImmutablePair<String, Object>("feature2", 42)
 		);
 
@@ -156,19 +156,20 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
 
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Feature actual1 = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNull(actual1);
 	}
 
 	@Test
 	public void testCalculateAggrFeatureWhenFeatureDoesNotExist() {
-		GenericHistogram notListedHistogram = new GenericHistogram();
-		notListedHistogram.add("first", 1.0);
-		notListedHistogram.add("fifths", 5.0);
-		notListedHistogram.add("tenth", 10.0);
+		Map<MultiKeyFeature, Double> histogram = new HashMap<>();
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		histogram.put(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		MultiKeyHistogram notListedMultiKeyHistogram = new MultiKeyHistogram(histogram, 16.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+				new ImmutablePair<String, Object>("feature2", notListedMultiKeyHistogram)
 		);
 
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
@@ -182,7 +183,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
 
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Feature actual1 = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
 		Assert.assertNull(actual1);
 	}
 
