@@ -2,6 +2,7 @@
 const os = require('os');
 const fs = require('fs');
 const { WatchedDir } = require('broccoli-source');
+const mergeTrees = require('broccoli-merge-trees');
 
 const featureFlagDefaultHash = require('./feature-flags');
 
@@ -227,11 +228,14 @@ const addFeatureFlags = function(environment) {
 };
 
 const commonBuildOptions = function(projectDir) {
-  const templatesPath = `${projectDir}/addon/components`;
-  let templatesTree = null;
-  if (fs.existsSync(templatesPath)) {
-    templatesTree = new WatchedDir(templatesPath);
-  }
+  const templateTrees = [
+    `${projectDir}/addon/components`,
+    `${projectDir}/tests/dummy/app/templates`
+  ].map((path) => {
+    if (fs.existsSync(path)) {
+      return new WatchedDir(path);
+    }
+  }).filter((aTree) => !!aTree);
 
   return {
     babel: {
@@ -244,7 +248,7 @@ const commonBuildOptions = function(projectDir) {
       includePolyfill: true
     },
     trees: {
-      templates: templatesTree
+      templates: mergeTrees(templateTrees)
     }
   };
 };
