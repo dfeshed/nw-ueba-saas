@@ -1,0 +1,24 @@
+.usm-ports {
+  padding: rsa-whitespace() rsa-whitespace() 0 0;
+  input {
+    max-width: 20%;
+  }
+  .title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: text-color(primary, light);
+    @include rsa-font(default,small);
+    .remove-setting {
+      float: right;
+      margin-right: rsa-whitespace(more);
+      margin-left: rsa-whitespace(more);
+    }
+  }
+  .port-error {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    max-width: 80%;
+    color: text-color(accentOne, dark);
+    margin-bottom: rsa-whitespace();
+    display: inline-block;
+  }
+}

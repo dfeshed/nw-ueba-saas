@@ -3606,6 +3606,11 @@ export default {
       invasiveActions: 'Invasive Actions',
       radioOptionEnabled: 'Enabled',
       radioOptionDisabled: 'Disabled',
+      endpointServerSettings: 'Endpoint Server',
+      primaryAddress: 'Hostname',
+      httpPort: 'HTTP Port',
+      udpPort: 'UDP Port',
+      portInvalidMsg: 'The port should be between 1 and 65535',
       scheduleConfiguration: {
         scanType: {
           title: 'Scheduled or Manual Scan',

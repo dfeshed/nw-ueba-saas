@@ -22,6 +22,8 @@ import {
   cpuMaxVm,
   radioButtonValue,
   radioButtonOption,
+  portValue,
+  isPortValid,
   runIntervalConfig,
   nameValidator,
   descriptionValidator,
@@ -189,6 +191,76 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     const result = radioButtonValue(fullState, 'agentMode');
     assert.deepEqual(result, expectedState, `should return agentMode of ${expectedState}`);
+  });
+
+  test('httpPort', function(assert) {
+    const expectedValue = 555;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizHttpPort(expectedValue)
+      .build();
+    const result = portValue(fullState, 'httpPort');
+    assert.deepEqual(result, expectedValue, `should return httpPort of ${expectedValue}`);
+  });
+
+  test('udpPort', function(assert) {
+    const expectedValue = 666;
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(expectedValue)
+      .build();
+    const result = portValue(fullState, 'udpPort');
+    assert.deepEqual(result, expectedValue, `should return udpPort of ${expectedValue}`);
+  });
+
+  test('isPortValid returns correcly based on the validity of the port value', function(assert) {
+    let portValue = 0;
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    let result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+
+    portValue = -1;
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+
+    portValue = -77777;
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+
+    portValue = 77777;
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+
+    portValue = '';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is empty string`);
+
+    portValue = 443;
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizUdpPort(portValue)
+      .build();
+    result = isPortValid(fullState, 'udpPort');
+    assert.deepEqual(result, true, `isPortValid returns ${result} when port value is ${portValue}`);
   });
 
   test('radioButtonOption returns the right radio button options based on the id', function(assert) {

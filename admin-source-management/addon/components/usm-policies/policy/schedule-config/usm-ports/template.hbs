@@ -1,0 +1,19 @@
+<h4 class='title'>
+  {{t (concat 'adminUsm.policy.' selectedSettingId)}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' selectedSettingId}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+<span class="rsa-form-input">
+  {{input
+    class='port-value'
+    type='number'
+    min=1
+    max=65535
+    value=(readonly portValue)
+    focus-out=(action 'handlePortValueChange')
+  }}
+</span>
+{{#if (not isPortValid)}}
+  <span class="port-error">{{t 'adminUsm.policy.portInvalidMsg'}}</span>
+{{/if}}

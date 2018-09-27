@@ -4,7 +4,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   RADIO_BUTTONS_CONFIG,
-  ALL_RADIO_OPTIONS
+  ALL_RADIO_OPTIONS,
+  isBetween
 } from 'admin-source-management/utils/settings';
 import { exceedsLength, isNameInList } from './util/selector-helpers';
 
@@ -64,6 +65,23 @@ export const sortedSelectedSettings = createSelector(
  * @public
  */
 export const radioButtonValue = (state, selectedSettingId) => state.usm.policyWizard.policy[selectedSettingId];
+
+/**
+ * It returns the port value (httpPort or udpPort) from state based on the selectedSettingId.
+ * @public
+ */
+export const portValue = (state, selectedSettingId) => {
+  return state.usm.policyWizard.policy[selectedSettingId];
+};
+
+/**
+ * It returns true if port is valid and within bounds, false otherwise
+ * @public
+ */
+export const isPortValid = (state, selectedSettingId) => {
+  const value = portValue(state, selectedSettingId);
+  return isBetween(value);
+};
 
 /**
  * It returns the appropriate radio button option based on the selectedSettingId

@@ -136,6 +136,16 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizHttpPort(httpPort) {
+    _set(this.state, 'usm.policyWizard.policy.httpPort', httpPort);
+    return this;
+  }
+
+  policyWizUdpPort(udpPort) {
+    _set(this.state, 'usm.policyWizard.policy.udpPort', udpPort);
+    return this;
+  }
+
   policyWizRunOnDaysOfWeek(runOnDaysOfWeekArray) {
     _set(this.state, 'usm.policyWizard.policy.runOnDaysOfWeek', runOnDaysOfWeekArray);
     return this;

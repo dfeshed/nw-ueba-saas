@@ -1,3 +1,6 @@
+const PORT_MIN_VALUE = 1;
+const PORT_MAX_VALUE = 65535;
+
 export const RADIO_BUTTONS_CONFIG = {
   name: 'recurrence',
   label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.title',
@@ -135,3 +138,11 @@ export const ALL_RADIO_OPTIONS = [
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },
   { id: 'agentMode', options: AGENT_MODE_CONFIG }
 ];
+
+// Utility function to check if the port number is valid
+export function isBetween(value) {
+  if (value === '') {
+    return false;
+  }
+  return value >= PORT_MIN_VALUE && value <= PORT_MAX_VALUE;
+}
