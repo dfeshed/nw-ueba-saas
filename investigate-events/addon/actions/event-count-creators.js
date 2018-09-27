@@ -12,14 +12,32 @@ export default function getEventCount() {
     const { serviceId, startTime, endTime, metaFilter } = state.queryNode;
     const { language } = state.dictionaries;
     const { threshold } = state.eventCount;
-    dispatch({
-      type: ACTION_TYPES.GET_EVENT_COUNT,
-      promise: fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold),
-      meta: {
-        onFailure(response) {
-          handleInvestigateErrorCode(response, 'GET_EVENT_COUNT');
-        }
+    const handlers = {
+      onInit() {
+        dispatch({
+          type: ACTION_TYPES.START_GET_EVENT_COUNT
+        });
+      },
+      onError(response = {}) {
+        handleInvestigateErrorCode(response, 'EVENT_COUNT_RESULTS');
+        dispatch({
+          type: ACTION_TYPES.FAILED_GET_EVENT_COUNT,
+          payload: response.code
+        });
+      },
+      onResponse(response) {
+        dispatch({
+          type: ACTION_TYPES.EVENT_COUNT_RESULTS,
+          payload: response
+        });
+
+        dispatch({
+          type: ACTION_TYPES.QUERY_STATS,
+          payload: response.meta
+        });
       }
-    });
+    };
+
+    fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold, handlers);
   };
 }

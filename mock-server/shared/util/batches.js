@@ -3,8 +3,7 @@ function sendBatches({
   dataArray,
   sendMessage,
   delayBetweenBatches = 100,
-  setupFrames = [],
-  metaPostProcessing = null
+  setupFrames = []
 }) {
   const stream = requestBody.stream || {};
   const page = requestBody.page || {};
@@ -53,19 +52,13 @@ function sendBatches({
           complete = delay && delay > 1 ? (index + 1) === allFrames.length : true;
         }
 
-        let message = {
+        sendMessage({
           data,
           meta: {
             ...meta,
             complete
           }
-        };
-
-        if (metaPostProcessing && message) {
-          message = metaPostProcessing(message, index);
-        }
-
-        sendMessage(message);
+        });
       };
     }(i), i * delayBetweenBatches);
   }

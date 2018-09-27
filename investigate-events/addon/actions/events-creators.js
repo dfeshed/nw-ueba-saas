@@ -53,9 +53,6 @@ export const eventsGetFirst = () => {
         const payload = Array.isArray(_payload) ? _payload : [];
         const description = meta ? meta.description : null;
         const percent = meta ? meta.percent : 0;
-
-        dispatch({ type: ACTION_TYPES.QUERY_STATS, payload: meta });
-
         // A streaming websocket call goes through different phases. First is
         // `Queued`, then `Executing`, then an optional, unnamed "data" phase.
         // Brokers appear to only use the first two pahses, while concentrators

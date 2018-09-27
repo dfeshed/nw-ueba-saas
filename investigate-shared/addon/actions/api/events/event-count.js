@@ -2,7 +2,7 @@ import {
   conditionsFilter,
   encodeMetaFilterConditions,
   serviceIdFilter,
-  streamPromiseRequest,
+  streamingRequest,
   thresholdFilter,
   timeRangeFilter
 } from './utils';
@@ -18,7 +18,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function fetchCount(serviceId, startTime, endTime, conditions, language, threshold, cancelPreviouslyExecuting = true) {
+export default function fetchCount(serviceId, startTime, endTime, conditions, language, threshold, handlers) {
   const query = {
     filter: [
       serviceIdFilter(serviceId),
@@ -27,9 +27,9 @@ export default function fetchCount(serviceId, startTime, endTime, conditions, la
       conditionsFilter(encodeMetaFilterConditions(conditions, language))
     ]
   };
-  return streamPromiseRequest(
+  return streamingRequest(
     'core-event-count',
     query,
-    { cancelPreviouslyExecuting }
+    handlers
   );
 }
