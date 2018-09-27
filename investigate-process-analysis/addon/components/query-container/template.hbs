@@ -1,5 +1,11 @@
 {{service-selector services=services serviceId=serviceId onServiceSelection=(action 'setSelectedService')}}
-{{time-selector startTime=startTime endTime=endTime onEntireTimeRangeSelection=(action 'setQueryTimeRange')}}
+{{time-selector
+  startTime=startTime
+  endTime=endTime
+  onTimeRangeError=(action 'timeRangeError')
+  onIndividualTimeUnitChange=(action 'customTimeRange')
+  timeRangeInvalid=timeRangeInvalid
+  onEntireTimeRangeSelection=(action 'timeRangeSelection')}}
 {{#rsa-form-button
   class='execute-query-button'
   defaultAction=executeQuery

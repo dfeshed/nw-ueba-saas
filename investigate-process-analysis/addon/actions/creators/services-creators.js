@@ -58,6 +58,16 @@ export const getServiceSummary = (serviceId) => {
   };
 };
 
+const _setQueryTimeRange = (dispatch, id, startTime, endTime) => {
+  dispatch({
+    type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
+    payload: {
+      startTime,
+      endTime,
+      selectedTimeRangeId: id
+    }
+  });
+};
 
 /**
  * Takes a time range object and calculates the start and end dates. The
@@ -69,37 +79,34 @@ export const getServiceSummary = (serviceId) => {
  * @param {object} timeRange The time range
  * @public
  */
-export const setQueryTimeRange = ({ id, value, unit }) => {
+export const setQueryTimeRange = ({ id, value, unit, startTime, endTime }, isCustomRange) => {
   return (dispatch, getState) => {
-    const state = getState();
-    // Get the database start/end times. If they are 0, then use browser time
-    // For startTime, set time to 1970 if DB time was 0.
-    const dbEndTime = getDbEndTime(state) || moment().unix();
-    const dbStartTime = getDbStartTime(state) || moment(0).unix();
-    let startTime;
 
-    // DB time
-    const endTime = moment(dbEndTime * 1000).endOf('minute');
+    if (!isCustomRange) {
+      const state = getState();
+      // Get the database start/end times. If they are 0, then use browser time
+      // For startTime, set time to 1970 if DB time was 0.
+      const dbEndTime = getDbEndTime(state) || moment().unix();
+      const dbStartTime = getDbStartTime(state) || moment(0).unix();
+      let startTime;
 
-    if (value) {
-      startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
-      // if the precision is in months - for last 30 days, momentjs takes last 30 days 23 hrs.
-      // So adding 23 hrs to startTime to negate the effect.
-      if (unit == 'months') {
-        startTime = startTime.add(23, 'hours');
+      // DB time
+      const endTime = moment(dbEndTime * 1000).endOf('minute');
+
+      if (value) {
+        startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
+        // if the precision is in months - for last 30 days, momentjs takes last 30 days 23 hrs.
+        // So adding 23 hrs to startTime to negate the effect.
+        if (unit == 'months') {
+          startTime = startTime.add(23, 'hours');
+        }
+      } else {
+        startTime = moment(dbStartTime * 1000).startOf('minute');
       }
+      _setQueryTimeRange(dispatch, id, startTime.unix(), endTime.unix());
     } else {
-      startTime = moment(dbStartTime * 1000).startOf('minute');
+      _setQueryTimeRange(dispatch, 'CUSTOM', startTime / 1000, endTime / 1000);
     }
-
-    dispatch({
-      type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
-      payload: {
-        startTime: startTime.unix(),
-        endTime: endTime.unix(),
-        selectedTimeRangeId: id
-      }
-    });
   };
 };
 export const setSelectedService = (service) => {
