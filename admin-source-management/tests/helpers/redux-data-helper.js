@@ -4,7 +4,8 @@ import { initialState as policyWizInitialState } from 'admin-source-management/r
 import { initialState as groupWizInitialState } from 'admin-source-management/reducers/usm/group-wizard-reducers';
 import {
   groups,
-  policies
+  policies,
+  endpointServers
 } from '../data/data';
 
 const _set = (obj, key, val) => {
@@ -131,6 +132,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPrimaryAddress(primaryAddress) {
+    _set(this.state, 'usm.policyWizard.policy.primaryAddress', primaryAddress);
+    return this;
+  }
+
   policyWizAgentMode(agentMode) {
     _set(this.state, 'usm.policyWizard.policy.agentMode', agentMode);
     return this;
@@ -178,6 +184,16 @@ export default class DataHelper {
 
   policyWizPolicyListStatus(status) {
     _set(this.state, 'usm.policyWizard.policyListStatus', status);
+    return this;
+  }
+
+  policyWizEndpointServers() {
+    _set(this.state, 'usm.policyWizard.listOfEndpointServers', endpointServers);
+    return this;
+  }
+
+  policyWizEndpointServersEmpty() {
+    _set(this.state, 'usm.policyWizard.listOfEndpointServers', []);
     return this;
   }
 

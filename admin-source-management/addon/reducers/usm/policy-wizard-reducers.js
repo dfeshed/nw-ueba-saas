@@ -32,9 +32,10 @@ export const initialState = {
     filterSignedHooks: null, // true or false
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
-    agentMode: null, // 'NO_MONITORING' | 'FULL_MONITORING'
+    primaryAddress: null,
     httpPort: null, // 1 to 65535
-    udpPort: null // 1 to 65535
+    udpPort: null, // 1 to 65535
+    agentMode: null // 'NO_MONITORING' | 'FULL_MONITORING'
   },
   policyStatus: null, // wait, complete, error
 
@@ -86,6 +87,10 @@ export const initialState = {
     // { id: 'fileLogPolicy', policyType: 'fileLogPolicy', name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' },
     // { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' }
   ],
+
+  // list of endpoint servers from the orchestration service to populate the hostname
+  // drop down
+  listOfEndpointServers: [],
 
   // define-policy-step - available settings to render the left col
   // * make sure the id is always the same as the policy property name
@@ -453,7 +458,17 @@ export default reduxActions.handleActions({
         });
       }
     })
-  )
+  ),
 
+  [ACTION_TYPES.FETCH_ENDPOINT_SERVERS]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('listOfEndpointServers', []);
+      },
+      success: (state) => {
+        return state.set('listOfEndpointServers', action.payload.data);
+      }
+    })
+  )
 
 }, Immutable.from(initialState));

@@ -105,6 +105,12 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.available-settings .agentMode').length, 1, 'Monitoring Mode component is shown in the available settings');
   });
 
+  test('All Endpoint Server components are shown in the available settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz().build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .primaryAddress').length, 1, 'Primary Address component is shown in the available settings');
+  });
+
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
       { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },

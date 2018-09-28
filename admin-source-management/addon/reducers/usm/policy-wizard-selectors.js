@@ -17,6 +17,42 @@ export const policyList = (state) => _policyWizardState(state).policyList;
 export const visited = (state) => _policyWizardState(state).visited;
 export const steps = (state) => _policyWizardState(state).steps;
 export const sourceTypes = (state) => _policyWizardState(state).sourceTypes;
+export const listOfEndpoints = (state) => _policyWizardState(state).listOfEndpointServers || [];
+
+export const endpointServersList = createSelector(
+  // only format/return what is in state - the reducer is responsible for the defaults for each setting
+  [listOfEndpoints],
+  (listOfEndpoints) => {
+    const services = [];
+    for (let i = 0; i < listOfEndpoints.length; i++) {
+      const service = {
+        id: listOfEndpoints[i].host,
+        name: listOfEndpoints[i].displayName
+      };
+      services.push(service);
+    }
+    return services;
+  }
+);
+
+/**
+ * we need the selected policy primaryAddress
+ * @public
+ */
+export const selectedEndpointSever = createSelector(
+  policy, endpointServersList,
+  (policy, endpointServersList) => {
+    let selected = null;
+    for (let s = 0; s < endpointServersList.length; s++) {
+      const endpointServer = endpointServersList[s];
+      if (policy.primaryAddress === endpointServer.id) {
+        selected = endpointServer;
+        break;
+      }
+    }
+    return selected;
+  }
+);
 
 export const isPolicyLoading = createSelector(
   _policyWizardState,

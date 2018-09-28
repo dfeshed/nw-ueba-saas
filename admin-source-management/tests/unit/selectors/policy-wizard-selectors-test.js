@@ -29,6 +29,8 @@ import {
   descriptionValidator,
   steps,
   isIdentifyPolicyStepValid,
+  endpointServersList,
+  selectedEndpointSever,
   // TODO when implemented isDefinePolicyStepvalid,
   // TODO when implemented isApplyToGroupStepvalid,
   // TODO when implemented isReviewPolicyStepvalid,
@@ -88,6 +90,44 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     const sourceTypeExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes[0]);
     const sourceTypeSelected = selectedSourceType(Immutable.from(fullState));
     assert.deepEqual(sourceTypeSelected, sourceTypeExpected, 'The returned value from the selectedSourceType selector is as expected');
+  });
+
+  test('selectedEndpointSever selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy()
+      .policyWizPrimaryAddress('10.10.10.10')
+      .policyWizEndpointServers()
+      .build();
+    const endpointExpected = {
+      'id': '10.10.10.10',
+      'name': 'NWAPPLIANCE27455 - Endpoint Server'
+    };
+    const endpointSelected = selectedEndpointSever(Immutable.from(fullState));
+    assert.deepEqual(endpointSelected, endpointExpected, 'The returned value from the selectedEndpointSever selector is as expected');
+
+    // null selected endpoint
+    const fullStateNullAddress = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy()
+      .policyWizPrimaryAddress(null)
+      .policyWizEndpointServers()
+      .build();
+    const endpointNullExpected = null;
+    const endpointNullSelected = selectedEndpointSever(Immutable.from(fullStateNullAddress));
+    assert.deepEqual(endpointNullSelected, endpointNullExpected, 'The returned value from the selectedEndpointSever selector is null as expected');
+
+  });
+
+  test('endpointServersList selector', function(assert) {
+    const hostExpected = '10.10.10.10';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizEndpointServers()
+      .build();
+    const endpointsSelected = endpointServersList(Immutable.from(fullState));
+    assert.equal(endpointsSelected.length, 2, 'number of endpoints is as expected');
+    assert.deepEqual(endpointsSelected[0].id, hostExpected, `endpointsSelected[0].id is ${hostExpected}`);
   });
 
   test('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {

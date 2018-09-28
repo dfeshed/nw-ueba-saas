@@ -15,6 +15,7 @@ const initializePolicy = (policyId) => {
 
     // init policy lists
     dispatch(fetchPolicyList());
+    dispatch(fetchEndpointServers());
   };
 };
 
@@ -137,6 +138,12 @@ const updatePolicyProperty = (field, value) => {
         { field: 'policy.runOnDaysOfWeek', value: null }
       ];
       break;
+    case 'primaryAddress':
+      value = value.id;
+      payload = [
+        { field: `policy.${field}`, value }
+      ];
+      break;
     default:
       payload = [
         { field: `policy.${field}`, value }
@@ -175,6 +182,13 @@ const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
   };
 };
 
+const fetchEndpointServers = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS,
+    promise: policyAPI.fetchEndpointServers()
+  };
+};
+
 export {
   initializePolicy,
   fetchPolicyList,
@@ -185,5 +199,6 @@ export {
   editPolicy,
   updatePolicyProperty,
   savePolicy,
-  savePublishPolicy
+  savePublishPolicy,
+  fetchEndpointServers
 };

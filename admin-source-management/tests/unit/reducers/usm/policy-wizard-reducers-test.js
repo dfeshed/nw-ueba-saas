@@ -7,6 +7,9 @@ import makePackAction from '../../../helpers/make-pack-action';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/policy-wizard-reducers';
+import {
+  endpointServers
+} from '../../../data/data';
 
 const policyWizInitialState = new ReduxDataHelper().policyWiz().build().usm.policyWizard;
 const scanScheduleId = 'scanType';
@@ -118,8 +121,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       { index: 15, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
       // { index: 16, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
       { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
-      // { index: 18, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
-      { index: 19, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+      // { index: 18, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
+      // { index: 20, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
+      { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
     ];
 
     const expectedEndState = {
@@ -135,7 +140,8 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         { index: 13, id: 'filterSignedHooks', label: 'adminUsm.policy.filterSignedHooks', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'filterSignedHooks', value: false }] },
         { index: 15, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
         { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
-        { index: 19, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+        { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
+        { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
       ],
       selectedSettings: [
         { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
@@ -147,7 +153,8 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         { index: 13, id: 'filterSignedHooks', label: 'adminUsm.policy.filterSignedHooks', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'filterSignedHooks', value: false }] },
         { index: 15, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
         { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
-        { index: 19, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+        { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
+        { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
       ]
     };
 
@@ -170,6 +177,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         filterSignedHooks: false,
         requestScanOnRegistration: false,
         blockingEnabled: false,
+        primaryAddress: '10.10.10.10',
         agentMode: false
       }
     };
@@ -504,6 +512,34 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     });
     const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
     assert.deepEqual(endState, expectedEndState, `policy populated & policyStatus is ${policyStatusExpected}`);
+  });
+
+  test('on FETCH_ENDPOINT_SERVERS start, endpoints list is reset', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizEndpointServersEmpty()
+      .build().usm.policyWizard;
+
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'list of endpoint servers is empty');
+  });
+
+  test('on FETCH_ENDPOINT_SERVERS success, endpoint servers list is properly set', function(assert) {
+    const listOfEndpointServers = {
+      data: endpointServers
+    };
+
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizEndpointServers()
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS,
+      payload: listOfEndpointServers
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'endpoint servers list is populated');
   });
 
 });

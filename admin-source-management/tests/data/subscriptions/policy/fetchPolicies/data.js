@@ -209,6 +209,7 @@ export default [
     filterSignedHooks: false,
     requestScanOnRegistration: true,
     blockingEnabled: false,
+    primaryAddress: '10.10.10.10',
     agentMode: 'FULL_MONITORING'
   }
 ];

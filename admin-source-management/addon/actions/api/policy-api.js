@@ -106,6 +106,20 @@ function savePublishPolicy(policy) {
   });
 }
 
+/**
+ * Get a list of endpoint servers that the
+ * agent will push the policy to.
+ * @public
+ */
+function fetchEndpointServers() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'fetchEndpointServers',
+    query: {}
+  });
+}
+
 export default {
   deletePolicies,
   fetchPolicies,
@@ -113,5 +127,6 @@ export default {
   fetchPolicy,
   publishPolicies,
   savePolicy,
-  savePublishPolicy
+  savePublishPolicy,
+  fetchEndpointServers
 };

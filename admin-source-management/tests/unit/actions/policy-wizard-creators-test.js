@@ -60,6 +60,18 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 
+  test('updatePolicyProperty action creator returns proper type and payload when field is primaryAddress', function(assert) {
+    const val = { id: '10.10.10.10' };
+    const expectedAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
+      payload: [
+        { field: 'policy.primaryAddress', value: '10.10.10.10' }
+      ]
+    };
+    const action = policyWizardCreators.updatePolicyProperty('primaryAddress', val);
+    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+  });
+
   test('updatePolicyProperty action creator returns proper default type and payload for any other field', function(assert) {
     const expectedAction = {
       type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,

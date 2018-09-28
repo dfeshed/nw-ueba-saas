@@ -67,6 +67,10 @@ const adminUsmConfigGen = function(environment) {
       savePublishRecord: {
         subscriptionDestination: '/user/queue/usm/policy/saveandpublish',
         requestDestination: '/ws/usm/policy/saveandpublish'
+      },
+      fetchEndpointServers: {
+        subscriptionDestination: '/user/queue/usm/endpoint/servers',
+        requestDestination: '/ws/usm/endpoint/servers'
       }
     }
   };
