@@ -6,7 +6,7 @@
   showOnlyIcons=showOnlyIcons
   onSaveFileStatus=onSaveFileStatus
   retrieveRemediationStatus=retrieveRemediationStatus
-  remediationStatus=remediationStatus}}
+  isRemediationAllowed=isRemediationAllowed}}
 
 {{endpoint/pivot-to-investigate
   itemList=itemList
@@ -46,6 +46,8 @@
         <li class="{{if isEditStatusButtonDisabled 'disabled'}}">
           {{#rsa-content-tethered-panel-trigger
             panel=fileAction.panelId
+            displayDelay=200
+            hideDelay=100
             isDisabled=isEditStatusButtonDisabled
           }}
             <div>

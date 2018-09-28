@@ -15,7 +15,8 @@ const initialState = Immutable.from({
   fileStatus: {}, // File status for selected file
   totalItems: null, // Total number of file context items
   pageNumber: -1,
-  hasNext: false
+  hasNext: false,
+  isRemediationAllowed: true
 });
 
 
@@ -37,14 +38,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
-  const { id, fileName, signature, size, fileProperties: { checksumSha256, checksumSha1, checksumMd5 } } = payload;
+  const { id, fileName, fileProperties, machineOsType } = payload;
+  const { signature, size, checksumSha256, checksumSha1, checksumMd5 } = fileProperties;
   let selectedList = [];
   // Previously selected driver
-
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size }];
+    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {} });
 
@@ -86,13 +87,14 @@ const fileContext = reduxActions.handleActions({
     const contexts = Object.values(fileContext);
     if (fileContextSelections.length < contexts.length) {
       return state.set('fileContextSelections', contexts.map((driver) => {
-        const { id, fileName, signature, size, fileProperties: { checksumSha256, checksumSha1, checksumMd5 } } = driver;
+        const { id, fileName, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5 } } = driver;
         return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size };
       }));
     } else {
       return state.set('fileContextSelections', []);
     }
   },
+
   [ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION]: (state) => state.set('fileContextSelections', []),
 
   [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {
@@ -133,7 +135,15 @@ const fileContext = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1)
+  [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
+
+  [ACTION_TYPES.FETCH_REMEDIATION_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        return s.set('isRemediationAllowed', action.payload.data);
+      }
+    });
+  }
 
 }, initialState);
 

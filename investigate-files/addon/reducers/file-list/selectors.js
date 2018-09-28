@@ -19,7 +19,7 @@ const DATASOURCE_TABS = [
 ];
 
 // Contains all the expression saved + newly added expression from the UI
-const files = (state) => state.files.fileList.fileData ? Object.values(state.files.fileList.fileData) : [];
+export const files = (state) => state.files.fileList.fileData ? Object.values(state.files.fileList.fileData) : [];
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _totalItems = (state) => state.files.fileList.totalItems;
 const _serviceList = (state) => state.files.fileList.listOfServices;
@@ -98,17 +98,6 @@ export const isAllSelected = createSelector(
       return files.length === selectedFileList.length;
     }
     return false;
-  }
-);
-export const processedFileList = createSelector(
-  [files, _selectedFileList],
-  (files, selectedFileList) => {
-    return files.map((file) => {
-      return {
-        ...file,
-        checked: selectedFileList.some((item) => item.id === file.id)
-      };
-    });
   }
 );
 

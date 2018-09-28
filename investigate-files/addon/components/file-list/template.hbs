@@ -41,8 +41,8 @@
       as |item index column|}}
       {{#if column.componentClass}}
         {{#file-list/body-cell item=item column=column}}
-          <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
-            {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
+          <label class="rsa-form-checkbox-label {{if (is-selected selections item) 'checked'}}">
+            {{rsa-form-checkbox checked=(is-selected selections item) change=(action 'toggleItemSelection' item)}}
           </label>
         {{/file-list/body-cell}}
       {{else}}
@@ -92,7 +92,7 @@
   {{endpoint/pivot-to-investigate/modal
     serviceList=serviceList
     metaName='checksumSha256'
-    item=rowItem
+    item=itemList
     closeModal=(action 'onCloseServiceModal')}}
 {{/if}}
 

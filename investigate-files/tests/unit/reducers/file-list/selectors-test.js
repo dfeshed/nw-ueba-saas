@@ -9,7 +9,6 @@ import {
   serviceList,
   getDataSourceTab,
   getContext,
-  processedFileList,
   isAllSelected,
   selectedFileStatusHistory,
   hostList
@@ -170,17 +169,7 @@ test('getContext returns alerts', function(assert) {
   const result = getContext(state);
   assert.equal(result.resultList.length, 2, '2 Alerts fetched');
 });
-test('processedFileList test', function(assert) {
-  const state = Immutable.from({
-    files: {
-      fileList: {
-        fileData: { 1: { id: 1 }, 2: { id: 2 } }
-      }
-    }
-  });
-  const result = processedFileList(state);
-  assert.equal(result.length, 2, '2 items expected');
-});
+
 test('isAllSelected test', function(assert) {
   const state1 = Immutable.from({
     files: {

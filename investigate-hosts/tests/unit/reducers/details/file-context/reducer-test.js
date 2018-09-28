@@ -17,7 +17,8 @@ const initialState = {
   fileStatus: {},
   totalItems: null,
   pageNumber: -1,
-  hasNext: false
+  hasNext: false,
+  isRemediationAllowed: true
 };
 
 module('Unit | Reducers | File Context', function() {
@@ -96,7 +97,10 @@ module('Unit | Reducers | File Context', function() {
       fileProperties: {
         checksumSha256: 'test',
         checksumSha1: 'test',
-        checksumMd5: 'test'
+        checksumMd5: 'test',
+        signature: {
+          thumbprint: 1
+        }
       }
     };
     let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
@@ -109,6 +113,7 @@ module('Unit | Reducers | File Context', function() {
     result = reducer(next, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
     assert.equal(result.fileContextSelections.length, 0);
   });
+
   test('TOGGLE_FILE_CONTEXT_ALL_SELECTION should toggle the selected driver', function(assert) {
     const previous = Immutable.from({
       selectedRowId: '123',
@@ -119,7 +124,10 @@ module('Unit | Reducers | File Context', function() {
           fileProperties: {
             checksumSha256: 'test',
             checksumSha1: 'test',
-            checksumMd5: 'test'
+            checksumMd5: 'test',
+            signature: {
+              thumbprint: 1
+            }
           }
         }
       }
@@ -132,7 +140,10 @@ module('Unit | Reducers | File Context', function() {
       fileProperties: {
         checksumSha256: 'test',
         checksumSha1: 'test',
-        checksumMd5: 'test'
+        checksumMd5: 'test',
+        signature: {
+          thumbprint: 1
+        }
       }
     };
     let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION });
@@ -141,7 +152,12 @@ module('Unit | Reducers | File Context', function() {
     const next = Immutable.from({
       fileContext: {
         drivers_61: {
-          id: '0'
+          id: '0',
+          fileProperties: {
+            signature: {
+              thumbprint: 1
+            }
+          }
         }
       },
       selectedRowId: '123',
@@ -261,6 +277,19 @@ module('Unit | Reducers | File Context', function() {
     });
     const result = reducer(previous, { type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo: 'DRIVER' } });
     assert.equal(result.fileContextSelections.length, 0);
+  });
+
+  test('FETCH_REMEDIATION_STATUS', function(assert) {
+    const previous = Immutable.from({
+      isRemediationAllowed: true
+    });
+
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
+      payload: { data: false }
+    });
+    const newEndState = reducer(previous, successAction);
+    assert.equal(newEndState.isRemediationAllowed, false);
   });
 
 });

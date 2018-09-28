@@ -5,5 +5,10 @@
   defaultAction=(action 'showEditFileStatusModal')}}
 
 {{#if showFileStatusModal}}
-  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus remediationStatus=remediationStatus itemList=itemList data=fileStatusData closeModal=(action 'closeModal')}}
+  {{endpoint/edit-file-status/modal
+    onSaveFileStatus=onSaveFileStatus
+    isRemediationAllowed=isRemediationAllowed
+    itemList=itemList
+    data=fileStatusData
+    closeModal=(action 'closeModal')}}
 {{/if}}

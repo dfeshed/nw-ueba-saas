@@ -12,39 +12,48 @@ const fileContext = {
     id: 1,
     fileName: 'test',
     timeModified: 12313221,
-    signature: {
-      features: ['microsoft', 'valid']
-    },
     fileProperties: {
       checksumSha256: 'test',
       checksumSha1: 'test',
-      checksumMd5: 'test'
+      checksumMd5: 'test',
+      signature: {
+        thumbprint: 1
+      }
+    },
+    signature: {
+      features: ['microsoft', 'valid']
     }
   },
   2: {
     id: 2,
     fileName: 'test1',
     timeModified: 12313221,
-    signature: {
-      features: ['microsoft', 'valid']
-    },
     fileProperties: {
       checksumSha256: 'test',
       checksumSha1: 'test',
-      checksumMd5: 'test'
+      checksumMd5: 'test',
+      signature: {
+        thumbprint: 1
+      }
+    },
+    signature: {
+      features: ['microsoft', 'valid']
     }
   },
   3: {
     id: 3,
     fileName: 'test2',
     timeModified: 12313221,
-    signature: {
-      features: ['microsoft', 'valid']
-    },
     fileProperties: {
       checksumSha256: 'test',
       checksumSha1: 'test',
-      checksumMd5: 'test'
+      checksumMd5: 'test',
+      signature: {
+        thumbprint: 1
+      }
+    },
+    signature: {
+      features: ['microsoft', 'valid']
     }
   }
 };

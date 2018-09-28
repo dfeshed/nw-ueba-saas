@@ -2,11 +2,17 @@
   {{endpoint/file-actionbar
     onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums)
     getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+    retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
     serviceList=serviceList
     metaName='checksumSha256'
+    isRemediationAllowed=isRemediationAllowed
     itemList=fileContextSelections
     fileStatusData=fileStatus}}
-  {{host-detail/utils/file-context-table isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnsConfig}}
+  {{host-detail/utils/file-context-table
+    isPaginated=isPaginated
+    storeName=storeName
+    tabName=tabName
+    columnsConfig=columnsConfig}}
 </box>
 {{#if propertyConfig}}
   <box xs='3'>

@@ -6,12 +6,14 @@ import {
   fileContextFileProperty,
   fileContextSelections,
   fileStatus,
-  selectedFileChecksums
+  selectedFileChecksums,
+  isRemediationAllowed
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
   setFileContextFileStatus,
-  getFileContextFileStatus
+  getFileContextFileStatus,
+  retrieveRemediationStatus
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 
@@ -20,12 +22,14 @@ const stateToComputed = (state, { storeName }) => ({
   fileContextSelections: fileContextSelections(state, storeName),
   serviceList: serviceList(state, storeName),
   fileStatus: fileStatus(state, storeName),
-  selectedFileChecksums: selectedFileChecksums(state, storeName)
+  selectedFileChecksums: selectedFileChecksums(state, storeName),
+  isRemediationAllowed: isRemediationAllowed(state, storeName)
 });
 
 const dispatchToActions = {
   setFileContextFileStatus,
-  getFileContextFileStatus
+  getFileContextFileStatus,
+  retrieveRemediationStatus
 };
 
 

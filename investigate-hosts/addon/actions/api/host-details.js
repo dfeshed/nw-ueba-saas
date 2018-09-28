@@ -103,11 +103,21 @@ const policyDetails = (data) => {
   });
 };
 
+const fetchRemediation = (thumbprints) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getRemediation',
+    modelName: 'endpoint',
+    query: { data: thumbprints }
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
   getFileContextData,
   exportFileContext,
   getFileSearchResults,
-  policyDetails
+  policyDetails,
+  fetchRemediation
 };

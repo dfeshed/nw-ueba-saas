@@ -6,7 +6,7 @@ import {
   fileCountForDisplay,
   serviceList,
   isAllSelected,
-  processedFileList,
+  files,
   checksums
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
@@ -34,7 +34,7 @@ const stateToComputed = (state) => ({
   columnConfig: columns(state),
   loadMoreStatus: state.files.fileList.loadMoreStatus,
   areFilesLoading: state.files.fileList.areFilesLoading,
-  files: processedFileList(state), // All visible files
+  files: files(state), // All visible files
   totalItems: fileCountForDisplay(state),
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: state.files.fileList.isSortDescending,
@@ -112,7 +112,7 @@ const FileList = Component.extend({
 
   showFileStatusModal: false,
 
-  rowItem: null,
+  itemList: [],
 
   @computed('columnConfig')
   updatedColumns(columns) {
@@ -185,7 +185,7 @@ const FileList = Component.extend({
 
     showEditFileStatus(item) {
       if (this.get('accessControl.endpointCanManageFiles')) {
-        this.set('rowItem', item);
+        this.set('itemList', [item]);
         this.set('showFileStatusModal', true);
       } else {
         failure('investigateFiles.noManagePermissions');
@@ -194,7 +194,7 @@ const FileList = Component.extend({
 
     showServiceList(item) {
 
-      this.set('rowItem', item);
+      this.set('itemList', [item]);
       this.set('showServiceModal', true);
     },
 

@@ -34,6 +34,8 @@
           beforeContextMenuShow=(action 'beforeContextMenuShow')
           editFileStatus=(action 'showEditFileStatus')
           pivotToInvestigate=(action 'showServiceList')
+          isRemediationAllowed=isRemediationAllowed
+          retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
           onSaveFileStatus = (action 'setFileContextFileStatus' tabName checksums)
         )
         noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
@@ -67,6 +69,8 @@
   {{endpoint/edit-file-status/modal
     itemList=fileContextSelections
     onSaveFileStatus=(action 'setFileContextFileStatus' tabName selectedFileChecksums)
+    retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
     data=fileStatus
+    isRemediationAllowed=isRemediationAllowed
     closeModal=(action 'onCloseEditFileStatus')}}
 {{/if}}

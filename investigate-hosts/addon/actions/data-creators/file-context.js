@@ -93,6 +93,17 @@ const _fetchHostFiles = () => {
   };
 };
 
+const retrieveRemediationStatus = (belongsTo, selections) => {
+  const thumbprints = selections.mapBy('signature.thumbprint').compact();
+  if (thumbprints && thumbprints.length) {
+    return {
+      type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
+      promise: HostDetails.fetchRemediation({ thumbprints }),
+      meta: { belongsTo }
+    };
+  }
+};
+
 
 export {
   getFileContext,
@@ -103,5 +114,6 @@ export {
   getFileContextFileStatus,
   setFileContextSort,
   getPaginatedFileContext,
+  retrieveRemediationStatus,
   resetSelection
 };

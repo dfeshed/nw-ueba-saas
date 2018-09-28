@@ -35,6 +35,10 @@ module.exports = function(env) {
       getPolicyDetails: {
         subscriptionDestination: '/user/queue/endpoint/policy/get',
         requestDestination: '/ws/endpoint/policy/get'
+      },
+      getRemediation: {
+        subscriptionDestination: '/user/queue/endpoint/certificate/remediation/allowed',
+        requestDestination: '/ws/endpoint/certificate/remediation/allowed'
       }
     }
   };

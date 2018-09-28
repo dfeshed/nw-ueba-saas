@@ -34,7 +34,7 @@ export default Component.extend({
     return item.machineOsType === 'windows';
   },
 
-  @computed('itemList', 'remediationStatus')
+  @computed('itemList', 'isRemediationAllowed')
   errorDecorator(itemList, isRemediationAllowed) {
     const size = itemList.mapBy('size');
     const sizeExceeds = size.some(this._isSizeExceeded);

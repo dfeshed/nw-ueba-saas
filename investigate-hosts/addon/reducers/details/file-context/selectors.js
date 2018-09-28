@@ -13,6 +13,7 @@ export const selectedRowId = (state, name) => state.endpoint[name].selectedRowId
 export const fileContextSelections = (state, name) => state.endpoint[name].fileContextSelections || [];
 export const totalItems = (state, name) => state.endpoint[name].totalItems;
 export const contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
+export const isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
 
 
 const _getProperties = (rowId, list, data) => {
