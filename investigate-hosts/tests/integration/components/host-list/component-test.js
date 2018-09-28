@@ -44,4 +44,8 @@ module('Integration | Component | host-list', function(hooks) {
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
   });
+  test('it renders host action bar by default', async function(assert) {
+    await render(hbs`{{host-list}}`);
+    assert.equal(findAll('.host-table__toolbar').length, 1, 'host table action bar is rendered by default');
+  });
 });

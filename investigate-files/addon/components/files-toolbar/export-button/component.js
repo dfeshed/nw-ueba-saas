@@ -1,11 +1,12 @@
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
-import { fileExportLink } from 'investigate-files/reducers/file-list/selectors';
+import { fileExportLink, hasFiles } from 'investigate-files/reducers/file-list/selectors';
 import { exportFileAsCSV } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
   downloadStatus: state.files.fileList.downloadStatus,
-  exportLink: fileExportLink(state)
+  exportLink: fileExportLink(state),
+  isExportButtonDisabled: !hasFiles(state)
 });
 const dispatchToActions = {
   exportFileAsCSV

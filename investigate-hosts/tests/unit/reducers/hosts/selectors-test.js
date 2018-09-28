@@ -13,7 +13,8 @@ import {
   hostCountForDisplay,
   warningMessages,
   isScanStartButtonDisabled,
-  extractAgentIds } from 'investigate-hosts/reducers/hosts/selectors';
+  extractAgentIds,
+  isExportButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -389,3 +390,32 @@ test('extractAgentIds', function(assert) {
   assert.equal(result.length, 1, 'Should extract only one agent');
 });
 
+test('isExportButtonDisabled', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+      }
+    }
+  });
+  const result = isExportButtonDisabled(state);
+  assert.equal(result, true, 'export button is disabled');
+});
+
+test('isExportButtonDisabled', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ]
+      }
+    }
+  });
+  const result = isExportButtonDisabled(state);
+  assert.equal(result, false, 'export button is enabled');
+});

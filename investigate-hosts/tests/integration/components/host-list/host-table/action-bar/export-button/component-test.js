@@ -6,6 +6,7 @@ import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import hostListState from '../../../../state/host.machines';
 
 import Immutable from 'seamless-immutable';
 
@@ -29,6 +30,8 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
   test('it renders host table action bar export button when exportStatus is streaming', async function(assert) {
     new ReduxDataHelper(setState)
       .hostExportStatus('streaming')
+      .hostList(hostListState.machines.hostList)
+      .hostSortField('machine.machineName')
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 1, 'loader is rendered');
@@ -37,6 +40,8 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
 
   test('it renders host table action bar export button when exportStatus is completed', async function(assert) {
     new ReduxDataHelper(setState)
+      .hostList(hostListState.machines.hostList)
+      .hostSortField('machine.machineName')
       .hostExportStatus('completed')
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);

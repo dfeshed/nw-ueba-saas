@@ -1,10 +1,14 @@
-{{#if (eq downloadStatus 'completed')}}
-  {{#rsa-form-button class="export-button" click=(action 'exportFileAsCSV')}}
-    {{t 'investigateFiles.button.exportToCSV'}}
-  {{/rsa-form-button}}
+{{#if isExportButtonDisabled}}
+  {{#rsa-form-button class="export-button" isDisabled=true}}{{t 'investigateFiles.button.exportToCSV'}}{{/rsa-form-button}}
 {{else}}
-  {{#rsa-form-button class="export-button" isDisabled=true}}
-    {{rsa-loader}} {{t 'investigateFiles.button.downloading'}}
-  {{/rsa-form-button}}
+  {{#if (eq downloadStatus 'completed')}}
+    {{#rsa-form-button class="export-button" click=(action 'exportFileAsCSV')}}
+      {{t 'investigateFiles.button.exportToCSV'}}
+    {{/rsa-form-button}}
+  {{else}}
+    {{#rsa-form-button class="export-button" isDisabled=true}}
+      {{rsa-loader}} {{t 'investigateFiles.button.downloading'}}
+    {{/rsa-form-button}}
+  {{/if}}
 {{/if}}
 <iframe src="{{exportLink}}" class="export-files-iframe"></iframe>

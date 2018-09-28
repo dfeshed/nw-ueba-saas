@@ -35,6 +35,7 @@ export const setEndpointServer = (server) => {
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));
+        dispatch({ type: ACTION_TYPES.RESET_FILES });
       });
     }
   };

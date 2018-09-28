@@ -211,3 +211,8 @@ export const scanCount = createSelector(
   hostListForScanning,
   (hostListForScanning) => hostListForScanning.length
 );
+
+export const isExportButtonDisabled = createSelector(
+  _hostList,
+  (hostList) => !hostList.length
+);

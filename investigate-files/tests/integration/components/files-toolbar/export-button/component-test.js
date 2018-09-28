@@ -30,7 +30,8 @@ test('it renders export button', function(assert) {
 });
 
 test('Loader present when downloaded status not completed', function(assert) {
-  new ReduxDataHelper(setState).downloadStatus('start').build();
+  const { files: { fileList } } = files;
+  new ReduxDataHelper(setState).files(fileList.files).downloadStatus('start').build();
   this.render(hbs`{{files-toolbar/export-button}}`);
 
   assert.equal(this.$('.export-button .rsa-loader').length, 1, 'Loader is present');
@@ -55,7 +56,7 @@ test('Iframe with download link present', function(assert) {
 test('Download triggered on click of Export to CSV button', function(assert) {
   const { files: { fileList } } = files;
 
-  new ReduxDataHelper(setState).fileList(fileList).build();
+  new ReduxDataHelper(setState).files(fileList.files).downloadStatus('completed').build();
   this.render(hbs`{{files-toolbar/export-button}}`);
 
   assert.equal(this.$('.export-button').text().trim(), 'Export to CSV', 'Button text before click, Export to CSV');
