@@ -74,8 +74,8 @@ export default Component.extend({
             }
           };
           if (!STATUS_WITH_REMEDIATION.includes(this.get('formData').fileStatus)) {
-            this.set('data.remediationAction', null);
-            this.set('data.category', null);
+            this.set('formData.remediationAction', null);
+            this.set('formData.category', null);
           }
           this.onSaveFileStatus(this.get('formData'), callback);
         })
