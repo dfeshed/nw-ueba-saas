@@ -3617,8 +3617,6 @@ export default {
       noMonitoring: 'No Monitoring',
       fullMonitoring: 'Full Monitoring',
       invasiveActions: 'Invasive Actions',
-      endpointServerSettings: 'Endpoint Server',
-      primaryAddress: 'Hostname',
       radioOptionEnabled: 'Enabled',
       radioOptionDisabled: 'Disabled',
       endpointServerSettings: 'Endpoint Server',
