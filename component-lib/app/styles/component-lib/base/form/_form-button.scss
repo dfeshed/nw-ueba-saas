@@ -22,10 +22,14 @@
       cursor: pointer;
     }
 
+    /* uncomment to show blue :focus border on all icon-only buttons */
+    /* &:focus {
+       border-color: $formButtonPrimaryBorderColor;
+    } */
+
     &:active {
       color: $formButtonHoverTypeColor;
     }
-
 
     i {
       font-size: 1.4em;
@@ -69,11 +73,17 @@
   &.is-standard:not(.is-disabled):not(.is-icon-only) {
     .rsa-form-button {
       border-color: $formButtonBorderColor;
+      &:focus {
+        border-color: $formButtonPrimaryBorderColor;
+      }
     }
 
     &:hover, &.is-active {
       .rsa-form-button {
         border-color: $formButtonHoverBorderColor;
+        &:focus {
+          border-color: $formButtonPrimaryBorderColor;
+        }
       }
     }
 
@@ -86,6 +96,9 @@
     .rsa-form-button {
       border-color: $formButtonPrimaryBorderColor;
       background-color: $formButtonPrimaryBackgroundColor;
+      &:focus {
+        border-color: $formButtonBorderColor;
+      }
     }
 
     &:hover, &.is-active {
@@ -106,6 +119,9 @@
     .rsa-form-button {
       border-color: $formButtonDangerBorderColor;
       background-color: $formButtonDangerBackgroundColor;
+      &:focus {
+        border-color: $formButtonBorderColor;
+      }
     }
 
     &:hover, &.is-active {
