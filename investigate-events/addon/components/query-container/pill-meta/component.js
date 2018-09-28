@@ -111,14 +111,19 @@ export default Component.extend({
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
-    onFocus(powerSelectAPI /* event */) {
+    onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
+      const targetValue = event.target.value;
+      // If we gain focus and `lastSearchText` exists, power-select will use
+      // that to down-select the list of metaOptions. This can happen if the
+      // user enters some text, focuses away, then comes back. What they
+      // previously typed will effect the list of metaOptions.
       if (powerSelectAPI.lastSearchedText && !selection) {
-        // If we gain focus and `lastSearchText` exists, power-select will use
-        // that to down-select the list of metaOptions. This can happen if the user
-        // enters some text, focuses away, then comes back. What they previously
-        // types will effect the list of metaOptions.
-        powerSelectAPI.actions.search('');
+        // There was no previous selection, so see if the user has started
+        // typing something into the <input>. If they have use that to
+        // perform a search op options.
+        const txt = targetValue || '';
+        powerSelectAPI.actions.search(txt);
       } else if (selection) {
         // Check to see if the selected metaOption is valid for the power-select
         // options and select it if it is; otherwise clear it out.
