@@ -1537,7 +1537,8 @@ export default {
       Modules: 'Endpoint (Modules)',
       IOC: 'Endpoint (IOC)',
       Archer: 'Archer',
-      LIST: 'List'
+      LIST: 'List',
+      ReputationServer: 'File Reputation'
     },
     header: {
       title: {
@@ -1549,7 +1550,8 @@ export default {
         endpoint: 'NetWitness Endpoint',
         liveConnectIp: 'Live Connect',
         liveConnectFile: 'Live Connect',
-        liveConnectDomain: 'Live Connect'
+        liveConnectDomain: 'Live Connect',
+        reputationServer: 'File Reputation'
       },
       archer: 'Archer',
       overview: 'overview',
@@ -1565,6 +1567,7 @@ export default {
       endpoint: 'Endpoint',
       liveConnect: 'Live Connect',
       unsafe: 'Unsafe',
+      reputationServer: 'File Reputation',
       closeButton: {
         title: 'Close'
       },
@@ -1643,6 +1646,14 @@ export default {
       ipAddress: 'Internal IP Address',
       businessProcesses: 'Business Processes',
       macAddress: 'MAC Address'
+    },
+    reputation: {
+      title: 'Reputation',
+      status: 'Reputation Status',
+      scannerMatch: 'Scanner Match',
+      platform: 'Classification Platform',
+      type: 'Classification Type',
+      familyName: 'Classification Family'
     },
     modules: {
       title: 'Top Suspicious Modules',
@@ -1840,7 +1851,8 @@ export default {
         lIST: 'List(s)',
         users: 'User(s)',
         endpoint: 'Host',
-        archer: 'Asset'
+        archer: 'Asset',
+        reputationServer: 'File Reputation'
       },
       resultCount: '(First {{count}} Results)'
     },

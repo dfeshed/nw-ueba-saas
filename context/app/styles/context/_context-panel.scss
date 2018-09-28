@@ -293,6 +293,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       border-bottom-style: ridge;
     }
     &__host-details,
+    &__reputation-server,
     &__archer-details,
     &__ad-details {
       padding-top: rsa-whitespace();
@@ -354,6 +355,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       }
     }
     &__ad-details,
+    &__reputation-server,
     &__archer-details {
       vbox {
         padding-left: rsa-whitespace(less);

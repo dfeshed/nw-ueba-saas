@@ -94,6 +94,14 @@ const datasources = {
     displayType: 'dynamic-grid',
     class: 'account-circle-1',
     tabRequired: true
+  },
+  reputationServer: {
+    field: 'ReputationServer',
+    title: 'context.header.reputationServer',
+    dataSourceType: 'ReputationServer',
+    displayType: 'dynamic-grid',
+    class: 'account-circle-1',
+    tabRequired: true
   }
 };
 
@@ -200,7 +208,8 @@ export default [{
     datasources.list,
     datasources.incident,
     datasources.alert,
-    datasources.liveConnectFile
+    datasources.liveConnectFile,
+    datasources.reputationServer
   ],
   headerButtons: [
     'add-to-list',

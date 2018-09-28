@@ -6,6 +6,7 @@ import INCIDENTS from 'context/config/im-incidents';
 import MACHINES from 'context/config/machines';
 import USERS from 'context/config/users';
 import ARCHER from 'context/config/archer';
+import REPUTATIONSERVER from 'context/config/reputationServer';
 
 export default {
   ARCHER,
@@ -15,5 +16,6 @@ export default {
   IOC,
   MODULES,
   LIST,
-  MACHINES
+  MACHINES,
+  REPUTATIONSERVER
 };

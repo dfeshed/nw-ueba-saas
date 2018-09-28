@@ -45,4 +45,13 @@ module('Integration | Component | context-panel', function(hooks) {
       assert.equal(findAll('.rsa-nav-tab').length, 6, 'Should not close panel onclicking another data source');
     });
   });
+
+  test('Test context panel should display for File hash', async function(assert) {
+    this.set('entityId', '1.1.1.1.');
+    this.set('entityType', 'FILE_HASH');
+    await render(hbs `{{context-panel entityId=entityId entityType=entityType}}`);
+    return waitFor('.rsa-nav-tab-group').then(() => {
+      assert.equal(findAll('.rsa-nav-tab').length, 5, 'We should get 5 data sources for File Hash');
+    });
+  });
 });
