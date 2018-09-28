@@ -11,16 +11,11 @@ import { patchFlash } from '../../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../../helpers/patch-socket';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState, savePolicySpy;
-const spys = [];
+let setState;
 
 module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
-  });
-
-  hooks.before(function() {
-    spys.push(savePolicySpy = sinon.spy(policyWizardCreators, 'savePolicy'));
   });
 
   hooks.beforeEach(function() {
@@ -29,14 +24,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
-  });
-
-  hooks.afterEach(function() {
-    spys.forEach((s) => s.reset());
-  });
-
-  hooks.after(function() {
-    spys.forEach((s) => s.restore());
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -114,7 +101,8 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set
   skip('Toolbar save action for Identify Policy step with valid data', async function(assert) {
     const done = assert.async();
-    assert.expect(3);
+    assert.expect(2);
+    const actionSpy = sinon.spy(policyWizardCreators, 'savePolicy');
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
@@ -127,17 +115,20 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       transitionToStep=(action transitionToStep)
       transitionToClose=(action transitionToClose)}}`
     );
+    done();
 
     // skip prev-button & publish-button since they aren't rendered
 
     // clicking the save-button should dispatch the savePolicy action
     assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
+    await focus(saveBtnEl);
     await click(saveBtnEl);
     return settled().then(() => {
-      assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
+      assert.ok(actionSpy.calledOnce, 'The savePolicy action was called once by Save');
       // only checking first arg as second arg will be a Function that lives in the Component
-      assert.equal(savePolicySpy.getCall(0).args[0], state.usm.policyWizard.policy);
+      assert.equal(actionSpy.getCall(0).args[0], state.usm.policyWizard.policy);
+      actionSpy.restore();
       done();
     });
   });

@@ -5,7 +5,7 @@
       tabIndex='1'
       label=(t 'adminUsm.groupWizard.name')
       placeholder=(t 'adminUsm.groupWizard.namePlaceholder')
-      value=(readonly group.name)
+      value=name
       maxLength=256
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
@@ -19,10 +19,9 @@
         tabIndex='2'
         label=(t 'adminUsm.groupWizard.description')
         placeholder=(t 'adminUsm.groupWizard.descPlaceholder')
-        value=(readonly group.description)
+        value=description
         maxLength=8000
         isError=descriptionValidator.showError
-        focusIn=(action 'handleDescriptionChange' value='target.value')
         focusOut=(action 'handleDescriptionChange' value='target.value')
       }}
     </hbox>

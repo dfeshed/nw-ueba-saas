@@ -13,7 +13,7 @@ const stateToComputed = (state) => ({
 
 const DefineGroupStep = Component.extend({
   tagName: 'vbox',
-  classNames: ['define-group-step', 'scroll-box'],
+  classNames: ['define-group-step', 'scroll-box', 'rsa-wizard-step'],
 
   actions: {
   }

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import Notifications from 'component-lib/mixins/notifications';
+import computed from 'ember-computed-decorators';
+
 import {
   group,
   nameValidator,
@@ -12,7 +13,8 @@ import {
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
-  group: group(state),
+  groupName: group(state).name,
+  groupDescription: group(state).description,
   nameValidator: nameValidator(state),
   descriptionValidator: descriptionValidator(state)
 });
@@ -21,21 +23,43 @@ const dispatchToActions = {
   editGroup
 };
 
-const IdentifyGroupStep = Component.extend(Notifications, {
+const IdentifyGroupStep = Component.extend({
   tagName: 'hbox',
   classNames: ['identify-group-step', 'scroll-box', 'rsa-wizard-step'],
 
+  // Computed properties for name and description
+  // This handles the issue with focus and loss of first key input
+  // Couldn't find any other binding type that worked correctly
+  @computed('groupName')
+  name(groupName) {
+    if (groupName) {
+      return groupName;
+    }
+  },
+
+  @computed('groupDescription')
+  description(groupDescription) {
+    if (groupDescription) {
+      return groupDescription;
+    }
+  },
+
+  // edit the group using fully qualified field name (e.g., 'group.name')
+  edit(field, value) {
+    if (field && value !== undefined) {
+      this.send('editGroup', field, value);
+    }
+  },
+
   actions: {
     handleNameChange(value) {
-      if (value !== undefined) {
-        this.send('editGroup', 'group.name', value.trim());
-      }
+      this.edit('group.name', value.trim());
     },
+
     handleDescriptionChange(value) {
-      if (value !== undefined) {
-        this.send('editGroup', 'group.description', value.trim());
-      }
+      this.edit('group.description', value.trim());
     }
+
   }
 });
 

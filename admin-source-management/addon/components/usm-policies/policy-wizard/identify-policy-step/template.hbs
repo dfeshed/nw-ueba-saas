@@ -23,7 +23,7 @@
       tabIndex='2'
       label=(t 'adminUsm.policyWizard.name')
       placeholder=(t 'adminUsm.policyWizard.namePlaceholder')
-      value=(readonly policy.name)
+      value=name
       maxLength=256
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
@@ -37,10 +37,9 @@
         tabIndex='3'
         label=(t 'adminUsm.policyWizard.description')
         placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
-        value=(readonly policy.description)
+        value=description
         maxLength=8000
         isError=descriptionValidator.showError
-        focusIn=(action 'handleDescriptionChange' value='target.value')
         focusOut=(action 'handleDescriptionChange' value='target.value')
       }}
     </hbox>

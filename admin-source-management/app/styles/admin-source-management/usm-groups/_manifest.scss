@@ -3,6 +3,18 @@
 .group-attributes {
   margin-top: rsa-whitespace(more);
   margin-bottom: rsa-whitespace(more);
+  position: relative;
+  .criteria-wrapper {
+    overflow-y: auto;
+    max-height: calc(100vh - 350px);
+    margin-bottom: 45px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid border-color(primary);
+  }
+  .add-criteria-button {
+    position: absolute;
+    bottom: 0px;
+  }
   .group-criterias {
     margin-left: rsa-whitespace(more);
     margin-top: rsa-whitespace(more);
