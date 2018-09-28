@@ -1,4 +1,5 @@
 import { isPresent } from '@ember/utils';
+import _ from 'lodash';
 
 const exceedsLength = (name, maxLength) => {
   if (isPresent(name) && isPresent(maxLength)) {
@@ -21,7 +22,24 @@ const isNameInList = (list, id, name) => {
   return false;
 };
 
+/**
+ * Takes a complete description and returns an object containing two truncated versions of the description
+ * {
+ *   truncated : 'Truncated to 256 characters without an omission indicator',
+ *   truncatedWithEllipsis 'Truncated to 256 characters with an ellipsis as the omission indicator...'
+ * }
+ * @param {*} description
+ * @public
+ */
+const descriptionsForDisplay = (description) => {
+  return {
+    truncated: description ? _.truncate(description, { length: 256, omission: '' }) : null,
+    truncatedWithEllipsis: description ? _.truncate(description, { length: 256, omission: '...' }) : null
+  };
+};
+
 export {
   exceedsLength,
-  isNameInList
+  isNameInList,
+  descriptionsForDisplay
 };

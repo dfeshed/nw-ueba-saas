@@ -1,0 +1,15 @@
+<div>
+  {{rsa-icon name='settings-1' style='lined'}}
+  <label class="policy-name-label" title="{{if policy.name policy.name ''}}">
+    {{#if policy.name}}
+      {{policy.name}}
+    {{else}}
+      {{t 'adminUsm.policyWizard.newPolicy'}}
+    {{/if}}
+  </label>
+</div>
+<div>
+  <label class="policy-description-label" title="{{descriptions.truncatedWithEllipsis}}">
+    {{descriptions.truncated}}
+  </label>
+</div>

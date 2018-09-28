@@ -63,10 +63,11 @@ export const initialState = {
   steps: [
     {
       id: 'identifyGroupStep',
-      nextStepId: 'defineGroupStep',
       prevStepId: '',
+      nextStepId: 'defineGroupStep',
       title: 'adminUsm.groupWizard.identifyGroup',
       stepComponent: 'usm-groups/group-wizard/identify-group-step',
+      titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     },
     {
@@ -75,6 +76,7 @@ export const initialState = {
       nextStepId: 'applyPolicyStep',
       title: 'adminUsm.groupWizard.defineGroup',
       stepComponent: 'usm-groups/group-wizard/define-group-step',
+      titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     },
     {
@@ -83,6 +85,7 @@ export const initialState = {
       nextStepId: 'reviewGroupStep',
       title: 'adminUsm.groupWizard.applyPolicy',
       stepComponent: 'usm-groups/group-wizard/apply-policy-step',
+      titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     },
     {
@@ -91,6 +94,7 @@ export const initialState = {
       nextStepId: '',
       title: 'adminUsm.groupWizard.reviewGroup',
       stepComponent: 'usm-groups/group-wizard/review-group-step',
+      titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     }
   ],

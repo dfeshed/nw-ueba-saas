@@ -3694,9 +3694,10 @@ export default {
       applyPolicyTitle: 'Apply Policy',
       applyPolicyOptional: '(Optional)',
       policyPlaceholder: 'Choose a policy',
-
       // review-group-step
       reviewGroup: 'Review',
+      // common titlebar
+      newGroup: 'New Group',
       // common toolbar
       previous: 'Previous',
       next: 'Next',
@@ -3733,6 +3734,8 @@ export default {
       applyToGroup: 'Apply to Group',
       // review-policy-step
       reviewPolicy: 'Review',
+      // common titlebar
+      newPolicy: 'New Policy',
       // common toolbar
       previous: 'Previous',
       next: 'Next',

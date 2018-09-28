@@ -49,10 +49,11 @@ export const initialState = {
   steps: [
     {
       id: 'identifyPolicyStep',
-      nextStepId: 'definePolicyStep',
       prevStepId: '',
+      nextStepId: 'definePolicyStep',
       title: 'adminUsm.policyWizard.identifyPolicy',
       stepComponent: 'usm-policies/policy-wizard/identify-policy-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
       toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
     },
     {
@@ -61,6 +62,7 @@ export const initialState = {
       nextStepId: 'applyToGroupStep',
       title: 'adminUsm.policyWizard.definePolicy',
       stepComponent: 'usm-policies/policy-wizard/define-policy-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
       toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
     },
     {
@@ -69,6 +71,7 @@ export const initialState = {
       nextStepId: 'reviewPolicyStep',
       title: 'adminUsm.policyWizard.applyToGroup',
       stepComponent: 'usm-policies/policy-wizard/apply-to-group-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
       toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
     },
     {
@@ -77,6 +80,7 @@ export const initialState = {
       nextStepId: '',
       title: 'adminUsm.policyWizard.reviewPolicy',
       stepComponent: 'usm-policies/policy-wizard/review-policy-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
       toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
     }
   ],

@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import computed from 'ember-computed-decorators';
 
 const RsaWizard = Component.extend({
   tagName: 'hbox',
@@ -18,6 +19,12 @@ const RsaWizard = Component.extend({
   init() {
     this._super(...arguments);
     this.set('currentStepId', this.get('initialStepId'));
+  },
+
+  @computed('currentStepId')
+  currentStep(currentStepId) {
+    const step = this.steps.find((s) => s.id === currentStepId);
+    return step;
   },
 
   actions: {

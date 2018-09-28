@@ -4,7 +4,7 @@ import _ from 'lodash';
  * Flattens nested object structure into one top level object.
  * Note that arrays & null are objects in JS, but this method ignores that and keeps them as they are.
  * @param {*} deepObject
- * @private
+ * @public
  */
 export function flattenObject(deepObject, flatObject = {}) {
   for (const prop in deepObject) {

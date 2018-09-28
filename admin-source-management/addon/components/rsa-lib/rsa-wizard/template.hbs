@@ -1,7 +1,9 @@
 {{!-- wizard left side steps nav --}}
 <vbox fit class="rsa-wizard-left-container">
-  {{!-- TODO pass in title text as params OR define a new component in config?  --}}
-  <div>TODO pass in title text as params OR define a new component in config?</div>
+  {{!-- wizard top-left titlebar container  --}}
+  <div class="rsa-wizard-titlebar-container">
+    {{component currentStep.titlebarComponent step=currentStep}}
+  </div>
   {{!-- TODO maybe extract into a separate component if validation gets crazy? --}}
   <ul>
     {{#each steps as |step|}}
@@ -23,18 +25,14 @@
 
 {{!-- wizard right side step & toolbar container --}}
 <vbox class="rsa-wizard-right-container">
-  {{#each steps as |step|}}
-    {{#if (eq currentStepId step.id)}}
-      {{!-- wizard current step container --}}
-      <vbox fit class="rsa-wizard-step-container">
-        {{component step.stepComponent step=step}}
-      </vbox>
-      {{!-- wizard current step toolbar container --}}
-      <vbox class="rsa-wizard-toolbar-container">
-        {{component step.toolbarComponent step=step transitionToStep=(action 'transitionToStep') transitionToClose=(action transitionToClose)}}
-      </vbox>
-    {{/if}}
-  {{/each}}
+  {{!-- wizard current step container --}}
+  <vbox fit class="rsa-wizard-step-container">
+    {{component currentStep.stepComponent step=currentStep}}
+  </vbox>
+  {{!-- wizard current step toolbar container --}}
+  <vbox class="rsa-wizard-toolbar-container">
+    {{component currentStep.toolbarComponent step=currentStep transitionToStep=(action 'transitionToStep') transitionToClose=(action transitionToClose)}}
+  </vbox>
 </vbox>
 
 {{!-- Overlay to prevent interactions while loading --}}
