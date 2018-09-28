@@ -193,7 +193,6 @@ const FileList = Component.extend({
     },
 
     showServiceList(item) {
-
       this.set('itemList', [item]);
       this.set('showServiceModal', true);
     },
@@ -207,6 +206,7 @@ const FileList = Component.extend({
     },
 
     beforeContextMenuShow(item) {
+      this.set('itemList', [item]);
       if (!this.isAlreadySelected(this.get('selections'), item)) {
         this.send('deSelectAllFiles');
         this.send('toggleFileSelection', item);
