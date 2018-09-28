@@ -19,7 +19,7 @@ const filterReducer = handleActions({
     return handle(state, action, {
       success: (s) => {
         const { payload: { data } } = action;
-        const filters = data.filter((filter) => (filter.filterType === action.meta.name));
+        const filters = data.filter((filter) => (filter.filterType === action.meta.belongsTo));
         let expressionList = [];
         let filter;
         if (state.selectedFilterId && filters.length) {

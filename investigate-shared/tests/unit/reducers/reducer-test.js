@@ -23,9 +23,8 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     });
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-      name: 'FILE',
       meta: {
-        name: 'FILE'
+        belongsTo: 'FILE'
       },
       type: ACTION_TYPES.GET_FILTER,
       payload: { data: [ { filterType: 'FILE' }, { filterType: 'MACHINE' }] }
@@ -41,7 +40,7 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
       meta: {
-        name: 'FILE'
+        belongsTo: 'FILE'
       },
       type: ACTION_TYPES.SAVE_FILTER,
       payload: { data: { filterType: 'FILE' } }
@@ -60,7 +59,7 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
 
     const newAction = makePackAction(LIFECYCLE.SUCCESS, {
       meta: {
-        name: 'FILE'
+        belongsTo: 'FILE'
       },
       type: ACTION_TYPES.DELETE_FILTER,
       payload: { data: { id: 1 } }

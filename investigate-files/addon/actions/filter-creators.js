@@ -21,7 +21,7 @@ const getFilter = (callback) => {
       type: ACTION_TYPES.GET_FILTER,
       promise: File.getSavedFilters(),
       meta: {
-        name: 'FILE',
+        belongsTo: 'FILE',
         onSuccess: () => {
           dispatch(callback());
         }
@@ -36,7 +36,7 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
       type: ACTION_TYPES.DELETE_FILTER,
       promise: File.deleteFilter(id),
       meta: {
-        name: 'FILE',
+        belongsTo: 'FILE',
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },
@@ -52,14 +52,14 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
 
 const applyFilters = (reload, expressions) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { name: 'FILE' } });
+    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { belongsTo: 'FILE' } });
     dispatch(reload());
   };
 };
 
 const applySavedFilters = (filter, reload) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { name: 'FILE' } });
+    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo: 'FILE' } });
     dispatch(applyFilters(reload, filter.criteria.expressionList));
   };
 };
@@ -76,7 +76,7 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
       type: ACTION_TYPES.SAVE_FILTER,
       promise: File.createCustomSearch(filter, schemas, filterType),
       meta: {
-        name: 'FILE',
+        belongsTo: 'FILE',
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },

@@ -42,12 +42,18 @@ export default Component.extend({
 
   _closeModal() {
     const closeModal = this.get('closeModal');
+    this.set('formData', {});
     if (closeModal) {
       closeModal();
     }
   },
 
-  @computed('data.comment', 'data.fileStatus')
+  @computed('data')
+  formData(data) {
+    return { ...data }; // required this to reset the data on cancel
+  },
+
+  @computed('formData.comment', 'formData.fileStatus')
   isSaveButtonDisabled(comment, fileStatus) {
     return isEmpty(comment) || isEmpty(fileStatus);
   },
@@ -67,11 +73,11 @@ export default Component.extend({
               failure('investigateFiles.editFileStatus.contexthubServerOffline');
             }
           };
-          if (!STATUS_WITH_REMEDIATION.includes(this.get('data').fileStatus)) {
+          if (!STATUS_WITH_REMEDIATION.includes(this.get('formData').fileStatus)) {
             this.set('data.remediationAction', null);
             this.set('data.category', null);
           }
-          this.onSaveFileStatus(this.get('data'), callback);
+          this.onSaveFileStatus(this.get('formData'), callback);
         })
         .catch(() => {
           this.set('isSaveButtonDisabled', true);

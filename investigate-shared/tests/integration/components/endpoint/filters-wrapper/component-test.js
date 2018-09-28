@@ -27,9 +27,10 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
 
   test('It shows save filter modal on clicking the save button', async function(assert) {
     this.set('showSaveFilterButton', true);
+    this.set('expressionList', [{}]);
     this.set('filterState', { filter: {} });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper filterState=filterState filterTypes=filterTypes showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`{{endpoint/filters-wrapper filterState=filterState expressionList=expressionList filterTypes=filterTypes showSaveFilterButton=showSaveFilterButton}}`);
     await click(document.querySelector('.save-filter-button button'));
     assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
   });
@@ -38,6 +39,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     assert.expect(1);
     this.set('showSaveFilterButton', true);
     this.set('filterState', { filter: {} });
+    this.set('expressionList', [{}]);
     this.set('filterTypes', FILTER_TYPE);
     this.set('getFirstPageOfFiles', function() {
       assert.ok(true);
@@ -45,7 +47,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     this.set('applyFilter', function(action, filters) {
       assert.equal(filters.length, 1);
     });
-    await render(hbs`{{endpoint/filters-wrapper filterState=filterState filterTypes=filterTypes applyFilters=(action applyFilter (action getFirstPageOfFiles)) showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`{{endpoint/filters-wrapper filterState=filterState expressionList=expressionList filterTypes=filterTypes applyFilters=(action applyFilter (action getFirstPageOfFiles)) showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await blur('.file-name-input  input');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);

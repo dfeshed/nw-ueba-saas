@@ -97,9 +97,9 @@ export default Component.extend({
     }
   },
 
-  @computed('isSystemFilter', 'selectedFilterId')
-  disableSave(isSystemFilter, selectedFilterId) {
-    return isSystemFilter && selectedFilterId !== 1;
+  @computed('isSystemFilter', 'selectedFilterId', 'expressionList')
+  disableSave(isSystemFilter, selectedFilterId, expressionList = []) {
+    return (isSystemFilter && selectedFilterId !== 1) || expressionList.length === 0;
   },
 
   @computed('isNameInvalid', 'isNameEmpty')
@@ -113,7 +113,9 @@ export default Component.extend({
   actions: {
 
     filterChanged(filters) {
-      this.applyFilters(parseFilters(filters));
+      const expressionList = parseFilters(filters);
+      this.set('expressionList', expressionList);
+      this.applyFilters(expressionList);
     },
 
     closeSaveFilterModal() {
@@ -126,7 +128,6 @@ export default Component.extend({
     showSaveFilter(filters) {
       const expressionList = parseFilters(filters);
       const { name, id } = this.get('savedFilter') || {};
-      this.set('expressionList', expressionList);
       if (id && id !== 1) {
         const filter = {
           name,

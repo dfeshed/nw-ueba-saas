@@ -9,7 +9,7 @@ import endpointQuery from './endpoint-query/reducer';
 import investigateQuery from './investigate-query/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
-const reducerPredicate = (action) => action.meta && action.meta.name === 'FILE';
+const reducerPredicate = (action) => action.meta && action.meta.belongsTo === 'FILE';
 
 export default combineReducers({
   files: combineReducers({

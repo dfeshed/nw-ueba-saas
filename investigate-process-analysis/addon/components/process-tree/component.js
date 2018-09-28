@@ -185,10 +185,14 @@ const TreeComponent = Component.extend({
       selectedProcessId
     } = this.getProperties('element', 'rootNode', 'zoomBehaviour', 'selectedProcessId');
     const el = select(element);
+
     this.centeringElement = el.select('.centering-element');
 
     const parent = el.select('svg');
     parent.call(zoomBehaviour);
+
+    // Reset zoom
+    this.centeringElement.attr('transform', 'translate(0, 0)');
 
     this.parent = parent;
     if (rootNode) {
