@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import _ from 'lodash';
 
 const ALERT_TABS = [
   {
@@ -26,13 +27,29 @@ export default Component.extend({
 
   classNames: ['risk-properties'],
 
-  @computed('activeAlertTab', 'alertsData')
-  tabs(activeAlertTab, alertsData) {
-    const alertCount = alertsData ? alertsData.alertCount : [];
+  @computed('activeRiskSeverityTab', 'riskScoreContext')
+  tabs(activeRiskSeverityTab, riskScoreContext) {
+    const alertCount = riskScoreContext ? riskScoreContext.alertCount : [];
+    const checksum = riskScoreContext ? riskScoreContext.hash : null;
     return ALERT_TABS.map((tab) => ({
       ...tab,
-      selected: tab.name === activeAlertTab,
+      checksum,
+      selected: tab.name === activeRiskSeverityTab,
       count: alertCount[tab.name] ? alertCount[tab.name] : 0
     }));
+  },
+
+  @computed('activeRiskSeverityTab', 'riskScoreContext')
+  contexts(activeAlertTab, riskScoreContext) {
+    const severity = _.upperFirst(activeAlertTab);
+    const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
+    if (alertContext) {
+      return Object.keys(alertContext).map((key) => ({
+        alertName: key,
+        alertCount: alertContext[key].alertCount,
+        eventCount: alertContext[key].eventContexts.length
+      }));
+    }
+    return null;
   }
 });

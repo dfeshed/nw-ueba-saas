@@ -2,16 +2,16 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import {
-  setDetailAlertTab
+  getUpdatedRiskScoreContext
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
-  activeDetailAlertTab: state.files.visuals.activeDetailAlertTab,
-  alertsData: state.files.fileList.alertsData
+  activeRiskSeverityTab: state.files.visuals.activeRiskSeverityTab,
+  riskScoreContext: state.files.fileList.riskScoreContext
 });
 
 const dispatchToActions = {
-  setDetailAlertTab
+  getUpdatedRiskScoreContext
 };
 
 const Overview = Component.extend({

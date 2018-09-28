@@ -2,7 +2,10 @@
   {{#layout.center}}
     <hbox class="file-detail-box scroll-box">
       <box class="alerts">
-        {{endpoint/risk-properties defaultAction=(action 'setDetailAlertTab') activeAlertTab=activeDetailAlertTab alertsData=alertsData}}
+        {{endpoint/risk-properties
+          defaultAction=(action 'getUpdatedRiskScoreContext')
+          activeRiskSeverityTab=activeRiskSeverityTab
+          riskScoreContext=riskScoreContext}}
       </box>
       <box>
         {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}

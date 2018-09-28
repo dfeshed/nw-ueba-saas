@@ -4,15 +4,15 @@ import Immutable from 'seamless-immutable';
 
 const visualsInitialState = Immutable.from({
   activeFileDetailTab: 'OVERVIEW',
-  activeDetailAlertTab: 'critical'
+  activeRiskSeverityTab: 'critical'
 });
 
 const visuals = handleActions({
   [ACTION_TYPES.CHANGE_FILE_DETAIL_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeFileDetailTab', tabName);
   },
-  [ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB]: (state, { payload: { tabName } }) => {
-    return state.set('activeDetailAlertTab', tabName);
+  [ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB]: (state, { payload: { tabName } }) => {
+    return state.set('activeRiskSeverityTab', tabName);
   }
 }, visualsInitialState);
 

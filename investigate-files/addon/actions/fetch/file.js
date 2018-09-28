@@ -122,7 +122,15 @@ const getContext = (query, handlers) => {
   });
 };
 
-const getAlertsData = (query) => {
+/**
+ * Executes a websocket fetch call for file context and returns a Promise.
+ *
+ * @method getRiskScoreContext
+ * @param query
+ * @public
+ * @returns {Promise}
+ */
+const getRiskScoreContext = (query) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileContext',
@@ -148,6 +156,6 @@ export default {
   deleteFilter,
   getAllServices,
   getContext,
-  getAlertsData,
+  getRiskScoreContext,
   fetchRemediation
 };

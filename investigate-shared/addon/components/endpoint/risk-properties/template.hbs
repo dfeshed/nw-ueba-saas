@@ -1,5 +1,5 @@
 <box>
-  <h1 class="alert-heading">{{t 'investigateShared.endpoint.riskProperties.alerts.heading' count=60}}</h1>
+  <h1 class="alert-heading">{{t 'investigateShared.endpoint.riskProperties.alerts.heading'}}</h1>
 </box>
 <box class="rsa-nav-tab-group">
   {{#endpoint/risk-properties/alert-tab tabs=tabs defaultAction=defaultAction as |tab|}}
@@ -11,5 +11,8 @@
   {{/endpoint/risk-properties/alert-tab}}
 </box>
 <box>
-  <h1>{{activeAlertTab}}</h1>
+  {{#endpoint/risk-properties/alert-context contexts=contexts as |context|}}
+    <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
+    <div class="alert-context__event">{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</div>
+  {{/endpoint/risk-properties/alert-context}}
 </box>

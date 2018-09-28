@@ -28,9 +28,8 @@ const fileListState = Immutable.from({
   hostNameList: [],
   fetchHostNameListError: false,
   fetchMetaValueLoading: false,
-  activeAlertTab: 'critical',
-  alertsData: null,
-  alertsError: null,
+  riskScoreContext: null,
+  riskScoreContextError: null,
   isRemediationAllowed: true
 });
 
@@ -120,10 +119,10 @@ const fileListReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.GET_ALERTS_DATA]: (state, action) => {
+  [ACTION_TYPES.GET_RISK_SCORE_CONTEXT]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.set('alertsData', action.payload.data),
-      failure: (s) => s.set('alertsError', action.payload.meta)
+      success: (s) => s.set('riskScoreContext', action.payload.data),
+      failure: (s) => s.set('riskScoreContextError', action.payload.meta)
     });
   },
 
@@ -180,10 +179,6 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
 
   [ACTION_TYPES.META_VALUE_COMPLETE]: (state) => state.set('fetchMetaValueLoading', false),
-
-  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => {
-    return state.set('activeAlertTab', tabName);
-  },
 
   [ACTION_TYPES.FETCH_REMEDIATION_STATUS]: (state, action) => {
     return handle(state, action, {

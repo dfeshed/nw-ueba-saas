@@ -3247,7 +3247,8 @@ export default {
       },
       riskProperties: {
         alerts: {
-          heading: 'Alerts ({{count}})',
+          heading: 'Alerts',
+          events: '{{count}} events',
           critical: 'Critical',
           high: 'High',
           medium: 'Medium',

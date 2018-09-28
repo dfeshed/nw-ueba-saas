@@ -17,6 +17,7 @@ import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { getFilter } from './filter-creators';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
+import _ from 'lodash';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -72,7 +73,6 @@ const getFirstPageOfFiles = () => {
   };
 };
 
-
 /**
  * Action creator for fetching an files schema.
  * @method fetchSchemaInfo
@@ -124,7 +124,6 @@ const initializeFilesPreferences = () => {
   };
 };
 
-
 /**
  * Action creator for exporting files.
  * @public
@@ -168,7 +167,6 @@ const updateColumnVisibility = (column) => {
   };
 };
 
-
 /**
  * Action Creator to sort the files.
  * @return {function} redux-thunk
@@ -188,7 +186,6 @@ const sortBy = (sortField, isSortDescending) => {
  */
 const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
 
-
 const getAllServices = () => ({
   type: ACTION_TYPES.GET_LIST_OF_SERVICES,
   promise: File.getAllServices(),
@@ -199,11 +196,10 @@ const getAllServices = () => ({
 
 const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName } });
 
-const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName } });
-const setDetailAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DETAIL_ALERT_TAB, payload: { tabName } });
+const activeRiskSeverityTab = (tabName) => ({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName } });
 
 const prepareQuery = (checksum, severity = 'Critical') => {
-  const categoryValue = severity.charAt(0).toUpperCase() + severity.slice(1);
+  const categoryValue = _.upperFirst(severity);
   return {
     filter: [
       { field: 'hash', value: checksum },
@@ -212,9 +208,9 @@ const prepareQuery = (checksum, severity = 'Critical') => {
   };
 };
 
-const getAlerts = (checksum, severity) => ({
-  type: ACTION_TYPES.GET_ALERTS_DATA,
-  promise: File.getAlertsData(prepareQuery(checksum, severity))
+const getRiskScoreContext = (checksum, severity) => ({
+  type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+  promise: File.getRiskScoreContext(prepareQuery(checksum, severity))
 });
 
 const fetchFileContext = (fileName) => {
@@ -313,7 +309,6 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
   fetchMetaValue(query, metaName, size, null, 1000, 10, handlers, 1);
 };
 
-
 const fetchHostNameList = (checksum) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigateQuery;
@@ -354,6 +349,13 @@ const fetchAgentId = (hostName, callBack) => {
 
 const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
 
+const getUpdatedRiskScoreContext = (checksum, tabName) => {
+  return (dispatch) => {
+    dispatch(activeRiskSeverityTab(tabName));
+    dispatch(getRiskScoreContext(checksum, tabName));
+  };
+};
+
 const retrieveRemediationStatus = (selections) => {
   const thumbprints = selections.mapBy('signature.thumbprint').compact();
   if (thumbprints && thumbprints.length) {
@@ -374,8 +376,6 @@ export {
   getAllServices,
   initializeFilesPreferences,
   setDataSourceTab,
-  setAlertTab,
-  setDetailAlertTab,
   fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
@@ -387,7 +387,8 @@ export {
   fetchAgentId,
   setNewFileTab,
   getFirstPageOfFiles,
-  getAlerts,
+  activeRiskSeverityTab,
+  getRiskScoreContext,
+  getUpdatedRiskScoreContext,
   retrieveRemediationStatus
 };
-

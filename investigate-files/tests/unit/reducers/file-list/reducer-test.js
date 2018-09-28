@@ -74,9 +74,8 @@ test('should return the initial state', function(assert) {
     hostNameList: [],
     fetchHostNameListError: false,
     fetchMetaValueLoading: false,
-    activeAlertTab: 'critical',
-    alertsData: null,
-    alertsError: null,
+    riskScoreContext: null,
+    riskScoreContextError: null,
     isRemediationAllowed: true
   });
 });
@@ -426,25 +425,10 @@ test('Fetch Complete will set to false', function(assert) {
   assert.equal(newEndState.fetchMetaValueLoading, false);
 });
 
-test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
-  const previous = Immutable.from({
-    activeAlertTab: 'critical',
-    alertsData: null
-  });
-
-  const expectedEndState = {
-    activeAlertTab: 'HIGH',
-    alertsData: null
-  };
-
-  const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName: 'HIGH' } });
-  assert.deepEqual(endState, expectedEndState);
-});
-
-test('The GET_ALERTS_DATA stes the alertData ', function(assert) {
+test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {
   // Initial state
   const initialResult = reducer(undefined, {});
-  assert.equal(initialResult.alertsData, null, 'original alertsData value');
+  assert.equal(initialResult.riskScoreContext, null, 'original riskScoreContext value');
 
   const response = [{
     hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
@@ -458,12 +442,12 @@ test('The GET_ALERTS_DATA stes the alertData ', function(assert) {
   ];
 
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_ALERTS_DATA,
+    type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
     payload: { data: response }
   });
 
   const result = reducer(initialResult, newAction);
-  assert.deepEqual(result.alertsData, response, 'alertsData value is set');
+  assert.deepEqual(result.riskScoreContext, response, 'riskScoreContext value is set');
 
 });
 

@@ -43,7 +43,10 @@
       {{/rsa-form-button}}
     {{/rightPanel.header}}
     {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
-      {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab alertsData=alertsData}}
+      {{endpoint/risk-properties
+        defaultAction=(action 'getUpdatedRiskScoreContext')
+        activeRiskSeverityTab=activeRiskSeverityTab
+        riskScoreContext=riskScoreContext}}
     {{else if (eq activeDataSourceTab 'HOSTS')}}
       {{file-found-on-hosts}}
     {{else}}
@@ -51,7 +54,3 @@
     {{/if}}
   {{/layout.right}}
 {{/rsa-page-layout}}
-
-
-
-

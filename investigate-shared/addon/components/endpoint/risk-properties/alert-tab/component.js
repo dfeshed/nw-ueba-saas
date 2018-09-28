@@ -10,9 +10,9 @@ export default Component.extend({
   selectedTab: '',
 
   actions: {
-    activate(tabName) {
+    activate(checksum, tabName) {
       if (this.get('defaultAction')) {
-        this.get('defaultAction')(tabName);
+        this.get('defaultAction')(checksum, tabName);
       }
     }
   }

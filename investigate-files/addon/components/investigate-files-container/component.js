@@ -8,9 +8,9 @@ import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/
 import {
   resetDownloadId,
   setDataSourceTab,
-  setAlertTab,
   toggleRiskPanel,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  getUpdatedRiskScoreContext
 } from 'investigate-files/actions/data-creators';
 import { inject as service } from '@ember/service';
 
@@ -26,21 +26,21 @@ const stateToComputed = (state) => ({
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
   activeDataSourceTab: state.files.fileList.activeDataSourceTab,
-  activeAlertTab: state.files.fileList.activeAlertTab,
   contextLoadingStatus: state.files.fileList.contextLoadingStatus,
   isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError,
   filter: state.files.filter,
-  alertsData: state.files.fileList.alertsData
+  activeRiskSeverityTab: state.files.visuals.activeRiskSeverityTab,
+  riskScoreContext: state.files.fileList.riskScoreContext
 });
 
 const dispatchToActions = {
   resetDownloadId,
   setDataSourceTab,
-  setAlertTab,
   toggleRiskPanel,
   applyFilters,
   createCustomSearch,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  getUpdatedRiskScoreContext
 };
 
 /**

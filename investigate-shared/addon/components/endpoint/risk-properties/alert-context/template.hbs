@@ -1,0 +1,7 @@
+{{#each contexts as |context|}}
+  <div class="alert-context__container">
+    {{#if hasBlock}}
+      {{yield context}}
+    {{/if}}
+  </div>
+{{/each}}

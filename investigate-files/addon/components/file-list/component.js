@@ -23,7 +23,7 @@ import {
   saveFileStatus,
   getSavedFileStatus,
   fetchHostNameList,
-  getAlerts,
+  getRiskScoreContext,
   retrieveRemediationStatus
 } from 'investigate-files/actions/data-creators';
 
@@ -57,7 +57,7 @@ const dispatchToActions = {
   saveFileStatus,
   getSavedFileStatus,
   fetchHostNameList,
-  getAlerts,
+  getRiskScoreContext,
   retrieveRemediationStatus
 };
 
@@ -161,7 +161,7 @@ const FileList = Component.extend({
         if (!isSameRowClicked && openRiskPanel) {
           this.send('fetchFileContext', item.firstFileName);
           this.send('fetchHostNameList', item.checksumSha256);
-          this.send('getAlerts', item.checksumSha256);
+          this.send('getRiskScoreContext', item.checksumSha256, 'critical');
           next(() => {
             this.openRiskPanel();
           });
