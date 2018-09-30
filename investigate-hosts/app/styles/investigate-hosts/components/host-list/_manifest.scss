@@ -12,6 +12,13 @@ $filter-panel-width: 250px;
     @include border-bottom(1px, solid, primary, dark);
     padding: rsa-whitespace(less);
   }
+
+  .rsa-data-filters {
+    .content-body {
+      height: calc(100vh - 240px);
+    }
+  }
+
   .machine-zone {
     min-height: calc(100vh - 135px);
     height: 100vh;

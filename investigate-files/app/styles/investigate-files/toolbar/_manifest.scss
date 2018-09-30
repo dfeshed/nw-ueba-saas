@@ -6,9 +6,12 @@
   }
 }
 .rsa-files-toolbar {
-  height: 30px;
+  hbox {
+    height: 70px;
+    align-items: center;
+  }
   color: text-color(primary, lightest);
-  padding: rsa-whitespace(less);
+  padding: 0 rsa-whitespace();
 
   .selection-count {
     padding-right: rsa-whitespace();
@@ -86,40 +89,7 @@
   }
 }
 
-.filter-list {
-  padding-left: 2px;
-  .filter-list__item-label {
-    width: 150px;
-    display: inline-block;
-    line-height: 2rem;
-  }
 
-  li {
-    width: 200px;
-  }
-
-  .filter-list__item {
-    cursor: pointer;
-    padding: 0.25rem 0 0 1rem;
-    &.is-active {
-      color: text-color(primary, lightest);
-      transition: color 0.5s ease;
-      background-color: background-color(secondary, dark);
-    }
-    &.is-hovering {
-      transition: color 0.5s ease;
-      background-color: background-color(secondary, darker);
-    }
-  }
-
-  .filter-group-name {
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: default;
-    pointer-events: none;
-    padding: 0.5rem;
-  }
-}
 
 .delete-filter {
   i {

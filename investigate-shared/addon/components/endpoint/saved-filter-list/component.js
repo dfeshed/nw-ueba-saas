@@ -11,6 +11,8 @@ import { inject as service } from '@ember/service';
 export default Component.extend({
   layout,
 
+  classNames: ['saved-filter-list'],
+
   i18n: service('i18n'),
 
   selectedFilterId: null,

@@ -9,7 +9,12 @@
         {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
         {{endpoint/filters-wrapper
           filterState=filter
+          savedFilter=savedFilter
+          savedFilters=hostFilters
+          selectedFilterId=selectedFilterId
           applyFilters=(action 'applyFilters' (action 'getPageOfMachines'))
+          applySavedFilters=(action 'applySavedFilters' (action 'getPageOfMachines'))
+          deleteFilter=(action 'deleteFilter')
           createCustomSearch=(action 'createCustomSearch')
           filterType='MACHINE'
           filterTypes=filterTypes }}

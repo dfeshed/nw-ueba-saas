@@ -2197,8 +2197,8 @@ export default {
         knowngood: 'Known Good'
       },
       fileCategoryTitle: 'File Category',
-      remediationActionTitle: 'Remediate',
-      remediationActionNote: 'Note: Applies to hosts where blocking is enabled and terminates all <br> processes running with this file hash.',
+      remediationActionTitle: 'Remediation',
+      remediationActionNote: 'Note: Applies to hosts where blocking is enabled and terminates all <br> processes associated with the selected file hashes',
       remediationActionAlert: {
         isSigned: 'Files signed by RSA and Microsoft cannot be blocked.',
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.',

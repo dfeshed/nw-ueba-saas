@@ -38,10 +38,6 @@ module('Integration | Component | host table action bar', function(hooks) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.service-selector').length, 1, 'service selector is rendered');
   });
-  test('it renders filter selection button', async function(assert) {
-    await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelectorAll('.panel11').length, 1, 'filter selection button rendered');
-  });
 
   test('it renders action bar start button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
@@ -63,14 +59,14 @@ module('Integration | Component | host table action bar', function(hooks) {
 
   test('it renders action bar export to csv button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(6) button').textContent.trim(), 'Export to CSV', 'action bar export to csv button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(5) .is-disabled').length, 1, 'action bar export to csv button is disabled by default');
+    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(5) button').textContent.trim(), 'Export to CSV', 'action bar export to csv button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(4) .is-disabled').length, 1, 'action bar export to csv button is disabled by default');
   });
 
   test('it renders action bar delete button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(7) button').textContent.trim(), 'Delete', 'action bar delete button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar div:nth-of-type(6) .is-disabled').length, 1, 'action bar delete button is disabled');
+    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(6) button').textContent.trim(), 'Delete', 'action bar delete button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar div:nth-of-type(5) .is-disabled').length, 1, 'action bar delete button is disabled');
   });
 
   test('it renders action bar start button when some hosts are selected', async function(assert) {

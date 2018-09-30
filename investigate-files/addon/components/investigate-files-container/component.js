@@ -1,10 +1,11 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { applyFilters, createCustomSearch } from 'investigate-files/actions/filter-creators';
+import { applyFilters, createCustomSearch, applySavedFilters, deleteFilter } from 'investigate-files/actions/filter-creators';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
 import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
+import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import {
   resetDownloadId,
   setDataSourceTab,
@@ -30,7 +31,11 @@ const stateToComputed = (state) => ({
   isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError,
   filter: state.files.filter,
   activeRiskSeverityTab: state.files.visuals.activeRiskSeverityTab,
-  riskScoreContext: state.files.fileList.riskScoreContext
+  riskScoreContext: state.files.fileList.riskScoreContext,
+  alertsData: state.files.fileList.alertsData,
+  filesFilters: state.files.filter.savedFilterList,
+  selectedFilterId: selectedFilterId(state.files),
+  savedFilter: savedFilter(state.files)
 });
 
 const dispatchToActions = {
@@ -40,7 +45,9 @@ const dispatchToActions = {
   applyFilters,
   createCustomSearch,
   getFirstPageOfFiles,
-  getUpdatedRiskScoreContext
+  getUpdatedRiskScoreContext,
+  applySavedFilters,
+  deleteFilter
 };
 
 /**

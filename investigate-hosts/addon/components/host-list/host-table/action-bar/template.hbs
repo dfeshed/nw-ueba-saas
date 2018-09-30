@@ -5,12 +5,6 @@
     {{/rsa-form-button}}
   </h2>
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
-  {{endpoint/saved-filter-list
-    selectedFilterId=selectedFilterId
-    savedFilter=savedFilter
-    savedFilters=hostFilters
-    applyFilter=(action 'applyCustomFilter')
-    deleteFilter=(action 'deleteFilter')}}
   {{host-scan/scan-command command='START_SCAN'}}
   {{host-scan/scan-command command='STOP_SCAN'}}
   {{host-list/host-table/action-bar/export-button}}

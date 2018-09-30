@@ -65,7 +65,9 @@
 }
 
 .host-table__toolbar-buttons {
-  padding: rsa-whitespace(less);
+  height: 70px;
+  align-items: center;
+  padding: 0 rsa-whitespace();
   .rsa-form-button-wrapper {
     margin-right: rsa-whitespace(less);
   }

@@ -95,6 +95,11 @@ page.investigate-files-engine {
     @include border-right(1px, solid, primary, dark);
   }
 
+  .rsa-data-filters {
+    .content-body {
+      height: calc(100vh - 240px);
+    }
+  }
   .risk-property-zone {
     min-width: 0;
     max-width: 0;

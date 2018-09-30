@@ -57,7 +57,7 @@ const applyFilters = (reload, expressions) => {
   };
 };
 
-const applySavedFilters = (filter, reload) => {
+const applySavedFilters = (reload, filter) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo: 'MACHINE' } });
     dispatch(applyFilters(reload, filter.criteria.expressionList));
