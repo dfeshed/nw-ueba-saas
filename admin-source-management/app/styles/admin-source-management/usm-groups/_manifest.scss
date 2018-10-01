@@ -8,7 +8,7 @@
     overflow-y: auto;
     max-height: calc(100vh - 350px);
     margin-bottom: 45px;
-    padding-bottom: 15px;
+    padding-bottom: 45px;
     border-bottom: 1px solid border-color(primary);
   }
   .add-criteria-button {
@@ -51,6 +51,8 @@
   }
   .textarea-input textarea, .osSelector, .text-input-field label, div.agent-selector {
     width: 385px;
+    max-width: 385px;
+    min-width: 385px;
   }
   .add-criteria-button {
     margin-top: rsa-whitespace(more);

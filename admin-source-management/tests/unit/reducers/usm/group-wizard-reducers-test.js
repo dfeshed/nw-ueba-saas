@@ -371,22 +371,6 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
-  test('on UPDATE_GROUP_CRITERIA, find correct agentMode first operator', function(assert) {
-    const expectedResult = {
-      ...initialState.group,
-      groupCriteria: {
-        ...initialState.group.groupCriteria,
-        criteria: [['agentMode', 'EQUAL', []]]
-      }
-    };
-    const action = {
-      type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
-      payload: { criteriaPath: ',0', value: 'agentMode', fieldIndex: 0 }
-    };
-    const result = reducers(initialState, action);
-    assert.deepEqual(result.group, expectedResult);
-  });
-
   test('on EDIT_GROUP, name, description, etc. are properly set', function(assert) {
     // edit name test
     const nameExpected = 'test name';

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 
-const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6', 'agentMode'];
+const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'];
 const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
 const INPT = ['textInput', 'osSelector', '2textInputs', 'agentSelector', 'textarea'];
 const VLDTR = ['none', '256max', 'validHostname', 'validHostnameList', 'validHostnameChars', 'ipv4', 'ipv4Pair', 'ipv4List', 'ipv6', 'ipv6Pair', 'ipv6List'];
@@ -21,8 +21,7 @@ const _GROUP_ATTRIBUTES_MAP = {
     [ATTRBT[1], [[OPRTR[1], INPT[0], VLDTR[1]], [OPRTR[2], INPT[0], VLDTR[1]], [OPRTR[3], INPT[0], VLDTR[1]], [OPRTR[4], INPT[0], VLDTR[1]]]],
     [ATTRBT[2], [[OPRTR[1], INPT[0], VLDTR[2]], [OPRTR[2], INPT[0], VLDTR[4]], [OPRTR[3], INPT[0], VLDTR[4]], [OPRTR[4], INPT[0], VLDTR[4]]]],
     [ATTRBT[3], [[OPRTR[6], INPT[2], VLDTR[6]], [OPRTR[0], INPT[4], VLDTR[7]], [OPRTR[5], INPT[4], VLDTR[7]], [OPRTR[7], INPT[2], VLDTR[6]]]],
-    [ATTRBT[4], [[OPRTR[6], INPT[2], VLDTR[9]], [OPRTR[0], INPT[4], VLDTR[10]], [OPRTR[5], INPT[4], VLDTR[10]], [OPRTR[7], INPT[2], VLDTR[9]]]],
-    [ATTRBT[5], [[OPRTR[1], INPT[3], VLDTR[0]]]]
+    [ATTRBT[4], [[OPRTR[6], INPT[2], VLDTR[9]], [OPRTR[0], INPT[4], VLDTR[10]], [OPRTR[5], INPT[4], VLDTR[10]], [OPRTR[7], INPT[2], VLDTR[9]]]]
   ]
 };
 

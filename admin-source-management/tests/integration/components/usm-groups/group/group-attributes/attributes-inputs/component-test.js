@@ -45,10 +45,6 @@ module('Integration | Component | attributes-inputs', function(hooks) {
     this.set('oprt', state.usm.groupWizard.groupAttributesMap.map[4][1][0]);
     await render(hbs`{{usm-groups/group/group-attributes/attribute-inputs inputField=oprt.[1]  value=criteria.[2] value2=criteria.[3] validation=oprt.[2] criteriaPath=(concat criteriaPath ',' index)}}`);
     assert.equal(findAll('.between-inputs').length, 1, 'The between-inputs for ipv6 appears in the DOM');
-
-    this.set('oprt', state.usm.groupWizard.groupAttributesMap.map[5][1][0]);
-    await render(hbs`{{usm-groups/group/group-attributes/attribute-inputs inputField=oprt.[1]  value=criteria.[2] value2=criteria.[3] validation=oprt.[2] criteriaPath=(concat criteriaPath ',' index)}}`);
-    assert.equal(findAll('.agent-selector').length, 1, 'The Agent Selector appears in the DOM');
   });
 
   // TODO validation

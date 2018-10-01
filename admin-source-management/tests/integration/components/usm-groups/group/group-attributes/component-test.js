@@ -26,7 +26,7 @@ module('Integration | Component | group-attributes', function(hooks) {
     new ReduxDataHelper(setState).groupWiz().build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('groupCriteria', state.usm.groupWizard.group.groupCriteria.criteria);
-    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
     assert.equal(findAll('.group-attributes').length, 1, 'The component group-attributes appears in the DOM');
     assert.equal(findAll('.attribute').length, 1, 'The selector attribute appears in the DOM');
     assert.equal(findAll('.operator').length, 1, 'The selector operator appears in the DOM');
@@ -38,14 +38,13 @@ module('Integration | Component | group-attributes', function(hooks) {
   test('Select group-attributes each attribute', async function(assert) {
     new ReduxDataHelper(setState).groupWiz().build();
     let state = this.owner.lookup('service:redux').getState();
-    this.set('groupCriteria', state.usm.groupWizard.group.groupCriteria.criteria);
-    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
     // osType
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 0);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'IN', 'osType operator field value is not showing or value is not "IN"');
     // osDescription
-    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 1);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUAL', 'osDescription operator field value is not showing or value is not "EQUAL"');
@@ -61,17 +60,12 @@ module('Integration | Component | group-attributes', function(hooks) {
     await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 4);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'BETWEEN', 'ipv6 operator field value is not showing or value is not "EQUAL"');
-    // agentMode
-    await selectChoose('.group-attributes .attribute', '.ember-power-select-option', 5);
-    state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria[0][1], 'EQUAL', 'agentMode operator field value is not showing or value is not "EQUAL"');
   });
 
   test('Add Criteria', async function(assert) {
     new ReduxDataHelper(setState).groupWiz().build();
     let state = this.owner.lookup('service:redux').getState();
-    this.set('groupCriteria', state.usm.groupWizard.group.groupCriteria.criteria);
-    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
     assert.equal(findAll('.add-criteria-button button').length, 1, 'The add-criteria-button button appears in the DOM');
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 1, 'A single criteria is present');
     await click('.add-criteria-button button');
@@ -82,8 +76,7 @@ module('Integration | Component | group-attributes', function(hooks) {
   test('Remove Criteria', async function(assert) {
     new ReduxDataHelper(setState).groupWiz().build();
     let state = this.owner.lookup('service:redux').getState();
-    this.set('groupCriteria', state.usm.groupWizard.group.groupCriteria.criteria);
-    await render(hbs`{{usm-groups/group/group-attributes criterias=groupCriteria criteriaPath=''}}`);
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
     assert.equal(findAll('.remove-criteria').length, 1, 'A remove-criteria button appears in the DOM');
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 1, 'A single criteria is present');
     await click('.remove-criteria');

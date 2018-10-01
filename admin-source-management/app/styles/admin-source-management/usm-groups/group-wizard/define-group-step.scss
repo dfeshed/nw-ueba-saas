@@ -3,7 +3,7 @@
     max-height: calc(100vh - #{$wizardStepMaxHeight});
 
     .group-criteria {
-      width: 80%;
+
       .attribute, .operator {
         padding-bottom: rsa-whitespace(more);
       }

@@ -1,51 +1,38 @@
 {{#if (eq inputField 'textInput')}}
   <span class='text-input-field'>
     {{rsa-form-input class='operator-input'
+      maxLength=64
       value=(readonly value.[0])
-      focusOut=(action 'handleInputChange' value='target.value')
+      focusOut=(action 'handleInputChange' value.[0])
     }}
   </span>
 {{else if (eq inputField 'osSelector')}}
   <div class="osSelector">
-    {{#power-select-multiple
-      options=osSelector
-      selected=value
-      onchange=(action 'onChangeOSSelector') as |option|}}
-      {{option}}
-    {{/power-select-multiple}}
+    {{#usm-groups/group/group-attributes/attribute-inputs/os-selector
+      selectedValues=value
+      criteriaPath=criteriaPath}}
+    {{/usm-groups/group/group-attributes/attribute-inputs/os-selector}}
   </div>
 {{else if (eq inputField '2textInputs')}}
-  {{!--Need to pass criteriaPath to payload in order to edit state. I was not ebled to pass two arguments in focusOut when using value='target.value'--}}
   <div class="between-inputs">
     {{rsa-form-input class='operator-input'
       value=(readonly value.[0])
       maxLength=64
-      focusOut=(action 'firstBetweenInput' value='target.value')
+      focusOut=(action 'firstBetweenInput' value.[0])
     }}
-    <span>and</span>{{!--second input for between operator--}}
+    <span>and</span>
     {{rsa-form-input class='operator-input'
       value=(readonly value.[1])
       maxLength=64
-      focusOut=(action 'secondBetweenInput' value='target.value')
+      focusOut=(action 'secondBetweenInput' value.[1])
     }}
-  </div>
-{{else if (eq inputField 'agentSelector')}}
-  <div class="agent-selector">
-    {{#power-select
-      searchEnabled=false
-      options=agentSelector
-      selected=value.[0]
-      onchange=(action 'handleInputChange') as |option|}}
-      {{option}}
-    {{/power-select}}
   </div>
 {{else if (eq inputField 'textarea')}}
   <div class="textarea-input">
-    {{!--Need to pass criteriaPath to payload in order to edit state. I was not ebled to pass two arguments in focusOut when using value='target.value'--}}
     {{rsa-form-textarea
       value=(readonly value.[0])
       isInline=true
-      focusOut=(action 'handleInputChange' value='target.value')
+      focusOut=(action 'handleInputChange' value.[0])
     }}
   </div>
 {{/if}}

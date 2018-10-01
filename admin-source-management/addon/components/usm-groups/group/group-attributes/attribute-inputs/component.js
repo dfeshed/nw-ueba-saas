@@ -12,20 +12,24 @@ const dispatchToActions = {
 const AttributeInputs = Component.extend({
   tagName: 'label',
   classNames: ['attributes-inputs'],
-  osSelector: ['Windows', 'Linux', 'MacOS'],
-  agentSelector: ['Full', 'Insights'],
   actions: {
-    handleInputChange(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), [value], 2);
+    handleInputChange(originalValue, event) {
+      const updatedValue = event.target.value;
+      if (updatedValue !== originalValue) {
+        this.send('updateGroupCriteria', this.get('criteriaPath'), [updatedValue], 2);
+      }
     },
-    firstBetweenInput(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 10);
+    firstBetweenInput(originalValue, event) {
+      const updatedValue = event.target.value;
+      if (updatedValue !== originalValue) {
+        this.send('updateGroupCriteria', this.get('criteriaPath'), updatedValue, 10);
+      }
     },
-    secondBetweenInput(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 11);
-    },
-    onChangeOSSelector(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 2);
+    secondBetweenInput(originalValue, event) {
+      const updatedValue = event.target.value;
+      if (updatedValue !== originalValue) {
+        this.send('updateGroupCriteria', this.get('criteriaPath'), updatedValue, 11);
+      }
     }
   }
 });

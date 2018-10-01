@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  groupAttributesMap
+  groupAttributesMap,
+  groupCriteria
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -10,8 +11,10 @@ import {
   removeCriteria
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
+// cloneDeep is needed for OS Type power-selector-multiple as it is directly mutating the selected items
 const stateToComputed = (state) => ({
-  groupAttributesMap: groupAttributesMap(state)
+  groupAttributesMap: groupAttributesMap(state),
+  criterias: groupCriteria(state)
 });
 
 const dispatchToActions = {
@@ -22,6 +25,7 @@ const dispatchToActions = {
 
 const GroupAttributes = Component.extend({
   classNames: ['group-attributes'],
+  criteriaPath: '',
   actions: {
     handleAttributeChange(criteriaPath, attr) {
       this.send('updateGroupCriteria', criteriaPath, attr, 0);
