@@ -82,9 +82,9 @@ $ember-power-select-line-height: 2rem;
 .ember-power-select-trigger {
   outline: none;
   background: transparent;
-  border-left: none!important;
-  border-right: none!important;
-  border-top: none!important;
+  border-left: none;
+  border-right: none;
+  border-top: none;
   border-bottom: 1px solid border-color(primary, light);
 
   &.is-error {

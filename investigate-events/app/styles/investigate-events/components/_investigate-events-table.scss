@@ -53,8 +53,8 @@
       max-height: 43px;
       &.is-disabled {
         .ember-power-select-trigger{
+          @include border(1px, solid, primary, dark);
           background-color: background-color(primary, darkest);
-          border: 1px solid border-color(primary, dark) !important;
           cursor: default;
           span {
             color : text-color(primary, dark) !important;
@@ -63,7 +63,7 @@
       }
       .ember-power-select-trigger {
         // Need to use important to override from-select style.
-        border: 1px solid border-color(primary, light) !important;
+        @include border(1px, solid, primary, light);
         width: 200px;
         overflow: hidden;
         .ember-power-select-status-icon {
@@ -201,7 +201,7 @@
     }
 
     &-body-cell {
-      border-top: 1px solid border-color(primary, dark);
+      @include border-top(1px, solid, primary, dark);
 
       .meta-key-and-value {
         .key {
