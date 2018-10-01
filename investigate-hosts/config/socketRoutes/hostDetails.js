@@ -33,8 +33,8 @@ module.exports = function(env) {
         requestDestination: '/ws/endpoint/filecontext/search/stream'
       },
       getPolicyDetails: {
-        subscriptionDestination: '/user/queue/endpoint/policy/get',
-        requestDestination: '/ws/endpoint/policy/get'
+        subscriptionDestination: '/user/queue/endpoint/grouppolicy/get',
+        requestDestination: '/ws/endpoint/grouppolicy/get'
       },
       getRemediation: {
         subscriptionDestination: '/user/queue/endpoint/certificate/remediation/allowed',

@@ -9,7 +9,7 @@ const _exportJsonStatus = (state) => state.endpoint.overview.exportJSONStatus;
 const _agentStatus = (state) => state.endpoint.machines.agentStatus;
 const _downloadId = (state) => state.endpoint.overview.downloadId;
 const _arrangeSecurityConfigsBy = (state) => state.endpoint.overview.arrangeSecurityConfigsBy;
-const _policyDetails = (state) => state.endpoint.overview.policyDetails || [];
+const _policyDetails = (state) => state.endpoint.overview.policyDetails || {};
 const _serverId = (state) => state.endpointQuery.serverId;
 
 const _hostAgentStatus = createSelector(
@@ -189,10 +189,11 @@ export const isMachineWindows = createSelector(
 export const getPropertyData = createSelector(
   [_policyDetails, _hostDetails],
   (policyDetails, hostDetails) => {
-    if (policyDetails.scheduledScanConfig &&
-      policyDetails.scheduledScanConfig.recurrentSchedule &&
-      policyDetails.scheduledScanConfig.scanOptions) {
-      const { scheduledScanConfig } = policyDetails;
+    const edrPolicy = policyDetails.policy ? policyDetails.policy.edrPolicy : {};
+    if (edrPolicy.scheduledScanConfig &&
+      edrPolicy.scheduledScanConfig.recurrentSchedule &&
+      edrPolicy.scheduledScanConfig.scanOptions) {
+      const { scheduledScanConfig } = edrPolicy;
       const { recurrentSchedule, scanOptions } = scheduledScanConfig;
       const { recurrence, runAtTime, runOnDaysOfWeek, scheduleStartDate } = recurrentSchedule;
       const { unit, interval } = recurrence;
@@ -205,7 +206,7 @@ export const getPropertyData = createSelector(
         scanInterval = `Every ${interval} week(s) on ${weekDay}`;
       }
       const scheduleConfig = {
-        enabled: policyDetails.scheduledScanConfig.enabled,
+        enabled: edrPolicy.scheduledScanConfig.enabled,
         scanInterval,
         runAtTime,
         scheduleStartDate,
