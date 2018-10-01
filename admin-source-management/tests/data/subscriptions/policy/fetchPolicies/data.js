@@ -210,6 +210,8 @@ export default [
     requestScanOnRegistration: true,
     blockingEnabled: false,
     primaryAddress: '10.10.10.10',
+    primaryHttpPort: 443,
+    primaryUdpPort: 540,
     agentMode: 'FULL_MONITORING'
   }
 ];

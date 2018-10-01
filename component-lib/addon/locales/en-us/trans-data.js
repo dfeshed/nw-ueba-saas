@@ -3621,8 +3621,8 @@ export default {
       radioOptionDisabled: 'Disabled',
       endpointServerSettings: 'Endpoint Server',
       primaryAddress: 'Hostname',
-      httpPort: 'HTTP Port',
-      udpPort: 'UDP Port',
+      primaryHttpPort: 'HTTP Port',
+      primaryUdpPort: 'UDP Port',
       portInvalidMsg: 'The port should be between 1 and 65535',
       scheduleConfiguration: {
         scanType: {

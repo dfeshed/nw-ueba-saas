@@ -33,8 +33,8 @@ export const initialState = {
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
     primaryAddress: null,
-    httpPort: null, // 1 to 65535
-    udpPort: null, // 1 to 65535
+    primaryHttpPort: null, // 1 to 65535
+    primaryUdpPort: null, // 1 to 65535
     agentMode: null // 'NO_MONITORING' | 'FULL_MONITORING'
   },
   policyStatus: null, // wait, complete, error
@@ -119,8 +119,8 @@ export const initialState = {
     { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
     { index: 18, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
     { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
-    { index: 20, id: 'httpPort', label: 'adminUsm.policy.httpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'httpPort', value: 443 }] },
-    { index: 21, id: 'udpPort', label: 'adminUsm.policy.udpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'udpPort', value: 444 }] },
+    { index: 20, id: 'primaryHttpPort', label: 'adminUsm.policy.primaryHttpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] },
+    { index: 21, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 22, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
     { index: 23, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
   ],

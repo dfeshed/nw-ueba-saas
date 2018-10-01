@@ -143,12 +143,12 @@ export default class DataHelper {
   }
 
   policyWizHttpPort(httpPort) {
-    _set(this.state, 'usm.policyWizard.policy.httpPort', httpPort);
+    _set(this.state, 'usm.policyWizard.policy.primaryHttpPort', httpPort);
     return this;
   }
 
   policyWizUdpPort(udpPort) {
-    _set(this.state, 'usm.policyWizard.policy.udpPort', udpPort);
+    _set(this.state, 'usm.policyWizard.policy.primaryUdpPort', udpPort);
     return this;
   }
 

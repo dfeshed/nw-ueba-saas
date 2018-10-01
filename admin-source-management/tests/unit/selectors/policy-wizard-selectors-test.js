@@ -233,23 +233,23 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     assert.deepEqual(result, expectedState, `should return agentMode of ${expectedState}`);
   });
 
-  test('httpPort', function(assert) {
+  test('primaryHttpPort', function(assert) {
     const expectedValue = 555;
     const fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizHttpPort(expectedValue)
       .build();
-    const result = portValue(fullState, 'httpPort');
+    const result = portValue(fullState, 'primaryHttpPort');
     assert.deepEqual(result, expectedValue, `should return httpPort of ${expectedValue}`);
   });
 
-  test('udpPort', function(assert) {
+  test('primaryUdpPort', function(assert) {
     const expectedValue = 666;
     const fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizUdpPort(expectedValue)
       .build();
-    const result = portValue(fullState, 'udpPort');
+    const result = portValue(fullState, 'primaryUdpPort');
     assert.deepEqual(result, expectedValue, `should return udpPort of ${expectedValue}`);
   });
 
@@ -259,7 +259,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    let result = isPortValid(fullState, 'udpPort');
+    let result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
 
     portValue = -1;
@@ -267,7 +267,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    result = isPortValid(fullState, 'udpPort');
+    result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
 
     portValue = -77777;
@@ -275,7 +275,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    result = isPortValid(fullState, 'udpPort');
+    result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
 
     portValue = 77777;
@@ -283,7 +283,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    result = isPortValid(fullState, 'udpPort');
+    result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
 
     portValue = '';
@@ -291,7 +291,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    result = isPortValid(fullState, 'udpPort');
+    result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is empty string`);
 
     portValue = 443;
@@ -299,7 +299,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWiz()
       .policyWizUdpPort(portValue)
       .build();
-    result = isPortValid(fullState, 'udpPort');
+    result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, true, `isPortValid returns ${result} when port value is ${portValue}`);
   });
 
