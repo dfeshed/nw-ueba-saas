@@ -153,8 +153,15 @@ test('hasInvestigateEventsAccess is set when required roles are included', funct
   assert.equal(service.get('hasInvestigateEventsAccess'), false);
   service.set('roles', ['investigate-server.predicate.read']);
   assert.equal(service.get('hasInvestigateEventsAccess'), false);
-  service.set('roles', ['investigate-server.event.read', 'investigate-server.predicate.read']);
+  service.set('roles', ['investigate-server.event.read', 'investigate-server.predicate.read', 'accessInvestigationModule']);
   assert.equal(service.get('hasInvestigateEventsAccess'), true);
+});
+
+test('hasInvestigateHostsAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasInvestigateHostsAccess'), false);
+  service.set('roles', ['endpoint-server.machine.read']);
+  assert.equal(service.get('hasInvestigateHostsAccess'), true);
 });
 
 test('hasRespondAccess is set when required roles are included', function(assert) {

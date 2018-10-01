@@ -78,7 +78,8 @@ export default Service.extend({
     // investigate properly, so we simply do not allow them access.
     const canSubmitQueries = this._hasPermission(roles, 'investigate-server.predicate.read');
     const canSeeEvents = this._hasPermission(roles, 'investigate-server.event.read');
-    return canSeeEvents && canSubmitQueries;
+    const hasInvestigationModule = this._hasPermission(roles, 'accessInvestigationModule');
+    return canSeeEvents && canSubmitQueries && hasInvestigationModule;
   },
 
   @computed('roles.[]')
@@ -177,7 +178,8 @@ export default Service.extend({
   @computed('roles.[]')
   hasInvestigateHostsAccess(roles) {
     // this permission is same for both hosts and files
-    return this._hasPermission(roles, 'endpoint-server.machine.read');
+    const hasEndpointMachineRead = this._hasPermission(roles, 'endpoint-server.machine.read');
+    return hasEndpointMachineRead;
   },
 
   @computed('roles.[]')
