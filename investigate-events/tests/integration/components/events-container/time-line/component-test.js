@@ -1,99 +1,81 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import hbs from 'htmlbars-inline-precompile';
+import { find, render } from '@ember/test-helpers';
 
 let setState;
-moduleForComponent('time-line', 'Integration | Component | time-line', {
-  integration: true,
-  resolver: engineResolverFor('investigate-events'),
-  beforeEach() {
-    initialize(this);
+module('Integration | Component | Time Line', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-events')
+  });
+
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       const fullState = { investigate: { ...state } };
-      applyPatch(Immutable.from(fullState));
-      this.inject.service('redux');
+      patchReducer(this, Immutable.from(fullState));
     };
-  },
-  afterEach() {
-    revertPatch();
-  }
-});
-
-test('it renders', function(assert) {
-  this.render(hbs`{{events-container/time-line}}`);
-
-  assert.equal(this.$('.rsa-investigate-timeline').length, 1, 'Expected to find root DOM node');
-  assert.equal(this.$('.rsa-chart').length, 1, 'Expected to find child chart\'s root DOM node');
-});
-
-test('it renders a wait indicator when status is \'wait\'', function(assert) {
-  setState({
-    eventTimeline: {
-      status: 'wait'
-    }
+    initialize(this.owner);
   });
 
-  this.render(hbs`{{events-container/time-line}}`);
-
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-wait').length, 1, 'Expected to find wait DOM node');
-});
-
-test('it renders an error indicator when status is \'rejected\'', function(assert) {
-  setState({
-    eventTimeline: {
-      status: 'rejected'
-    }
+  test('it renders', async function(assert) {
+    await render(hbs`{{events-container/time-line}}`);
+    assert.ok(find('.rsa-investigate-timeline'), 'Expected to find root DOM node');
+    assert.ok(find('.rsa-chart'), 'Expected to find child chart\'s root DOM node');
   });
 
-  assert.expect(2);
-
-  this.set('retryAction', function() {
-    assert.ok(true, 'retryAction was invoked when Retry DOM was clicked');
-  });
-
-  this.render(hbs`{{events-container/time-line retryAction=retryAction}}`);
-
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-rejected').length, 1, 'Expected to find error DOM node');
-
-  const retryButton = this.$('.rsa-investigate-timeline .js-test-retry');
-  assert.equal(retryButton.length, 1, 'Expected to find Retry DOM node');
-
-});
-
-test('it renders an empty message only when the status is \'resolved\' and no data is given', function(assert) {
-  setState({
-    eventTimeline: {
-      status: 'rejected',
-      data: {
-        value: 1,
-        count: 1
+  test('it renders a wait indicator when status is \'wait\'', async function(assert) {
+    setState({
+      eventTimeline: {
+        status: 'wait'
       }
-    }
+    });
+    await render(hbs`{{events-container/time-line}}`);
+    assert.ok(find('.rsa-investigate-timeline .js-test-wait'), 'Expected to find wait DOM node');
   });
 
-  this.render(hbs`{{events-container/time-line}}`);
-
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
-
-  this.set('status', 'rejected');
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
-
-  this.set('status', 'resolved');
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
-
-});
-
-test('it renders an empty message only when the status is \'resolved\' and no data is given', function(assert) {
-  setState({
-    eventTimeline: {
-      status: 'resolved',
-      data: undefined
-    }
+  test('it renders an error indicator when status is \'rejected\'', async function(assert) {
+    setState({
+      eventTimeline: {
+        status: 'rejected'
+      }
+    });
+    await render(hbs`{{events-container/time-line}}`);
+    assert.ok(find('.rsa-investigate-timeline .js-test-rejected'), 'Expected to find error DOM node');
+    assert.ok(find('.rsa-investigate-timeline .js-test-retry'), 'Expected to find Retry DOM node');
   });
 
-  this.render(hbs`{{events-container/time-line}}`);
-  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 1, 'Expected empty message in DOM');
+  test('it renders an empty message only when the status is \'resolved\' and no data is given', async function(assert) {
+    setState({
+      eventTimeline: {
+        status: 'rejected',
+        data: {
+          value: 1,
+          count: 1
+        }
+      }
+    });
+    await render(hbs`{{events-container/time-line}}`);
+    assert.notOk(find('.rsa-investigate-timeline .js-test-empty'), 'Expected empty message to be missing');
+    this.set('status', 'rejected');
+    assert.notOk(find('.rsa-investigate-timeline .js-test-empty'), 'Expected empty message to be missing');
+    this.set('status', 'resolved');
+    assert.notOk(find('.rsa-investigate-timeline .js-test-empty'), 'Expected empty message to be missing');
+
+  });
+
+  test('it renders an empty message only when the status is \'resolved\' and no data is given', async function(assert) {
+    setState({
+      eventTimeline: {
+        status: 'resolved',
+        data: undefined
+      }
+    });
+    await render(hbs`{{events-container/time-line}}`);
+    assert.ok(find('.rsa-investigate-timeline .js-test-empty'), 'Expected empty message in DOM');
+  });
 });

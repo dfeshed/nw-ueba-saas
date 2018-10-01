@@ -9,7 +9,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | Progress Bar', function(hooks) {
+module('Integration | Component | Console Panel Progress Bar', function(hooks) {
 
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
