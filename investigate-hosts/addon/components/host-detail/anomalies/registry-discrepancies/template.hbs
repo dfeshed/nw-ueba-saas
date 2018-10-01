@@ -1,7 +1,6 @@
-{{yield (hash
-  tableItems=(readonly registryDiscrepancies)
-  type=(t 'investigateHosts.hosts.footerLabel.anomalies.registryDiscrepancies')
+{{host-detail/utils/datatable
+  items=(readonly registryDiscrepancies)
+  type=(t 'investigateHosts.hosts.footerLabel.registryDiscrepancies')
   columnsConfig=columnsConfigWithTitle
   selectedIndex=-1
-  )
 }}

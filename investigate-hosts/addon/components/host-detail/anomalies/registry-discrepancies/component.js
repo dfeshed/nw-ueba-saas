@@ -17,8 +17,9 @@ const dispatchToActions = {
 };
 
 const RegistryDiscrepancies = Component.extend({
-  tagName: '',
+  tagName: 'box',
   i18n: service('i18n'),
+  classNames: ['col-xs-12', 'registry-discrepancies'],
 
   @computed('columnsConfig')
   columnsConfigWithTitle(columnsConfig) {
