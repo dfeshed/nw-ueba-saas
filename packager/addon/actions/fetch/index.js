@@ -2,12 +2,14 @@ import {
   getPackagerConfig,
   setPackagerConfig,
   getListOfDevices,
-  getConfiguration
+  getConfiguration,
+  fetchEndpointServers
 } from './packager';
 
 export {
   getPackagerConfig,
   setPackagerConfig,
   getListOfDevices,
-  getConfiguration
+  getConfiguration,
+  fetchEndpointServers
 };

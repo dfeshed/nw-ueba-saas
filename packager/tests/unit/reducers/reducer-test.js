@@ -17,7 +17,8 @@ const initialState = Immutable.from({
   initialState: {
     packageConfig: {}
   },
-  devices: {}
+  devices: {},
+  selectedServerIP: null
 });
 
 test('should return the initial state', function(assert) {
@@ -46,7 +47,8 @@ test('Get defaultPackagerConfig ', function(assert) {
     defaultPackagerConfig: {},
     error: false,
     loading: false,
-    initialState: {}
+    initialState: {},
+    selectedServerIP: '10.40.12.21'
   });
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_INFO,
@@ -54,8 +56,8 @@ test('Get defaultPackagerConfig ', function(assert) {
   });
 
   const endState = reducer(previous, action);
-  assert.deepEqual(endState.defaultPackagerConfig, data);
-  assert.deepEqual(endState.initialState, data);
+  assert.deepEqual(endState.defaultPackagerConfig, { ...data, packageConfig: { ...data.packageConfig, server: previous.selectedServerIP } });
+  assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data.packageConfig, server: previous.selectedServerIP } });
 });
 
 test('Update Redux state with UI state ', function(assert) {
@@ -68,4 +70,16 @@ test('Update Redux state with UI state ', function(assert) {
   };
   const endState = reducer(previous, action);
   assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
+});
+
+test('set selected server ip check', function(assert) {
+  const previous = Immutable.from({
+    selectedServerIP: null
+  });
+  const action = {
+    type: ACTION_TYPES.SET_SELECTED_SERVER_IP,
+    payload: '10.30.12.1'
+  };
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.selectedServerIP, '10.30.12.1');
 });

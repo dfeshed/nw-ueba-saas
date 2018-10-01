@@ -39,6 +39,14 @@ const getConfiguration = (model) => {
   });
 };
 
+export const fetchEndpointServers = () => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'findAll',
+    modelName: 'endpoint-server',
+    query: {}
+  });
+};
 
 export {
   getPackagerConfig,

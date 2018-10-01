@@ -10,12 +10,13 @@
  */
 
 import { debug } from '@ember/debug';
-
+import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from './types';
 import {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices
+  getListOfDevices,
+  fetchEndpointServers
 } from './fetch';
 
 /**
@@ -100,6 +101,36 @@ const getDevices = () => ({
 });
 
 /**
+ * action creator to fetch enpoint server list
+ * @method getEndpointServerList
+ * @public
+ */
+const getEndpointServerList = (serverId) => {
+  return (dispatch) => {
+    const request = lookup('service:request');
+    request.registerPersistentStreamOptions({ 'socketUrlPostfix': 'any', 'requiredSocketUrl': 'endpoint/socket' });
+    dispatch({
+      type: ACTION_TYPES.GET_ENDPOINT_SERVERS,
+      promise: fetchEndpointServers(),
+      meta: {
+        onSuccess: (response) => {
+          request.registerPersistentStreamOptions({ 'socketUrlPostfix': serverId });
+          const servers = [...response.data];
+          const selectedServer = servers.find((server) => server.id === serverId);
+          if (selectedServer) {
+            dispatch({ type: ACTION_TYPES.SET_SELECTED_SERVER_IP, payload: selectedServer.host });
+          }
+          dispatch(getConfig());
+          debug(`onSuccess: ${response}`);
+        },
+        onfailure: () => {
+          request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
+        }
+      }
+    });
+  };
+};
+/**
  * Generic handler for errors
  * @private
  */
@@ -121,5 +152,6 @@ export {
   getConfig,
   getDevices,
   resetForm,
-  saveUIState
+  saveUIState,
+  getEndpointServerList
 };

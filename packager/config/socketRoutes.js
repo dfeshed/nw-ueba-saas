@@ -27,6 +27,13 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/logconfig/load',
         requestDestination: '/ws/endpoint/logconfig/load'
       }
+    },
+    'endpoint-server': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/endpoint/server/get-all',
+        requestDestination: '/ws/endpoint/server/get-all'
+      }
     }
   };
 };

@@ -13,7 +13,8 @@ const initialState = Immutable.from({
   devices: {},
   initialState: {
     packageConfig: {}
-  }
+  },
+  selectedServerIP: null
 });
 
 const packagerReducer = handleActions({
@@ -22,7 +23,16 @@ const packagerReducer = handleActions({
       start: () => state.merge({ loading: true, error: false }),
       finish: (s) => s.set('loading', false),
       failure: (s) => s.set('error', true),
-      success: (s) => s.set('defaultPackagerConfig', action.payload.data).set('initialState', action.payload.data)
+      success: (s) => s.merge({
+        defaultPackagerConfig: {
+          ...action.payload.data,
+          packageConfig: { ...action.payload.data.packageConfig, server: s.selectedServerIP }
+        },
+        initialState: {
+          ...action.payload.data,
+          packageConfig: { ...action.payload.data.packageConfig, server: s.selectedServerIP }
+        }
+      })
     });
   },
 
@@ -49,8 +59,9 @@ const packagerReducer = handleActions({
 
   [ACTION_TYPES.RETRIEVE_FAILURE]: (state) => state.merge({ error: true, loading: false }),
 
-  [ACTION_TYPES.RESET_FORM]: (state) => state.set('defaultPackagerConfig', { ...state.initialState })
+  [ACTION_TYPES.RESET_FORM]: (state) => state.set('defaultPackagerConfig', { ...state.initialState }),
 
+  [ACTION_TYPES.SET_SELECTED_SERVER_IP]: (state, { payload }) => state.set('selectedServerIP', payload)
 }, initialState);
 
 export default packagerReducer;

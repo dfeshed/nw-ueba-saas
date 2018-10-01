@@ -6,7 +6,7 @@ import Component from '@ember/component';
 import { next } from '@ember/runloop';
 
 import {
-  getConfig,
+  getEndpointServerList,
   getDevices
 } from '../../actions/data-creators';
 
@@ -21,7 +21,7 @@ const stateToComputed = ({ packager }) => ({
   error: packager.error
 });
 const dispatchToActions = {
-  getConfig,
+  getEndpointServerList,
   getDevices
 };
 
@@ -30,7 +30,7 @@ const Container = Component.extend({
   layout,
   tagName: 'box',
   classNames: 'packager-container rsa-application-layout-panel-content input-content',
-
+  serverId: null,
   // download link for packager
   @computed('downloadLink')
   iframeSrc(link) {
@@ -51,7 +51,7 @@ const Container = Component.extend({
     this._super(...arguments);
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.send('getConfig');
+        this.send('getEndpointServerList', this.get('serverId'));
         this.send('getDevices');
       }
     });
