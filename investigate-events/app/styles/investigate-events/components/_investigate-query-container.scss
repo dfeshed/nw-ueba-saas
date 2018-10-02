@@ -461,6 +461,7 @@
   /* styles for pills */
   .query-pills {
     display: flex;
+    position: relative;
     flex-flow: row wrap;
     max-height: 10.5rem;
     overflow-x: hidden;
