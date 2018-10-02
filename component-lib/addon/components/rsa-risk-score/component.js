@@ -16,7 +16,11 @@ export default Component.extend({
   layout,
   tagName: 'svg',
   classNames: ['rsa-risk-score'],
-  attributeBindings: ['diameter:width', 'diameter:height'],
+  attributeBindings: [
+    'diameter:width',
+    'diameter:height',
+    'testId:test-id'
+  ],
   score: null,
   radius: null,
   size: 'small',

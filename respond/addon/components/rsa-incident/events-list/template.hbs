@@ -10,8 +10,8 @@
         </span>
         {{#if selectionExists}}
           <span class="clear-selection" test-id="clearSelection">
-            <button test-id="clearSelectionBtn" onclick={{action "clearSelection"}}>
-              {{t 'respond.eventsList.showAllEvents'}}
+            <button class="see-all-events" test-id="clearSelectionBtn" onclick={{action "clearSelection"}}>
+              {{t 'respond.eventsList.seeAllEvents'}}
             </button>
           </span>
         {{/if}}
@@ -25,19 +25,18 @@
   </box>
   <box class="events-list__table-view-body flexi-fill">
     <div class="events-list__scroller">
-      <table class="events-list-table" test-id="eventsListTable">
+      <ul class="events-list-rows" test-id="eventsList">
         {{#vertical-collection
           items=items
           containerSelector=".events-list__scroller"
-          tagName="tbody"
           key="id"
-          estimateHeight=120
+          estimateHeight=162
           bufferSize=15
           as |item|
           }}
-          {{rsa-incident/events-list-row item=item expandedId=expandedId expand=(action "expandStorylineEvent")}}
+          {{rsa-incident/events-list-row alerts=alerts item=item expandedId=expandedId expand=(action "expandStorylineEvent")}}
         {{/vertical-collection}}
-      </table>
+      </ul>
     </div>
   </box>
 </vbox>

@@ -2,10 +2,11 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { clearSelection, expandStorylineEvent } from 'respond/actions/creators/incidents-creators';
-import { storyDatasheet, expandedStorylineEventId, storylineEventsStatus, incidentSelection } from 'respond/selectors/storyline';
+import { getAlertsWithIndicatorId, storyDatasheet, expandedStorylineEventId, storylineEventsStatus, incidentSelection } from 'respond/selectors/storyline';
 
 const stateToComputed = (state) => ({
   items: storyDatasheet(state),
+  alerts: getAlertsWithIndicatorId(state),
   expandedId: expandedStorylineEventId(state),
   loadingStatus: storylineEventsStatus(state),
   selection: incidentSelection(state)

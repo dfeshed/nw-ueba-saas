@@ -18,11 +18,9 @@ module('Integration | Component | events-list', function(hooks) {
 
     await render(hbs`{{rsa-incident/events-list}}`);
 
-    assert.equal(findAll(selectors.table).length, 1);
+    assert.equal(findAll(selectors.list).length, 1);
     assert.equal(findAll(selectors.row).length, 16);
-    assert.equal(findAll(selectors.genericRow).length, 12);
     assert.equal(findAll(selectors.genericMain).length, 12);
-    assert.equal(findAll(selectors.endpointRow).length, 4);
     assert.equal(findAll(selectors.endpointMain).length, 4);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
@@ -91,7 +89,7 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.row).length, 3);
     assert.equal(findAll(selectors.clear).length, 1);
     assert.equal(findAll(selectors.clearButton).length, 1);
-    assert.equal(find(selectors.clearButton).textContent.trim(), 'show all events');
+    assert.equal(find(selectors.clearButton).textContent.trim(), 'See All Events');
   });
 
   test('clear selection button will reset applied event filter and hide clear option', async function(assert) {

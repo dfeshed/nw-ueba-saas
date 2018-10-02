@@ -24,13 +24,29 @@
     overflow: auto;
     position: relative;
 
-    .events-list-table {
-      width: 100%;
-      margin-top: -10px;
-      margin-bottom: 30px;
+    .events-list-rows {
+      padding-bottom: 6em;
       border-spacing: 10px;
       border-collapse: separate;
+
+      li:nth-child(odd) {
+        background-color: background-color(primary, darkest);
+      }
+
+      li:nth-child(even) {
+        background-color: background-color(primary, darker);
+      }
     }
+  }
+
+  .see-all-events {
+    @include rsa-font(regular, smaller);
+    @include border(1px, solid, primary, lighter);
+    padding-top: rsa-whitespace(least);
+    padding-bottom: rsa-whitespace(least);
+    padding-left: rsa-whitespace(less);
+    padding-right: rsa-whitespace(less);
+    margin-left: rsa-whitespace(less);
   }
 
   .event-fetch-loader {

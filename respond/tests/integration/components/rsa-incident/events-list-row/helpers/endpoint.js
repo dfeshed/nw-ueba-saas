@@ -3,9 +3,16 @@ import { selectors, endpoint } from './selectors';
 
 export const assertRowPresent = (assert) => {
   assert.equal(findAll(selectors.row).length, 1);
-  assert.equal(findAll(selectors.endpointRow).length, 1);
   assert.equal(findAll(selectors.endpointMain).length, 1);
   assert.equal(findAll(selectors.genericDetail).length, 0);
+  assert.equal(findAll(selectors.caption).length, 1);
+  assert.equal(find(selectors.caption).textContent, 'Event Source and Target');
+};
+
+export const assertRowAlertDetails = (assert, { name, summary, score }) => {
+  assert.equal(find(selectors.alertName).textContent.trim(), name);
+  assert.equal(find(selectors.alertScore).textContent.trim(), score);
+  assert.equal(find(selectors.eventSummary).textContent.trim(), summary);
 };
 
 export const assertRowHeader = (assert, { eventType, category, action, hostname, userAccount, operatingSystem, fileHash }) => {

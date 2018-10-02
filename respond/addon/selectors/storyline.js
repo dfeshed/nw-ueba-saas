@@ -302,6 +302,19 @@ export const selectedStoryEventCountExpected = createSelector(
   }
 );
 
+export const getAlertsWithIndicatorId = createSelector(
+  incidentIndicators,
+  (incidentIndicators) => {
+    return incidentIndicators.map((indicator) => {
+      const alert = indicator.alert || {};
+      return {
+        ...alert,
+        indicatorId: indicator.id
+      };
+    });
+  }
+);
+
 export const storylineEventsStatus = createSelector(
   storylineState,
   (storylineState) => storylineState.storylineEventsStatus

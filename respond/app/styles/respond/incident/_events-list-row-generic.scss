@@ -1,38 +1,28 @@
 .events-list-generic-header {
   display: flex;
-
-  vbox hbox:first-child {
-    font-weight: bold;
-  }
-
-  vbox hbox {
-    padding-bottom: 10px;
-  }
+  padding: 10px;
 }
 
 .events-list-generic-footer {
   table {
     width: 100%;
-    margin-left: -10px;
-    margin-right: -10px;
-    border-spacing: 10px;
+    padding-left: .4em;
+    padding-right: .4em;
     border-collapse: separate;
+    border-spacing: rsa-whitespace(less);
   }
 
-  table tr:first-child td {
-    font-weight: bold;
+  table tr:first-child th:first-child {
+    width: 4rem;
   }
-  table tr td:first-child {
-    width: 8%;
+
+  table tr:first-child th:nth-child(2) {
+    width: 9rem;
   }
 }
 
 .events-list-generic-detail {
-  @include border(1px, solid, primary, base, translucent);
-  padding-top: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 20px;
-  border-top-width: 0;
+  padding: 10px;
   display: flex;
+  @include border-top(1px, solid, primary, dark);
 }

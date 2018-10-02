@@ -1226,6 +1226,7 @@ export default {
       CLOSURE: 'Closure'
     },
     eventDetails: {
+      caption: 'Event Source and Target',
       title: 'Event Details',
       events: 'events',
       in: 'in',
@@ -1366,7 +1367,8 @@ export default {
       }
     },
     eventsList: {
-      showAllEvents: 'show all events',
+      eventOfTotal: 'Event {{eventIndex}} of {{numEvents}}',
+      seeAllEvents: 'See All Events',
       generic: {
         time: 'EVENT TIME',
         type: 'EVENT TYPE',

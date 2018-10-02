@@ -1,13 +1,76 @@
 .events-list-table-row {
-  width: 100%;
-  height: 120px;
-  padding: 10px;
+  padding: rsa-whitespace(less);
+
+  dl {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 2.5em;
+  }
+
+  dd, dt {
+    flex-basis: 50%;
+  }
+
+  table th, dt {
+    @include rsa-font(regular, smaller, true);
+    color: text-color(primary, light);
+    font-weight: bold;
+  }
+
+  table td, dd {
+    color: text-color(primary, lightest);
+    @include rsa-font(regular, small);
+  }
+
+  table th, td {
+    text-align: left;
+  }
+
+  button {
+    width: 100%;
+    &:focus {
+      outline: none;
+      border-radius: .05rem;
+      box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
+    }
+  }
+
+  .events-list-detail:focus {
+    outline: none;
+    border-radius: .05rem;
+    box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
+  }
+
+  .events-list-alert-detail {
+    display: flex;
+    align-items: center;
+  }
+
+  .events-list-detail {
+    padding-left: 1.8em;
+    padding-right: 1.8em;
+  }
+
+  .inline-alert-name {
+    display: inline;
+    font-weight: bold;
+    padding-left: rsa-whitespace(less);
+  }
+
+  .inline-events-summary {
+    @include rsa-font(regular, smaller);
+    margin-top: 2px;
+    color: text-color(primary, light);
+    padding-left: rsa-whitespace(less);
+  }
 
   .events-list-table-cell {
     .events-list-info {
-      @include border(1px, solid, primary, base, translucent);
-      height: 120px;
-      padding: 10px;
+      padding: 1px;
+      padding-left: 1.8em;
+      padding-right: 1.8em;
     }
   }
 }
