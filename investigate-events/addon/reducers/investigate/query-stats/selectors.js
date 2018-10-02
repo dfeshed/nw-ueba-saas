@@ -21,13 +21,13 @@ export const slowestInQuery = createSelector(
 
     const findSlowest = (list = []) => {
       list.forEach((device) => {
-        if (slowestIds.length === 0) {
+        if (device.elapsedTime && (slowestIds.length === 0)) {
           slowestTime = device.elapsedTime;
           slowestIds.push(device.serviceId);
         } else if (device.elapsedTime > slowestTime) {
           slowestTime = device.elapsedTime;
           slowestIds = [device.serviceId];
-        } else if (device.elapsedTime === slowestTime) {
+        } else if (device.elapsedTime && (device.elapsedTime === slowestTime)) {
           slowestIds.push(device.serviceId);
         }
 

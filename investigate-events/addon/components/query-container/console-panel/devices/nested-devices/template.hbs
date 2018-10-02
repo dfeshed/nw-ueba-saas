@@ -44,7 +44,10 @@
   </svg>
 
   <strong class="device">{{device.serviceName}}</strong>
-  <span class="elapsed-time">{{t 'investigate.queryStats.nestedElapsedTime' time=device.elapsedTime}}</span>
+
+  {{#if device.elapsedTime}}
+    <span class="elapsed-time">{{t 'investigate.queryStats.nestedElapsedTime' time=device.elapsedTime}}</span>
+  {{/if}}
 
   {{#if device.devices.length}}
     {{rsa-icon class="expand" name='arrow-down-12' size="small"}}

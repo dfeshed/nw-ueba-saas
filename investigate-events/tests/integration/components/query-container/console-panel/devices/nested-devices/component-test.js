@@ -55,6 +55,23 @@ module('Integration | Component | nested-devices', function(hooks) {
     assert.ok(find('.nested-devices .device-hierarchy'));
   });
 
+  test('renders the correct dom when zero for elapsedTime', async function(assert) {
+    this.set('noTime', {
+      serviceId: 'foo',
+      elapsedTime: 0,
+      on: true,
+      serviceName: 'Foo'
+    });
+    await render(hbs`
+      <ul class="device-hierarchy">
+        {{query-container/console-panel/devices/nested-devices device=noTime isExpanded=isExpanded height=height}}
+      </ul>
+    `);
+
+    assert.equal(find('.nested-devices .one-line-summary .device').textContent.trim(), 'Foo');
+    assert.notOk(find('.nested-devices .one-line-summary .elapsed-time'));
+  });
+
   test('renders the correct dom when isSlowest', async function(assert) {
     this.set('isSlowest', true);
     await render(hbs`

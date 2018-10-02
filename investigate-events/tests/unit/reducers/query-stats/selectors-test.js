@@ -18,6 +18,24 @@ import {
 
 module('Unit | Selectors | queryStats');
 
+test('slowestInQuery when zeros', function(assert) {
+  const slowest = slowestInQuery({
+    investigate: {
+      queryStats: {
+        devices: [{
+          serviceId: 'foo',
+          elapsedTime: 0
+        }, {
+          serviceId: 'bar',
+          elapsedTime: 0
+        }]
+      }
+    }
+  });
+
+  assert.equal(slowest.length, 0);
+});
+
 test('slowestInQuery when only one', function(assert) {
   const slowest = slowestInQuery({
     investigate: {
