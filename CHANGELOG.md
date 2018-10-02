@@ -1,3 +1,58 @@
+# [9.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.4.0)
+## Features
+* [ASOC-58476](https://bedfordjira.na.rsa.net/browse/ASOC-58476):&emsp;Inter-Pill Keyboard Interaction - Navigation
+* [ASOC-59802](https://bedfordjira.na.rsa.net/browse/ASOC-59802):&emsp;Event Selection - Running Query
+* [ASOC-59803](https://bedfordjira.na.rsa.net/browse/ASOC-59803):&emsp;Event Selection - Permissions
+* [ASOC-59807](https://bedfordjira.na.rsa.net/browse/ASOC-59807):&emsp;Download Drop-down - Initial Display
+* [ASOC-60647](https://bedfordjira.na.rsa.net/browse/ASOC-60647):&emsp;Handle Hashes In URL (refresh)
+* [ASOC-60653](https://bedfordjira.na.rsa.net/browse/ASOC-60653):&emsp;Handle Internal Transitioning (query events button)
+* [ASOC-60654](https://bedfordjira.na.rsa.net/browse/ASOC-60654):&emsp;On Back/Forward Parse Hash Into Pills/Free Text and Execute Search
+* [ASOC-60656](https://bedfordjira.na.rsa.net/browse/ASOC-60656):&emsp;Leave Original Params Out of Back/Forward History
+* [ASOC-60690](https://bedfordjira.na.rsa.net/browse/ASOC-60690):&emsp;Include Interim Warning Messages in Console
+* [ASOC-60691](https://bedfordjira.na.rsa.net/browse/ASOC-60691):&emsp;Include Fatal Error Messages in Console
+* [ASOC-62443](https://bedfordjira.na.rsa.net/browse/ASOC-62443):&emsp;Keep time from Navigate instead of using default Events time range
+* [ASOC-62444](https://bedfordjira.na.rsa.net/browse/ASOC-62444):&emsp;Improve Events pagination loads for Logs
+* [ASOC-62603](https://bedfordjira.na.rsa.net/browse/ASOC-62603):&emsp;Update Search API to include text search
+* [ASOC-63777](https://bedfordjira.na.rsa.net/browse/ASOC-63777):&emsp;Capture Each Pill as a Separate Hash
+* [ASOC-63936](https://bedfordjira.na.rsa.net/browse/ASOC-63936):&emsp;ember-power-select needs to be upgraded
+
+
+# [9.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/36b983d73c39022bfd2bb4b03569c80b37329fc0)
+## Features
+* [ASOC-54122](https://bedfordjira.na.rsa.net/browse/ASOC-54122):&emsp;Event Analysis time selector - Basic Entry & Handling Preferences/Formats
+* [ASOC-54130](https://bedfordjira.na.rsa.net/browse/ASOC-54130):&emsp;Event Analysis time selector date validation user experience
+* [ASOC-54131](https://bedfordjira.na.rsa.net/browse/ASOC-54131):&emsp;Event Analysis time selector validation - Single Date Validation Rules
+* [ASOC-54132](https://bedfordjira.na.rsa.net/browse/ASOC-54132):&emsp;Event Analysis time selector validation - Multiple Date Validation Rules
+* [ASOC-54134](https://bedfordjira.na.rsa.net/browse/ASOC-54134):&emsp;Time Range Date Transformation - Date Transformation
+* [ASOC-60380](https://bedfordjira.na.rsa.net/browse/ASOC-60380):&emsp;Server Validation UX
+* [ASOC-60638](https://bedfordjira.na.rsa.net/browse/ASOC-60638):&emsp;Predicate API Insert
+* [ASOC-60640](https://bedfordjira.na.rsa.net/browse/ASOC-60640):&emsp;Predicate API Retrieve
+* [ASOC-60641](https://bedfordjira.na.rsa.net/browse/ASOC-60641):&emsp;Predicate API Edit/Remove
+* [ASOC-60642](https://bedfordjira.na.rsa.net/browse/ASOC-60642):&emsp;Migrate Predicates
+* [ASOC-60643](https://bedfordjira.na.rsa.net/browse/ASOC-60643):&emsp;Hashed Predicates in Classic
+* [ASOC-60650](https://bedfordjira.na.rsa.net/browse/ASOC-60650):&emsp;Handle Params in URL (refresh)
+* [ASOC-60682](https://bedfordjira.na.rsa.net/browse/ASOC-60682):&emsp;Populate Frame Meta with Core Messages
+* [ASOC-60684](https://bedfordjira.na.rsa.net/browse/ASOC-60684):&emsp;Capture New Messages and Store in UI State
+* [ASOC-60685](https://bedfordjira.na.rsa.net/browse/ASOC-60685):&emsp;Add Icon to Search Box and Update with Query Status
+* [ASOC-60686](https://bedfordjira.na.rsa.net/browse/ASOC-60686):&emsp;Add Query Console Panel on Icon Click
+* [ASOC-61141](https://bedfordjira.na.rsa.net/browse/ASOC-61141):&emsp;Alter query to remove parameter to ignore cache
+* [ASOC-61272](https://bedfordjira.na.rsa.net/browse/ASOC-61272):&emsp;Focus Actions
+* [ASOC-61956](https://bedfordjira.na.rsa.net/browse/ASOC-61956):&emsp;Change label at bottom of Event Analysis table
+* [ASOC-62231](https://bedfordjira.na.rsa.net/browse/ASOC-62231):&emsp;Pre-Upgrade configuration & Document with Post upgrade validation instructions
+
+
+# [9.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/c003d6a62e063f603af2cdab601c5ac1ba557a87)
+## Features
+* [ASOC-54127](https://bedfordjira.na.rsa.net/browse/ASOC-54127):&emsp;Event Analysis time selector - Tool tip
+* [ASOC-55113](https://bedfordjira.na.rsa.net/browse/ASOC-55113):&emsp;Pill Edit - Inherited from Single Pill Creation
+* [ASOC-55114](https://bedfordjira.na.rsa.net/browse/ASOC-55114):&emsp;Pill Edit - Initial Open
+* [ASOC-55119](https://bedfordjira.na.rsa.net/browse/ASOC-55119):&emsp;Pill Edit - Coming from Classic
+* [ASOC-59801](https://bedfordjira.na.rsa.net/browse/ASOC-59801):&emsp;Event Selection - Select All
+* [ASOC-58902](https://bedfordjira.na.rsa.net/browse/ASOC-58902):&emsp;Enable UI Test Cases: Investigation
+* [ASOC-60382](https://bedfordjira.na.rsa.net/browse/ASOC-60382):&emsp;Incorporate Date time Range Component
+* [ASOC-61271](https://bedfordjira.na.rsa.net/browse/ASOC-61271):&emsp;Add Focus For Pill
+
+
 # [9.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.1.0)
 ## Features
 * [ASOC-51573](https://bedfordjira.na.rsa.net/browse/ASOC-51573):&emsp;Single Pill Creation - Coming From Classic
