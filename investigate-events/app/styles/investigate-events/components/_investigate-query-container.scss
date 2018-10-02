@@ -168,15 +168,15 @@
       }
     }
 
-    &.console-has-error {
-      .query-bar-options {
-        @include border(1px, solid, accentOne);
-      }
-    }
-
     &.console-has-warning {
       .query-bar-options {
         @include border(1px, solid, accentThree);
+      }
+    }
+
+    &.console-has-error {
+      .query-bar-options {
+        @include border(1px, solid, accentOne);
       }
     }
 
@@ -198,6 +198,198 @@
         overflow: hidden;
         @include rsa-font(body, small);
         box-shadow: 1px 1px 1px background-color(neutral, dark);
+
+        .devices-status {
+          display: inline-block;
+          display: flex;
+          margin-top: rsa-whitespace(least);
+
+          .all-online,
+          .some-offline,
+          .device-hierarchy {
+            color: text-color(primary, lightest);
+            display: inline-block;
+            margin-right: rsa-whitespace(most);
+          }
+
+          .all-online,
+          .some-offline {
+            i {
+              position: relative;
+              top: rsa-whitespace(least);
+              color: text-color(accentOne);
+            }
+          }
+
+          .some-offline {
+            margin-top: -6px;
+          }
+
+          .device-hierarchy {
+            color: text-color(primary, light);
+
+            li {
+              position: relative;
+              padding-bottom: rsa-whitespace();
+
+              i {
+                display: inline-block;
+                margin-left: rsa-whitespace(less);
+
+                &.rsa-icon-arrow-down-12-filled {
+                }
+
+                &.warning {
+                  margin-top: -.5rem;
+                  color: text-color(accentThree);
+                  position: relative;
+                  top: 3px;
+                }
+
+                &.slowest {
+                  margin-top: -.5rem;
+                  color: text-color(accentThree);
+                  position: relative;
+                  top: 3px;
+                }
+
+                &.offline {
+                  margin-top: -.5rem;
+                  color: text-color(accentOne);
+                  position: relative;
+                  top: 3px;
+                }
+              }
+
+              &:last-of-type {
+                padding-bottom: rsa-whitespace(less);
+              }
+            }
+
+            svg {
+              width: 2px;
+              position: absolute;
+              @include rsa-layer(controls);
+              left: 4px;
+
+              line {
+                stroke: text-color(primary);
+                stroke-width: 2px;
+              }
+            }
+
+            svg.horizontal {
+              width: 23px;
+              height: 2px;
+              position: absolute;
+              @include rsa-layer(controls);
+              left: -23px;
+              top: 5px;
+            }
+
+            i.rsa-icon-arrow-down-12-filled {
+              margin-left: rsa-whitespace(least);
+
+              &:hover, &:active {
+                cursor: pointer;
+                color: text-color(secondary);
+              }
+            }
+
+            .device {
+              color: text-color(primary, lightest);
+              padding: 0;
+              margin-right: rsa-whitespace(least);
+              font-weight: bold;
+            }
+          }
+        }
+
+        .device-hierarchy {
+          .device-hierarchy {
+            display: block;
+            padding-left: rsa-whitespace(more);
+            overflow: hidden;
+            position: relative;
+            top: 6px;
+
+            li {
+              &:first-of-type {
+                padding-top: rsa-whitespace(less);
+              }
+            }
+          }
+        }
+
+        .one-line-summary {
+          position: relative;
+          display: inline-block;
+          @include rsa-layer(above);
+        }
+
+        .circle {
+          @include rsa-layer(controls);
+          position: relative;
+          margin: 0;
+          display: inline-block;
+          margin-right: rsa-whitespace(least);
+          border-radius: .35rem;
+          height: .35rem;
+          width: .35rem;
+
+          &.empty {
+            @include border(2px, solid, primary, light);
+            background-color: background-color(primary, darker);
+
+            &.offline {
+              @include border(2px, solid, accentOne);
+              background-color: background-color(primary, darker);
+            }
+
+            &.warning {
+              @include border(2px, solid, accentThree);
+              background-color: background-color(primary, darker);
+            }
+
+            &.error {
+              @include border(2px, solid, accentOne);
+              background-color: background-color(primary, darker);
+            }
+          }
+
+          &.populated {
+            &.open {
+              @include border(2px, solid, primary, lightest);
+              background-color: background-color(primary, darker);
+            }
+
+            &.closed {
+              @include border(2px, solid, primary, lightest);
+              background-color: background-color(primary, lightest);
+            }
+
+            &.offline {
+              @include border(2px, solid, accentOne);
+              &.closed {
+                background-color: background-color(accentOne);
+              }
+            }
+
+            &.warning {
+              @include border(2px, solid, accentThree);
+              &.closed {
+                background-color: background-color(accentThree);
+              }
+            }
+
+            &.error {
+              @include border(2px, solid, accentOne);
+              &.closed {
+                background-color: background-color(accentOne);
+              }
+            }
+          }
+        }
 
         .progress-bar {
           box-sizing: border-box;
@@ -222,27 +414,22 @@
           }
         }
 
-        h3 {
-          color: text-color(primary, lightest);
-          margin: rsa-whitespace();
-        }
-
         code {
           margin: 0 rsa-whitespace() rsa-whitespace();
           color: text-color(primary, light);
           font-size: .85rem;
         }
 
-        &.has-error {
+        &.has-warning {
           .console-content {
-            @include border(1px, solid, accentOne);
+            @include border(1px, solid, accentThree);
             @include border-top(1px, solid, primary, dark);
           }
         }
 
-        &.has-warning {
+        &.has-error {
           .console-content {
-            @include border(1px, solid, accentThree);
+            @include border(1px, solid, accentOne);
             @include border-top(1px, solid, primary, dark);
           }
         }
@@ -279,14 +466,8 @@
           margin-bottom: rsa-whitespace();
         }
 
-        .progress {
-          position: relative;
-          top: 3px;
-          display: inline-block;
-        }
-
         .progress, .service, .timerange {
-          margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+          margin: rsa-whitespace(least) rsa-whitespace(most) 0 rsa-whitespace();
           color: text-color(primary, light);
 
           .label {
@@ -297,6 +478,10 @@
           .value {
             margin-left: rsa-whitespace(less);
           }
+        }
+
+        .progress {
+          display: inline-block;
         }
 
         .fatal-errors {
@@ -326,7 +511,7 @@
         }
 
         .console-content {
-          overflow: hidden;
+          overflow: auto;
           max-height: 20rem;
           height: 0;
           max-height: 20rem;

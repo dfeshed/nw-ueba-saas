@@ -77,6 +77,16 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   assert.equal(nextResult.warnings[0].warning, 'warning');
   assert.equal(nextResult.warnings[1].serviceId, 'bar');
   assert.equal(nextResult.warnings[1].warning, 'warning');
+
+  const lastResult = reducer(nextResult, {
+    type: ACTION_TYPES.QUERY_STATS,
+    payload: {}
+  });
+
+  assert.equal(lastResult.description, 'foo');
+  assert.equal(lastResult.percent, 50);
+  assert.equal(lastResult.devices.length, 1);
+  assert.equal(lastResult.devices[0].serviceId, 'baz');
 });
 
 test('INITIALIZE_QUERYING reducer clears state', function(assert) {

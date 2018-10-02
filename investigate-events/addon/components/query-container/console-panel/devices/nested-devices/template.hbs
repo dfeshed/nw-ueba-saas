@@ -1,0 +1,80 @@
+{{#if (and device.devices.length isExpanded height)}}
+  <svg class="vertical" viewBox="0 0 2 {{height}}">
+    <line x1="0" y1="2" x2="0" y2={{height}} />
+  </svg>
+{{/if}}
+
+<span class="one-line-summary" {{action 'expandDevices'}}>
+  {{#if device.devices.length}}
+    {{#if isExpanded}}
+      {{#if hasError}}
+        <span class="circle populated open error"></span>
+      {{else if inOfflinePath}}
+        <span class="circle populated open offline"></span>
+      {{else if inWarningPath}}
+        <span class="circle populated open warning"></span>
+      {{else}}
+        <span class="circle populated open"></span>
+      {{/if}}
+    {{else}}
+      {{#if hasError}}
+        <span class="circle populated closed error"></span>
+      {{else if inOfflinePath}}
+        <span class="circle populated closed offline"></span>
+      {{else if inWarningPath}}
+        <span class="circle populated closed warning"></span>
+      {{else}}
+        <span class="circle populated closed"></span>
+      {{/if}}
+    {{/if}}
+  {{else}}
+    {{#if hasError}}
+      <span class="circle empty error"></span>
+    {{else if inOfflinePath}}
+      <span class="circle empty offline"></span>
+    {{else if inWarningPath}}
+      <span class="circle empty warning"></span>
+    {{else}}
+      <span class="circle empty"></span>
+    {{/if}}
+  {{/if}}
+
+  <svg class="horizontal" viewBox="0 0 23 2">
+    <line x1="0" y1="0" x2="23" y2="0" />
+  </svg>
+
+  <strong class="device">{{device.serviceName}}</strong>
+  <span class="elapsed-time">{{t 'investigate.queryStats.nestedElapsedTime' time=device.elapsedTime}}</span>
+
+  {{#if device.devices.length}}
+    {{rsa-icon class="expand" name='arrow-down-12' size="small"}}
+  {{/if}}
+
+  {{#if isSlowest}}
+    {{rsa-icon class="slowest" name='stopwatch' size="large" title=(t 'investigate.queryStats.slowest')}}
+  {{/if}}
+
+  {{#if warning}}
+    {{rsa-icon class="warning" name='report-problem-triangle' size="large" title=warning.warning}}
+  {{/if}}
+
+  {{#if hasOffline}}
+    {{rsa-icon class="offline" name='report-problem-triangle' size="large" title=(t 'investigate.queryStats.offline')}}
+  {{/if}}
+</span>
+
+{{#if (and isExpanded device.devices.length)}}
+  <ul class="device-hierarchy">
+    {{#each device.devices as |childDevice|}}
+      {{query-container/console-panel/devices/nested-devices
+        devicesExpanded=devicesExpanded
+        device=childDevice
+        slowestInQuery=slowestInQuery
+        offlineServices=offlineServices
+        offlineServicesPath=offlineServicesPath
+        warnings=warnings
+        warningsPath=warningsPath
+      }}
+    {{/each}}
+  </ul>
+{{/if}}

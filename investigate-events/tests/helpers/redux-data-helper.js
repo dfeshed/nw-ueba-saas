@@ -430,9 +430,48 @@ export default class DataHelper {
 
   queryStatsIsComplete() {
     _set(this.state.queryStats, 'percent', 100);
-    _set(this.state.queryStats, 'devices', [{}]);
+    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2000 }]);
     return this;
   }
+
+  queryStatsNoTime() {
+    _set(this.state.queryStats, 'percent', 100);
+    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true }]);
+    return this;
+  }
+
+  queryStatsWithHierarcy() {
+    _set(this.state.queryStats, 'devices', [
+      {
+        serviceId: '1',
+        on: true,
+        elapsedTime: 2000,
+        devices: [
+          {
+            serviceId: '1',
+            on: true,
+            elapsedTime: 2000
+          }
+        ]
+      }
+    ]);
+    return this;
+  }
+
+  queryStatsWithOffline() {
+    _set(this.state, 'queryStats', {
+      devices: [{ serviceId: '1', on: false }, ...this.state.queryStats.devices]
+    });
+    return this;
+  }
+
+  queryStatsWithMultipleOffline() {
+    _set(this.state, 'queryStats', {
+      devices: [{ serviceId: '1', on: false }, { serviceId: '1', on: false }, ...this.state.queryStats.devices]
+    });
+    return this;
+  }
+
 
   queryStatsHasWarning() {
     _set(this.state.queryStats, 'description', 'warning');
@@ -450,7 +489,6 @@ export default class DataHelper {
   }
 
   queryStatsHasError() {
-    _set(this.state.queryStats, 'description', 'error');
     _set(this.state.queryStats, 'errors', [{
       serviceId: '1',
       error: 'error'

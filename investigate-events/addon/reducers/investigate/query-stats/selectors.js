@@ -1,5 +1,4 @@
 import reselect from 'reselect';
-
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -9,6 +8,7 @@ const _deviceStats = (state) => state.investigate.queryStats.devices;
 const _percent = (state) => state.investigate.queryStats.percent;
 const _errors = (state) => state.investigate.queryStats.errors;
 const _warnings = (state) => state.investigate.queryStats.warnings;
+const _devices = (state) => state.investigate.queryStats.devices;
 const _services = (state) => state.investigate.services.serviceData;
 
 // SELECTOR FUNCTIONS
@@ -16,20 +16,77 @@ const _services = (state) => state.investigate.services.serviceData;
 export const slowestInQuery = createSelector(
   [_deviceStats],
   (deviceStats) => {
-    const times = deviceStats.map((d) => d.elapsedTime);
-    const min = Math.max(...times);
-    return deviceStats.filter((d) => d.elapsedTime === min).map((d) => d.serviceId);
+    let slowestIds = [];
+    let slowestTime = 0;
+
+    const findSlowest = (list = []) => {
+      list.forEach((device) => {
+        if (slowestIds.length === 0) {
+          slowestTime = device.elapsedTime;
+          slowestIds.push(device.serviceId);
+        } else if (device.elapsedTime > slowestTime) {
+          slowestTime = device.elapsedTime;
+          slowestIds = [device.serviceId];
+        } else if (device.elapsedTime === slowestTime) {
+          slowestIds.push(device.serviceId);
+        }
+
+        if (device.devices && device.devices.length) {
+          findSlowest(device.devices);
+        }
+      });
+    };
+
+    findSlowest(deviceStats);
+    return slowestIds;
+  }
+);
+
+export const offlineServicesPath = createSelector(
+  [_deviceStats],
+  (deviceStats = []) => {
+    const allOffline = [];
+
+    const findOffline = (list = []) => {
+      let foundOffline = false;
+      list.forEach((device) => {
+        if (!device.on || findOffline(device.devices)) {
+          allOffline.push(device.serviceId);
+          foundOffline = true;
+        }
+      });
+      return foundOffline;
+    };
+
+    findOffline(deviceStats);
+    return allOffline;
   }
 );
 
 export const offlineServices = createSelector(
   [_deviceStats],
-  (deviceStats) => {
-    if (!deviceStats) {
-      return [];
-    } else {
-      return deviceStats.filter((d) => !d.on);
-    }
+  (deviceStats = []) => {
+    const ids = [];
+
+    const recursiveOffline = (list = []) => {
+      list.forEach((device) => {
+        if (!device.on) {
+          ids.push(device.serviceId);
+        } else if (device.devices && device.devices.length) {
+          recursiveOffline(device.devices);
+        }
+      });
+    };
+
+    recursiveOffline(deviceStats);
+    return ids;
+  }
+);
+
+export const hasOfflineServices = createSelector(
+  [offlineServices],
+  (services) => {
+    return services && services.length > 0;
   }
 );
 
@@ -41,27 +98,9 @@ export const hasWarning = createSelector(
 );
 
 export const hasError = createSelector(
-  [_errors, offlineServices],
+  [_errors, hasOfflineServices],
   (errors, offline) => {
-    return (errors && errors.length > 0) || (offline && offline.length > 0);
-  }
-);
-
-export const serviceshasErrorOrWarning = createSelector(
-  [_errors, _warnings],
-  (errors, warnings) => {
-    let errorIds = [];
-    let warningIds = [];
-
-    if (errors) {
-      errorIds = errors.map((e) => e.serviceId);
-    }
-
-    if (warnings) {
-      warningIds = warnings.map((e) => e.serviceId);
-    }
-
-    return [...errorIds, ...warningIds];
+    return (errors && errors.length > 0) || offline;
   }
 );
 
@@ -80,10 +119,11 @@ export const isProgressBarDisabled = createSelector(
 );
 
 // references devices because we only receive devices data when the query isComplete
+// references errors because errors are fatal and indicate completion
 export const isComplete = createSelector(
-  [_percent, _deviceStats],
-  (percent, devices) => {
-    return (percent === 100) && devices && devices.length > 0;
+  [_deviceStats, _errors],
+  (devices = [], errors = []) => {
+    return errors.length > 0 || devices.length > 0;
   }
 );
 
@@ -112,9 +152,59 @@ export const warningsWithServiceName = createSelector(
   }
 );
 
+export const warningsPath = createSelector(
+  [_deviceStats, warningsWithServiceName],
+  (deviceStats, warnings = []) => {
+    const allWarnings = [];
+    const warningIds = warnings.map((w) => w.serviceId);
+
+    const findWarning = (list = []) => {
+      let foundWarning = false;
+      list.forEach((device) => {
+        if (warningIds.includes(device.serviceId) || findWarning(device.devices)) {
+          allWarnings.push(device.serviceId);
+          foundWarning = true;
+        }
+      });
+      return foundWarning;
+    };
+
+    findWarning(deviceStats);
+    return allWarnings;
+  }
+);
+
 export const errorsWithServiceName = createSelector(
   [_errors, _services],
   (errors, services) => {
     return _formatErrorsAndWarnings(errors, services);
+  }
+);
+
+export const decoratedDevices = createSelector(
+  [_devices, _services],
+  (devices, services) => {
+    if (!devices || !services) {
+      return [];
+    } else {
+      const process = (toProcess) => {
+        if (!toProcess) {
+          return [];
+        }
+
+        return toProcess.map((d) => {
+          return {
+            on: d.on,
+            serviceId: d.serviceId,
+            devices: process(d.devices),
+            elapsedTime: d.elapsedTime / 1000,
+            serviceName: services.findBy('id', d.serviceId).displayName
+          };
+        });
+      };
+
+      const updatedDevices = process(devices);
+      return updatedDevices;
+    }
   }
 );

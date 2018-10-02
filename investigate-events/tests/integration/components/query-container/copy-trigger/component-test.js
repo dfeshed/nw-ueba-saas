@@ -9,7 +9,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | Copy Trigger', function(hooks) {
+module('Integration | Component | copy-trigger', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });

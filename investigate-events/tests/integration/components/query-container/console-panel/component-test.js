@@ -9,7 +9,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | Console Panel', function(hooks) {
+module('Integration | Component | console-panel', function(hooks) {
 
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
@@ -74,7 +74,7 @@ module('Integration | Component | Console Panel', function(hooks) {
     `);
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
     assert.equal(findAll('.console-panel.has-error .console-content .fatal-errors i.rsa-icon-report-problem-triangle-filled').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'error');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Complete');
     assert.equal(find('.console-panel .console-content .fatal-errors .error-text').textContent.trim(), 'error');
   });
 
@@ -101,6 +101,22 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel .progress-bar').length, 0);
+  });
+
+  test('does not render devices when not complete', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(findAll('.console-panel .devices-status').length, 0);
+  });
+
+  test('renders devices when complete', async function(assert) {
+    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(findAll('.console-panel .devices-status').length, 1);
   });
 
 });

@@ -63,6 +63,9 @@
         {{/each}}
       </ul>
     {{/if}}
-  </div>
 
+    {{#if devices.length}}
+      {{query-container/console-panel/devices}}
+    {{/if}}
+  </div>
 </div>

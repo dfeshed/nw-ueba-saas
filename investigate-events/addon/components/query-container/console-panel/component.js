@@ -1,30 +1,32 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import {
-  hasError,
-  hasWarning,
-  warningsWithServiceName,
-  errorsWithServiceName,
-  isComplete
-} from 'investigate-events/reducers/investigate/query-stats/selectors';
-import { selectedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
+import {
+  hasError,
+  hasWarning,
+  isComplete,
+  decoratedDevices,
+  warningsWithServiceName,
+  errorsWithServiceName
+} from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { selectedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
-  filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
   serviceId: state.investigate.queryNode.previousQueryParams.serviceId,
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
   endTime: state.investigate.queryNode.previousQueryParams.endTime,
   description: state.investigate.queryStats.description,
   warnings: warningsWithServiceName(state),
   errors: errorsWithServiceName(state),
+  isComplete: isComplete(state),
   hasError: hasError(state),
   hasWarning: hasWarning(state),
-  selectedService: selectedService(state),
-  isComplete: isComplete(state)
+  devices: decoratedDevices(state),
+  filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
+  selectedService: selectedService(state)
 });
 
 const ConsolePanel = Component.extend({

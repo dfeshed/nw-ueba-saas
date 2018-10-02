@@ -552,10 +552,18 @@ export default {
       }
     },
     queryStats: {
+      summary: 'returned {{eventCount}} events in {{elapsedTime}} seconds.',
+      summaryNoTime: 'returned {{eventCount}} events.',
+      offline: 'This service is offline.',
+      allOnline: 'All services are online.',
+      oneOffline: '1 service is offline.',
+      someOffline: '{{offline}} services are offline.',
       queried: 'Service queried:',
       between: 'Time range:',
       progress: 'Progress:',
       complete: 'Complete',
+      nestedElapsedTime: '({{time}}s)',
+      slowest: 'This is the slowest service in the query.',
       hasError: 'This query returned an error.',
       hasWarning: 'This query returned a warning.',
       openCloseLabel: 'Click to open or close the query console.',

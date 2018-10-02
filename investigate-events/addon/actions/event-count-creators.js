@@ -26,15 +26,21 @@ export default function getEventCount() {
         });
       },
       onResponse(response) {
-        dispatch({
-          type: ACTION_TYPES.EVENT_COUNT_RESULTS,
-          payload: response
-        });
+        // protect against null data while query is being processed and when devices are returned
+        if (response.data != null) {
+          dispatch({
+            type: ACTION_TYPES.EVENT_COUNT_RESULTS,
+            payload: response
+          });
+        }
 
-        dispatch({
-          type: ACTION_TYPES.QUERY_STATS,
-          payload: response.meta
-        });
+        // protext against empty meta when data is passed back
+        if (response.meta) {
+          dispatch({
+            type: ACTION_TYPES.QUERY_STATS,
+            payload: response.meta
+          });
+        }
       }
     };
 

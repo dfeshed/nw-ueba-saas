@@ -9,7 +9,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | Console Trigger', function(hooks) {
+module('Integration | Component | console-trigger', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -129,7 +129,7 @@ module('Integration | Component | Console Trigger', function(hooks) {
   });
 
   test('renders the correct title when hasWarning', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().queryStatsHasWarning().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsHasWarning().build();
     await render(hbs`
       {{query-container/console-trigger}}
     `);
@@ -138,7 +138,7 @@ module('Integration | Component | Console Trigger', function(hooks) {
   });
 
   test('renders the correct title when hasError', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().queryStatsHasError().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsHasError().build();
     await render(hbs`
       {{query-container/console-trigger}}
     `);

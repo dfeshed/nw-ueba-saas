@@ -4,8 +4,8 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
 import { find, findAll, render } from '@ember/test-helpers';
-import { patchReducer } from '../../../../helpers/vnext-patch';
-import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 
 let setState;
 

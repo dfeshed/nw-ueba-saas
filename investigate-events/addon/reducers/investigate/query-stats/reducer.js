@@ -29,11 +29,17 @@ export default handleActions({
   },
 
   [ACTION_TYPES.QUERY_STATS]: (state, { payload }) => {
-    const updatedState = {
-      description: payload.description,
-      percent: payload.percent,
-      devices: payload.devices
-    };
+    const updatedState = {};
+
+    if (payload.description) {
+      updatedState.description = payload.description;
+    }
+    if (payload.percent) {
+      updatedState.percent = parseInt(payload.percent, 10);
+    }
+    if (payload.devices) {
+      updatedState.devices = payload.devices;
+    }
 
     if (payload.error) {
       updatedState.errors = [{

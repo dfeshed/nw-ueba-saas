@@ -35,7 +35,7 @@ function sendBatches({
     batches.push({
       data: dataArray.slice(i, i + batchSize),
       meta: {
-        percent: 100
+        percent: '100'
       }
     });
   }

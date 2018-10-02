@@ -1,0 +1,84 @@
+{{#if (eq 1 offlineServices.length)}}
+  <div class="some-offline">
+    {{rsa-icon title=(t 'investigate.queryStats.warning') name='report-problem-triangle' size="large"}}
+    {{t 'investigate.queryStats.oneOffline'}}
+  </div>
+{{else if offlineServices.length}}
+  <div class="some-offline">
+    {{rsa-icon title=(t 'investigate.queryStats.warning') name='report-problem-triangle' size="large"}}
+    {{t 'investigate.queryStats.someOffline' offline=offlineServices.length}}
+  </div>
+{{else}}
+  <div class="all-online">
+    {{t 'investigate.queryStats.allOnline'}}
+  </div>
+{{/if}}
+
+<ul class="device-hierarchy">
+  {{#each devices as |device|}}
+    <li>
+      {{#if (and isExpanded height)}}
+        <svg class="vertical" viewBox="0 0 2 {{height}}">
+          <line x1="0" y1="2" x2="0" y2={{height}} />
+        </svg>
+      {{/if}}
+
+      <span class="one-line-summary" {{action 'expandDevices'}}>
+        {{#if device.devices}}
+          {{#if isExpanded}}
+            {{#if hasError}}
+              <span class="circle populated open error"></span>
+            {{else if hasWarning}}
+              <span class="circle populated open warning"></span>
+            {{else}}
+              <span class="circle populated open"></span>
+            {{/if}}
+          {{else}}
+            {{#if hasError}}
+              <span class="circle populated closed error"></span>
+            {{else if hasWarning}}
+              <span class="circle populated closed warning"></span>
+            {{else}}
+              <span class="circle populated closed"></span>
+            {{/if}}
+          {{/if}}
+        {{else}}
+          {{#if hasError}}
+            <span class="circle empty error"></span>
+          {{else if hasWarning}}
+            <span class="circle empty warning"></span>
+          {{else}}
+            <span class="circle empty"></span>
+          {{/if}}
+        {{/if}}
+
+        <strong class="device">{{device.serviceName}}</strong>
+        {{#if device.elapsedTime}}
+          {{t 'investigate.queryStats.summary' eventCount=eventCount elapsedTime=device.elapsedTime}}
+        {{else}}
+          {{t 'investigate.queryStats.summaryNoTime' eventCount=eventCount}}
+        {{/if}}
+
+        {{#if device.devices.length}}
+          {{rsa-icon name='arrow-down-12' size="small"}}
+        {{/if}}
+      </span>
+
+      {{#if (and isExpanded device.devices.length)}}
+        <ul class="device-hierarchy">
+          {{#each device.devices as |childDevice|}}
+            {{query-container/console-panel/devices/nested-devices
+              devicesExpanded=(action 'devicesExpanded')
+              device=childDevice
+              slowestInQuery=slowestInQuery
+              offlineServices=offlineServices
+              offlineServicesPath=offlineServicesPath
+              warnings=warnings
+              warningsPath=warningsPath
+            }}
+          {{/each}}
+        </ul>
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>
