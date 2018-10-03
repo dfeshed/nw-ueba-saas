@@ -28,7 +28,7 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
     }
 
     /**
-     * Test Zero AggrFeatureValue creation, where no key were met.
+     * Test Zero AggrFeatureValue creation, where no key was met.
      */
     @Test
     public void testCalculateHistogramAggrFeatureValueWithoutAppropriateKey() {

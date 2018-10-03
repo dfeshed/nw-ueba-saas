@@ -37,13 +37,7 @@ public class MultiKeyFeature {
 
         if (featureNameToValue.size() != that.getFeatureNameToValue().size()) return false;
 
-        for (Map.Entry<String, FeatureValue> entry : featureNameToValue.entrySet()) {
-            if (!that.getFeatureNameToValue().get(entry.getKey()).equals(entry.getValue())) {
-                return false;
-            }
-        }
-
-        return true;
+        return featureNameToValue.equals(((MultiKeyFeature) o).featureNameToValue);
     }
 
     @Override

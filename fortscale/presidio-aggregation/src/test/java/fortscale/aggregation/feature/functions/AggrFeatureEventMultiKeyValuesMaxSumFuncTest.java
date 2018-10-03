@@ -145,7 +145,7 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
     }
 
     /**
-     * Test zero AggrFeatureValue creation, where no key were met
+     * Test zero AggrFeatureValue creation, where no key was met
      */
     @Test
     public void testCalculateAggrFeatureWithNoAppropriateKey() {

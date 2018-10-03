@@ -188,7 +188,7 @@ public class FeatureBucketsServiceTest {
         featureBucket2.setBucketId(BUCKET_ID2);
         aggregatedFeatures = new HashMap<>();
         total = 2;
-        multiKeyHistogram =createMultiKeyHistogram(new HashMap<>(), 70.0, total);
+        multiKeyHistogram = createMultiKeyHistogram(new HashMap<>(), 70.0, total);
         feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
         featureBucket2.setAggregatedFeatures(aggregatedFeatures);
@@ -200,7 +200,7 @@ public class FeatureBucketsServiceTest {
         Map<String, FeatureValue> featureNameToValue = new HashMap<>();
         featureNameToValue.put("context.sourcePath",new FeatureStringValue("source_path_test"));
         featureNameToValue.put("context.srcMachineId",new FeatureStringValue("pc1"));
-        multiKeyHistogram =createMultiKeyHistogram(featureNameToValue, 90.0, total);
+        multiKeyHistogram = createMultiKeyHistogram(featureNameToValue, 90.0, total);
         feature = new Feature("srcpath_and_srcmachine_to_highest_score_map", multiKeyHistogram);
         aggregatedFeatures.put("srcpath_and_srcmachine_to_highest_score_map", feature);
         featureBucket3.setAggregatedFeatures(aggregatedFeatures);

@@ -71,20 +71,23 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
             return;
         }
 
-        histogram.entrySet().removeIf(e -> {
-            boolean contains = e.getKey().containsValue(val);
-            if (contains) {
+        Iterator<Map.Entry<MultiKeyFeature, Double>> it = histogram.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<MultiKeyFeature, Double> e = it.next();
+            if (e.getKey().containsValue(val)) {
                 if (e.getValue() != null) {
                     this.total -= e.getValue();
                 }
-            }
-            return contains;
-        });
+                it.remove();
 
-        if (histogram.size() > 0) {
-            maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-        } else {
-            maxObject = null;
+                if (maxObject.equals(e.getKey())) {
+                    if (histogram.size() > 0) {
+                        maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+                    } else {
+                        maxObject = null;
+                    }
+                }
+            }
         }
     }
 

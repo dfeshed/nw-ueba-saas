@@ -28,12 +28,12 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 
 	private AggrFeatureValue createExpected(Long numberOfDistinctValues, MultiKeyHistogram... multiKeyHistograms) {
 		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues, 0L);
-		MultiKeyHistogram sumGenericHistogram = new MultiKeyHistogram();
+		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
 		for (MultiKeyHistogram hist : multiKeyHistograms) {
-			sumGenericHistogram.add(hist);
+            sumMultiKeyHistogram.add(hist);
 		}
-		sumGenericHistogram.remove(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
-		ret.setTotal((long)sumGenericHistogram.getTotal());
+        sumMultiKeyHistogram.remove(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
+		ret.setTotal((long)sumMultiKeyHistogram.getTotal());
 		return ret;
 	}
 
@@ -200,10 +200,10 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 	@Test
 	public void testCalculateAggrFeatureWithFilteredMultiKeys(){
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		MultiKeyHistogram multiKeyHistogram1 = createMultiKeyHistogram();
+		MultiKeyHistogram multiKeyHistogram = createMultiKeyHistogram();
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<>("feature1", multiKeyHistogram1)
+				new ImmutablePair<>("feature1", multiKeyHistogram)
 		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
@@ -222,20 +222,20 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
 		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
 		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		AggrFeatureValue expectedAggrFeatureValue = createExpected(2L, multiKeyHistogram1);
+		AggrFeatureValue expectedAggrFeatureValue = createExpected(2L, multiKeyHistogram);
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
 	}
 
 	/**
-	 * Test zero AggrFeature creation, where no key were met
+	 * Test zero AggrFeature creation, where no key was met
 	 */
 	@Test
 	public void testCalculateAggrFeatureWithNoAppropriateKey(){
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
-		MultiKeyHistogram multiKeyHistogram1 = createMultiKeyHistogram();
+		MultiKeyHistogram multiKeyHistogram = createMultiKeyHistogram();
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
-				new ImmutablePair<>("feature1", multiKeyHistogram1)
+				new ImmutablePair<>("feature1", multiKeyHistogram)
 		);
 
 		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
@@ -254,7 +254,7 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
 		Assert.assertTrue(actual1.getValue() instanceof AggrFeatureValue);
 		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		AggrFeatureValue expectedAggrFeatureValue = createExpected(0L, multiKeyHistogram1);
+		AggrFeatureValue expectedAggrFeatureValue = createExpected(0L, multiKeyHistogram);
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
 	}
 
