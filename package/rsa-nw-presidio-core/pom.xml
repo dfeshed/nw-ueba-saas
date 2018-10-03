@@ -73,6 +73,9 @@
             <version>${presidio-core.version}</version>
         </dependency>
     </dependencies>
+    <properties>
+        <presidio-app-venv.directory>${presidio-app.directory}/airflow/venv</presidio-app-venv.directory>
+    </properties>
 
     <build>
         <plugins>
@@ -146,6 +149,11 @@
                         <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
                         <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
                     </defineStatements>
+                    <preinstallScriptlet>
+                        <script>[ -d ${presidio-app-venv.directory} ] &amp;&amp; chown -R
+                            ${presidio.username}:${presidio.groupname} ${presidio-app-venv.directory}
+                        </script>
+                    </preinstallScriptlet>
                     <defaultGroupname>${presidio.groupname}</defaultGroupname>
                     <defaultUsername>${presidio.username}</defaultUsername>
                     <mappings>
