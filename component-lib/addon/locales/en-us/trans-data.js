@@ -1375,6 +1375,10 @@ export default {
       }
     },
     eventsList: {
+      title: {
+        'one': 'event',
+        'other': 'events'
+      },
       eventOfTotal: 'Event {{eventIndex}} of {{numEvents}}',
       seeAllEvents: 'See All Events',
       generic: {

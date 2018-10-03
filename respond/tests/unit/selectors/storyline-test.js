@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 import {
   storyPointsWithEvents,
   storyEventCountExpected,
-  selectedStoryEventCountExpected
+  selectedStoryEventCountExpected,
+  getAlertsWithIndicatorId
 } from 'respond/selectors/storyline';
 
 module('Unit | Mixin | Storyline Selector');
@@ -269,4 +270,71 @@ test('storyPointsWithEvents returns sum of storyline and events including isOpen
     id: 'alert3'
   });
   assert.ok(result[2].isOpen);
+});
+
+test('getAlertsWithIndicatorId returns each alert with the associated indicator id', function(assert) {
+  const state = {
+    respond: {
+      storyline: {
+        storyline: [
+          {
+            id: 'alert1',
+            alert: {
+              name: 'one',
+              severity: 10
+            },
+            storylineEvents: [
+              {
+                indicatorId: 'alert1'
+              }
+            ]
+          },
+          {
+            id: 'alert2',
+            alert: {
+              name: 'two',
+              severity: 20
+            },
+            storylineEvents: [
+              {
+                indicatorId: 'alert2'
+              }
+            ]
+          },
+          {
+            id: 'alert3',
+            alert: {
+              name: 'three',
+              severity: 30
+            },
+            storylineEvents: [
+              {
+                indicatorId: 'alert3'
+              }
+            ]
+          }
+        ]
+      }
+    }
+  };
+
+  const result = getAlertsWithIndicatorId(state);
+
+  assert.deepEqual(result, [
+    {
+      indicatorId: 'alert1',
+      name: 'one',
+      severity: 10
+    },
+    {
+      indicatorId: 'alert2',
+      name: 'two',
+      severity: 20
+    },
+    {
+      indicatorId: 'alert3',
+      name: 'three',
+      severity: 30
+    }
+  ]);
 });

@@ -32,14 +32,12 @@
     width: 100%;
     &:focus {
       outline: none;
-      border-radius: .05rem;
       box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
     }
   }
 
   .events-list-detail:focus {
     outline: none;
-    border-radius: .05rem;
     box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
   }
 

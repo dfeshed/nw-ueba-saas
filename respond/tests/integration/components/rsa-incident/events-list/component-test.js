@@ -100,6 +100,8 @@ module('Integration | Component | events-list', function(hooks) {
 
     assert.equal(findAll(selectors.row).length, 1);
     assert.equal(findAll(selectors.clear).length, 1);
+    assert.equal(find(selectors.count).textContent.trim(), '1');
+    assert.equal(find(selectors.label).textContent.trim(), 'event');
 
     await click(selectors.clearButton);
 
