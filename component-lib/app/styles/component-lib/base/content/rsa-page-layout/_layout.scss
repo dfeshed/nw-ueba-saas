@@ -39,3 +39,19 @@ $rightZoneMinWidth: 400px;
     flex-grow: 1;
   }
 }
+
+@media screen and (max-width: 1550px){
+  .show-left-zone.show-right-zone {
+    .left-zone {
+      max-width: 0;
+      min-width: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+  .show-right-zone {
+    .title-header {
+      display: none !important;
+    }
+  }
+}
