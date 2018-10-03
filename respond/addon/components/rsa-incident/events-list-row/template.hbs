@@ -6,7 +6,7 @@
   </div>
   {{component componentClass item=item}}
 {{/rsa-incident/events-list-row/trigger}}
-<div tabIndex="0" id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" hidden={{collapsed}}>
+<div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" hidden={{collapsed}}>
   <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
   {{#if ariaExpanded}}
     {{component detailComponentClass item=item}}

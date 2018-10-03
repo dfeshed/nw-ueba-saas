@@ -42,7 +42,6 @@ export default [].concat(
           'username': ''
         }
       },
-      'destination_parameter': 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
       'detected_by': '-nwendpoint',
       'detector': {
         'device_class': '',
@@ -62,6 +61,10 @@ export default [].concat(
       'host_dst': '',
       'host_src': '',
       'hostname': 'INENMENONS4L2C',
+      'ip_dst': '',
+      'ip_src': '',
+      'launch_argument_dst': 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
+      'launch_argument_src': 'dtf.exe  -dll:ioc.dll -testcase:353',
       'operating_system': '',
       'related_links': [
         {
@@ -103,10 +106,10 @@ export default [].concat(
       },
       'source_filename': 'dtf.exe',
       'source_hash': '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-      'source_parameter': 'dtf.exe  -dll:ioc.dll -testcase:353',
-      'source_user_account': 'CORP\\menons4',
+      'source_path': '',
       'target_filename': 'cmd.EXE',
       'target_hash': '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+      'target_path': '',
       'timestamp': 1528429212000,
       'to': '',
       'type': 'Log',
@@ -158,7 +161,6 @@ export default [].concat(
           'username': ''
         }
       },
-      'destination_parameter': 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
       'detected_by': '-nwendpoint',
       'detector': {
         'device_class': '',
@@ -178,6 +180,10 @@ export default [].concat(
       'host_dst': '',
       'host_src': '',
       'hostname': 'INENMENONS4L2C',
+      'ip_dst': '',
+      'ip_src': '',
+      'launch_argument_dst': 'PowerShell.exe --run',
+      'launch_argument_src': 'dtf.exe  -dll:ioc.dll -testcase:353',
       'operating_system': '',
       'related_links': [
         {
@@ -219,10 +225,10 @@ export default [].concat(
       },
       'source_filename': 'dtf.exe',
       'source_hash': '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-      'source_parameter': 'dtf.exe  -dll:ioc.dll -testcase:353',
-      'source_user_account': 'CORP\\menons4',
+      'source_path': '',
       'target_filename': 'cmd.EXE',
       'target_hash': '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+      'target_path': '',
       'timestamp': 1528429212000,
       'to': '',
       'type': 'Log',
@@ -298,7 +304,6 @@ export default [].concat(
           'username': ''
         }
       },
-      'destination_parameter': 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
       'detected_by': '-nwendpoint',
       'detector': {
         'device_class': '',
@@ -318,6 +323,10 @@ export default [].concat(
       'host_dst': '',
       'host_src': '',
       'hostname': 'INENMENONS4L2C',
+      'ip_dst': '',
+      'ip_src': '',
+      'launch_argument_dst': 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
+      'launch_argument_src': 'dtf.exe  -dll:ioc.dll -testcase:353',
       'operating_system': '',
       'related_links': [
         {
@@ -359,10 +368,10 @@ export default [].concat(
       },
       'source_filename': 'dtf.exe',
       'source_hash': '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-      'source_parameter': 'dtf.exe  -dll:ioc.dll -testcase:353',
-      'source_user_account': 'CORP\\menons4',
+      'source_path': '',
       'target_filename': 'cmd.exe',
       'target_hash': '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+      'target_path': '',
       'timestamp': 1528429212000,
       'to': '',
       'type': 'Log',
@@ -414,7 +423,6 @@ export default [].concat(
           'username': ''
         }
       },
-      'destination_parameter': 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
       'detected_by': '-nwendpoint',
       'detector': {
         'device_class': '',
@@ -434,6 +442,10 @@ export default [].concat(
       'host_dst': '',
       'host_src': '',
       'hostname': 'INENMENONS4L2C',
+      'ip_dst': '',
+      'ip_src': '',
+      'launch_argument_dst': 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
+      'launch_argument_src': 'dtf.exe  -dll:ioc.dll -testcase:353',
       'operating_system': '',
       'related_links': [
         {
@@ -475,10 +487,10 @@ export default [].concat(
       },
       'source_filename': 'dtf.exe',
       'source_hash': '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-      'source_parameter': 'dtf.exe  -dll:ioc.dll -testcase:353',
-      'source_user_account': 'CORP\\menons4',
+      'source_path': '',
       'target_filename': 'cmd.exe',
       'target_hash': '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+      'target_path': '',
       'timestamp': 1528429212000,
       'to': '',
       'type': 'Log',

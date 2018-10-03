@@ -33,7 +33,7 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     endpoint.assertDetailColumns(assert, {
       total: 4,
-      children: 12
+      children: 10
     });
 
     endpoint.assertDetailRow(assert, {
@@ -92,48 +92,34 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     endpoint.assertDetailRow(assert, {
       column: 1,
       row: 6,
-      label: 'Launch Argument',
-      value: 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE'
-    });
-
-    endpoint.assertDetailRow(assert, {
-      column: 1,
-      row: 7,
       label: 'Device Type',
       value: 'nwendpoint'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 8,
+      row: 7,
       label: 'Event Source',
       value: '10.63.0.117:56005'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 9,
+      row: 8,
       label: 'Event Source ID',
       value: '857775'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 10,
-      label: 'Source User Account',
-      value: 'CORP\\menons4'
-    });
-
-    endpoint.assertDetailRow(assert, {
-      column: 1,
-      row: 11,
+      row: 9,
       label: 'User',
       value: 'CORP\\menons4'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 12,
+      row: 10,
       label: 'User Src',
       value: 'CORP\\menons4'
     });

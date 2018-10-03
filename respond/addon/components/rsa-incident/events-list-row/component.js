@@ -11,6 +11,11 @@ export default Component.extend({
   classNames: ['events-list-table-row'],
   attributeBindings: ['testId:test-id'],
 
+  @computed('ariaExpanded')
+  tabIndex(ariaExpanded) {
+    return ariaExpanded ? '0' : '-1';
+  },
+
   @computed('item.id')
   eventIndex(itemId) {
     const id = itemId && itemId.toString() || '';

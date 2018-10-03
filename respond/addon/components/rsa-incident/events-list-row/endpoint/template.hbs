@@ -32,14 +32,14 @@
       <tr>
         <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.endpoint.sourceLabel'}}</th>
         <td test-id="eventSourceFileNameValue">{{item.source_filename}}</td>
-        <td test-id="eventSourceLaunchValue">{{item.source_parameter}}</td>
+        <td class="launch-args" test-id="eventSourceLaunchValue">{{item.launch_argument_src}}</td>
         <td test-id="eventSourcePathValue">{{item.source_path}}</td>
         <td test-id="eventSourceHashValue">{{item.source_hash}}</td>
       </tr>
       <tr>
         <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.endpoint.targetLabel'}}</th>
         <td test-id="eventTargetFileNameValue">{{item.target_filename}}</td>
-        <td test-id="eventTargetLaunchValue">{{item.target_parameter}}</td>
+        <td class="launch-args" test-id="eventTargetLaunchValue">{{item.launch_argument_dst}}</td>
         <td test-id="eventTargetPathValue">{{item.target_path}}</td>
         <td test-id="eventTargetHashValue">{{item.target_hash}}</td>
       </tr>

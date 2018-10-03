@@ -182,13 +182,14 @@ module('Integration | Component | events-list-row', function(hooks) {
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
 
     const details = find(`[id='${detailsId}']`);
-    assert.equal(details.getAttribute('tabIndex'), '0');
+    assert.equal(details.getAttribute('tabIndex'), '-1');
     assert.equal(details.getAttribute('aria-hidden'), 'true');
     assert.equal(details.getAttribute('hidden'), '');
     assert.equal(details.querySelector('.sr-only').textContent, 'Event Details');
 
     await click(childSelector);
 
+    assert.equal(details.getAttribute('tabIndex'), '0');
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
     assert.equal(details.getAttribute('aria-hidden'), 'false');
     assert.equal(details.getAttribute('hidden'), null);

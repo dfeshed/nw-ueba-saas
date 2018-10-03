@@ -19,6 +19,10 @@
   table tr:first-child th:nth-child(2) {
     width: 9rem;
   }
+
+  .launch-args {
+    word-break: break-word;
+  }
 }
 
 .events-list-endpoint-detail {
