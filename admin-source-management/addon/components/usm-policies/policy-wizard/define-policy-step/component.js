@@ -22,7 +22,7 @@ const dispatchToActions = {
 
 const DefinePolicyStep = Component.extend({
   tagName: 'vbox',
-  classNames: ['define-policy-step', 'scroll-box', 'rsa-wizard-step'],
+  classNames: ['define-policy-step', 'rsa-wizard-step'],
 
   // step object required to be passed in
   // step: null, // the wizard passes this in but we're not using it (yet anyway) - uncomment if/when needed

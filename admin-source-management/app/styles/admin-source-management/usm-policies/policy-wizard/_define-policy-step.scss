@@ -1,6 +1,5 @@
 .usm-policy-wizard {
   .define-policy-step {
-    max-height: calc(100vh - #{$wizardStepMaxHeight});
     .all-settings {
       .rsa-icon {
         font-size: 16px;
@@ -46,6 +45,10 @@
       .available-settings .title {
         @include rsa-font();
         padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+      }
+      .selected-settings, .available-settings {
+        max-height: calc(100vh - #{$wizardStepMaxHeight});
+        overflow-y: auto;
       }
       .selected-settings .scan-options {
         @include rsa-font(light,small);
