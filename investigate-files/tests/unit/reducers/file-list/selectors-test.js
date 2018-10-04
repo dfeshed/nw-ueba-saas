@@ -11,7 +11,8 @@ import {
   getContext,
   isAllSelected,
   selectedFileStatusHistory,
-  hostList
+  hostList,
+  files
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -42,6 +43,12 @@ const STATE = Immutable.from({
   },
   endpointQuery: {}
 });
+
+test('files', function(assert) {
+  const result = files(STATE);
+  assert.equal(result.length, 3);
+});
+
 
 test('fileExportLink', function(assert) {
   const result = fileExportLink(STATE);

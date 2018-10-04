@@ -8,12 +8,47 @@ const _contextLoadingStatus = (state, name) => state.endpoint[name].contextLoadi
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _tabName = (state, name) => name;
 
-export const fileStatus = (state, name) => ({ ...state.endpoint[name].fileStatus });
-export const selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
-export const fileContextSelections = (state, name) => state.endpoint[name].fileContextSelections || [];
-export const totalItems = (state, name) => state.endpoint[name].totalItems;
-export const contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
-export const isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
+const _fileStatus = (state, name) => state.endpoint[name].fileStatus;
+const _selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
+const _fileContextSelections = (state, name) => state.endpoint[name].fileContextSelections || [];
+const _totalItems = (state, name) => state.endpoint[name].totalItems;
+const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
+const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
+
+export const fileStatus = createSelector(
+  _fileStatus,
+  (fileStatus) => ({ ...fileStatus })
+);
+
+
+export const selectedRowId = createSelector(
+  _selectedRowId,
+  (selectedRowId) => selectedRowId
+);
+
+
+export const fileContextSelections = createSelector(
+  _fileContextSelections,
+  (fileContextSelections) => fileContextSelections
+);
+
+
+export const totalItems = createSelector(
+  _totalItems,
+  (totalItems) => totalItems
+);
+
+
+export const contextLoadMoreStatus = createSelector(
+  _contextLoadMoreStatus,
+  (contextLoadMoreStatus) => contextLoadMoreStatus
+);
+
+
+export const isRemediationAllowed = createSelector(
+  _isRemediationAllowed,
+  (isRemediationAllowed) => isRemediationAllowed
+);
 
 
 const _getProperties = (rowId, list, data) => {

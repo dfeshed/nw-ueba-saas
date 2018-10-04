@@ -47,7 +47,7 @@ const _toggleSelection = (state, payload) => {
   } else {
     selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType }];
   }
-  return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {} });
+  return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {}, isRemediationAllowed: true });
 
 };
 
