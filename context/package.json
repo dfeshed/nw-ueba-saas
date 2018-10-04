@@ -68,7 +68,7 @@
     "ember-dependency-lookup": "2.0.0"
   },
   "engines": {
-    "node": "7.5.0"
+    "node": "8.12.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
