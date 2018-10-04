@@ -11,7 +11,8 @@ public enum Schema {
     PRINT("print"),
     ACTIVE_DIRECTORY("active_directory"),
     // Dlp file is used only in the ade tests
-    DLPFILE("dlpfile");
+    DLPFILE("dlpfile"),
+    IOC("ioc");
 
     private String name;
 

@@ -17,24 +17,15 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
-import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
-import presidio.input.core.services.converters.ade.AuthenticationInputToAdeConverter;
-import presidio.input.core.services.converters.ade.FileInputToAdeConverter;
-import presidio.input.core.services.converters.ade.PrintInputToAdeConverter;
-import presidio.input.core.services.converters.output.ActiveDirectoryInputToOutputConverter;
-import presidio.input.core.services.converters.output.AuthenticationInputToOutputConverter;
-import presidio.input.core.services.converters.output.FileInputToOutputConverter;
-import presidio.input.core.services.converters.output.PrintInputToOutputConverter;
+import presidio.input.core.services.converters.ade.*;
+import presidio.input.core.services.converters.output.*;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
-import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.managers.FileTransformerManager;
-import presidio.input.core.services.transformation.managers.PrintTransformerManager;
+import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -182,5 +173,23 @@ public class InputCoreConfiguration {
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public PrintInputToAdeConverter printInputToAdeConverter() {
         return new PrintInputToAdeConverter();
+    }
+
+    @Bean(name = "IOC.transformer")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public IocTransformerManager IocTransformerManager() {
+        return new IocTransformerManager();
+    }
+
+    @Bean(name = "IOC.input-output-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public IocInputToOutputConverter iocInputToOutputConverter() {
+        return new IocInputToOutputConverter();
+    }
+
+    @Bean(name = "IOC.input-ade-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public IocInputToAdeConverter iocInputToAdeConverter() {
+        return new IocInputToAdeConverter();
     }
 }
