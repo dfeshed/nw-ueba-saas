@@ -42,18 +42,154 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String ALIAS_HOST_FIELD_NAME = "alias_host";
     private static final String ALIAS_SRC_FIELD_NAME = "alias_src";
     private static final String HOST_SRC_FIELD_NAME = "host_src";
+    private static final String HOST_DST_FIELD_NAME = "host_dst";
     private static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
     private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
+    private static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
+    private static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
     private static final String RESULT_SUCCESS = "SUCCESS";
     private static final String RESULT_FAILURE = "FAILURE";
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
-
+    private static final String EXPLICIT_CREDENTIALS_LOGON = "EXPLICIT_CREDENTIALS_LOGON";
+    public static final String SESSION_ID_FIELD_NAME = "sessionid";
+    public static final String EC_OUTCOME_FIELD_NAME = "ec_outcome";
 
 
     private String wrapWithDollar(String fieldName){
         return String.format("${%s}", fieldName);
+    }
+
+    private IJsonObjectTransformer buildAuthenticationSecureIdTransformer() {
+        List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
+
+        //Convert time field from EPOCH millis to EPOCH seconds
+        EpochTimeToNanoRepresentationTransformer dateTimeMillisToSeconds =
+                new EpochTimeToNanoRepresentationTransformer("date-time-millis-to-nano-representation", EVENT_TIME_FIELD_NAME, DATE_TIME_FIELD_NAME);
+        transformerChainList.add(dateTimeMillisToSeconds);
+
+        //Create capture and format list for source machines and destination machines
+        CaptureAndFormatConfiguration machineIdNormalizationZeroPattern =
+                new CaptureAndFormatConfiguration("-", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationFirstPattern =
+                new CaptureAndFormatConfiguration(".*:.*", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationSecondPattern =
+                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationThirdPattern =
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration machineIdNormalizationFourthPattern =
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+
+        List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(
+                machineIdNormalizationZeroPattern,
+                machineIdNormalizationFirstPattern,
+                machineIdNormalizationSecondPattern,
+                machineIdNormalizationThirdPattern,
+                machineIdNormalizationFourthPattern);
+
+        // Normalize the srcMachineId values
+        RegexCaptorAndFormatter srcMachineIdNormalization =
+                new RegexCaptorAndFormatter("src-machine-id-normalization",
+                        HOST_SRC_FIELD_NAME,
+                        SRC_MACHINE_ID_FIELD_NAME,
+                        srcAndDstMachineCaptureAndFormatConfigurationList);
+        transformerChainList.add(srcMachineIdNormalization);
+
+
+        // Normalize the userId values
+        CaptureAndFormatConfiguration userNormalizationFirstPattern = new CaptureAndFormatConfiguration("CN=([^,]+)", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationSecondPattern = new CaptureAndFormatConfiguration("CN=([^,]+),.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationThirdPattern = new CaptureAndFormatConfiguration("(.+\\\\)+(.+)@.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationFourthPattern = new CaptureAndFormatConfiguration("(.+\\\\)+([^@]+)", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationFifthPattern = new CaptureAndFormatConfiguration("(.+)@.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationSixthPattern = new CaptureAndFormatConfiguration(".+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(0, "LOWER")));
+        RegexCaptorAndFormatter userIdNormalization = new RegexCaptorAndFormatter("user-id-normalization", USER_DST_FIELD_NAME, USER_ID_FIELD_NAME,
+                Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
+                        userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
+        transformerChainList.add(userIdNormalization);
+
+        //Supporting ANONYMOUS LOGON and SYSTEM users
+        JsonObjectRegexPredicate srcMachineNotBlank = new JsonObjectRegexPredicate("src-machine-not-blank", SRC_MACHINE_ID_FIELD_NAME, "^(?!\\s*$).+");
+        FilterTransformer filterEventForAnonymousOrSystemUsersWithNoMachine =
+                new FilterTransformer("anonymous-or-system-filter", srcMachineNotBlank, true);
+        JoinTransformer createUserIdByJoiningMachineIdAndUserIdTransformer =
+                new JoinTransformer("create-user-id-by-joining-machine-id-and-user-id", USER_ID_FIELD_NAME,
+                        Arrays.asList(wrapWithDollar(USER_ID_FIELD_NAME), wrapWithDollar(SRC_MACHINE_ID_FIELD_NAME)),
+                        "@");
+        JsonObjectChainTransformer anonymousOrSystemUsersChainTransformer =
+                new JsonObjectChainTransformer("anonymous-or-system-chain",
+                        Arrays.asList(filterEventForAnonymousOrSystemUsersWithNoMachine, createUserIdByJoiningMachineIdAndUserIdTransformer));
+        JsonObjectRegexPredicate anonymousOrSystemUsersPredicate =
+                new JsonObjectRegexPredicate("user-equals-anonymous-or-system-predicate", USER_ID_FIELD_NAME, "anonymous logon|system");
+        IfElseTransformer anonymousOrSystemUsersIfElseTransformer =
+                new IfElseTransformer("user-equals-anonymous-or-system-if-else",
+                        anonymousOrSystemUsersPredicate,
+                        anonymousOrSystemUsersChainTransformer);
+        transformerChainList.add(anonymousOrSystemUsersIfElseTransformer);
+
+        //Normalize the result values
+        CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
+        CaptureAndFormatConfiguration resultSuccessPattern = new CaptureAndFormatConfiguration(".*(?i:succ).*", RESULT_SUCCESS, null);
+        RegexCaptorAndFormatter resultNormalizationTransformer =
+                new RegexCaptorAndFormatter("result-normalization", EC_OUTCOME_FIELD_NAME, RESULT_FIELD_NAME,
+                        Arrays.asList(resultFailedPattern, resultSuccessPattern));
+
+        transformerChainList.add(resultNormalizationTransformer);
+
+        //Fill operationType
+        SetterTransformer operationTypeTransformer =
+                new SetterTransformer("operation-type-transformer", OPERATION_TYPE_FIELD_NAME, "MFA");
+
+        transformerChainList.add(operationTypeTransformer);
+
+        //rename sessionId to eventId
+        CopyValueTransformer renameSessionIdToEventId =
+                new CopyValueTransformer(
+                        "rename-session-id-to-event-id",
+                        SESSION_ID_FIELD_NAME,
+                        true,
+                        Collections.singletonList(EVENT_ID_FIELD_NAME));
+        transformerChainList.add(renameSessionIdToEventId);
+
+        //rename reference_id to dataSource
+        CopyValueTransformer renameDeviceTypeToDataSource =
+                new CopyValueTransformer(
+                        "rename-device-type-to-data-source",
+                        DEVICE_TYPE_FIELD_NAME,
+                        true,
+                        Collections.singletonList(DATA_SOURCE_FIELD_NAME));
+        transformerChainList.add(renameDeviceTypeToDataSource);
+
+        // copy user_id to userName
+        CopyValueTransformer copyUserId =
+                new CopyValueTransformer(
+                        "copy-user-id",
+                        USER_ID_FIELD_NAME,
+                        true,
+                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME, USERNAME_FIELD_NAME));
+        transformerChainList.add(copyUserId);
+
+        //The SecureId Transformer that chain all the transformers together.
+        return new JsonObjectChainTransformer("auth-secureid-transformer", transformerChainList);
+
+    }
+
+    private IJsonObjectTransformer buildAuthTransformer() {
+        IJsonObjectTransformer authenticationSecureIdTransformer = buildAuthenticationSecureIdTransformer();
+        IJsonObjectTransformer authenticationWindowsAuditTransformer = buildAuthenticationWindowsAuditTransformer();
+        JsonObjectRegexPredicate deviceTypeEqualRsaacesrv =
+                new JsonObjectRegexPredicate("device-type-equal-rsaacesrv", DEVICE_TYPE_FIELD_NAME, "rsaacesrv");
+
+        return new IfElseTransformer("device-type-secureid", deviceTypeEqualRsaacesrv, authenticationSecureIdTransformer, authenticationWindowsAuditTransformer);
     }
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
@@ -277,8 +413,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     }
 
     @Test
-    public void deserialize_auth_trasformer_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+    public void deserialize_auth_transformer_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String transformerJsonAsString = mapper.writeValueAsString(transformer);
 
@@ -287,7 +423,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void filter_service_name_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         JSONObject jsonObject = buildAuthWindowAuditJsonObject("4769", "testUser", "winevent_snare",
                 "krbtgt", 1528124556000L, "2", "[\"someone-pc\"]", "Success Audit"
@@ -300,7 +436,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void filter_logon_type_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         JSONObject jsonObject = buildAuthWindowAuditJsonObject("4624", "rsmith@montereytechgroup.com", "winevent_snare",
                 null, 1528124556000L, "7", "[\"DESKTOP-LLHJ389\"]", "Success Audit"
@@ -314,7 +450,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4624_option1_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4624";
         String userDst = "rsmith@montereytechgroup.com";
@@ -336,7 +472,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4624_with_anonymous_logon_user_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4624";
         String userDst = "ANONYMOUS LOGON";
@@ -358,7 +494,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4624_with_anonymous_logon_user_and_blank_machine_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4624";
         String userDst = "ANONYMOUS LOGON";
@@ -380,7 +516,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4776_option1_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4776";
         String userDst = "CN=BOBBY,OU=Users,DC=Dell";
@@ -403,7 +539,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4776_option2_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4776";
         String userDst = "CN=BOBBY,OU=Users,DC=Dell";
@@ -427,7 +563,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
     @Test
     public void event_code_4769_option1_test() throws JsonProcessingException {
-        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String referenceId = "4769";
         String userDst = "CN=BOBBY,OU=Users,DC=Dell";
