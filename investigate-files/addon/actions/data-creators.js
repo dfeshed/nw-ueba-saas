@@ -148,7 +148,7 @@ const exportFileAsCSV = () => {
 
 const _getVisibleColumnNames = (getState) => {
   const { preferences: { filePreference } } = getState().preferences;
-  return ['firstFileName', ...filePreference.visibleColumns];
+  return _.uniq(['firstFileName', ...filePreference.visibleColumns]);
 };
 
 
