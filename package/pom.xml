@@ -116,9 +116,7 @@
                         <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
                     </defineStatements>
                     <preinstallScriptlet>
-                        <script>[ -d ${presidio-app-venv.directory} ] &amp;&amp; chown -R
-                            ${presidio.username}:${presidio.groupname} ${presidio-app-venv.directory}
-                        </script>
+                        <script>[ -d ${presidio-app-venv.directory} ] &amp;&amp; chown -R ${presidio.username}:${presidio.groupname} ${presidio-app-venv.directory}</script>
                     </preinstallScriptlet>
                     <defaultGroupname>${presidio.groupname}</defaultGroupname>
                     <defaultUsername>${presidio.username}</defaultUsername>
