@@ -121,7 +121,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "3.0.1",
     "seamless-immutable": "7.1.2",
-    "sockjs-client-web": "1.1.1",
+    "sockjs-client-web": "1.1.1-alpha.2",
     "tether": "^1.4.0"
   },
   "engines": {

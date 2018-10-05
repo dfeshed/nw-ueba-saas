@@ -10885,9 +10885,9 @@ socket.io@1.6.0:
     socket.io-client "1.6.0"
     socket.io-parser "2.3.1"
 
-sockjs-client-web@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/sockjs-client-web/-/sockjs-client-web-1.1.1.tgz#ff61eb3f20b3043edc4f89ee5507be42924b9e2f"
+sockjs-client-web@1.1.1-alpha.2:
+  version "1.1.1-alpha.2"
+  resolved "https://registry.npmjs.org/sockjs-client-web/-/sockjs-client-web-1.1.1-alpha.2.tgz#8aa8edd5e1f558bce50b6497025b04963330dda7"
   integrity sha1-/2HrPyCzBD7cT4nuVQe+QpJLni8=
   dependencies:
     debug "^2.2.0"

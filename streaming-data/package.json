@@ -26,7 +26,7 @@
     "ember-cli-node-assets": "0.2.0",
     "ember-get-config": "0.2.3",
     "jquery": "3.1.1",
-    "sockjs-client-web": "1.1.1"
+    "sockjs-client-web": "1.1.1-alpha.2"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
