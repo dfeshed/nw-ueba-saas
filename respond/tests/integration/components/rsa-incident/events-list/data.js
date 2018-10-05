@@ -1,6 +1,7 @@
 export const reEventId = '5b841c880a32bd5a68baeaf3:0';
 export const networkEventId = '5b757f480a32bd36c7609e96:0';
 export const endpointEventId = '5b8554be0a32bd353ad3a167:0';
+export const uebaEventId = '44732bcc-b9e8-4b2d-badb-e8747c98db46';
 
 const storyLineEvents = {
   respond: {
@@ -709,6 +710,7 @@ const storyLineEvents = {
               user_src: '',
               username: '',
               indicatorId: '5b757f480a32bd36c7609e96',
+              eventIndex: 0,
               id: networkEventId
             }
           ]
@@ -813,6 +815,7 @@ const storyLineEvents = {
               user_src: '',
               username: '',
               indicatorId: '5b757f480a32bd36c7609e97',
+              eventIndex: 0,
               id: '5b757f480a32bd36c7609e97:0'
             }
           ]
@@ -935,6 +938,7 @@ const storyLineEvents = {
               user_src: '',
               username: '',
               indicatorId: '5b89f97d0a32bd26fdf4507d',
+              eventIndex: 0,
               id: '5b89f97d0a32bd26fdf4507d:0'
             }
           ]
@@ -968,6 +972,7 @@ const storyLineEvents = {
               },
               id: 'c05972b1-db65-4786-bf86-d4f1541aa161',
               indicatorId: '586ecfc0ecd25950034e1318',
+              eventIndex: 0,
               schema: 'ACTIVE_DIRECTORY',
               scores: {
                 operationType: 4
@@ -999,8 +1004,9 @@ const storyLineEvents = {
                 userId: 'ad_qa_1_9',
                 userName: 'ad_qa_1_9'
               },
-              id: '44732bcc-b9e8-4b2d-badb-e8747c98db46',
+              id: uebaEventId,
               indicatorId: '586ecfc0ecd25950034e1318',
+              eventIndex: 1,
               schema: 'ACTIVE_DIRECTORY',
               scores: {
                 operationType: 4
@@ -1132,6 +1138,7 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
+              eventIndex: 0,
               id: endpointEventId
             },
             {
@@ -1253,6 +1260,7 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
+              eventIndex: 1,
               id: '5b8554be0a32bd353ad3a167:1'
             },
             {
@@ -1279,6 +1287,7 @@ const storyLineEvents = {
               user_account: '',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
+              eventIndex: 2,
               id: '5b8554be0a32bd353ad3a167:2'
             },
             {
@@ -1400,6 +1409,7 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
+              eventIndex: 3,
               id: '5b8554be0a32bd353ad3a167:3'
             },
             {
@@ -1521,6 +1531,7 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
+              eventIndex: 4,
               id: '5b8554be0a32bd353ad3a167:4'
             }
           ]
@@ -1754,6 +1765,7 @@ const storyLineEvents = {
               user_src: '',
               username: '',
               indicatorId: '5b841c880a32bd5a68baeaf3',
+              eventIndex: 1,
               id: '5b841c880a32bd5a68baeaf3:1'
             },
             {
@@ -1868,6 +1880,7 @@ const storyLineEvents = {
               user_src: '',
               username: '',
               indicatorId: '5b841c880a32bd5a68baeaf3',
+              eventIndex: 2,
               id: '5b841c880a32bd5a68baeaf3:2'
             }
           ]
@@ -1902,6 +1915,7 @@ const storyLineEvents = {
               timestamp: 1434571084000,
               type: 'Web Threat Detection Incident',
               user: 'John Doe1',
+              eventIndex: 0,
               indicatorId: '5b7f08240a32bd5a68baea89'
             }
           ]
@@ -1937,6 +1951,7 @@ const storyLineEvents = {
               type: 'ecat event',
               user: '',
               indicatorId: '5b7f06c10a32bd5a68baea84',
+              eventIndex: 0,
               id: '5b7f06c10a32bd5a68baea84:0'
             }
           ]
@@ -2081,6 +2096,7 @@ const storyLineEvents = {
               timestamp: 1407801720000,
               type: 'Resubmit',
               indicatorId: '5b9bb59dbcde8d385474a70a',
+              eventIndex: 0,
               id: '5b9bb59dbcde8d385474a70a:0'
             }
           ]

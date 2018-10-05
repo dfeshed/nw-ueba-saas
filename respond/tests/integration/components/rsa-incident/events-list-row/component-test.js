@@ -1,14 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, click, render } from '@ember/test-helpers';
+import { find, click, render, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-import { storyLineEvents, reEventId, networkEventId, endpointEventId } from '../events-list/data';
+import { storyLineEvents, uebaEventId, reEventId, networkEventId, endpointEventId } from '../events-list/data';
 import { storyDatasheet, getAlertsWithIndicatorId } from 'respond/selectors/storyline';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
+
+const ENTER_KEY = 13;
 
 module('Integration | Component | events-list-row', function(hooks) {
   setupRenderingTest(hooks, {
@@ -158,6 +160,98 @@ module('Integration | Component | events-list-row', function(hooks) {
     });
   });
 
+  test('renders generic row for ueba event', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+    const events = storyDatasheet(redux.getState());
+    const alerts = getAlertsWithIndicatorId(redux.getState());
+    const [ item ] = events.filter((e) => e.id === uebaEventId);
+
+    this.set('item', item);
+    this.set('alerts', alerts);
+
+    await render(hbs`{{rsa-incident/events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    generic.assertRowPresent(assert);
+
+    generic.assertRowAlertDetails(assert, {
+      name: 'abnormal_object_change_operation',
+      summary: '(Event 2 of 2)',
+      score: '4'
+    });
+
+    generic.assertRowHeader(assert, {
+      eventType: '',
+      detectorIp: '',
+      fileName: '',
+      fileHash: ''
+    });
+
+    generic.assertTableColumns(assert);
+
+    generic.assertTableSource(assert, {
+      ip: '',
+      port: '',
+      host: '',
+      mac: '',
+      user: ''
+    });
+
+    generic.assertTableTarget(assert, {
+      ip: '',
+      port: '',
+      host: '',
+      mac: '',
+      user: ''
+    });
+  });
+
+  test('event summary renders correctly with invalid eventIndex value', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+    const events = storyDatasheet(redux.getState());
+    const alerts = getAlertsWithIndicatorId(redux.getState());
+    const [ original ] = events.filter((e) => e.id === uebaEventId);
+
+    const item = {
+      ...original,
+      eventIndex: '0'
+    };
+
+    this.set('item', item);
+    this.set('alerts', alerts);
+
+    await render(hbs`{{rsa-incident/events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    const score = '4';
+    const summary = '(Event 1 of 2)';
+    const name = 'abnormal_object_change_operation';
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: null });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: undefined });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: NaN });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: [] });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: [{ id: 1 }] });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: 'yolo' });
+    generic.assertRowAlertDetails(assert, { name, summary, score });
+
+    this.set('item', { ...original, eventIndex: '08' });
+    generic.assertRowAlertDetails(assert, {
+      name,
+      summary: '(Event 9 of 2)',
+      score
+    });
+  });
+
   test('each element in the row has the correct aria attributes', async function(assert) {
     const redux = this.owner.lookup('service:redux');
     const events = storyDatasheet(redux.getState());
@@ -177,9 +271,12 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     const trigger = find(triggerSelector);
     const detailsId = `${guid}-row-details`;
-    assert.equal(trigger.tagName, 'BUTTON');
+    assert.equal(trigger.tagName, 'DIV');
+    assert.equal(trigger.getAttribute('role'), 'button');
+    assert.equal(trigger.getAttribute('tabIndex'), '0');
     assert.equal(trigger.getAttribute('aria-controls'), detailsId);
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(trigger.getAttribute('aria-pressed'), 'false');
 
     const details = find(`[id='${detailsId}']`);
     assert.equal(details.getAttribute('tabIndex'), '-1');
@@ -189,10 +286,31 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     await click(childSelector);
 
-    assert.equal(details.getAttribute('tabIndex'), '0');
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+    assert.equal(trigger.getAttribute('aria-pressed'), 'true');
+    assert.equal(details.getAttribute('tabIndex'), '0');
     assert.equal(details.getAttribute('aria-hidden'), 'false');
     assert.equal(details.getAttribute('hidden'), null);
-    assert.equal(document.activeElement.id, trigger.getAttribute('id'));
+  });
+
+  test('keyPress will also toggle the event row to show details', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+    const events = storyDatasheet(redux.getState());
+    const [ item ] = events.filter((e) => e.id === endpointEventId);
+
+    this.set('item', item);
+    this.set('expand', (id) => this.set('expandedId', id));
+
+    await render(hbs`{{rsa-incident/events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
+
+    const triggerSelector = '[test-id=eventRowTrigger]';
+    const childSelector = '[test-id=endpointEventMain]';
+
+    const trigger = find(triggerSelector);
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+
+    await triggerKeyEvent(childSelector, 'keypress', ENTER_KEY);
+
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true');
   });
 });

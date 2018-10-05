@@ -61,7 +61,7 @@ test('When FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH, the storyline events 
   };
   const expectedEndState = {
     ...initialState,
-    storylineEvents: [{ indicatorId, events: [{ id: `${indicatorId}:0`, indicatorId }, { id: `${indicatorId}:1`, indicatorId }] }],
+    storylineEvents: [{ indicatorId, events: [{ id: `${indicatorId}:0`, eventIndex: 0, indicatorId }, { id: `${indicatorId}:1`, eventIndex: 1, indicatorId }] }],
     storylineEventsBuffer: [],
     storylineEventsStatus: 'paused'
   };
@@ -86,7 +86,7 @@ test('When FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH, events are added to t
   const expectedEndState = {
     ...initialState,
     storylineEvents: [{}],
-    storylineEventsBuffer: [{ indicatorId, events: [{ id: `${indicatorId}:0`, indicatorId }, { id: `${indicatorId}:1`, indicatorId }] }],
+    storylineEventsBuffer: [{ indicatorId, events: [{ id: `${indicatorId}:0`, eventIndex: 0, indicatorId }, { id: `${indicatorId}:1`, eventIndex: 1, indicatorId }] }],
     storylineEventsStatus: 'paused'
   };
   const action = {
@@ -110,7 +110,7 @@ test('When FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH, and the buffer exceed
   const expectedEndState = {
     ...initialState,
     // items from the buffer along with the new event set from the action end up in the storylineEvents array
-    storylineEvents: [{}, {}, {}, { indicatorId, events: [{ id: `${indicatorId}:0`, indicatorId }, { id: `${indicatorId}:1`, indicatorId }] }],
+    storylineEvents: [{}, {}, {}, { indicatorId, events: [{ id: `${indicatorId}:0`, eventIndex: 0, indicatorId }, { id: `${indicatorId}:1`, eventIndex: 1, indicatorId }] }],
     storylineEventsBuffer: [],
     storylineEventsStatus: 'paused'
   };

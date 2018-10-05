@@ -13,6 +13,10 @@
     flex-basis: 50%;
   }
 
+  table {
+    padding-bottom: rsa-whitespace(less);
+  }
+
   table th, dt {
     @include rsa-font(regular, smaller, true);
     color: text-color(primary, light);
@@ -26,14 +30,6 @@
 
   table th, td {
     text-align: left;
-  }
-
-  button {
-    width: 100%;
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
-    }
   }
 
   .events-list-detail:focus {
@@ -65,6 +61,14 @@
   }
 
   .events-list-table-cell {
+    @include border-bottom(1px, solid, primary, light);
+
+    &:focus {
+      border: none;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
+    }
+
     .events-list-info {
       padding: 1px;
       padding-left: 1.8em;

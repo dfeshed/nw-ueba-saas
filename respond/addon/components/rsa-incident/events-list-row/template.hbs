@@ -1,4 +1,4 @@
-{{#rsa-incident/events-list-row/trigger showDetail=(action "showDetail") ariaControls=ariaControls expanded=ariaExpanded}}
+{{#rsa-incident/events-list-row/trigger showDetail=(action "showDetail") ariaControls=ariaControls expanded=ariaExpanded role="button" tabIndex="0"}}
   <div class="events-list-alert-detail">
     {{rsa-risk-score score=associatedAlert.severity size="small" testId="eventsAlertScore"}}
     <h3 class="inline-alert-name" test-id="eventsAlertName">{{associatedAlert.name}}</h3>

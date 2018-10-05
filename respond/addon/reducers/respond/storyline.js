@@ -117,6 +117,7 @@ const storyline = reduxActions.handleActions({
       // Tag each retrieved event with its parent indicator id.
       // This is useful downstream for mapping events back to their parent.
       evt.indicatorId = indicatorId;
+      evt.eventIndex = index;
 
       // Ensure each event has an id.
       // This is useful for selecting individual events in the UI.

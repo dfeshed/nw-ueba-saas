@@ -16,12 +16,9 @@ export default Component.extend({
     return ariaExpanded ? '0' : '-1';
   },
 
-  @computed('item.id')
-  eventIndex(itemId) {
-    const id = itemId && itemId.toString() || '';
-    const tokens = id.match(/(.*)\:(.*)/) || [];
-    const index = tokens.length === 3 ? tokens[2] : '0';
-    return parseInt(index, 10) + 1;
+  @computed('item.eventIndex')
+  eventIndex(index) {
+    return index && parseInt(index, 10) + 1 || 1;
   },
 
   @computed('alerts', 'item.indicatorId')
