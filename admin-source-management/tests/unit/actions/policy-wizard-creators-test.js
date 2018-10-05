@@ -61,10 +61,11 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('updatePolicyProperty action creator returns proper type and payload when field is primaryAddress', function(assert) {
-    const val = { id: '10.10.10.10' };
+    const val = { id: 'id1', host: '10.10.10.10' };
     const expectedAction = {
       type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
       payload: [
+        { field: 'policy.primaryNwServiceId', value: 'id1' },
         { field: 'policy.primaryAddress', value: '10.10.10.10' }
       ]
     };

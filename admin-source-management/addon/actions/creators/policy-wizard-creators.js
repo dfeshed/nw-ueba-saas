@@ -139,9 +139,9 @@ const updatePolicyProperty = (field, value) => {
       ];
       break;
     case 'primaryAddress':
-      value = value.id;
       payload = [
-        { field: `policy.${field}`, value }
+        { field: 'policy.primaryNwServiceId', value: value.id },
+        { field: 'policy.primaryAddress', value: value.host }
       ];
       break;
     default:

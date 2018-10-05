@@ -26,7 +26,8 @@ export const endpointServersList = createSelector(
     const services = [];
     for (let i = 0; i < listOfEndpoints.length; i++) {
       const service = {
-        id: listOfEndpoints[i].host,
+        id: listOfEndpoints[i].id,
+        host: listOfEndpoints[i].host,
         name: listOfEndpoints[i].displayName
       };
       services.push(service);
@@ -45,7 +46,7 @@ export const selectedEndpointSever = createSelector(
     let selected = null;
     for (let s = 0; s < endpointServersList.length; s++) {
       const endpointServer = endpointServersList[s];
-      if (policy.primaryAddress === endpointServer.id) {
+      if (policy.primaryAddress === endpointServer.host) {
         selected = endpointServer;
         break;
       }

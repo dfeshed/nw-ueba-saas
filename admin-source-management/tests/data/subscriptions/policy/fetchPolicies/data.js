@@ -22,7 +22,11 @@ export default [
     filterSignedHooks: false,
     requestScanOnRegistration: false,
     blockingEnabled: false,
-    agentMode: 'NO_MONITORING'
+    agentMode: 'NO_MONITORING',
+    primaryAddress: '',
+    primaryNwServiceId: '',
+    primaryHttpPort: 443,
+    primaryUdpPort: 444
   },
   {
     id: 'policy_001',
@@ -63,7 +67,11 @@ export default [
       filterSignedHooks: false,
       requestScanOnRegistration: false,
       blockingEnabled: false,
-      agentMode: 'FULL_MONITORING'
+      agentMode: 'FULL_MONITORING',
+      primaryAddress: '',
+      primaryNwServiceId: '',
+      primaryHttpPort: 443,
+      primaryUdpPort: 444
     },
     associatedGroups: [
       {
@@ -88,7 +96,11 @@ export default [
     filterSignedHooks: false,
     requestScanOnRegistration: false,
     blockingEnabled: false,
-    agentMode: 'FULL_MONITORING'
+    agentMode: 'FULL_MONITORING',
+    primaryAddress: '',
+    primaryNwServiceId: '',
+    primaryHttpPort: 443,
+    primaryUdpPort: 444
   },
   {
     id: 'policy_002',
@@ -113,7 +125,11 @@ export default [
     filterSignedHooks: false,
     requestScanOnRegistration: false,
     blockingEnabled: true,
-    agentMode: 'NO_MONITORING'
+    agentMode: 'NO_MONITORING',
+    primaryAddress: '',
+    primaryNwServiceId: '',
+    primaryHttpPort: 443,
+    primaryUdpPort: 444
   },
   {
     id: 'policy_003',
@@ -145,7 +161,11 @@ export default [
       filterSignedHooks: false,
       requestScanOnRegistration: false,
       blockingEnabled: false,
-      agentMode: 'FULL_MONITORING'
+      agentMode: 'FULL_MONITORING',
+      primaryAddress: '10.10.10.12',
+      primaryNwServiceId: 'id2',
+      primaryHttpPort: 443,
+      primaryUdpPort: 444
     },
     associatedGroups: [],
     scanType: 'MANUAL',
@@ -161,7 +181,11 @@ export default [
     filterSignedHooks: false,
     requestScanOnRegistration: false,
     blockingEnabled: false,
-    agentMode: 'FULL_MONITORING'
+    agentMode: 'FULL_MONITORING',
+    primaryAddress: '10.10.10.12',
+    primaryNwServiceId: 'id2',
+    primaryHttpPort: 443,
+    primaryUdpPort: 444
   },
   {
     id: 'policy_014',
@@ -193,7 +217,11 @@ export default [
       filterSignedHooks: false,
       requestScanOnRegistration: true,
       blockingEnabled: false,
-      agentMode: 'FULL_MONITORING'
+      agentMode: 'FULL_MONITORING',
+      primaryAddress: '10.10.10.10',
+      primaryNwServiceId: 'id1',
+      primaryHttpPort: 443,
+      primaryUdpPort: 540
     },
     associatedGroups: [],
     scanType: 'SCHEDULED',
@@ -210,6 +238,7 @@ export default [
     requestScanOnRegistration: true,
     blockingEnabled: false,
     primaryAddress: '10.10.10.10',
+    primaryNwServiceId: 'id1',
     primaryHttpPort: 443,
     primaryUdpPort: 540,
     agentMode: 'FULL_MONITORING'

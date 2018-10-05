@@ -48,8 +48,6 @@ module('Integration | Component | usm-policies/policy/schedule-config/primary-ad
         .policyWiz()
         .policyWizEndpointServers()
         .build();
-    // const state = this.owner.lookup('service:redux').getState();
-    // this.set('endpointsList', state.usm.policyWizard.listOfEndpointServers);
     await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
     await selectChoose('.primary-address__list', '.ember-power-select-option', 0);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

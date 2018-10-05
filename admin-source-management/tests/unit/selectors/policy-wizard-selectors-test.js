@@ -100,7 +100,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .policyWizEndpointServers()
       .build();
     const endpointExpected = {
-      'id': '10.10.10.10',
+      'id': 'id1',
+      'host': '10.10.10.10',
       'name': 'NWAPPLIANCE27455 - Endpoint Server'
     };
     const endpointSelected = selectedEndpointSever(Immutable.from(fullState));
@@ -116,18 +117,19 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     const endpointNullExpected = null;
     const endpointNullSelected = selectedEndpointSever(Immutable.from(fullStateNullAddress));
     assert.deepEqual(endpointNullSelected, endpointNullExpected, 'The returned value from the selectedEndpointSever selector is null as expected');
-
   });
 
   test('endpointServersList selector', function(assert) {
     const hostExpected = '10.10.10.10';
+    const idExpected = 'id1';
     const fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizEndpointServers()
       .build();
     const endpointsSelected = endpointServersList(Immutable.from(fullState));
     assert.equal(endpointsSelected.length, 2, 'number of endpoints is as expected');
-    assert.deepEqual(endpointsSelected[0].id, hostExpected, `endpointsSelected[0].id is ${hostExpected}`);
+    assert.deepEqual(endpointsSelected[0].host, hostExpected, `endpointsSelected[0].host is ${hostExpected}`);
+    assert.deepEqual(endpointsSelected[0].id, idExpected, `endpointsSelected[0].id is ${idExpected}`);
   });
 
   test('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {

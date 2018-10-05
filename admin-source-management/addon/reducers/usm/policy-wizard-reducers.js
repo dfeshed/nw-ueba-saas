@@ -33,6 +33,7 @@ export const initialState = {
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
     primaryAddress: null,
+    primaryNwServiceId: null,
     primaryHttpPort: null, // 1 to 65535
     primaryUdpPort: null, // 1 to 65535
     agentMode: null // 'NO_MONITORING' | 'FULL_MONITORING'
@@ -118,7 +119,7 @@ export const initialState = {
     { index: 16, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
     { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
     { index: 18, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
-    { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
+    { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
     { index: 20, id: 'primaryHttpPort', label: 'adminUsm.policy.primaryHttpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] },
     { index: 21, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 22, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
