@@ -251,6 +251,18 @@ export default reduxActions.handleActions({
     return state.set('group', editedGroup);
   },
 
+  [ACTION_TYPES.ADD_OR_OPERATOR]: (state, action) => {
+    const { andOr } = action.payload;
+    const editedGroup = {
+      ...state.group,
+      groupCriteria: {
+        ...state.group.groupCriteria,
+        conjunction: andOr
+      }
+    };
+    return state.set('group', editedGroup);
+  },
+
   [ACTION_TYPES.SAVE_GROUP]: (state, action) => (
     handle(state, action, {
       start: (state) => {

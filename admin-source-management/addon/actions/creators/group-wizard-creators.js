@@ -107,6 +107,16 @@ const removeCriteria = (criteriaPath) => {
   };
 };
 
+const handleAndOrOperator = (andOr) => {
+  const payload = {
+    andOr
+  };
+  return {
+    type: ACTION_TYPES.ADD_OR_OPERATOR,
+    payload
+  };
+};
+
 const saveGroup = (group, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.SAVE_GROUP,
@@ -148,5 +158,6 @@ export {
   updateGroupCriteria,
   savePublishGroup,
   addCriteria,
-  removeCriteria
+  removeCriteria,
+  handleAndOrOperator
 };

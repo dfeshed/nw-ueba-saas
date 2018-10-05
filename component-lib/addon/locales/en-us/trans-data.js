@@ -3791,6 +3791,14 @@ export default {
         BETWEEN: 'between',
         NOT_BETWEEN: 'not between'
       },
+      andOrOperator: {
+        AND: 'all',
+        OR: 'any'
+      },
+      andOrOperatorText: {
+        first: 'Include source if ',
+        second: ' of the following criteria are met:'
+      },
       inputValidations: {
         none: '',
         notEmpty: 'Value can not be empty',

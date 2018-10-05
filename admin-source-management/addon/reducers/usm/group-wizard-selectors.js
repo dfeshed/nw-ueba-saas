@@ -12,6 +12,7 @@ export const visited = (state) => _groupWizardState(state).visited;
 export const steps = (state) => _groupWizardState(state).steps;
 export const groupCriteria = (state) => _groupWizardState(state).group.groupCriteria.criteria;
 export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
+export const andOrOperator = (state) => _groupWizardState(state).group.groupCriteria.conjunction;
 
 export const isGroupLoading = createSelector(
   _groupWizardState,

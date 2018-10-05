@@ -28,6 +28,60 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(endState, groupWizInitialState);
   });
 
+  test('on ADD_OR_OPERATOR, set to OR', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [
+            ['osType', 'IN', ['abc']]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        conjunction: 'OR'
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.ADD_OR_OPERATOR,
+      payload: { andOr: 'OR' }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
+  test('on ADD_OR_OPERATOR, set to AND', function(assert) {
+    const initialState2 = Immutable.from({
+      group: {
+        name: 'test',
+        groupCriteria: {
+          conjunction: 'OR',
+          criteria: [
+            ['osType', 'IN', ['abc']]
+          ]
+        }
+      }
+    });
+    const expectedResult = {
+      ...initialState2.group,
+      groupCriteria: {
+        ...initialState2.group.groupCriteria,
+        conjunction: 'AND'
+      }
+    };
+    const action = {
+      type: ACTION_TYPES.ADD_OR_OPERATOR,
+      payload: { andOr: 'AND' }
+    };
+    const result = reducers(initialState2, action);
+    assert.deepEqual(result.group, expectedResult);
+  });
+
   test('on ADD_CRITERIA, find if new Criteria is added', function(assert) {
     const expectedResult = {
       ...initialState.group,

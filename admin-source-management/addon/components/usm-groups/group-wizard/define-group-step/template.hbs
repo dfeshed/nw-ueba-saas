@@ -1,1 +1,16 @@
+<table class="andOrTable">
+  <tr>
+    <td class="first">{{t 'adminUsm.groupCriteria.andOrOperatorText.first'}}</td>
+    <td class="andOrOperator">
+      {{#power-select
+        searchEnabled=false
+        options=andOr
+        selected=andOrOperator
+        onchange=(action 'handleAndOrOperator') as |option|}}
+        {{t (concat 'adminUsm.groupCriteria.andOrOperator.' option)}}
+      {{/power-select}}
+    </td>
+    <td class="second">{{t 'adminUsm.groupCriteria.andOrOperatorText.second'}}</td>
+  </tr>
+</table>
 {{usm-groups/group/group-attributes}}
