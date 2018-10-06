@@ -1,5 +1,6 @@
 .events-list-table-row {
   padding: rsa-whitespace(less);
+  @include border-bottom(1px, solid, primary, light);
 
   dl {
     display: flex;
@@ -11,10 +12,6 @@
 
   dd, dt {
     flex-basis: 50%;
-  }
-
-  table {
-    padding-bottom: rsa-whitespace(less);
   }
 
   table th, dt {
@@ -61,10 +58,7 @@
   }
 
   .events-list-table-cell {
-    @include border-bottom(1px, solid, primary, light);
-
     &:focus {
-      border: none;
       outline: none;
       box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
     }

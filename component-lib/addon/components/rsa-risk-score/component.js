@@ -17,6 +17,7 @@ export default Component.extend({
   tagName: 'svg',
   classNames: ['rsa-risk-score'],
   attributeBindings: [
+    'focusable',
     'diameter:width',
     'diameter:height',
     'testId:test-id'

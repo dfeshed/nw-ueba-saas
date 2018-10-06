@@ -25,7 +25,7 @@ export default Component.extend({
   click() {
     this.showDetail();
   },
-  keyPress(e) {
+  keyDown(e) {
     if (e && e.keyCode === ENTER_KEY) {
       this.showDetail();
     }

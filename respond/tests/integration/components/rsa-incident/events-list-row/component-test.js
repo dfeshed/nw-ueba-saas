@@ -269,6 +269,10 @@ module('Integration | Component | events-list-row', function(hooks) {
     const row = find(rowSelector);
     const guid = row.getAttribute('id');
 
+    // IE11 will focus on the svg without this attribute
+    const riskScore = find('[test-id=eventsAlertScore]');
+    assert.equal(riskScore.getAttribute('focusable'), 'false');
+
     const trigger = find(triggerSelector);
     const detailsId = `${guid}-row-details`;
     assert.equal(trigger.tagName, 'DIV');
@@ -293,7 +297,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     assert.equal(details.getAttribute('hidden'), null);
   });
 
-  test('keyPress will also toggle the event row to show details', async function(assert) {
+  test('keyDown will also toggle the event row to show details', async function(assert) {
     const redux = this.owner.lookup('service:redux');
     const events = storyDatasheet(redux.getState());
     const [ item ] = events.filter((e) => e.id === endpointEventId);
@@ -309,7 +313,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     const trigger = find(triggerSelector);
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
 
-    await triggerKeyEvent(childSelector, 'keypress', ENTER_KEY);
+    await triggerKeyEvent(childSelector, 'keydown', ENTER_KEY);
 
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
   });
