@@ -109,7 +109,6 @@ public class MultiKeyHistogramTest {
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) ((val1 + val2) + (val1 + val2 + val3)));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature2);
 
         String valToRemove = "value1";
         multiKeyHistogram.remove(new FeatureStringValue(valToRemove));
@@ -117,42 +116,7 @@ public class MultiKeyHistogramTest {
         Assert.assertNull(multiKeyHistogram.getHistogram().get(multiKeyFeature1));
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2 + val3));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature2);
     }
-
-
-    @Test
-    public void testRemoveKeyWhichIsMaxObject() {
-        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
-
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
-        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
-        double val1 = 1.0;
-        double val2 = 5.0;
-        multiKeyHistogram.add(multiKeyFeature1, val1);
-        multiKeyHistogram.add(multiKeyFeature1, val2);
-
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
-        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
-        double val3 = 4.0;
-        multiKeyHistogram.add(multiKeyFeature2, val1);
-        multiKeyHistogram.add(multiKeyFeature2, val2);
-        multiKeyHistogram.add(multiKeyFeature2, val3);
-
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
-        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) ((val1 + val2) + (val1 + val2 + val3)));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature2);
-
-        String valToRemove = "value2";
-        multiKeyHistogram.remove(new FeatureStringValue(valToRemove));
-
-        Assert.assertNull(multiKeyHistogram.getHistogram().get(multiKeyFeature2));
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
-        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature1);
-    }
-
 
     @Test
     public void testRemoveKeyWhichDoesNotExist() {
@@ -167,13 +131,11 @@ public class MultiKeyHistogramTest {
 
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature1);
 
         String valToRemove = "value2";
         multiKeyHistogram.remove(new FeatureStringValue(valToRemove));
 
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2));
-        Assert.assertEquals(multiKeyHistogram.getMaxObject(), multiKeyFeature1);
     }
 }

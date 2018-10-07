@@ -19,7 +19,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
     @Transient
     private Map<MultiKeyFeature, Double> histogram;
     private double total = 0d;
-    private Object maxObject = null;
 
     public MultiKeyHistogram() {
         this.histogram = new HashMap<>();
@@ -35,17 +34,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
         Double oldCount = histogram.get(multiKeyFeature);
         Double newValCount = oldCount != null ? count + oldCount : count;
         histogram.put(multiKeyFeature, newValCount);
-
-        if (maxObject == null) {
-            maxObject = multiKeyFeature;
-        } else {
-            Double maxCount = histogram.get(maxObject);
-            if (maxCount == null) {
-                maxObject = multiKeyFeature;
-            } else if (maxCount < newValCount) {
-                maxObject = multiKeyFeature;
-            }
-        }
         this.total += count;
     }
 
@@ -55,10 +43,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
             add(key, count);
         }
         return this;
-    }
-
-    public Object getMaxObject() {
-        return maxObject;
     }
 
     public boolean isEmpty() {
@@ -82,14 +66,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
                     this.total -= e.getValue();
                 }
                 it.remove();
-
-                if (maxObject.equals(e.getKey())) {
-                    if (histogram.size() > 0) {
-                        maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-                    } else {
-                        maxObject = null;
-                    }
-                }
             }
         }
     }

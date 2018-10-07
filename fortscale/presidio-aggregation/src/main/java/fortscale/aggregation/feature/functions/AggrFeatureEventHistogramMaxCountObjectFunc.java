@@ -1,16 +1,13 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
-import fortscale.utils.AggrFeatureFunctionUtils;
 
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by amira on 20/07/2015.
@@ -22,7 +19,8 @@ public class AggrFeatureEventHistogramMaxCountObjectFunc extends AbstractAggrFea
 
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram) {
-		return new AggrFeatureValue(multiKeyHistogram.getMaxObject(), (long)multiKeyHistogram.getTotal());
+		MultiKeyFeature max = multiKeyHistogram.getHistogram().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+		return new AggrFeatureValue(max, (long)multiKeyHistogram.getTotal());
 	}
 
 
