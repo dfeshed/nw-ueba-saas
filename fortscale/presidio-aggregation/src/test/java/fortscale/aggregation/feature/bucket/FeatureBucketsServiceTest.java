@@ -3,7 +3,6 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxRelatedFuncTestUtils;
 import fortscale.common.feature.*;
 import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
@@ -215,7 +214,7 @@ public class FeatureBucketsServiceTest {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
         featureNameToValue.forEach(multiKeyFeature::add);
-        multiKeyHistogram.setMax(multiKeyFeature, count);
+        multiKeyHistogram.set(multiKeyFeature, count);
         multiKeyHistogram.setTotal(total);
         return multiKeyHistogram;
     }

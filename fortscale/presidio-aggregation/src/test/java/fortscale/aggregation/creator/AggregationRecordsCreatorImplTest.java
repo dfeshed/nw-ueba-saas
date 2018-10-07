@@ -54,7 +54,7 @@ public class AggregationRecordsCreatorImplTest {
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
         multiKeyFeature.add("server", new FeatureStringValue("app_1"));
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
-        multiKeyHistogram.setMax(multiKeyFeature, 14.0);
+        multiKeyHistogram.set(multiKeyFeature, 14.0);
 
         Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", multiKeyHistogram);
 

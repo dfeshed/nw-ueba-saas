@@ -6,7 +6,6 @@ import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.feature.*;
 import fortscale.utils.AggrFeatureFunctionUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +70,8 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
 
             if (multiKeyFeature != null && maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
                 double potentialMax = ((FeatureNumericValue)maximizeFeatureValue.getValue()).getValue().doubleValue();
-                multiKeyHistogram.setMax(multiKeyFeature, potentialMax);
+                Double max = multiKeyHistogram.getCount(multiKeyFeature);
+                multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
             }
         }
 

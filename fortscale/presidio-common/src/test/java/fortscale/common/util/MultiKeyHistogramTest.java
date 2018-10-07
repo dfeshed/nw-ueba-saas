@@ -1,41 +1,36 @@
 package fortscale.common.util;
 
 import fortscale.common.feature.FeatureStringValue;
-import fortscale.common.feature.FeatureValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MultiKeyHistogramTest {
 
     @Test
-    public void testSetMax() {
+    public void testSet() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
         MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
         multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
-        double max1 = 90;
-        multiKeyHistogram.setMax(multiKeyFeature1, 80.0);
-        multiKeyHistogram.setMax(multiKeyFeature1, 50.0);
-        multiKeyHistogram.setMax(multiKeyFeature1, max1);
+        double value1 = 90;
+        multiKeyHistogram.set(multiKeyFeature1, 80.0);
+        multiKeyHistogram.set(multiKeyFeature1, 50.0);
+        multiKeyHistogram.set(multiKeyFeature1, value1);
 
         MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
         multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
-        double max2 = 100;
-        multiKeyHistogram.setMax(multiKeyFeature2, 80.0);
-        multiKeyHistogram.setMax(multiKeyFeature2, 50.0);
-        multiKeyHistogram.setMax(multiKeyFeature2, 70.0);
-        multiKeyHistogram.setMax(multiKeyFeature2, max2);
+        double value2 = 10;
+        multiKeyHistogram.set(multiKeyFeature2, 80.0);
+        multiKeyHistogram.set(multiKeyFeature2, 70.0);
+        multiKeyHistogram.set(multiKeyFeature2, value2);
 
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) max1);
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) max2);
-        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) 7.0);
+        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) value1);
+        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) value2);
+        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) 6.0);
     }
 
     @Test

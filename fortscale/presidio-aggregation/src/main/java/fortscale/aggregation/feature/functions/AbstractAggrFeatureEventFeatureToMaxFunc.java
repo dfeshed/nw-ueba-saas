@@ -7,7 +7,6 @@ import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +53,9 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
             }
             for (Map.Entry<MultiKeyFeature, Double> featuresGroupAndMax : (((MultiKeyHistogram)aggrFeature.getValue()).getHistogram()).entrySet()) {
                 MultiKeyFeature key = featuresGroupAndMax.getKey();
-                Double maxValue = featuresGroupAndMax.getValue();
-                multiKeyHistogram.setMax(key, maxValue);
+                Double potentialMax = featuresGroupAndMax.getValue();
+                Double max = multiKeyHistogram.getCount(key);
+                multiKeyHistogram.set(key, max == null ? potentialMax : Math.max(max, potentialMax));
             }
         }
 

@@ -25,10 +25,9 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 
     public static Feature createAggrFeature(String featureName, Pair<MultiKeyFeature, Integer>... featureValuesAndNumbers) {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
-        Map<MultiKeyFeature, Double> featuresGroupToMax = new HashMap<>();
         for (Pair<MultiKeyFeature, Integer> featureValuesAndNumber : featureValuesAndNumbers) {
             MultiKeyFeature multiKeyFeature = featureValuesAndNumber.getLeft();
-            multiKeyHistogram.setMax(multiKeyFeature, featureValuesAndNumber.getRight().doubleValue());
+            multiKeyHistogram.set(multiKeyFeature, featureValuesAndNumber.getRight().doubleValue());
         }
         return new Feature(featureName, multiKeyHistogram);
     }

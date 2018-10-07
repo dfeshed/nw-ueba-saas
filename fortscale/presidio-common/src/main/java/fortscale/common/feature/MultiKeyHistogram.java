@@ -13,20 +13,19 @@ import java.util.stream.Collectors;
 
 @Document
 public class MultiKeyHistogram implements Serializable, FeatureValue {
-
     private static final String HISTOGRAM_FIELD_NAME = "histogram";
 
     @Transient
     private Map<MultiKeyFeature, Double> histogram;
+    //todo: total in set and in add methods a little bit different. move it out of the methods? separate for 2 diff vars?
     private double total = 0d;
 
     public MultiKeyHistogram() {
         this.histogram = new HashMap<>();
     }
 
-    public void setMax(MultiKeyFeature multiKeyFeature, Double potentialMax) {
-        Double max = histogram.get(multiKeyFeature);
-        histogram.put(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+    public void set(MultiKeyFeature multiKeyFeature, Double value) {
+        histogram.put(multiKeyFeature, value);
         this.total++;
     }
 
@@ -38,19 +37,35 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
     }
 
     public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram) {
-        for (MultiKeyFeature key : multiKeyHistogram.getHistogram().keySet()) {
-            Double count = multiKeyHistogram.getHistogram().get(key);
-            add(key, count);
+        for (Map.Entry<MultiKeyFeature, Double> entry : multiKeyHistogram.getHistogram().entrySet()) {
+            add(entry.getKey(), entry.getValue());
         }
         return this;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public Double getCount(MultiKeyFeature multiKeyFeature) {
+        return histogram.get(multiKeyFeature);
     }
 
     public boolean isEmpty() {
         return histogram.isEmpty();
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public long getN() {
+        return histogram.size();
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+
+    public Map<MultiKeyFeature, Double> getHistogram() {
+        return histogram;
     }
 
     public void remove(FeatureValue val) {
@@ -68,19 +83,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
                 it.remove();
             }
         }
-    }
-
-    public long getN() {
-        return histogram.size();
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-
-    public Map<MultiKeyFeature, Double> getHistogram() {
-        return histogram;
     }
 
     @AccessType(AccessType.Type.PROPERTY)

@@ -119,7 +119,7 @@ public class EpochtimeToHighestDoubleMapRetrieverTest {
                 String epochtime = String.valueOf(currentBucketStartInstant.getEpochSecond());
                 MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
                 multiKeyFeature.add(FEATURE_NAME, new FeatureStringValue(epochtime));
-                multiKeyHistogram.setMax(multiKeyFeature, cyclicIntegerIterator.next().doubleValue());
+                multiKeyHistogram.set(multiKeyFeature, cyclicIntegerIterator.next().doubleValue());
                 currentBucketStartInstant = currentBucketStartInstant.plus(epochtimeResolution);
             }
 
