@@ -1,33 +1,6 @@
 import { schema } from 'normalizr';
 import { addId, commonNormalizerStrategy } from 'investigate-hosts/reducers/details/schema-utils';
 
-/**
- * Pluck the anomalies from osType and set it to parent
- * @param input
- * @returns {{anomalies}}
- * @public
- */
-const fileContextStrategy = (input) => {
-  const { machineOsType, id } = input;
-  const context = input[machineOsType];
-  const {
-    imageHooks = [],
-    threads = [],
-    kernelHooks = []
-  } = context;
-
-  addId(imageHooks, id, 'imageHooks_');
-  addId(threads, id, 'threads_');
-  addId(kernelHooks, id, 'kernelHooks_');
-
-  return {
-    ...input,
-    imageHooks,
-    threads,
-    kernelHooks
-  };
-};
-
 const imageHooksStrategy = (input) => {
   const { machineOsType, id } = input;
   const context = input[machineOsType];
@@ -45,12 +18,36 @@ const imageHooksStrategy = (input) => {
       ...item,
       dllFileName,
       hookedProcess: `${fileName} : ${pid}`,
-      symbol: `${hookedFileName}!${symbol}`
+      hookedFileName,
+      symbol
     };
   });
   return {
     ...input,
     imageHooks: newData
+  };
+};
+
+const kernelHooksStrategy = (input) => {
+  const { machineOsType, id } = input;
+  const context = input[machineOsType];
+  const {
+    kernelHooks = []
+  } = context;
+  addId(kernelHooks, id, 'kernelHooks_');
+  const { fileName: driverFileName } = input;
+  const newData = kernelHooks.map((item) => {
+    const { hookLocation: { fileName: hookedFileName, objectFunction } } = item;
+    return {
+      ...item,
+      objectFunction,
+      driverFileName,
+      hookedFileName
+    };
+  });
+  return {
+    ...input,
+    kernelHooks: newData
   };
 };
 
@@ -94,7 +91,7 @@ const fileContextKernelHook = new schema.Entity('fileContext',
   {
     kernelHooks: [kernelHook]
   },
-  { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
+  { idAttribute: 'checksumSha256', processStrategy: kernelHooksStrategy });
 
 // List of file context
 const imageHookSchema = [fileContextImageHooks];
