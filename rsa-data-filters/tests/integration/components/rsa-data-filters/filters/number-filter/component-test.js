@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, fillIn, blur } from '@ember/test-helpers';
+import { render, findAll, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
@@ -59,7 +59,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     await render(hbs`{{rsa-data-filters/filters/number-filter onChange=(action onChange) filterOptions=filterOptions}}`);
     assert.equal(findAll('.operators').length, 1, 'It renders operators');
     await fillIn('.number-input.start input', '20');
-    await blur('.number-input.start input');
+    await triggerKeyEvent('.number-input.start input', 'keyup', 13);
   });
 
 

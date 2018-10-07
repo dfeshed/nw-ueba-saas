@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, fillIn, blur, click } from '@ember/test-helpers';
+import { render, findAll, find, fillIn, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | rsa-data-filters', function(hooks) {
@@ -25,7 +25,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.equal(findAll('.filter-controls').length, 1, 'Expecting to render one filter control');
     assert.equal(findAll('.text-filter').length, 1, 'Expected render text filter');
     await fillIn('.file-name-input  input', 'malware.exe');
-    await blur('.file-name-input  input');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
@@ -43,7 +43,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.equal(findAll('.filter-controls').length, 2, 'Expecting to render one filter control');
     assert.equal(findAll('.text-filter').length, 2, 'Expected render text filter');
     await fillIn('.file-name-input  input', 'malware.exe');
-    await blur('.file-name-input  input');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
@@ -99,7 +99,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.expect(3);
     this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
-      assert.equal(filters.length, 2);
+      assert.equal(filters.length, 0);
     });
 
     this.set('showSaveFilterButton', false);

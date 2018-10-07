@@ -9,11 +9,11 @@
     onchange=(action 'changeOperator') as |option|}}
     {{option.label}}
   {{/power-select}}
-  {{rsa-form-input
-    onEnter=(action 'onEnter')
-    focusOut=(action 'onInputFocusOut')
-    value=filterValue.value class='file-name-input'
-    isError=isError
-    errorMessage=(t errorMessage)
-    placeholder='Enter Value'}}
+  <div class="file-name-input rsa-form-input">
+    {{input
+      type="text"
+      value=(readonly filterValue.value)
+      placeholder='Enter Value'
+      key-up="handleKeyUp"}}
+  </div>
 </hbox>

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, fillIn, blur } from '@ember/test-helpers';
+import { render, findAll, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
@@ -43,7 +43,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     this.set('options', { name: 'fileName', filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
-    await blur('.file-name-input  input');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
 });

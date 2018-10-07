@@ -20,7 +20,7 @@ export default Component.extend({
 
   updatedFilters: [],
 
-  clearFormOnReset: false,
+  clearFormOnReset: true,
 
   showSaveFilterButton: false,
 
@@ -67,6 +67,7 @@ export default Component.extend({
     const preLoadedFilters = this._setPreAppliedFilterValues(this.get('config'));
     this.set('preLoadedFilters', preLoadedFilters);
     this.set('updatedFilters', [...preLoadedFilters]);
+    this.set('disableSaveFilterButton', preLoadedFilters.length === 0);
   },
 
 
@@ -91,8 +92,8 @@ export default Component.extend({
       if (onFilterChange) {
         onFilterChange(newFilters);
       }
-
       this.set('updatedFilters', newFilters);
+      this.set('disableSaveFilterButton', newFilters.length === 0);
     },
 
     saveFilters() {
@@ -103,13 +104,18 @@ export default Component.extend({
     },
 
     resetFilters() {
+      const onFilterChange = this.get('onFilterChange');
+      this.set('disableSaveFilterButton', true);
       if (!this.get('clearFormOnReset')) {
-        const onFilterChange = this.get('onFilterChange');
         const preLoadedFilters = this.get('preLoadedFilters');
         if (onFilterChange) {
-          this.set('isReset', true);
           this.set('updatedFilters', [...preLoadedFilters]);
           onFilterChange(preLoadedFilters);
+        }
+      } else {
+        this.set('updatedFilters', []);
+        if (onFilterChange) {
+          onFilterChange([], true);
         }
       }
     }

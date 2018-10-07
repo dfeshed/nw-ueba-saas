@@ -69,10 +69,6 @@ const FILTER_TYPES = [
     'name': 'size',
     'label': 'investigateFiles.fields.size',
     'type': 'number',
-    'filterValue': {
-      operator: 'GREATER_THAN',
-      value: []
-    },
     'operators': [
       { label: 'Greater Than', type: 'GREATER_THAN' },
       { label: 'Less Than', type: 'LESS_THAN' },

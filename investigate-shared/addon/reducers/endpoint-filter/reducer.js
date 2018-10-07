@@ -40,6 +40,8 @@ const filterReducer = handleActions({
 
   [ACTION_TYPES.APPLY_FILTER]: (state, { payload }) => state.set('expressionList', payload),
 
+  [ACTION_TYPES.RESET_FILTER]: (state) => state.merge({ 'selectedFilter': { id: 1, criteria: { expressionList: [] } } }), // RESET To All
+
   [ACTION_TYPES.SET_SAVED_FILTER]: (state, { payload }) => state.set('selectedFilter', payload),
 
   [ACTION_TYPES.SAVE_FILTER]: (state, action) => {

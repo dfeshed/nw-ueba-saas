@@ -36,7 +36,7 @@ const convertFromBytes = (bytes) => {
 };
 
 export const expressionList = createSelector(
-  savedFilter,
+  [savedFilter],
   (savedFilter) => {
     if (savedFilter) {
       return savedFilter.criteria.expressionList;

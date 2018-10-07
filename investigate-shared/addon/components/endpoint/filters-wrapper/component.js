@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { filters, isSystemFilter, selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
 import layout from './template';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
@@ -75,6 +74,8 @@ export default Component.extend({
 
   filterType: null,
 
+  resetFilters: null,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
@@ -97,11 +98,6 @@ export default Component.extend({
     }
   },
 
-  @computed('isSystemFilter', 'selectedFilterId', 'expressionList')
-  disableSave(isSystemFilter, selectedFilterId, expressionList = []) {
-    return (isSystemFilter && selectedFilterId !== 1) || expressionList.length === 0;
-  },
-
   @computed('isNameInvalid', 'isNameEmpty')
   displayProperties(isNameInvalid, isNameEmpty) {
     const label = isNameInvalid || isNameEmpty ? 'investigateFiles.filter.customFilters.save.errorHeader' :
@@ -112,10 +108,15 @@ export default Component.extend({
 
   actions: {
 
-    filterChanged(filters) {
-      const expressionList = parseFilters(filters);
-      this.set('expressionList', expressionList);
-      this.applyFilters(expressionList);
+    filterChanged(filters, reset) {
+      if (reset) {
+        this.applyFilters(filters);
+        this.resetFilters();
+      } else {
+        const expressionList = parseFilters(filters);
+        this.set('expressionList', expressionList);
+        this.applyFilters(expressionList);
+      }
     },
 
     closeSaveFilterModal() {
@@ -127,35 +128,20 @@ export default Component.extend({
 
     showSaveFilter(filters) {
       const expressionList = parseFilters(filters);
-      const { name, id } = this.get('savedFilter') || {};
-      if (id && id !== 1) {
-        const filter = {
-          name,
-          id
-        };
-        const callBackOptions = {
-          onSuccess: () => {
-            success('investigateFiles.filter.customFilters.save.success');
-          },
-          onFailure: () => failure('investigateFiles.customFilter.error')
-        };
-        this.createCustomSearch(filter, expressionList, this.get('filterType'), callBackOptions);
-      } else {
-        this.set('showSaveFilter', true);
-        run.next(() => {
-          this.get('eventBus').trigger('rsa-application-modal-open-save-search');
-        });
+      this.set('expressionList', expressionList);
+      const savedFilter = this.get('savedFilter');
+
+      if (savedFilter) {
+        this.set('saveFilterName', savedFilter.name);
       }
+
+      this.set('showSaveFilter', true);
     },
 
     saveFilter() {
 
       const { saveFilterName, isNameInvalid, expressionList } = this.getProperties('saveFilterName', 'isNameInvalid', 'expressionList');
-
-      const filter = {
-        name: saveFilterName || ''
-      };
-
+      const { name, id } = this.get('savedFilter') || {};
       //  checking if any of the added filter fields are empty.
       if (!expressionList.length || expressionList.some((item) => !item.propertyValues)) {
         failure('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage');
@@ -165,12 +151,24 @@ export default Component.extend({
         const callBackOptions = {
           onSuccess: () => {
             success('investigateFiles.filter.customFilters.save.success');
-            this.get('eventBus').trigger('rsa-application-modal-close-save-search');
             this.set('showSaveFilter', false);
           },
           onFailure: () => failure('investigateFiles.customFilter.error')
         };
-        this.createCustomSearch(filter, expressionList, this.get('filterType'), callBackOptions);
+        if (saveFilterName === name) {
+          const filter = {
+            name,
+            id
+          };
+
+          this.createCustomSearch(filter, expressionList, this.get('filterType'), callBackOptions);
+        } else {
+          const filter = {
+            name: saveFilterName || ''
+          };
+          this.createCustomSearch(filter, expressionList, this.get('filterType'), callBackOptions);
+        }
+
       }
       this.set('saveFilterName', '');
     }

@@ -3,6 +3,7 @@ import layout from './template';
 import { assign } from '@ember/polyfills';
 import { isEmpty } from '@ember/utils';
 import { computed } from '@ember/object';
+import { debounce } from '@ember/runloop';
 
 export default Component.extend({
 
@@ -104,18 +105,10 @@ export default Component.extend({
   },
 
   actions: {
-    onEnter(value) {
+    handleKeyUp(value = '') {
       this.set('filterValue.value', value);
-      this._handeFilterChanged();
+      debounce(this, this._handeFilterChanged, {}, 600);
     },
-    onInputFocusOut(e) {
-      if (this.get('options.filterOnBlur')) {
-        const { value } = e.target;
-        this.set('filterValue.value', value);
-        this._handeFilterChanged();
-      }
-    },
-
     changeOperator(option) {
       this.set('filterValue.operator', option);
       this._onFilterChange();

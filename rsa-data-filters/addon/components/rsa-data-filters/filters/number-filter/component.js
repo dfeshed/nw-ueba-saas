@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
 import computed from 'ember-computed-decorators';
+import { debounce } from '@ember/runloop';
 
 export default Component.extend({
 
@@ -55,11 +56,15 @@ export default Component.extend({
 
   @computed('filterValue.operator')
   isOperatorBetween(operator) {
-    return 'BETWEEN' === operator.type;
+    return 'BETWEEN' === (operator && operator.type);
   },
 
   init() {
     this._super(arguments);
+    const { operators, filterValue } = this.get('filterOptions');
+    if (operators && !filterValue) {
+      this.set('defaults.filterValue', { operator: operators[0].type, value: [] });
+    }
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     this.set('options', options);
   },
@@ -95,13 +100,8 @@ export default Component.extend({
   },
 
   actions: {
-    onEnter(value) {
-      this._handleFilterChange(value);
-    },
-    onInputFocusOut(e) {
-      if (this.get('options.filterOnBlur')) {
-        this._handleFilterChange(e.target.value);
-      }
+    handleKeyUp(value = '') {
+      debounce(this, this._handleFilterChange, value, 600);
     },
 
     changeOperator(option) {

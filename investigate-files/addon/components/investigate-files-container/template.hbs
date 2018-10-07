@@ -6,12 +6,13 @@
       savedFilter=savedFilter
       savedFilters=filesFilters
       selectedFilterId=selectedFilterId
+      filterType='FILE'
+      filterTypes=filterTypes
+      resetFilters=(action 'resetFilters')
       applyFilters=(action 'applyFilters' (action 'getFirstPageOfFiles'))
       applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfFiles'))
       deleteFilter=(action 'deleteFilter')
-      createCustomSearch=(action 'createCustomSearch')
-      filterType='FILE'
-      filterTypes=filterTypes }}
+      createCustomSearch=(action 'createCustomSearch')}}
   {{/layout.left}}
   {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">

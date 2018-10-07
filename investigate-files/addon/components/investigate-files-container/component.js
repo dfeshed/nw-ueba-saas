@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { applyFilters, createCustomSearch, applySavedFilters, deleteFilter } from 'investigate-files/actions/filter-creators';
+import { applyFilters, createCustomSearch, applySavedFilters, deleteFilter, resetFilters } from 'investigate-files/actions/filter-creators';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
@@ -47,7 +47,8 @@ const dispatchToActions = {
   getFirstPageOfFiles,
   getUpdatedRiskScoreContext,
   applySavedFilters,
-  deleteFilter
+  deleteFilter,
+  resetFilters
 };
 
 /**

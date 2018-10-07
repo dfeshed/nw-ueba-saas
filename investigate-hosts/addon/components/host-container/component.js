@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { hostListForScanning, hasMachineId } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
-import { createCustomSearch, applyFilters, applySavedFilters, deleteFilter } from 'investigate-hosts/actions/data-creators/filter-creators';
+import { createCustomSearch, applyFilters, applySavedFilters, deleteFilter, resetFilters } from 'investigate-hosts/actions/data-creators/filter-creators';
 import { FILTER_TYPES } from './filter-types';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
@@ -21,7 +21,8 @@ const dispatchToActions = {
   createCustomSearch,
   applySavedFilters,
   applyFilters,
-  deleteFilter
+  deleteFilter,
+  resetFilters
 };
 
 const Container = Component.extend({

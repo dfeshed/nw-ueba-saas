@@ -11,27 +11,29 @@
   {{/power-select}}
 
   {{#if isOperatorBetween}}
-    {{rsa-form-input
-      type='number'
-      onEnter=(action 'onEnter')
-      focusOut=(action 'onInputFocusOut')
-      value=filterValue.value.[0]
-      class='number-input start'}}
-    {{rsa-form-input
-      type='number'
-      onEnter=(action 'onEnter')
-      focusOut=(action 'onInputFocusOut')
-      value=filterValue.value.[1]
-      class='number-input end'}}
+    <div class="number-input start rsa-form-input">
+      {{input
+        type="number"
+        value=(readonly filterValue.value.[0])
+        placeholder='Enter Value'
+        key-up="handleKeyUp"}}
+    </div>
+    <div class="number-input end rsa-form-input">
+      {{input
+        type="number"
+        value=(readonly filterValue.value.[1])
+        placeholder='Enter Value'
+        key-up="handleKeyUp"}}
+    </div>
   {{else}}
-    {{rsa-form-input
-      type='number'
-      onEnter=(action 'onEnter')
-      focusOut=(action 'onInputFocusOut')
-      value=filterValue.value.[0]
-      class='number-input'}}
+    <div class="number-input rsa-form-input">
+      {{input
+        type="number"
+        value=(readonly filterValue.value.[0])
+        placeholder='Enter Value'
+        key-up="handleKeyUp"}}
+    </div>
   {{/if}}
-
   {{#if hasUnits}}
     {{#power-select
       tagName='div'

@@ -57,6 +57,9 @@ const applyFilters = (reload, expressions) => {
   };
 };
 
+const resetFilters = () => ({ type: ACTION_TYPES.RESET_FILTER, meta: { belongsTo: 'MACHINE' } });
+
+
 const applySavedFilters = (reload, filter) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo: 'MACHINE' } });
@@ -93,5 +96,6 @@ export {
   deleteFilter,
   applyFilters,
   applySavedFilters,
-  createCustomSearch
+  createCustomSearch,
+  resetFilters
 };
