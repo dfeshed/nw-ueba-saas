@@ -51,12 +51,11 @@ public class AggregationRecordsCreatorImplTest {
         featureBucket.setStartTime(startTime);
         featureBucket.setEndTime(endTime);
 
-        Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-        featureNameToValue.put("server", new FeatureStringValue("app_1"));
-        MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
-        Map<MultiKeyFeature, Double> histogram = new HashMap<>();
-        histogram.put(multiKeyFeature, 14.0);
-        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram(histogram, 1d);
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+        multiKeyFeature.add("server", new FeatureStringValue("app_1"));
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+        multiKeyHistogram.setMax(multiKeyFeature, 14.0);
+
         Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", multiKeyHistogram);
 
         HashMap<String, Feature> aggregatedFeatures = new HashMap<>();

@@ -41,8 +41,8 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
     @SuppressWarnings("unchecked")
     private MultiKeyHistogram calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         String featureToPick = getFeatureToPick(aggrFeatureEventConf);
-        Map<MultiKeyFeature, Double> featuresGroupToMax = new HashMap<>();
-        double total = 0.0;
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             Feature aggrFeature = aggrFeatures.get(featureToPick);
             if (aggrFeature == null) {
@@ -54,14 +54,12 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
             }
             for (Map.Entry<MultiKeyFeature, Double> featuresGroupAndMax : (((MultiKeyHistogram)aggrFeature.getValue()).getHistogram()).entrySet()) {
                 MultiKeyFeature key = featuresGroupAndMax.getKey();
-                Double value = featuresGroupAndMax.getValue();
-                Double max = featuresGroupToMax.get(key);
-                featuresGroupToMax.put(key, max == null ? value : Math.max(max, value));
+                Double maxValue = featuresGroupAndMax.getValue();
+                multiKeyHistogram.setMax(key, maxValue);
             }
-            total += ((MultiKeyHistogram) aggrFeature.getValue()).getTotal();
         }
 
-        return featuresGroupToMax.isEmpty()? null : new MultiKeyHistogram(featuresGroupToMax, total);
+        return multiKeyHistogram.isEmpty()? null : multiKeyHistogram;
     }
 
     private String getFeatureToPick(AggregatedFeatureEventConf aggrFeatureEventConf) {

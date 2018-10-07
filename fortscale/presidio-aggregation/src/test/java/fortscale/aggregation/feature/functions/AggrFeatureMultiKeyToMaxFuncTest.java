@@ -145,7 +145,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         final String maximizeFeatureName = "event_time_score";
 
         final int max = 10;
-        MultiKeyFeature multiKeyFeature = new MultiKeyFeature(new HashMap<>());
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature, max - 1));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<>("dest_machine", "host_456"),

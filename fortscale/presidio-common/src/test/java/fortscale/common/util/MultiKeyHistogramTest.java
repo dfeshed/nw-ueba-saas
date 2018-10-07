@@ -18,18 +18,16 @@ public class MultiKeyHistogramTest {
     public void testSetMax() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
         double max1 = 90;
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
         multiKeyHistogram.setMax(multiKeyFeature1, 80.0);
         multiKeyHistogram.setMax(multiKeyFeature1, 50.0);
         multiKeyHistogram.setMax(multiKeyFeature1, max1);
 
-        Map<String, FeatureValue> featureNameToValue2 = new HashMap<>();
-        featureNameToValue2.put("featureName2", new FeatureStringValue("value2"));
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
         double max2 = 100;
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature(featureNameToValue2);
         multiKeyHistogram.setMax(multiKeyFeature2, 80.0);
         multiKeyHistogram.setMax(multiKeyFeature2, 50.0);
         multiKeyHistogram.setMax(multiKeyFeature2, 70.0);
@@ -44,17 +42,15 @@ public class MultiKeyHistogramTest {
     public void testAdd() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
         double val1 = 1.0;
         double val2 = 5.0;
         multiKeyHistogram.add(multiKeyFeature1, val1);
         multiKeyHistogram.add(multiKeyFeature1, val2);
 
-        Map<String, FeatureValue> featureNameToValue2 = new HashMap<>();
-        featureNameToValue2.put("featureName2", new FeatureStringValue("value2"));
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature(featureNameToValue2);
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
         double val3 = 4.0;
         multiKeyHistogram.add(multiKeyFeature2, val1);
         multiKeyHistogram.add(multiKeyFeature2, val2);
@@ -70,13 +66,11 @@ public class MultiKeyHistogramTest {
     public void testAddMultiKeyHistogram() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
 
-        Map<String, FeatureValue> featureNameToValue2 = new HashMap<>();
-        featureNameToValue2.put("featureName2", new FeatureStringValue("value2"));
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature(featureNameToValue2);
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
         multiKeyHistogram.add(multiKeyFeature1, 10.0);
         multiKeyHistogram.add(multiKeyFeature2, 50.0);
 
@@ -98,17 +92,15 @@ public class MultiKeyHistogramTest {
     public void testRemoveKeyFromOneKeyHistogram() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
         double val1 = 1.0;
         double val2 = 5.0;
         multiKeyHistogram.add(multiKeyFeature1, val1);
         multiKeyHistogram.add(multiKeyFeature1, val2);
 
-        Map<String, FeatureValue> featureNameToValue2 = new HashMap<>();
-        featureNameToValue2.put("featureName2", new FeatureStringValue("value2"));
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature(featureNameToValue2);
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
         double val3 = 4.0;
         multiKeyHistogram.add(multiKeyFeature2, val1);
         multiKeyHistogram.add(multiKeyFeature2, val2);
@@ -133,17 +125,15 @@ public class MultiKeyHistogramTest {
     public void testRemoveKeyWhichIsMaxObject() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
         double val1 = 1.0;
         double val2 = 5.0;
         multiKeyHistogram.add(multiKeyFeature1, val1);
         multiKeyHistogram.add(multiKeyFeature1, val2);
 
-        Map<String, FeatureValue> featureNameToValue2 = new HashMap<>();
-        featureNameToValue2.put("featureName2", new FeatureStringValue("value2"));
-        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature(featureNameToValue2);
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("featureName2", new FeatureStringValue("value2"));
         double val3 = 4.0;
         multiKeyHistogram.add(multiKeyFeature2, val1);
         multiKeyHistogram.add(multiKeyFeature2, val2);
@@ -168,9 +158,8 @@ public class MultiKeyHistogramTest {
     public void testRemoveKeyWhichDoesNotExist() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
-        Map<String, FeatureValue> featureNameToValue1 = new HashMap<>();
-        featureNameToValue1.put("featureName1", new FeatureStringValue("value1"));
-        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature(featureNameToValue1);
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("featureName1", new FeatureStringValue("value1"));
         double val1 = 1.0;
         double val2 = 5.0;
         multiKeyHistogram.add(multiKeyFeature1, val1);

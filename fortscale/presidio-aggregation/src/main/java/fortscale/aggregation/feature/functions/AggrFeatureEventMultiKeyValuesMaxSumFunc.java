@@ -65,7 +65,7 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
             //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
-                    if (multiKeyRecordEntry.getKey().contains(key.getFeatureNameToValue())) {
+                    if (multiKeyRecordEntry.getKey().contains(key)) {
                         Double max = multiKeyRecordEntry.getValue();
                         sum += max;
                         //todo: recalculate total?

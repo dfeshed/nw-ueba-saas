@@ -18,16 +18,11 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     @Transient
     private Map<MultiKeyFeature, Double> histogram;
-    private double total = 0.0; //todo: long instead double?
+    private double total = 0d;
     private Object maxObject = null;
 
     public MultiKeyHistogram() {
         this.histogram = new HashMap<>();
-    }
-
-    public MultiKeyHistogram(Map<MultiKeyFeature, Double> histogram, double total) {
-        this.histogram = histogram;
-        this.total = total;
     }
 
     public void setMax(MultiKeyFeature multiKeyFeature, Double potentialMax) {
@@ -66,6 +61,14 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
         return maxObject;
     }
 
+    public boolean isEmpty() {
+        return histogram.isEmpty();
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
     public void remove(FeatureValue val) {
         if (val == null) {
             return;
@@ -98,6 +101,7 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
     public double getTotal() {
         return total;
     }
+
 
     public Map<MultiKeyFeature, Double> getHistogram() {
         return histogram;

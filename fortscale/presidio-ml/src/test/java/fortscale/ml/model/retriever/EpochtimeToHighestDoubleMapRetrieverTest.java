@@ -113,18 +113,17 @@ public class EpochtimeToHighestDoubleMapRetrieverTest {
         while (currentStartInstant.isBefore(lastEndInstant)) {
             Instant currentBucketStartInstant = currentStartInstant;
             Instant currentEndInstant = currentStartInstant.plus(fixedDurationStrategy.toDuration());
-            Map<MultiKeyFeature, Double>  epochtimeToHighestDoubleMap = new HashMap<>();
+            MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
             while (currentBucketStartInstant.isBefore(currentEndInstant)) {
                 String epochtime = String.valueOf(currentBucketStartInstant.getEpochSecond());
-                Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-                featureNameToValue.put(FEATURE_NAME, new FeatureStringValue(epochtime));
-                MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
-                epochtimeToHighestDoubleMap.put(multiKeyFeature, cyclicIntegerIterator.next().doubleValue());
+                MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+                multiKeyFeature.add(FEATURE_NAME, new FeatureStringValue(epochtime));
+                multiKeyHistogram.setMax(multiKeyFeature, cyclicIntegerIterator.next().doubleValue());
                 currentBucketStartInstant = currentBucketStartInstant.plus(epochtimeResolution);
             }
 
-            Feature feature = new Feature(FEATURE_NAME, new MultiKeyHistogram(epochtimeToHighestDoubleMap, 0d));
+            Feature feature = new Feature(FEATURE_NAME, multiKeyHistogram);
             FeatureBucket featureBucket = new FeatureBucket();
             featureBucket.setStartTime(currentStartInstant);
             featureBucket.setEndTime(currentEndInstant);

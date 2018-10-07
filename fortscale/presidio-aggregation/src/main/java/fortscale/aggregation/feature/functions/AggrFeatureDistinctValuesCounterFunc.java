@@ -43,7 +43,6 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
 
     @Override
     protected AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram) {
-
         long numOfDistinctValues = 0;
 
         Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
@@ -55,7 +54,7 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
             //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
-                    if (multiKeyRecordEntry.getKey().contains(key.getFeatureNameToValue())) {
+                    if (multiKeyRecordEntry.getKey().contains(key)) {
                         numOfDistinctValues++;
                         //todo: filter total?
                         break;

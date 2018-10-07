@@ -212,10 +212,12 @@ public class FeatureBucketsServiceTest {
     }
 
     private MultiKeyHistogram createMultiKeyHistogram(Map<String, FeatureValue> featureNameToValue, double count, double total){
-        MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
-        Map<MultiKeyFeature, Double> histogram = new HashMap<>();
-        histogram.put(multiKeyFeature, count);
-        return new MultiKeyHistogram(histogram, total);
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+        featureNameToValue.forEach(multiKeyFeature::add);
+        multiKeyHistogram.setMax(multiKeyFeature, count);
+        multiKeyHistogram.setTotal(total);
+        return multiKeyHistogram;
     }
 
 

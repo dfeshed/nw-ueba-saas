@@ -24,12 +24,13 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 
 
     public static Feature createAggrFeature(String featureName, Pair<MultiKeyFeature, Integer>... featureValuesAndNumbers) {
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
         Map<MultiKeyFeature, Double> featuresGroupToMax = new HashMap<>();
         for (Pair<MultiKeyFeature, Integer> featureValuesAndNumber : featureValuesAndNumbers) {
             MultiKeyFeature multiKeyFeature = featureValuesAndNumber.getLeft();
-            featuresGroupToMax.put(multiKeyFeature, featureValuesAndNumber.getRight().doubleValue());
+            multiKeyHistogram.setMax(multiKeyFeature, featureValuesAndNumber.getRight().doubleValue());
         }
-        return new Feature(featureName, new MultiKeyHistogram(featuresGroupToMax, featuresGroupToMax.size()));
+        return new Feature(featureName, multiKeyHistogram);
     }
 
     public static Map<String, Feature> createBucketAggrFeaturesMap(String featureName, Pair<MultiKeyFeature, Integer>... featureValuesAndNumbers) {

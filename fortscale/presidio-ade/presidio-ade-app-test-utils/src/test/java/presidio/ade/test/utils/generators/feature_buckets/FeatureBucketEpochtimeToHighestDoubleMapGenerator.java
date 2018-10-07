@@ -2,6 +2,7 @@ package presidio.ade.test.utils.generators.feature_buckets;
 
 import fortscale.common.feature.*;
 import fortscale.common.util.GenericHistogram;
+import fortscale.utils.data.Pair;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,17 +24,15 @@ public class FeatureBucketEpochtimeToHighestDoubleMapGenerator extends FeatureBu
     public Map<String, Feature> getNext() {
         Map<String, Feature> next = super.getNext();
         Feature feature = next.get(featureName);
-        Map<MultiKeyFeature, Double> map = new HashMap<>();
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
         for (Entry<String, Double> entry : ((GenericHistogram)feature.getValue()).getHistogramMap().entrySet()) {
-            Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-            featureNameToValue.put(featureName, new FeatureStringValue( entry.getKey()) );
-            MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
-            map.put(multiKeyFeature, entry.getValue());
+            MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+            multiKeyFeature.add(featureName, new FeatureStringValue( entry.getKey()));
+            multiKeyHistogram.add(multiKeyFeature, entry.getValue());
         }
 
-        MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram(map, 0d);
-        feature.setValue(multiKeyHistogram1);
+        feature.setValue(multiKeyHistogram);
         return next;
     }
 }

@@ -52,17 +52,17 @@ public class AggrFeatureTestUtils {
 	}
 
 	public static MultiKeyFeature createMultiKeyFeatureWithOneFeature(String featureName, String featureValue){
-		Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-		featureNameToValue.put(featureName,new FeatureStringValue(featureValue));
-		return new MultiKeyFeature(featureNameToValue);
+		MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+		multiKeyFeature.add(featureName,new FeatureStringValue(featureValue));
+		return multiKeyFeature;
 	}
 
 	public static MultiKeyFeature createMultiKeyFeature(Map<String,String> featureNameToValues){
-		Map<String, FeatureValue> featureNameToValue = new HashMap<>();
+		MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
 		featureNameToValues.forEach((k,v) -> {
-			featureNameToValue.put(k,new FeatureStringValue(v));
+			multiKeyFeature.add(k,new FeatureStringValue(v));
 		});
-		return new MultiKeyFeature(featureNameToValue);
+		return multiKeyFeature;
 	}
 
 }

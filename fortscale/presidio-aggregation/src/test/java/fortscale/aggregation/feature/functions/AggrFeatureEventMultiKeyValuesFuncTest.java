@@ -58,7 +58,8 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
      * @return MultiKeyHistogram
      */
     private MultiKeyHistogram buildMultiKeyHistogram(double featureCount1, double featureCount2, double featureCount3) {
-        double total = featureCount1 + featureCount2 + featureCount3;
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+
         Map<String, String> featureNameToValues1 = new HashMap<>();
         featureNameToValues1.put("featureName1", "featureValue1");
         featureNameToValues1.put("featureName2", "featureValue2");
@@ -71,12 +72,11 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
         featureNameToValues3.put("featureName1", "featureValue4");
         featureNameToValues3.put("featureName2", "featureValue3");
 
-        Map<MultiKeyFeature, Double> histogram = new HashMap<>();
-        histogram.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues1), featureCount1);
-        histogram.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues2), featureCount2);
-        histogram.put(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues3), featureCount3);
+        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues1), featureCount1);
+        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues2), featureCount2);
+        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues3), featureCount3);
 
-        return new MultiKeyHistogram(histogram, total);
+        return multiKeyHistogram;
     }
 
 }

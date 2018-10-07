@@ -66,7 +66,7 @@ public class AggrFeatureEventMultiKeyValuesFunc extends AbstractAggrFeatureEvent
             //sum all values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
-                    if (multiKeyRecordEntry.getKey().contains(key.getFeatureNameToValue())) {
+                    if (multiKeyRecordEntry.getKey().contains(key)) {
                         Double counter = multiKeyRecordEntry.getValue();
                         counter = counter == null ? 0 : counter;
                         if (!counter.isNaN() && !counter.isInfinite()) {

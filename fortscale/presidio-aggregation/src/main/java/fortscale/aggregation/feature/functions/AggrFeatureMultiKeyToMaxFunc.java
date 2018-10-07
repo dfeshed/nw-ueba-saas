@@ -54,7 +54,7 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
         FeatureValue value = aggrFeature.getValue();
 
         if (value == null) {
-            value = new MultiKeyHistogram(new HashMap<>(), 0d);
+            value = new MultiKeyHistogram();
             aggrFeature.setValue(value);
         } else if (!(value instanceof MultiKeyHistogram)) {
             throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s.",

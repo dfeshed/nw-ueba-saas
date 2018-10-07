@@ -40,12 +40,12 @@ public class AbstractAggrFeatureEventFeatureToMaxFuncTest {
     }
 
     private MultiKeyFeature generateGroupByFeatureValuesKey(String[] features) {
-        Map<String, FeatureValue> featureNameToValue = new HashedMap();
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
         for (String feature : features) {
 
-            featureNameToValue.put("", new FeatureStringValue(feature));
+            multiKeyFeature.add("", new FeatureStringValue(feature));
         }
-        return new MultiKeyFeature(featureNameToValue);
+        return multiKeyFeature;
     }
 
     @Test
