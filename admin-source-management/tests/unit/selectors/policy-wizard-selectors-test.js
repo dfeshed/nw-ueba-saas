@@ -1,4 +1,7 @@
 import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { lookup } from 'ember-dependency-lookup';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import moment from 'moment';
@@ -24,6 +27,10 @@ import {
   radioButtonOption,
   portValue,
   isPortValid,
+  beaconIntervalValue,
+  beaconIntervalValueValidator,
+  beaconIntervalUnits,
+  selectedBeaconIntervalUnit,
   runIntervalConfig,
   nameValidator,
   descriptionValidator,
@@ -47,7 +54,11 @@ import {
   AGENT_MODE_CONFIG
 } from 'admin-source-management/utils/settings';
 
-module('Unit | Selectors | Policy Wizard Selectors', function() {
+module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
+  setupTest(hooks);
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   test('policy selector', function(assert) {
     const nameExpected = 'test name';
@@ -235,21 +246,21 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     assert.deepEqual(result, expectedState, `should return agentMode of ${expectedState}`);
   });
 
-  test('primaryHttpPort', function(assert) {
+  test('primaryHttpsPort', function(assert) {
     const expectedValue = 555;
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizHttpPort(expectedValue)
+      .policyWizPrimaryHttpsPort(expectedValue)
       .build();
-    const result = portValue(fullState, 'primaryHttpPort');
-    assert.deepEqual(result, expectedValue, `should return httpPort of ${expectedValue}`);
+    const result = portValue(fullState, 'primaryHttpsPort');
+    assert.deepEqual(result, expectedValue, `should return httpsPort of ${expectedValue}`);
   });
 
   test('primaryUdpPort', function(assert) {
     const expectedValue = 666;
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(expectedValue)
+      .policyWizPrimaryUdpPort(expectedValue)
       .build();
     const result = portValue(fullState, 'primaryUdpPort');
     assert.deepEqual(result, expectedValue, `should return udpPort of ${expectedValue}`);
@@ -259,7 +270,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     let portValue = 0;
     let fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     let result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
@@ -267,7 +278,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     portValue = -1;
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
@@ -275,7 +286,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     portValue = -77777;
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
@@ -283,7 +294,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     portValue = 77777;
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
@@ -291,7 +302,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     portValue = '';
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, false, `isPortValid returns ${result} when port value is empty string`);
@@ -299,10 +310,220 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     portValue = 443;
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizUdpPort(portValue)
+      .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
     assert.deepEqual(result, true, `isPortValid returns ${result} when port value is ${portValue}`);
+  });
+
+  test('beaconIntervalValue selector', function(assert) {
+    let settingId = 'primaryHttpsBeaconInterval';
+    let intervalExpected = 15;
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalExpected)
+      .build();
+    let intervalActual = beaconIntervalValue(fullState, settingId);
+    assert.deepEqual(intervalActual, intervalExpected, `${settingId} is ${intervalExpected}`);
+
+    settingId = 'primaryUdpBeaconInterval';
+    intervalExpected = 30;
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalExpected)
+      .build();
+    intervalActual = beaconIntervalValue(fullState, settingId);
+    assert.deepEqual(intervalActual, intervalExpected, `${settingId} is ${intervalExpected}`);
+  });
+
+  test('beaconIntervalValueValidator selector', function(assert) {
+    // === HTTPS ===
+    let settingId = 'primaryHttpsBeaconInterval';
+    let visited = [`policy.${settingId}`];
+    let intervalValue = 15;
+    let intervalUnit = 'MINUTES';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = { isError: false, showError: false, errorMessage: '' };
+    let validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 0; // valid range is 1 minute to 24 hours  (or 1440 minutes or 86400 seconds)
+    intervalUnit = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 1441; // valid range is 1 minute to 24 hours  (or 1440 minutes or 86400 seconds)
+    intervalUnit = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 15; // valid range is 1 minute to 24 hours  (or 1440 minutes or 86400 seconds)
+    intervalUnit = 'HOURS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 0; // valid range is 1 minute to 24 hours  (or 1440 minutes or 86400 seconds)
+    intervalUnit = 'HOURS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 25; // valid range is 1 minute to 24 hours  (or 1440 minutes or 86400 seconds)
+    intervalUnit = 'HOURS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(intervalValue)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    // === UDP ===
+    settingId = 'primaryUdpBeaconInterval';
+    visited = [`policy.${settingId}`];
+    intervalValue = 30;
+    intervalUnit = 'SECONDS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 4; // valid range is 5 seconds to 10 minutes (600 seconds)
+    intervalUnit = 'SECONDS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 601; // valid range is 5 seconds to 10 minutes (600 seconds)
+    intervalUnit = 'SECONDS';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 5; // valid range is 5 seconds to 10 minutes (600 seconds)
+    intervalUnit = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 0; // valid range is 5 seconds to 10 minutes (600 seconds)
+    intervalUnit = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+
+    intervalValue = 11; // valid range is 5 seconds to 10 minutes (600 seconds)
+    intervalUnit = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(intervalValue)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validActual = beaconIntervalValueValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
+  });
+
+  test('beaconIntervalUnits selector', function(assert) {
+    const i18n = lookup('service:i18n');
+
+    let settingId = 'primaryHttpsBeaconInterval';
+    const httpsMinsText = i18n.t(`adminUsm.policy.${settingId}_MINUTES`);
+    const httpsHourText = i18n.t(`adminUsm.policy.${settingId}_HOURS`);
+    let unitsExpected = [{ unit: 'MINUTES', label: httpsMinsText }, { unit: 'HOURS', label: httpsHourText }];
+    let unitsActual = beaconIntervalUnits(settingId);
+    assert.deepEqual(unitsActual, unitsExpected, `${settingId} units options are as expected`);
+
+    settingId = 'primaryUdpBeaconInterval';
+    const udpMinsText = i18n.t(`adminUsm.policy.${settingId}_SECONDS`);
+    const udpHourText = i18n.t(`adminUsm.policy.${settingId}_MINUTES`);
+    unitsExpected = [{ unit: 'SECONDS', label: udpMinsText }, { unit: 'MINUTES', label: udpHourText }];
+    unitsActual = beaconIntervalUnits(settingId);
+    assert.deepEqual(unitsActual, unitsExpected, `${settingId} units options are as expected`);
+  });
+
+  test('selectedBeaconIntervalUnit selector', function(assert) {
+    let settingId = 'primaryHttpsBeaconInterval';
+    let unitExpected = 'HOURS';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconIntervalUnit(unitExpected)
+      .build();
+    let unitActual = selectedBeaconIntervalUnit(fullState, settingId);
+    assert.deepEqual(unitActual.unit, unitExpected, `${settingId}Unit is ${unitExpected}`);
+
+    settingId = 'primaryUdpBeaconInterval';
+    unitExpected = 'MINUTES';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconIntervalUnit(unitExpected)
+      .build();
+    unitActual = selectedBeaconIntervalUnit(fullState, settingId);
+    assert.deepEqual(unitActual.unit, unitExpected, `${settingId}Unit is ${unitExpected}`);
   });
 
   test('radioButtonOption returns the right radio button options based on the id', function(assert) {

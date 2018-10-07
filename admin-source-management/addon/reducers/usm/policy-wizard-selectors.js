@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
+import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -104,7 +105,7 @@ export const sortedSelectedSettings = createSelector(
 export const radioButtonValue = (state, selectedSettingId) => state.usm.policyWizard.policy[selectedSettingId];
 
 /**
- * It returns the port value (httpPort or udpPort) from state based on the selectedSettingId.
+ * It returns the port value (primaryHttpsPort or primaryUdpPort) from state based on the selectedSettingId.
  * @public
  */
 export const portValue = (state, selectedSettingId) => {
@@ -118,6 +119,98 @@ export const portValue = (state, selectedSettingId) => {
 export const isPortValid = (state, selectedSettingId) => {
   const value = portValue(state, selectedSettingId);
   return isBetween(value);
+};
+
+/**
+ * returns a beacon interval value based on the selectedSettingId
+ * (value of primaryHttpsBeaconInterval or primaryUdpBeaconInterval)
+ * @public
+ */
+export const beaconIntervalValue = (state, selectedSettingId) => {
+  return state.usm.policyWizard.policy[selectedSettingId];
+};
+
+/**
+ * returns a beacon interval value validator object with values set for
+ * - isError, errorMessage
+ * @public
+ */
+export const beaconIntervalValueValidator = (state, selectedSettingId) => {
+  const intervalValue = beaconIntervalValue(state, selectedSettingId);
+  const intervalUnit = state.usm.policyWizard.policy[`${selectedSettingId}Unit`];
+  // const multiplier = (intervalUnit === 'HOURS') ? 3600 : (intervalUnit === 'MINUTES') ? 60 : 1;
+  let multiplier = 1; // 'SECONDS'
+  if (intervalUnit === 'MINUTES') {
+    multiplier = 60;
+  } else if (intervalUnit === 'HOURS') {
+    multiplier = 3600;
+  }
+  const seconds = intervalValue * multiplier;
+
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  // HTTPS valid interval is 1 minute to 24 hours
+  if (selectedSettingId === 'primaryHttpsBeaconInterval') {
+    if (seconds < 60 || seconds > 86400) {
+      error = true;
+      enableMessage = true;
+      message = `adminUsm.policy.${selectedSettingId}InvalidMsg`;
+    }
+  // UDP valid interval is 5 seconds to 10 minutes
+  } else if (selectedSettingId === 'primaryUdpBeaconInterval') {
+    if (seconds < 5 || seconds > 600) {
+      error = true;
+      enableMessage = true;
+      message = `adminUsm.policy.${selectedSettingId}InvalidMsg`;
+    }
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
+const BEACON_INTERVAL_UNITS = {
+  primaryHttpsBeaconInterval: ['MINUTES', 'HOURS'],
+  primaryUdpBeaconInterval: ['SECONDS', 'MINUTES']
+};
+
+/**
+ * returns the available beacon interval unit options based on the selectedSettingId
+ * @public
+ */
+export const beaconIntervalUnits = (selectedSettingId) => {
+  const i18n = lookup('service:i18n');
+  const intervalUnits = BEACON_INTERVAL_UNITS[selectedSettingId];
+  const options = intervalUnits.map((unit) => {
+    const label = i18n.t(`adminUsm.policy.${selectedSettingId}_${unit}`);
+    return {
+      unit,
+      label
+    };
+  });
+  return options;
+};
+
+/**
+ * we need the beacon interval unit object based on the selectedSettingId & the unit string value
+ * (value of primaryHttpsBeaconIntervalUnit or primaryUdpBeaconIntervalUnit)
+ * @public
+ */
+export const selectedBeaconIntervalUnit = (state, selectedSettingId) => {
+  const intervalUnits = beaconIntervalUnits(selectedSettingId);
+  let selected = null;
+  for (let s = 0; s < intervalUnits.length; s++) {
+    const intervalUnit = intervalUnits[s];
+    if (state.usm.policyWizard.policy[`${selectedSettingId}Unit`] === intervalUnit.unit) {
+      selected = intervalUnit;
+      break;
+    }
+  }
+  return selected;
 };
 
 /**

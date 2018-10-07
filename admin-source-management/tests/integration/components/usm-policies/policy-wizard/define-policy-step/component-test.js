@@ -42,7 +42,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 19, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 21, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -60,8 +60,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .heading').length, 5, 'All heading labels rendered correctly');
     assert.equal(findAll('.available-settings .sub-heading').length, 4, 'All sub-heading labels rendered correctly');
-    assert.equal(findAll('.available-settings .title').length, 15, 'All components in available-settings rendered correctly');
-    assert.equal(findAll('.available-settings .rsa-icon').length, 15, 'The plus icon next to the components is rendered correctly');
+    assert.equal(findAll('.available-settings .title').length, 17, 'All components in available-settings rendered correctly');
+    assert.equal(findAll('.available-settings .rsa-icon').length, 17, 'The plus icon next to the components is rendered correctly');
   });
 
   test('Effective date component should be greyed out by default', async function(assert) {
@@ -109,6 +109,10 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .primaryAddress').length, 1, 'Primary Address component is shown in the available settings');
+    assert.equal(findAll('.available-settings .primaryHttpsPort').length, 1, 'Primary HTTPS Port component is shown in the available settings');
+    assert.equal(findAll('.available-settings .primaryHttpsBeaconInterval').length, 1, 'Primary HTTPS Beacon Interval component is shown in the available settings');
+    assert.equal(findAll('.available-settings .primaryUdpPort').length, 1, 'Primary UDP Port component is shown in the available settings');
+    assert.equal(findAll('.available-settings .primaryUdpBeaconInterval').length, 1, 'Primary UDP Beacon Interval component is shown in the available settings');
   });
 
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {

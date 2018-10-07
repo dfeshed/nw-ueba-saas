@@ -3635,9 +3635,17 @@ export default {
       radioOptionDisabled: 'Disabled',
       endpointServerSettings: 'Endpoint Server',
       primaryAddress: 'Hostname',
-      primaryHttpPort: 'HTTP Port',
+      primaryHttpsPort: 'HTTPS Port',
       primaryUdpPort: 'UDP Port',
       portInvalidMsg: 'The port should be between 1 and 65535',
+      primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
+      primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',
+      primaryHttpsBeaconInterval_MINUTES: 'Minutes',
+      primaryHttpsBeaconInterval_HOURS: 'Hours',
+      primaryUdpBeaconInterval: 'UDP Beacon Interval',
+      primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
+      primaryUdpBeaconInterval_SECONDS: 'Seconds',
+      primaryUdpBeaconInterval_MINUTES: 'Minutes',
       scheduleConfiguration: {
         scanType: {
           title: 'Scheduled or Manual Scan',

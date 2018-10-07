@@ -34,8 +34,12 @@ export const initialState = {
     blockingEnabled: null, // true or false
     primaryAddress: null,
     primaryNwServiceId: null,
-    primaryHttpPort: null, // 1 to 65535
+    primaryHttpsPort: null, // 1 to 65535
+    primaryHttpsBeaconInterval: null, // 15 (900 secs is 15 mins)
+    primaryHttpsBeaconIntervalUnit: null, // 'MINUTES' | 'HOURS'
     primaryUdpPort: null, // 1 to 65535
+    primaryUdpBeaconInterval: null, // 30 (seconds)
+    primaryUdpBeaconIntervalUnit: null, // 'SECONDS' | 'MINUTES'
     agentMode: null // 'NO_MONITORING' | 'FULL_MONITORING'
   },
   policyStatus: null, // wait, complete, error
@@ -120,10 +124,12 @@ export const initialState = {
     { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
     { index: 18, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
     { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
-    { index: 20, id: 'primaryHttpPort', label: 'adminUsm.policy.primaryHttpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] },
-    { index: 21, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
-    { index: 22, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
-    { index: 23, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+    { index: 20, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+    { index: 21, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+    { index: 22, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
+    { index: 23, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+    { index: 24, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
+    { index: 25, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
   ],
   // define-policy-step - selected settings to render the right col
   selectedSettings: [],

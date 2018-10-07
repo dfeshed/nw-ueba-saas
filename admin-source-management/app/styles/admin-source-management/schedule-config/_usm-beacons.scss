@@ -1,24 +1,24 @@
-.usm-ports {
+.usm-beacons {
   padding: rsa-whitespace() rsa-whitespace() 0 0;
-  input {
-    max-width: 75px;
-  }
+
   .title {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: text-color(primary, light);
-    @include rsa-font(default,small);
+    @include rsa-font(default, small);
     .remove-setting {
       float: right;
       margin-right: rsa-whitespace(more);
       margin-left: rsa-whitespace(more);
     }
   }
-  .port-error {
-    padding: rsa-whitespace() rsa-whitespace() 0 0;
-    max-width: 80%;
-    color: text-color(accentOne, dark);
-    margin-bottom: rsa-whitespace();
-    display: inline-block;
+
+  .beacon-interval-value {
+    max-width: 75px;
+  }
+
+  .beacon-interval-unit {
+    margin-top: .67rem; /* it works - why asky why? don't question CSS black magic! */
+    margin-left: rsa-whitespace();
   }
 }

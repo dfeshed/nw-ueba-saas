@@ -142,13 +142,33 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizHttpPort(httpPort) {
-    _set(this.state, 'usm.policyWizard.policy.primaryHttpPort', httpPort);
+  policyWizPrimaryHttpsPort(primaryHttpsPort) {
+    _set(this.state, 'usm.policyWizard.policy.primaryHttpsPort', primaryHttpsPort);
     return this;
   }
 
-  policyWizUdpPort(udpPort) {
-    _set(this.state, 'usm.policyWizard.policy.primaryUdpPort', udpPort);
+  policyWizPrimaryHttpsBeaconInterval(primaryHttpsBeaconInterval) {
+    _set(this.state, 'usm.policyWizard.policy.primaryHttpsBeaconInterval', primaryHttpsBeaconInterval);
+    return this;
+  }
+
+  policyWizPrimaryHttpsBeaconIntervalUnit(primaryHttpsBeaconIntervalUnit) {
+    _set(this.state, 'usm.policyWizard.policy.primaryHttpsBeaconIntervalUnit', primaryHttpsBeaconIntervalUnit);
+    return this;
+  }
+
+  policyWizPrimaryUdpPort(primaryUdpPort) {
+    _set(this.state, 'usm.policyWizard.policy.primaryUdpPort', primaryUdpPort);
+    return this;
+  }
+
+  policyWizPrimaryUdpBeaconInterval(primaryUdpBeaconInterval) {
+    _set(this.state, 'usm.policyWizard.policy.primaryUdpBeaconInterval', primaryUdpBeaconInterval);
+    return this;
+  }
+
+  policyWizPrimaryUdpBeaconIntervalUnit(primaryUdpBeaconIntervalUnit) {
+    _set(this.state, 'usm.policyWizard.policy.primaryUdpBeaconIntervalUnit', primaryUdpBeaconIntervalUnit);
     return this;
   }
 
