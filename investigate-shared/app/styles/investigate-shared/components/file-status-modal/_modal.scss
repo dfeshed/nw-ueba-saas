@@ -35,7 +35,6 @@ $modalWidth: 500px;
     .file-status-radio, .remediation-action-radio, .blacklist-category-title {
       height: 14px;
       margin-bottom: rsa-whitespace(less);
-      padding-top: rsa-whitespace(less);
     }
     .comment-box .rsa-form-textarea {
       textarea {
@@ -77,6 +76,9 @@ $modalWidth: 500px;
       .remediation-action-radio .rsa-icon-information-circle-lined {
         padding-left: rsa-whitespace(less);
       }
+    }
+    .blacklist-category-title {
+      padding-top: rsa-whitespace(less);
     }
 
   }

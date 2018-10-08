@@ -53,37 +53,39 @@
   }
 }
 
+
+.ember-power-select-option {
+  &[aria-current="true"] {
+    .delete-filter {
+      display: inline-block;
+    }
+  }
+}
+
+.delete-filter {
+  float: right;
+  right: 0.5rem;
+  display: none;
+  .rsa-icon-bin-1-filled {
+    font-size: 1rem !important;
+  }
+}
+
+.saved-filters-title {
+  @include rsa-font(header, small);
+  padding: 0 0 rsa-whitespace(less) 0;
+  color: text-color(primary, light);
+  letter-spacing: 1px;
+}
+
 .filter-list {
   width: 367px;
   padding-left: 2px;
-  height: 300px;
   overflow-y: auto;
   .filter-list__item-label {
     width: 150px;
     display: inline-block;
     line-height: 2rem;
-  }
-
-  .filter-list__item {
-    cursor: pointer;
-    padding: 0.25rem 0 0 1rem;
-    &.is-active {
-      color: text-color(primary, lightest);
-      transition: color 0.5s ease;
-      background-color: background-color(secondary, dark);
-    }
-    &.is-hovering {
-      transition: color 0.5s ease;
-      background-color: background-color(secondary, darker);
-    }
-  }
-
-  .filter-group-name {
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: default;
-    pointer-events: none;
-    padding: 0.5rem;
   }
 }
 

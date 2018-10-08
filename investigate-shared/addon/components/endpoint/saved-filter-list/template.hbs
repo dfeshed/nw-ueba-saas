@@ -1,32 +1,23 @@
-{{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
-  {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-    {{filterLabel}}
-  {{/rsa-form-button}}
-{{/rsa-content-tethered-panel-trigger}}
-{{#rsa-content-tethered-panel
-  classPrefix='ember-filter-tether'
-  isPopover=true displayCloseButton=false
-  position='bottom-right'
-  panelId='panel11'}}
-  <ul class='filter-list'>
-    {{endpoint/saved-filter-list/filter-item
-      selectedFilterId=selectedFilterId
-      filter=allFiles
-      applyCustomFilter=applyFilter
-      deleteFilter=(action 'deleteSelectedFilter' opt.id)}}
-    {{#each savedFilterGroup as |filter|}}
-      <li class='filter-group'>
-        <h3 class='filter-group-name'>{{filter.groupName}}</h3>
-        {{#each filter.options as |opt|}}
-          <ul class='filter-option'>
-            {{endpoint/saved-filter-list/filter-item
-              selectedFilterId=selectedFilterId
-              filter=opt
-              applyCustomFilter=applyFilter
-              deleteFilter=(action 'deleteSelectedFilter' opt.id)}}
-          </ul>
-        {{/each}}
-      </li>
-    {{/each}}
-  </ul>
-{{/rsa-content-tethered-panel}}
+<h2 class='saved-filters-title'>{{t 'investigateShared.endpoint.savedFilters'}}</h2>
+{{#power-select
+  class='filter-list'
+  searchEnabled=false
+  selected=selected
+  options=customFilters
+  renderInPlace=true
+  onclose=(action 'onClose')
+  placeholder='Make a selection'
+  onchange=(action 'applyCustomFilter') as |option| }}
+  {{option.name}}
+  <a onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
+    {{#rsa-button-with-confirmation
+      style='danger'
+      class='delete-filter'
+      title=(t 'investigateFiles.deleteTitle')
+      isIconOnly=true
+      confirmationMessage=(t 'investigateFiles.filter.customFilters.delete.confirmMessage')
+      onConfirm=(action 'deleteSelectedFilter' option.id)}}
+      {{rsa-icon name='bin-1' title=(t 'investigateFiles.deleteTitle')}}
+    {{/rsa-button-with-confirmation}}
+  </a>
+{{/power-select}}

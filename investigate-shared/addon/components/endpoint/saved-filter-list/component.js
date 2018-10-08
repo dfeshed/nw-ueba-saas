@@ -23,28 +23,21 @@ export default Component.extend({
 
   deleteFilter: null,
 
-  allFiles: {
-    id: 1,
-    name: 'All',
-    systemFilter: true,
-    criteria: {
-      expressionList: []
-    }
-  },
-
-  @computed('savedFilter')
-  filterLabel(savedFilter) {
-    return savedFilter ? savedFilter.name : this.get('i18n').t('investigateFiles.filter.allFiles');
-  },
+  selected: null,
 
   @computed('savedFilters')
-  savedFilterGroup(filesFilters = []) {
-    const systemFilter = filesFilters.filterBy('systemFilter', true);
-    const customFilter = filesFilters.filterBy('systemFilter', false);
-    return [
-      { groupName: 'System Filter', options: systemFilter },
-      { groupName: 'Custom Filter', options: customFilter }
-    ];
+  customFilters(filesFilters = []) {
+    return filesFilters.filterBy('systemFilter', false);
+  },
+
+  didReceiveAttrs() {
+    this._super(arguments);
+    const savedFilter = this.get('savedFilter');
+    if (savedFilter && savedFilter.id === 1) {
+      this.set('selected', null);
+    } else {
+      this.set('selected', savedFilter);
+    }
   },
 
   actions: {
@@ -57,6 +50,23 @@ export default Component.extend({
         onFailure: () => failure('investigateFiles.filter.customFilters.delete.errorMessage')
       };
       this.deleteFilter(id, callbackOptions);
+    },
+
+    stopPropagation(e) {
+      e.stopPropagation();
+    },
+
+    applyCustomFilter(option) {
+      this.set('selected', option);
+      if (option) {
+        this.applyFilter(option);
+      }
+    },
+
+    onClose(data, e) {
+      if (e.target.classList.contains('rsa-form-button')) {
+        return false;
+      }
     }
   }
 });

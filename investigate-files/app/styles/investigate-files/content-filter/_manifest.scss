@@ -59,23 +59,6 @@
   top: 8px;
 }
 
-.is-hovering .delete-filter {
-  display: inline-block;
-  .rsa-icon-bin-1-filled {
-    font-size: 100%;
-    top: -2px;
-  }
-}
-
-.delete-filter {
-  float: right;
-  right: 0.5rem;
-  display: none;
-  .rsa-icon-bin-1-filled {
-    font-size: 1.25rem;
-  }
-}
-
 .modal-content.save-search {
   .rsa-form-label {
     margin-top: 10px;

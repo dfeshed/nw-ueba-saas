@@ -50,16 +50,6 @@ page.investigate-files-engine {
     }
   }
 
-  .filter-list__item:hover {
-    color: text-color(primary, lightest);
-    transition: color 0.5s ease;
-  }
-
-  .filter-list__item-label {
-    width: 150px;
-    display: inline-block;
-  }
-
   .toolbar-zone {
     border-bottom: 1px solid $zoneBorderColor;
     padding: rsa-whitespace();
@@ -97,7 +87,7 @@ page.investigate-files-engine {
 
   .rsa-data-filters {
     .content-body {
-      height: calc(100vh - 240px);
+      height: calc(100vh - 260px);
     }
   }
   .risk-property-zone {

@@ -3306,7 +3306,8 @@ export default {
         download: 'Download',
         more: 'More',
         moreActions: 'More Actions'
-      }
+      },
+      savedFilters: 'Saved Filters'
     }
   },
   investigateProcessAnalysis: {
