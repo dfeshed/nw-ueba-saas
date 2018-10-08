@@ -229,6 +229,7 @@ buildEmberApp investigate-events false true true
 buildEmberApp investigate-hosts false true true
 buildEmberApp investigate-files false true true
 buildEmberApp investigate false true true
+buildEmberApp respond-shared false false true
 buildEmberApp respond false true true
 buildEmberApp configure false true true
 buildEmberApp investigate-process-analysis false true true

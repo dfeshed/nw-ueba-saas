@@ -37,6 +37,7 @@ nukeNode investigate-files
 nukeNode entity-details
 nukeNode investigate-users
 nukeNode investigate
+nukeNode respond-shared
 nukeNode respond
 nukeNode configure
 nukeNode admin-source-management

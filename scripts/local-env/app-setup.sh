@@ -71,6 +71,7 @@ prepareApp investigate-files
 prepareApp investigate-users
 prepareApp investigate
 prepareApp entity-details
+prepareApp respond-shared
 prepareApp respond
 prepareApp configure
 prepareApp admin-source-management

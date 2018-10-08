@@ -10,6 +10,7 @@ const ALL_SUBMODULES = [
   'entity-details',
   'investigate-users',
   'investigate',
+  'respond-shared',
   'respond',
   'configure',
   'admin',
@@ -43,6 +44,7 @@ const saModuleDependants = {
     'entity-details',
     'investigate-users',
     'packager',
+    'respond-shared',
     'respond',
     'configure',
     'admin',
@@ -95,6 +97,10 @@ const saModuleDependants = {
     'investigate-events'
   ],
   sa: [], // sa is an end state app, nothing depends on it
+  'respond-shared': [
+    'respond',
+    'sa'
+  ],
   respond: ['sa'],
   configure: ['sa'],
   investigate: ['sa'],
