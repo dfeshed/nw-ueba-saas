@@ -6,7 +6,9 @@ import fortscale.common.feature.MultiKeyHistogram;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class MultiKeyHistogramTest {
 
@@ -70,7 +72,7 @@ public class MultiKeyHistogramTest {
         multiKeyHistogram.add(multiKeyFeature2, 50.0);
 
         MultiKeyHistogram newMultiKeyHistogram = new MultiKeyHistogram();
-        newMultiKeyHistogram.add(multiKeyHistogram);
+        newMultiKeyHistogram.add(multiKeyHistogram, new HashSet<>());
 
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) newMultiKeyHistogram.getTotal());
 
@@ -84,7 +86,7 @@ public class MultiKeyHistogramTest {
 
 
     @Test
-    public void testRemoveKeyFromOneKeyHistogram() {
+    public void testFilterKeyFromOneKeyHistogram() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
         MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
@@ -105,16 +107,18 @@ public class MultiKeyHistogramTest {
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) ((val1 + val2) + (val1 + val2 + val3)));
 
-        String valToRemove = "value1";
-        multiKeyHistogram.remove(new FeatureStringValue(valToRemove));
+        MultiKeyHistogram filteredMultiKeyHistogram = new MultiKeyHistogram();
+        Set<FeatureStringValue> filter = new HashSet<>();
+        filter.add(new FeatureStringValue("value1"));
+        filteredMultiKeyHistogram.add(multiKeyHistogram,filter);
 
-        Assert.assertNull(multiKeyHistogram.getHistogram().get(multiKeyFeature1));
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
-        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2 + val3));
+        Assert.assertNull(filteredMultiKeyHistogram.getHistogram().get(multiKeyFeature1));
+        Assert.assertEquals(filteredMultiKeyHistogram.getHistogram().get(multiKeyFeature2), (Double) (val1 + val2 + val3));
+        Assert.assertEquals((Double) filteredMultiKeyHistogram.getTotal(), (Double) (val1 + val2 + val3));
     }
 
     @Test
-    public void testRemoveKeyWhichDoesNotExist() {
+    public void testFilterKeyWhichDoesNotExist() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
         MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
@@ -127,10 +131,12 @@ public class MultiKeyHistogramTest {
         Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
         Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2));
 
-        String valToRemove = "value2";
-        multiKeyHistogram.remove(new FeatureStringValue(valToRemove));
+        MultiKeyHistogram filteredMultiKeyHistogram = new MultiKeyHistogram();
+        Set<FeatureStringValue> filter = new HashSet<>();
+        filter.add(new FeatureStringValue("value2"));
+        filteredMultiKeyHistogram.add(multiKeyHistogram,filter);
 
-        Assert.assertEquals(multiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
-        Assert.assertEquals((Double) multiKeyHistogram.getTotal(), (Double) (val1 + val2));
+        Assert.assertEquals(filteredMultiKeyHistogram.getHistogram().get(multiKeyFeature1), (Double) (val1 + val2));
+        Assert.assertEquals((Double) filteredMultiKeyHistogram.getTotal(), (Double) (val1 + val2));
     }
 }

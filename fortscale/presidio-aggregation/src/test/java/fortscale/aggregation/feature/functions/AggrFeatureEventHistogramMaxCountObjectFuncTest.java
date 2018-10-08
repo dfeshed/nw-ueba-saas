@@ -1,17 +1,11 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import fortscale.common.util.GenericHistogram;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by orend on 26/07/2015.
@@ -26,9 +20,12 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey,0L);
 		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
 		for(MultiKeyHistogram hist: multiKeyHistograms){
-			sumMultiKeyHistogram.add(hist);
+			Set<FeatureStringValue> filter = new HashSet<>();
+			if(removeNa) {
+				filter.add(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
+			}
+			sumMultiKeyHistogram.add(hist, filter);
 		}
-		sumMultiKeyHistogram.remove(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
 		ret.setTotal((long)sumMultiKeyHistogram.getTotal());
 		return ret;
 	}

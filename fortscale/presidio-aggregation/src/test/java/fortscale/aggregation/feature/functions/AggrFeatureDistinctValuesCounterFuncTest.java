@@ -30,9 +30,10 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues, 0L);
 		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
 		for (MultiKeyHistogram hist : multiKeyHistograms) {
-            sumMultiKeyHistogram.add(hist);
+			Set<FeatureStringValue> filter = new HashSet<>();
+			filter.add(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
+            sumMultiKeyHistogram.add(hist, filter);
 		}
-        sumMultiKeyHistogram.remove(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
 		ret.setTotal((long)sumMultiKeyHistogram.getTotal());
 		return ret;
 	}

@@ -36,9 +36,11 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
         this.total += count;
     }
 
-    public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram) {
+    public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram, Set<FeatureStringValue> filter) {
         for (Map.Entry<MultiKeyFeature, Double> entry : multiKeyHistogram.getHistogram().entrySet()) {
-            add(entry.getKey(), entry.getValue());
+            if(!entry.getKey().containsAtLeastOneValue(filter)){
+                add(entry.getKey(), entry.getValue());
+            }
         }
         return this;
     }
@@ -63,26 +65,8 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
         return total;
     }
 
-
     public Map<MultiKeyFeature, Double> getHistogram() {
         return histogram;
-    }
-
-    public void remove(FeatureValue val) {
-        if (val == null) {
-            return;
-        }
-
-        Iterator<Map.Entry<MultiKeyFeature, Double>> it = histogram.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<MultiKeyFeature, Double> e = it.next();
-            if (e.getKey().containsValue(val)) {
-                if (e.getValue() != null) {
-                    this.total -= e.getValue();
-                }
-                it.remove();
-            }
-        }
     }
 
     @AccessType(AccessType.Type.PROPERTY)

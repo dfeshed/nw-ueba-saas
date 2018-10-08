@@ -1,11 +1,11 @@
 package fortscale.common.feature;
 
-import fortscale.utils.data.Pair;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Document
 public class MultiKeyFeature {
@@ -28,8 +28,13 @@ public class MultiKeyFeature {
         return this.featureNameToValue.entrySet().containsAll(multiKeyFeature.getFeatureNameToValue().entrySet());
     }
 
-    public boolean containsValue(FeatureValue featureValue) {
-        return featureNameToValue.containsValue(featureValue);
+    public boolean containsAtLeastOneValue(Set<FeatureStringValue> featureValues) {
+        for(FeatureStringValue featureValue : featureValues){
+            if(featureNameToValue.containsValue(featureValue)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -9,9 +9,8 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @JsonTypeName(AggrFeatureMultiKeyHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
@@ -72,11 +71,12 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
             return null;
         }
 
-        MultiKeyHistogram histogram = calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        MultiKeyHistogram histogram = calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList, false, Collections.emptyList());
         return new Feature(aggrFeatureEventConf.getName(), histogram);
     }
 
-    public static MultiKeyHistogram calculateHistogramFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+    public static MultiKeyHistogram calculateHistogramFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList,
+                                                                            boolean removeNA, List<String> additionalNAValues) {
         MultiKeyHistogram histogram = new MultiKeyHistogram();
 
         List<String> aggregatedFeatureNamesList = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
@@ -86,7 +86,11 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
                 Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
                 if (aggrFeature != null) {
                     if (aggrFeature.getValue() instanceof MultiKeyHistogram) {
-                        histogram.add((MultiKeyHistogram) aggrFeature.getValue());
+                        if (removeNA) {
+                            Set<String> filter = AggGenericNAFeatureValues.getNAValues();
+                            filter.addAll(additionalNAValues);
+                            histogram.add((MultiKeyHistogram) aggrFeature.getValue(), filter.stream().map(FeatureStringValue::new).collect(Collectors.toSet()));
+                        }
                     } else {
                         throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
                                 aggregatedFeatureName, GenericHistogram.class.getSimpleName()));

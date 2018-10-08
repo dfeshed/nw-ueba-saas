@@ -2,11 +2,9 @@ package presidio.ade.test.utils.generators.feature_buckets;
 
 import fortscale.common.feature.*;
 import fortscale.common.util.GenericHistogram;
-import fortscale.utils.data.Pair;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
