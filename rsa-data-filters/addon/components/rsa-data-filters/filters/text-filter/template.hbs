@@ -9,11 +9,17 @@
     onchange=(action 'changeOperator') as |option|}}
     {{option.label}}
   {{/power-select}}
-  <div class="file-name-input rsa-form-input">
+  <label class="file-name-input rsa-form-input {{if isError 'is-error'}}">
     {{input
       type="text"
       value=(readonly filterValue.value)
       placeholder='Enter Value'
       key-up="handleKeyUp"}}
-  </div>
+
+    {{#if (and isError errorMessage)}}
+      <div class="input-error">
+        {{t errorMessage}}
+      </div>
+    {{/if}}
+  </label>
 </hbox>

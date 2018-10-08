@@ -69,8 +69,10 @@ const addFilter = (query, expressionList) => {
       const modifiedList = list.filter((item) => item.propertyValues.length);
       if (modifiedList.length) {
         query.criteria = {
-          expressionList: modifiedList,
-          predicateType: 'AND'
+          criteriaList: [{
+            expressionList: modifiedList,
+            predicateType: 'AND'
+          }]
         };
       }
     }

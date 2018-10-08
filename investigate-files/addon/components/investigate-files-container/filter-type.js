@@ -120,21 +120,8 @@ const FILTER_TYPES = [
     'type': 'text'
   },
   {
-    'name': 'checksumMd5',
-    'label': 'investigateFiles.fields.checksumMd5',
-    'type': 'text',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return !/^[A-Za-z0-9]*$/.test(value);
-        },
-        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
-      }
-    }
-  },
-  {
-    'name': 'checksumSha256',
-    'label': 'investigateFiles.fields.checksumSha256',
+    'name': 'fileHash',
+    'label': 'investigateFiles.filter.fileHash',
     'type': 'text',
     'validations': {
       format: {

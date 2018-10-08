@@ -56,7 +56,7 @@ export default Component.extend({
 
   layout,
 
-  tagName: '',
+  classNames: ['filter-wrapper'],
 
   showSaveFilter: false,
 

@@ -65,17 +65,20 @@ export default Component.extend({
   _validate() {
     let property;
     const value = this.get('filterValue.value');
+    const operator = this.get('filterValue.operator.type');
     const validations = this.get('options.validations');
     for (property in validations) {
       const validatorObject = validations[property];
       if (validatorObject.constructor === Object) {
-        const { validator, message } = validatorObject;
-        const isInvalid = validator(value);
-        if (isInvalid) {
-          return {
-            isValid: false,
-            message
-          };
+        const { validator, message, exclude = [] } = validatorObject;
+        if (!exclude.includes(operator)) {
+          const isInvalid = validator(value);
+          if (isInvalid) {
+            return {
+              isValid: false,
+              message
+            };
+          }
         }
       }
     }
@@ -93,7 +96,7 @@ export default Component.extend({
     }
   },
 
-  _handeFilterChanged() {
+  _handleFilterChanged() {
     const { isValid, message } = this._validate();
     if (isValid) {
       this.set('isError', false);
@@ -107,8 +110,9 @@ export default Component.extend({
   actions: {
     handleKeyUp(value = '') {
       this.set('filterValue.value', value);
-      debounce(this, this._handeFilterChanged, {}, 600);
+      debounce(this, this._handleFilterChanged, {}, 600);
     },
+
     changeOperator(option) {
       this.set('filterValue.operator', option);
       this._onFilterChange();

@@ -9,7 +9,7 @@
   .file-name-input, .number-input {
     padding-left: rsa-whitespace();
     input {
-      padding: 0.17em;
+      padding: 0.3em;
     }
   }
 
@@ -76,6 +76,7 @@
   width: 100%;
   padding: rsa-whitespace(less);
   display: inline-flex;
+  position: absolute;
   .rsa-form-button-wrapper {
     flex-grow: 1;
   }
@@ -88,8 +89,10 @@
 }
 
 .content-body {
-  height: calc(100vh - 184px);
-  overflow: auto;
-  overflow-x: hidden;
   padding: rsa-whitespace();
+}
+
+.filter-wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
 }

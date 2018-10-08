@@ -2060,6 +2060,8 @@ export default {
       invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
       invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
       osType: 'Operating System',
+      fileHash: 'File Hash',
+      fileHashInfo: 'Enter SHA256, SHA1 or MD5',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',

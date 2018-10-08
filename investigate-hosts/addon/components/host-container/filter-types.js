@@ -64,6 +64,7 @@ const FILTER_TYPES = [
     'type': 'text',
     'validations': {
       format: {
+        exclude: ['LIKE'],
         validator: (value) => {
           return !(/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(value));
         },
@@ -94,6 +95,7 @@ const FILTER_TYPES = [
     'type': 'text',
     'validations': {
       format: {
+        exclude: ['LIKE'],
         validator: (value) => {
           return !(/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(value));
         },
