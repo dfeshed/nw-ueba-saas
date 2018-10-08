@@ -50,7 +50,11 @@
                   </vbox>
                 {{else}}
                   <vbox xs='3'>
-                    {{rsa-content-definition label=(t cellData.title) value=(if (get data cellData.field) (get data cellData.field) '-')}}
+                    {{#if (eq (get data cellData.field) 0)}}
+                      {{rsa-content-definition label=(t cellData.title) value="0"}}
+                    {{else}}
+                      {{rsa-content-definition label=(t cellData.title) value=(if (get data cellData.field) (get data cellData.field) '-')}}
+                    {{/if}}
                   </vbox>
                 {{/if}}
               {{/each}}
