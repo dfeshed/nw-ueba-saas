@@ -110,7 +110,10 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
   return request.promiseRequest({
     method: 'saveFilter',
     modelName: 'endpoint',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 
@@ -208,7 +211,10 @@ const deleteSearch = (id) => {
   return request.promiseRequest({
     method: 'removeSearch',
     modelName: 'search',
-    query: { data: { id } }
+    query: { data: { id } },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 const getContext = (query, handlers) => {

@@ -87,7 +87,10 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
   return request.promiseRequest({
     method: 'saveFilter',
     modelName: 'files',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 
@@ -96,7 +99,10 @@ const getSavedFilters = () => {
   return request.promiseRequest({
     method: 'getFilter',
     modelName: 'files',
-    query: {}
+    query: {},
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 
@@ -105,7 +111,10 @@ const deleteFilter = (id) => {
   return request.promiseRequest({
     method: 'deleteFilter',
     modelName: 'files',
-    query: { data: { id } }
+    query: { data: { id } },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 

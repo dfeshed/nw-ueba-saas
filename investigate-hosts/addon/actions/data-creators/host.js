@@ -11,6 +11,7 @@ import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filte
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { getFilter } from 'investigate-hosts/actions/data-creators/filter-creators';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
+import { initializeEndpoint } from 'investigate-hosts/actions/data-creators/endpoint-server';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
@@ -82,7 +83,7 @@ const getAllSchemas = () => {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
           dispatch(initializeHostsPreferences());
-          dispatch(getFilter(getPageOfMachines));
+          dispatch(getFilter(initializeEndpoint));
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);

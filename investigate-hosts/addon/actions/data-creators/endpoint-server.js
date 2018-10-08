@@ -2,9 +2,9 @@ import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-hosts/actions/api/server';
-import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
+import { getAllSchemas, getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
 
-const _initializeEndpoint = () => {
+export const initializeEndpoint = () => {
   return (dispatch, getState) => {
     const server = getState().endpointServer.serviceData ? getState().endpointServer.serviceData[0] : {};
     dispatch(setEndpointServer(server));
@@ -31,8 +31,7 @@ export const setEndpointServer = (server) => {
         dispatch(isEndpointServerOffline(false));
         // reset files state every time a different endpoint server is selected.
         dispatch({ type: ACTION_TYPES.RESET_HOSTS });
-        dispatch(getAllSchemas());
-        dispatch(initializeHostPage());
+        dispatch(getPageOfMachines());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));
@@ -51,8 +50,7 @@ export const getEndpointServers = () => {
       promise: fetchEndpointServers(),
       meta: {
         onSuccess: (response) => {
-          request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
-          dispatch(_initializeEndpoint());
+          dispatch(getAllSchemas());
           debug(`onSuccess: ${response}`);
         },
         onfailure: () => {

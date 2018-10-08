@@ -255,7 +255,7 @@ test('The FETCH_NEXT_MACHINES sets load more state properly when totalItems > 10
     payload: { data: { hasNext: false, totalItems: 1500, items: [ { id: 12 }, { id: 13 }] } }
   });
   const newEndState1 = reducer(previous, loadMoreAction);
-  assert.equal(newEndState1.loadMoreHostStatus, 'stopped', 'load more status is stopped when hasNext is false');
+  assert.equal(newEndState1.loadMoreHostStatus, 'completed', 'load more status is stopped when hasNext is false');
 });
 
 test('The RESET_HOST_DOWNLOAD_LINK action reset the HOST download link', function(assert) {

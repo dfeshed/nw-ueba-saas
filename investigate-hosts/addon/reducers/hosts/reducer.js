@@ -38,7 +38,7 @@ const _handleAppendMachines = (action) => {
     return state.merge({
       hostList: [...hostList, ...data.items],
       pageNumber: data.pageNumber,
-      loadMoreHostStatus: (data.hasNext || data.totalItems >= 1000) ? 'stopped' : 'completed',
+      loadMoreHostStatus: data.hasNext ? 'stopped' : 'completed',
       hasNext: data.hasNext
     });
   };

@@ -95,8 +95,8 @@ export default Service.extend({
     return {
       ...opts,
       streamOptions: {
-        ...(opts.streamOptions || {}),
-        ...persistentStreamOptions
+        ...persistentStreamOptions,
+        ...(opts.streamOptions || {})
       }
     };
   },
