@@ -1528,6 +1528,7 @@ export default {
     dsNotConfigured: 'Context Sources not configured: ',
     marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click Help.',
     lcMarketingText: 'Live Connect collects, analyzes, and assesses the Threat Intelligence data such as IP Addresses, Domains and File Hashes collected from various sources. To view the data, enable Threat Insights in ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
+    fileReputationMarketingText: 'File Reputation displays reputation of a file hash that indicates the level of threat a file poses. This information is leveraged by analysts during investigation of files to increase detection and response to malicious and suspicious file behavior. This feature is not enabled by default. To enable File Reputation, go to ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',

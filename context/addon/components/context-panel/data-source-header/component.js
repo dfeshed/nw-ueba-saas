@@ -12,6 +12,8 @@ const stateToComputed = ({ context: { context, tabs } }) => ({
   onLiveConnectTab: onLiveConnectTab(tabs),
   lookupData: context.lookupData
 });
+
+const FILE_REPUTATION_SERVER = 'FileReputationServer';
 const DSHeaderComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__data__header',
@@ -37,8 +39,10 @@ const DSHeaderComponent = Component.extend({
   },
   @computed('dataSourceDetails')
   dsTypeMarketing({ dataSourceGroup }) {
+    if (dataSourceGroup === FILE_REPUTATION_SERVER) {
+      return this.get('i18n').t('context.fileReputationMarketingText');
+    }
     return this.get('i18n').t(`context.marketingDSType.${dataSourceGroup}`);
-
   },
   @computed('dataSources', 'activeTabName', 'dataSourceDetails')
   isConfigured(dataSources, activeTabName, { dataSourceGroup }) {
