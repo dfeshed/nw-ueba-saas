@@ -179,7 +179,8 @@ export default Service.extend({
   hasInvestigateHostsAccess(roles) {
     // this permission is same for both hosts and files
     const hasEndpointMachineRead = this._hasPermission(roles, 'endpoint-server.machine.read');
-    return hasEndpointMachineRead;
+    const hasInvestigationModule = this._hasPermission(roles, 'accessInvestigationModule');
+    return hasInvestigationModule && hasEndpointMachineRead;
   },
 
   @computed('roles.[]')
