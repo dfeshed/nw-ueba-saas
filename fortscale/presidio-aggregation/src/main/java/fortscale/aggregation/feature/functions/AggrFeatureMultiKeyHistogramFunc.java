@@ -86,11 +86,12 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
                 Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
                 if (aggrFeature != null) {
                     if (aggrFeature.getValue() instanceof MultiKeyHistogram) {
+                        Set<String> filter = new HashSet<>();
                         if (removeNA) {
-                            Set<String> filter = AggGenericNAFeatureValues.getNAValues();
+                            filter.addAll(AggGenericNAFeatureValues.getNAValues());
                             filter.addAll(additionalNAValues);
-                            histogram.add((MultiKeyHistogram) aggrFeature.getValue(), filter.stream().map(FeatureStringValue::new).collect(Collectors.toSet()));
                         }
+                        histogram.add((MultiKeyHistogram) aggrFeature.getValue(), filter.stream().map(FeatureStringValue::new).collect(Collectors.toSet()));
                     } else {
                         throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
                                 aggregatedFeatureName, GenericHistogram.class.getSimpleName()));
