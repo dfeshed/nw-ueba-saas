@@ -42,13 +42,13 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 21, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 17, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/usm-radios' },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/usm-radios' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
@@ -59,7 +59,6 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .heading').length, 5, 'All heading labels rendered correctly');
-    assert.equal(findAll('.available-settings .sub-heading').length, 4, 'All sub-heading labels rendered correctly');
     assert.equal(findAll('.available-settings .title').length, 17, 'All components in available-settings rendered correctly');
     assert.equal(findAll('.available-settings .rsa-icon').length, 17, 'The plus icon next to the components is rendered correctly');
   });
@@ -117,8 +116,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, availableSettings: newAvailableSettings });
@@ -128,8 +127,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
 
   test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios' },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
     setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
@@ -145,7 +144,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('Scan Schedule label should be present if scanScheduleId is added the selected settings', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     // simulate a click on the plus icon next to scan schedule.
-    // this triggers 2 reducers ACTION_TYPES.ADD_TO_SELECTED_SETTINGS and ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS
+    // this triggers 2 reducers ACTION_TYPES.ADD_TO_SELECTED_SETTINGS and ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS
     const plusIcon = document.querySelector('.scanType span .rsa-icon');
     await click(plusIcon);
     assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');

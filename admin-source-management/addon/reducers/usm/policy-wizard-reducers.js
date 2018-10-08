@@ -104,32 +104,28 @@ export const initialState = {
   // define-policy-step - available settings to render the left col
   // * make sure the id is always the same as the policy property name
   availableSettings: [
-    { index: 0, id: 'scanScheduleLabel', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-    { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
-    { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
-    { index: 3, id: 'recIntervalSubHeader', label: 'adminUsm.policy.recurrenceInterval', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-    { index: 4, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
-    { index: 5, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
-    { index: 6, id: 'maxUsageSubHeader', label: 'adminUsm.policy.maximumProcessorUsage', isSubHeader: true, isEnabled: true, isGreyedOut: true, parentId: 'scanType' },
-    { index: 7, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
-    { index: 8, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', callback: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] },
-    { index: 9, id: 'advScanSettingsLabel', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
-    { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'captureFloatingCode', value: false }] },
-    { index: 11, id: 'downloadMbr', label: 'adminUsm.policy.downloadMbr', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'downloadMbr', value: false }] },
-    { index: 12, id: 'includeHooksSubHeader', label: 'adminUsm.policy.includeHooks', isSubHeader: true, isEnabled: true, isGreyedOut: false, parentId: null },
-    { index: 13, id: 'filterSignedHooks', label: 'adminUsm.policy.filterSignedHooks', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'filterSignedHooks', value: false }] },
-    { index: 14, id: 'autoLaunchScanSubHeader', label: 'adminUsm.policy.autoLaunchScan', isSubHeader: true, isEnabled: true, isGreyedOut: false, parentId: null },
-    { index: 15, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
-    { index: 16, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
-    { index: 17, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
-    { index: 18, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
-    { index: 19, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
-    { index: 20, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
-    { index: 21, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
-    { index: 22, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
-    { index: 23, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
-    { index: 24, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
-    { index: 25, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+    { index: 0, id: 'scanScheduleHeader', label: 'adminUsm.policy.scanSchedule', isHeader: true, isEnabled: true, isGreyedOut: true },
+    { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+    { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
+    { index: 3, id: 'recurrenceInterval', label: 'adminUsm.policy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
+    { index: 4, id: 'scanStartTime', label: 'adminUsm.policy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/start-time', defaults: [{ field: 'scanStartTime', value: '10:00' }] },
+    { index: 5, id: 'cpuMax', label: 'adminUsm.policy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/cpu-max', defaults: [{ field: 'cpuMax', value: 75 }] },
+    { index: 6, id: 'cpuMaxVm', label: 'adminUsm.policy.vmMaximum', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/vm-max', defaults: [{ field: 'cpuMaxVm', value: 85 }] },
+    { index: 7, id: 'advScanSettingsHeader', label: 'adminUsm.policy.advScanSettings', isHeader: true, isEnabled: true },
+    { index: 8, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'captureFloatingCode', value: false }] },
+    { index: 9, id: 'downloadMbr', label: 'adminUsm.policy.downloadMbr', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'downloadMbr', value: false }] },
+    { index: 10, id: 'filterSignedHooks', label: 'adminUsm.policy.filterSignedHooks', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'filterSignedHooks', value: false }] },
+    { index: 11, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
+    { index: 12, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
+    { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
+    { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
+    { index: 15, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
+    { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+    { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+    { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
+    { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+    { index: 20, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
+    { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
   ],
   // define-policy-step - selected settings to render the right col
   selectedSettings: [],
@@ -139,30 +135,62 @@ export const initialState = {
 };
 
 const scanScheduleId = 'scanType';
-const scanSchedLabelId = 'scanScheduleLabel';
+const allScanScheduleIds = ['scanType', 'scanStartDate', 'recurrenceInterval', 'scanStartTime', 'cpuMax', 'cpuMaxVm'];
+const scanSchedHeaderId = 'scanScheduleHeader';
+const allAdvScanSettingsIds = ['captureFloatingCode', 'downloadMbr', 'filterSignedHooks', 'requestScanOnRegistration'];
+const advScanSettingsHeaderId = 'advScanSettingsHeader';
+const invActionsHeaderId = 'invActionsHeader';
+const allInvActionsIds = 'blockingEnabled';
+const endpointServerHeaderId = 'endpointServerHeader';
+const allEndpointServerIds = ['primaryAddress', 'primaryHttpPort', 'primaryUdpPort'];
+const agentSettingsHeaderId = 'agentSettingsHeader';
+const allAgentSettingsIds = 'agentMode';
 
-// Private method used to determine if a top level label like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
+// Private method used to determine if a top level header like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
 // needs to be shown in the Selected settings vbox on the right.
 // Suppose a child component from "SCAN SCHEDULE" is moved to the right, we need to show the "SCAN SCHEDULE"
-// label on the right too for that child component.
-const _shouldShowLabelInSelSettings = (selectedSettingsIds, matchingIds) => {
-  let showLabel = false;
-  const { length } = selectedSettingsIds;
+// header on the right too for that child component.
+const _shouldShowHeaderInSelSettings = (selectedSettingsIds, matchingIds) => {
+  let showHeader = false;
+  const { length } = matchingIds;
   for (let i = 0; i < length; ++i) {
     if (_.indexOf(selectedSettingsIds, matchingIds[i]) !== -1) {
-      showLabel = true;
+      showHeader = true;
       break;
     }
   }
-  return showLabel;
+  return showHeader;
 };
 
-// If determined that a particular label needs to be shown on the right, this method will add that label
-// to the selectedSettings array.
-const _addLabelToSelSettings = (state, labelId) => {
-  const { selectedSettings, availableSettings } = state;
-  const labelToAdd = availableSettings.find((d) => d.id === labelId);
-  return _.uniqBy([ ...selectedSettings, labelToAdd ], 'id');
+// Private method that does a find of headerId in the availableSettings array,
+// and returns that entire object.
+const _findHeaderInAvailSettings = (availableSettings, headerId) => {
+  return availableSettings.find((d) => d.id === headerId);
+};
+
+// Private method that returns a new selectedSettings array after removing the headerId
+const _removeHeaderFromSelSettings = (selectedSettings, headerId) => {
+  return selectedSettings.filter((el) => el.id !== headerId);
+};
+
+// Private method used to determine if a top level header like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
+// needs to be shown in the Available settings vbox on the left.
+// If all the componenents under a header is moved to the right, this method changes the header's isEnabled flag
+// to false, meaning the header will not appear on left anymore
+// if even one component under the header is still on the left, the header stays intact.
+const _shouldShowHeaderInAvailSettings = (subset, superset, el) => {
+  // check if the superset contains all elements from the subset
+  if (_.difference(subset, superset).length === 0) {
+    return {
+      ...el,
+      isEnabled: false
+    };
+  } else {
+    return {
+      ...el,
+      isEnabled: true
+    };
+  }
 };
 
 export default reduxActions.handleActions({
@@ -272,20 +300,71 @@ export default reduxActions.handleActions({
     }, { deep: true }); // deep merge so we don't reset everything
   },
 
-  // define-policy-step - when stuff gets moved from left col to right col, add appropriate labels to the right col
-  [ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS]: (state) => {
-    const { selectedSettings } = state;
+  // define-policy-step - when stuff gets moved from left col to right col or viceversa, this handles updating
+  // the headers correctly.
+  [ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS]: (state) => {
+    const { availableSettings, selectedSettings } = state;
     let newSelectedSettings = [...selectedSettings];
 
-    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["scanType", "scanScheduleLabel", ...]
-    const showScanSchedLabelInSelSettings = _shouldShowLabelInSelSettings(selectedSettingsIds, [scanScheduleId]);
+    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["scanType", "scanScheduleHeader", ...]
 
-    if (showScanSchedLabelInSelSettings) {
-      newSelectedSettings = _addLabelToSelSettings(state, scanSchedLabelId);
+    const showScanSchedHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allScanScheduleIds);
+    if (showScanSchedHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, scanSchedHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, scanSchedHeaderId);
     }
 
+    const showadvScanSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allAdvScanSettingsIds);
+    if (showadvScanSettingsHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, advScanSettingsHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, advScanSettingsHeaderId);
+    }
+
+    const showInvActionsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allInvActionsIds]);
+    if (showInvActionsHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, invActionsHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, invActionsHeaderId);
+    }
+
+    const showEndpointServerHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allEndpointServerIds);
+    if (showEndpointServerHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, endpointServerHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, endpointServerHeaderId);
+    }
+
+    const showAgentSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allAgentSettingsIds]);
+    if (showAgentSettingsHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, agentSettingsHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, agentSettingsHeaderId);
+    }
+
+    const newAvailableSettings = availableSettings.map((el) => {
+      if (el.id === scanSchedHeaderId) {
+        return _shouldShowHeaderInAvailSettings(allScanScheduleIds, selectedSettingsIds, el);
+      }
+      if (el.id === advScanSettingsHeaderId) {
+        return _shouldShowHeaderInAvailSettings(allAdvScanSettingsIds, selectedSettingsIds, el);
+      }
+      if (el.id === invActionsHeaderId) {
+        return _shouldShowHeaderInAvailSettings([allInvActionsIds], selectedSettingsIds, el);
+      }
+      if (el.id === endpointServerHeaderId) {
+        return _shouldShowHeaderInAvailSettings(allEndpointServerIds, selectedSettingsIds, el);
+      }
+      if (el.id === agentSettingsHeaderId) {
+        return _shouldShowHeaderInAvailSettings([allAgentSettingsIds], selectedSettingsIds, el);
+      }
+      return el;
+    });
+
     return state.merge({
-      selectedSettings: newSelectedSettings
+      availableSettings: newAvailableSettings,
+      selectedSettings: _.uniqBy(newSelectedSettings, 'id')
     });
   },
 

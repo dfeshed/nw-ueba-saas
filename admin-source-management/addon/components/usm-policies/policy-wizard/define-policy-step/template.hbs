@@ -5,11 +5,6 @@
       {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
         {{#if enabledAvailableSetting.isHeader}}
           <div class="heading">{{t enabledAvailableSetting.label}}</div>
-        {{else if enabledAvailableSetting.isSubHeader}}
-          <div class="sub-heading available-setting {{enabledAvailableSetting.id}}
-            {{if enabledAvailableSetting.isGreyedOut 'is-greyed-out' 'not-greyed-out'}}">
-            {{t enabledAvailableSetting.label}}
-          </div>
         {{else}}
           <div class="title available-setting {{enabledAvailableSetting.id}}
             {{if enabledAvailableSetting.isGreyedOut 'is-greyed-out' 'not-greyed-out'}}">
@@ -30,7 +25,7 @@
           <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
           <div class="selected-setting">
-            {{component sortedSelectedSetting.callback
+            {{component sortedSelectedSetting.component
               selectedSettingId=sortedSelectedSetting.id
             }}
           </div>

@@ -36,21 +36,25 @@ const fetchPolicyList = () => {
 const newPolicy = () => ({ type: ACTION_TYPES.NEW_POLICY });
 
 /**
- * Fetches a single policy for edit
+ * Fetches a single policy for edit. It also dispatches _updateHeadersForAllSettings
+ * so that correct headers will be intact for the policy that is fetched.
  * @public
  */
 const fetchPolicy = (id, callbacks = callbacksDefault) => {
-  return {
-    type: ACTION_TYPES.FETCH_POLICY,
-    promise: policyAPI.fetchPolicy(id),
-    meta: {
-      onSuccess: (response) => {
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        callbacks.onFailure(response);
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_POLICY,
+      promise: policyAPI.fetchPolicy(id),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+          dispatch(_updateHeadersForAllSettings());
+        },
+        onFailure: (response) => {
+          callbacks.onFailure(response);
+        }
       }
-    }
+    });
   };
 };
 
@@ -67,9 +71,7 @@ const addToSelectedSettings = (id) => {
       type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS,
       payload: id
     });
-    dispatch({
-      type: ACTION_TYPES.ADD_LABEL_TO_SELECTED_SETTINGS
-    });
+    dispatch(_updateHeadersForAllSettings());
   };
 };
 
@@ -84,17 +86,34 @@ const removeFromSelectedSettings = (id) => {
   // if the main id like scanScheduleId gets removed, we don't want any of it's child components
   // like (effective date, recurrence interval, processor usage) be displayed in selected settings.
   // so reset the state to defaults to clear out everything in selected settings.
-  switch (id) {
-    case scanScheduleId:
-      return {
-        type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS
-      };
-    default:
-      return {
-        type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS,
-        payload: id
-      };
-  }
+  return (dispatch) => {
+    switch (id) {
+      case scanScheduleId:
+        dispatch({
+          type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS
+        });
+        break;
+      default:
+        dispatch({
+          type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS,
+          payload: id
+        });
+    }
+    dispatch(_updateHeadersForAllSettings());
+  };
+};
+
+/**
+ * define-policy-step...
+ * This gets dispatched alongside with addToSelectedSettings, removeFromSelectedSettings and fetchPolicy
+ * @private
+ */
+const _updateHeadersForAllSettings = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS
+    });
+  };
 };
 
 /**

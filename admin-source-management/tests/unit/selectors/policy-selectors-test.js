@@ -46,8 +46,8 @@ const fullState = {
       },
       policyStatus: null, // wait, complete, error
       availableSettings: [
-        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
       ],
       selectedSettings: []
     }

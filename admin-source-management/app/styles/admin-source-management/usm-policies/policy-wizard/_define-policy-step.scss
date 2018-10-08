@@ -25,10 +25,6 @@
         }
       }
 
-      .sub-heading {
-        @include rsa-font();
-        padding: rsa-whitespace() rsa-whitespace() 0 0;
-      }
       .available-settings {
         margin-right: rsa-whitespace(most);
         .rsa-icon {

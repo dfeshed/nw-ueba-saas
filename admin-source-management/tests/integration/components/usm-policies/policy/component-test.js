@@ -36,12 +36,12 @@ const initialState = {
   },
   policyStatus: null, // wait, complete, error
   availableSettings: [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
-    { index: 2, id: 'recurrenceInterval', label: 'Scan Frequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
-    { index: 3, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
-    { index: 4, id: 'cpuMax', label: 'CPU Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
-    { index: 5, id: 'vmMax', label: 'Virtual Machine Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' }
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', component: 'usm-policies/policy/schedule-config/effective-date' },
+    { index: 2, id: 'recurrenceInterval', label: 'Scan Frequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', component: 'usm-policies/policy/schedule-config/recurrence-interval' },
+    { index: 3, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', component: 'usm-policies/policy/schedule-config/start-time' },
+    { index: 4, id: 'cpuMax', label: 'CPU Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', component: 'usm-policies/policy/schedule-config/cpu-max' },
+    { index: 5, id: 'vmMax', label: 'Virtual Machine Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', component: 'usm-policies/policy/schedule-config/vm-max' }
   ],
   selectedSettings: []
 };
@@ -136,8 +136,8 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
 
   skip('All the components in the selected settings is rendered on the UI ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     setState({ ...initialState, selectedSettings: newSelectedSettings });
     await render(hbs`{{usm-policies/policy}}`);
@@ -176,8 +176,8 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
 
   skip('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     setState({ ...initialState, availableSettings: newAvailableSettings });
     await render(hbs`{{usm-policies/policy}}`);
@@ -186,8 +186,8 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
 
   skip('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
-      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     setState({ ...initialState, selectedSettings: newSelectedSettings });
     await render(hbs`{{usm-policies/policy}}`);
