@@ -2072,10 +2072,9 @@ export default {
       },
       customFilters: {
         save: {
-          description: 'Provide a name to the search to be saved. This name will appear in the search box list.',
-          name: 'Name *',
+          description: 'Choose a name that contains 1-256 alphanumeric characters, underscores, and hyphen. <br>The name must not match an already existing filter name.',
           errorHeader: 'Unable to save search',
-          header: 'Save search',
+          header: 'Save Filter',
           errorMessage: 'The search cannot be saved. ',
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
@@ -2083,6 +2082,7 @@ export default {
           filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
           invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
         },
+        error: 'Name already exists. Provide a unique name for the filter.',
         delete: {
           successMessage: 'Query deleted successfully.',
           errorMessage: 'Failed to delete the saved search',

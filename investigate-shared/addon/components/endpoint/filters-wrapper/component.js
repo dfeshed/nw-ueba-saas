@@ -153,7 +153,7 @@ export default Component.extend({
             success('investigateFiles.filter.customFilters.save.success');
             this.set('showSaveFilter', false);
           },
-          onFailure: () => failure('investigateFiles.customFilter.error')
+          onFailure: () => failure('investigateFiles.filter.customFilters.error')
         };
         if (saveFilterName === name) {
           const filter = {
