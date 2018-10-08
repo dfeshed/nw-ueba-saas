@@ -4,13 +4,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.rsa.netwitness.cba.api.S3DataIterator;
 import fortscale.common.general.Schema;
-import fortscale.domain.core.AbstractDocument;
-import org.flume.source.sdk.EventsStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -22,13 +20,9 @@ import static java.util.Objects.requireNonNull;
  * @author Abhinav Iyappan
  * @since 11.3
  */
-public class CBAEventsStream implements EventsStream {
+public class CBAEventsStream extends AbstractNetwitnessEventsStream {
 
     private static final Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);
-
-    private S3DataIterator iterator;
-    private Schema schema;
-    private long count = 0;
 
     /**
      * Instantiate the iterator for streaming. The config map MUST contain the following properties:
@@ -44,58 +38,19 @@ public class CBAEventsStream implements EventsStream {
      * @param config    configuration paramters like bucket name, path of the event files etc.
      */
     @Override
-    public void startStreaming(Schema schema, Instant startDate, Instant endDate, Map<String, String> config) {
-        this.schema = schema;
-        this.count = 0;
-        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+    public Iterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate,
+            Map<String, String> config) {
         validateConfiguration(config);
-        iterator = new S3DataIterator(s3, config, startDate, endDate);
-        logger.info("Iterator {} instantiated", iterator);
-    }
-
-    /**
-     * Is the iterator finished ?
-     *
-     * @return false is iterator is finished, true otherwise
-     */
-    @Override
-    public boolean hasNext() {
-        return iterator.hasNext();
-    }
-
-    /**
-     * Get the next event from S3.
-     *
-     * @return an AbstractDocument
-     */
-    @Override
-    public AbstractDocument next() {
-
-        AbstractDocument document = null;
-        Map<String, Object> event = iterator.next();
-        if (event != null) {
-            document = NetwitnessDocumentBuilder.getInstance().buildDocument(schema, event);
-            count++;
-            logger.debug("CBA document: {}", document);
+        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+        S3DataIterator iterator;
+        try {
+            iterator = new S3DataIterator(s3, config, startDate, endDate);
         }
-        return document;
-    }
-
-    /**
-     * Close the {@link S3DataIterator}, and print a count of events read so far.
-     */
-    @Override
-    public void stopStreaming() {
-        if (iterator != null) {
-            try {
-                iterator.close();
-            }
-            catch (IOException e) {
-                logger.error("Error while closing iterator. {}", e);
-            }
-            logger.info("No. of records read from current S3 source: {}", count);
+        catch (Exception e) {
+            logger.error("start streaming failed", e);
+            throw new RuntimeException("start streaming failed", e);
         }
-
+        return iterator;
     }
 
     /**
