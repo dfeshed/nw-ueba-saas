@@ -1,6 +1,6 @@
 export default {
   class: 'rsa-context-panel__grid__reputation-server',
-  dataSourceGroup: 'ReputationServer',
+  dataSourceGroup: 'FileReputationServer',
   header: '',
   headerRequired: false,
   footerRequired: true,

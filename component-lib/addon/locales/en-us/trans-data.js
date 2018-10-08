@@ -1552,7 +1552,7 @@ export default {
       IOC: 'Endpoint (IOC)',
       Archer: 'Archer',
       LIST: 'List',
-      ReputationServer: 'File Reputation'
+      FileReputationServer: 'File Reputation'
     },
     header: {
       title: {
@@ -1565,7 +1565,7 @@ export default {
         liveConnectIp: 'Live Connect',
         liveConnectFile: 'Live Connect',
         liveConnectDomain: 'Live Connect',
-        reputationServer: 'File Reputation'
+        fileReputationServer: 'File Reputation'
       },
       archer: 'Archer',
       overview: 'overview',
@@ -1581,7 +1581,7 @@ export default {
       endpoint: 'Endpoint',
       liveConnect: 'Live Connect',
       unsafe: 'Unsafe',
-      reputationServer: 'File Reputation',
+      fileReputationServer: 'File Reputation',
       closeButton: {
         title: 'Close'
       },
@@ -1866,7 +1866,7 @@ export default {
         users: 'User(s)',
         endpoint: 'Host',
         archer: 'Asset',
-        reputationServer: 'File Reputation'
+        fileReputationServer: 'File Reputation'
       },
       resultCount: '(First {{count}} Results)'
     },
@@ -1896,7 +1896,7 @@ export default {
         'LiveConnect-Domain': 'LiveConnect',
         criticality: 'Criticality',
         riskRating: 'Asset Risk',
-        ReputationServer: 'Reputation'
+        FileReputationServer: 'Reputation'
       }
     }
   },

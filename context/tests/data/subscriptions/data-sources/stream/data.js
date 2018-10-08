@@ -13,6 +13,20 @@ export default [{
   'contentLastModifiedTime': 1488906967222,
   'dataSourceConnectionId': '5b82f6eeb3e9d75d78a9183h'
 }, {
+  'id': '58be7d121969557cbbdbfc57',
+  'name': '58be7d121969557cbbdbfc55_FileReputationServer_datasource',
+  'enabled': true,
+  'description': null,
+  'type': 'FileReputationServer',
+  'dataSourceGroup': 'FileReputationServer',
+  'maxSize': -1,
+  'maxAgeOfEntriesInSeconds': -1,
+  'maxStorageSize': -1,
+  'maxCacheMemorySize': -1,
+  'contentVersion': 13,
+  'contentLastModifiedTime': 1488906967222,
+  'dataSourceConnectionId': '5b754298b8880c4ddd15deb1'
+}, {
   'id': '58be7d121969557cbbdbfc5sdf',
   'name': 'Liveconnect-ds',
   'enabled': true,

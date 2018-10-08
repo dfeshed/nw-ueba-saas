@@ -24,8 +24,8 @@ export default [
     'lastModifiedBy': 'Netwitness Web(nw-web)',
     'lastModifiedOn': 1535622914065,
     'id': '5b754298b8880c4ddd15deb1',
-    'name': 'ReputationServer',
-    'type': 'ReputationServer',
+    'name': 'FileReputationServer',
+    'type': 'FileReputationServer',
     'enabled': true,
     'connectionParameters': {
       'test_conn_http_method': 'POST',

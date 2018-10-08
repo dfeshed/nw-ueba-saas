@@ -52,6 +52,7 @@ module('Integration | Component | context-panel', function(hooks) {
     await render(hbs `{{context-panel entityId=entityId entityType=entityType}}`);
     return waitFor('.rsa-nav-tab-group').then(() => {
       assert.equal(findAll('.rsa-nav-tab').length, 5, 'We should get 5 data sources for File Hash');
+      assert.equal(findAll('.tabsFileReputationServer').length, 1, 'File Reputation datasource tab should exists.');
     });
   });
 });

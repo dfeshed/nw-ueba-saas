@@ -95,10 +95,10 @@ const datasources = {
     class: 'account-circle-1',
     tabRequired: true
   },
-  reputationServer: {
-    field: 'ReputationServer',
-    title: 'context.header.reputationServer',
-    dataSourceType: 'ReputationServer',
+  fileReputationServer: {
+    field: 'FileReputationServer',
+    title: 'context.header.fileReputationServer',
+    dataSourceType: 'FileReputationServer',
     displayType: 'dynamic-grid',
     class: 'account-circle-1',
     tabRequired: true
@@ -209,7 +209,7 @@ export default [{
     datasources.incident,
     datasources.alert,
     datasources.liveConnectFile,
-    datasources.reputationServer
+    datasources.fileReputationServer
   ],
   headerButtons: [
     'add-to-list',

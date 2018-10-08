@@ -78,7 +78,7 @@ module('Integration | Component | context tooltip records', function(hooks) {
       model: { type: 'FILE_HASH', id: '3f066dd1f1da052248aed5abc4a0c6a1' }
     });
     await render(hbs`{{context-tooltip/records model=model}}`);
-    assert.ok(findAll('.rsa-context-tooltip-records__record .text')[4].textContent.indexOf(reputation), 'Expected to find Reputataion Attribute for File_HASH');
+    assert.ok(findAll('.rsa-context-tooltip-records__record .text')[4].textContent.indexOf(reputation), 'Expected to find Reputation Attribute for File_HASH');
 
   });
 });
