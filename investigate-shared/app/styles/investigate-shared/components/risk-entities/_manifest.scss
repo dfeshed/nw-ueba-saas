@@ -1,0 +1,41 @@
+.risk-entities {
+  background-color: text-color(primary, darker);
+  .header {
+    @include rsa-font(header, small);
+    color: text-color(neutral);
+    padding: rsa-whitespace();
+  }
+
+  .entities{
+    padding-bottom: rsa-whitespace(less);
+    min-height: 40px;
+  }
+
+  svg{
+    vertical-align: text-bottom;
+  }
+
+  .title {
+    @include rsa-font(light,small, true);
+    color: text-color(primary, light);
+    display: inline-block;
+    width: 10%;
+    float: left;
+    padding-top: rsa-whitespace(less);
+  }
+
+  .entity-data{
+    display: inline-block;
+    width: 90%;
+  }
+
+  .entity-name{
+    @include rsa-font(regular,small);
+    vertical-align: text-top;
+  }
+
+  .arrow-icon {
+    color:text-color(secondary);
+  }
+
+}

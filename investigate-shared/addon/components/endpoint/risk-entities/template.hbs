@@ -1,0 +1,35 @@
+<h3 {{action 'toggleContent'}}>
+  {{#if isCollapsed}}
+    {{rsa-icon class="arrow-icon" size="small" name="arrow-right-12"}}
+  {{else}}
+    {{rsa-icon class="arrow-icon" size="small" name="arrow-down-12"}}
+  {{/if}}
+
+  {{#each entities as |entity|}}
+    <span class="header">
+      {{rsa-icon name=entity.class}} {{entity.title}}({{entity.count}})
+    </span>
+  {{/each}}
+</h3>
+
+<div class="content">
+  {{#each entities as |entity|}}
+    <div class="entities">
+      <span class="title">
+        {{rsa-icon name=entity.class}} {{entity.title}}({{entity.count}})
+      </span>
+      {{#each-in entitiesData as |key entityData|}}
+        {{#if (eq key entity.title)}}
+          <span class="entity-data">
+            {{#each entityData as |data|}}
+              {{#if data.score}}
+                {{rsa-risk-score score=data.score size='small'}}
+              {{/if}}
+              <span class="entity-name">{{data.name}}</span>
+            {{/each}}
+          </span>
+        {{/if}}
+      {{/each-in}}
+    </div>
+  {{/each}}
+</div>
