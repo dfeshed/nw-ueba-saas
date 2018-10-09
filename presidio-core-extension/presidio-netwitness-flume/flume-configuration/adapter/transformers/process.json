@@ -285,10 +285,10 @@
     {
       "type": "copy_value",
       "name": "rename-cert.common",
-      "sourceKey": "filename_src",
+      "sourceKey": "cert_common",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "srcProcessFilename"
+        "srcProcessCertificateIssuer"
       ]
     },
     ,
