@@ -64,27 +64,9 @@ export const initialState = {
     {
       id: 'definePolicyStep',
       prevStepId: 'identifyPolicyStep',
-      nextStepId: 'applyToGroupStep',
+      nextStepId: '',
       title: 'adminUsm.policyWizard.definePolicy',
       stepComponent: 'usm-policies/policy-wizard/define-policy-step',
-      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
-      toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
-    },
-    {
-      id: 'applyToGroupStep',
-      prevStepId: 'definePolicyStep',
-      nextStepId: 'reviewPolicyStep',
-      title: 'adminUsm.policyWizard.applyToGroup',
-      stepComponent: 'usm-policies/policy-wizard/apply-to-group-step',
-      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
-      toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
-    },
-    {
-      id: 'reviewPolicyStep',
-      prevStepId: 'applyToGroupStep',
-      nextStepId: '',
-      title: 'adminUsm.policyWizard.reviewPolicy',
-      stepComponent: 'usm-policies/policy-wizard/review-policy-step',
       titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
       toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
     }
@@ -142,7 +124,7 @@ const advScanSettingsHeaderId = 'advScanSettingsHeader';
 const invActionsHeaderId = 'invActionsHeader';
 const allInvActionsIds = 'blockingEnabled';
 const endpointServerHeaderId = 'endpointServerHeader';
-const allEndpointServerIds = ['primaryAddress', 'primaryHttpPort', 'primaryUdpPort'];
+const allEndpointServerIds = ['primaryAddress', 'primaryHttpsPort', 'primaryHttpsBeaconInterval', 'primaryUdpPort', 'primaryUdpBeaconInterval'];
 const agentSettingsHeaderId = 'agentSettingsHeader';
 const allAgentSettingsIds = 'agentMode';
 

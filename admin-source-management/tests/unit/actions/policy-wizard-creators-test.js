@@ -12,18 +12,14 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('addToSelectedSettings action creator returns proper type and payload', function(assert) {
-    const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
-    };
     const dispatch = (action) => {
       // first dispatch has a payload
       if (action.payload) {
         assert.equal(action.type, ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, 'action has the correct type');
         assert.deepEqual(action.payload, 'id1', 'payload has the correct id');
       } else {
-        // second dispatch is a function
-        const thunk2 = action;
-        thunk2(secondDispatch);
+        // second dispatch does not have a payload
+        assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
       }
     };
     const thunk = policyWizardCreators.addToSelectedSettings('id1');
@@ -31,18 +27,14 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('removeFromSelectedSettings action creator returns proper type and payload', function(assert) {
-    const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
-    };
     const dispatch = (action) => {
       // first dispatch has a payload
       if (action.payload) {
         assert.equal(action.type, ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, 'action has the correct type');
         assert.deepEqual(action.payload, 'id1', 'payload has the correct id');
       } else {
-        // second dispatch is a function
-        const thunk2 = action;
-        thunk2(secondDispatch);
+        // second dispatch does not have a payload
+        assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
       }
     };
     const thunk = policyWizardCreators.removeFromSelectedSettings('id1');
@@ -54,17 +46,16 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('removeFromSelectedSettings ac returns proper type when id is scanType', function(assert) {
-    const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
-    };
     const dispatch = (action) => {
-      // first dispatch is not a function
-      if (typeof action !== 'function') {
-        assert.equal(action.type, ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, 'action has the correct type');
-      } else {
-        // second dispatch is a function
-        const thunk2 = action;
-        thunk2(secondDispatch);
+      switch (action.type) {
+        case ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS:
+          assert.equal(action.type, ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, 'action has the correct type');
+          break;
+        case ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type');
+          break;
+        default:
+          assert.equal(true, false, 'action has the correct type');
       }
     };
     const scanScheduleId = 'scanType';

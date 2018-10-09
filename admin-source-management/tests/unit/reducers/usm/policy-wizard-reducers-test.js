@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import moment from 'moment';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -100,7 +100,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(endState, expectedEndState, 'policy is set and policyStatus is complete');
   });
 
-  skip('on FETCH_POLICY success, availableSettings & selectedSettings are properly set', function(assert) {
+  test('on FETCH_POLICY success, availableSettings & selectedSettings are properly set', function(assert) {
     const initialStateCopy = _.cloneDeep(policyWizInitialState);
     const expectedEndState = {
       availableSettings: [
@@ -120,10 +120,13 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
         { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
         { index: 15, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
-        { index: 16, id: 'primaryHttpPort', label: 'adminUsm.policy.primaryHttpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] },
-        { index: 17, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
-        { index: 18, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
-        { index: 19, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+        { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+        { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+        { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
+        { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+        { index: 20, id: 'agentSettingsHeader', label: 'adminUsm.policy.agentSettings', isHeader: true, isEnabled: true },
+        { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+
       ],
       selectedSettings: [
         { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
@@ -136,7 +139,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         { index: 11, id: 'requestScanOnRegistration', label: 'adminUsm.policy.requestScanOnRegistration', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'requestScanOnRegistration', value: false }] },
         { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] },
         { index: 15, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] },
-        { index: 19, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+        { index: 21, id: 'agentMode', label: 'adminUsm.policy.agentMode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
       ]
     };
 
@@ -169,8 +172,9 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       payload: fetchPolicyPayload
     });
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings, expectedEndState.availableSettings, 'availableSettings are properly set');
-    assert.deepEqual(endState.selectedSettings, expectedEndState.selectedSettings, 'selectedSettings are properly set');
+    assert.deepEqual(endState.availableSettings.length, expectedEndState.availableSettings.length, 'availableSettings are properly set');
+    assert.equal(endState.availableSettings[21].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
+    assert.deepEqual(endState.selectedSettings.length, expectedEndState.selectedSettings.length, 'selectedSettings are properly set');
   });
 
   test('on FETCH_POLICY_LIST start, policyList is reset and policyListStatus is properly set', function(assert) {

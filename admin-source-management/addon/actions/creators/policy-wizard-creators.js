@@ -109,10 +109,8 @@ const removeFromSelectedSettings = (id) => {
  * @private
  */
 const _updateHeadersForAllSettings = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS
-    });
+  return {
+    type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS
   };
 };
 
