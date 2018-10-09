@@ -58,6 +58,9 @@
   }
 
   .time-range-invalid {
+    .rsa-date-time-range {
+      border-color: border-color(accentOne, darker);
+    }
     .rsa-form-button {
       &:not(.is-standard) {
         border-left-width: 0px;

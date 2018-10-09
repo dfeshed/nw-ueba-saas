@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent, blur, settled } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import { patchReducer } from '../../../helpers/vnext-patch';
@@ -14,6 +14,36 @@ import KEY_MAP from 'investigate-events/util/keys';
 const ENTER_KEY = KEY_MAP.enter.code;
 
 let setState;
+
+const timeRangeSelectors = {
+  customTimeRangeTetheredDropdownButton: '.time-selector .rsa-form-button',
+  customTimeRange_24_HOURS: '.rsa-dropdown-action-list li:nth-child(9)',
+  dateTimeRange: '.rsa-date-time-range',
+  invalidTimeRange: '.rsa-investigate-query-container__time-selector.time-range-invalid',
+  minuteInput: '.date-time-input.minute input'
+};
+
+async function iterateTimeRangeSelection(assert) {
+  // leave the minutes input blank
+  await fillIn(timeRangeSelectors.minuteInput, '');
+
+  // focus out to set it
+  await blur(timeRangeSelectors.minuteInput);
+
+  return settled().then(async () => {
+    // should see a invalid timerange
+    assert.equal(findAll(timeRangeSelectors.invalidTimeRange).length, 1, 'Found an invalid timerange');
+
+    // click on the tethered panel dropdown
+    await click(timeRangeSelectors.customTimeRangeTetheredDropdownButton);
+
+    // select last 24 hours from the dropdown
+    await click(timeRangeSelectors.customTimeRange_24_HOURS);
+
+    // should see the appropriate calculated timerange
+    assert.equal(find(timeRangeSelectors.dateTimeRange).getAttribute('title').trim(), 'Calculated duration:  23 hours 59 minutes 59 seconds');
+  });
+}
 
 module('Integration | Component | query-container', function(hooks) {
   setupRenderingTest(hooks, {
@@ -81,5 +111,24 @@ module('Integration | Component | query-container', function(hooks) {
     await fillIn(PILL_SELECTORS.metaInput, '');
     // press ENTER to submit query
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('Make the timerange invalid, then select from custom dropdown - error should go away', async function(assert) {
+    assert.expect(5);
+    const startTimeinSec = 1508091780; // Oct 15 2017 18:23
+    const endTimeinSec = 1508178179; // Oct 16 2017 18:22
+    new ReduxDataHelper(setState)
+      .hasRequiredValuesToQuery(true)
+      .queryStats()
+      .startTime(startTimeinSec)
+      .endTime(endTimeinSec)
+      .build();
+
+    await render(hbs`{{query-container}}`);
+    assert.equal(find('.rsa-date-time-range').getAttribute('title').trim(), 'Calculated duration:  23 hours 59 minutes 59 seconds');
+
+    await iterateTimeRangeSelection(assert);
+
+    await iterateTimeRangeSelection(assert);
   });
 });
