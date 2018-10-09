@@ -274,7 +274,7 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('saveUIState', this.get('configData'));
-          this.send('setConfig', this.get('configData'), false, this._getCallbackFunction());
+          this.send('setConfig', this.get('configData'), false, this._getCallbackFunction(), this.get('serverId'));
         } else {
           if (packageConfigError) {
             this._scrollTo('.server-input-group');
@@ -293,7 +293,7 @@ const formComponent = Component.extend({
         this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
         this.set('configData.logCollectionConfig.enabled', this.get('enabled'));
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
-        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG', this._getCallbackFunction());
+        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG', this._getCallbackFunction(), this.get('serverId'));
       } else {
         this._scrollTo('.windows-log-collection');
       }
