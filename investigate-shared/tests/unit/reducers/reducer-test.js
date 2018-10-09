@@ -68,5 +68,15 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     assert.equal(newEndState.savedFilterList.length, 0);
   });
 
+  test('RESET_FILTER reset saved filter', function(assert) {
+    const previous = Immutable.from({
+      selectedFilter: {},
+      expressionList: [{}]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.RESET_FILTER });
+    assert.equal(result.selectedFilter.id, 1);
+    assert.equal(result.selectedFilter.criteria.expressionList.length, 0);
+  });
+
 });
 

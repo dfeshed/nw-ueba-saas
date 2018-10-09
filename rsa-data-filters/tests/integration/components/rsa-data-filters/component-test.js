@@ -95,19 +95,17 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     click('.save-filter-button button');
   });
 
-  test('it reset action is executed', async function(assert) {
+  test('reset action is executed', async function(assert) {
     assert.expect(3);
     this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 0);
     });
 
-    this.set('showSaveFilterButton', false);
+    this.set('showSaveFilterButton', true);
     await render(hbs`{{rsa-data-filters onFilterChange=(action onFilterChange) showSaveFilterButton=showSaveFilterButton config=config}}`);
-    assert.equal(findAll('.save-filter-button').length, 0);
+    assert.equal(findAll('.save-filter-button').length, 1);
     assert.equal(findAll('.reset-filter-button').length, 1, 'Expected render reset button');
     click('.reset-filter-button button');
   });
-
-
 });

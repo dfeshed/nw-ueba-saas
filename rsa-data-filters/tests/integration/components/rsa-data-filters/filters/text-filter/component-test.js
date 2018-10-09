@@ -46,4 +46,49 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
+  test('it should show the error message and error style', async function(assert) {
+    assert.expect(2);
+    this.set('onQueryChange', () => {});
+    this.set('options', {
+      name: 'fileName',
+      filterOnBlur: true,
+      'validations': {
+        format: {
+          validator: (value) => {
+            return !/^[A-Za-z0-9]*$/.test(value);
+          },
+          message: 'Error'
+        }
+      }
+    });
+    await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
+    await fillIn('.file-name-input  input', '@@@123');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('.is-error').length, 1);
+    assert.equal(document.querySelectorAll('.input-error').length, 1);
+  });
+
+  test('no validation if operator is part of exclude', async function(assert) {
+    assert.expect(2);
+    this.set('onQueryChange', () => {});
+    this.set('options', {
+      name: 'fileName',
+      filterOnBlur: false,
+      'validations': {
+        format: {
+          exclude: ['IN'],
+          validator: (value) => {
+            return !/^[A-Za-z0-9]*$/.test(value);
+          },
+          message: 'Error'
+        }
+      }
+    });
+    await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
+    await fillIn('.file-name-input  input', '@@@123');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('.is-error').length, 0);
+    assert.equal(document.querySelectorAll('.input-error').length, 0);
+  });
+
 });
