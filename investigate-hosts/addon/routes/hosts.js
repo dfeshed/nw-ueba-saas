@@ -1,8 +1,8 @@
 import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
-import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
+import { initializeHostPage } from 'investigate-hosts/actions/data-creators/host';
+import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
 import { getEndpointServers, isEndpointServerOffline } from 'investigate-hosts/actions/data-creators/endpoint-server';
 
@@ -60,10 +60,13 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     const { serverId } = redux.getState().endpointQuery;
-    const { sid } = params;
+    const { sid, machineId } = params;
     const request = lookup('service:request');
     run.next(() => {
       // refreshing host details page or routing using url
+      if (!machineId) {
+        redux.dispatch(resetDetailsInputAndContent());
+      }
       if (!sid && !serverId) {
         redux.dispatch(getEndpointServers());
       } else {
@@ -93,17 +96,6 @@ export default Route.extend({
         controller.set(queryParams[i], null);
       }
     }
-  },
-
-  // On activating the route get the all the schema, schema response is used to build the column configuration and filter
-  activate() {
-    run.next(() => {
-      const redux = this.get('redux');
-      const { serverId } = redux.getState().endpointQuery;
-      if (serverId) {
-        redux.dispatch(getAllSchemas());
-      }
-    });
   },
 
   // On deactivating the route send the user left page action to cleanup the state if any

@@ -15,18 +15,7 @@ const _totalItems = (state) => state.endpoint.machines.totalItems;
 const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _expressionList = (state) => state.endpoint.filter.expressionList || [];
-
-const _agentVersion = createSelector(
-  [ _hostDetailId, _hostList ],
-  (hostDetailId, hostList) => {
-    if (hostDetailId) {
-      const host = hostList.find((host) => host.id === hostDetailId);
-      if (host && host.machine) {
-        return host.machine.agentVersion;
-      }
-    }
-  }
-);
+const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 
 export const serviceList = createSelector(
   _serviceList,
@@ -39,11 +28,13 @@ export const serviceList = createSelector(
  );
 
 export const hostListForScanning = createSelector(
-  [ _selectedHostList, _hostDetailId, _agentVersion ],
-  (selectedHostList, hostDetailId, agentVersion) => {
-    if (hostDetailId) {
+  [ _selectedHostList, _hostDetails ],
+  (selectedHostList, hostDetails) => {
+    if (hostDetails.id) {
+      const { machine, id } = hostDetails;
+      const { agentVersion } = machine;
       if (agentVersion && !agentVersion.startsWith('4.4')) {
-        return [{ id: hostDetailId, version: agentVersion }];
+        return [{ id, version: agentVersion }];
       } else {
         return [];
       }

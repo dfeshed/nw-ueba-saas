@@ -72,8 +72,10 @@ test('it renders error page when endpointserver is offline', function(assert) {
   .isEndpointServerOffline(true)
   .build();
   this.render(hbs`{{host-detail}}`);
-  assert.equal(this.$('.host-header').length, 0, 'host detail is not rendered');
+  assert.equal(this.$('.host-header').length, 1, 'host header is not rendered');
   assert.equal(this.$('.error-page').length, 1, 'endpoint server is offline');
+  assert.equal(this.$('.host-detail-wrapper').length, 0, 'host detail is rendered');
+
 });
 
 test('it renders host detail when endpointserver is online', function(assert) {
@@ -85,5 +87,6 @@ test('it renders host detail when endpointserver is online', function(assert) {
     .build();
   this.render(hbs`{{host-detail}}`);
   assert.equal(this.$('.error-page').length, 0, 'endpoint server is online');
-  assert.equal(this.$('.host-header').length, 1, 'host detail is rendered');
+  assert.equal(this.$('.host-header').length, 1, 'host header is rendered');
+  assert.equal(this.$('.host-detail-wrapper').length, 1, 'host detail is rendered');
 });

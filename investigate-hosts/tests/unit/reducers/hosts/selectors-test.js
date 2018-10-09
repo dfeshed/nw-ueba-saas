@@ -55,7 +55,8 @@ const STATE = Immutable.from({
           name: 'endpoint'
         }
       ]
-    }
+    },
+    overview: {}
   },
   endpointQuery: {}
 });
@@ -113,7 +114,8 @@ test('allAreEcatAgents, check all are 4.4 agents', function(assert) {
             version: '4.4.0.1'
           }
         ]
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, true);
@@ -133,7 +135,8 @@ test('allAreEcatAgents, when some are not ecat agents', function(assert) {
             version: '4.4.0.1'
           }
         ]
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, false);
@@ -144,7 +147,8 @@ test('allAreEcatAgents, when no host is selected', function(assert) {
     endpoint: {
       machines: {
         selectedHostList: []
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, true);
@@ -164,7 +168,8 @@ test('allAreEcatAgents, when no are ecat agent', function(assert) {
             version: '4.2.0.1'
           }
         ]
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, false);
@@ -184,7 +189,8 @@ test('hasEcatAgents, check some are 4.4 agents', function(assert) {
             version: '4.2.0.1'
           }
         ]
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, true);
@@ -204,7 +210,8 @@ test('hasEcatAgents, when none are ecat agents', function(assert) {
             version: '4.2.0.1'
           }
         ]
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, false);
@@ -215,7 +222,8 @@ test('hasEcatAgents, when no host is selected', function(assert) {
     endpoint: {
       machines: {
         selectedHostList: []
-      }
+      },
+      overview: {}
     }
   }));
   assert.equal(result, false);
@@ -266,7 +274,8 @@ test('warningMessages', function(assert) {
           }
         ],
         selectedHostList: [ { id: 1, version: '4.4' }]
-      }
+      },
+      overview: {}
     }
   });
   const result = warningMessages(state);
@@ -284,7 +293,8 @@ test('warningMessages', function(assert) {
           }
         ],
         selectedHostList: [ { id: 1, version: '4.4' }]
-      }
+      },
+      overview: {}
     }
   });
   assert.equal(warningMessages(state2).length, 1, 'should contain one error message');
@@ -301,7 +311,8 @@ test('warningMessages', function(assert) {
           }
         ],
         selectedHostList: [ { id: 1, version: '11.1' }]
-      }
+      },
+      overview: {}
     }
   });
   assert.equal(warningMessages(state3).length, 1, 'should contain one error message');
@@ -318,7 +329,8 @@ test('warningMessages', function(assert) {
           }
         ],
         selectedHostList: [ { id: 1, version: '11.1' }]
-      }
+      },
+      overview: {}
     }
   });
   assert.equal(warningMessages(state4).length, 0, 'should contain one error message');
@@ -337,7 +349,8 @@ test('isScanStartButtonDisabled', function(assert) {
           }
         ],
         selectedHostList: []
-      }
+      },
+      overview: {}
     }
   });
   const result = isScanStartButtonDisabled(state);
@@ -355,7 +368,8 @@ test('isScanStartButtonDisabled', function(assert) {
           }
         ],
         selectedHostList: [{ id: 1 }]
-      }
+      },
+      overview: {}
     }
   });
   assert.equal(isScanStartButtonDisabled(state2), false, 'should be false when some host are selected');
@@ -372,7 +386,8 @@ test('isScanStartButtonDisabled', function(assert) {
           }
         ],
         selectedHostList: new Array(200)
-      }
+      },
+      overview: {}
     }
   });
   assert.equal(isScanStartButtonDisabled(state3), true, 'should be true when more host selected');
@@ -383,7 +398,8 @@ test('extractAgentIds', function(assert) {
     endpoint: {
       machines: {
         selectedHostList: [ { id: 1, version: '4.4' }, { id: 2, version: '11.1' }]
-      }
+      },
+      overview: {}
     }
   });
   const result = extractAgentIds(state);
