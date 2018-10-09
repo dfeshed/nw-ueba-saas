@@ -1,0 +1,276 @@
+{
+  "type": "chain",
+  "name": "file-windows-audit-transformer",
+  "transformerList": [
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-device-type-to-data-source",
+      "sourceKey": "device_type",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dataSource"
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "user-id-normalization",
+      "sourceKey": "user_src",
+      "destinationKey": "userId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-src",
+      "sourceKey": "user_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "userName",
+        "userDisplayName"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-action-to-operation-type",
+      "sourceKey": "action",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "operationType"
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "machine-id-normalization",
+      "sourceKey": "alias-host",
+      "destinationKey": "machineId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "-",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*:.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": "(\\\\\\\\)?([^\\.]+)\\..+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(\\\\\\\\)?(.+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "machine-owner-normalization",
+      "sourceKey": "owner",
+      "destinationKey": "machine_owner",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-process-directory",
+      "sourceKey": "directory_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processDirectory"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-process-file-name",
+      "sourceKey": "filename_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processFileName"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-registry-key-group",
+      "sourceKey": "ec_subject",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "registryKeyGroup"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-registry-key-group",
+      "sourceKey": "registry_key",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "registryKey"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-registry-value",
+      "sourceKey": "registry_value",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "registryValueName"
+      ]
+    }
+    //todo: add processDirectoryGroup: Context=dir.*
+    //todo: add processCategories: Context=application.*,
+    //todo: machineOwner: define 2 fields machineOwner and userId?
+  ]
+}
