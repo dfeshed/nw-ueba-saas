@@ -1,0 +1,42 @@
+<vbox class="events-list__table-view">
+  <box class="events-list__table-view-header flexi-fit">
+    <h2>
+      <span class="event-count-and-label">
+        <span class="event-count" test-id="eventCount">
+          {{items.length}}
+        </span>
+        <span class="event-label" test-id="eventLabel">
+          {{t 'respond.eventsList.title' count=items.length}}
+        </span>
+        {{#if selectionExists}}
+          <span class="clear-selection" test-id="clearSelection">
+            <button class="see-all-events" test-id="clearSelectionBtn" onclick={{action clearSelection}}>
+              {{t 'respond.eventsList.seeAllEvents'}}
+            </button>
+          </span>
+        {{/if}}
+        {{#if (not-eq loadingStatus 'completed')}}
+          <span class="event-fetch-loader" test-id="eventFetchLoader">
+            {{rsa-loader size="small"}}
+          </span>
+        {{/if}}
+      </span>
+    </h2>
+  </box>
+  <box class="events-list__table-view-body flexi-fill">
+    <div class="events-list__scroller">
+      <ul class="events-list-rows" test-id="eventsList">
+        {{#vertical-collection
+          items=items
+          containerSelector=".events-list__scroller"
+          key="id"
+          estimateHeight=166
+          bufferSize=15
+          as |item|
+          }}
+          {{events-list-row alerts=alerts item=item expandedId=expandedId expand=expandStorylineEvent}}
+        {{/vertical-collection}}
+      </ul>
+    </div>
+  </box>
+</vbox>

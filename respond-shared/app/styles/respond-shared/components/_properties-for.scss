@@ -1,0 +1,14 @@
+.properties-for {
+
+  table {
+    border-spacing: 0;
+  }
+
+  td {
+    @include rsa-font(paragraph, small);
+  }
+
+  a {
+    color: text-color(secondary, light);
+  }
+}

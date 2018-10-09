@@ -1,6 +1,6 @@
 import reselect from 'reselect';
-import arrayFlattenBy from 'respond/utils/array/flatten-by';
-import arrayFilterByList from 'respond/utils/array/filter-by-list';
+import arrayFlattenBy from 'respond-shared/utils/array/flatten-by';
+import arrayFilterByList from 'respond-shared/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 import { get, set, setProperties } from '@ember/object';
 import { lookup } from 'ember-dependency-lookup';

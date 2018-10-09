@@ -1,0 +1,14 @@
+{{#events-list-row/trigger showDetail=(action "showDetail") ariaControls=ariaControls expanded=ariaExpanded role="button" tabIndex="0"}}
+  <div class="events-list-alert-detail">
+    {{rsa-risk-score score=associatedAlert.severity size="small" testId="eventsAlertScore" focusable="false"}}
+    <h3 class="inline-alert-name" test-id="eventsAlertName">{{associatedAlert.name}}</h3>
+    <span class="inline-events-summary" test-id="eventsAlertSummary">({{t 'respond.eventsList.eventOfTotal' eventIndex=eventIndex numEvents=associatedAlert.numEvents}})</span>
+  </div>
+  {{component componentClass item=item}}
+{{/events-list-row/trigger}}
+<div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" hidden={{collapsed}}>
+  <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
+  {{#if ariaExpanded}}
+    {{component detailComponentClass item=item}}
+  {{/if}}
+</div>
