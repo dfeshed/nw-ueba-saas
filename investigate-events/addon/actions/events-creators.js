@@ -4,6 +4,7 @@ import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import _ from 'lodash';
+import getEventCount from './event-count-creators';
 
 // Common functions.
 const commonHandlers = function(dispatch) {
@@ -139,17 +140,13 @@ export const eventsGetMore = () => {
     const handlers = {
       onInit(stopStream) {
         this.stopStreaming = stopStream;
+        getEventCount();
         dispatch({ type: ACTION_TYPES.SET_ANCHOR, payload: anchor });
         dispatch({ type: ACTION_TYPES.SET_GOAL, payload: goal });
       },
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
         const payload = response && response.data;
-        const meta = response && response.meta;
-
-        if (meta) {
-          dispatch({ type: ACTION_TYPES.QUERY_STATS, payload: meta });
-        }
 
         if (Array.isArray(payload) && payload.length) {
           payload.forEach(_hasherizeEventMeta);

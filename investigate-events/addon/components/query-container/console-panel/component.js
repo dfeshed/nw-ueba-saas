@@ -11,11 +11,10 @@ import {
   warningsWithServiceName,
   errorsWithServiceName
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
-import { selectedService } from 'investigate-events/reducers/investigate/services/selectors';
+import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
-  serviceId: state.investigate.queryNode.previousQueryParams.serviceId,
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
   endTime: state.investigate.queryNode.previousQueryParams.endTime,
   description: state.investigate.queryStats.description,
@@ -26,7 +25,7 @@ const stateToComputed = (state) => ({
   hasWarning: hasWarning(state),
   devices: decoratedDevices(state),
   filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
-  selectedService: selectedService(state)
+  queriedService: queriedService(state)
 });
 
 const ConsolePanel = Component.extend({

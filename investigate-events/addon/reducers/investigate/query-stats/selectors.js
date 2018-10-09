@@ -21,10 +21,14 @@ export const slowestInQuery = createSelector(
 
     const findSlowest = (list = []) => {
       list.forEach((device) => {
+        if (device.devices && device.devices.length) {
+          return;
+        }
+
         if (device.elapsedTime && (slowestIds.length === 0)) {
           slowestTime = device.elapsedTime;
           slowestIds.push(device.serviceId);
-        } else if (device.elapsedTime > slowestTime) {
+        } else if (slowestTime && device.elapsedTime > slowestTime) {
           slowestTime = device.elapsedTime;
           slowestIds = [device.serviceId];
         } else if (device.elapsedTime && (device.elapsedTime === slowestTime)) {
@@ -38,7 +42,12 @@ export const slowestInQuery = createSelector(
     };
 
     findSlowest(deviceStats);
-    return slowestIds;
+
+    if (slowestIds.length > 1 || slowestIds.length === 0) {
+      return;
+    } else {
+      return slowestIds[0];
+    }
   }
 );
 
@@ -197,7 +206,7 @@ export const decoratedDevices = createSelector(
             on: d.on,
             serviceId: d.serviceId,
             devices: process(d.devices),
-            elapsedTime: d.elapsedTime / 1000,
+            elapsedTime: d.elapsedTime,
             serviceName: services.findBy('id', d.serviceId).displayName
           };
         });

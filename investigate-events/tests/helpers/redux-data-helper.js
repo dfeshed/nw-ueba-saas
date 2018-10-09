@@ -430,7 +430,7 @@ export default class DataHelper {
 
   queryStatsIsComplete() {
     _set(this.state.queryStats, 'percent', 100);
-    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2000 }]);
+    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
     return this;
   }
 
@@ -445,12 +445,12 @@ export default class DataHelper {
       {
         serviceId: '1',
         on: true,
-        elapsedTime: 2000,
+        elapsedTime: 2,
         devices: [
           {
             serviceId: '1',
             on: true,
-            elapsedTime: 2000
+            elapsedTime: 2
           }
         ]
       }

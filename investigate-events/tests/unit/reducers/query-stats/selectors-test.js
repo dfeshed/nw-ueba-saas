@@ -33,7 +33,7 @@ test('slowestInQuery when zeros', function(assert) {
     }
   });
 
-  assert.equal(slowest.length, 0);
+  assert.equal(slowest, undefined);
 });
 
 test('slowestInQuery when only one', function(assert) {
@@ -51,11 +51,10 @@ test('slowestInQuery when only one', function(assert) {
     }
   });
 
-  assert.equal(slowest.length, 1);
-  assert.equal(slowest[0], 'bar');
+  assert.equal(slowest, 'bar');
 });
 
-test('slowestInQuery when only multiple', function(assert) {
+test('slowestInQuery when multiple', function(assert) {
   const slowest = slowestInQuery({
     investigate: {
       queryStats: {
@@ -70,9 +69,7 @@ test('slowestInQuery when only multiple', function(assert) {
     }
   });
 
-  assert.equal(slowest.length, 2);
-  assert.equal(slowest[0], 'foo');
-  assert.equal(slowest[1], 'bar');
+  assert.equal(slowest, undefined);
 });
 
 test('offlineServicesPath', function(assert) {
@@ -552,11 +549,11 @@ test('decoratedDevices', function(assert) {
       queryStats: {
         devices: [{
           serviceId: 'foo',
-          elapsedTime: 1000,
+          elapsedTime: 1,
           on: true,
           devices: [{
             serviceId: 'bar',
-            elapsedTime: 2000,
+            elapsedTime: 2,
             on: true
           }]
         }]

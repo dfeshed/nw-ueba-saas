@@ -4,7 +4,9 @@ import {
   getDbEndTime,
   getDbStartTime,
   hasSummaryData,
-  hasFatalSummaryError
+  hasFatalSummaryError,
+  selectedService,
+  queriedService
 } from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
@@ -16,7 +18,8 @@ const state = Immutable.from({
     services: {
       serviceData: [
         { id: 'id1', displayName: 'Service Name', name: 'SN' },
-        { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
+        { id: 'id2', displayName: 'Service Name2', name: 'SN2' },
+        { id: 'sd1', displayName: 'Service Name3', name: 'SN3' }
       ],
       summaryData: {
         startTime: '1234',
@@ -24,6 +27,9 @@ const state = Immutable.from({
       }
     },
     queryNode: {
+      previousQueryParams: {
+        serviceId: 'id1'
+      },
       serviceId: 'sd1',
       startTime,
       endTime,
@@ -50,6 +56,14 @@ const errorState = Immutable.from({
       summaryErrorCode: 3
     }
   }
+});
+
+test('queriedService are computed correctly', function(assert) {
+  assert.equal(queriedService(state).displayName, 'Service Name', 'Returns the queried service');
+});
+
+test('selectedService are computed correctly', function(assert) {
+  assert.equal(selectedService(state).displayName, 'Service Name3', 'Returns the selected service');
 });
 
 test('hasSummaryData are computed correctly', function(assert) {

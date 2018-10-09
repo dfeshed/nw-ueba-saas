@@ -3,6 +3,7 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
+const _queriedServiceId = (state) => state.investigate.queryNode.previousQueryParams.serviceId;
 const _services = (state) => state.investigate.services.serviceData;
 const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
@@ -19,17 +20,17 @@ export const getDbStartTime = (state) => {
 // SELECTOR FUNCTIONS
 export const getServiceId = (state) => state.investigate.queryNode.serviceId;
 
-export const selectedService = createSelector(
-  [_services, getServiceId],
-  (services, serviceId) => {
-    let ret = null;
-    if (services && Array.isArray(services)) {
-      const selectedService = services.find((e) => e.id === serviceId);
-      ret = selectedService ? selectedService : services[0];
-    }
-    return ret;
+const selectService = (services, serviceId) => {
+  let ret = null;
+  if (services && Array.isArray(services)) {
+    const selectedService = services.find((e) => e.id === serviceId);
+    ret = selectedService ? selectedService : services[0];
   }
-);
+  return ret;
+};
+
+export const selectedService = createSelector([_services, getServiceId], selectService);
+export const queriedService = createSelector([_services, _queriedServiceId], selectService);
 
 /**
  * If summaryData object exists in state and the service has collected some

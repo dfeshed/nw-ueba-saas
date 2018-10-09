@@ -53,10 +53,12 @@
         {{/if}}
 
         <strong class="device">{{device.serviceName}}</strong>
-        {{#if device.elapsedTime}}
-          {{t 'investigate.queryStats.summary' eventCount=eventCount elapsedTime=device.elapsedTime}}
-        {{else}}
-          {{t 'investigate.queryStats.summaryNoTime' eventCount=eventCount}}
+        {{#if eventCount}}
+          {{#if device.elapsedTime}}
+            {{t 'investigate.queryStats.summary' eventCount=eventCount elapsedTime=device.elapsedTime}}
+          {{else}}
+            {{t 'investigate.queryStats.summaryNoTime' eventCount=eventCount}}
+          {{/if}}
         {{/if}}
 
         {{#if device.devices.length}}

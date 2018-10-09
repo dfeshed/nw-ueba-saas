@@ -39,15 +39,15 @@ export default {
               devices: [{
                 serviceId: '555d9a6fe4b0d37c827d402d',
                 on: true,
-                elapsedTime: index * 3000,
+                elapsedTime: 0,
                 devices: [{
                   serviceId: '555d9a6fe4b0d37c827d4021',
                   on: true,
-                  elapsedTime: index * 2000,
+                  elapsedTime: 0,
                   devices: [{
-                    serviceId: '555d9a6fe4b0d37c827d402e', on: true, elapsedTime: index * 1000,
+                    serviceId: '555d9a6fe4b0d37c827d402e', on: true, elapsedTime: 0,
                     devices: [{
-                      serviceId: '555d9a6fe4b0d37c827d402f', on: true, elapsedTime: index * 500
+                      serviceId: '555d9a6fe4b0d37c827d402f', on: true, elapsedTime: 0
                     }]
                   }]
                 }]
@@ -64,7 +64,7 @@ export default {
         }
 
         sendMessage({
-          data: data().length,
+          data: data.length,
           meta
         });
       }, i * 500, i);

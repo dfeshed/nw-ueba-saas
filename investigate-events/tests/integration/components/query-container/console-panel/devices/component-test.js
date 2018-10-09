@@ -77,6 +77,15 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('2 seconds'));
   });
 
+  test('renders the summary of the top level device when no seconds and no elapsedTime', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsNoTime().eventCount(0).build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+    assert.notOk(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('events'));
+    assert.notOk(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('second'));
+  });
+
   test('renders when hasError', async function(assert) {
     new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).queryStatsWithOffline().build();
     await render(hbs`

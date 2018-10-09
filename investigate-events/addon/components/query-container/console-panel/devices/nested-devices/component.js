@@ -58,12 +58,12 @@ export default Component.extend({
     }
   },
 
-  @computed('device.serviceId', 'slowestInQuery', 'slowestInQuery.length')
+  @computed('device.serviceId', 'slowestInQuery')
   isSlowest: (serviceId, slowestInQuery) => {
     if (!slowestInQuery || !serviceId) {
       return;
     } else {
-      return slowestInQuery.includes(serviceId);
+      return slowestInQuery === serviceId;
     }
   },
 
