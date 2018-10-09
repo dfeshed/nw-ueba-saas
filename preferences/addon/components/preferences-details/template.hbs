@@ -11,7 +11,7 @@
             selected=(get preferences item.field)
             searchEnabled=false
             onchange=(action 'saveNewPreferences' item.field) as |option|}}
-            {{t (concat fieldPrefix '.' option)}}
+            {{t (concat item.fieldPrefix '.' option)}}
           {{/power-select}}
         </label>
       {{else if (eq item.type 'checkbox')}}
@@ -26,12 +26,12 @@
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>{{t item.name}}</h4>
           {{#each item.options as |option|}}
-            <label title="{{t (concat fieldPrefix '.' option '-tooltip') default='empty'}}" class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
+            <label title="{{t (concat item.fieldPrefix '.' option '-tooltip') default='empty'}}" class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
               {{radio-button
                 value=option
                 groupValue=(readonly (get preferences item.field))
                 changed=(action 'saveNewPreferences' item.field option) }}
-              {{t (concat fieldPrefix '.' option)}}
+              {{t (concat item.fieldPrefix '.' option)}}
             </label>
           {{/each}}
         </div>
@@ -45,7 +45,7 @@
             selected=(get preferences item.field)
             searchEnabled=false
             onchange=(action 'saveNewPreferences' item.field) as |option|}}
-            {{t (concat fieldPrefix '.' option)}}
+            {{t (concat item.fieldPrefix '.' option)}}
           {{/power-select-multiple}}
         </label>
       {{else if (eq item.type 'divider')}}

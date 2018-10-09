@@ -12,8 +12,15 @@ export const getDbStartTime = (state) => state.investigate.services.summaryData.
 export const getPreferencesSchema = createSelector(
   [_preferencesConfiguration],
   (preferencesConfiguration) => {
-    if (preferencesConfiguration) {
-      return preferencesConfiguration.items;
+    if (preferencesConfiguration && preferencesConfiguration.items) {
+      const { fieldPrefix } = preferencesConfiguration;
+      const items = preferencesConfiguration.items.map((item) => {
+        return {
+          ...item,
+          fieldPrefix: item.additionalFieldPrefix ? `${fieldPrefix}.${item.additionalFieldPrefix}` : fieldPrefix
+        };
+      });
+      return items;
     }
     return null;
   }

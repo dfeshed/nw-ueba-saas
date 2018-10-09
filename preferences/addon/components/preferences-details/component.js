@@ -6,8 +6,7 @@ import { getPreferencesSchema } from 'preferences/reducers/preferences-panel/sel
 
 const stateToComputed = ({ preferences }) => ({
   preferences: preferences.preferences,
-  preferencesSchema: getPreferencesSchema(preferences),
-  fieldPrefix: preferences.preferencesConfig.fieldPrefix
+  preferencesSchema: getPreferencesSchema(preferences)
 });
 
 const dispatchToActions = {

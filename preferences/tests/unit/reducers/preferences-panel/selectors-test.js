@@ -12,6 +12,7 @@ module('Unit | Selectors | Preferences-Panel');
 
 const state = Immutable.from({
   preferencesConfig: {
+    fieldPrefix: prefConfig.fieldPrefix,
     items: prefConfig.items,
     helpIds: prefConfig.helpIds
   },
@@ -25,10 +26,11 @@ const state = Immutable.from({
   }
 });
 
-test('get the preference schema', function(assert) {
+test('get the preference schema with item fieldPrefix computed', function(assert) {
   const response = prefConfig.items;
   const preferencesSchema = getPreferencesSchema(state);
-  assert.deepEqual(preferencesSchema, response);
+  assert.equal(preferencesSchema[0].fieldPrefix, `${prefConfig.fieldPrefix}.${response[0].additionalFieldPrefix}`, 'Item field prefix with additionalFieldPrefix is computed correctly');
+  assert.equal(preferencesSchema[1].fieldPrefix, prefConfig.fieldPrefix, 'Item field prefix without additionalFieldPrefix  is computed correctly');
 });
 
 test('get the preference schema as null', function(assert) {

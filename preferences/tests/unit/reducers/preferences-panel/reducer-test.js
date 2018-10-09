@@ -19,6 +19,7 @@ const initialState = Immutable.from({
 
 const preferences = {
   defaultPacketFormat: 'downloadPCAP',
+  defaultMetaFormat: 'downloadText',
   defaultLogFormat: 'downloadLog',
   currentReconView: 'PACKET',
   isHeaderOpen: true,
@@ -78,6 +79,8 @@ test('test SAVE_PREFERENCES action handler with success event', function(assert)
   assert.notEqual(result.preferences, null);
   assert.equal(result.preferences.currentReconView, 'PACKET');
   assert.equal(result.preferences.defaultPacketFormat, 'downloadPCAP');
+  assert.equal(result.preferences.defaultMetaFormat, 'downloadText');
+  assert.equal(result.preferences.defaultLogFormat, 'downloadLog');
 });
 
 test('test SAVE_PREFERENCES action handler with failure event', function(assert) {

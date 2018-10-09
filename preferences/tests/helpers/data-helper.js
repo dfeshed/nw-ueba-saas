@@ -3,6 +3,7 @@ import { KEY } from 'redux-pack';
 export const DEFAULT_INITIALIZE = {
   eventsPreferences: {
     defaultPacketFormat: 'downloadPCAP',
+    defaultMetaFormat: 'downloadText',
     defaultLogFormat: 'downloadLog',
     currentReconView: 'PACKET',
     isHeaderOpen: true,

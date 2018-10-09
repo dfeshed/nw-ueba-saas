@@ -28,6 +28,7 @@ export default {
       'PACKET',
       'FILE'
     ],
+    additionalFieldPrefix: 'reconView',
     field: 'eventAnalysisPreferences.currentReconView'
   },
   {
@@ -40,6 +41,17 @@ export default {
       'JSON'
     ],
     field: 'eventAnalysisPreferences.defaultLogFormat'
+  },
+  {
+    name: 'preferences.investigate-events.defaultMetaFormat',
+    type: 'dropdown',
+    options: [
+      'TEXT',
+      'XML',
+      'CSV',
+      'TSV'
+    ],
+    field: 'eventAnalysisPreferences.defaultMetaFormat'
   },
   {
     name: 'preferences.investigate-events.defaultPacketFormat',
@@ -71,6 +83,7 @@ export default {
     eventAnalysisPreferences: {
       currentReconView: 'TEXT',
       defaultLogFormat: 'LOG',
+      defaultMetaFormat: 'TEXT',
       defaultPacketFormat: 'PCAP',
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100

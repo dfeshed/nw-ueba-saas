@@ -22,7 +22,7 @@ const contentToRender = hbs `
             <aside>
               {{preferences-panel-trigger
                 preferencesConfig=preferencesConfig
-                publishPreferences=(action 'preferencesUpdated')}}              
+                publishPreferences=(action 'preferencesUpdated')}}
               <div class='testDiv'>
                 Panel Content
               </div>
@@ -50,7 +50,7 @@ test('preferences trigger does not publish preferences on open', function(assert
 
   return waitFor('.rsa-preferences-panel-trigger').then(() => {
     this.$('.rsa-icon-settings-1-filled').trigger('click');
-    return waitFor('.ember-power-select-selected-item', { count: 3 }).then(() => {
+    return waitFor('.ember-power-select-selected-item', { count: 4 }).then(() => {
       assert.equal(this.$('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
     });
   });

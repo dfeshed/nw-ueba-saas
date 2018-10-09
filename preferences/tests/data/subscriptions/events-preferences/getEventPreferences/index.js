@@ -14,6 +14,7 @@ export default {
         isRequestShown: true,
         isResponseShown: true,
         defaultLogFormat: 'LOG',
+        defaultMetaFormat: 'TEXT',
         defaultPacketFormat: 'PCAP',
         autoDownloadExtractedFiles: true,
         packetsPageSize: 100
