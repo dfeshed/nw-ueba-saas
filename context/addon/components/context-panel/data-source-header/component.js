@@ -42,7 +42,9 @@ const DSHeaderComponent = Component.extend({
     if (dataSourceGroup === FILE_REPUTATION_SERVER) {
       return this.get('i18n').t('context.fileReputationMarketingText');
     }
-    return this.get('i18n').t(`context.marketingDSType.${dataSourceGroup}`);
+    const dataSourceName = this.get('i18n').t(`context.marketingDSType.${dataSourceGroup}`);
+    const marketingText = this.get('i18n').t('context.marketingText');
+    return dataSourceName + marketingText;
   },
   @computed('dataSources', 'activeTabName', 'dataSourceDetails')
   isConfigured(dataSources, activeTabName, { dataSourceGroup }) {
