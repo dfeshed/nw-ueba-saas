@@ -24,7 +24,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), 'Edit File Status', 'Edit file status button is present.');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].textContent.trim(), 'Pivot to Investigate', 'Pivot to investigate button is present.');
+    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
   });
 
   test('when component is used to show only icons', async function(assert) {
@@ -32,7 +32,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showOnlyIcons=true}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), '', 'Edit file status button is present without any text content.');
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-icon-only'), true, 'Edit file statusButton is icon only.');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-icon-only'), true, 'Pivot to investigate Button is icon only.');
+    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-icon-only'), true, 'Analyze Events Button is icon only.');
   });
 
   test('when noFiles selected', async function(assert) {

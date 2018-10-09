@@ -7,6 +7,7 @@ import { lookup } from 'ember-dependency-lookup';
  * @public
  */
 const setFileStatus = (data) => {
+  data.automaticallyAssigned = false;
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'setFileStatus',

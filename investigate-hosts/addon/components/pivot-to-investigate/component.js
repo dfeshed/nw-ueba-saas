@@ -56,7 +56,7 @@ const PivotToInvestigate = Component.extend({
     const cntx = this;
     return [
       {
-        label: 'Pivot to Investigate',
+        label: 'Analyze Events',
         action() {
           cntx.send('toggleServiceSelection');
         }

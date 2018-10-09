@@ -51,7 +51,7 @@ module('Integration | Component | file found on machines', function(hooks) {
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
     assert.equal(findAll('.host_details_link').length, 4, '4 Machines are listed.');
-    assert.equal(findAll('.pivot-to-investigate-button .rsa-form-button').length, 4, 'Pivot to investigate button appears with each machine.');
+    assert.equal(findAll('.pivot-to-investigate-button .rsa-form-button').length, 4, 'Analyze Events button appears with each machine.');
     assert.equal(findAll('.rsa-form-button .rsa-icon-download-2-filled').length, 4, 'Download button for each machine is rendered.');
   });
 

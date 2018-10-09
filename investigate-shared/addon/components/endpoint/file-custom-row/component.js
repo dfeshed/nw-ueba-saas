@@ -86,7 +86,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
     if (cntx.get('showPivotToInvestigate') != false) {
       const pivot = {
-        label: 'Pivot to Investigate',
+        label: 'Analyze Events',
         icon: 'expand-6',
         disabled() {
           return (cntx.get('selections').length > 1);

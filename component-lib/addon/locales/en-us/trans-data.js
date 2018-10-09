@@ -2126,7 +2126,7 @@ export default {
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
-      machineCount: 'Machine Count',
+      machineCount: 'Hosts',
       remediationaction: 'Remediationaction',
       elf: {
         classType: 'ELF.Class Type',
@@ -2215,7 +2215,7 @@ export default {
       },
       fileCategoryTitle: 'File Category',
       remediationActionTitle: 'Remediation',
-      remediationActionNote: 'Note: Applies to hosts where blocking is enabled and terminates all <br> processes associated with the selected file hashes',
+      remediationActionNote: 'Applies to hosts where blocking is enabled and terminates all <br> processes associated with the selected file hashes.',
       remediationActionAlert: {
         isSigned: 'Files signed by RSA and Microsoft cannot be blocked.',
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.',
@@ -3302,7 +3302,7 @@ export default {
       },
       fileActions: {
         editFileStatus: 'Edit File Status',
-        pivotToInvestigate: 'Pivot to Investigate',
+        pivotToInvestigate: 'Analyze Events',
         watch: 'Watch',
         download: 'Download',
         more: 'More',
