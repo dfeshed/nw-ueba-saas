@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "file-windows-audit-transformer",
+  "name": "registry-transformer",
   "transformerList": [
     {
       "type": "copy_value",
@@ -157,10 +157,19 @@
       ]
     },
     {
+      "type": "copy_value",
+      "name": "copy-alias-host-to-machine-name",
+      "sourceKey": "alias-host",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "machineName"
+      ]
+    },
+    {
       "type": "regex_captor_and_formatter",
       "name": "machine-owner-normalization",
       "sourceKey": "owner",
-      "destinationKey": "machine_owner",
+      "destinationKey": "machineOwner",
       "captureAndFormatConfigurations": [
         {
           "pattern": "CN=([^,]+)",
