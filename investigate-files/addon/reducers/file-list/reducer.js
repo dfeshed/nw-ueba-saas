@@ -30,7 +30,8 @@ const fileListState = Immutable.from({
   fetchMetaValueLoading: false,
   riskScoreContext: null,
   riskScoreContextError: null,
-  isRemediationAllowed: true
+  isRemediationAllowed: true,
+  selectedFile: {}
 });
 
 const _handleAppendFiles = (action) => {
@@ -144,6 +145,8 @@ const fileListReducer = handleActions({
   },
 
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
+
+  [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload }) => state.set('selectedFile', payload),
 
   [ACTION_TYPES.SET_AGENT_COUNT]: (state, { payload }) => state.set('agentCountMapping', { ...state.agentCountMapping, ...payload }),
 

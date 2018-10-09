@@ -76,7 +76,8 @@ test('should return the initial state', function(assert) {
     fetchMetaValueLoading: false,
     riskScoreContext: null,
     riskScoreContextError: null,
-    isRemediationAllowed: true
+    isRemediationAllowed: true,
+    selectedFile: {}
   });
 });
 
@@ -104,6 +105,14 @@ test('INCREMENT_PAGE_NUMBER action should increment page number', function(asser
   });
   const result = reducer(previous, { type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
   assert.equal(result.pageNumber, 1);
+});
+
+test('SET_SELECTED_FILE set the selected file', function(assert) {
+  const previous = Immutable.from({
+    selectedFile: {}
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: { fileName: 'test.exe' } });
+  assert.equal(result.selectedFile.fileName, 'test.exe');
 });
 
 test('The SET_SORT_BY will set the selected sort to state', function(assert) {

@@ -269,6 +269,8 @@ const getSavedFileStatus = (selections) => ({
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
 
+const setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: item });
+
 const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onComplete }) => {
   const query = { ...queryNode };
   query.metaFilter = {
@@ -392,5 +394,6 @@ export {
   activeRiskSeverityTab,
   getRiskScoreContext,
   getUpdatedRiskScoreContext,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  setSelectedFile
 };

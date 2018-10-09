@@ -35,7 +35,8 @@ const stateToComputed = (state) => ({
   alertsData: state.files.fileList.alertsData,
   filesFilters: state.files.filter.savedFilterList,
   selectedFilterId: selectedFilterId(state.files),
-  savedFilter: savedFilter(state.files)
+  savedFilter: savedFilter(state.files),
+  selectedFile: state.files.fileList.selectedFile
 });
 
 const dispatchToActions = {

@@ -37,19 +37,8 @@
 
 .saved-filter-list {
   padding: rsa-whitespace();
-  .panel11 {
-    width: 100%;
-    .rsa-form-button-wrapper {
-      width: 100%;
-      display: inline-flex;
-      .rsa-form-button {
-        width: 100%;
-        text-align: left;
-        .rsa-icon {
-          float: right;
-        }
-      }
-    }
+  .ember-power-select-option {
+    height: 32px;
   }
 }
 

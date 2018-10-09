@@ -75,6 +75,7 @@ module('Integration | Component | file found on machines', function(hooks) {
     await click(findAll('.files-body .rsa-data-table-body-row')[0]);
     return settled().then(() => {
       assert.equal(findAll('.files-host-list').length, 1, 'Machine list is rendered');
+      assert.equal(findAll('.investigate-file-tab .title').length, 1, 'title is rendered in right panel');
       done();
     });
 

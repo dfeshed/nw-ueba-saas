@@ -24,7 +24,8 @@ import {
   getSavedFileStatus,
   fetchHostNameList,
   getRiskScoreContext,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  setSelectedFile
 } from 'investigate-files/actions/data-creators';
 
 import { failure } from 'investigate-shared/utils/flash-messages';
@@ -58,7 +59,8 @@ const dispatchToActions = {
   getSavedFileStatus,
   fetchHostNameList,
   getRiskScoreContext,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  setSelectedFile
 };
 
 /**
@@ -160,6 +162,7 @@ const FileList = Component.extend({
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
           this.send('fetchFileContext', item.firstFileName);
+          this.send('setSelectedFile', item);
           this.send('fetchHostNameList', item.checksumSha256);
           this.send('getRiskScoreContext', item.checksumSha256, 'critical');
           next(() => {

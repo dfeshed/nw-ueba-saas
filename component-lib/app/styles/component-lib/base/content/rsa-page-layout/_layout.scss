@@ -18,9 +18,19 @@ $rightZoneMinWidth: 400px;
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
   }
 
+  &.show-left-zone.show-right-zone {
+    .center-zone {
+      min-width: calc(100% - 800px);
+    }
+  }
+
   &.show-left-zone {
+    .center-zone {
+      min-width: calc(100% - 400px);
+    }
     .left-zone {
       max-width: $leftZoneMinWidth;
+      min-width: $leftZoneMinWidth;
       opacity: opacity-value(opaque);
       @include border-right(1px, solid, primary, lightest, nearly-transparent);
     }
@@ -29,18 +39,20 @@ $rightZoneMinWidth: 400px;
   &.show-right-zone {
     .right-zone {
       max-width: $rightZoneMinWidth;
+      min-width: $rightZoneMinWidth;
       @include border-left(1px, solid, primary, lightest, nearly-transparent);
       opacity: opacity-value(opaque);
-
+    }
+    .center-zone {
+      min-width: calc(100% - 400px);
     }
   }
   .center-zone {
-    min-width: 25%;
-    flex-grow: 1;
+    min-width: 100%;
   }
 }
 
-@media screen and (max-width: 1550px){
+@media screen and (max-width: 1800px){
   .show-left-zone.show-right-zone {
     .left-zone {
       max-width: 0;

@@ -40,7 +40,10 @@
     {{/if}}
   {{/layout.center}}
   {{#layout.right as |rightPanel|}}
-    {{#rightPanel.header class="investigate-file-tab"}}
+    {{#rightPanel.header  class="investigate-file-tab"}}
+      <h3 class='title'>
+        {{selectedFile.firstFileName}}
+      </h3>
       {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
         <div class="label">{{t tab.label}}</div>
       {{/title-bar}}

@@ -390,7 +390,7 @@ module('Integration | Component | file list', function(hooks) {
   });
 
   test('on row click, file details panel opens up', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     this.set('openRiskPanel', function() {
       assert.ok(true);
     });
@@ -409,7 +409,12 @@ module('Integration | Component | file list', function(hooks) {
       </style>
     {{file-list openRiskPanel=(action openRiskPanel)}}`);
     await click(findAll('.rsa-data-table-body-row')[0]);
+    return settled().then(() => {
+      const state = this.owner.lookup('service:redux').getState();
+      assert.equal(state.files.fileList.selectedFile.firstFileName, 'systemd-journald.service');
+    });
   });
+
   test('on select all rows checkbox ', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)
