@@ -211,10 +211,20 @@
       {
         "type": "copy_value",
         "name": "copy-user-id",
-        "sourceKey": "user_dst",
+        "sourceKey": "userId",
         "isRemoveSourceKey": false,
         "destinationKeys": [
-          "userDisplayName"
+          "userDisplayName",
+          "userName"
+        ]
+      },
+      {
+        "type": "copy_value",
+        "name": "copy-src-machine-name",
+        "sourceKey": "srcMachineId",
+        "isRemoveSourceKey": false,
+        "destinationKeys": [
+          "srcMachineName"
         ]
       }
     ]
