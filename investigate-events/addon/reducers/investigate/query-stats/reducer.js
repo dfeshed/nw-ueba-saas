@@ -48,6 +48,12 @@ export default handleActions({
       }, ...state.errors];
     }
 
+    if (payload.code > 0) {
+      updatedState.errors = [{
+        error: payload.message
+      }, ...state.errors];
+    }
+
     if (payload.warning) {
       updatedState.warnings = [{
         serviceId: payload.serviceId,

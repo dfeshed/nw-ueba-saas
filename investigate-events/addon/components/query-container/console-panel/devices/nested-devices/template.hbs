@@ -70,7 +70,7 @@
   <ul class="device-hierarchy">
     {{#each device.devices as |childDevice|}}
       {{query-container/console-panel/devices/nested-devices
-        devicesExpanded=devicesExpanded
+        devicesExpanded=(action 'devicesExpanded')
         device=childDevice
         slowestInQuery=slowestInQuery
         offlineServices=offlineServices

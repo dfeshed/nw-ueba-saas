@@ -11,10 +11,11 @@ export default Component.extend({
 
   updateHeight() {
     run.schedule('afterRender', () => {
-      const thisHeight = this.$().height();
-      const lastChildHeight = this.$('li:last-of-type').height();
+      const hierarchy = this.$('> .device-hierarchy');
+      const lastNested = this.$('> .device-hierarchy > .nested-devices').last();
+      const whitespace = 15;
 
-      this.set('height', (thisHeight - lastChildHeight) + 5);
+      this.set('height', (hierarchy.height() - lastNested.height()) + whitespace);
 
       if (this.devicesExpanded) {
         this.devicesExpanded();
@@ -70,6 +71,10 @@ export default Component.extend({
   actions: {
     expandDevices() {
       this.toggleProperty('isExpanded');
+      this.updateHeight();
+    },
+
+    devicesExpanded() {
       this.updateHeight();
     }
   }

@@ -496,6 +496,13 @@ export default class DataHelper {
     return this;
   }
 
+  queryStatsHasErrorWithoutId() {
+    _set(this.state.queryStats, 'errors', [{
+      error: 'error'
+    }]);
+    return this;
+  }
+
   queryStatsIsEmpty() {
     _set(this.state.queryStats, 'description', null);
     return this;

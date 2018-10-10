@@ -89,6 +89,47 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   assert.equal(lastResult.devices[0].serviceId, 'baz');
 });
 
+test('QUERY_STATS reducer updates errors when code/message passed', function(assert) {
+  const prevState = Immutable.from({
+    description: null,
+    percent: 0,
+    errors: [],
+    warnings: [],
+    devices: []
+  });
+  const action = {
+    type: ACTION_TYPES.QUERY_STATS,
+    payload: {
+      message: 'error message',
+      code: 1
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.errors.length, 1);
+  assert.equal(result.errors[0].error, 'error message');
+});
+
+test('QUERY_STATS reducer does not update errors when 0 code passed', function(assert) {
+  const prevState = Immutable.from({
+    description: null,
+    percent: 0,
+    errors: [],
+    warnings: [],
+    devices: []
+  });
+  const action = {
+    type: ACTION_TYPES.QUERY_STATS,
+    payload: {
+      message: 'message',
+      code: 0
+    }
+  };
+  const result = reducer(prevState, action);
+  assert.equal(result.errors.length, 0);
+});
+
+
 test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   const prevState = Immutable.from({
     isConsoleOpen: true,

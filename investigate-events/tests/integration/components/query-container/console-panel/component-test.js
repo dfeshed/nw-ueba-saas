@@ -75,7 +75,16 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
     assert.equal(findAll('.console-panel.has-error .console-content .fatal-errors i.rsa-icon-report-problem-triangle-filled').length, 1);
     assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Complete');
+    assert.ok(find('.console-panel .console-content .fatal-errors').textContent.trim().includes('concentrator'));
     assert.equal(find('.console-panel .console-content .fatal-errors .error-text').textContent.trim(), 'error');
+  });
+
+  test('renders the correct dom hasError without service', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().hasRequiredValuesToQuery(true).queryStats().queryStatsHasErrorWithoutId().build();
+    await render(hbs`
+      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+    `);
+    assert.equal(find('.console-panel .console-content .fatal-errors').textContent.trim(), 'error');
   });
 
   test('renders warnings', async function(assert) {

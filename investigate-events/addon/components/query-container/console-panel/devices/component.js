@@ -32,10 +32,12 @@ const DevicesStatus = Component.extend({
 
   updateHeight() {
     run.schedule('afterRender', () => {
-      const thisHeight = this.$('.device-hierarchy:first-of-type > li > .device-hierarchy').first().height();
-      const lastChildHeight = this.$('.device-hierarchy:first-of-type > li > .device-hierarchy > li:last-of-type').first().height();
+      const allItems = this.$('.device-hierarchy li:not(.device-hierarchy .device-hierarchy .device-hierarchy li)');
+      const fullHeight = allItems.height();
+      const lastItemHeight = allItems.last().height();
+      const whitespace = 5;
 
-      this.set('height', (thisHeight - lastChildHeight + 16));
+      this.set('height', (fullHeight - lastItemHeight) + whitespace);
     });
   },
 
