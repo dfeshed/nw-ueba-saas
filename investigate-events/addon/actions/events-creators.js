@@ -140,7 +140,7 @@ export const eventsGetMore = () => {
     const handlers = {
       onInit(stopStream) {
         this.stopStreaming = stopStream;
-        getEventCount();
+        dispatch(getEventCount());
         dispatch({ type: ACTION_TYPES.SET_ANCHOR, payload: anchor });
         dispatch({ type: ACTION_TYPES.SET_GOAL, payload: goal });
       },
