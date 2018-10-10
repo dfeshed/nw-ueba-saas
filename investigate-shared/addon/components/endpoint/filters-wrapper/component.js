@@ -3,6 +3,7 @@ import { filters, isSystemFilter, selectedFilterId, savedFilter } from 'investig
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import layout from './template';
+import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const _isFilterHasValues = (filter) => {
@@ -95,6 +96,13 @@ export default Component.extend({
   isNameInvalid(name) {
     if (name) {
       return /^\s*$/.test(name) || !idRegex.test(name);
+    }
+  },
+
+  @computed('saveFilterName')
+  isNameEmpty(name) {
+    if (name !== null) {
+      return isEmpty(name);
     }
   },
 

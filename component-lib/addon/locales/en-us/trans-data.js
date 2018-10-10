@@ -2079,7 +2079,7 @@ export default {
       customFilters: {
         save: {
           description: 'Choose a name that contains 1-256 alphanumeric characters, underscores, and hyphen. <br>The name must not match an already existing filter name.',
-          errorHeader: 'Unable to save search',
+          errorHeader: 'Unable to save filter',
           header: 'Save Filter',
           errorMessage: 'The search cannot be saved. ',
           emptyMessage: 'Name field is empty.',
