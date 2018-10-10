@@ -143,7 +143,7 @@ const getRiskScoreContext = (query) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileContext',
-    modelName: 'scoring-server',
+    modelName: 'risk-score-server',
     query
   });
 };

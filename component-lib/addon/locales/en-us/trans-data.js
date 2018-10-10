@@ -1527,8 +1527,8 @@ export default {
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
     marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click Help.',
-    lcMarketingText: 'Live Connect collects, analyzes, and assesses the Threat Intelligence data such as IP Addresses, Domains and File Hashes collected from various sources. To view the data, enable Threat Insights in ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
-    fileReputationMarketingText: 'File Reputation displays reputation of a file hash that indicates the level of threat a file poses. This information is leveraged by analysts during investigation of files to increase detection and response to malicious and suspicious file behavior. This feature is not enabled by default. To enable File Reputation, go to ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
+    lcMarketingText: 'Live Connect collects, analyzes, and assesses the Threat Intelligence data such as IP Addresses, Domains and File Hashes collected from various sources. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. To view the data, enable Threat Insights in ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
+    fileReputationMarketingText: 'File Reputation displays reputation of a file hash that indicates the level of threat a file poses. This information is leveraged by analysts during investigation of files to increase detection and response to malicious and suspicious file behavior. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. This feature is not enabled by default. To enable File Reputation, go to ADMIN > System > Live Services or contact your Administrator. For more information, click Help.',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',
@@ -1851,6 +1851,7 @@ export default {
       'transport.http.error': 'Context lookup failed for this datasource since it returned an error.',
       'transport.validation.error': 'The data format is not supported for the data source.',
       'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.',
+      'service.unavailable': 'Maximum queries permissible in a day for RSA Live File Reputation Service has exceeded. Retry after 00:00 UTC tomorrow. Click Help for more details.',
       archer: {
         noData: 'Data in RSA Archer is not available.',
         notConfigured: 'Configure Archer as a data source, add or enable to pivot successfully.',

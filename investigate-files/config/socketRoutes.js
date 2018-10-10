@@ -10,7 +10,7 @@ const filesConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
   const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
-  const scoringSocketUrl = common.determineSocketUrl(environment, '/scoring/socket');
+  const riskScoreSocketUrl = common.determineSocketUrl(environment, '/risk/score/socket');
 
 
   return {
@@ -97,11 +97,11 @@ const filesConfigGen = function(environment) {
         requestDestination: '/ws/endpoint/server/get-all'
       }
     },
-    'scoring-server': {
-      socketUrl: scoringSocketUrl,
+    'risk-score-server': {
+      socketUrl: riskScoreSocketUrl,
       getFileContext: {
-        subscriptionDestination: '/user/queue/scoring/file/context/get',
-        requestDestination: '/ws/scoring/file/context/get'
+        subscriptionDestination: '/user/queue/risk/score/file/context/get',
+        requestDestination: '/ws/risk/score/file/context/get'
       }
     }
   };
