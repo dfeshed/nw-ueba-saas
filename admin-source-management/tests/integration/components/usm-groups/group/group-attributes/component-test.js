@@ -32,7 +32,7 @@ module('Integration | Component | group-attributes', function(hooks) {
     assert.equal(findAll('.operator').length, 1, 'The selector operator appears in the DOM');
     assert.equal(findAll('.add-criteria-button').length, 1, 'The add-criteria-button button appears in the DOM');
     // default attribute is osSelector
-    assert.equal(findAll('.osSelector').length, 1, 'The osSelector appears in the DOM');
+    assert.equal(findAll('.os-selector').length, 1, 'The osSelector appears in the DOM');
   });
 
   test('Select group-attributes each attribute', async function(assert) {

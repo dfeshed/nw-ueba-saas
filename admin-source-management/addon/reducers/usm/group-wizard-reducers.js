@@ -4,26 +4,50 @@ import { handle } from 'redux-pack';
 import _ from 'lodash';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
-
-const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'];
-const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
-const INPT = ['textInput', 'osSelector', '2textInputs', 'agentSelector', 'textarea'];
-const VLDTR = ['none', '256max', 'validHostname', 'validHostnameList', 'validHostnameChars', 'ipv4', 'ipv4Pair', 'ipv4List', 'ipv6', 'ipv6Pair', 'ipv6List'];
+// const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'];
+// const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
+// const INPT = ['text-input', 'os-selector', 'between-text-input', 'textarea-input'];
+// const VLDTR = ['none', 'notEmpty', 'maxLength256', 'validHostname', 'validHostnameList', 'validHostnameChars', 'validIPv4', 'validIPv4List', 'validIPv6', 'validIPv6List'];
 // In the future the _GROUP_ATTRIBUTES_MAP may be initialize with an API call
 // _GROUP_ATTRIBUTES_MAP is derived from https://wiki.na.rsa.net/display/RPA/Cycle+9+Attributes
 // The _GROUP_ATTRIBUTES_MAP is used to draw dynamically the selectors for attributes and operators and also the associated input/s
-// Consider __GROUP_ATTRIBUTES_MAP.map[0] = [osType, [IN, osSelector, none]], here the 'osType' attribute has one operator 'IN", has selector type input 'osSelector' and has no validation
-// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUAL, textInput, 256max], ... plus three other operators with associated input/s and validation ]
+// Consider __GROUP_ATTRIBUTES_MAP.map[0] = [osType, [IN, os-selector-input, notEmpty]], here the 'osType' attribute has one operator 'IN", has selector type input 'os-selector' and has no validation
+// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUALS, text-input, maxLength256], ... plus three other operators with associated input/s and validation ]
+
+/* eslint-disable no-multi-spaces*/
 const _GROUP_ATTRIBUTES_MAP = {
-  attribute: ATTRBT,
+  attribute: ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'],
   map: [
-    [ATTRBT[0], [[OPRTR[0], INPT[1], VLDTR[0]]]],
-    [ATTRBT[1], [[OPRTR[1], INPT[0], VLDTR[1]], [OPRTR[2], INPT[0], VLDTR[1]], [OPRTR[3], INPT[0], VLDTR[1]], [OPRTR[4], INPT[0], VLDTR[1]]]],
-    [ATTRBT[2], [[OPRTR[1], INPT[0], VLDTR[2]], [OPRTR[2], INPT[0], VLDTR[4]], [OPRTR[3], INPT[0], VLDTR[4]], [OPRTR[4], INPT[0], VLDTR[4]]]],
-    [ATTRBT[3], [[OPRTR[6], INPT[2], VLDTR[6]], [OPRTR[0], INPT[4], VLDTR[7]], [OPRTR[5], INPT[4], VLDTR[7]], [OPRTR[7], INPT[2], VLDTR[6]]]],
-    [ATTRBT[4], [[OPRTR[6], INPT[2], VLDTR[9]], [OPRTR[0], INPT[4], VLDTR[10]], [OPRTR[5], INPT[4], VLDTR[10]], [OPRTR[7], INPT[2], VLDTR[9]]]]
+    ['osType', [
+      ['IN',            'os-selector',          'notEmpty']
+    ]],
+    ['osDescription', [
+      ['EQUAL',         'text-input',           'maxLength256'],
+      ['CONTAINS',      'text-input',           'maxLength256'],
+      ['STARTS_WITH',   'text-input',           'maxLength256'],
+      ['ENDS_WITH',     'text-input',           'maxLength256']
+    ]],
+    ['hostname', [
+      ['EQUAL',         'text-input',           'validHostname'],
+      ['CONTAINS',      'text-input',           'validHostnameChars'],
+      ['STARTS_WITH',   'text-input',           'validHostnameChars'],
+      ['ENDS_WITH',     'text-input',           'validHostnameChars']
+    ]],
+    ['ipv4', [
+      ['BETWEEN',       'between-text-input',   'validIPv4'],
+      ['IN',            'textarea-input',       'validIPv4List'],
+      ['NOT_IN',        'textarea-input',       'validIPv4List'],
+      ['NOT_BETWEEN',   'between-text-input',   'validIPv4']
+    ]],
+    ['ipv6', [
+      ['BETWEEN',       'between-text-input',   'validIPv6'],
+      ['IN',            'textarea-input',       'validIPv6List'],
+      ['NOT_IN',        'textarea-input',       'validIPv6List'],
+      ['NOT_BETWEEN',   'between-text-input',   'validIPv6']
+    ]]
   ]
 };
+/* eslint-enable no-multi-spaces */
 
 export const initialState = {
   // the group object to be created/updated/saved

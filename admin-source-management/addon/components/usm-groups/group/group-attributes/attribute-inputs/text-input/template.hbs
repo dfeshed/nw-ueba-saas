@@ -1,0 +1,7 @@
+{{rsa-form-input class='operator-input'
+  maxLength=1024
+  value=localValue
+  isError=validator.showError
+  errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
+  focusOut=(action 'handleInputChange' value='target.value')
+}}

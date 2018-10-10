@@ -10,7 +10,7 @@
           {{#each attribute.[1] as |operator|}}
             {{!--then find input field/s and validation in groupAttributesMap--}}
             {{#if (eq criteria.[1] operator.[0])}}
-              <div class='group-criteria'>
+              <hbox class='group-criteria'>
                 <span class="attribute">
                   <label class="rsa-form-label power-select">
                     {{#power-select
@@ -33,18 +33,18 @@
                     {{/power-select}}
                   </label>
                 </span>
-                {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
-                {{#usm-groups/group/group-attributes/attribute-inputs
-                  inputField=operator.[1]
-                  value=criteria.[2]
-                  value2=criteria.[3]
-                  validation=operator.[2]
-                  criteriaPath=(concat criteriaPath ',' index)}}
-                {{/usm-groups/group/group-attributes/attribute-inputs}}
+                <span class="input-value">
+                  {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
+                  {{component (concat 'usm-groups/group/group-attributes/attribute-inputs/' operator.[1])               
+                    inputField=operator.[1]
+                    value=criteria.[2]
+                    validation=operator.[2]
+                    criteriaPath=(concat criteriaPath ',' index)}}
+                </span>
                 <span class="remove-criteria" {{action 'removeCriteria' (concat criteriaPath ',' index)}}>
                   {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
                 </span>
-              </div> 
+              </hbox> 
             {{/if}}
           {{/each}}
         {{/if}}

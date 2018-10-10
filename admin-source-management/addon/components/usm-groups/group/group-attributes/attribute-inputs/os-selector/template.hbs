@@ -1,7 +1,13 @@
 {{#power-select-multiple
   searchEnabled=false
   options=osSelector
-  selected=selectedValuesClone
+  selected=selectedValues
+  triggerClass=(if validator.showError 'selector-error')
   onchange=(action 'onChangeOSSelector') as |option|}}
   {{option}}
 {{/power-select-multiple}}
+{{#if validator.showError}}
+  <span class="input-error">
+    {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
+  </span>
+{{/if}}

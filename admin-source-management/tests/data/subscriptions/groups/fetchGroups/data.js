@@ -41,7 +41,19 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'groupCriteria': {}
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '123',
+            '22'
+          ]
+        ]
+      ]
+    }
   },
   {
     'id': 'group_003',
@@ -74,10 +86,59 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'groupCriteria': {
-      'conjunction': 'AND',
-      'criteria': [
-        ['osType', 'IN', []]
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'osType',
+          'IN',
+          [
+            'Windows'
+          ]
+        ],
+        [
+          'osType',
+          'IN',
+          [
+            'Windows'
+          ]
+        ],
+        [
+          'osDescription',
+          'ENDS_WITH',
+          [
+            'hebjc'
+          ]
+        ],
+        [
+          'ipv4',
+          'NOT_IN',
+          [
+            '125.1.1.227,125.1.1.78\n'
+          ]
+        ],
+        [
+          'hostname',
+          'EQUAL',
+          [
+            'trbkx'
+          ]
+        ],
+        [
+          'osDescription',
+          'CONTAINS',
+          [
+            'xltbk'
+          ]
+        ],
+        [
+          'ipv4',
+          'NOT_BETWEEN',
+          [
+            '1.1.1.45',
+            '1.1.2.193'
+          ]
+        ]
       ]
     }
   },

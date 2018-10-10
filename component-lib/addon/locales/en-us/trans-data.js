@@ -3816,15 +3816,13 @@ export default {
       inputValidations: {
         none: '',
         notEmpty: 'Value can not be empty',
-        lessThan256Char: 'Value can not be empty and must be less than 256 characters',
+        maxLength256: 'Value can not be empty and must be less than 256 characters',
         validHostname: 'Invalid host name',
         validHostnameList: 'One or more of the the hostnames are invalid',
-        validHostnameChars: 'NA',
+        validHostnameChars: 'Invalid host name characters',
         validIPv4: 'Invalid IPv4 address',
-        validIPv4Pair: 'One or both of the the IPv4 addresses are invalid',
         validIPv4List: 'One or more of the the IPv4 addresses are invalid',
         validIPv6: 'Invalid IPv6 address',
-        validIPv6Pair: 'One or both of the the IPv6 addresses are invalid',
         validIPv6List: 'One or more of the the IPv6 addresses are invalid'
       }
     },

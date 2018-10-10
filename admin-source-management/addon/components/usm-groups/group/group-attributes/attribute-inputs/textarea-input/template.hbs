@@ -1,0 +1,15 @@
+<vbox>
+  {{rsa-form-textarea class='operator-input'
+    value=localValue
+    isInline=true
+    isError=validator.showError
+    errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
+    focusOut=(action 'handleInputChange' value='target.value')
+  }}
+  {{#if validator.showError}}
+    <span class="input-error">
+      {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
+    </span>
+  {{/if}}
+</vbox>
+  
