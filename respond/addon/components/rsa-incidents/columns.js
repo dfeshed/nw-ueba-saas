@@ -23,7 +23,7 @@ export default [
   },
   {
     field: 'riskScore',
-    title: 'respond.incidents.list.riskScore',
+    title: 'respond.incidents.list.score',
     width: '7%',
     dataType: 'number'
   },

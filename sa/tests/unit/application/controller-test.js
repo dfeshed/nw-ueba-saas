@@ -1,10 +1,9 @@
 import $ from 'jquery';
-import { next } from '@ember/runloop';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { t } from 'ember-i18n/test-support';
-import { settled } from '@ember/test-helpers';
+import { waitUntil, settled } from '@ember/test-helpers';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import * as ACTION_TYPES from 'sa/actions/types';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
@@ -30,11 +29,10 @@ module('Unit | Controller | application', function(hooks) {
     const result = controller._generateFileName('dark');
     assert.equal(result, '/assets/dark-cfd46dd672a31535e0e47662f6dcb59f.css');
 
-    const done = assert.async();
-    $(`link[rel=stylesheet][href~="${fingerprint}"]`).remove();
-    next(() => {
-      done();
-    });
+    const selector = `link[rel=stylesheet][href~="${fingerprint}"]`;
+    $(selector).remove();
+
+    await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
   });
 
   test('generates non prod theme url when link with fingerprint not found', async function(assert) {
@@ -43,9 +41,10 @@ module('Unit | Controller | application', function(hooks) {
     const result = controller._generateFileName('light');
     assert.equal(result, lightCss);
 
-    return settled().then(() => {
-      $(`link[rel=stylesheet][href~="${lightCss}"]`).remove();
-    });
+    const selector = `link[rel=stylesheet][href~="${lightCss}"]`;
+    $(selector).remove();
+
+    await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
   });
 
   test('will NOT alter the body class when theme is undefined (string)', async function(assert) {

@@ -51,7 +51,26 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const done = assert.async();
     setState();
     await render(hbs`{{rsa-incidents}}`);
-    assert.equal(findAll('.rsa-incidents').length, 1, 'The rsa-incidents component should be found in the DOM');
+    const selector = '.rsa-incidents';
+    await waitUntil(() => findAll(selector).length === 1, { timeout: 8000 });
+    assert.equal(findAll(selector).length, 1, 'The rsa-incidents component should be found in the DOM');
+    await settled().then(() => done());
+  });
+
+  test('each explorer column is properly translated', async function(assert) {
+    const done = assert.async();
+    setState();
+    await render(hbs`{{rsa-incidents}}`);
+    const selector = '.header-title';
+    await waitUntil(() => findAll(selector).length === 8, { timeout: 8000 });
+    assert.equal(findAll(selector)[0].textContent.trim(), 'Created');
+    assert.equal(findAll(selector)[1].textContent.trim(), 'Priority');
+    assert.equal(findAll(selector)[2].textContent.trim(), 'Risk Score');
+    assert.equal(findAll(selector)[3].textContent.trim(), 'ID');
+    assert.equal(findAll(selector)[4].textContent.trim(), 'Name');
+    assert.equal(findAll(selector)[5].textContent.trim(), 'Status');
+    assert.equal(findAll(selector)[6].textContent.trim(), 'Assignee');
+    assert.equal(findAll(selector)[7].textContent.trim(), 'Alerts');
     await settled().then(() => done());
   });
 
