@@ -55,6 +55,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String EXPLICIT_CREDENTIALS_LOGON = "EXPLICIT_CREDENTIALS_LOGON";
     public static final String SESSION_ID_FIELD_NAME = "sessionid";
     public static final String EC_OUTCOME_FIELD_NAME = "ec_outcome";
+    public static final String EC_ACTIVITY_FIELD_NAME = "ec.activity";
+    public static final String RSAACESRV_DEVICE_TYPE = "rsaacesrv";
 
 
     private String wrapWithDollar(String fieldName){
@@ -174,9 +176,16 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 new CopyValueTransformer(
                         "copy-user-id",
                         USER_ID_FIELD_NAME,
-                        true,
+                        false,
                         Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME, USERNAME_FIELD_NAME));
         transformerChainList.add(copyUserId);
+
+        CopyValueTransformer copySrcMachineName=
+                new CopyValueTransformer("copy-src-machine-name",
+                        SRC_MACHINE_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(SRC_MACHINE_NAME_FIELD_NAME));
+        transformerChainList.add(copySrcMachineName);
 
         //The SecureId Transformer that chain all the transformers together.
         return new JsonObjectChainTransformer("auth-secureid-transformer", transformerChainList);
@@ -412,6 +421,28 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         return jsonObject;
     }
 
+    private JSONObject buildAuthSecureIdJsonObject(
+            String sessionId,
+            String userDst,
+            Long eventTime,
+            String aliasHost,
+            String ecActivity,
+            String ecOutcome,
+            String hostSource
+    ){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(SESSION_ID_FIELD_NAME, sessionId);
+        jsonObject.put(USER_DST_FIELD_NAME, userDst);
+        jsonObject.put(DEVICE_TYPE_FIELD_NAME, RSAACESRV_DEVICE_TYPE);
+        jsonObject.put(ALIAS_HOST_FIELD_NAME, new JSONArray(aliasHost));
+        jsonObject.put(HOST_SRC_FIELD_NAME, hostSource);
+        jsonObject.put(EVENT_TIME_FIELD_NAME, eventTime);
+        jsonObject.put(EC_ACTIVITY_FIELD_NAME, ecActivity);
+        jsonObject.put(EC_OUTCOME_FIELD_NAME, ecOutcome);
+
+        return jsonObject;
+    }
+
     @Test
     public void deserialize_auth_transformer_test() throws JsonProcessingException {
         IJsonObjectTransformer transformer = buildAuthTransformer();
@@ -419,6 +450,38 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         String transformerJsonAsString = mapper.writeValueAsString(transformer);
 
         Assert.assertNotNull(transformerJsonAsString);
+    }
+
+    @Test
+    public void event_secure_id_succesful_logon_test() throws JsonProcessingException{
+        IJsonObjectTransformer transformer = buildAuthTransformer();
+
+        String sessionId = "1835299306";
+        String userDst = "gandalf";
+        String aliasHost = "[\"gandalf-srv\"]";
+        long eventTime = 1528124556000L;
+        String ecActivity = "Logon";
+        String ecOutcome = "Success";
+        String hostSource = "gandalf-pc";
+        String operationType = "MFA";
+
+        JSONObject jsonObject = buildAuthSecureIdJsonObject(sessionId, userDst,
+                eventTime*1000, aliasHost, ecActivity, ecOutcome, hostSource);
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+        Assert.assertEquals("wrong event id", sessionId, retJsonObject.get(EVENT_ID_FIELD_NAME));
+        Assert.assertEquals("wrong dateTime", new Double(eventTime), retJsonObject.get(DATE_TIME_FIELD_NAME));
+        Assert.assertEquals("username normalization did not work", userDst, retJsonObject.get(USER_ID_FIELD_NAME));
+        Assert.assertEquals("wrong username", userDst, retJsonObject.get(USERNAME_FIELD_NAME));
+        Assert.assertEquals("wrong userDisplayName", userDst, retJsonObject.get(USER_DISPLAY_NAME_FIELD_NAME));
+        Assert.assertEquals("source machine id is not as expected", hostSource, retJsonObject.opt(SRC_MACHINE_ID_FIELD_NAME));
+        Assert.assertEquals("source machine name is not as expected", hostSource, retJsonObject.opt(SRC_MACHINE_NAME_FIELD_NAME));
+        Assert.assertEquals("result normalization did not work", RESULT_SUCCESS, retJsonObject.get(RESULT_FIELD_NAME));
+
+        Assert.assertEquals("operation type logic according the accesses field did not work", operationType, retJsonObject.get(OPERATION_TYPE_FIELD_NAME));
+        Assert.assertEquals("wrong data source", RSAACESRV_DEVICE_TYPE, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
+
+        System.out.println(retJsonObject.toString());
     }
 
     @Test
