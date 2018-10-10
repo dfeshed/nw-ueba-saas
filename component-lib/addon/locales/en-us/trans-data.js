@@ -2133,7 +2133,7 @@ export default {
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
       machineCount: 'Hosts',
-      remediationaction: 'Remediationaction',
+      remediationAction: 'Remediation Action',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',

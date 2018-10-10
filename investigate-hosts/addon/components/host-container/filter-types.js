@@ -97,7 +97,11 @@ const FILTER_TYPES = [
       format: {
         exclude: ['LIKE'],
         validator: (value) => {
-          return !(/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(value));
+          const ips = value.split('||');
+          const isValidIps = ips.map((ip) => {
+            return (/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip.trim()));
+          });
+          return isValidIps.includes(false);
         },
         message: 'investigateHosts.hosts.filters.invalidIP'
       }
