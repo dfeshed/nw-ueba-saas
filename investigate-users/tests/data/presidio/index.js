@@ -62,5 +62,5 @@ const urlMap = [{
 }];
 
 export default (req) => {
-  return urlMap.find(({ url }) => req.indexOf(url) > 0).data;
+  return urlMap.find(({ url }) => req.indexOf(url) > 0) ? urlMap.find(({ url }) => req.indexOf(url) > 0).data : userList;
 };

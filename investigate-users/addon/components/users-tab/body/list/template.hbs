@@ -1,0 +1,31 @@
+{{#rsa-data-table lazy=true items=users columnsConfig=columnsData}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell column=column}}
+      {{#if (eq column.field 'score')}}
+        {{rsa-content-badge-score score=(get item column.field) size='small'  invertColor=true style=(get severityMap (get item 'scoreSeverity'))}}
+      {{else if (eq column.field 'isAdmin')}}
+        {{#if (eq (get item column.field) true)}}
+          <span class='users-tab_body_list_admin'>
+            {{rsa-icon size='large' style='lined' name='account-group-5'}}
+          </span>
+        {{/if}}  
+      {{else if (eq column.field 'alerts')}}
+        {{users-tab/body/list/alerts  userId=(get item 'id') alerts=(get item column.field)}}
+      {{else if (eq column.field 'displayName')}}
+        <span class='users-tab_body_list_name'>
+          {{get item column.field}}
+          {{#if (eq (get item 'followed') true)}}
+            <span class='users-tab_body_list_watched'>
+              {{rsa-icon size='large' style='lined' name='binoculars'}}
+            </span>
+          {{/if}}
+        </span>
+      {{/if}}
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+{{#unless allUserReceived}}
+  <div class='users-tab_body_list_loader'>
+    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+  </div>
+{{/unless}}

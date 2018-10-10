@@ -1,0 +1,90 @@
+<div class='alerts-tab_body_body-table_header'>
+  <div class='severity'>
+  </div>
+  <div class='alertName'>
+    {{t 'investigateUsers.alerts.alertName'}}
+  </div>
+  <div class='entityName'>
+    {{t 'investigateUsers.alerts.entityName'}}
+  </div>
+  <div class='startTime'>
+    {{t 'investigateUsers.alerts.startTime'}}
+  </div>
+  <div class='indicatorCount'>
+    {{t 'investigateUsers.alerts.indicatorCount'}}
+  </div>
+  <div class='status'>
+    {{t 'investigateUsers.alerts.status'}}
+  </div>
+</div>
+
+<div class='alerts-tab_body_body-table_body'>
+  {{#each-in groupedAlerts as |timestamp alertList|}}
+    <div class='alerts-tab_body_body-table_body_row'>
+      <div class='alerts-tab_body_body-table_body_row_date'>
+        <span class='alerts-tab_body_body-table_body_row_date_icon'>
+          {{rsa-icon size='small' style='filled' name='arrow-up-12'}}
+        </span>
+        {{t 'investigateUsers.alerts.startFrom'}} {{alert-date timestamp=timestamp}}
+      </div>
+      <div class='alerts-tab_body_body-table_body_row_alerts {{if (eq timestamp timeLineClicked) 'expandRow'}}'>
+        {{#each alertList as |alert|}}
+          <div class='alerts-tab_body_body-table_body_row_alerts_alert' {{action 'expandAlert' alert.id}}>
+            <div class='severity'>
+              <span class='alerts-tab_body_body-table_body_row_date_icon'>
+                {{#if (eq alertClicked  alert.id)}}
+                  {{rsa-icon size='small' style='lined' name='arrow-down-12'}}
+                {{else}}
+                  {{rsa-icon size='small' style='lined' name='arrow-right-12'}}
+                {{/if}}  
+              </span>
+              <div class={{alert.severity}}>
+              </div>
+              {{alert.severity}}
+            </div>
+            <div class='alertName'>
+              {{alert.name}} | <span class='lighter'> {{alert.timeframe}} </span>
+            </div>
+            <div class='entityName'>
+              {{alert.entityName}}
+            </div>
+            <div class='startTime'>
+              {{rsa-content-datetime timestamp=alert.startDate displayMilliseconds=false}}
+            </div>
+            <div class='indicatorCount'>
+              {{alert.evidenceSize}}
+            </div>
+            <div class='status'>
+              {{alert.status}}
+            </div>
+          </div>
+          <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators  {{if (eq alertClicked  alert.id) 'expandRow'}}'>
+            {{#rsa-data-table lazy=true items=alert.evidences columnsConfig=columnsData}} 
+              {{#rsa-data-table/header as |column|}}
+                <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
+                  {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
+                </span>
+              {{/rsa-data-table/header}}
+              {{#rsa-data-table/body as |item index column|}} 
+                {{#rsa-data-table/body-cell item=item index=index column=column}}
+                  {{#if (eq column.field 'startDate')}}
+                    {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+                  {{else}}
+                    <span class={{if (eq column.field 'name') 'primary' 'lighter'}}>
+                      {{get item column.field}}
+                    </span>
+                  {{/if}}
+                {{/rsa-data-table/body-cell}}
+              {{/rsa-data-table/body}}
+            {{/rsa-data-table}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/each-in}}
+  {{#unless allAlertsReceived}}
+    <div class='alerts-tab_body_body-table_body_row_loader'>
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    </div>
+  {{/unless}}
+</div>

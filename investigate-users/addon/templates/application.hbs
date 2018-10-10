@@ -1,14 +1,14 @@
 <div class="rsa-nav-tab-group user-header">
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "overview")  click=(action 'navigateTo' 'index')}}
-    <div class="label">Overview</div>
+  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "overview")  click=(action 'controllerNavigateTo' 'index')}}
+    <div class="label">{{t 'investigateUsers.overview.title'}}</div>
   {{/rsa-nav-tab}}
 
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "users")  click=(action 'navigateTo' 'users')}}
-    <div class="label">Users</div>
+  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "users")  click=(action 'controllerNavigateTo' 'users')}}
+    <div class="label">{{t 'investigateUsers.users.title'}}</div>
   {{/rsa-nav-tab}}
 
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "alerts")  click=(action 'navigateTo' 'alerts')}}
-    <div class="label">Alerts</div>
+  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "alerts")  click=(action 'controllerNavigateTo' 'alerts')}}
+    <div class="label">{{t 'investigateUsers.alerts.title'}}</div>
   {{/rsa-nav-tab}}
 </div> 
-{{user-container}}
+{{user-container applyUserFilter=(action 'controllerApplyUserFilter')}}

@@ -4,7 +4,7 @@ export default {
     'displayName': 'ad_qa_1_9',
     'username': 'ad_qa_1_9',
     'noDomainUsername': null,
-    'followed': false,
+    'followed': true,
     'alerts': [{
       'id': '07fdc97b-cb20-4373-9ef4-f578e80d6cb4',
       'name': 'abnormal_ad_changes',

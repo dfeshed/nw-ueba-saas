@@ -1,0 +1,9 @@
+<div class='users-tab_filter_options'>
+  {{users-tab/filter/category}}
+  {{users-tab/filter/filter}}
+  {{users-tab/filter/favorites}}
+</div>
+<div class='users-tab_filter_controls'>
+  {{#rsa-form-button isFullWidth=true}}{{t 'investigateUsers.addToFavorites'}}{{/rsa-form-button}}
+  {{#rsa-form-button isFullWidth=true click=(action 'resetFilters')}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
+</div>

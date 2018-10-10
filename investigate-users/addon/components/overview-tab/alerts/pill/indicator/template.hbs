@@ -1,0 +1,17 @@
+{{#rsa-content-tethered-panel-trigger panel=(concat 'indi-' alertId) }}
+  <div class='user-overview-tab_upper_alerts_container_pill_indicator_count'>
+    {{indicators.length}}
+  </div>
+  <div class='user-overview-tab_upper_alerts_container_pill_indicator_text'>
+    {{t 'investigateUsers.alerts.indicators'}}
+  </div>
+{{/rsa-content-tethered-panel-trigger}}
+{{#rsa-content-tethered-panel panelId=(concat 'indi-' alertId) style="primary" position='left' displayCloseButton=false panelClass='user_alert_indicator_panel'}}
+  <ul>
+    {{#each indicators as |indicator|}}
+      <li>
+        {{indicator.name}}
+      </li>
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}

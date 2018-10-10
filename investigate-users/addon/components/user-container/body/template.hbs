@@ -1,0 +1,7 @@
+{{#if (eq activeTabName 'overview')}}
+  {{overview-tab applyUserFilter=applyUserFilter}}
+{{else if (eq activeTabName 'users')}}
+  {{users-tab}}
+{{else if (eq activeTabName 'alerts')}}
+  {{alerts-tab}}
+{{/if}}

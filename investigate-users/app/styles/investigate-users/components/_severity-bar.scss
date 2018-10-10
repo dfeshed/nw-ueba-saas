@@ -1,0 +1,50 @@
+.severity-bar {
+  color: text-color(primary, light);
+  display: flex;
+  flex-direction: row;
+
+  &_div {
+    display: flex;
+    flex-direction: row;
+
+    &_severity {
+      width: .30rem;
+      margin: 0 rsa-whitespace(least);
+      border-radius: rsa-whitespace(least);
+      height: 25px;
+    }
+
+    &_count {
+      @include rsa-font(default, small);
+      text-transform: uppercase;
+      display: flex;
+      .number {
+        padding: rsa-whitespace(least);
+      }
+      .text {
+        padding: rsa-whitespace(least);
+        padding-right: 2*rsa-whitespace();
+      }
+    }
+  }
+
+  .selected {
+    background-color: text-color(primary, dark);
+  }
+
+  .critical {
+    background-color: text-color(accentOne, dark);
+  }
+
+  .high {
+    background-color: text-color(accentThree, dark);
+  }
+
+  .medium {
+    background-color: text-color(accentFour, dark);
+  }
+
+  .low {
+    background-color: text-color(accentTwo, dark);
+  }
+}

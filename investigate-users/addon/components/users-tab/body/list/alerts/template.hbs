@@ -1,0 +1,21 @@
+{{#rsa-content-tethered-panel-trigger panel=(concat 'user-' userId) }}
+  <div class='users-tab_body_list_alerts'>
+    {{alerts.length}} {{t 'investigateUsers.alerts.title'}}
+  </div>
+{{/rsa-content-tethered-panel-trigger}} 
+{{#rsa-content-tethered-panel panelId=(concat 'user-' userId) style="primary" position='bottom' displayCloseButton=false panelClass='users-tab_body_list_alerts_panel'}}
+  <ul>
+    {{#each alerts as |alert|}}
+      <li>
+        <div class='indicator {{alert.severity}}'>
+        </div>
+        <div class='indicator_name'>
+          {{alert.severity}}
+        </div>
+        <div class='link'>
+          {{alert.name}} | {{alert.timeframe}}
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}

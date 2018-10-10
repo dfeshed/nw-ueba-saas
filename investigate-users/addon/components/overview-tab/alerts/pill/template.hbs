@@ -1,0 +1,28 @@
+<div class='user-overview-tab_upper_alerts_container_pill_rating'>
+  <div class='user-overview-tab_upper_alerts_container_pill_rating_score'>
+  </div>
+  <div class='user-overview-tab_upper_alerts_container_pill_rating_text'>
+    {{alert.severity}}
+  </div>
+  <div class='user-overview-tab_upper_alerts_container_pill_details'>
+    <div class='user-overview-tab_upper_alerts_container_pill_details_name'>
+      <div class='user-overview-tab_upper_alerts_container_pill_details_name_text'>
+        {{alert.name}}
+      </div>
+      <div class='user-overview-tab_upper_alerts_container_pill_details_name_time'>
+        | {{alert.timeframe}}
+      </div>
+    </div>
+    <div class='user-overview-tab_upper_alerts_container_pill_details_time'>
+      <div class='user-overview-tab_upper_alerts_container_pill_details_time_name'>
+        {{alert.entityName}}
+      </div>
+      <div class='user-overview-tab_upper_alerts_container_pill_details_time_time'>
+        {{rsa-content-datetime timestamp=(get alert 'startTime') displayMilliseconds=false}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class='user-overview-tab_upper_alerts_container_pill_indicator'>
+  {{overview-tab/alerts/pill/indicator userId=alert.entityId alertId=alert.id indicators=alert.evidences}}
+</div>

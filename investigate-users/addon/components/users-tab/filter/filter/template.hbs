@@ -1,0 +1,29 @@
+<div class='users-tab_filter_filter_title'>
+  {{t 'investigateUsers.users.filters.title'}}
+</div>
+<div class='users-tab_filter_filter_list'>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.users.filters.allTypes'}}
+    </div>
+
+    {{#power-select-multiple
+      options=existAlertTypes
+      selected=selectedAlertTypes
+      onchange=(action 'updateFilterForAlertTypes') as |option|}}
+      {{option.name}}
+    {{/power-select-multiple}}
+  </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.users.filters.indicators'}}
+    </div>
+
+    {{#power-select-multiple
+      options=existAnomalyTypes
+      selected=selectedAnomalyTypes
+      onchange=(action 'updateFilterForAnomalyTypes') as |option|}}
+      {{option.name}}
+    {{/power-select-multiple}}
+  </label>
+</div>

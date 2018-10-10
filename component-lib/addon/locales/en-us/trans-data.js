@@ -3923,5 +3923,73 @@ export default {
   rsaTooltip: {
     note: 'Note: ',
     labelMessage: 'Only the initial 255 characters of the value are indexed as part of this meta, and will be included in any indexed search.'
+  },
+  investigateUsers: {
+    export: 'Export',
+    sortBy: 'Sort By',
+    sortOptions: {
+      name: 'Name',
+      score: 'Risk Score',
+      alerts: 'Alerts'
+    },
+    resetFilters: 'Reset Filters',
+    addToFavorites: 'Add To Favorites',
+    severity: {
+      Critical: 'Critical',
+      High: 'High',
+      Medium: 'Medium',
+      Low: 'Low',
+      // Need to use same key
+      critical: 'Critical',
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low'
+    },
+    overview: {
+      title: 'Overview',
+      topAlerts: 'Top Alerts'
+    },
+    users: {
+      title: 'Users',
+      addAllToWatchedList: 'Add All To WatchedList',
+      highRisk: 'High Risk Users',
+      all: 'All Users',
+      risky: 'Risky Users',
+      watched: 'Watched',
+      admin: 'Admin',
+      filters: {
+        favorites: 'Favorites',
+        title: 'Filters',
+        allTypes: 'All Types',
+        indicators: 'Indicators',
+        riskyUsers: 'Risky Users',
+        watchlistUsers: 'Watchlist Users',
+        adminUsers: 'Admin Users'
+      }
+    },
+    alerts: {
+      title: 'Alerts',
+      all: 'All Alerts',
+      alertName: 'Alert Name',
+      entityName: 'Entity Name',
+      startTime: 'Start Time',
+      indicatorCount: 'Indicator Count',
+      startFrom: 'Alerts starts from ',
+      status: 'Status',
+      indicators: 'Indicators',
+      indicator: {
+        name: 'Alert',
+        anomalyValue: 'Anomaly Value',
+        numOfEvents: 'Event Count',
+        startDate: 'Start Date'
+      },
+      filters: {
+        title: 'Filters',
+        severity: 'Severity',
+        feedback: 'Feedback',
+        indicators: 'Indicators',
+        dateRange: 'Date Range'
+      }
+    }
   }
 };

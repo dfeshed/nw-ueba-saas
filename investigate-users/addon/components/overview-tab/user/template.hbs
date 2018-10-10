@@ -1,0 +1,20 @@
+<div class='user-overview-tab_title'>
+  {{t 'investigateUsers.users.highRisk'}}
+</div>
+<div class='user-overview-tab_upper_users_rows'>
+  {{#each topUsers as |user|}}
+    <div class='user-overview-tab_upper_users_row'>
+      <div class='user-overview-tab_upper_users_row_score'>
+        {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
+      </div>
+      <div class='user-overview-tab_upper_users_row_name'>
+        {{user.displayName}}
+      </div>
+      <div class='user-overview-tab_upper_users_row_icon'>
+        {{#if (eq user.followed true)}}
+          {{rsa-icon size='large' style='filled' name='account-group-5'}}
+        {{/if}}
+      </div>
+    </div>
+  {{/each}}
+</div>

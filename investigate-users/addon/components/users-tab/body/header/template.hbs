@@ -1,0 +1,38 @@
+<div class='users-tab_body_header'>
+  {{severity-bar data=usersSeverity updateSeverity=(action 'applyFilter') selected=filterSeverity}}
+  <div class='users-tab_body_header_bar'>
+    <div class='users-tab_body_header_bar_count'>
+      <div>
+        {{totalUsers}} {{t 'investigateUsers.users.title'}}
+      </div>
+      <div>
+        <label class="rsa-form-label power-select users-tab_body_header_bar_count_sort">
+          <div class="label-text">
+            {{t 'investigateUsers.sortBy'}}:
+          </div>
+          {{#power-select
+            options=options
+            selected=sortBy
+            searchEnabled=false
+            onchange=(action 'updateSort') as |option|}}
+            {{t (concat 'investigateUsers.sortOptions.' option.id)}}
+          {{/power-select}}
+        </label>
+      </div>
+    </div>
+    <div class='users-tab_body_header_bar_control'>
+      <div>
+        {{#rsa-form-button }} 
+          {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} 
+          {{t 'investigateUsers.export'}} 
+        {{/rsa-form-button}}
+      </div>
+      <div>
+        {{#rsa-form-button }} 
+          {{rsa-icon size='medium' style='filled' name='binoculars'}} 
+          {{t 'investigateUsers.users.addAllToWatchedList'}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  </div>
+</div>

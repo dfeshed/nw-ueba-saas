@@ -1,0 +1,16 @@
+{{#each-in data as |severity count|}}
+  {{#rsa-form-button isIconOnly=true click=(action 'updateSeverity' severity) class=(if (eq selected severity) 'selected')}}
+    <div class='severity-bar_div'>
+      <div class='severity-bar_div_severity {{severity}}'>
+      </div>
+      <div class='severity-bar_div_count'>
+        <div class='number'>
+          {{count}}
+        </div> 
+        <div class='text'>
+          {{t (concat 'investigateUsers.severity.' severity)}}
+        </div>
+      </div>
+    </div>
+  {{/rsa-form-button}}
+{{/each-in}}

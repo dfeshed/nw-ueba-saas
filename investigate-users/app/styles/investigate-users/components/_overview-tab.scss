@@ -1,0 +1,286 @@
+.user-body {  
+  .user-overview-tab {
+    height: calc(100% - 45px);
+
+    &_title {
+      color: text-color(primary, light);
+      @include rsa-font(header);
+      padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+      border-bottom: 2px SOLID background-color(primary, darker);
+    }
+
+    &_upper {
+      height: 70%;
+      flex-direction: row;
+      display: flex;
+
+      &_users {
+        width: 30%;
+        padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+
+        > div {
+          background-color: background-color(primary, darker);
+          height: 100%;
+        }
+
+        &_rows {
+          height: calc(100% - 45px);
+          overflow-y: auto;
+        }
+
+        &_row {
+          padding: rsa-whitespace(less) rsa-whitespace();
+          height: 60px;
+          text-align: center;
+          display: flex;
+          flex-direction: row;
+          border-bottom: 1px SOLID background-color(primary, dark);
+
+          &_score {
+            width: 60px;
+            .rsa-content-badge-score {
+              padding: rsa-whitespace(least);
+            }
+            .score {
+              @include rsa-font(default);
+            }
+          }
+
+          &_name {
+            align-items: center;
+            display: flex;
+            color: text-color(secondary, dark);
+            @include rsa-font(navigation, small);
+            padding: rsa-whitespace(less) rsa-whitespace();
+          }
+
+          &_icon {
+            align-items: center;
+            display: flex;
+            padding: rsa-whitespace(less);
+          }
+        }
+
+      }
+
+      &_alerts {
+        width: 70%;
+        padding: rsa-whitespace();
+
+        > div {
+          background-color: background-color(primary, darker);
+          height: 100%;
+        }
+
+        &_container {
+          color: text-color(primary, lightest);
+          height: calc(100% - 45px);
+          overflow-y: auto;
+
+          &_pill {
+            width: calc(50% - 20px);
+            height: 60px;
+            float: left;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            border-bottom: 1px SOLID background-color(primary, dark);
+            margin: 0 rsa-whitespace(less);
+
+            &_rating {
+              display: flex;
+              align-items: center;
+              padding: rsa-whitespace(least);
+              width: 80%;
+
+              &_score {
+                height: 20px;
+                background-color: red;
+                border-radius: .2rem;
+                width: rsa-whitespace(least);
+              }
+
+              &_text {
+                @include rsa-font(header, small);
+                padding: rsa-whitespace(least);
+              }
+            }
+
+            &_details {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(least) rsa-whitespace();
+
+              &_name {
+                white-space: nowrap;
+                overflow: hidden;
+                display: inline-flex;
+                padding: rsa-whitespace(least);
+                @include rsa-font(default, small);
+
+                &_text {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+
+                &_time {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  color: text-color(primary);
+                }
+              }
+
+              &_time {
+                white-space: nowrap;
+                overflow: hidden;
+                display: inline-flex;
+                padding: rsa-whitespace(least);
+                @include rsa-font(default, smaller);
+
+                &_name {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  color: text-color(secondary, dark);
+                  padding: rsa-whitespace(least);
+                }
+
+                &_time {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  color: text-color(primary);
+                  padding: rsa-whitespace(least);
+                }
+              }
+            }
+
+            &_indicator {
+              display: flex;
+              width: 20%;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+
+              
+
+              &_count {
+                @include rsa-font(header, larger);
+                display: flex;
+                justify-content: center;
+                color: text-color(primary, lighter);
+              }
+
+              &_text {
+                color: text-color(primary);
+                @include rsa-font(default, smaller);
+              }
+
+              &_list {
+                color: text-color(secondary, dark);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &_lower {
+      height: 30%;
+      min-height: 150px;
+      flex-direction: row;
+      display: flex;
+
+      &_users {
+        width: 30%;
+        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+
+        > div {
+          background-color: background-color(primary, darker);
+          height: 100%;
+        }
+
+        &_watched {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          text-align: center;
+          padding: rsa-whitespace(less);
+          height: 115px;
+
+          > div {
+            padding: rsa-whitespace(less);
+          }
+          .rsa-form-button {
+            height: 100%;
+            justify-content: space-evenly;
+            border: none;
+            display: flex !important;
+            flex-direction: column;
+            > div {
+              align-self: center;
+              margin:0px;
+              > i {
+                margin-left: rsa-whitespace(less) !important;
+              }
+            }
+          }
+
+          .count {
+            @include rsa-font(bold);
+            color: text-color(secondary, dark);
+          }
+
+          .text {
+            @include rsa-font(default, smaller);
+          }
+
+          &_risk {
+            height: 100%;
+            >button >div > i {
+              color: text-color(accentThree);
+            }
+          }
+          
+
+          &_watched {
+            height: 100%;
+            >button >div > i {
+              color: text-color(accentOne);
+            }
+          }
+
+          &_admin {
+            height: 100%;
+            >button >div > i {
+              color: text-color(primary);
+            }
+          }
+
+        }
+      }
+
+      &_alerts {
+        width: 70%;
+        padding: 0 rsa-whitespace() rsa-whitespace() 0;
+
+        > div {
+          background-color: background-color(primary, darker);
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+.user_alert_indicator_panel {
+  padding: rsa-whitespace(less);
+  color: text-color(secondary, dark);
+  @include rsa-font(default, smaller);
+  top: -45px;
+  > ul > li {
+    padding: rsa-whitespace(least);
+  }
+}

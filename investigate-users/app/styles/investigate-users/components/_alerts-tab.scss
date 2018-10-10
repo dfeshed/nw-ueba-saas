@@ -1,0 +1,287 @@
+.alerts-tab {
+  height: calc(100% - 48px);
+  display: flex;
+  background-color: background-color(primary, darker);
+  border: 1px solid text-color(primary);
+
+  &_filter {
+    width: 25%;
+    border-right: 1px solid text-color(primary);
+
+    &_filters {
+      height: calc(100% - 85px);
+      padding: rsa-whitespace();
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &_title {
+        @include rsa-font(default);
+        color: text-color(primary);
+      }
+
+      .label-text {
+        padding-top: rsa-whitespace() + rsa-whitespace(less);
+        height: 25px;
+        color: text-color(primary, lighter);
+        @include rsa-font(header, small);
+      }
+
+      .rsa-investigate-query-container__time-selector {
+        padding: rsa-whitespace() 0;
+      }
+    }
+
+    &_control {
+      padding: rsa-whitespace();
+      border-top: 1px solid text-color(primary, darkest);
+      height: 50px;
+    }
+
+    .rsa-investigate-query-container__time-selector {
+      display: flex;
+
+      > div {
+        width: calc(100% - 40px);
+      }
+    }
+
+    .rsa-content-tethered-panel-trigger {
+      height: inherit;
+
+      > div {
+        height: 100%;
+
+        > button {
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  &_body {
+    width: 75%;
+    height: 100%;
+
+    &_header {
+      height: 40px;
+      display: flex;
+      justify-content: space-between;
+
+      &_export {
+        padding: rsa-whitespace(less);
+        .rsa-form-button {
+          @include rsa-font(default, small);
+        }
+      }
+
+      .Critical {
+        background-color: text-color(accentOne, dark);
+      }
+
+      .High {
+        background-color: text-color(accentThree, dark);
+      }
+
+      .Medium {
+        background-color: text-color(accentFour, dark);
+      }
+
+      .Low {
+        background-color: text-color(accentTwo, dark);
+      }
+    }
+
+    &_body {
+      height: calc(100% - 60px);
+
+      &-table {
+        flex-direction: column !important;
+        height: 100%;
+
+        &_header {
+          display: flex;
+          width: 100%;
+          @include rsa-font(header, small);
+          color: text-color(primary, lighter);
+          background-color: text-color(primary, dark);
+          border: 1px solid text-color(primary);
+
+          .severity {
+            width: 15%;
+            padding: rsa-whitespace(less);
+            border-right: 1px solid text-color(primary);
+          }
+
+          .alertName {
+            width: 25%;
+            padding: rsa-whitespace(less);
+            border-right: 1px solid text-color(primary);
+          }
+
+          .entityName {
+            width: 15%;
+            padding: rsa-whitespace(less);
+            border-right: 1px solid text-color(primary);
+          }
+
+          .startTime {
+            width: 15%;
+            padding: rsa-whitespace(less);
+            border-right: 1px solid text-color(primary);
+          }
+
+          .indicatorCount {
+            width: 15%;
+            padding: rsa-whitespace(less);
+            border-right: 1px solid text-color(primary);
+          }
+
+          .status {
+            width: 15%;
+            padding: rsa-whitespace(less);
+
+          }
+        }
+
+        &_body {
+          min-height: 250px;
+          height: 100%;
+          overflow-y: auto;
+          color: text-color(primary);
+
+          &_row {
+            &_loader {
+              justify-content: center;
+              display: flex;
+              padding: rsa-whitespace();
+            }
+
+            &_date {
+              display: flex;
+              padding: rsa-whitespace();
+              color: text-color(secondary, dark);
+              @include rsa-font(default, small);
+              border-bottom: 1px solid text-color(primary, darkest);
+              &_icon {
+                padding: 0 rsa-whitespace(least) 0 0;
+              }
+            }
+
+            .expandRow {
+              display: block;
+            }
+
+            &_alerts {
+
+              &_alert {
+                display: flex;
+                align-items: center;
+                @include rsa-font(default, small);
+                border-top: 1px solid text-color(primary);
+
+                .severity {
+                  width: calc(15% - 1rem);
+                  display: flex;
+                  align-items: center;
+                  color: text-color(primary, lighter);
+                  margin-left: 2*rsa-whitespace();
+                  @include rsa-font(default, small);
+                  text-transform: uppercase;
+
+                  > div {
+                    width: rsa-whitespace(least);
+                    height: 20px;
+                    margin: rsa-whitespace(less);
+
+                    border-radius: rsa-whitespace();
+                  }
+
+                }
+
+                .lighter {
+                  color: text-color(primary, light);
+                }
+
+                .Critical {
+                  background-color: text-color(accentOne, dark);
+                }
+
+                .High {
+                  background-color: text-color(accentThree, dark);
+                }
+
+                .Medium {
+                  background-color: text-color(accentFour, dark);
+                }
+
+                .Low {
+                  background-color: text-color(accentTwo, dark);
+                }
+
+                .alertName {
+                  width: 25%;
+                  padding: rsa-whitespace(less);
+                  color: text-color(secondary);
+                }
+
+                .entityName {
+                  width: 15%;
+                  padding: rsa-whitespace(less);
+                  color: text-color(primary, light);
+                }
+
+                .startTime {
+                  width: 15%;
+                  padding: rsa-whitespace(less);
+                  color: text-color(primary, light);
+                }
+
+                .indicatorCount {
+                  width: 15%;
+                  padding: rsa-whitespace(less);
+                  color: text-color(primary, light);
+                }
+
+                .status {
+                  width: 15%;
+                  padding: rsa-whitespace(less);
+                  color: text-color(primary, light);
+                }
+
+                &_indicators {
+                  display: none;
+                  margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) 3*rsa-whitespace();
+                  border: 1px solid text-color(primary, dark);
+
+                  .rsa-data-table-header {
+                    background-color: text-color(primary, dark);
+                    @include rsa-font(default, smaller);
+                  }
+
+                  .rsa-data-table-header-cell {
+                    border: 1px solid text-color(primary);
+                    @include rsa-font(default, smaller);
+                  }
+
+                  .rsa-data-table-body-cell {
+                    @include rsa-font(default, smaller);
+                    padding: rsa-whitespace(least) rsa-whitespace(less);
+                  }
+
+                  .primary {
+                    color: text-color(secondary);
+                  }
+
+                  .lighter {
+                    color: text-color(primary, light);
+                  }
+                }
+              }
+            }
+
+          }
+        }
+      }
+    }
+  }
+}

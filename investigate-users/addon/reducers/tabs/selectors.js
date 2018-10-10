@@ -1,0 +1,1 @@
+export const activeTabName = (state) => state.tabs.activeTabName;

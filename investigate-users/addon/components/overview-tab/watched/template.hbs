@@ -1,0 +1,44 @@
+<div class='user-overview-tab_title'>
+  {{t 'investigateUsers.users.all'}}
+</div>
+<div class='user-overview-tab_lower_users_watched'>
+  <div>
+    {{#rsa-form-button class='user-overview-tab_lower_users_watched_risk' isFullWidth=true click=(action 'applyFilter' 'risky')}}
+      <div>
+        {{rsa-icon size='large' style='filled' name='alarm-check' }}
+      </div>
+      <div class='count'>
+        {{riskyUserCount}}
+      </div>
+      <div class='text'>
+        {{t 'investigateUsers.users.risky'}}
+      </div>
+    {{/rsa-form-button}}
+  </div>
+  <div>
+    {{#rsa-form-button class='user-overview-tab_lower_users_watched_watched' isFullWidth=true click=(action 'applyFilter' 'watched')}}
+      <div>
+        {{rsa-icon size='large' style='filled' name='binoculars'}}
+      </div>
+      <div class='count'>
+        {{watchedUserCount}}
+      </div>
+      <div class='text'>
+        {{t 'investigateUsers.users.watched'}}
+      </div>
+    {{/rsa-form-button}}
+  </div>
+  <div>
+    {{#rsa-form-button class='user-overview-tab_lower_users_watched_admin' isFullWidth=true click=(action 'applyFilter' 'admin')}}
+      <div>
+        {{rsa-icon size='large' style='lined' name='account-group-5' }}
+      </div>
+      <div class='count'>
+        {{adminUserCount}}
+      </div>
+      <div class='text'>
+        {{t 'investigateUsers.users.admin'}}
+      </div>
+    {{/rsa-form-button}}
+  </div>
+</div>

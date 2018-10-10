@@ -1,0 +1,33 @@
+<div class='users-tab_filter_user_row'>
+  {{#rsa-form-button 
+    isFullWidth=true 
+    click=(action 'applyFilter' 'risky') 
+    class=(if isRisky 'rsa-form-button-clicked')
+  }}
+    {{rsa-icon size='medium' style='lined' name='alarm-check' class='risky'}}
+    {{t 'investigateUsers.users.filters.riskyUsers'}}
+    ({{riskyUserCount}})
+  {{/rsa-form-button}}
+</div>
+<div class='users-tab_filter_user_row'>
+  {{#rsa-form-button 
+    isFullWidth=true 
+    click=(action 'applyFilter' 'watched') 
+    class=(if isWatched 'rsa-form-button-clicked')
+  }}
+    {{rsa-icon size='medium' style='lined' name='binoculars' class='watched'}}
+    {{t 'investigateUsers.users.filters.watchlistUsers'}}
+    ({{watchedUserCount}})
+  {{/rsa-form-button}}
+</div>
+<div class='users-tab_filter_user_row'>
+  {{#rsa-form-button 
+    isFullWidth=true 
+    click=(action 'applyFilter' 'admin') 
+    class=(if isAdmin 'rsa-form-button-clicked')
+  }}
+    {{rsa-icon size='medium' style='lined' name='account-group-5' class='admin'}}
+    {{t 'investigateUsers.users.filters.adminUsers'}}
+    ({{adminUserCount}})
+  {{/rsa-form-button}}
+</div>

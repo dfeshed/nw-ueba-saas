@@ -1,0 +1,8 @@
+<div class='user-overview-tab_title'>
+  {{t 'investigateUsers.overview.topAlerts'}}
+</div>
+<div class='user-overview-tab_upper_alerts_container'>
+  {{#each topAlerts as |alert|}}
+    {{overview-tab/alerts/pill alert=alert}}
+  {{/each}}
+</div>

@@ -1,0 +1,18 @@
+{{#rsa-data-table lazy=true items=favorites columnsConfig=columnsData}}
+  {{#rsa-data-table/header as |column|}}
+    <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{column.title}}>
+      {{t (concat 'investigateUsers.users.filters.' column.title)}}
+    </span>
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell column=column}}
+      {{#rsa-form-button 
+        isFullWidth=true 
+        click=(action 'applyFilter' item) 
+        class=(if (eq selected (get item 'id')) 'rsa-form-button-clicked')
+      }}
+        {{get item column.field}}
+      {{/rsa-form-button}}
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

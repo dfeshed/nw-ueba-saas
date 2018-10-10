@@ -1,0 +1,283 @@
+.users-tab {
+  height: calc(100% - 48px);
+  background-color: background-color(primary, darker);
+  display: flex;
+  border: 1px solid text-color(primary);
+  flex-direction: row;
+
+  &_filter {
+    width: 25%;
+    border: 1px solid text-color(primary);
+    border-top: 0px;
+    height: 100%;
+
+    > div {
+      height: 100%;
+    }
+
+    &_options {
+      height: calc(100% - 100px);
+      overflow-y: auto;
+    }
+
+    &_user {
+      padding: rsa-whitespace(less);
+      border-bottom: 1px solid text-color(primary);
+
+      &_row {
+        display: flex;
+        flex-direction: row;
+        @include rsa-font(default, small);
+        color: text-color(secondary, dark);
+
+        .rsa-form-button-wrapper {
+          width: 100%;
+        }
+
+        .rsa-form-button {
+          padding: rsa-whitespace(least) rsa-whitespace(less);
+          color: text-color(secondary, dark);
+        }
+
+        .rsa-form-button {
+          border: none;
+          text-align: start;
+        }
+
+        .rsa-form-button-clicked {
+          background-color: text-color(secondary, dark);
+
+          > button {
+            color: text-color(primary, light);
+          }
+        }
+
+        .risky {
+          color: text-color(accentFour, dark);
+        }
+
+        .admin {
+          color: text-color(primary);
+        }
+
+        .watched {
+          color: text-color(accentThree, dark);
+        }
+
+        > div {
+          padding: rsa-whitespace(least);
+        }
+      }
+    }
+
+    &_favorites {
+      padding: rsa-whitespace(less);
+      color: text-color(primary);
+      @include rsa-font(default, medium);
+
+      .rsa-form-button {
+        border: none;
+        text-align: start;
+        color: text-color(primary, light);
+      }
+
+      .rsa-form-button-clicked {
+        background-color: text-color(secondary, dark);
+      }
+    }
+
+    &_filter {
+      padding: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+      border-bottom: 1px solid text-color(primary);
+      @include rsa-font(default, medium);
+
+      &_title {
+        @include rsa-font(header, large);
+        padding: rsa-whitespace(less);
+      }
+
+      &_list {
+        padding: rsa-whitespace(less);
+        display: flex;
+        overflow-y: auto;
+        flex-direction: column;
+        justify-content: space-evenly;
+      }
+
+      &_select {
+        padding: rsa-whitespace() 0;
+
+        .ember-power-select-multiple-option {
+          width: 5rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    &_controls {
+      border-top: 1px solid text-color(primary);
+      padding: rsa-whitespace(less) rsa-whitespace();
+      justify-content: space-around;
+      display: flex;
+      flex-direction: column;
+      bottom: 0;
+      height: 80px;
+    }
+  }
+
+  &_body {
+    width: 75%;
+    height: 100%;
+    border-bottom: 1px solid text-color(primary);
+
+    &_header {
+      height: 90px;
+      border-bottom: 1px solid text-color(primary, darkest);
+
+      &_bar {
+        display: flex;
+        padding: 0 rsa-whitespace(less);
+        @include rsa-font(header, large);
+        color: text-color(primary, lightest);
+        text-align: center;
+        justify-content: space-between;
+
+        &_count {
+          display: flex;
+          justify-content: center;
+          padding: rsa-whitespace(least);
+
+          &_sort {
+            padding: 0 rsa-whitespace();
+            color: text-color(primary, light);
+            display: flex;
+
+            .label-text {
+              padding: rsa-whitespace(less);
+            }
+
+            .ember-power-select-trigger {
+              @include rsa-font(default);
+              width: 10rem;
+            }
+
+            .ember-power-select-dropdown {
+              @include rsa-font(default);
+              width: 10rem;
+            }
+          }
+        }
+
+        &_control {
+          display: flex;
+          flex-direction: row;
+          width: 50%;
+          justify-content: flex-end;
+          padding: 0 2*rsa-whitespace(less);
+          height: 80px;
+
+          > div {
+            padding: 0 rsa-whitespace(least);
+            > div {
+              padding-top: rsa-whitespace(less);
+              @include rsa-font(default, small);
+            }
+          }
+        }
+      }
+    }
+
+    &_list {
+      padding: rsa-whitespace() 0;
+      height: calc(100% - 120px);
+      overflow-y: auto;
+      @include rsa-font();
+
+      &_loader {
+        display: flex;
+        justify-content: center;
+        padding: rsa-whitespace();
+      }
+
+      &_name {
+        @include rsa-font(default, small);
+        color: text-color(secondary);
+      }
+
+      &_watched {
+        color: text-color(accentOne, light);
+        margin: rsa-whitespace();
+      }
+
+      &_admin {
+        color: text-color(primary);
+      }
+
+      .rsa-data-table-body-cell {
+        display: flex;
+        align-items: center;
+        @include rsa-font();
+        max-width: unset;
+        padding: rsa-whitespace(less) rsa-whitespace();
+      }
+
+      .rsa-data-table-body-cell *, .rsa-data-table-header-cell * {
+        max-width: unset;
+      }
+
+      &_alerts {
+        color: text-color(secondary);
+
+        &_panel {
+          padding: rsa-whitespace(less);
+          @include rsa-font();
+
+          > ul > li {
+            display: flex;
+            padding: rsa-whitespace(least);
+            align-items: center;
+
+            > div {
+              margin: 0 0 0 rsa-whitespace(least);
+            }
+
+            .indicator {
+              width: rsa-whitespace(least);
+              border-radius: rsa-whitespace(least);
+              height: 15px;
+
+              &_name {
+                @include rsa-font(default, smaller);
+              }
+            }
+
+            .link {
+              @include rsa-font(default, smaller);
+              color: text-color(secondary, lighter);
+              padding-left: rsa-whitespace(less);
+            }
+
+            .Critical {
+              background-color: text-color(accentOne, dark);
+            }
+
+            .High {
+              background-color: text-color(accentThree, dark);
+            }
+
+            .Medium {
+              background-color: text-color(accentFour, dark);
+            }
+
+            .Low {
+              background-color: text-color(accentTwo, dark);
+            }
+          }
+        }
+      }
+    }
+  }
+}

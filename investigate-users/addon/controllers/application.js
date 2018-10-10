@@ -2,10 +2,12 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
+
 export default Controller.extend({
   classNames: 'user-header',
   accessControl: service(),
   routing: service('-routing'),
+  redux: service(),
 
   /**
    * Returns the leaf route name for the current fully qualified route
@@ -22,8 +24,11 @@ export default Controller.extend({
   },
 
   actions: {
-    navigateTo(routeName) {
-      this.transitionToRoute(routeName);
+    controllerNavigateTo(routeName) {
+      this.send('navigateTo', routeName);
+    },
+    controllerApplyUserFilter(filterFor) {
+      this.send('applyUserFilter', filterFor);
     }
   }
 });

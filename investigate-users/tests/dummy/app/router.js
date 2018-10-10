@@ -7,7 +7,8 @@ const Router = ERouter.extend({
 });
 
 Router.map(function() {
-  this.mount('investigate-users');
+  this.mount('investigate-users', { path: 'investigate/users' });
+  this.route('users');
 });
 
 export default Router;
