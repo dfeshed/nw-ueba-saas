@@ -20,7 +20,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFunc extends AbstractAggrFea
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram) {
 		MultiKeyFeature max = multiKeyHistogram.getHistogram().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-		return new AggrFeatureValue(max, (long)multiKeyHistogram.getTotal());
+		return new AggrFeatureValue(max);
 	}
 
 

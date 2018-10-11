@@ -28,20 +28,4 @@ public class FeatureStringValue implements FeatureValue {
     public String toString() {
         return value;
     }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FeatureStringValue)) return false;
-        FeatureStringValue that = (FeatureStringValue) o;
-
-        return value.equals(that.value);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
 }

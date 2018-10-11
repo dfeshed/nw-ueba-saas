@@ -26,8 +26,10 @@ public class FeatureBucketEpochtimeToHighestDoubleMapGenerator extends FeatureBu
 
         for (Entry<String, Double> entry : ((GenericHistogram)feature.getValue()).getHistogramMap().entrySet()) {
             MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-            multiKeyFeature.add(featureName, new FeatureStringValue( entry.getKey()));
-            multiKeyHistogram.add(multiKeyFeature, entry.getValue());
+            multiKeyFeature.add(featureName,entry.getKey());
+            Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);
+            Double newValCount = oldCount != null ? entry.getValue() + oldCount : entry.getValue();
+            multiKeyHistogram.set(multiKeyFeature, newValCount);
         }
 
         feature.setValue(multiKeyHistogram);

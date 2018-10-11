@@ -31,10 +31,10 @@ public class AggrFeatureFunctionUtils {
             if (groupByFeature == null) return null;
 
             FeatureValue groupByFeatureValue = groupByFeature.getValue();
-            if (groupByFeatureValue == null || (groupByFeatureValue instanceof FeatureStringValue && StringUtils.isBlank((String) ((FeatureStringValue) groupByFeatureValue).getValue()))) {
+            if (groupByFeatureValue == null || (groupByFeatureValue instanceof FeatureStringValue && StringUtils.isBlank(((FeatureStringValue) groupByFeatureValue).getValue()))) {
                 groupByFeatureValue = new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE);
             }
-            multiKeyFeature.add(groupByFeatureName, groupByFeatureValue);
+            multiKeyFeature.add(groupByFeatureName, groupByFeatureValue.toString());
         }
         return multiKeyFeature;
     }
@@ -46,9 +46,7 @@ public class AggrFeatureFunctionUtils {
      */
     public static MultiKeyFeature buildMultiKeyFeature(Map<String, String> features) {
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-        features.forEach((key, value) -> {
-            multiKeyFeature.add(key, new FeatureStringValue(value));
-        });
+        features.forEach(multiKeyFeature::add);
         return multiKeyFeature;
     }
 

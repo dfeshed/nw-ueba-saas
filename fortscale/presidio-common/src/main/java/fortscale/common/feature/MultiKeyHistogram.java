@@ -17,8 +17,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     @Transient
     private Map<MultiKeyFeature, Double> histogram;
-    //todo: total in set and in add methods a little bit different. move it out of the methods? separate for 2 diff vars?
-    private double total = 0d;
 
     public MultiKeyHistogram() {
         this.histogram = new HashMap<>();
@@ -26,27 +24,17 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     public void set(MultiKeyFeature multiKeyFeature, Double value) {
         histogram.put(multiKeyFeature, value);
-        this.total++;
     }
 
-    public void add(MultiKeyFeature multiKeyFeature, Double count) {
-        Double oldCount = histogram.get(multiKeyFeature);
-        Double newValCount = oldCount != null ? count + oldCount : count;
-        histogram.put(multiKeyFeature, newValCount);
-        this.total += count;
-    }
-
-    public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram, Set<FeatureStringValue> filter) {
+    public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram, Set<String> filter) {
         for (Map.Entry<MultiKeyFeature, Double> entry : multiKeyHistogram.getHistogram().entrySet()) {
             if(!entry.getKey().containsAtLeastOneValue(filter)){
-                add(entry.getKey(), entry.getValue());
+                Double oldCount = histogram.get(entry.getKey());
+                Double newValCount = oldCount != null ?  entry.getValue() + oldCount :  entry.getValue();
+                set(entry.getKey(), newValCount);
             }
         }
         return this;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
     }
 
     public Double getCount(MultiKeyFeature multiKeyFeature) {
@@ -59,10 +47,6 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     public long getN() {
         return histogram.size();
-    }
-
-    public double getTotal() {
-        return total;
     }
 
     public Map<MultiKeyFeature, Double> getHistogram() {

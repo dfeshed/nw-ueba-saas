@@ -39,3 +39,6 @@ fortscale/presidio-ade/presidio-ade-app-manager/spring-shell\.log
 fortscale/presidio-ade/presidio-ade-app-smart/spring-shell\.log
 
 fortscale/presidio-output/presidio-output-processor/spring-shell\.log
+
+presidio-workflows/venv/
+fortscale/presidio-configuration/presidio-configuration-server/src/main/resources/configurations/accumulate-feature-aggregation-dev.properties

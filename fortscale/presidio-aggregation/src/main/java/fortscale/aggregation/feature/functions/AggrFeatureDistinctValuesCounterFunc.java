@@ -49,19 +49,18 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
 
         //sum all if no keys were defined
         if (keys.isEmpty()) {
-            return new AggrFeatureValue(multiKeyHistogram.getN(), (long)multiKeyHistogram.getTotal());
+            return new AggrFeatureValue(multiKeyHistogram.getN());
         } else {
             //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
                     if (multiKeyRecordEntry.getKey().contains(key)) {
                         numOfDistinctValues++;
-                        //todo: filter total?
                         break;
                     }
                 }
             }
-            return new AggrFeatureValue(numOfDistinctValues, (long)multiKeyHistogram.getTotal());
+            return new AggrFeatureValue(numOfDistinctValues);
         }
     }
 }

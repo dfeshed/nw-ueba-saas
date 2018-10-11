@@ -196,9 +196,9 @@ public class FeatureBucketsServiceTest {
         featureBucket3.setBucketId(BUCKET_ID3);
         aggregatedFeatures = new HashMap<>();
         total = 2;
-        Map<String, FeatureValue> featureNameToValue = new HashMap<>();
-        featureNameToValue.put("context.sourcePath",new FeatureStringValue("source_path_test"));
-        featureNameToValue.put("context.srcMachineId",new FeatureStringValue("pc1"));
+        Map<String, String> featureNameToValue = new HashMap<>();
+        featureNameToValue.put("context.sourcePath","source_path_test");
+        featureNameToValue.put("context.srcMachineId","pc1");
         multiKeyHistogram = createMultiKeyHistogram(featureNameToValue, 90.0, total);
         feature = new Feature("srcpath_and_srcmachine_to_highest_score_map", multiKeyHistogram);
         aggregatedFeatures.put("srcpath_and_srcmachine_to_highest_score_map", feature);
@@ -210,28 +210,21 @@ public class FeatureBucketsServiceTest {
         return featureBuckets;
     }
 
-    private MultiKeyHistogram createMultiKeyHistogram(Map<String, FeatureValue> featureNameToValue, double count, double total){
+    private MultiKeyHistogram createMultiKeyHistogram(Map<String, String> featureNameToValue, double count, double total){
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
         featureNameToValue.forEach(multiKeyFeature::add);
         multiKeyHistogram.set(multiKeyFeature, count);
-        multiKeyHistogram.setTotal(total);
         return multiKeyHistogram;
     }
 
 
     public boolean isEqual(MultiKeyHistogram m1, MultiKeyHistogram m2) {
-        if (m1.getTotal() != m2.getTotal() ||
-                m1.getHistogram().size() != m1.getHistogram().size()) {
-            return false;
-        }
-
         for (Map.Entry<MultiKeyFeature, Double> m1Entry : m1.getHistogram().entrySet()) {
             if (!m2.getHistogram().get(m1Entry.getKey()).equals(m1Entry.getValue())) {
                 return false;
             }
         }
-
         return true;
     }
 

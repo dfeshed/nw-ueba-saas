@@ -50,7 +50,9 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
             MultiKeyFeature multiKeyFeature = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames);
 
             if (multiKeyFeature != null) {
-                multiKeyHistogram.add(multiKeyFeature, 1.0);
+                Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);
+                Double newValCount = oldCount != null ? 1.0 + oldCount : 1.0;
+                multiKeyHistogram.set(multiKeyFeature, newValCount);
             }
         }
 
@@ -91,7 +93,7 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
                             filter.addAll(AggGenericNAFeatureValues.getNAValues());
                             filter.addAll(additionalNAValues);
                         }
-                        histogram.add((MultiKeyHistogram) aggrFeature.getValue(), filter.stream().map(FeatureStringValue::new).collect(Collectors.toSet()));
+                        histogram.add((MultiKeyHistogram) aggrFeature.getValue(), filter);
                     } else {
                         throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
                                 aggregatedFeatureName, GenericHistogram.class.getSimpleName()));

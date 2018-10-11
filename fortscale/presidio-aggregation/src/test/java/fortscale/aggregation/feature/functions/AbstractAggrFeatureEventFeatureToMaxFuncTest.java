@@ -39,15 +39,6 @@ public class AbstractAggrFeatureEventFeatureToMaxFuncTest {
         Assert.assertTrue(calculateMapAggrFeatureValueWasCalled[0]);
     }
 
-    private MultiKeyFeature generateGroupByFeatureValuesKey(String[] features) {
-        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-        for (String feature : features) {
-
-            multiKeyFeature.add("", new FeatureStringValue(feature));
-        }
-        return multiKeyFeature;
-    }
-
     @Test
     public void shouldCreateTheSameMappingGivenOnlyOneBucket() {
         final String featureName = "host";

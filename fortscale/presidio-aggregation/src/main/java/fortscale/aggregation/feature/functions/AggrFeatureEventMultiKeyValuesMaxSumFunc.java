@@ -68,13 +68,12 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
                     if (multiKeyRecordEntry.getKey().contains(key)) {
                         Double max = multiKeyRecordEntry.getValue();
                         sum += max;
-                        //todo: recalculate total?
                         break;
                     }
                 }
             }
         }
 
-        return new AggrFeatureValue(sum, (long) multiKeyHistogram.getTotal());
+        return new AggrFeatureValue(sum);
     }
 }

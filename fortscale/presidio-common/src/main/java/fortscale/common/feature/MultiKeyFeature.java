@@ -10,17 +10,17 @@ import java.util.Set;
 @Document
 public class MultiKeyFeature {
 
-    private Map<String, FeatureValue> featureNameToValue;
+    private Map<String, String> featureNameToValue;
 
     public MultiKeyFeature() {
         this.featureNameToValue = new HashMap<>();
     }
 
-    public void add(String featureName, FeatureValue featureValue) {
+    public void add(String featureName, String featureValue) {
         this.featureNameToValue.put(featureName, featureValue);
     }
 
-    public Map<String, FeatureValue> getFeatureNameToValue() {
+    public Map<String, String> getFeatureNameToValue() {
         return featureNameToValue;
     }
 
@@ -28,8 +28,8 @@ public class MultiKeyFeature {
         return this.featureNameToValue.entrySet().containsAll(multiKeyFeature.getFeatureNameToValue().entrySet());
     }
 
-    public boolean containsAtLeastOneValue(Set<FeatureStringValue> featureValues) {
-        for(FeatureStringValue featureValue : featureValues){
+    public boolean containsAtLeastOneValue(Set<String> featureValues) {
+        for(String featureValue : featureValues){
             if(featureNameToValue.containsValue(featureValue)){
                 return true;
             }
@@ -41,7 +41,6 @@ public class MultiKeyFeature {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MultiKeyFeature)) return false;
-        MultiKeyFeature that = (MultiKeyFeature) o;
         return featureNameToValue.equals(((MultiKeyFeature) o).featureNameToValue);
     }
 

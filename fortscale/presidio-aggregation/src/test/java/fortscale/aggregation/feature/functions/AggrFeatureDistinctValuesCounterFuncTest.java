@@ -27,14 +27,13 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 	}
 
 	private AggrFeatureValue createExpected(Long numberOfDistinctValues, MultiKeyHistogram... multiKeyHistograms) {
-		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues, 0L);
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues);
 		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
 		for (MultiKeyHistogram hist : multiKeyHistograms) {
-			Set<FeatureStringValue> filter = new HashSet<>();
-			filter.add(new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE));
+			Set<String> filter = new HashSet<>();
+			filter.add(AggGenericNAFeatureValues.NOT_AVAILABLE);
             sumMultiKeyHistogram.add(hist, filter);
 		}
-		ret.setTotal((long)sumMultiKeyHistogram.getTotal());
 		return ret;
 	}
 
@@ -43,14 +42,14 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 
 		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram();
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
 
 		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram();
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", multiKeyHistogram1),
@@ -58,9 +57,9 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		);
 
 		MultiKeyHistogram multiKeyHistogram2 = new MultiKeyHistogram();
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("seventeenthName","seventeenthValue"),17.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("seventeenthName","seventeenthValue"),17.0);
 
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", multiKeyHistogram2),
@@ -86,15 +85,15 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 
 		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram();
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
-		multiKeyHistogram1.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NaName",AggGenericNAFeatureValues.NOT_AVAILABLE),3.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("secondName","secondValue"),2.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirdName","thirdValue"),3.0);
+		multiKeyHistogram1.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NaName",AggGenericNAFeatureValues.NOT_AVAILABLE),3.0);
 
 		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram();
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", multiKeyHistogram1),
@@ -102,10 +101,10 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		);
 
 		MultiKeyHistogram multiKeyHistogram2 = new MultiKeyHistogram();
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("seventeenthName","seventeenthValue"),17.0);
-		multiKeyHistogram2.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NaName",AggGenericNAFeatureValues.NOT_AVAILABLE),17.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("eleventhName","eleventhValue"),11.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("thirteenthName","thirteenthValue"),13.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("seventeenthName","seventeenthValue"),17.0);
+		multiKeyHistogram2.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("NaName",AggGenericNAFeatureValues.NOT_AVAILABLE),17.0);
 
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", multiKeyHistogram2),
@@ -125,7 +124,6 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		AggrFeatureValue actualAggrFeatureValue = (AggrFeatureValue)actual1.getValue();
 		AggrFeatureValue expectedAggrFeatureValue = createExpected(6L, multiKeyHistogram1, multiKeyHistogram2);
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
-		Assert.assertEquals(expectedAggrFeatureValue.getTotal(), actualAggrFeatureValue.getTotal());
 	}
 
 	@Test
@@ -133,12 +131,10 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 
 		MultiKeyHistogram multiKeyHistogram1 = new MultiKeyHistogram();
-
-
 		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram();
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", multiKeyHistogram1),
@@ -165,9 +161,9 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 
 		MultiKeyHistogram multiKeyNotListedHistogram = new MultiKeyHistogram();
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
-		multiKeyNotListedHistogram.add(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("firstName","firstValue"),1.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("fifthsName","fifthsValue"),5.0);
+		multiKeyNotListedHistogram.set(AggrFeatureTestUtils.createMultiKeyFeatureWithOneFeature("tenthName","tenthValue"),10.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature2", multiKeyNotListedHistogram)
@@ -263,17 +259,17 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		Map<String, String> featureNameToValue1 = new HashMap<>();
 		featureNameToValue1.put("operationType","open");
 		featureNameToValue1.put("result","SUCCESS");
-		multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1),10.0);
+		multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1),10.0);
 
 		Map<String, String> featureNameToValue3 = new HashMap<>();
 		featureNameToValue3.put("operationType","open");
 		featureNameToValue3.put("result","FAILURE");
-		multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3),2.0);
+		multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3),2.0);
 
 		Map<String, String> featureNameToValue4 = new HashMap<>();
 		featureNameToValue4.put("operationType","close");
 		featureNameToValue4.put("result","SUCCESS");
-		multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue4),3.0);
+		multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue4),3.0);
 
 		return multiKeyHistogram;
 	}

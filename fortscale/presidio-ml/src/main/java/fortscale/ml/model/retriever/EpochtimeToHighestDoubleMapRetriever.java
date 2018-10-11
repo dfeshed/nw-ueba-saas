@@ -109,14 +109,14 @@ public class EpochtimeToHighestDoubleMapRetriever extends AbstractDataRetriever 
     }
 
     private long convertKeyToEpochtime(MultiKeyFeature key) {
-        Map<String, FeatureValue> featureNameToValue = key.getFeatureNameToValue();
+        Map<String, String> featureNameToValue = key.getFeatureNameToValue();
         if (featureNameToValue.size() != 1) {
             String s = String.format("%s supports only keys containing 1 feature.", getClass().getSimpleName());
             throw new IllegalArgumentException(s);
         }
 
         if(featureNameToValue.values().stream().findFirst().isPresent()){
-            return Long.parseLong(featureNameToValue.values().stream().findFirst().get().toString());
+            return Long.parseLong(featureNameToValue.values().stream().findFirst().get());
         }
         else{
             String s = String.format("Invalid key: %s.", key);

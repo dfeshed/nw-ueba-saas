@@ -52,7 +52,7 @@ public class AggregationRecordsCreatorImplTest {
         featureBucket.setEndTime(endTime);
 
         MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-        multiKeyFeature.add("server", new FeatureStringValue("app_1"));
+        multiKeyFeature.add("server", "app_1");
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
         multiKeyHistogram.set(multiKeyFeature, 14.0);
 

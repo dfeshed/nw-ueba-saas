@@ -27,14 +27,14 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         featureNameToValue1.put("feature2", "SUCCESS");
         double val1 = 9.0;
         MultiKeyFeature multiKeyFeature1 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue1);
-        multiKeyHistogram.add(multiKeyFeature1, val1);
+        multiKeyHistogram.set(multiKeyFeature1, val1);
 
         Map<String, String> featureNameToValue2 = new HashMap<>();
         featureNameToValue2.put("feature1", "move");
         featureNameToValue2.put("feature2", "SUCCESS");
         double val2 = 5.0;
         MultiKeyFeature multiKeyFeature2 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2);
-        multiKeyHistogram.add(multiKeyFeature2, val2);
+        multiKeyHistogram.set(multiKeyFeature2, val2);
 
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>("feature1", new FeatureStringValue("open")),
@@ -49,11 +49,9 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
 
         Assert.assertEquals(value.getClass(), MultiKeyHistogram.class);
         MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram) aggrFeature.getValue();
-        Double expectedTotal = val1 + val2 + 1;
         Double expectedFeatureValue1 = val1 + 1;
         Double expectedFeatureValue2 = val2;
 
-        Assert.assertEquals(expectedTotal, (Double) aggrFeatureValue.getTotal());
         Assert.assertEquals(expectedFeatureValue1, aggrFeatureValue.getHistogram().get(multiKeyFeature1));
         Assert.assertEquals(expectedFeatureValue2, aggrFeatureValue.getHistogram().get(multiKeyFeature2));
     }
@@ -84,8 +82,8 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         for (Pair<Double, Double> pair : pairs) {
             MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
-            multiKeyHistogram.add(multiKeyFeature1, pair.getKey());
-            multiKeyHistogram.add(multiKeyFeature2, pair.getValue());
+            multiKeyHistogram.set(multiKeyFeature1, pair.getKey());
+            multiKeyHistogram.set(multiKeyFeature2, pair.getValue());
             Map<String, Feature> map = AggrFeatureTestUtils.createFeatureMap(
                     new ImmutablePair<String, Object>("feature1", multiKeyHistogram)
             );
@@ -99,6 +97,5 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         Double resultFeature12 = ((MultiKeyHistogram) actual.getValue()).getHistogram().get(multiKeyFeature2);
         Assert.assertEquals(resultFeature1, (Double) (keyPair1 + ketPair2));
         Assert.assertEquals(resultFeature12, (Double) (valuePair1 + valuePair2));
-        Assert.assertEquals((Double) ((MultiKeyHistogram) actual.getValue()).getTotal(), (Double) (keyPair1 + ketPair2 + valuePair1 + valuePair2));
     }
 }

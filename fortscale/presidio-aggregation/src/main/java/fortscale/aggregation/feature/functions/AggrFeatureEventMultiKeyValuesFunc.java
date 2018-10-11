@@ -42,17 +42,17 @@ public class AggrFeatureEventMultiKeyValuesFunc extends AbstractAggrFeatureEvent
     private static final String KEY_FIELD_NAME = "keys";
     private Set<MultiKeyFeature> keys;
 
-    //todo: might be an indicator that groupby "values" in bucket functions and then sum all the values without filtering?
-    //todo: currently we do not have such indicator.
-    @JsonCreator
-    public AggrFeatureEventMultiKeyValuesFunc(@JsonProperty(KEY_FIELD_NAME) Set<Map<String, String>> keys) {
-        Assert.notEmpty(keys, "Function is missing the key whose value needs to be retrieved.");
-        this.keys = new HashSet<>();
 
+    @JsonProperty(KEY_FIELD_NAME)
+    public void setKeys(Set<Map<String, String>> keys) {
         keys.forEach(features -> {
             MultiKeyFeature featureNamesAndValues = AggrFeatureFunctionUtils.buildMultiKeyFeature(features);
             this.keys.add(featureNamesAndValues);
         });
+    }
+
+    public AggrFeatureEventMultiKeyValuesFunc() {
+        this.keys = new HashSet<>();
     }
 
     @Override
@@ -63,21 +63,26 @@ public class AggrFeatureEventMultiKeyValuesFunc extends AbstractAggrFeatureEvent
         if (multiKeyHistogram != null) {
             Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
 
-            //sum all values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
-            for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
-                for (MultiKeyFeature key : keys) {
-                    if (multiKeyRecordEntry.getKey().contains(key)) {
-                        Double counter = multiKeyRecordEntry.getValue();
-                        counter = counter == null ? 0 : counter;
-                        if (!counter.isNaN() && !counter.isInfinite()) {
-                            sum += counter;
+            //sum all if no keys defined
+            if (keys.isEmpty()) {
+                sum = histogram.values().stream().mapToDouble(v -> v).sum();
+            } else {
+                //sum all values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
+                for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
+                    for (MultiKeyFeature key : keys) {
+                        if (multiKeyRecordEntry.getKey().contains(key)) {
+                            Double counter = multiKeyRecordEntry.getValue();
+                            counter = counter == null ? 0 : counter;
+                            if (!counter.isNaN() && !counter.isInfinite()) {
+                                sum += counter;
+                            }
+                            break;
                         }
-                        //todo: filter total?
-                        break;
                     }
                 }
             }
-            aggrFeatureValue = new AggrFeatureValue(sum, (long) multiKeyHistogram.getTotal());
+
+            aggrFeatureValue = new AggrFeatureValue(sum);
         }
         return aggrFeatureValue;
     }

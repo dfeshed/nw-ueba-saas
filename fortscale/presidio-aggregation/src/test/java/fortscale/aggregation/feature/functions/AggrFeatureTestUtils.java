@@ -53,15 +53,13 @@ public class AggrFeatureTestUtils {
 
 	public static MultiKeyFeature createMultiKeyFeatureWithOneFeature(String featureName, String featureValue){
 		MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-		multiKeyFeature.add(featureName,new FeatureStringValue(featureValue));
+		multiKeyFeature.add(featureName,featureValue);
 		return multiKeyFeature;
 	}
 
 	public static MultiKeyFeature createMultiKeyFeature(Map<String,String> featureNameToValues){
 		MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-		featureNameToValues.forEach((k,v) -> {
-			multiKeyFeature.add(k,new FeatureStringValue(v));
-		});
+		featureNameToValues.forEach(multiKeyFeature::add);
 		return multiKeyFeature;
 	}
 

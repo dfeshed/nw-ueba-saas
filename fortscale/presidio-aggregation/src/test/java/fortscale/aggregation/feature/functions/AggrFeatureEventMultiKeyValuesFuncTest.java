@@ -22,7 +22,8 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
         Set<Map<String, String>> keys = new HashSet<>();
         keys.add(key);
 
-        AggrFeatureEventMultiKeyValuesFunc func = new AggrFeatureEventMultiKeyValuesFunc(keys);
+        AggrFeatureEventMultiKeyValuesFunc func = new AggrFeatureEventMultiKeyValuesFunc();
+        func.setKeys(keys);
         AggrFeatureValue aggrFeatureValue = func.calculateHistogramAggrFeatureValue(multiKeyHistogram);
         Assert.assertEquals(aggrFeatureValue.getValue(), featureCount1 + featureCount2);
     }
@@ -43,10 +44,21 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
         Set<Map<String, String>> keys = new HashSet<>();
         keys.add(key);
 
-        AggrFeatureEventMultiKeyValuesFunc func = new AggrFeatureEventMultiKeyValuesFunc(keys);
+        AggrFeatureEventMultiKeyValuesFunc func = new AggrFeatureEventMultiKeyValuesFunc();
+        func.setKeys(keys);
         AggrFeatureValue aggrFeatureValue = func.calculateHistogramAggrFeatureValue(multiKeyHistogram);
-
         Assert.assertEquals(aggrFeatureValue.getValue(), 0.0);
+    }
+
+    @Test
+    public void testCalculateHistogramAggrFeatureValueWithoutKeys() {
+        double featureCount1 = 1.0;
+        double featureCount2 = 2.0;
+        double featureCount3 = 3.0;
+        MultiKeyHistogram multiKeyHistogram = buildMultiKeyHistogram(featureCount1, featureCount2, featureCount3);
+        AggrFeatureEventMultiKeyValuesFunc func = new AggrFeatureEventMultiKeyValuesFunc();
+        AggrFeatureValue aggrFeatureValue = func.calculateHistogramAggrFeatureValue(multiKeyHistogram);
+        Assert.assertEquals(aggrFeatureValue.getValue(), featureCount1 + featureCount2 + featureCount3);
     }
 
     /**
@@ -72,9 +84,9 @@ public class AggrFeatureEventMultiKeyValuesFuncTest {
         featureNameToValues3.put("featureName1", "featureValue4");
         featureNameToValues3.put("featureName2", "featureValue3");
 
-        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues1), featureCount1);
-        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues2), featureCount2);
-        multiKeyHistogram.add(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues3), featureCount3);
+        multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues1), featureCount1);
+        multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues2), featureCount2);
+        multiKeyHistogram.set(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValues3), featureCount3);
 
         return multiKeyHistogram;
     }
