@@ -1,18 +1,26 @@
-<box>
-  <h1 class="alert-heading">{{t 'investigateShared.endpoint.riskProperties.alerts.heading'}}</h1>
-</box>
-<box class="rsa-nav-tab-group">
-  {{#endpoint/risk-properties/alert-tab tabs=tabs defaultAction=defaultAction as |tab|}}
-    <div class="alert-count">{{tab.count}}</div>
-    <div class="label">
-      {{endpoint/color-indicator color=tab.color size='medium'}}
-      <span class="tab-text">{{t tab.label}}</span>
-    </div>
-  {{/endpoint/risk-properties/alert-tab}}
-</box>
-<box>
-  {{#endpoint/risk-properties/alert-context contexts=contexts as |context|}}
-    <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
-    <div class="alert-context__event">{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</div>
-  {{/endpoint/risk-properties/alert-context}}
-</box>
+{{#if riskScoreContext}}
+  <box>
+    <h1 class="alert-heading">{{t 'investigateShared.endpoint.riskProperties.alerts.heading'}}</h1>
+  </box>
+  <box class="rsa-nav-tab-group">
+    {{#endpoint/risk-properties/alert-tab tabs=tabs defaultAction=defaultAction as |tab|}}
+      <div class="alert-count">{{tab.count}}</div>
+      <div class="label">
+        {{#if tab.color}}
+          {{endpoint/color-indicator color=tab.color size='medium'}}
+        {{/if}}
+        <span class="tab-text">{{t tab.label}}</span>
+      </div>
+    {{/endpoint/risk-properties/alert-tab}}
+  </box>
+  <box>
+    {{#endpoint/risk-properties/alert-context contexts=contexts as |context|}}
+      <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
+      <div class="alert-context__event">{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</div>
+    {{/endpoint/risk-properties/alert-context}}
+  </box>
+{{else}}
+  <centered>
+    {{rsa-loader size='larger'}}
+  </centered>
+{{/if}}

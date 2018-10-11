@@ -1,5 +1,5 @@
 {{#each tabs as |tab|}}
-  {{#rsa-nav-tab align='center' isActive=tab.selected click=(action 'activate' tab.checksum tab.name)}}
+  {{#rsa-nav-tab align='center' isActive=tab.selected click=(action 'activate' tab.checksum tab.name tab.count)}}
     {{#if hasBlock}}
       {{yield tab}}
     {{/if}}
