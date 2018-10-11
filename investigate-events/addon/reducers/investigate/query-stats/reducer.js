@@ -28,7 +28,7 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.QUERY_STATS]: (state, { payload }) => {
+  [ACTION_TYPES.QUERY_STATS]: (state, { payload, code }) => {
     const updatedState = {};
 
     if (payload.description) {
@@ -48,7 +48,7 @@ export default handleActions({
       }, ...state.errors];
     }
 
-    if (payload.code > 0) {
+    if (code > 0) {
       updatedState.errors = [{
         error: payload.message
       }, ...state.errors];

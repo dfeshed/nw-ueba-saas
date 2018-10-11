@@ -38,7 +38,8 @@ export default function getEventCount() {
         if (response.meta) {
           dispatch({
             type: ACTION_TYPES.QUERY_STATS,
-            payload: response.meta
+            payload: response.meta,
+            code: response.code
           });
         }
       }

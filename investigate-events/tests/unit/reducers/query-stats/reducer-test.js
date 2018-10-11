@@ -42,10 +42,10 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   });
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
+    code: 0,
     payload: {
       description: 'foo',
       percent: 50,
-      error: 'error',
       serviceId: 'bar',
       warning: 'warning',
       devices: [{
@@ -57,9 +57,6 @@ test('QUERY_STATS reducer updates stats', function(assert) {
 
   assert.equal(result.description, 'foo');
   assert.equal(result.percent, 50);
-  assert.equal(result.errors.length, 1);
-  assert.equal(result.errors[0].serviceId, 'bar');
-  assert.equal(result.errors[0].error, 'error');
   assert.equal(result.warnings.length, 1);
   assert.equal(result.warnings[0].serviceId, 'bar');
   assert.equal(result.warnings[0].warning, 'warning');
@@ -67,11 +64,6 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   assert.equal(result.devices[0].serviceId, 'baz');
 
   const nextResult = reducer(result, action);
-  assert.equal(nextResult.errors.length, 2);
-  assert.equal(nextResult.errors[0].serviceId, 'bar');
-  assert.equal(nextResult.errors[0].error, 'error');
-  assert.equal(nextResult.errors[1].serviceId, 'bar');
-  assert.equal(nextResult.errors[1].error, 'error');
   assert.equal(nextResult.warnings.length, 2);
   assert.equal(nextResult.warnings[0].serviceId, 'bar');
   assert.equal(nextResult.warnings[0].warning, 'warning');
@@ -99,15 +91,20 @@ test('QUERY_STATS reducer updates errors when code/message passed', function(ass
   });
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
+    code: 1,
     payload: {
       message: 'error message',
       code: 1
     }
   };
   const result = reducer(prevState, action);
-
   assert.equal(result.errors.length, 1);
   assert.equal(result.errors[0].error, 'error message');
+
+  const nextResult = reducer(result, action);
+  assert.equal(nextResult.errors.length, 2);
+  assert.equal(nextResult.errors[0].error, 'error message');
+  assert.equal(nextResult.errors[1].error, 'error message');
 });
 
 test('QUERY_STATS reducer does not update errors when 0 code passed', function(assert) {
@@ -120,9 +117,9 @@ test('QUERY_STATS reducer does not update errors when 0 code passed', function(a
   });
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
+    code: 0,
     payload: {
-      message: 'message',
-      code: 0
+      message: 'message'
     }
   };
   const result = reducer(prevState, action);
