@@ -1,8 +1,8 @@
 package presidio.sdk.api.domain.rawevents;
 
 import fortscale.domain.core.EventResult;
-import fortscale.domain.core.Level;
-import fortscale.domain.core.Tactic;
+import fortscale.domain.core.ioc.Level;
+import fortscale.domain.core.ioc.Tactic;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -53,14 +53,15 @@ public class IocRawEvent extends AbstractInputDocument {
         this.name = other.name;
         this.tactic = other.tactic;
         this.level = other.level;
+        this.machineId = other.machineId;
+        this.machineName = other.machineName;
         this.machineOwner = other.machineOwner;
     }
 
-    //todo: ioc has no operation type, while it required to be not EMPTY in AbstractInputDocument
     public IocRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
-                       List<String> operationTypeCategory, EventResult result, String userName, String userDisplayName,
+                       List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName,
                        Map<String, String> additionalInfo, String name, Tactic tactic, Level level, String machineId, String machineName, String machineOwner, String resultCode) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategories, result, userName, userDisplayName, additionalInfo, resultCode);
         this.name = name;
         this.tactic = tactic;
         this.level = level;

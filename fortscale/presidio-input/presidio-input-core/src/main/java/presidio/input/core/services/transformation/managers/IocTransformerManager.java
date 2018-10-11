@@ -8,13 +8,10 @@ import java.util.List;
 
 public class IocTransformerManager implements TransformationManager {
 
-    private List<Transformer> transformers;
+    private List<Transformer> transformers = new ArrayList<>();;
 
     @Override
     public List<Transformer> getTransformers() {
-        if (transformers == null) {
-            transformers = new ArrayList<>();
-        }
         return transformers;
     }
 

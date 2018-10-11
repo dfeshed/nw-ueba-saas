@@ -1,8 +1,8 @@
 package presidio.ade.domain.record.enriched.ioc;
 
 import fortscale.common.general.Schema;
-import fortscale.domain.core.Level;
-import fortscale.domain.core.Tactic;
+import fortscale.domain.core.ioc.Level;
+import fortscale.domain.core.ioc.Tactic;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

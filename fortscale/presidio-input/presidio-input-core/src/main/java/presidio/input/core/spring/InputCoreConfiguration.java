@@ -176,19 +176,19 @@ public class InputCoreConfiguration {
     }
 
     @Bean(name = "IOC.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public IocTransformerManager IocTransformerManager() {
+    @Lazy
+    public IocTransformerManager iocTransformerManager() {
         return new IocTransformerManager();
     }
 
     @Bean(name = "IOC.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public IocInputToOutputConverter iocInputToOutputConverter() {
         return new IocInputToOutputConverter();
     }
 
     @Bean(name = "IOC.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public IocInputToAdeConverter iocInputToAdeConverter() {
         return new IocInputToAdeConverter();
     }

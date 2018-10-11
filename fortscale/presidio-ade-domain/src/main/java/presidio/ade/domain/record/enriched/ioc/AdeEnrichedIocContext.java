@@ -1,7 +1,7 @@
 package presidio.ade.domain.record.enriched.ioc;
 
-import fortscale.domain.core.Level;
-import fortscale.domain.core.Tactic;
+import fortscale.domain.core.ioc.Level;
+import fortscale.domain.core.ioc.Tactic;
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 
 

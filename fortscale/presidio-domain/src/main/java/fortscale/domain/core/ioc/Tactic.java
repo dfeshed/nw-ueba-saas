@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.core.ioc;
 
 public enum Tactic {
     INITIAL_ACCESS,
@@ -15,7 +15,7 @@ public enum Tactic {
 
 
 
-    public static Tactic getTactic(String result) {
-        return Tactic.valueOf(result.toUpperCase());
+    public static Tactic getTactic(String tactic) {
+        return Tactic.valueOf(tactic.toUpperCase());
     }
 }

@@ -1,8 +1,8 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
-import fortscale.domain.core.Level;
-import fortscale.domain.core.Tactic;
+import fortscale.domain.core.ioc.Level;
+import fortscale.domain.core.ioc.Tactic;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
