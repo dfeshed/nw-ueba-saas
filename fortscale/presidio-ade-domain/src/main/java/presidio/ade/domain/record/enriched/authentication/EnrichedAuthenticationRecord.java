@@ -11,8 +11,6 @@ import java.time.Instant;
 
 /**
  * The enriched authentication record POJO.
- * interactive logon : src machine and dst machine are same.
- * interactive remote : src machine is original and dst machine is computer.
  */
 @Document
 @AdeRecordMetadata(adeEventType = Schema.AUTHENTICATION)
