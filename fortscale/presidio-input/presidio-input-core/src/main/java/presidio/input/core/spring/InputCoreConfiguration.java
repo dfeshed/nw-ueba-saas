@@ -10,7 +10,6 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
@@ -104,75 +103,39 @@ public class InputCoreConfiguration {
     }
 
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
         return new ActiveDirectoryTransformationManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public AuthenticationTransformerManager authenticationTransformerManager() {
         return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "FILE.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public FileTransformerManager fileTransformerManager() {
         return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
+    @Bean(name = "REGISTRY.transformer")
+    @Lazy
+    public RegistryTransformerManager registryTransformerManager() {
+        return new RegistryTransformerManager();
+    }
+
     @Bean(name = "PRINT.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public PrintTransformerManager printTransformerManager() {
         return new PrintTransformerManager();
     }
 
-    @Bean(name = "FILE.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public FileInputToOutputConverter fileInputToOutputConverter() {
-        return new FileInputToOutputConverter();
-    }
-
-    @Bean(name = "ACTIVE_DIRECTORY.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ActiveDirectoryInputToOutputConverter activeDirectoryInputToOutputConverter() {
-        return new ActiveDirectoryInputToOutputConverter();
-    }
-
-    @Bean(name = "AUTHENTICATION.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public AuthenticationInputToOutputConverter authenticationInputToOutputConverter() {
-        return new AuthenticationInputToOutputConverter();
-    }
-
-    @Bean(name = "PRINT.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public PrintInputToOutputConverter printeInputToOutputConverter() {
-        return new PrintInputToOutputConverter();
-    }
-
-    @Bean(name = "FILE.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public FileInputToAdeConverter fileInputToAdeConverter() {
-        return new FileInputToAdeConverter();
-    }
-
-    @Bean(name = "ACTIVE_DIRECTORY.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ActiveDirectoryInputToAdeConverter activeDirectoryInputToAdeConverter() {
-        return new ActiveDirectoryInputToAdeConverter();
-    }
-
-    @Bean(name = "AUTHENTICATION.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
-        return new AuthenticationInputToAdeConverter();
-    }
-
-    @Bean(name = "PRINT.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public PrintInputToAdeConverter printInputToAdeConverter() {
-        return new PrintInputToAdeConverter();
+    @Bean(name = "PROCESS.transformer")
+    @Lazy
+    public ProcessTransformerManager processTransformerManager() {
+        return new ProcessTransformerManager();
     }
 
     @Bean(name = "IOC.transformer")
@@ -181,10 +144,82 @@ public class InputCoreConfiguration {
         return new IocTransformerManager();
     }
 
+    @Bean(name = "FILE.input-output-converter")
+    @Lazy
+    public FileInputToOutputConverter fileInputToOutputConverter() {
+        return new FileInputToOutputConverter();
+    }
+
+    @Bean(name = "ACTIVE_DIRECTORY.input-output-converter")
+    @Lazy
+    public ActiveDirectoryInputToOutputConverter activeDirectoryInputToOutputConverter() {
+        return new ActiveDirectoryInputToOutputConverter();
+    }
+
+    @Bean(name = "AUTHENTICATION.input-output-converter")
+    @Lazy
+    public AuthenticationInputToOutputConverter authenticationInputToOutputConverter() {
+        return new AuthenticationInputToOutputConverter();
+    }
+
+    @Bean(name = "PROCESS.input-output-converter")
+    @Lazy
+    public ProcessInputToOutputConverter processInputToOutputConverter() {
+        return new ProcessInputToOutputConverter();
+    }
+
+    @Bean(name = "PRINT.input-output-converter")
+    @Lazy
+    public PrintInputToOutputConverter printeInputToOutputConverter() {
+        return new PrintInputToOutputConverter();
+    }
+
+    @Bean(name = "REGISTRY.input-output-converter")
+    @Lazy
+    public RegistryInputToOutputConverter registryInputToOutputConverter() {
+        return new RegistryInputToOutputConverter();
+    }
+
     @Bean(name = "IOC.input-output-converter")
     @Lazy
     public IocInputToOutputConverter iocInputToOutputConverter() {
         return new IocInputToOutputConverter();
+    }
+
+    @Bean(name = "FILE.input-ade-converter")
+    @Lazy
+    public FileInputToAdeConverter fileInputToAdeConverter() {
+        return new FileInputToAdeConverter();
+    }
+
+    @Bean(name = "ACTIVE_DIRECTORY.input-ade-converter")
+    @Lazy
+    public ActiveDirectoryInputToAdeConverter activeDirectoryInputToAdeConverter() {
+        return new ActiveDirectoryInputToAdeConverter();
+    }
+
+    @Bean(name = "AUTHENTICATION.input-ade-converter")
+    @Lazy
+    public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
+        return new AuthenticationInputToAdeConverter();
+    }
+
+    @Bean(name = "PRINT.input-ade-converter")
+    @Lazy
+    public PrintInputToAdeConverter printInputToAdeConverter() {
+        return new PrintInputToAdeConverter();
+    }
+
+    @Bean(name = "PROCESS.input-ade-converter")
+    @Lazy
+    public ProcessInputToAdeConverter processInputToAdeConverter() {
+        return new ProcessInputToAdeConverter();
+    }
+
+    @Bean(name = "REGISTRY.input-ade-converter")
+    @Lazy
+    public RegistryInputToAdeConverter registryInputToAdeConverter() {
+        return new RegistryInputToAdeConverter();
     }
 
     @Bean(name = "IOC.input-ade-converter")

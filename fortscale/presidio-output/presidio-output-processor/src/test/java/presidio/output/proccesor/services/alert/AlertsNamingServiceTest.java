@@ -69,7 +69,7 @@ public class AlertsNamingServiceTest {
                 "high_number_of_distinct_src_computers",
                 "high_number_of_senesitive_group_membership_events",
                 "high_number_of_failed_file_permission_change_attempts",
-                "abnormal_remote_destination_machine",
+                "abnormal_destination_machine",
                 "high_number_of_successful_file_rename_operations",
                 "high_number_of_distinct_src_computer_clusters"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
