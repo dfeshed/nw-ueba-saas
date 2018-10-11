@@ -132,6 +132,12 @@ public class InputCoreConfiguration {
         return new PrintTransformerManager();
     }
 
+    @Bean(name = "PROCESS.transformer")
+    @Lazy
+    public ProcessTransformerManager processTransformerManager() {
+        return new ProcessTransformerManager();
+    }
+
     @Bean(name = "FILE.input-output-converter")
     @Lazy
     public FileInputToOutputConverter fileInputToOutputConverter() {
@@ -148,6 +154,12 @@ public class InputCoreConfiguration {
     @Lazy
     public AuthenticationInputToOutputConverter authenticationInputToOutputConverter() {
         return new AuthenticationInputToOutputConverter();
+    }
+
+    @Bean(name = "PROCESS.input-output-converter")
+    @Lazy
+    public ProcessInputToOutputConverter processInputToOutputConverter() {
+        return new ProcessInputToOutputConverter();
     }
 
     @Bean(name = "PRINT.input-output-converter")
@@ -185,6 +197,12 @@ public class InputCoreConfiguration {
     @Lazy
     public PrintInputToAdeConverter printInputToAdeConverter() {
         return new PrintInputToAdeConverter();
+    }
+
+    @Bean(name = "PROCESS.input-ade-converter")
+    @Lazy
+    public ProcessInputToAdeConverter processInputToAdeConverter() {
+        return new ProcessInputToAdeConverter();
     }
 
     @Bean(name = "REGISTRY.input-ade-converter")
