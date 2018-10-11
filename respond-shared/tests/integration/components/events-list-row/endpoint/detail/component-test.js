@@ -25,19 +25,75 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     endpoint.assertDetailColumns(assert, {
       total: 4,
-      children: 10
+      children: 18
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
       row: 1,
+      label: 'Source Filename',
+      value: 'dtf.exe'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 2,
+      label: 'Source Launch Argument',
+      value: 'dtf.exe  -dll:ioc.dll -testcase:353'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 3,
+      label: 'Source Path',
+      value: '/foo/bar'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 4,
+      label: 'Source Hash',
+      value: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 5,
+      label: 'Target Filename',
+      value: 'cmd.EXE'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 6,
+      label: 'Target Launch Argument',
+      value: 'PowerShell.exe --run'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 7,
+      label: 'Target Path',
+      value: '/bar/baz'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 8,
+      label: 'Target Hash',
+      value: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 9,
       label: 'Domain/Host',
       value: 'INENMENONS4L2C'
     });
 
     const detectorRowElement = endpoint.assertDetailRowParent(assert, {
       column: 1,
-      row: 2,
+      row: 10,
       label: 'Detector',
       value: ''
     });
@@ -50,14 +106,14 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 3,
+      row: 11,
       label: 'Size',
       value: '41'
     });
 
     const dataRowElement = endpoint.assertDetailRowParent(assert, {
       column: 1,
-      row: 4,
+      row: 12,
       label: 'Data',
       value: ''
     });
@@ -76,42 +132,42 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 5,
+      row: 13,
       label: 'Agent ID',
       value: 'C593263F-E2AB-9168-EFA4-C683E066A035'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 6,
+      row: 14,
       label: 'Device Type',
       value: 'nwendpoint'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 7,
+      row: 15,
       label: 'Event Source',
       value: '10.63.0.117:56005'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 8,
+      row: 16,
       label: 'Event Source ID',
       value: '857775'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 9,
+      row: 17,
       label: 'User',
       value: 'CORP\\menons4'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 10,
+      row: 18,
       label: 'User Src',
       value: 'CORP\\menons4'
     });

@@ -13,9 +13,9 @@ export default Component.extend({
   classNames: ['events-list-table-row'],
   attributeBindings: ['testId:test-id'],
 
-  @computed('ariaExpanded')
-  tabIndex(ariaExpanded) {
-    return ariaExpanded ? '0' : '-1';
+  @computed('expanded')
+  tabIndex(expanded) {
+    return expanded ? '0' : '-1';
   },
 
   @computed('item.eventIndex')
@@ -34,6 +34,16 @@ export default Component.extend({
   },
 
   @computed('componentClass')
+  headerComponentClass(componentClass) {
+    return `${componentClass}/header`;
+  },
+
+  @computed('componentClass')
+  footerComponentClass(componentClass) {
+    return `${componentClass}/footer`;
+  },
+
+  @computed('componentClass')
   detailComponentClass(componentClass) {
     return `${componentClass}/detail`;
   },
@@ -49,13 +59,13 @@ export default Component.extend({
   },
 
   @computed('expandedId', 'item.id')
-  ariaExpanded(expandedId, itemId) {
+  expanded(expandedId, itemId) {
     return expandedId === itemId;
   },
 
-  @computed('ariaExpanded')
-  collapsed(ariaExpanded) {
-    return !ariaExpanded;
+  @computed('expanded')
+  collapsed(expanded) {
+    return !expanded;
   },
 
   actions: {

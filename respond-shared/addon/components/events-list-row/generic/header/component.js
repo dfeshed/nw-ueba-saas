@@ -3,7 +3,8 @@ import Component from '@ember/component';
 
 export default Component.extend({
   layout,
-  testId: 'genericEventMain',
+  tagName: 'dl',
+  testId: 'genericEventHeader',
   attributeBindings: ['testId:test-id'],
-  classNames: ['events-list-info']
+  classNames: ['events-list-generic-header']
 });

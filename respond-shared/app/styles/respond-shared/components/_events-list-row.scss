@@ -31,7 +31,6 @@
 
   .events-list-detail:focus {
     outline: none;
-    box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
   }
 
   .events-list-alert-detail {
@@ -40,8 +39,8 @@
   }
 
   .events-list-detail {
-    padding-left: 1.8em;
-    padding-right: 1.8em;
+    padding-left: 1.2em;
+    padding-right: 1.2em;
   }
 
   .inline-alert-name {
@@ -60,13 +59,6 @@
   .events-list-table-cell {
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 0.2rem background-color(secondary, base, nearly-opaque);
-    }
-
-    .events-list-info {
-      padding: 1px;
-      padding-left: 1.8em;
-      padding-right: 1.8em;
     }
   }
 }

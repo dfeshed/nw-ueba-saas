@@ -5,9 +5,11 @@ const selectors = {
   label: '[test-id=eventLabel]',
   clear: '[test-id=clearSelection]',
   loader: '[test-id=eventFetchLoader]',
-  genericMain: '[test-id=genericEventMain]',
+  genericHeader: '[test-id=genericEventHeader]',
+  genericFooter: '[test-id=genericEventFooter]',
   genericDetail: '[test-id=genericEventDetail]',
-  endpointMain: '[test-id=endpointEventMain]',
+  endpointHeader: '[test-id=endpointEventHeader]',
+  endpointFooter: '[test-id=endpointEventFooter]',
   endpointDetail: '[test-id=endpointEventDetail]',
   clearButton: '[test-id=clearSelectionBtn]'
 };

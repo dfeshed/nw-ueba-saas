@@ -1,0 +1,31 @@
+<table>
+  <caption class="sr-only" test-id="eventTableCaption">{{t 'respond.eventDetails.caption'}}</caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col" test-id="eventTableIpLabel">{{t 'respond.eventsList.generic.tableIP'}}</th>
+      <th scope="col" test-id="eventTablePortLabel">{{t 'respond.eventsList.generic.tablePORT'}}</th>
+      <th scope="col" test-id="eventTableHostLabel">{{t 'respond.eventsList.generic.tableHOST'}}</th>
+      <th scope="col" test-id="eventTableMacLabel">{{t 'respond.eventsList.generic.tableMAC'}}</th>
+      <th scope="col" test-id="eventTableUserLabel">{{t 'respond.eventsList.generic.tableUSER'}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.generic.sourceLabel'}}</th>
+      <td test-id="eventSourceIpValue">{{item.source.device.ip_address}}</td>
+      <td test-id="eventSourcePortValue">{{item.source.device.port}}</td>
+      <td test-id="eventSourceHostValue">{{item.source.device.dns_hostname}}</td>
+      <td test-id="eventSourceMacValue">{{item.source.device.mac_address}}</td>
+      <td test-id="eventSourceUserValue">{{item.source.user.username}}</td>
+    </tr>
+    <tr>
+      <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.generic.targetLabel'}}</th>
+      <td test-id="eventTargetIpValue">{{item.destination.device.ip_address}}</td>
+      <td test-id="eventTargetPortValue">{{item.destination.device.port}}</td>
+      <td test-id="eventTargetHostValue">{{item.destination.device.dns_hostname}}</td>
+      <td test-id="eventTargetMacValue">{{item.destination.device.mac_address}}</td>
+      <td test-id="eventTargetUserValue">{{item.destination.user.username}}</td>
+    </tr>
+  </tbody>
+</table>

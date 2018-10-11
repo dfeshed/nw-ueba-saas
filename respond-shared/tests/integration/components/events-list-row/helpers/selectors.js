@@ -63,8 +63,8 @@ export const endpoint = {
 
 export const selectors = {
   row: '[test-id=eventsListRow]',
-  genericMain: '[test-id=genericEventMain]',
-  endpointMain: '[test-id=endpointEventMain]',
+  genericHeader: '[test-id=genericEventHeader]',
+  endpointHeader: '[test-id=endpointEventHeader]',
   genericDetail: '[test-id=genericEventDetail]',
   caption: '[test-id=eventTableCaption]',
   alertName: '[test-id=eventsAlertName]',

@@ -3,7 +3,7 @@ import { selectors, generic } from './selectors';
 
 export const assertRowPresent = (assert) => {
   assert.equal(findAll(selectors.row).length, 1);
-  assert.equal(findAll(selectors.genericMain).length, 1);
+  assert.equal(findAll(selectors.genericHeader).length, 1);
   assert.equal(findAll(selectors.genericDetail).length, 0);
   assert.equal(findAll(selectors.caption).length, 1);
   assert.equal(find(selectors.caption).textContent, 'Event Source and Target');

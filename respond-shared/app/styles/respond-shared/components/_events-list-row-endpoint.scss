@@ -1,13 +1,15 @@
 .events-list-endpoint-header {
   display: flex;
   padding: 10px;
+  padding-left: 1.8em;
+  padding-right: 1.8em;
 }
 
 .events-list-endpoint-footer {
   table {
     width: 100%;
-    padding-left: .4em;
-    padding-right: .4em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
     border-collapse: separate;
     border-spacing: rsa-whitespace(less);
   }
@@ -26,6 +28,7 @@
 }
 
 .events-list-endpoint-detail {
+  @include border-top(1px, solid, primary);
   padding: 10px;
   display: flex;
 }

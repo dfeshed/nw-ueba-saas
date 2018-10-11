@@ -33,8 +33,8 @@ module('Integration | Component | events-list', function(hooks) {
 
     assert.equal(findAll(selectors.list).length, 1);
     assert.equal(findAll(selectors.row).length, 16);
-    assert.equal(findAll(selectors.genericMain).length, 12);
-    assert.equal(findAll(selectors.endpointMain).length, 4);
+    assert.equal(findAll(selectors.genericHeader).length, 12);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
@@ -58,18 +58,32 @@ module('Integration | Component | events-list', function(hooks) {
       expandStorylineEvent=expandStorylineEvent}}`);
 
     assert.equal(findAll(selectors.row).length, 16);
+    assert.equal(findAll(selectors.genericHeader).length, 12);
+    assert.equal(findAll(selectors.genericFooter).length, 12);
     assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.endpointFooter).length, 4);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
 
-    await click(`${selectors.row}:nth-of-type(1) ${selectors.genericMain}`);
+    await click(`${selectors.row}:nth-of-type(1) ${selectors.genericHeader}`);
 
     assert.equal(findAll(selectors.genericDetail).length, 1);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
 
-    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointMain}`);
+    assert.equal(findAll(selectors.genericHeader).length, 12);
+    assert.equal(findAll(selectors.genericFooter).length, 11);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.endpointFooter).length, 4);
+
+    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointHeader}`);
 
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 1);
+
+    assert.equal(findAll(selectors.genericHeader).length, 12);
+    assert.equal(findAll(selectors.genericFooter).length, 12);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.endpointFooter).length, 3);
   });
 
   test('loading spinner present when storyline event status not completed', async function(assert) {

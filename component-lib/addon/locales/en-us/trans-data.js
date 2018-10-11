@@ -1378,7 +1378,8 @@ export default {
         device_type: 'Device Type',
         category: 'Category',
         source_user_account: 'Source User Account',
-        destination_parameter: 'Launch Argument'
+        launch_argument_src: 'Source Launch Argument',
+        launch_argument_dst: 'Target Launch Argument'
       },
       periodValue: {
         hours: 'hour(s)',

@@ -246,7 +246,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     const rowSelector = '[test-id=eventsListRow]';
     const triggerSelector = '[test-id=eventRowTrigger]';
-    const childSelector = '[test-id=endpointEventMain]';
+    const childSelector = '[test-id=endpointEventHeader]';
 
     const row = find(rowSelector);
     const guid = row.getAttribute('id');
@@ -289,7 +289,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     const triggerSelector = '[test-id=eventRowTrigger]';
-    const childSelector = '[test-id=endpointEventMain]';
+    const childSelector = '[test-id=endpointEventHeader]';
 
     const trigger = find(triggerSelector);
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
