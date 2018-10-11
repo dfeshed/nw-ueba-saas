@@ -56,7 +56,6 @@ const getCertificateStatus = (selections) => {
   });
 };
 
-
 export default {
   getCertificates,
   getCertificateStatus,

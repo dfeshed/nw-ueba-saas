@@ -2,14 +2,15 @@
   selectedFilterId=selectedFilterId
   savedFilter=savedFilter
   savedFilters=savedFilters
-  applyFilter=applySavedFilters
-  deleteFilter=deleteFilter}}
+  applyFilter=(action applySavedFilters filterType)
+  deleteFilter=(action deleteFilter filterType)}}
 
 {{rsa-data-filters
   config=allFilters
   showSaveFilterButton=true
   onSave=(action 'showSaveFilter')
-  onFilterChange=(action 'filterChanged')}}
+  onFilterChange=(action 'filterChanged')
+  resetFilters=(action resetFilters filterType)}}
 
 {{#if showSaveFilter}}
   {{#rsa-application-modal autoOpen=true eventId='save-search' label=(t displayProperties.label)}}

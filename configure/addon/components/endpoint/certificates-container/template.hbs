@@ -1,7 +1,18 @@
 {{#rsa-page-layout showRightZone=false as |layout|}}
   {{#layout.left as |leftPanel|}}
     {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
-    {{filters-wrapper}}
+    {{endpoint/filters-wrapper
+      filterState=filter
+      savedFilter=savedFilter
+      savedFilters=certificateFilters
+      selectedFilterId=selectedFilterId
+      filterType='CERTIFICATE'
+      filterTypes=filterTypes
+      resetFilters=(action 'resetFilters')
+      applyFilters=(action 'applyFilters' (action 'getFirstPageOfCertificates'))
+      applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfCertificates'))
+      deleteFilter=(action 'deleteFilter')
+      createCustomSearch=(action 'createCustomSearch')}}
   {{/layout.left}}
 
   {{#layout.center}}

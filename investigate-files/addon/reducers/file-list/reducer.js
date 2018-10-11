@@ -91,7 +91,7 @@ const fileListReducer = handleActions({
   },
   [ACTION_TYPES.SET_SORT_BY]: (state, { payload: { sortField, isSortDescending } }) => state.merge({
     sortField,
-    areFilesLoading: 'sorting',
+    areFilesLoading: 'completed',
     isSortDescending
   }),
 

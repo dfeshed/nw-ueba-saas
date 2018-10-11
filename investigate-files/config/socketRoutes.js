@@ -104,6 +104,21 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/risk/score/file/context/get',
         requestDestination: '/ws/risk/score/file/context/get'
       }
+    },
+    filters: {
+      socketUrl,
+      saveFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/set',
+        requestDestination: '/ws/endpoint/filter/set'
+      },
+      getFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+        requestDestination: '/ws/endpoint/filter/get-all'
+      },
+      deleteFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/remove',
+        requestDestination: '/ws/endpoint/filter/remove'
+      }
     }
   };
 };

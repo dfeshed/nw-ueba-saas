@@ -10,10 +10,10 @@ import {
 
 
 const stateToComputed = (state) => ({
-  certificatesItems: state.configure.endpoint.certificates.certificatesList,
-  loadMoreStatus: state.configure.endpoint.certificates.loadMoreStatus,
+  certificatesItems: state.configure.endpoint.certificates.list.certificatesList,
+  loadMoreStatus: state.configure.endpoint.certificates.list.loadMoreStatus,
   areCertificatesLoading: certificatesLoading(state),
-  selectedCertificateList: state.configure.endpoint.certificates.selectedCertificateList,
+  selectedCertificateList: state.configure.endpoint.certificates.list.selectedCertificateList,
   isAllSelected: isAllSelected(state)
 });
 

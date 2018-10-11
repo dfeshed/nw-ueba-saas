@@ -6,8 +6,8 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const getCertificates = () => {
   return (dispatch, getState) => {
-    const { sortField, isSortDescending, pageNumber } = getState().configure.endpoint.certificates;
-    const expressionList = [];
+    const { sortField, isSortDescending, pageNumber } = getState().configure.endpoint.certificates.list;
+    const { expressionList } = getState().configure.endpoint.certificates.filter;
     dispatch({
       type: ACTION_TYPES.GET_CERTIFICATES,
       promise: api.getCertificates(pageNumber, { sortField, isSortDescending }, expressionList),
@@ -29,6 +29,18 @@ const getCertificates = () => {
 const getPageOfCertificates = () => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
+    dispatch(getCertificates());
+  };
+};
+
+/**
+ * Action Creator for fetching the first page of data. Before sending the request resets the state
+ * @returns {function(*)}
+ * @private
+ */
+const getFirstPageOfCertificates = () => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
     dispatch(getCertificates());
   };
 };
@@ -61,6 +73,7 @@ const toggleAllCertificateSelection = () => ({ type: ACTION_TYPES.TOGGLE_ALL_CER
 export {
   getCertificates,
   getPageOfCertificates,
+  getFirstPageOfCertificates,
   getSavedCertificateStatus,
   saveCertificateStatus,
   toggleCertificateSelection,

@@ -7,8 +7,8 @@ import { inject as service } from '@ember/service';
 import { success, failure } from 'configure/utils/flash-messages';
 
 const stateToComputed = (state) => ({
-  selections: state.configure.endpoint.certificates.selectedCertificateList,
-  statusData: state.configure.endpoint.certificates.statusData
+  selections: state.configure.endpoint.certificates.list.selectedCertificateList,
+  statusData: state.configure.endpoint.certificates.list.statusData
 });
 
 const dispatchToActions = {

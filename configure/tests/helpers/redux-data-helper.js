@@ -241,35 +241,35 @@ export default class DataHelper {
 
   certificatesItems(items) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.certificatesList', items);
+    _set(this.state, 'endpoint.certificates.list.certificatesList', items);
     return this;
   }
 
   certificatesLoadingStatus(status) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.certificatesLoadingStatus', status);
+    _set(this.state, 'endpoint.certificates.list.certificatesLoadingStatus', status);
     return this;
   }
 
   loadMoreStatus(status) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.loadMoreStatus', status);
+    _set(this.state, 'endpoint.certificates.list.loadMoreStatus', status);
     return this;
   }
 
   totalCertificates(items) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.totalItems', items);
+    _set(this.state, 'endpoint.certificates.list.totalItems', items);
     return this;
   }
   selectedCertificatesList(items) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.selectedCertificateList', items);
+    _set(this.state, 'endpoint.certificates.list.selectedCertificateList', items);
     return this;
   }
   certificateStatusData(status) {
     this._setBaseState();
-    _set(this.state, 'endpoint.certificates.certificateDataStatus', status);
+    _set(this.state, 'endpoint.certificates.list.certificateDataStatus', status);
     return this;
   }
   isEndpointServerOffline(status) {

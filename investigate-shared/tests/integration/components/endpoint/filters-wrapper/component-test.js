@@ -18,42 +18,47 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  test('It renders the rsa-data-filters', async function(assert) {
+  test('save filter is getting called', async function(assert) {
+    assert.expect(4);
     this.set('filterState', { filter: { }, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper filterState=filterState filterTypes=filterTypes}}`);
-    assert.equal(findAll('.rsa-data-filters').length, 1, 'Filters Rendered');
-  });
-
-  test('apply filter getting called', async function(assert) {
-    assert.expect(1);
-    this.set('showSaveFilterButton', true);
-    this.set('filterState', { filter: {}, expressionList: [] });
-    this.set('expressionList', [{}]);
-    this.set('filterTypes', FILTER_TYPE);
+    this.set('filterType', 'FILE');
+    this.set('applySavedFilters', function() {
+      assert.ok(true);
+    });
     this.set('getFirstPageOfFiles', function() {
       assert.ok(true);
     });
-    this.set('applyFilter', function(action, filters) {
-      assert.equal(filters.length, 1);
+    this.set('applyFilters', function() {
+      assert.ok(true);
     });
-    await render(hbs`{{endpoint/filters-wrapper filterState=filterState expressionList=expressionList filterTypes=filterTypes applyFilters=(action applyFilter (action getFirstPageOfFiles)) showSaveFilterButton=showSaveFilterButton}}`);
-    await fillIn('.file-name-input  input', 'malware.exe');
-    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
-  });
+    this.set('deleteFilter', function() {
+      assert.ok(true);
+    });
+    this.set('resetFilters', function() {
+      assert.ok(true);
+    });
+    this.set('createCustomSearch', function() {
+      assert.ok(true);
+    });
 
-  test('save filter is getting called', async function(assert) {
-    assert.expect(3);
     this.set('showSaveFilterButton', true);
-    this.set('createCustomSearch', function(action, filters) {
-      assert.equal(filters.length, 1);
-    });
-    this.set('applyFilter', function(filters) {
-      assert.equal(filters.length, 1);
-    });
     this.set('filterState', { filter: {}, expressionList: [] });
-    this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper filterState=filterState applyFilters=(action applyFilter) filterTypes=filterTypes createCustomSearch=(action createCustomSearch) showSaveFilterButton=showSaveFilterButton}}`);
+    this.set('expressionList', [{}]);
+    await render(hbs`
+    {{endpoint/filters-wrapper
+      filterState=filterState
+      savedFilter=savedFilter
+      savedFilters=filesFilters
+      selectedFilterId=selectedFilterId
+      filterType='FILE'
+      filterTypes=filterTypes
+      resetFilters=(action resetFilters)
+      applyFilters=(action applyFilters (action getFirstPageOfFiles))
+      applySavedFilters=(action applySavedFilters (action getFirstPageOfFiles))
+      deleteFilter=(action deleteFilter)
+      createCustomSearch=(action createCustomSearch)}}`);
+    assert.equal(findAll('.rsa-data-filters').length, 1, 'Filters Rendered');
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));

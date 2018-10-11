@@ -858,11 +858,23 @@ export default {
         },
         noResultsMessage: 'No certificates were found.',
         footer: '{{count}} of {{total}} {{label}}',
+        filter: {
+          invalidFilterInput: 'Invalid filter input',
+          invalidFilterInputLength: 'Filter input longer than 256 characters',
+          invalidCharacters: 'Can contain alphanumeric or special characters.',
+          invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
+          invalidCharsAlphaNumericOnly: 'Special characters are not allowed'
+        },
         status: {
           edit: 'Edit Certificate Status',
           certificateStatus: 'Certificate Status',
           success: 'Certificate status updated successfully',
-          error: 'Certificate status update failed'
+          error: 'Certificate status update failed',
+          statusOptions: {
+            neutral: 'Neutral',
+            blacklisted: 'Blacklisted',
+            whitelisted: 'Whitelisted'
+          }
         }
       }
     }

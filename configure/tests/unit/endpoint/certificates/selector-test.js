@@ -14,32 +14,34 @@ const STATE = Immutable.from({
   configure: {
     endpoint: {
       certificates: {
-        certificatesList: [
-          {
-            'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033',
-            'friendlyName': 'Microsoft Windows',
-            'subject': 'C=US, S=Washington, L=Redmond, O=Microsoft Corporation, CN=Microsoft Windows',
-            'subjectKey': '111c89583fbec5662adaff8661edeca33a83c952',
-            'serial': '33000001066ec325c431c9180e000000000106',
-            'issuer': 'C=US, S=Washington, L=Redmond, O=Microsoft Corporation, CN=Microsoft Windows Production PCA 2011',
-            'authorityKey': 'a92902398e16c49778cd90f99e4f9ae17c55af53',
-            'notValidBeforeUtcDate': '2016-10-11T20:39:31.000+0000',
-            'notValidAfterUtcDate': '2018-01-11T20:39:31.000+0000',
-            'features': [
-              'rootMicrosoft'
-            ],
-            'crl': [
-              'http://www.microsoft.com/pkiops/crl/MicWinProPCA2011_2011-10-19.crl'
-            ]
-          }
-        ],
-        totalItems: 100
+        list: {
+          certificatesList: [
+            {
+              'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033',
+              'friendlyName': 'Microsoft Windows',
+              'subject': 'C=US, S=Washington, L=Redmond, O=Microsoft Corporation, CN=Microsoft Windows',
+              'subjectKey': '111c89583fbec5662adaff8661edeca33a83c952',
+              'serial': '33000001066ec325c431c9180e000000000106',
+              'issuer': 'C=US, S=Washington, L=Redmond, O=Microsoft Corporation, CN=Microsoft Windows Production PCA 2011',
+              'authorityKey': 'a92902398e16c49778cd90f99e4f9ae17c55af53',
+              'notValidBeforeUtcDate': '2016-10-11T20:39:31.000+0000',
+              'notValidAfterUtcDate': '2018-01-11T20:39:31.000+0000',
+              'features': [
+                'rootMicrosoft'
+              ],
+              'crl': [
+                'http://www.microsoft.com/pkiops/crl/MicWinProPCA2011_2011-10-19.crl'
+              ]
+            }
+          ],
+          totalItems: 100
+        }
       }
     }
   }
 });
 
-module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
+module('Unit | Selectors | configure | endpoint/certificates', function(hooks) {
 
   setupTest(hooks);
 
@@ -62,8 +64,10 @@ module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
       configure: {
         endpoint: {
           certificates: {
-            certificatesList: 10,
-            totalItems: 2000
+            list: {
+              certificatesList: 10,
+              totalItems: 2000
+            }
           }
         }
       }
@@ -77,7 +81,9 @@ module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
       configure: {
         endpoint: {
           certificates: {
-            certificatesLoadingStatus: 'wait'
+            list: {
+              certificatesLoadingStatus: 'wait'
+            }
           }
         }
       }
@@ -91,9 +97,11 @@ module('Unit | Selectors | investigate-files | file-filter', function(hooks) {
       configure: {
         endpoint: {
           certificates: {
-            certificatesLoadingStatus: 'wait',
-            certificatesList: new Array(3),
-            selectedCertificateList: []
+            list: {
+              certificatesLoadingStatus: 'wait',
+              certificatesList: new Array(3),
+              selectedCertificateList: []
+            }
           }
         }
       }

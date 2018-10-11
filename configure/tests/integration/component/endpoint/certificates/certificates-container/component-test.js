@@ -63,4 +63,8 @@ module('Integration | Component | certificates-container', function(hooks) {
     assert.equal(findAll('.certificates-body').length, 1, 'certificates body has rendered.');
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
   });
+  test('certificates filter panel rendered', async function(assert) {
+    await render(hbs`{{endpoint/certificates-container}}`);
+    assert.equal(findAll('.filter-wrapper').length, 1, 'certificates filter panel has rendered.');
+  });
 });

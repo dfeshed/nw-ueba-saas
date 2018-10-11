@@ -3,7 +3,13 @@ import { connect } from 'ember-redux';
 import { hostListForScanning, hasMachineId } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
-import { createCustomSearch, applyFilters, applySavedFilters, deleteFilter, resetFilters } from 'investigate-hosts/actions/data-creators/filter-creators';
+import {
+  applyFilters,
+  createCustomSearch,
+  applySavedFilters,
+  deleteFilter,
+  resetFilters
+} from 'investigate-shared/actions/data-creators/filter-creators';
 import { FILTER_TYPES } from './filter-types';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
@@ -36,10 +42,6 @@ const Container = Component.extend({
   classNameBindings: ['hasMachineId'],
 
   filterTypes: FILTER_TYPES,
-
-  init() {
-    this._super(...arguments);
-  },
 
   click(event) {
     // this trigger is required to open start/stop scan modal window

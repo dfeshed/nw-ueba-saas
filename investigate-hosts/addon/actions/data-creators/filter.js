@@ -120,33 +120,6 @@ const addExternalFilter = (expression) => {
 };
 
 
-/**
- * Action creator for deleting the saved search
- * @returns {function(*, *)}
- * @public
- */
-const deleteSavedSearch = (id, callbacks = callbacksDefault) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.DELETE_SAVED_SEARCH,
-      promise: Machines.deleteSearch(id),
-      meta: {
-        onSuccess: (response) => {
-          const debugResponse = JSON.stringify(response);
-          debug(`onSuccess: ${ACTION_TYPES.DELETE_SAVED_SEARCH} ${debugResponse}`);
-          dispatch(resetFilters());
-          callbacks.onSuccess(response);
-        },
-        onFailure: (response) => {
-          handleError(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
-          callbacks.onFailure(response);
-        }
-      }
-    });
-  };
-};
-
-
 export {
   setActiveFilter,
   updateFilter,
@@ -155,6 +128,5 @@ export {
   removeFilter,
   resetFilters,
   createCustomSearch,
-  deleteSavedSearch,
   addExternalFilter
 };

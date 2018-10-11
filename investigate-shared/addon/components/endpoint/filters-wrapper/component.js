@@ -118,12 +118,12 @@ export default Component.extend({
 
     filterChanged(filters, reset) {
       if (reset) {
-        this.applyFilters(filters);
-        this.resetFilters();
+        this.applyFilters(filters, this.get('filterType'));
+        this.resetFilters(this.get('filterType'));
       } else {
         const expressionList = parseFilters(filters);
         this.set('expressionList', expressionList);
-        this.applyFilters(expressionList);
+        this.applyFilters(expressionList, this.get('filterType'));
       }
     },
 

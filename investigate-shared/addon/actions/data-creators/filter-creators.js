@@ -1,12 +1,12 @@
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
-import File from './fetch/file';
+import api from 'investigate-shared/actions/api/filters/filter-api';
 import { warn } from '@ember/debug';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const _handleError = (response, type) => {
   const warnResponse = JSON.stringify(response);
-  warn(`_handleError ${type} ${warnResponse}`, { id: 'investigate-files.actions.data-creators' });
+  warn(`_handleError ${type} ${warnResponse}`, { id: 'investigate-CERTIFICATEs.actions.data-creators' });
 };
 
 
@@ -15,13 +15,13 @@ const _handleError = (response, type) => {
  * @returns {function(*)}
  * @public
  */
-const getFilter = (callback) => {
+const getFilter = (callback, belongsTo) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.GET_FILTER,
-      promise: File.getSavedFilters(),
+      promise: api.getSavedFilters(),
       meta: {
-        belongsTo: 'FILE',
+        belongsTo,
         onSuccess: () => {
           dispatch(callback());
         }
@@ -30,13 +30,13 @@ const getFilter = (callback) => {
   };
 };
 
-const deleteFilter = (id, callbacks = callbacksDefault) => {
+const deleteFilter = (belongsTo, id, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.DELETE_FILTER,
-      promise: File.deleteFilter(id),
+      promise: api.deleteFilter(id),
       meta: {
-        belongsTo: 'FILE',
+        belongsTo,
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },
@@ -50,19 +50,19 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
 };
 
 
-const applyFilters = (reload, expressions) => {
+const applyFilters = (reload, expressions, belongsTo) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { belongsTo: 'FILE' } });
+    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions, meta: { belongsTo } });
     dispatch(reload());
   };
 };
 
-const resetFilters = () => ({ type: ACTION_TYPES.RESET_FILTER, meta: { belongsTo: 'FILE' } });
+const resetFilters = (belongsTo) => ({ type: ACTION_TYPES.RESET_FILTER, meta: { belongsTo } });
 
-const applySavedFilters = (reload, filter) => {
+const applySavedFilters = (reload, belongsTo, filter) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo: 'FILE' } });
-    dispatch(applyFilters(reload, filter.criteria.expressionList));
+    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter, meta: { belongsTo } });
+    dispatch(applyFilters(reload, filter.criteria.expressionList, belongsTo));
   };
 };
 
@@ -76,9 +76,9 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_FILTER,
-      promise: File.createCustomSearch(filter, schemas, filterType),
+      promise: api.createCustomSearch(filter, schemas, filterType),
       meta: {
-        belongsTo: 'FILE',
+        belongsTo: filterType,
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },

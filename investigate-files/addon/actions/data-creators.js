@@ -15,12 +15,10 @@ import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
-import { getFilter } from './filter-creators';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
-import { initializeEndpoint } from './endpoint-server-creators';
-
 import _ from 'lodash';
-
+import { initializeEndpoint } from './endpoint-server-creators';
+import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const _handleError = (response, type) => {
@@ -121,7 +119,7 @@ const initializeFilesPreferences = () => {
       const storedState = json ? JSON.parse(json) : null;
       // *****/
       dispatch({ type: ACTION_TYPES.SET_QUERY_INPUT, payload: storedState || {} });
-      dispatch(getFilter(initializeEndpoint));
+      dispatch(getFilter(initializeEndpoint, 'FILE'));
     });
   };
 };

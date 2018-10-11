@@ -10,6 +10,7 @@ const configureConfigGen = function(environment) {
   const socketUrlEndpoint = common.determineSocketUrl(environment, '/endpoint/socket');
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
 
+
   return {
     'log-parser-rules': {
       socketUrl: socketUrlLogs,
@@ -156,6 +157,21 @@ const configureConfigGen = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/server/get-all',
         requestDestination: '/ws/endpoint/server/get-all'
+      }
+    },
+    filters: {
+      socketUrl,
+      saveFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/set',
+        requestDestination: '/ws/endpoint/filter/set'
+      },
+      getFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+        requestDestination: '/ws/endpoint/filter/get-all'
+      },
+      deleteFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/remove',
+        requestDestination: '/ws/endpoint/filter/remove'
       }
     }
   };

@@ -10,7 +10,6 @@ import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creat
 import { deleteHosts, getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
 import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
-import { applySavedFilters, deleteFilter } from 'investigate-hosts/actions/data-creators/filter-creators';
 
 const stateToComputed = (state) => ({
   totalItems: hostCountForDisplay(state),
@@ -28,8 +27,6 @@ const dispatchToActions = {
   toggleDeleteHostsModal,
   deleteHosts,
   setEndpointServer,
-  applySavedFilters,
-  deleteFilter,
   getPageOfMachines
 };
 
@@ -44,13 +41,6 @@ const ActionBar = Component.extend({
   i18n: service(),
 
   actions: {
-
-    applyCustomFilter(filter) {
-      this.send('applySavedFilters', filter, () => {
-        this.send('getPageOfMachines');
-      });
-    },
-
     handleDeleteHosts() {
       const callBackOptions = {
         onSuccess: () => {

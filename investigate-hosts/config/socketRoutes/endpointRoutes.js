@@ -39,10 +39,6 @@ const hostsConfigGen = function(env) {
         subscriptionDestination: '/user/queue/endpoint/machine/schema',
         requestDestination: '/ws/endpoint/machine/schema'
       },
-      getAllFilters: {
-        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
-        requestDestination: '/ws/endpoint/filter/get-all'
-      },
       agentCount: {
         subscriptionDestination: '/user/queue/endpoint/machine/aggregate/group-count',
         requestDestination: '/ws/endpoint/machine/aggregate/group-count'
@@ -62,15 +58,19 @@ const hostsConfigGen = function(env) {
       getHostFileContext: {
         subscriptionDestination: '/user/queue/endpoint/machine/process/get-all',
         requestDestination: '/ws/endpoint/machine/process/get-all'
-      },
+      }
+    },
+    filters: {
+      socketUrl,
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',
         requestDestination: '/ws/endpoint/filter/set'
-      }
-    },
-    search: {
-      socketUrl,
-      removeSearch: {
+      },
+      getFilter: {
+        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+        requestDestination: '/ws/endpoint/filter/get-all'
+      },
+      deleteFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       }

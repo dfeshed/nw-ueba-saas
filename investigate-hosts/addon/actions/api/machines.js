@@ -198,25 +198,6 @@ const notifyAgentStatus = ({ onResponse = NOOP, onError = NOOP, onInit = NOOP, o
   });
 };
 
-/**
- * Sending the request to delete the selected saved search.
- *
- * @method deleteSearch
- * @public
- * @param id
- * @returns {Promise}
- */
-const deleteSearch = (id) => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'removeSearch',
-    modelName: 'search',
-    query: { data: { id } },
-    streamOptions: {
-      socketUrlPostfix: 'any'
-    }
-  });
-};
 const getContext = (query, handlers) => {
   const request = lookup('service:request');
   return request.streamRequest({
@@ -241,6 +222,5 @@ export default {
   stopScanRequest,
   deleteHosts,
   notifyAgentStatus,
-  deleteSearch,
   getContext
 };

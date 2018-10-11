@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect';
 
-const _totalItems = (state) => state.configure.endpoint.certificates.totalItems;
+const _totalItems = (state) => state.configure.endpoint.certificates.list.totalItems;
 
-const certificatesList = (state) => state.configure.endpoint.certificates.certificatesList || [];
+const certificatesList = (state) => state.configure.endpoint.certificates.list.certificatesList || [];
 
-const _certificatesLoadingStatus = (state) => state.configure.endpoint.certificates.certificatesLoadingStatus;
+const _certificatesLoadingStatus = (state) => state.configure.endpoint.certificates.list.certificatesLoadingStatus;
 
-const _selectedCertificateList = (state) => state.configure.endpoint.certificates.selectedCertificateList || [];
+const _selectedCertificateList = (state) => state.configure.endpoint.certificates.list.selectedCertificateList || [];
 
 export const certificatesColumns = [
   {
