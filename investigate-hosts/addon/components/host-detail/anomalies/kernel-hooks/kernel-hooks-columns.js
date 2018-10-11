@@ -2,6 +2,15 @@
 
 export default {
   windows: [{
+    'dataType': 'checkbox',
+    'width': 20,
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox'
+  },
+  {
     field: 'type',
     title: 'type',
     width: 100

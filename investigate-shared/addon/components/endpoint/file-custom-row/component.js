@@ -5,6 +5,7 @@ import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/c
 import { inject as service } from '@ember/service';
 import { externalLookup } from 'investigate-shared/utils/file-external-lookup';
 
+
 export default DataTableBodyRow.extend(contextMenuMixin, {
   layout,
 
@@ -24,38 +25,37 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
     const cntx = this;
     const contextConf = [
       {
-        label: 'Edit File Status',
-        icon: 'pencil-write-2',
-        iconStyle: 'lined',
+        label: 'editFileStatus',
+        prefix: 'investigateShared.endpoint.fileActions.',
         action() {
           cntx.retrieveRemediationStatus(cntx.get('selections'));
           cntx.editFileStatus(cntx.get('item'));
         }
       },
       {
-        label: 'Download',
-        icon: 'download-2',
-        iconStyle: 'lined'
-      },
-      {
-        label: 'Google Lookup',
+        label: 'googleLookup',
+        prefix: 'investigateShared.endpoint.fileActions.',
         subActions: [
-          { label: 'Filename',
+          { label: 'fileName',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'fileName', type: 'google' }, cntx.get('selections'));
             }
           },
-          { label: 'MD5',
+          { label: 'md5',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'md5', type: 'google' }, cntx.get('selections'));
             }
           },
-          { label: 'SHA1',
+          { label: 'sha1',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'sha1', type: 'google' }, cntx.get('selections'));
             }
           },
-          { label: 'SHA256',
+          { label: 'sha256',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'sha256', type: 'google' }, cntx.get('selections'));
             }
@@ -63,31 +63,67 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         ]
       },
       {
-        label: 'VirusTotal Lookup',
+        label: 'virusTotalLookup',
+        prefix: 'investigateShared.endpoint.fileActions.',
         subActions: [
-          { label: 'MD5',
+          { label: 'md5',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'md5', type: 'VirusTotal' }, cntx.get('selections'));
             }
           },
-          { label: 'SHA1',
+          { label: 'sha1',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'sha1', type: 'VirusTotal' }, cntx.get('selections'));
             }
           },
-          { label: 'SHA256',
+          { label: 'sha256',
+            prefix: 'investigateShared.endpoint.fileActions.',
             action() {
               externalLookup({ name: 'sha256', type: 'VirusTotal' }, cntx.get('selections'));
             }
           }
         ]
+      },
+      {
+        label: 'downloadToServer',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        className: ' divider cntxBorder',
+        disabled() {
+          return (cntx.get('fileDownloadButtonStatus').isDownloadToServerDisabled);
+        },
+        action() {
+          cntx.downloadFiles();
+        }
+      },
+      {
+        label: 'saveLocalCopy',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        disabled() {
+          return (cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled);
+        },
+        action() {
+          cntx.saveLocalCopy();
+        }
+      },
+      {
+        label: 'analyzeFile',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        disabled() {
+          return (cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled);
+        },
+        action() {
+          cntx.analyzeFile();
+        }
       }
     ];
 
     if (cntx.get('showPivotToInvestigate') != false) {
       const pivot = {
-        label: 'Analyze Events',
-        icon: 'expand-6',
+        label: 'pivotToInvestigate',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        className: ' divider cntxBorder',
         disabled() {
           return (cntx.get('selections').length > 1);
         },

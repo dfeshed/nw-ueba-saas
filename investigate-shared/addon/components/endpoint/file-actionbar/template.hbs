@@ -24,7 +24,7 @@
     isIconOnly=false
     title=(t 'investigateShared.endpoint.fileActions.moreActions')
     withDropdown=true
-    isDisabled=false
+    isDisabled=isEditStatusButtonDisabled
     class='watch-button more-action-button'}}
     {{rsa-icon name='navigation-show-more-1'}}
     {{#unless showOnlyIcons}}
@@ -41,7 +41,7 @@
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
-    {{#each fileActionConf as |fileAction|}}
+    {{#each fileActionOptions as |fileAction|}}
       {{#if fileAction.subItems}}
         <li class="{{if isEditStatusButtonDisabled 'disabled'}}">
           {{#rsa-content-tethered-panel-trigger
@@ -72,7 +72,12 @@
           {{/rsa-content-tethered-panel}}
         </li>
       {{else}}
-        <li class="disabled" {{action 'onFileAction' fileAction}}>{{fileAction.title}}</li>
+        {{#if (eq fileAction.name 'downloadToServer')}}
+          <hr class="divider actionSeperator">
+        {{/if}}
+        <li class="{{fileAction.panelId}}{{if fileAction.disabled ' disabled'}}" {{action 'onFileDownloadOptions' fileAction.name fileAction.disabled}}>
+          {{fileAction.title}}
+        </li>
       {{/if}}
     {{/each}}
   </ul>

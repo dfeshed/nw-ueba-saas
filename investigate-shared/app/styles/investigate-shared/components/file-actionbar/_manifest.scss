@@ -11,14 +11,15 @@
       padding-right: rsa-whitespace(less);
     }
   }
-  .watch-button {
-    padding-left: 7px;
+  .file-status-more-actions {
+    margin-left: 7px;
   }
 }
 
 .file-action-selector-panel {
   .rsa-dropdown-action-list {
-    .disabled {
+    padding: rsa-whitespace(less) 0;
+    .disabled, li.disabled:hover {
       color: text-color(primary);
       .rsa-content-tethered-panel-trigger {
         color: text-color(primary);
@@ -82,4 +83,8 @@
   i {
     color: text-color(primary, lightest);
   }
+}
+
+.actionSeperator {
+  margin: 0.5rem rsa-whitespace();
 }

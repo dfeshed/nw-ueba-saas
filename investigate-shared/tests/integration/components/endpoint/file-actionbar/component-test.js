@@ -54,17 +54,120 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     const actionSpy = sinon.spy(window, 'open');
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2}}`);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render.');
     await triggerEvent('.panel2', 'mouseover');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 7, 'All the list options should render.');
-    await click(findAll('.rsa-dropdown-action-list li')[3]);
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, 'Sub menu options should hide.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 8, 'All the list options should render.');
+    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'Sub menu options should hide.');
     assert.equal(actionSpy.callCount, 2);
     actionSpy.reset();
     actionSpy.restore();
+  });
+
+  test('More action, is disabled when no rows are selected', async function(assert) {
+    this.set('itemList', []);
+
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false}}`);
+
+    assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), true, 'More action button is disabled.');
+  });
+
+  test('More action, is enabled when rows are selected', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false}}`);
+
+    assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enabled.');
+  });
+
+  test('More action, Download to server', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('downloadFiles', function() {
+      assert.ok('External function called on click of button');
+    });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      downloadFiles=downloadFiles
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render.');
+    await click('.rsa-dropdown-action-list .panel3');
+  });
+
+  test('More action, Save local copy', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('saveLocalCopy', function() {
+      assert.ok('External function called on click of button');
+    });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      saveLocalCopy=saveLocalCopy
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    await click('.rsa-dropdown-action-list .panel4');
+  });
+
+  test('More action, Analyze File', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('analyzeFile', function() {
+      assert.ok('External function called on click of button');
+    });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      analyzeFile=analyzeFile
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    await click('.rsa-dropdown-action-list .panel5');
+  });
+
+  test('More action, disabled buttons dont get triggered', async function(assert) {
+    assert.expect(0);
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('downloadFiles', function() {
+      assert.ok('External function called on click of button');
+    });
+
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      downloadFiles=downloadFiles
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    await click('.rsa-dropdown-action-list .panel3');
   });
 });

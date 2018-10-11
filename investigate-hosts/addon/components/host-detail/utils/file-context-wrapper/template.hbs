@@ -7,12 +7,20 @@
     metaName='checksumSha256'
     isRemediationAllowed=isRemediationAllowed
     itemList=fileContextSelections
-    fileStatusData=fileStatus}}
+    fileStatusData=fileStatus
+    fileDownloadButtonStatus=fileDownloadButtonStatus
+    downloadFiles=(action 'onDownloadFilesToServer')
+    saveLocalCopy=(action 'onSaveLocalCopy')
+    analyzeFile=(action 'onAnalyzeFile')}}
   {{host-detail/utils/file-context-table
     isPaginated=isPaginated
     storeName=storeName
     tabName=tabName
-    columnsConfig=columnsConfig}}
+    columnsConfig=columnsConfig
+    fileDownloadButtonStatus=fileDownloadButtonStatus
+    downloadFiles=(action 'onDownloadFilesToServer')
+    saveLocalCopy=(action 'onSaveLocalCopy')
+    analyzeFile=(action 'onAnalyzeFile')}}
 </box>
 {{#if propertyConfig}}
   <box xs='3'>

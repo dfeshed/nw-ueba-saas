@@ -3257,6 +3257,9 @@ export default {
       buttonText: 'Navigate',
       buttonText2: 'Event Analysis',
       iconTitle: 'Pivot to Navigate or Event Analysis'
+    },
+    flash: {
+      fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.'
     }
   },
   investigateShared: {
@@ -3311,9 +3314,17 @@ export default {
         editFileStatus: 'Edit File Status',
         pivotToInvestigate: 'Analyze Events',
         watch: 'Watch',
-        download: 'Download',
+        downloadToServer: 'Download to Server',
         more: 'More',
-        moreActions: 'More Actions'
+        moreActions: 'More Actions',
+        saveLocalCopy: 'Save a Local Copy',
+        analyzeFile: 'Analyze File',
+        virusTotalLookup: 'VirusTotal Lookup',
+        googleLookup: 'Google Lookup',
+        fileName: 'File Name',
+        md5: 'MD5',
+        sha1: 'SHA1',
+        sha256: 'SHA256'
       },
       savedFilters: 'Saved Filters'
     }

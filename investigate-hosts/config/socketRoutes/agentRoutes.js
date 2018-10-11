@@ -25,6 +25,10 @@ module.exports = function(environment) {
         subscriptionDestination: '/topic/agentstatus/notifications',
         requestDestination: '/dummy/agentstatus/notifications',
         cancelDestination: '/ws/endpoint/agent/cancel'
+      },
+      downloadFileToServer: {
+        subscriptionDestination: '/user/queue/endpoint/command/download-file',
+        requestDestination: '/ws/endpoint/command/download-file'
       }
     }
   };

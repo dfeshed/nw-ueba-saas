@@ -5,3 +5,16 @@
     }
   }
 }
+.context-menu {
+  padding: rsa-whitespace(less) 0;
+  .context-menu__item {
+    padding: 0.30rem 1rem;
+    &:nth-child(4), &:nth-child(7) {
+      padding-top: 0px; 
+    }
+    .cntxBorder {
+      padding-top: rsa-whitespace(less);
+      margin: 0px auto;
+    }
+  }
+}

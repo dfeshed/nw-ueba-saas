@@ -125,7 +125,7 @@ export default class DataHelper {
   }
   // Host drivers
   drivers(drivers) {
-    _set(this.state, 'drivers.driver.', drivers);
+    _set(this.state, 'drivers', drivers);
     return this;
   }
   selectedDriverList(selectedDrivers) {

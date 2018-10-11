@@ -104,6 +104,28 @@ const retrieveRemediationStatus = (belongsTo, selections) => {
   }
 };
 
+const _getListOfFilesToDownload = (slectedFiles, agentId) => {
+  const files = slectedFiles.map(({ checksumSha256, path, fileName }) => ({
+    hash: checksumSha256,
+    fileName,
+    path
+  }));
+
+  return {
+    agentId,
+    files
+  };
+};
+
+const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
+
+  HostDetails.sendFileDownloadToServerRequest(_getListOfFilesToDownload(selectedFiles, agentId))
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message.message);
+    });
+};
 
 export {
   getFileContext,
@@ -115,5 +137,6 @@ export {
   setFileContextSort,
   getPaginatedFileContext,
   retrieveRemediationStatus,
-  resetSelection
+  resetSelection,
+  downloadFilesToServer
 };

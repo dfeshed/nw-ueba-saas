@@ -112,6 +112,15 @@ const fetchRemediation = (thumbprints) => {
   });
 };
 
+const sendFileDownloadToServerRequest = (selectedFileDetails) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'downloadFileToServer',
+    modelName: 'agent',
+    query: { data: selectedFileDetails }
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
@@ -119,5 +128,6 @@ export default {
   exportFileContext,
   getFileSearchResults,
   policyDetails,
-  fetchRemediation
+  fetchRemediation,
+  sendFileDownloadToServerRequest
 };
