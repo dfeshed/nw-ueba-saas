@@ -31,9 +31,9 @@
       }
     },
     {
-      "name": "sumOfHighestDstMachineNameRegexClusterScoresUserIdInteractiveRemoteAuthenticationHourly",
+      "name": "sumOfHighestDstMachineNameRegexClusterScoresUserIdAuthenticationHourly",
       "type": "P",
-      "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdInteractiveRemoteAuthenticationHourly",
+      "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {

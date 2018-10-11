@@ -10,6 +10,8 @@ public enum Schema {
     FILE("file"),
     PRINT("print"),
     ACTIVE_DIRECTORY("active_directory"),
+    PROCESS("process"),
+    REGISTRY("registry"),
     // Dlp file is used only in the ade tests
     DLPFILE("dlpfile");
 
