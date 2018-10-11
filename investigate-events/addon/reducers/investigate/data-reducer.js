@@ -20,14 +20,17 @@ const _initialState = Immutable.from({
   metaPanelSize: META_PANEL_SIZES.DEFAULT,
   reconSize: RECON_PANEL_SIZES.MAX,
   eventsPreferencesConfig: CONFIG,
+  eventAnalysisPreferences: null,
   columnGroups: null,
   columnGroup: null // null avoids rendering the events table before fetching the persisted column group from backend
 });
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
+    const eventAnalysisPreferences = _.get(payload, 'eventAnalysisPreferences', state.eventAnalysisPreferences);
     const columnGroup = _.get(payload, 'eventPreferences.columnGroup', state.columnGroup);
     return state.merge({
+      eventAnalysisPreferences,
       columnGroup: columnGroup || 'SUMMARY'
     });
   },

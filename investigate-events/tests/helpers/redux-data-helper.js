@@ -172,6 +172,11 @@ export default class DataHelper {
     return this;
   }
 
+  defaultEventAnalysisPreferences() {
+    _set(this.state, 'data.eventAnalysisPreferences', CONFIG.defaultPreferences.eventAnalysisPreferences);
+    return this;
+  }
+
   eventResults(data) {
     _set(this.state, 'eventResults.data', data);
     return this;
@@ -184,11 +189,17 @@ export default class DataHelper {
 
   allEventsSelected(val) {
     _set(this.state, 'eventResults.allEventsSelected', val);
+    _set(this.state, 'eventResults.selectedEventIds', []);
     return this;
   }
 
   withSelectedEventIds() {
     _set(this.state, 'eventResults.selectedEventIds', ['bar']);
+    return this;
+  }
+
+  selectedEventIds(eventIds) {
+    _set(this.state, 'eventResults.selectedEventIds', eventIds);
     return this;
   }
 

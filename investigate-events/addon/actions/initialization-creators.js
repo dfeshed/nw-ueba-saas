@@ -7,6 +7,7 @@ import { parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } 
 import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchInvestigateData, getServiceSummary } from './data-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import CONFIG from 'investigate-events/reducers/investigate/config';
 import { fetchServices } from 'investigate-shared/actions/api/services';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -68,7 +69,7 @@ const _initializePreferences = (dispatch, getState) => {
         } else {
           dispatch({
             type: ACTION_TYPES.SET_PREFERENCES,
-            payload: { queryTimeFormat: TIME_RANGES.DATABASE_TIME }
+            payload: { queryTimeFormat: TIME_RANGES.DATABASE_TIME, eventAnalysisPreferences: CONFIG.defaultPreferences.eventAnalysisPreferences }
           });
           // Since there is no preference data for the current user, set the default column group.
           // This cannot be set as initial state in redux, since it results in the entire events table

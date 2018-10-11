@@ -2,10 +2,12 @@ import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
+import { getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
 
 const stateToComputed = (state) => ({
   isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
-  selectedEventIds: state.investigate.eventResults.selectedEventIds
+  selectedEventIds: state.investigate.eventResults.selectedEventIds,
+  downloadOptions: getDownloadOptions(state)
 });
 
 const dispatchToActions = {
@@ -31,15 +33,7 @@ const DownloadDropdown = Component.extend({
 
   @computed('isAllEventsSelected')
   downloadTitle(isAllEventsSelected) {
-    return this.get('i18n').t(`investigate.events.download.${isAllEventsSelected ? 'all' : 'selected'}`);
-  },
-
-  @computed()
-  selectedDownloadPreference() {
-    // TODO for download implementation
-    return [
-      'Download preference 1'
-    ];
+    return { name: this.get('i18n').t(`investigate.events.download.${isAllEventsSelected ? 'all' : 'selected'}`) }; // TODO disable false
   }
 });
 

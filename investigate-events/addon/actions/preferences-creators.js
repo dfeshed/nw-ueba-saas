@@ -16,6 +16,21 @@ import { fetchInvestigateData } from './data-creators';
 export const preferencesUpdated = (preferences) => {
   return (dispatch, getState) => {
     const currentTimeFormat = getState().investigate.queryNode.queryTimeFormat;
+    const currentEventAnalysisPreferences = getState().investigate.data.eventAnalysisPreferences;
+
+    let newEventAnalysisPreferences = {
+      ...currentEventAnalysisPreferences
+    };
+
+    if (preferences.eventAnalysisPreferences) {
+      newEventAnalysisPreferences = {
+        ...currentEventAnalysisPreferences,
+        ...preferences.eventAnalysisPreferences
+      };
+    }
+
+    preferences.eventAnalysisPreferences = newEventAnalysisPreferences;
+
     dispatch({
       type: ACTION_TYPES.SET_PREFERENCES,
       payload: preferences

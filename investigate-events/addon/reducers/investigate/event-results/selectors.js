@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import { lookup } from 'ember-dependency-lookup';
 
 const { createSelector } = reselect;
 
@@ -11,6 +12,10 @@ const _streamGoal = (state) => state.investigate.eventResults.streamGoal;
 const _status = (state) => state.investigate.eventResults.status;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
+const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
+const _items = (state) => state.investigate.data.eventsPreferencesConfig.items;
+const _isAllEventsSelected = (state) => state.investigate.eventResults.allEventsSelected;
+const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
 
 /* Two types of message formats
     - Case one -> 'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454 && time="2018-04-09 15:48:00" - "2018-04-10 15:47:59""'
@@ -98,6 +103,34 @@ export const getNextPayloadSize = createSelector(
   }
 );
 
+export const getDownloadOptions = createSelector(
+  [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData, _status],
+  (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData, status) => {
+    // TODO change to status stopped (mock vs actual)
+    if ((status === 'complete' || status === 'stopped') && eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
+
+      const i18n = lookup('service:i18n');
+      const downloadOptions = [];
+      const dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
+      const total = selectedEventIds.length;
+
+      // preferredOptions
+      dropDownItems.forEach((item) => {
+
+        const [,, eventType ] = item.name.split('.');
+        const option = eventAnalysisPreferences[eventType];
+        const num = _getCountForEventType(eventType, selectedEventIds, resultsData);
+        downloadOptions.push({
+          name: i18n.t(`investigate.events.download.${item.name}`, { option }),
+          count: (num > 0 && !isAllEventsSelected) ? `${num}/${total}` : ''
+        });
+      });
+      return downloadOptions;
+    }
+    return [];
+  }
+);
+
 /**
  * Finds and returns the index of the first array member whose key matches a
  * given value. Will use `Array.findIndex()` if supported.
@@ -106,6 +139,7 @@ export const getNextPayloadSize = createSelector(
  * @param {*} value The attribute value to be matched
  * @private
  */
+
 const _indexOfBy = (arr, key, value) => {
   let _index = -1;
   arr = Array.isArray(arr) ? arr : [];
@@ -123,3 +157,17 @@ const _indexOfBy = (arr, key, value) => {
   }
   return _index;
 };
+
+/**
+ * Returns count for each download type based on number of events of the type selected
+ * @private
+ */
+const _getCountForEventType = (eventType, selectedEventIds, resultsData) => {
+  if (eventType === 'defaultMetaFormat') {
+    return selectedEventIds.length;
+  }
+  const selectedEvents = resultsData.filter((event) => selectedEventIds.indexOf(event.sessionId) >= 0);
+  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? 'defaultLogFormat' : 'defaultPacketFormat'));
+  return selectedEventsOfType.length;
+};
+

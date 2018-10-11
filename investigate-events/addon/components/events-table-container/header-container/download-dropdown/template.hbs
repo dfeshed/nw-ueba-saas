@@ -1,12 +1,14 @@
 {{#if permissionAllowsDownload}}
   <label class="is-small power-select">
     {{#power-select
-      selected=selectedDownloadPreference
+      options=downloadOptions
+      selected=downloadTitle
       searchEnabled=false
       triggerClass='is-small'
       disabled=isDisabled
-      onchange=(action 'downloadByPreference')}}
-      <span>{{downloadTitle}}</span>
+      onchange=(action 'downloadByPreference') as |option|}}
+      <span title="{{option.name}}">{{option.name}}</span>
+      <span class='right'>{{option.count}}</span>
     {{/power-select}}
   </label>
 {{/if}}

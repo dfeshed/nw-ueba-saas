@@ -83,6 +83,7 @@ module('Integration | Component | Events Table Container', function(hooks) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
+      .eventsPreferencesConfig()
       .eventResults([])
       .build();
 
@@ -96,6 +97,7 @@ module('Integration | Component | Events Table Container', function(hooks) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
+      .eventsPreferencesConfig()
       .eventResults(['something'])
       .build();
 

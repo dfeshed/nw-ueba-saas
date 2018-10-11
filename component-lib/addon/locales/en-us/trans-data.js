@@ -494,7 +494,14 @@ export default {
       },
       download: {
         selected: 'Download',
-        all: 'Download All'
+        all: 'Download All',
+        preferences: {
+          'investigate-events': {
+            defaultLogFormat: 'Logs as {{option}}',
+            defaultMetaFormat: 'Visible Meta as {{option}}',
+            defaultPacketFormat: 'Network as {{option}}'
+          }
+        },
       },
       error: 'An unexpected error occurred when executing this query.',
       fatalSummaryError: 'The service is unavailable',

@@ -66,7 +66,7 @@ module('Integration | Component | events table header container', function(hooks
   });
 
   test('persisted column group is preselected in the drop down', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('MALWARE').columnGroups(EventColumnGroups).build();
+    new ReduxDataHelper(setState).columnGroup('MALWARE').eventsPreferencesConfig().columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container}}`);
     // return waitFor(columnSelector).then(() => {
     assert.equal(find(columnSelector).textContent.trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');

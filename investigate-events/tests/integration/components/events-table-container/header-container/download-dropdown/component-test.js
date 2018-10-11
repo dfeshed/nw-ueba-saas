@@ -5,12 +5,25 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { find, render } from '@ember/test-helpers';
+import { find, findAll, render } from '@ember/test-helpers';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
-const downloadTitle = '.rsa-investigate-events-table__header__downloadEvents span';
+const downloadTitle = `${downloadSelector} span span`;
+const downloadOptions = '.ember-power-select-options';
 
 let setState;
+
+const eventResultsData = [
+  { sessionId: 1, medium: 1 },
+  { sessionId: 2, medium: 1 },
+  { sessionId: 3, medium: 32 }
+];
+
+const assertForDownloadOptions = async function(assert, options, index, value, count) {
+  assert.equal(options[index].children[0].textContent.trim(), value);
+  assert.equal(options[index].children[1].textContent.trim(), count);
+};
 
 module('Integration | Component | Download Dropdown', function(hooks) {
   setupRenderingTest(hooks, {
@@ -49,7 +62,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .allEventsSelected(true)
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.equal(find(downloadTitle).textContent.trim(), 'Download All', 'Download dropdown should read `Download All` if selectAll is checked');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download All', 'Download dropdown should read `Download All` if selectAll is checked');
   });
 
   test('download dropdown should read Download if selectAll is not checked', async function(assert) {
@@ -58,7 +71,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .withSelectedEventIds()
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.equal(find(downloadTitle).textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
   });
 
   test('download dropdown should be enabled if all or 1+ events are selected ', async function(assert) {
@@ -77,4 +90,52 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
   });
+
+  test('download dropdown should show options', async function(assert) {
+    new ReduxDataHelper(setState)
+      .allEventsSelected(true)
+      .isEventResultsError(false)
+      .eventsPreferencesConfig()
+      .defaultEventAnalysisPreferences()
+      .eventResults(eventResultsData)
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    await clickTrigger();
+    assert.equal(findAll(`${downloadOptions} li`).length, 3, '3 options found');
+  });
+
+  test('download dropdown should show appropriate options if log and Network events are selected ', async function(assert) {
+    new ReduxDataHelper(setState)
+      .allEventsSelected(false)
+      .isEventResultsError(false)
+      .eventsPreferencesConfig()
+      .defaultEventAnalysisPreferences()
+      .eventResults(eventResultsData)
+      .selectedEventIds([1, 3])
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    await clickTrigger();
+    const options = findAll(`${downloadOptions} li`);
+    await assertForDownloadOptions(assert, options, 0, 'Logs as LOG', '1/2');
+    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as TEXT', '2/2');
+    await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '1/2');
+  });
+
+  test('download dropdown should show appropriate options if only Network events are selected ', async function(assert) {
+    new ReduxDataHelper(setState)
+      .allEventsSelected(false)
+      .isEventResultsError(false)
+      .eventsPreferencesConfig()
+      .defaultEventAnalysisPreferences()
+      .eventResults(eventResultsData)
+      .selectedEventIds([1, 2])
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    await clickTrigger();
+    const options = findAll(`${downloadOptions} li`);
+    await assertForDownloadOptions(assert, options, 0, 'Logs as LOG', '');
+    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as TEXT', '2/2');
+    await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '2/2');
+  });
+
 });
