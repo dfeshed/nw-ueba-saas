@@ -155,15 +155,28 @@ test('The FETCH_DOWNLOAD_JOB_ID action will sets the download id to state', func
 
 test('The FETCH_ALL_SCHEMAS action start will reset the host list', function(assert) {
   const previous = Immutable.from({
-    hostList: HOST_LIST
+    hostList: HOST_LIST,
+    hostFetchStatus: 'completed',
+    selectedHostList: [{
+      id: '123',
+      agentVersion: '4.4'
+    }],
+    totalItems: 3
+
   });
 
   assert.equal(previous.hostList.length, 3);
+  assert.equal(previous.hostFetchStatus, 'completed');
+  assert.equal(previous.selectedHostList.length, 1);
+  assert.equal(previous.totalItems, 3);
 
   const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_ALL_SCHEMAS });
   const endState = reducer(previous, startAction);
 
   assert.equal(endState.hostList.length, 0);
+  assert.equal(endState.hostFetchStatus, 'wait');
+  assert.equal(endState.selectedHostList.length, 0);
+  assert.equal(endState.totalItems, 0);
 });
 
 test('The FETCH_ALL_MACHINES will sets machine api response to state', function(assert) {

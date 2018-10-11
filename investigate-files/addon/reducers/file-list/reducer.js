@@ -99,7 +99,7 @@ const fileListReducer = handleActions({
     fileData: {},
     pageNumber: -1,
     totalItems: 0,
-    areFilesLoading: 'sorting'
+    areFilesLoading: 'wait'
   }),
 
   [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {

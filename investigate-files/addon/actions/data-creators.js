@@ -370,6 +370,8 @@ const retrieveRemediationStatus = (selections) => {
   }
 };
 
+const userLeftFilesPage = () => ({ type: ACTION_TYPES.USER_LEFT_FILES_PAGE });
+
 export {
   getPageOfFiles,
   sortBy,
@@ -395,5 +397,6 @@ export {
   getRiskScoreContext,
   getUpdatedRiskScoreContext,
   retrieveRemediationStatus,
-  setSelectedFile
+  setSelectedFile,
+  userLeftFilesPage
 };

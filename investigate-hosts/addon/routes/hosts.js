@@ -59,7 +59,6 @@ export default Route.extend({
 
   model(params) {
     const redux = this.get('redux');
-    const { serverId } = redux.getState().endpointQuery;
     const { sid, machineId } = params;
     const request = lookup('service:request');
     run.next(() => {
@@ -67,10 +66,12 @@ export default Route.extend({
       if (!machineId) {
         redux.dispatch(resetDetailsInputAndContent());
       }
-      if (!sid && !serverId) {
+      if (!sid) {
+        // get host list
         redux.dispatch(getEndpointServers());
       } else {
-        request.registerPersistentStreamOptions({ socketUrlPostfix: serverId || sid, requiredSocketUrl: 'endpoint/socket' });
+        // get host details
+        request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         return request.ping('endpoint-server-ping')
         .then(() => {
           const { machineId, tabName = 'OVERVIEW' } = params;

@@ -92,11 +92,13 @@ test('The RESET_DOWNLOAD_ID action reset the export link', function(assert) {
 test('RESET_FILES action reset files and page number', function(assert) {
   const previous = Immutable.from({
     fileData: { a: { firstFileName: 'test.dll' } },
-    pageNumber: 0
+    pageNumber: 0,
+    areFilesLoading: 'completed'
   });
   const result = reducer(previous, { type: ACTION_TYPES.RESET_FILES });
   assert.equal(Object.values(result.fileData).length, 0);
   assert.equal(result.pageNumber, -1);
+  assert.equal(result.areFilesLoading, 'wait');
 });
 
 test('INCREMENT_PAGE_NUMBER action should increment page number', function(assert) {

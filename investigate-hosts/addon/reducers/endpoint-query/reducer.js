@@ -10,6 +10,8 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.ENDPOINT_SERVER_SELECTED]: (state, { payload }) => {
     return state.set('serverId', payload);
-  }
+  },
+
+  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('serverId', null)
 
 }, Immutable.from(initialState));
