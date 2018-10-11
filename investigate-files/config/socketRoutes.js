@@ -3,6 +3,7 @@
 
 const common = require('../../common');
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
+const licenseConfigGen = require('../../license').socketRouteGenerator;
 let mergedConfig;
 
 const filesConfigGen = function(environment) {
@@ -119,7 +120,7 @@ module.exports = function(environment) {
     return {};
   }
 
-  const configGenerators = [filesConfigGen, preferencesConfigGen];
+  const configGenerators = [filesConfigGen, preferencesConfigGen, licenseConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

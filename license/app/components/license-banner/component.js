@@ -1,0 +1,1 @@
+export { default } from 'license/components/license-banner/component';

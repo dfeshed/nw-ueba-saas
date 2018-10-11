@@ -6,6 +6,7 @@ const contextMocks = require('../context').mockDestinations;
 const investigateMocks = require('../investigate').mockDestinations;
 const preferencesMocks = require('../preferences').mockDestinations;
 const adminEngineMocks = require('../admin').mockDestinations;
+const licenseMocks = require('../license').mockDestinations;
 
 const path = require('path');
 const administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
@@ -18,6 +19,7 @@ require('mock-server').startServer({
     contextMocks,
     preferencesMocks,
     ...adminEngineMocks,
-    administrationMocks
+    administrationMocks,
+    licenseMocks
   ]
 });

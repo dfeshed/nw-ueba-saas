@@ -1,0 +1,20 @@
+<span class="banner-msg">
+  {{t messageKey}}<a href="/admin/system#licensing" target='_blank' rel="noopener noreferrer">{{t 'license.banner.licensePage'}}</a>
+</span>
+
+<span class="buttons">
+
+  {{#rsa-form-button
+      isIconOnly=true
+      defaultAction=(action 'goToHelp' 'licenseCompliance' '')}}
+    {{rsa-icon name="help-circle" style="lined"}}
+  {{/rsa-form-button}}
+  {{#if (is-equal level 'warning')}}
+    <span class="dismiss-btn">
+      {{#rsa-form-button defaultAction="dismiss"}}
+        {{t 'license.banner.dismiss'}}
+      {{/rsa-form-button}}
+    </span>
+  {{/if}}
+
+</span>

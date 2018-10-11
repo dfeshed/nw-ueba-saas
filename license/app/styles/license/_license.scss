@@ -1,0 +1,36 @@
+$bannerHeight: 36px;
+
+.license-banner {
+
+  line-height: $bannerHeight;
+  text-align: center;
+  height: $bannerHeight;
+  color: text-color(neutral);
+
+  &.hidden {
+    display: none;
+  }
+
+  &.warning {
+    background: text-color(accentFour, dark);
+  }
+
+  &.error {
+    background: text-color(accentOne, dark);
+  }
+
+  .banner-msg {
+    vertical-align: middle;
+    line-height: normal;
+  }
+
+  .buttons {
+    float: right;
+  }
+
+  .dismiss-btn {
+    padding-right: 5px;
+    vertical-align: middle;
+    line-height: $bannerHeight;
+  }
+}

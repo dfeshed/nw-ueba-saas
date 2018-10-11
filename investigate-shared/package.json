@@ -73,7 +73,8 @@
       "../component-lib",
       "../streaming-data",
       "../rsa-context-menu",
-      "../rsa-data-filters"
+      "../rsa-data-filters",
+      "../license"
     ]
   }
 }

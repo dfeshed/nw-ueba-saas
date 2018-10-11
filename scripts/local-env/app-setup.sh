@@ -62,6 +62,7 @@ prepareApp rsa-context-menu
 prepareApp rsa-data-filters
 prepareApp streaming-data
 prepareApp packager
+prepareApp license
 prepareApp recon
 prepareApp style-guide
 prepareApp investigate-shared

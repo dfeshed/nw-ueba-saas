@@ -8,6 +8,7 @@ const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
 const adminEngineConfigGen = require('../../../admin').socketRouteGenerator;
+const licenseConfigGen = require('../../../license').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 const featuresConfigGen = require('./features');
 
@@ -20,6 +21,7 @@ const configGenerators = [
   preferencesConfigGen,
   packagerConfigGen,
   adminEngineConfigGen,
+  licenseConfigGen,
   adminConfigGen,
   featuresConfigGen
 ];

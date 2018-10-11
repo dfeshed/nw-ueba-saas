@@ -89,6 +89,7 @@
       "../configure",
       "../recon",
       "../packager",
+      "../license",
       "../context",
       "../preferences",
       "../investigate-shared",

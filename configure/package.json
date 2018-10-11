@@ -82,7 +82,8 @@
       "../component-lib",
       "../streaming-data",
       "../context",
-      "../investigate-shared"
+      "../investigate-shared",
+      "../license"
     ]
   },
   "private": true

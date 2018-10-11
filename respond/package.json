@@ -85,7 +85,8 @@
       "../streaming-data",
       "../recon",
       "../context",
-      "../rsa-context-menu"
+      "../rsa-context-menu",
+      "../license"
     ]
   },
   "private": true

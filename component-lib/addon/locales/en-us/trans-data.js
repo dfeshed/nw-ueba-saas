@@ -3858,6 +3858,17 @@ export default {
     }
   },
   // end admin-source-management (a.k.a USM)
+  license: {
+    banner: {
+      dismiss: 'Dismiss',
+      licensePage: 'License Details',
+      unlicensed: 'One or more services are not licensed. For more information, see ',
+      expired: 'One or more licenses have expired. For more information, see ',
+      'usage-exceeded': 'You have exceeded license usage limits. For more information, see ',
+      'near-expiry': 'One or more licenses are expiring. For more information, see ',
+      'near-usage-limit': 'You are nearing license usage limits. For more information, see '
+    }
+  },
   rsaWizard: {
     tests: {
       testStep1Label: 'Test Step 1',

@@ -82,7 +82,8 @@
       "../component-lib",
       "../streaming-data",
       "../context",
-      "../admin-source-management"
+      "../admin-source-management",
+      "../license"
     ]
   },
   "private": true

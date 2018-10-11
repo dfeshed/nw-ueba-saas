@@ -20,6 +20,7 @@ const ALL_SUBMODULES = [
   'style-guide',
   'context',
   'preferences',
+  'license',
   'test-helpers',
   'ember-route-action-helper',
   'ember-cli-document-title',
@@ -51,6 +52,7 @@ const saModuleDependants = {
     'admin-source-management',
     'context',
     'preferences',
+    'license',
     'investigate-process-analysis',
     'rsa-context-menu',
     'rsa-data-filters',
@@ -68,6 +70,7 @@ const saModuleDependants = {
     'investigate-users',
     'investigate',
     'packager',
+    'license',
     'respond',
     'configure',
     'admin',
@@ -116,6 +119,7 @@ const saModuleDependants = {
     'entity-details',
     'investigate-users',
     'packager',
+    'license',
     'respond',
     'configure',
     'admin',
@@ -133,6 +137,14 @@ const saModuleDependants = {
   preferences: [
     'sa',
     'investigate-events'
+  ],
+  license: [
+    'sa',
+    'investigate',
+    'investigate-shared',
+    'respond',
+    'admin',
+    'configure'
   ],
   'rsa-context-menu': [
     'sa',

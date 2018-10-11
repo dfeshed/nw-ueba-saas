@@ -64,3 +64,8 @@
     }
   }
 }
+
+.license-banner.shown + .host-container {
+  // When license banner is shown, the absolute top position has to be adjusted
+  top: 86px;
+}

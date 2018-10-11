@@ -216,6 +216,7 @@ buildMockServer
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
 buildEmberApp packager false true true
+buildEmberApp license false true true
 buildEmberApp rsa-data-filters false true true
 buildEmberApp recon false true true
 buildEmberApp context false true true

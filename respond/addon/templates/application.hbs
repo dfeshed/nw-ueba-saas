@@ -1,5 +1,6 @@
 <page class="respond-engine {{routePath}}">
   {{#if respondServerOffline}}
+    {{license-banner}}
     {{error-page
       errorDescription=(t 'respond.errorPage.serviceDownDescription')
       title=(t 'respond.errorPage.serviceDown')}}
@@ -21,6 +22,7 @@
         {{/rsa-nav-tab}}
       {{/if}}
     </div>
+    {{license-banner}}
     {{outlet}}
   {{/if}}
 </page>
