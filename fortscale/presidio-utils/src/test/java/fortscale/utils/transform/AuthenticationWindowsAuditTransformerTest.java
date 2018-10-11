@@ -687,8 +687,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         String expectedDstMachine = dstMachine.toLowerCase();
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
 
-        aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE,EXPLICIT_CREDENTIALS_LOGON ,
-        referenceId,expectedDstMachine,dstMachine);
+                aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE,EXPLICIT_CREDENTIALS_LOGON ,
+                referenceId,expectedDstMachine,dstMachine);
 
     }
 

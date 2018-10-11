@@ -10,31 +10,21 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
-import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
-import presidio.input.core.services.converters.ade.AuthenticationInputToAdeConverter;
-import presidio.input.core.services.converters.ade.FileInputToAdeConverter;
-import presidio.input.core.services.converters.ade.PrintInputToAdeConverter;
-import presidio.input.core.services.converters.output.ActiveDirectoryInputToOutputConverter;
-import presidio.input.core.services.converters.output.AuthenticationInputToOutputConverter;
-import presidio.input.core.services.converters.output.FileInputToOutputConverter;
-import presidio.input.core.services.converters.output.PrintInputToOutputConverter;
+import presidio.input.core.services.converters.ade.*;
+import presidio.input.core.services.converters.output.*;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
-import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.managers.FileTransformerManager;
-import presidio.input.core.services.transformation.managers.PrintTransformerManager;
+import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -113,74 +103,93 @@ public class InputCoreConfiguration {
     }
 
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
         return new ActiveDirectoryTransformationManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public AuthenticationTransformerManager authenticationTransformerManager() {
         return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "FILE.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public FileTransformerManager fileTransformerManager() {
         return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
+    @Bean(name = "REGISTRY.transformer")
+    @Lazy
+    public RegistryTransformerManager registryTransformerManager() {
+        return new RegistryTransformerManager();
+    }
+
     @Bean(name = "PRINT.transformer")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public PrintTransformerManager printTransformerManager() {
         return new PrintTransformerManager();
     }
 
     @Bean(name = "FILE.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public FileInputToOutputConverter fileInputToOutputConverter() {
         return new FileInputToOutputConverter();
     }
 
     @Bean(name = "ACTIVE_DIRECTORY.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public ActiveDirectoryInputToOutputConverter activeDirectoryInputToOutputConverter() {
         return new ActiveDirectoryInputToOutputConverter();
     }
 
     @Bean(name = "AUTHENTICATION.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public AuthenticationInputToOutputConverter authenticationInputToOutputConverter() {
         return new AuthenticationInputToOutputConverter();
     }
 
     @Bean(name = "PRINT.input-output-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public PrintInputToOutputConverter printeInputToOutputConverter() {
         return new PrintInputToOutputConverter();
     }
 
+
+    @Bean(name = "REEGISTRY.input-output-converter")
+    @Lazy
+    public RegistryInputToOutputConverter registryInputToOutputConverter() {
+        return new RegistryInputToOutputConverter();
+    }
+
     @Bean(name = "FILE.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public FileInputToAdeConverter fileInputToAdeConverter() {
         return new FileInputToAdeConverter();
     }
 
     @Bean(name = "ACTIVE_DIRECTORY.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public ActiveDirectoryInputToAdeConverter activeDirectoryInputToAdeConverter() {
         return new ActiveDirectoryInputToAdeConverter();
     }
 
     @Bean(name = "AUTHENTICATION.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
     }
 
     @Bean(name = "PRINT.input-ade-converter")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Lazy
     public PrintInputToAdeConverter printInputToAdeConverter() {
         return new PrintInputToAdeConverter();
+    }
+
+    @Bean(name = "REGISTRY.input-ade-converter")
+    @Lazy
+    public RegistryInputToAdeConverter registryInputToAdeConverter() {
+        return new RegistryInputToAdeConverter();
     }
 }
