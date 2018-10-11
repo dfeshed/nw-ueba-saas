@@ -21,7 +21,7 @@ public class IocInputToOutputConverter implements InputOutputConverter {
         outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setMachineId(transformedEvent.getMachineId());
         outputEvent.setMachineName(transformedEvent.getMachineName());
-        outputEvent.setMachineOwner(transformedEvent.getMachineOwner());
+        outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
 
         return outputEvent;
     }

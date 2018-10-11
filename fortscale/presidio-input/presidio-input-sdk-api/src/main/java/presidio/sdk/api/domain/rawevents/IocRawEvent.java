@@ -22,7 +22,6 @@ public class IocRawEvent extends AbstractInputDocument {
     public static final String LEVEL_FIELD_NAME = "level";
     public static final String MACHINE_ID_FIELD_NAME = "machineId";
     public static final String MACHINE_NAME_FIELD_NAME = "machineName";
-    public static final String MACHINE_OWNER_FIELD_NAME = "machineOwner";
 
     @NotEmpty
     @Field(NAME_FIELD_NAME)
@@ -42,9 +41,6 @@ public class IocRawEvent extends AbstractInputDocument {
     @Field(MACHINE_NAME_FIELD_NAME)
     private String machineName;
 
-    @Field(MACHINE_OWNER_FIELD_NAME)
-    private String machineOwner;
-
     public IocRawEvent() {
     }
 
@@ -55,19 +51,17 @@ public class IocRawEvent extends AbstractInputDocument {
         this.level = other.level;
         this.machineId = other.machineId;
         this.machineName = other.machineName;
-        this.machineOwner = other.machineOwner;
     }
 
     public IocRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                        List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName,
-                       Map<String, String> additionalInfo, String name, Tactic tactic, Level level, String machineId, String machineName, String machineOwner, String resultCode) {
+                       Map<String, String> additionalInfo, String name, Tactic tactic, Level level, String machineId, String machineName, String resultCode) {
         super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategories, result, userName, userDisplayName, additionalInfo, resultCode);
         this.name = name;
         this.tactic = tactic;
         this.level = level;
         this.machineId = machineId;
         this.machineName = machineName;
-        this.machineOwner = machineOwner;
     }
 
     public String getName() {
@@ -108,14 +102,6 @@ public class IocRawEvent extends AbstractInputDocument {
 
     public void setMachineName(String machineName) {
         this.machineName = machineName;
-    }
-
-    public String getMachineOwner() {
-        return machineOwner;
-    }
-
-    public void setMachineOwner(String machineOwner) {
-        this.machineOwner = machineOwner;
     }
 
     @Override

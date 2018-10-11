@@ -20,7 +20,6 @@ public class IocEnrichedEvent extends EnrichedEvent {
     public static final String LEVEL_FIELD_NAME = "level";
     public static final String MACHINE_ID_FIELD_NAME = "machineId";
     public static final String MACHINE_NAME_FIELD_NAME = "machineName";
-    public static final String MACHINE_OWNER_FIELD_NAME = "machineOwner";
 
     @Field(NAME_FIELD_NAME)
     private String name;
@@ -38,9 +37,6 @@ public class IocEnrichedEvent extends EnrichedEvent {
     @Field(MACHINE_NAME_FIELD_NAME)
     private String machineName;
 
-    @Field(MACHINE_OWNER_FIELD_NAME)
-    private String machineOwner;
-
     public IocEnrichedEvent() {
     }
 
@@ -48,14 +44,12 @@ public class IocEnrichedEvent extends EnrichedEvent {
                             Tactic tactic,
                             Level level,
                             String machineId,
-                            String machineName,
-                            String machineOwner) {
+                            String machineName) {
         this.name = name;
         this.tactic = tactic;
         this.level = level;
         this.machineId = machineId;
         this.machineName = machineName;
-        this.machineOwner = machineOwner;
     }
 
     public IocEnrichedEvent(Instant createdDate,
@@ -75,15 +69,13 @@ public class IocEnrichedEvent extends EnrichedEvent {
                             Tactic tactic,
                             Level level,
                             String machineId,
-                            String machineName,
-                            String machineOwner) {
+                            String machineName) {
         super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
         this.name = name;
         this.tactic = tactic;
         this.level = level;
         this.machineId = machineId;
         this.machineName = machineName;
-        this.machineOwner = machineOwner;
     }
 
     public String getName() {
@@ -124,13 +116,5 @@ public class IocEnrichedEvent extends EnrichedEvent {
 
     public void setMachineName(String machineName) {
         this.machineName = machineName;
-    }
-
-    public String getMachineOwner() {
-        return machineOwner;
-    }
-
-    public void setMachineOwner(String machineOwner) {
-        this.machineOwner = machineOwner;
     }
 }

@@ -67,7 +67,7 @@ public class IocRawEventTest {
         IocRawEvent iocRawEvent = new IocRawEvent(Instant.now(), "eventId", "dataSource",
                 "userId", "operationType", null, EventResult.SUCCESS,
                 "userName", "userDisplayName", null, "ioc name",
-                Tactic.PERSISTENCE, Level.CRITICAL, "machine_id", "machine_name", "machineOwner", "resultCode");
+                Tactic.PERSISTENCE, Level.CRITICAL, "machine_id", "machine_name", "resultCode");
         return iocRawEvent;
     }
 }
