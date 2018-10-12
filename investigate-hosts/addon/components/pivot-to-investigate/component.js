@@ -64,11 +64,19 @@ const PivotToInvestigate = Component.extend({
     ];
   },
 
+  _escapeBackslash: (value) => {
+    return value.replace(/\\\\?(?!')/g, '\\\\');
+  },
+
   _buildFilter() {
     const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
     const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    const value = metaValue || get(item, metaName); // if metaValue not passed get the value from item
+    let value = metaValue || get(item, metaName); // if metaValue not passed get the value from item
     // If list meta then add || in query
+    if (metaName === 'userName') {
+      value = this._escapeBackslash(value);
+    }
+
     if (Array.isArray(investigateMeta)) {
       const query = investigateMeta.map((meta) => {
         return this._getQuery(meta, value);
