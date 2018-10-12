@@ -15,6 +15,14 @@ const FILTER_TYPES = [
     ]
   },
   {
+    name: 'features',
+    label: 'configure.endpoint.certificates.filter.signature',
+    type: 'list',
+    listOptions: [
+      { name: 'cert.rootMicrosoft', label: 'configure.endpoint.certificates.filter.isRootMicrosoft' }
+    ]
+  },
+  {
     'name': 'friendlyName',
     'label': 'configure.endpoint.certificates.columns.friendlyName',
     'type': 'text',

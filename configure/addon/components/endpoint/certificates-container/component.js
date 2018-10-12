@@ -11,7 +11,7 @@ import {
   resetFilters,
   getFilter
 } from 'investigate-shared/actions/data-creators/filter-creators';
-import { getFirstPageOfCertificates } from 'configure/actions/creators/endpoint/certificates-creator';
+import { getFirstPageOfCertificates, getPageOfCertificates } from 'configure/actions/creators/endpoint/certificates-creator';
 import { FILTER_TYPES } from './filter-types';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
@@ -34,6 +34,7 @@ const dispatchToActions = {
   deleteFilter,
   resetFilters,
   getFirstPageOfCertificates,
+  getPageOfCertificates,
   getFilter
 };
 
@@ -49,7 +50,7 @@ const Certificate = Component.extend({
     this._super(...arguments);
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.send('getFilter', getFirstPageOfCertificates, 'CERTIFICATE');
+        this.send('getFilter', () => {}, 'CERTIFICATE');
       }
     });
   }

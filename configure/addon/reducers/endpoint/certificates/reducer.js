@@ -33,17 +33,9 @@ const _handleAppendCertificates = (action) => {
 };
 
 const _toggleSelectedCertificate = (state, payload) => {
-  const { selectedCertificateList } = state;
   const { thumbprint } = payload;
-  let selectedList = [];
-  // Previously selected certificate
 
-  if (selectedCertificateList.some((certificate) => certificate.thumbprint === thumbprint)) {
-    selectedList = selectedCertificateList.filter((certificate) => certificate.thumbprint !== thumbprint);
-  } else {
-    selectedList = [...selectedCertificateList, { thumbprint }];
-  }
-  return state.merge({ 'selectedCertificateList': selectedList, 'certificateStatusData': {} });
+  return state.merge({ 'selectedCertificateList': [{ thumbprint }], 'certificateStatusData': {} });
 
 };
 
@@ -88,15 +80,6 @@ const CertificateReducers = handleActions({
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
 
   [ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE]: (state, { payload }) => _toggleSelectedCertificate(state, payload),
-
-  [ACTION_TYPES.TOGGLE_ALL_CERTIFICATE_SELECTION]: (state) => {
-    const { certificatesList, selectedCertificateList } = state;
-    if (selectedCertificateList.length < certificatesList.length) {
-      return state.set('selectedCertificateList', Object.values(certificatesList).map((certificate) => ({ thumbprint: certificate.thumbprint })));
-    } else {
-      return state.set('selectedCertificateList', []);
-    }
-  },
 
   [ACTION_TYPES.RESET_CERTIFICATES]: (state) => state.merge(initialState)
 

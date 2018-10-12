@@ -52,15 +52,16 @@ const CertificateStatus = Component.extend({
 
   @computed('statusData', 'selections')
   data(statusData, selections) {
-    if (statusData && selections.length === 1) {
-      return statusData;
-    }
-    return {
+    const statusDataObject = {
       certificateStatus: null,
       category: null,
       comment: '',
       remediationAction: null
     };
+    if (statusData && selections.length === 1) {
+      return { ...statusDataObject, ...statusData };
+    }
+    return statusDataObject;
   },
 
   actions: {

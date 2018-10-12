@@ -160,7 +160,7 @@ const configureConfigGen = function(environment) {
       }
     },
     filters: {
-      socketUrl,
+      socketUrl: socketUrlEndpoint,
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',
         requestDestination: '/ws/endpoint/filter/set'

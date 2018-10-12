@@ -9,15 +9,7 @@ const _certificatesLoadingStatus = (state) => state.configure.endpoint.certifica
 const _selectedCertificateList = (state) => state.configure.endpoint.certificates.list.selectedCertificateList || [];
 
 export const certificatesColumns = [
-  {
-    dataType: 'checkbox',
-    width: 20,
-    class: 'rsa-form-row-checkbox',
-    componentClass: 'rsa-form-checkbox',
-    visible: true,
-    disableSort: true,
-    headerComponentClass: 'rsa-form-checkbox'
-  },
+
   {
     field: 'friendlyName',
     title: 'configure.endpoint.certificates.columns.friendlyName',

@@ -1,16 +1,11 @@
-{{#rsa-data-table columnsConfig=certificatesColumns items=certificatesItems}}
+{{#rsa-data-table
+  columnsConfig=certificatesColumns
+  items=certificatesItems
+  onRowClick=(action 'toggleSelectedRow')}}
   {{#rsa-data-table/header as |column|}}
-    {{#if (eq column.dataType "checkbox")}}
-      <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
-        {{rsa-form-checkbox
-          checked=isAllSelected
-          change=(action 'toggleAllCertificateSelection')}}
-      </label>
-    {{else}}
-      <span class='js-move-handle'>
-        {{t column.title}}
-      </span>
-    {{/if}}
+    <span class='js-move-handle'>
+      {{t column.title}}
+    </span>
   {{/rsa-data-table/header}}
 
   {{#if areCertificatesLoading}}
@@ -20,17 +15,9 @@
   {{else}}
     {{#rsa-data-table/body
       noResultsMessage=(t 'configure.endpoint.certificates.noResultsMessage') as |item index column|}}
-      {{#if column.componentClass}}
-        {{#rsa-data-table/body-cell item=item column=column}}
-          <label class="rsa-form-checkbox-label {{if (is-selected selectedCertificateList item) 'checked'}}">
-            {{rsa-form-checkbox checked=item.checked change=(action 'toggleCertificateSelection' item)}}
-          </label>
-        {{/rsa-data-table/body-cell}}
-      {{else}}
-        {{#rsa-data-table/body-cell column=column}}
-          {{get item column.field}}
-        {{/rsa-data-table/body-cell}}
-      {{/if}}
+      {{#rsa-data-table/body-cell column=column}}
+        {{get item column.field}}
+      {{/rsa-data-table/body-cell}}
     {{/rsa-data-table/body}}
     {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfCertificates')}}
   {{/if}}

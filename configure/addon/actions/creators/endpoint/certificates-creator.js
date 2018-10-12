@@ -68,7 +68,6 @@ const getSavedCertificateStatus = (selections) => ({
 });
 
 const toggleCertificateSelection = (selectedCertificate) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE, payload: selectedCertificate });
-const toggleAllCertificateSelection = () => ({ type: ACTION_TYPES.TOGGLE_ALL_CERTIFICATE_SELECTION });
 
 export {
   getCertificates,
@@ -76,6 +75,5 @@ export {
   getFirstPageOfCertificates,
   getSavedCertificateStatus,
   saveCertificateStatus,
-  toggleCertificateSelection,
-  toggleAllCertificateSelection
+  toggleCertificateSelection
 };

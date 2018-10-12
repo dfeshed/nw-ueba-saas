@@ -870,7 +870,9 @@ export default {
           invalidFilterInputLength: 'Filter input longer than 256 characters',
           invalidCharacters: 'Can contain alphanumeric or special characters.',
           invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
-          invalidCharsAlphaNumericOnly: 'Special characters are not allowed'
+          invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
+          isRootMicrosoft: 'Is Root Microsoft',
+          signature: 'Signature'
         },
         status: {
           edit: 'Edit Certificate Status',

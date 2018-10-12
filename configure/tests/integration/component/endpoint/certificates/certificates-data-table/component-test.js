@@ -117,5 +117,16 @@ module('Integration | Component | certificates-data-table', function(hooks) {
     await render(hbs`{{endpoint/certificates-data-table}}`);
     assert.equal(findAll('.rsa-data-table-body .rsa-panel-message .message')[0].textContent.trim(), 'No certificates were found.', 'No certificate results message is displayed.');
   });
+  test('testing the certificate table row click', async function(assert) {
+    new ReduxDataHelper(setState)
+      .certificatesItems(items)
+      .loadMoreStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .build();
+    await render(hbs`{{endpoint/certificates-data-table}}`);
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    assert.equal(findAll('.rsa-data-table-body-row')[0].classList.contains('is-selected'), true, 'certificate row selected');
+  });
 
 });
