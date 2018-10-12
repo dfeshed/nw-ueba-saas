@@ -66,17 +66,21 @@ export default Component.extend({
   },
 
   @computed('fileDownloadButtonStatus')
-  fileActionOptions({ isDownloadToServerDisabled, isSaveLocalAndFileAnalysisDisabled }) {
+  fileActionOptions(fileDownloadButtonStatus) {
+
     const i18n = this.get('i18n');
     let fileActionConfClone = [...FileActionConf];
 
-    // Additional menu options enabled and disabled based on selected file's download status.
-    fileActionConfClone = [
-      ...fileActionConfClone,
-      { panelId: 'panel3', name: 'downloadToServer', disabled: isDownloadToServerDisabled },
-      { panelId: 'panel4', name: 'saveLocalCopy', disabled: isSaveLocalAndFileAnalysisDisabled },
-      { panelId: 'panel5', name: 'analyzeFile', disabled: isSaveLocalAndFileAnalysisDisabled }
-    ];
+    if (fileDownloadButtonStatus) {
+      const { isDownloadToServerDisabled, isSaveLocalAndFileAnalysisDisabled } = fileDownloadButtonStatus;
+      // Additional menu options enabled and disabled based on selected file's download status.
+      fileActionConfClone = [
+        ...fileActionConfClone,
+        { panelId: 'panel3', name: 'downloadToServer', disabled: isDownloadToServerDisabled },
+        { panelId: 'panel4', name: 'saveLocalCopy', disabled: isSaveLocalAndFileAnalysisDisabled },
+        { panelId: 'panel5', name: 'analyzeFile', disabled: isSaveLocalAndFileAnalysisDisabled }
+      ];
+    }
 
     // Translated titles added.
     return fileActionConfClone.map((item) => {

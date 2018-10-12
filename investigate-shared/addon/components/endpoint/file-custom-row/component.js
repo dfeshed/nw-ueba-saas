@@ -85,39 +85,46 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
             }
           }
         ]
-      },
-      {
-        label: 'downloadToServer',
-        prefix: 'investigateShared.endpoint.fileActions.',
-        className: ' divider cntxBorder',
-        disabled() {
-          return (cntx.get('fileDownloadButtonStatus').isDownloadToServerDisabled);
-        },
-        action() {
-          cntx.downloadFiles();
-        }
-      },
-      {
-        label: 'saveLocalCopy',
-        prefix: 'investigateShared.endpoint.fileActions.',
-        disabled() {
-          return (cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled);
-        },
-        action() {
-          cntx.saveLocalCopy();
-        }
-      },
-      {
-        label: 'analyzeFile',
-        prefix: 'investigateShared.endpoint.fileActions.',
-        disabled() {
-          return (cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled);
-        },
-        action() {
-          cntx.analyzeFile();
-        }
       }
     ];
+
+    if (cntx.get('fileDownloadButtonStatus')) {
+
+      const fileDownloadButtons = [
+        {
+          label: 'downloadToServer',
+          prefix: 'investigateShared.endpoint.fileActions.',
+          className: ' divider cntxBorder',
+          disabled() {
+            return cntx.get('fileDownloadButtonStatus').isDownloadToServerDisabled;
+          },
+          action() {
+            cntx.downloadFiles();
+          }
+        },
+        {
+          label: 'saveLocalCopy',
+          prefix: 'investigateShared.endpoint.fileActions.',
+          disabled() {
+            return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
+          },
+          action() {
+            cntx.saveLocalCopy();
+          }
+        },
+        {
+          label: 'analyzeFile',
+          prefix: 'investigateShared.endpoint.fileActions.',
+          disabled() {
+            return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
+          },
+          action() {
+            cntx.analyzeFile();
+          }
+        }
+      ];
+      contextConf.push(...fileDownloadButtons);
+    }
 
     if (cntx.get('showPivotToInvestigate') != false) {
       const pivot = {

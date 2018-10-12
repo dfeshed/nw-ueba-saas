@@ -88,6 +88,22 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enabled.');
   });
 
+  test('File download buttons not added when fileDownloadButtonStatus is not present', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2}}`);
+
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as Download Files options are not present.');
+
+  });
+
   test('More action, Download to server', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },

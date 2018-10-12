@@ -501,7 +501,7 @@ export default {
             defaultMetaFormat: 'Visible Meta as {{option}}',
             defaultPacketFormat: 'Network as {{option}}'
           }
-        },
+        }
       },
       error: 'An unexpected error occurred when executing this query.',
       fatalSummaryError: 'The service is unavailable',
