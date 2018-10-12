@@ -35,6 +35,9 @@ const convertToBytes = (unit, values) => {
     const { value } = item;
     let val = value;
     switch (unit) {
+      case 'bytes' :
+        val = value * 1;
+        break;
       case 'KB' :
         val = value * 1024;
         break;
