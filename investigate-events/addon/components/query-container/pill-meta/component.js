@@ -81,6 +81,14 @@ export default Component.extend({
   @computed('isActive', 'metaOptions')
   isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
 
+  init() {
+    this._super(...arguments);
+    this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: () => this._createFreeFormPill(),
+      [MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION]: (d) => this.set('_highlightedAfterOption', d)
+    });
+  },
+
   didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('isActive')) {
@@ -108,6 +116,22 @@ export default Component.extend({
   },
 
   actions: {
+    /**
+     * Handler for all messages coming from afterOptionsComponent.
+     * @param {string} type The event type from `message-types`
+     * @param {Object} data The event data
+     * @public
+     */
+    handleMessage(type, data) {
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn(data);
+      } else {
+        // Any messages that do not match expected message types get send up
+        // to the query-pill component.
+        this._broadcast(type, data);
+      }
+    },
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
@@ -182,14 +206,21 @@ export default Component.extend({
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isEnter(event)) {
-        // If the user presses ENTER, selecting an operator that was already
-        // selected, power-select does nothing. We want the focus to move onto
-        // the pill value. If nothing has been selected, this is an indication
-        // we should execute the query.
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
+        const _highlightedAfterOption = this.get('_highlightedAfterOption');
         if (selection && selected && selection === selected) {
+          // If the user presses ENTER, selecting a meta that was already
+          // selected, power-select does nothing. We want the focus to move onto
+          // the pill operator.
           this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+        } else if (selected === null && _highlightedAfterOption === 'Free Form Filter') {
+          // If the user presses ENTER while all the meta was filtered out, the
+          // assumption is that they want to create a free-form filter. Since
+          // we have access to the power-select API, we'll perform an empty
+          // search to restore all the options in the dropdown.
+          this._createFreeFormPill();
+          powerSelectAPI.actions.search('');
         } else {
           dropFocus();
           next(this, () => {
@@ -251,6 +282,19 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+  _createFreeFormPill() {
+    // get input text
+    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const { value } = el;
+    // cleanup (close dropdown, etc)
+    el.value = '';
+    this._focusOnPowerSelectTrigger();
+    // send value up to create a complex pill
+    if (value && value.length > 0) {
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, value);
+    }
   },
 
   _focusOnPowerSelectTrigger() {

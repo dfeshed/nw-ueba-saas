@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -32,7 +33,7 @@ const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdi
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
-
+// const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
@@ -59,7 +60,7 @@ const wormhole = 'wormhole-context-menu';
 
 let setState, contextEventListenerCallback;
 
-module('Integration | Component | query-pills', function(hooks) {
+module('Integration | Component | Query Pills', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -1978,5 +1979,29 @@ module('Integration | Component | query-pills', function(hooks) {
 
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have the new pill template meta open');
+  });
+
+  skip('Meta pill can create a free-form pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    // enter non-meta value for pill and press ENTER
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
+    return settled().then(async () => {
+      // assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add free form filter creator was called once');
+      // assert.deepEqual(
+      //   addFreeFormFilterSpy.args[0][0],
+      //   { freeFormText: 'foobar', position: 0, shouldAddFocusToNewPill: false },
+      //   'The action creator was called with the right arguments'
+      // );
+      assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), 'foobar', 'Expected stringified pill');
+    });
   });
 });

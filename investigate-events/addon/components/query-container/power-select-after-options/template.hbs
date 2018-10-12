@@ -1,0 +1,12 @@
+{{#each options as |opt index|}}
+  <li class="ember-power-select-option ember-power-select-after-option"
+    aria-disabled="{{opt.disabled}}"
+    aria-current="{{opt.highlighted}}"
+    data-option-index="{{index}}"
+    onmouseover={{action 'onMouseOver'}}
+    onmouseup={{action 'onMouseUp'}}
+    role="option">
+    <span class="value">{{select.searchText}}</span>
+    <span class="description">{{opt.label}}</span>
+  </li>
+{{/each}}

@@ -2,7 +2,7 @@ import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -46,7 +46,7 @@ const _setPillData = (component) => {
   return enrichedPill;
 };
 
-module('Integration | Component | query-pill', function(hooks) {
+module('Integration | Component | Query Pill', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -199,10 +199,10 @@ module('Integration | Component | query-pill', function(hooks) {
     // Click back on meta and verify that 1 down-selected option is visible
     await click(PILL_SELECTORS.meta);
     await focus(PILL_SELECTORS.metaTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2);
     // Clear input to show all meta options
     await fillIn(PILL_SELECTORS.metaInput, '');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
     // Select meta options B
     await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 1);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'b');
@@ -1195,5 +1195,31 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
+  });
+
+  test('it sends a message up to create a free-form pill', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'foobar', 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 });

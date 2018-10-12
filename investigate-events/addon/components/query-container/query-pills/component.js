@@ -15,6 +15,7 @@ import {
   deselectedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
+  addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
   deleteGuidedPill,
@@ -28,6 +29,7 @@ import {
   selectGuidedPills,
   selectAllPillsTowardsDirection
 } from 'investigate-events/actions/guided-creators';
+
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -42,6 +44,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
+  addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
   deleteGuidedPill,
@@ -183,7 +186,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (position) => this._addFocusToLeftPill(position),
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
-      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position)
+      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position)
     });
   },
 
@@ -499,6 +503,13 @@ const QueryPills = RsaContextMenu.extend({
     if (!isEventFiredFromQueryPill(e)) {
       this.send('removeGuidedPillFocus');
     }
+  },
+
+  _createFreeFormPill(freeFormText, position) {
+    // if true, it means a pill is being created in the middle of pills
+    const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
+    this._pillsExited();
+    this.send('addFreeFormFilter', { freeFormText, position, shouldAddFocusToNewPill });
   }
 });
 

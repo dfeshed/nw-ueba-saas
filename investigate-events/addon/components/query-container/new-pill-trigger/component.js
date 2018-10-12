@@ -68,6 +68,11 @@ export default Component.extend({
           break;
         case MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT:
           this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('newPillPosition'));
+          break;
+        case MESSAGE_TYPES.CREATE_FREE_FORM_PILL:
+          this._broadcast(type, data);
+          this.set('isAddNewPill', false);
+          break;
       }
     }
   },

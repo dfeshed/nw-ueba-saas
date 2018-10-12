@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { blur, fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -342,16 +342,16 @@ module('Integration | Component | Pill Meta', function(hooks) {
     `);
     await focus(PILL_SELECTORS.metaTrigger);
     // assert number of options
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
     // perform a search that down-selects the list of options
     await typeInSearch('c');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 8);
     // blur and assert no options present
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', TAB_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.metaTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
     return settled();
   });
 
@@ -373,5 +373,46 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);
     await blur(PILL_SELECTORS.metaTrigger);
     assert.equal(find(PILL_SELECTORS.metaSelectInput).value, 'b');
+  });
+
+  test('it broadcasts a message to create a free-form pill when the ENTER key is pressed', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'foobar', 'correct data');
+        assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it does NOT broadcasts a message to create a free-form pill if no value is entered', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.notOk('should not get here');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 });

@@ -59,7 +59,7 @@ export const _serverSideValidation = (pillData, position) => {
 export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill }) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.ADD_GUIDED_PILL,
+      type: ACTION_TYPES.ADD_PILL,
       payload: {
         pillData,
         position,
@@ -180,7 +180,7 @@ export const openGuidedPillForEdit = ({ pillData }) => ({
   }
 });
 
-export const addFreeFormFilter = (freeFormText) => {
+export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusToNewPill }) => {
   return (dispatch, getState) => {
     const pillData = transformTextToPillData(
       freeFormText.trim(),
@@ -188,13 +188,15 @@ export const addFreeFormFilter = (freeFormText) => {
     );
 
     dispatch({
-      type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+      type: ACTION_TYPES.ADD_PILL,
       payload: {
-        pillData: [pillData]
+        pillData,
+        position,
+        shouldAddFocusToNewPill
       }
     });
     if (!pillData.complexFilterText) {
-      dispatch(_validateGuidedPill(pillData, 0));
+      dispatch(_validateGuidedPill(pillData, position));
     }
   };
 };

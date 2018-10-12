@@ -165,11 +165,11 @@ test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer be
   assert.equal(result.pillsData[0].isEditing, false);
 });
 
-test('ADD_GUIDED_PILL adds pill to empty list', function(assert) {
+test('ADD_PILL adds pill to empty list', function(assert) {
   const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.queryNode;
 
   const action = {
-    type: ACTION_TYPES.ADD_GUIDED_PILL,
+    type: ACTION_TYPES.ADD_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 0
@@ -181,9 +181,9 @@ test('ADD_GUIDED_PILL adds pill to empty list', function(assert) {
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_GUIDED_PILL adds pill to beginning of list', function(assert) {
+test('ADD_PILL adds pill to beginning of list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_GUIDED_PILL,
+    type: ACTION_TYPES.ADD_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 0
@@ -195,9 +195,9 @@ test('ADD_GUIDED_PILL adds pill to beginning of list', function(assert) {
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_GUIDED_PILL adds pill to the middle of a list', function(assert) {
+test('ADD_PILL adds pill to the middle of a list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_GUIDED_PILL,
+    type: ACTION_TYPES.ADD_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 1
@@ -209,9 +209,9 @@ test('ADD_GUIDED_PILL adds pill to the middle of a list', function(assert) {
   assert.equal(result.pillsData[1].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_GUIDED_PILL adds pill to end of list', function(assert) {
+test('ADD_PILL adds pill to end of list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_GUIDED_PILL,
+    type: ACTION_TYPES.ADD_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 2

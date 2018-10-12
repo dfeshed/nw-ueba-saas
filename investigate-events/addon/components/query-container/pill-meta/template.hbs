@@ -1,5 +1,9 @@
 {{#if isActiveWithOptions}}
   {{#power-select-typeahead
+    afterOptionsComponent=(
+      component 'query-container/power-select-after-options'
+      sendMessage=(action 'handleMessage')
+    )
     allowClear=false
     defaultHighlighted=_highlighter
     extra=(hash labelPath='metaName')

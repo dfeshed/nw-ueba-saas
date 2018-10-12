@@ -1,4 +1,4 @@
-import { click, fillIn, find, focus, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { click, fillIn, focus, triggerKeyEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -52,20 +52,18 @@ export const createBasicPill = async function(fromTrigger, format, operator) {
   if (format) {
     // choose the meta of format requested
     const meta = _metaNameForFormat(format);
-    selectChoose(selectors.metaPowerSelect, meta);
+    await selectChoose(selectors.metaPowerSelect, meta);
   } else {
     // Choose the first meta option
-    selectChoose(selectors.metaPowerSelect, selectors.powerSelectOption, 0); // option A
+    await selectChoose(selectors.metaPowerSelect, selectors.powerSelectOption, 0); // option A
   }
-  await waitUntil(() => find(selectors.operatorPowerSelect));
 
   if (operator) {
-    selectChoose(selectors.operatorPowerSelect, operator);
+    await selectChoose(selectors.operatorPowerSelect, operator);
   } else {
     // Choose the first operator option
-    selectChoose(selectors.operatorPowerSelect, '='); // option =
+    await selectChoose(selectors.operatorPowerSelect, '='); // option =
   }
-  await waitUntil(() => find(selectors.valueInput));
 
   // Fill in the value, to properly simulate the event we need to fillIn AND
   // triggerKeyEvent for the "x" character.

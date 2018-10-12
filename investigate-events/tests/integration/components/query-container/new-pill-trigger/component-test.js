@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -16,12 +17,14 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
 
+const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+
 let setState;
 
-module('Integration | Component | new-pill-trigger', function(hooks) {
+module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -193,5 +196,28 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
+  });
+
+  test('it broadcasts a message when creating a free-form pill', async function(assert) {
+    const done = assert.async(4);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data, position) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'foobar', 'Correct data');
+        assert.equal(position, 0, 'Correct position of the pill');
+      }
+      done();
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 });

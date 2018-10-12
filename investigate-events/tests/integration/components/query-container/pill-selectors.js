@@ -52,5 +52,7 @@ export default {
   activeQueryPill: '.query-pill.is-active',
   focusedPill: '.is-focused',
   loadingQueryButton: '.execute-query-button .rsa-loader',
-  powerSelectDropdown
+  powerSelectDropdown,
+  powerSelectAfterOptions: '.ember-power-select-after-options',
+  powerSelectAfterOption: '.ember-power-select-after-option'
 };

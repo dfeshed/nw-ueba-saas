@@ -41,14 +41,14 @@ const freeForm = Component.extend({
   },
 
   onFocusOut({ event }) {
-    const text = event.target.value;
+    const freeFormText = event.target.value;
     // Don't do anything if there is nothing in the box
-    if (text.length > 0) {
+    if (freeFormText.length > 0) {
 
       // Don't do anything if the text is the same as it was
       // when the component was initially rendered
-      if (this.get('initialFreeFormText') !== text) {
-        this.send('addFreeFormFilter', text);
+      if (this.get('initialFreeFormText') !== freeFormText) {
+        this.send('addFreeFormFilter', { freeFormText });
       }
     }
   },

@@ -419,7 +419,7 @@ export default handleActions({
     }, { deep: true });
   },
 
-  [ACTION_TYPES.ADD_GUIDED_PILL]: (state, { payload }) => {
+  [ACTION_TYPES.ADD_PILL]: (state, { payload }) => {
     const { pillData, position, shouldAddFocusToNewPill } = payload;
     const newPillData = {
       ..._initialPillState,

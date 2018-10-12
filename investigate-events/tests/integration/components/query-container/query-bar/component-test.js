@@ -13,7 +13,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 
 let setState;
 
-module('Integration | Component | query-bar', function(hooks) {
+module('Integration | Component | Query Bar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });

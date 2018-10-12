@@ -11,15 +11,16 @@ import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 import guidedCreators from 'investigate-events/actions/guided-creators';
 
-const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilter');
-const updatedFreeFormTextSpy = sinon.spy(guidedCreators, 'updatedFreeFormText');
-
 const ENTER_KEY = KEY_MAP.enter.code;
 const X_KEY = 88;
 
+const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilter');
+const updatedFreeFormTextSpy = sinon.spy(guidedCreators, 'updatedFreeFormText');
+const spys = [addFreeFormFilterSpy, updatedFreeFormTextSpy];
+
 let setState;
 
-module('Integration | Component | free-form', function(hooks) {
+module('Integration | Component | Free Form', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -31,13 +32,11 @@ module('Integration | Component | free-form', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    addFreeFormFilterSpy.reset();
-    updatedFreeFormTextSpy.reset();
+    spys.forEach((s) => s.reset());
   });
 
   hooks.after(function() {
-    addFreeFormFilterSpy.restore();
-    updatedFreeFormTextSpy.restore();
+    spys.forEach((s) => s.restore());
   });
 
   test('it triggers execute query action when user enters text and presses enter', async function(assert) {
@@ -57,7 +56,7 @@ module('Integration | Component | free-form', function(hooks) {
     assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add pill action creator was called once');
     assert.deepEqual(
       addFreeFormFilterSpy.args[0][0],
-      'medium = 1',
+      { freeFormText: 'medium = 1' },
       'The action creator was called with the right arguments'
     );
 

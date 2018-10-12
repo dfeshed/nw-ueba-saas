@@ -845,3 +845,28 @@
 input::-ms-clear {
   display: none;
 }
+
+.ember-power-select-option--no-matches-message {
+  color: rsa-color(grey, light);
+  font-weight: 100;
+}
+.ember-power-select-after-options {
+  min-width: 300px;
+  border-top: 1px solid text-color(primary);
+  .ember-power-select-after-option {
+    width: 100%;
+    display: flex;
+    font-weight: 100;
+    .value {
+      flex: 1 1 auto;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .description {
+      flex: 0 0 auto;
+      color: rsa-color(grey, light);
+      padding-left: rsa-whitespace();
+    }
+  }
+}

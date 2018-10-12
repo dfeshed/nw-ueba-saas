@@ -223,7 +223,8 @@ export default Component.extend({
         }
       },
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
-      [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data)
+      [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data) => this._createFreeFormPill(data)
     });
 
     if (this.get('isExistingPill')) {
@@ -864,6 +865,11 @@ export default Component.extend({
     if (!this.get('isActive')) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
     }
+  },
+
+  _createFreeFormPill(data) {
+    this._reset();
+    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, data);
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //
