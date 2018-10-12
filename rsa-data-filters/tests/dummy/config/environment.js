@@ -1,7 +1,8 @@
+/* eslint-env node */
 'use strict';
 
 module.exports = function(environment) {
-  let ENV = {
+  const ENV = {
     modulePrefix: 'dummy',
     environment,
     rootURL: '/',
@@ -15,6 +16,38 @@ module.exports = function(environment) {
         // Prevent Ember Data from overriding Date.parse.
         Date: false
       }
+    },
+    i18n: {
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
+    },
+    dateFormatDefault: 'MM/dd/yyyy',
+    timeFormatDefault: 'HR24',
+    timezoneDefault: 'America/Los_Angeles',
+    timezones: [
+      {
+        'displayLabel': 'UTC (GMT+00:00)',
+        'offset': 'GMT+00:00',
+        'zoneId': 'UTC'
+      },
+      {
+        'displayLabel': 'America/Los Angeles (GMT-07:00)',
+        'offset': 'GMT-07:00',
+        'zoneId': 'America/Los_Angeles'
+      }],
+    requestEula: true,
+    flashMessageDefaults: {
+      timeout: 5000,
+      extendedTimeout: 0,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
+    moment: {
+      includeLocales: ['en'],
+      includeTimezone: 'subset'
     },
 
     APP: {
@@ -40,11 +73,10 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {
-    // here you can enable a production-specific feature
+
   }
 
   return ENV;

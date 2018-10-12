@@ -6,8 +6,25 @@ import layout from './template';
 import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
+const DATE_COLUMNS = [
+  'agentStatus.lastSeenTime',
+  'machine.scanStartTime'
+];
+
+
 const _isFilterHasValues = (filter) => {
   return filter && filter.value && filter.value.length;
+};
+
+const _dateValues = (values, unit) => {
+  return values.map((item) => {
+    return {
+      value: item.value,
+      relativeValueType: unit,
+      relative: true,
+      valueType: 'DATE'
+    };
+  });
 };
 
 const parseFilters = (filters) => {
@@ -18,7 +35,9 @@ const parseFilters = (filters) => {
       if (name === 'size') {
         propertyValues = convertToBytes(unit, propertyValues);
       }
-
+      if (DATE_COLUMNS.includes(name)) {
+        propertyValues = _dateValues(propertyValues, unit);
+      }
       return {
         restrictionType: operator,
         propertyValues,
@@ -182,6 +201,27 @@ export default Component.extend({
 
       }
       this.set('saveFilterName', '');
+    },
+
+    applyFilters() {
+      const applySavedFilters = this.get('applySavedFilters');
+      if (applySavedFilters) {
+        applySavedFilters(...arguments);
+      }
+    },
+
+    deleteSavedFilter() {
+      const deleteFilter = this.get('deleteFilter');
+      if (deleteFilter) {
+        deleteFilter(...arguments);
+      }
+    },
+
+    resetAllFilters() {
+      const resetFilters = this.get('resetFilters');
+      if (resetFilters) {
+        resetFilters(...arguments);
+      }
     }
   }
 });

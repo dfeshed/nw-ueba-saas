@@ -53,4 +53,21 @@ module('Integration | Component | rsa-data-filters/filters/dropdown-filter', fun
     await render(hbs`{{rsa-data-filters/filters/dropdown-filter onChange=(action onChange) filterOptions=options}}`);
     await selectChoose('.dropdown-filter', '.ember-power-select-option', 0);
   });
+
+  test('it should set the query based on multiple selection', async function(assert) {
+    assert.expect(1);
+    this.set('onChange', (query) => {
+      assert.equal(query.value.length, 3);
+    });
+    const options = [
+      { name: 'one', label: 'Option 1' },
+      { name: 'two', label: 'Option 2' },
+      { name: 'three', label: 'Option 3' }
+    ];
+    this.set('options', { multiSelect: true, name: 'fileStatus', listOptions: options, filterValue: ['one', 'two'] });
+
+    await render(hbs`{{rsa-data-filters/filters/dropdown-filter onChange=(action onChange) filterOptions=options}}`);
+    await selectChoose('.dropdown-filter', '.ember-power-select-option', 2);
+  });
+
 });

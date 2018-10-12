@@ -53,6 +53,13 @@ export default Component.extend({
           case 'number':
             preLoadedFilters.push({ ...filterValue, name });
             break;
+          case 'date':
+            if (filterValue.value && filterValue.value.length === 1) {
+              preLoadedFilters.push({ ...filterValue, name, operator: 'GREATER_THAN' });
+            } else {
+              preLoadedFilters.push({ ...filterValue, name, operator: 'BETWEEN' });
+            }
+            break;
           case 'range':
             preLoadedFilters.push({ name, operator: 'BETWEEN', value: filterValue });
             break;

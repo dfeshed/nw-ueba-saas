@@ -96,3 +96,16 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.date-time-options {
+  width: 100%;
+}
+.range-start-time, .range-end-time {
+  .datetime-picker-icon {
+    top: 1rem;
+  }
+}
+
+.toggle-custom-range {
+  float: right;
+}

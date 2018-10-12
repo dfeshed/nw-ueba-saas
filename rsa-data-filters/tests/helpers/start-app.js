@@ -3,6 +3,10 @@ import { run } from '@ember/runloop';
 import Application from '../../app';
 import config from '../../config/environment';
 
+import registerFlatpickrHelpers from 'ember-flatpickr/test-support/helpers';
+
+registerFlatpickrHelpers();
+
 export default function startApp(attrs) {
   let attributes = merge({}, config.APP);
   attributes.autoboot = true;

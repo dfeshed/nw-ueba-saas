@@ -66,18 +66,54 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
   });
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
-    assert.expect(7);
-    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    assert.expect(9);
+    this.set('config', [
+      {
+        type: 'list',
+        name: 'status',
+        filterValue: ['one', 'two'],
+        listOptions: [
+          { name: 'one', label: 'ONE' },
+          { name: 'two', label: 'Two' }
+        ]
+      },
+      {
+        type: 'text',
+        filterOnBlur: true,
+        name: 'size',
+        filterValue: {
+          operator: 'LIKE',
+          value: ['test']
+        }
+      },
+      {
+        type: 'date',
+        name: 'scanTime',
+        filterValue: {
+          value: [ 1427958061000, 1427958061000 ]
+        }
+      },
+      {
+        type: 'date',
+        name: 'agentStatusTime',
+        filterValue: {
+          value: [ 5 ],
+          unit: 'Minutes'
+        }
+      }
+    ]);
     this.set('onFilterChange', (filters) => {
-      assert.equal(filters.length, 2);
-      assert.equal(filters[1].name, 'status');
-      assert.equal(filters[1].value.length, 1);
+      assert.equal(filters.length, 4);
+      assert.equal(filters[1].name, 'scanTime');
+      assert.equal(filters[1].value.length, 2);
+      assert.equal(filters[1].operator, 'BETWEEN');
     });
 
     await render(hbs`{{rsa-data-filters onFilterChange=(action onFilterChange) config=config}}`);
-    assert.equal(findAll('.filter-controls').length, 2, 'Expecting to render one filter control');
+    assert.equal(findAll('.filter-controls').length, 4, 'Expecting to render one filter control');
     assert.equal(findAll('.text-filter').length, 1, 'Expected render text filter');
     assert.equal(findAll('.list-filter').length, 1, 'Expected render list filter');
+    assert.equal(findAll('.date-filter').length, 2, 'Expected render date filter');
     assert.equal(find('.text-filter .file-name-input input').value.trim(), 'test', 'Expected to set the correct value to text field');
     await click('.list-filter .list-filter-option');
   });

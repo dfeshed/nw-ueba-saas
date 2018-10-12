@@ -53,10 +53,13 @@ export default Component.extend({
       const isMultiSelect = this.get('isMultiSelect');
 
       let value;
-      if (isMultiSelect) {
-        value = option.mapBy('name');
-      } else {
-        value = [option.name];
+
+      if (option) {
+        if (isMultiSelect) {
+          value = option.mapBy('name');
+        } else {
+          value = [option.name];
+        }
       }
 
       this.set('filterValue', option);

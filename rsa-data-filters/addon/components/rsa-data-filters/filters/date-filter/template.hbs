@@ -1,0 +1,42 @@
+<h2 class='filter-text'>
+  {{options.label}}
+  {{#if options.showCustomDate}}
+    {{#x-toggle
+      class='toggle-custom-range'
+      showLabels=true
+      onLabel='Custom Date'
+      value=(readonly hasCustomDate)
+      onToggle=(action 'toggleCustomDate') as |toggle|}}
+      {{toggle.switch}}
+      {{toggle.onLabel value=(readonly (not hasCustomDate))}}
+    {{/x-toggle}}
+  {{/if}}
+</h2>
+<vbox class='text-filter-content'>
+  {{#if hasCustomDate}}
+    {{rsa-form-datetime
+      placeholder=(t 'dataFilters.startDate')
+      class='range-start-time'
+      isError=hasCustomDateError
+      value=(unbound customDateRangeStart)
+      onChange=(action 'customStartDateChanged')
+      errorMessage=(if hasCustomDateError (t customDateErrorMessage))}}
+    {{rsa-form-datetime
+      class='range-end-time'
+      placeholder=(t 'dataFilters.endDate')
+      value=(unbound customDateRangeEnd)
+      onChange=(action 'customEndDateChanged')}}
+  {{else}}
+    {{#power-select
+      tagName='div'
+      allowClear=true
+      class='date-time-options'
+      options=options.timeframes
+      searchEnabled=false
+      selected=filterValue.unit
+      onchange=(action "onChangeTimeframe") as |time|}}
+      {{t (concat 'dataFilters.timeframeOptions.' time.name) }}
+    {{/power-select}}
+  {{/if}}
+</vbox>
+

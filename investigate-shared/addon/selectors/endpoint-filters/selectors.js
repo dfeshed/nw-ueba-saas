@@ -76,6 +76,9 @@ export const filters = createSelector(
         const { propertyValues, restrictionType } = expression;
         let filterValue = null;
         switch (type) {
+          case 'date':
+            filterValue = { value: propertyValues.mapBy('value'), operator: restrictionType, unit: propertyValues[0].relativeValueType };
+            break;
           case 'text':
             filterValue = { value: propertyValues.mapBy('value'), operator: restrictionType };
             break;
@@ -100,16 +103,5 @@ export const filters = createSelector(
       }
       return { ...item, label: i18n.t(label) };
     });
-  }
-);
-
-/**
- * Returns list of all the filters which are not defaults. This will be displayed in more filter dropdown
- * @public
- */
-export const listWithoutDefault = createSelector(
-  filters,
-  (filters) => {
-    return filters.filter((item) => !item.isDefault);
   }
 );

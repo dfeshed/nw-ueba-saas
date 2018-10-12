@@ -112,7 +112,7 @@ const FILTER_TYPES = [
       { name: 'signature.microsoft', label: 'investigateFiles.filter.signature.signer.microsoft' },
       { name: 'signature.apple', label: 'investigateFiles.filter.signature.signer.apple' }
     ],
-    type: 'dropdown'
+    type: 'list'
   },
   {
     'name': 'pe.resources.company',

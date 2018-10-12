@@ -2733,6 +2733,33 @@ export default {
         startDateAfterEndDate: 'Start date needs to be before End date.',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
+        },
+        securityConfig: {
+          allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
+          allowDisplayMixedContent: 'Allow Display Mixed Content',
+          antiVirusDisabled: 'Anti-virus Disabled',
+          'badCertificateWarningDisabled': 'Bad Certificate Warning Disabled',
+          'cookiesCleanupDisabled': 'Cookies Cleanup Disabled',
+          'crossSiteScriptFilterDisabled': 'Cross Site Script Filter Disabled',
+          'firewallDisabled': 'Firewall Disabled',
+          'fileVaultDisabled': 'File-Vault Disabled',
+          'gatekeeperDisabled': 'Gatekeeper Disabled',
+          'ieDepDisabled': 'IE-Dep Disabled',
+          'ieEnhancedSecurityDisabled': 'IE Enhanced Security Disabled',
+          'intranetZoneNotificationDisabled': 'Intranet Zone Notification Disabled',
+          'kextSigningDisabled': 'Kext Signing Disabled',
+          'luaDisabled': 'LUA Disabled',
+          'windowsUpdateDisabled': 'Windows Update Disabled',
+          'registryToolsDisabled': 'Registry Tools Disabled',
+          'safariFraudWebsiteWarningDisabled': 'Safari Fraud Website Warning Disabled',
+          'smartScreenFilterDisabled': 'Smart Screen Filter Disabled',
+          'sudoersNoPasswordPrompt': 'Sudoers No Password Prompt',
+          'systemIntegrityProtectionDisabled': 'System Integrity Protection Disabled',
+          'systemRestoreDisabled': 'System Restore Disabled',
+          'taskManagerDisabled': 'Task Manager Disabled',
+          'uacDisabled': 'UAC Disabled',
+          'warningPostRedirectionDisabled': 'Warning Post Redirection Disabled',
+          'warningOnZoneCrossingDisabled': 'Warning On Zone Crossing Disabled'
         }
       },
       restrictionTypeOptions: {
@@ -4034,5 +4061,25 @@ export default {
         dateRange: 'Date Range'
       }
     }
+  },
+  dataFilters: {
+    timeframeOptions: {
+      LAST_FIVE_MINUTES: 'Last 5 Minutes ago',
+      LAST_TEN_MINUTES: 'Last 10 Minutes ago',
+      LAST_FIFTEEN_MINUTES: 'Last 15 Minutes ago',
+      LAST_THIRTY_MINUTES: 'Last 30 Minutes ago',
+      LAST_ONE_HOUR: 'Last 1 Hours ago',
+      LAST_THREE_HOURS: 'Last 3 Hours ago',
+      LAST_SIX_HOURS: 'Last 6 Hours ago',
+      LAST_TWELVE_HOURS: 'Last 12 Hours ago',
+      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours ago',
+      LAST_TWO_DAYS: 'Last 2 Days ago',
+      LAST_SEVEN_DAYS: 'Last 7 Days ago',
+      LAST_TWO_WEEKS: 'Last 2 Weeks ago',
+      LAST_ONE_MONTH: 'Last 1 Month ago'
+    },
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
   }
 };
