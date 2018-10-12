@@ -24,12 +24,12 @@ const TextAreaInput = Component.extend({
 
   @computed('localValue', 'validation')
   validator(localValue, validation) {
-    return groupExpressionValidator(localValue, validation, true);
+    return groupExpressionValidator(localValue, validation, true, true);
   },
 
   actions: {
     handleInputChange(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), [value], 2);
+      this.send('updateGroupCriteria', this.get('criteriaPath'), [value.trim()], 2);
     }
   }
 });

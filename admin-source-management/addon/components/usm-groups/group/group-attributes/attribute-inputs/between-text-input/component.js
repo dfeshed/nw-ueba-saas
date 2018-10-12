@@ -24,21 +24,21 @@ const BetweenTextInput = Component.extend({
 
   @computed('firstValue', 'validation')
   firstValueValidator(firstValue, validation) {
-    return groupExpressionValidator(firstValue, validation, true);
+    return groupExpressionValidator(firstValue, validation, true, true);
   },
 
   @computed('secondValue', 'validation')
   secondValueValidator(secondValue, validation) {
-    return groupExpressionValidator(secondValue, validation, true);
+    return groupExpressionValidator(secondValue, validation, true, true);
   },
 
   actions: {
     firstValueChange(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 10);
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 10);
     },
 
     secondValueChange(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 11);
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 11);
     }
   }
 });

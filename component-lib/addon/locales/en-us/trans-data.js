@@ -3877,7 +3877,7 @@ export default {
       inputValidations: {
         none: '',
         notEmpty: 'Value can not be empty',
-        maxLength256: 'Value can not be empty and must be less than 256 characters',
+        maxLength255: 'Value can not be empty and must be less than 256 characters',
         validHostname: 'Invalid host name',
         validHostnameList: 'One or more of the the hostnames are invalid',
         validHostnameChars: 'Invalid host name characters',

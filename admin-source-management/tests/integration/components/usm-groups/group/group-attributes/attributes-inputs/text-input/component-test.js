@@ -31,7 +31,7 @@ module('Integration | Component | text-input', function(hooks) {
   test('osDescription using text-input', async function(assert) {
     assert.expect(5);
     const translation = this.owner.lookup('service:i18n');
-    const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.maxLength256');
+    const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.maxLength255');
     new ReduxDataHelper(setState)
       .groupWiz()
       .build();

@@ -7,12 +7,12 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 // const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'];
 // const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
 // const INPT = ['text-input', 'os-selector', 'between-text-input', 'textarea-input'];
-// const VLDTR = ['none', 'notEmpty', 'maxLength256', 'validHostname', 'validHostnameList', 'validHostnameChars', 'validIPv4', 'validIPv4List', 'validIPv6', 'validIPv6List'];
+// const VLDTR = ['none', 'notEmpty', 'maxLength255', 'validHostname', 'validHostnameList', 'validHostnameChars', 'validIPv4', 'validIPv4List', 'validIPv6', 'validIPv6List'];
 // In the future the _GROUP_ATTRIBUTES_MAP may be initialize with an API call
 // _GROUP_ATTRIBUTES_MAP is derived from https://wiki.na.rsa.net/display/RPA/Cycle+9+Attributes
 // The _GROUP_ATTRIBUTES_MAP is used to draw dynamically the selectors for attributes and operators and also the associated input/s
 // Consider __GROUP_ATTRIBUTES_MAP.map[0] = [osType, [IN, os-selector-input, notEmpty]], here the 'osType' attribute has one operator 'IN", has selector type input 'os-selector' and has no validation
-// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUALS, text-input, maxLength256], ... plus three other operators with associated input/s and validation ]
+// __GROUP_ATTRIBUTES_MAP.map[1] = [osDescription, [EQUALS, text-input, maxLength255], ... plus three other operators with associated input/s and validation ]
 
 /* eslint-disable no-multi-spaces*/
 const _GROUP_ATTRIBUTES_MAP = {
@@ -22,16 +22,17 @@ const _GROUP_ATTRIBUTES_MAP = {
       ['IN',            'os-selector',          'notEmpty']
     ]],
     ['osDescription', [
-      ['EQUAL',         'text-input',           'maxLength256'],
-      ['CONTAINS',      'text-input',           'maxLength256'],
-      ['STARTS_WITH',   'text-input',           'maxLength256'],
-      ['ENDS_WITH',     'text-input',           'maxLength256']
+      ['EQUAL',         'text-input',           'maxLength255'],
+      ['CONTAINS',      'text-input',           'maxLength255'],
+      ['STARTS_WITH',   'text-input',           'maxLength255'],
+      ['ENDS_WITH',     'text-input',           'maxLength255']
     ]],
     ['hostname', [
       ['EQUAL',         'text-input',           'validHostname'],
       ['CONTAINS',      'text-input',           'validHostnameChars'],
       ['STARTS_WITH',   'text-input',           'validHostnameChars'],
-      ['ENDS_WITH',     'text-input',           'validHostnameChars']
+      ['ENDS_WITH',     'text-input',           'validHostnameChars'],
+      ['IN',            'text-input',           'validHostname']
     ]],
     ['ipv4', [
       ['BETWEEN',       'between-text-input',   'validIPv4'],

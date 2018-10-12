@@ -23,7 +23,7 @@ const OsSelector = Component.extend({
 
   @computed('selectedValues', 'validation')
   validator(selectedValues, validation) {
-    return groupExpressionValidator(selectedValues, validation, true);
+    return groupExpressionValidator(selectedValues, validation, false, true);
   },
 
   actions: {
