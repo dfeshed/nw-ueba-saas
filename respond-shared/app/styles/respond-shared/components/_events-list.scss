@@ -30,12 +30,35 @@
       border-collapse: separate;
 
       li:nth-child(odd) {
-        background-color: background-color(primary, darkest);
+        &:not(.expanded) {
+          background-color: background-color(primary, darkest);
+        }
+        &.expanded {
+          background-color: background-color(secondary, base, nearly-transparent);
+          &.events-list-table-row {
+            @include border-top(1px, solid, secondary);
+          }
+          & + .events-list-table-row {
+            @include border-top(1px, solid, secondary);
+          }
+        }
       }
 
       li:nth-child(even) {
-        background-color: background-color(primary, darker);
+        &:not(.expanded) {
+          background-color: background-color(primary, darker);
+        }
+        &.expanded {
+          background-color: background-color(secondary, base, nearly-transparent);
+          &.events-list-table-row {
+            @include border-top(1px, solid, secondary);
+          }
+          & + .events-list-table-row {
+            @include border-top(1px, solid, secondary);
+          }
+        }
       }
+
     }
   }
 

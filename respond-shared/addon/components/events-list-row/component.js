@@ -10,6 +10,7 @@ export default Component.extend({
   layout,
   tagName: 'li',
   testId: 'eventsListRow',
+  classNameBindings: ['expanded'],
   classNames: ['events-list-table-row'],
   attributeBindings: ['testId:test-id'],
 

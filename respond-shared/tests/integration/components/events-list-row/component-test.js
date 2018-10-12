@@ -263,6 +263,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     assert.equal(trigger.getAttribute('aria-controls'), detailsId);
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
     assert.equal(trigger.getAttribute('aria-pressed'), 'false');
+    assert.notOk(find(rowSelector).classList.contains('expanded'));
 
     const details = find(`[id='${detailsId}']`);
     assert.equal(details.getAttribute('tabIndex'), '-1');
@@ -277,6 +278,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     assert.equal(details.getAttribute('tabIndex'), '0');
     assert.equal(details.getAttribute('aria-hidden'), 'false');
     assert.equal(details.getAttribute('hidden'), null);
+    assert.ok(find(rowSelector).classList.contains('expanded'));
   });
 
   test('keyDown will also toggle the event row to show details', async function(assert) {

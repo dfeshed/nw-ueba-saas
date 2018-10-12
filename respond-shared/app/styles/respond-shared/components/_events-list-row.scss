@@ -1,6 +1,19 @@
 .events-list-table-row {
   padding: rsa-whitespace(less);
-  @include border-bottom(1px, solid, primary, light);
+
+  &:first-of-type {
+    border-top: 0;
+    & ~ .events-list-table-row {
+      @include border-top(1px, solid, primary, light);
+    }
+  }
+
+  &:nth-last-child(2) {
+    @include border-bottom(1px, solid, secondary);
+    &:not(.expanded) {
+      @include border-bottom(1px, solid, primary, light);
+    }
+  }
 
   dl {
     display: flex;
@@ -57,6 +70,7 @@
   }
 
   .events-list-table-cell {
+    cursor: pointer;
     &:focus {
       outline: none;
     }
