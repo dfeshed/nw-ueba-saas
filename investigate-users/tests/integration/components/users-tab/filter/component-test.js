@@ -3,10 +3,25 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, find, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { patchFetch } from '../../../../helpers/patch-fetch';
+import { Promise } from 'rsvp';
 
 module('Integration | Component | users-tab/filter', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-users')
+  });
+
+  hooks.beforeEach(function() {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return {};
+          }
+        });
+      });
+    });
   });
 
   test('it renders', async function(assert) {

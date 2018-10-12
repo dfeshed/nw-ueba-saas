@@ -1,9 +1,24 @@
 import { module, test } from 'qunit';
 import { visit, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import { patchFetch } from '../helpers/patch-fetch';
+import { Promise } from 'rsvp';
 
 module('Acceptance | investigate-users', function(hooks) {
   setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return {};
+          }
+        });
+      });
+    });
+  });
 
   test('visiting /investigate-users', async function(assert) {
     await visit('/investigate/users');

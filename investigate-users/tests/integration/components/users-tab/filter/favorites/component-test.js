@@ -7,6 +7,8 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import favorite from '../../../../../data/presidio/favorite_filter';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import { patchFetch } from '../../../../../helpers/patch-fetch';
+import { Promise } from 'rsvp';
 
 let setState;
 
@@ -21,6 +23,16 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return {};
+          }
+        });
+      });
+    });
   });
 
   test('it renders', async function(assert) {

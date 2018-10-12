@@ -1,6 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
+import { patchFetch } from '../../helpers/patch-fetch';
+import { Promise } from 'rsvp';
+import dataIndex from '../../data/presidio';
 import { getTopTenAlerts, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 
 export const initialFilterState = Immutable.from({
@@ -17,6 +20,19 @@ export const initialFilterState = Immutable.from({
 
 module('Unit | Actions | Alert Details', (hooks) => {
   setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    patchFetch((url) => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return dataIndex(url);
+          }
+        });
+      });
+    });
+  });
 
   test('it can getTopTenAlerts', (assert) => {
     assert.expect(2);

@@ -9,6 +9,9 @@ import existAnomalyTypes from '../../../../../data/presidio/exist_anomaly_types'
 import existAlertTypes from '../../../../../data/presidio/exist_alert_types';
 import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import { patchFetch } from '../../../../../helpers/patch-fetch';
+import dataIndex from '../../../../../data/presidio';
+import { Promise } from 'rsvp';
 
 let setState;
 
@@ -23,6 +26,16 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    patchFetch((url) => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return dataIndex(url);
+          }
+        });
+      });
+    });
   });
 
   test('it renders', async function(assert) {

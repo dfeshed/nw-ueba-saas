@@ -1,10 +1,26 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialFilterState } from 'investigate-users/reducers/users/selectors';
+import { patchFetch } from '../../helpers/patch-fetch';
+import { Promise } from 'rsvp';
+import dataIndex from '../../data/presidio';
 import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview } from 'investigate-users/actions/user-details';
 
 module('Unit | Actions | User Details Actions', (hooks) => {
   setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    patchFetch((url) => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return dataIndex(url);
+          }
+        });
+      });
+    });
+  });
 
   test('it can getAdminUserCount', (assert) => {
     assert.expect(2);

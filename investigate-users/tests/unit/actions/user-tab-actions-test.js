@@ -1,6 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
+import { patchFetch } from '../../helpers/patch-fetch';
+import { Promise } from 'rsvp';
+import dataIndex from '../../data/presidio';
 import { getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
 
 export const initialFilterState = Immutable.from({
@@ -22,6 +25,19 @@ export const initialFilterState = Immutable.from({
 
 module('Unit | Actions | User Tab Actions', (hooks) => {
   setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    patchFetch((url) => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return dataIndex(url);
+          }
+        });
+      });
+    });
+  });
 
   test('it can getSeverityDetailsForUserTabs', (assert) => {
     assert.expect(2);
