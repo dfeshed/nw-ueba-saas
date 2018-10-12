@@ -122,6 +122,26 @@ export const initialState = {
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     }
   ],
+  rankingSteps: [
+    {
+      id: 'chooseSourceStep',
+      prevStepId: '',
+      nextStepId: 'editRankingStep',
+      title: 'adminUsm.groupRankingWizard.chooseSource',
+      stepComponent: 'usm-groups/group-ranking/choose-source-step',
+      titlebarComponent: 'usm-groups/group-ranking/group-titlebar',
+      toolbarComponent: 'usm-groups/group-ranking/group-toolbar'
+    },
+    {
+      id: 'editRankingStep',
+      prevStepId: 'chooseSourceStep',
+      nextStepId: '',
+      title: 'adminUsm.groupRankingWizard.editRanking',
+      stepComponent: 'usm-groups/group-ranking/edit-ranking-step',
+      titlebarComponent: 'usm-groups/group-ranking/group-titlebar',
+      toolbarComponent: 'usm-groups/group-ranking/group-toolbar'
+    }
+  ],
   // keeps track of the form fields visited by the user
   visited: [],
   groupAttributesMap: _GROUP_ATTRIBUTES_MAP

@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import {
   groupAttributesMap,
   groupCriteria
@@ -26,6 +27,10 @@ const dispatchToActions = {
 const GroupAttributes = Component.extend({
   classNames: ['group-attributes'],
   criteriaPath: '',
+  @computed('criterias')
+  maxTenCriteria(criterias) {
+    return criterias.length > 9;
+  },
   actions: {
     handleAttributeChange(criteriaPath, attr) {
       this.send('updateGroupCriteria', criteriaPath, attr, 0);

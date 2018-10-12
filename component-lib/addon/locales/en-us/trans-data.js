@@ -3599,7 +3599,8 @@ export default {
       applyPolicies: 'Apply Policy(ies)',
       save: 'Save and Publish',
       saveAndPublish: 'Save and Publish',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      editRanking: 'Edit Ranking'
     },
     groups: {
       title: 'Groups',
@@ -3787,19 +3788,26 @@ export default {
       reviewGroup: 'Review',
       // common titlebar
       newGroup: 'New Group',
+      groupRanking: 'RANKING GROUPS',
       // common toolbar
       previous: 'Previous',
       next: 'Next',
       publishGroup: 'Publish Group',
+      publishRanking: 'Publish Ranking',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
       addCondition: 'Add Condition',
+      maxTenCriteria: 'A maximum of ten criteria is allowed',
       actionMessages: {
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
         savePublishSuccess: 'The group has been saved and published successfully.'
       }
+    },
+    groupRankingWizard: {
+      chooseSource: 'Choose Source Type',
+      editRanking: 'Edit Ranking'
     },
     policyWizard: {
       // identify-policy-step

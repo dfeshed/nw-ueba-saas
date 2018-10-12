@@ -1,7 +1,11 @@
 .usm-group-wizard {
   .define-group-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
-
+    .maxTenCriteria {
+      position: absolute;
+      left: 160px;
+      bottom: 6px;
+    }
     .andOrTable {
       width: 500px;
       height: 30px;
@@ -42,6 +46,20 @@
         margin-top: rsa-whitespace(); 
         vertical-align: text-top;
         width: 800px;
+        .attribute, .operator {
+          padding-bottom: rsa-whitespace(more);
+        }
+        .input-value {
+          padding-bottom: rsa-whitespace(more);
+          
+          .textarea-input {
+            .input-error {
+              @include rsa-font(paragraph, small);
+              color: text-color(primary, lightest);
+              padding-left: rsa-whitespace(less);
+            }
+          }
+        }
         label {
           display: inline-block;
           margin-right: rsa-whitespace(less);

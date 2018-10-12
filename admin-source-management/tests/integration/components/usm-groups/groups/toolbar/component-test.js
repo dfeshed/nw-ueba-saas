@@ -12,6 +12,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 const selectors = {
   componentClass: '.usm-groups-toolbar',
   createNewButton: '.usm-groups-toolbar .groups-create-new-button',
+  rankingButton: '.groups-editRanking-button',
   deleteButton: '.usm-groups-toolbar .groups-delete-button',
   applyPoliciesButton: '.usm-groups-toolbar .groups-apply-policies-button',
   publishButton: '.usm-groups-toolbar .groups-publish-button'
@@ -34,12 +35,13 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   });
 
   test('The components appears in the DOM', async function(assert) {
-    assert.expect(9);
+    assert.expect(10);
     new ReduxDataHelper(setState)
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(selectors.componentClass).length, 1, 'The Toolbar component appears in the DOM');
     assert.equal(findAll(selectors.createNewButton).length, 1, 'Create New groups button is showing');
+    assert.equal(findAll(selectors.rankingButton).length, 1, 'Ranking button is showing');
     assert.equal(findAll(selectors.deleteButton).length, 1, 'Delete groups button is showing');
     assert.equal(findAll(selectors.applyPoliciesButton).length, 1, 'Apply Policies groups button is showing');
     assert.equal(findAll(selectors.publishButton).length, 1, 'Publish groups button is showing');

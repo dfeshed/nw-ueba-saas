@@ -61,7 +61,14 @@
 {{#rsa-form-button
   class='add-criteria-button'
   style='standard'
+  isDisabled=maxTenCriteria
   defaultAction='addCriteria'
 }}
   {{t 'adminUsm.groupWizard.addCondition'}}
 {{/rsa-form-button}}
+{{#if maxTenCriteria}}
+  <span class='maxTenCriteria'>{{t 'adminUsm.groupWizard.maxTenCriteria'}}</span>
+{{/if}}
+
+    
+    

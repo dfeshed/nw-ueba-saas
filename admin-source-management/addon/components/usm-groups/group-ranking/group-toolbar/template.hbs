@@ -1,0 +1,45 @@
+{{!-- previous is visible if prevStepId is defined, and always enabled --}}
+{{#if step.prevStepId}}
+  {{#rsa-form-button
+    class='prev-button'
+    defaultAction='transitionToPrevStep'
+  }}
+    {{t 'adminUsm.groupWizard.previous'}}
+  {{/rsa-form-button}}
+{{/if}}
+
+{{!-- next is visible if nextStepId is defined, and enabled if the current step is valid --}}
+{{#if step.nextStepId}}
+  {{#rsa-form-button
+    class='next-button'
+    style='primary'
+    defaultAction='transitionToNextStep'
+    isDisabled=(not isStepValid)
+  }}
+    {{t 'adminUsm.groupWizard.next'}}
+  {{/rsa-form-button}}
+{{else}}
+  {{#rsa-form-button
+    class='publish-button'
+    style='primary'
+    defaultAction=(action 'save' true)
+  }}
+    {{t 'adminUsm.groupWizard.publishRanking'}}
+  {{/rsa-form-button}}
+{{/if}}
+
+{{!-- save is always visible, and enabled if the current step is valid --}}
+{{#rsa-form-button
+  class='save-button'
+  defaultAction=(action 'save' false)
+}}
+  {{t 'adminUsm.groupWizard.saveAndClose'}}
+{{/rsa-form-button}}
+
+{{!-- cancel is always visible & enabled --}}
+{{#rsa-form-button
+  class='cancel-button'
+  defaultAction='cancel'
+}}
+  {{t 'adminUsm.groupWizard.cancel'}}
+{{/rsa-form-button}}

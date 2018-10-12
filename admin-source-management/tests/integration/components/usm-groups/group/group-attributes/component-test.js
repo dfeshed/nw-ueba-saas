@@ -71,6 +71,20 @@ module('Integration | Component | group-attributes', function(hooks) {
     await click('.add-criteria-button button');
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 2, 'A new criteria was added');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    await click('.add-criteria-button button');
+    state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 10, '8 new criteria were added to a max of ten');
+    await click('.add-criteria-button button');
+    state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 10, 'No more criteria can be added');
+    assert.equal(findAll('.maxTenCriteria').length, 1, 'The message for maxTenCriteria appears in the DOM');
   });
 
   test('Remove Criteria', async function(assert) {
