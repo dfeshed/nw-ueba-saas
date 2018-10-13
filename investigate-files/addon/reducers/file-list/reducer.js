@@ -61,7 +61,7 @@ const _toggleSelectedFile = (state, payload) => {
   } else {
     selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size }];
   }
-  return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {} });
+  return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {}, isRemediationAllowed: true });
 
 };
 const fileListReducer = handleActions({

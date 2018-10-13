@@ -4,7 +4,7 @@ import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import _ from 'lodash';
 import { select, event, selectAll } from 'd3-selection';
-import { zoom } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
@@ -191,11 +191,14 @@ const TreeComponent = Component.extend({
     const parent = el.select('svg');
     parent.call(zoomBehaviour);
 
-    // Reset zoom
-    this.centeringElement.attr('transform', 'translate(0, 0)');
-
     this.parent = parent;
     if (rootNode) {
+      // Reset Zoom
+      const transform = zoomIdentity
+        .scale(1)
+        .translate(0, 0);
+      zoomBehaviour.transform(parent, transform);
+
       this.buildChart(rootNode);
       this.addSelectedClass(selectedProcessId);
     }
