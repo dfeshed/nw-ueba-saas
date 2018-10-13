@@ -19,6 +19,8 @@ import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/fil
 import _ from 'lodash';
 import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
+import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/alert-event';
+
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const _handleError = (response, type) => {
@@ -351,6 +353,13 @@ const fetchAgentId = (hostName, callBack) => {
 
 const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
 
+const setSelectedAlert = (context) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context });
+    dispatch(getAlertEvents(context));
+  };
+};
+
 const getUpdatedRiskScoreContext = (checksum, tabName) => {
   return (dispatch) => {
     dispatch(activeRiskSeverityTab(tabName));
@@ -369,6 +378,27 @@ const retrieveRemediationStatus = (selections) => {
 };
 
 const userLeftFilesPage = () => ({ type: ACTION_TYPES.USER_LEFT_FILES_PAGE });
+
+const getAlertEvents = (context) => {
+  return (dispatch) => {
+    const handlers = {
+      onResponse(response) {
+        const { data } = response || {};
+        dispatch({ type: ACTION_TYPES.GET_EVENTS, payload: data });
+      },
+      onError() {
+        dispatch({ type: ACTION_TYPES.GET_EVENTS_ERROR });
+      },
+      onCompleted() {
+        dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED });
+      }
+    };
+
+    fetchStreamingAlertEvents(context.context, handlers);
+  };
+};
+
+const expandEvent = (id) => ({ type: ACTION_TYPES.EXPANDED_EVENT, id });
 
 export {
   getPageOfFiles,
@@ -395,6 +425,9 @@ export {
   getRiskScoreContext,
   getUpdatedRiskScoreContext,
   retrieveRemediationStatus,
+  getAlertEvents,
+  setSelectedAlert,
   setSelectedFile,
-  userLeftFilesPage
+  userLeftFilesPage,
+  expandEvent
 };

@@ -14,7 +14,10 @@
     {{/endpoint/risk-properties/alert-tab}}
   </box>
   <box>
-    {{#endpoint/risk-properties/alert-context contexts=contexts as |context|}}
+    {{#endpoint/risk-properties/alert-context
+      contexts=contexts
+      setAlertAction=setSelectedAlert
+      selectedAlert=selectedAlert as |context|}}
       <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
       <div class="alert-context__event">{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</div>
     {{/endpoint/risk-properties/alert-context}}

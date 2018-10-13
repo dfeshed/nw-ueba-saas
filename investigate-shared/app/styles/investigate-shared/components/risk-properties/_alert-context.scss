@@ -1,18 +1,22 @@
 .alert-context {
+  margin-top: rsa-whitespace(less);
+  .is-selected {
+    background-color: text-color(secondary, dark);
+  }
 
   &__container {
     cursor: pointer;
   }
 
   &__name {
-    @include rsa-font(regular, small);
-    color: text-color(primary, light);
+    font-size: .9rem;
+    color: text-color(primary, lighter);
     padding: 1rem 0 0 .5rem;
   }
 
   &__event {
     @include rsa-font(regular, small);
-    color: text-color(primary, light);
+    color: text-color(primary, lighter);
     padding: .5rem 0 .5rem .5rem;
   }
 }

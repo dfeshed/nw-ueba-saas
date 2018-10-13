@@ -1,5 +1,6 @@
 {{#each contexts as |context|}}
-  <div class="alert-context__container">
+  <div class="alert-context__container {{if (eq context.alertName selectedAlert) 'is-selected'}}"
+    {{action 'handleClick' context}}>
     {{#if hasBlock}}
       {{yield context}}
     {{/if}}

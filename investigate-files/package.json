@@ -82,7 +82,8 @@
       "../streaming-data",
       "../preferences",
       "../investigate-shared",
-      "../rsa-data-filters"
+      "../rsa-data-filters",
+      "../respond-shared"
     ]
   },
   "private": true

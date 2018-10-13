@@ -56,6 +56,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
   });
 
   test('change landing severity tab if currentActiveTab has 0 alerts', async function(assert) {
+    assert.expect(2);
     const riskScoreContext = {
       'hash': 'test-hash',
       'alertCount': {
@@ -64,25 +65,27 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'medium': 3
       },
       'categorizedAlerts': {
-        'Critical': {
+        'High': {
           'test alert': {
-            'alertCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            }]
+            'alertCount': 2,
+            'eventContexts': [{ 'id': 1, 'sourceId': 'decoder-id1' }, { 'id': 2, 'sourceId': 'decoder-id1' }]
           }
         }
       }
     };
     this.set('riskScoreContext', riskScoreContext);
     this.set('activeRiskSeverityTab', 'critical');
+    this.set('setSelectedAlert', (context) => {
+      assert.equal(context.context['decoder-id1'].length, 2, '2 events are grouped in decoder-id1');
+    });
 
     this.set('activate', () => {
       this.set('activeRiskSeverityTab', 'high');
     });
 
-    await render(hbs`{{endpoint/risk-properties activeRiskSeverityTab=activeRiskSeverityTab
+    await render(hbs`{{endpoint/risk-properties 
+      activeRiskSeverityTab=activeRiskSeverityTab 
+      setSelectedAlert=(action setSelectedAlert)
       riskScoreContext=riskScoreContext defaultAction=(action activate)}}`);
 
     assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'High', 'high tab is selected');

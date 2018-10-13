@@ -53,14 +53,15 @@ export default Component.extend({
   },
 
   @computed('activeRiskSeverityTab', 'riskScoreContext')
-  contexts(activeAlertTab, riskScoreContext) {
-    const severity = _.upperFirst(activeAlertTab);
+  contexts(activeRiskSeverityTab, riskScoreContext) {
+    const severity = _.upperFirst(activeRiskSeverityTab);
     const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
     if (alertContext) {
       return Object.keys(alertContext).map((key) => ({
         alertName: key,
         alertCount: alertContext[key].alertCount,
-        eventCount: alertContext[key].eventContexts.length
+        eventCount: alertContext[key].eventContexts.length,
+        context: _.groupBy(alertContext[key].eventContexts, 'sourceId')
       }));
     }
     return null;

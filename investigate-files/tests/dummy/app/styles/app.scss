@@ -8,6 +8,9 @@
 
 @import "investigate-shared/manifest";
 
+/* Import respond-shared styles from addon */
+@import 'respond-shared/manifest';
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.investigate-files-engine-dummy {
   color: text-color(primary, light);

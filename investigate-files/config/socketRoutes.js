@@ -43,6 +43,13 @@ const filesConfigGen = function(environment) {
         cancelDestination: '/ws/investigate/cancel'
       }
     },
+    'core-event': {
+      socketUrl: investigateSocketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events',
+        requestDestination: '/ws/investigate/events/stream'
+      }
+    },
     'files': {
       socketUrl,
       'schema': {

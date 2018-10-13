@@ -4,14 +4,16 @@
       <box class="alerts">
         {{endpoint/risk-properties
           defaultAction=(action 'getUpdatedRiskScoreContext')
+          setSelectedAlert=(action 'setSelectedAlert')
           activeRiskSeverityTab=activeRiskSeverityTab
-          riskScoreContext=riskScoreContext}}
+          riskScoreContext=riskScoreContext
+          selectedAlert=selectedAlert}}
       </box>
-      <box>
+      <box class="events">
         {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
           {{rsa-icon name='layout-2'}}
         {{/rsa-form-button}}
-        Events
+        {{file-details/overview/events-list-container}}
       </box>
     </hbox>
   {{/layout.center}}
