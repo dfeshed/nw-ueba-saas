@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.enriched.activedirectory;
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,6 +9,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * The enriched active directory record POJO.
@@ -20,6 +22,10 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
     public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
     public static final String OBJECT_ID = "objectId";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
+    public static final String RESULT_FIELD = "result";
+    public static final String RESULT_CODE_FIELD = "resultCode";
 
     @Field(USER_ID_FIELD)
     private String userId;
@@ -31,6 +37,14 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     private Boolean isUserAdmin;
     @Field(OBJECT_ID)
     private String objectId;
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD)
+    private List<String> operationTypeCategories;
+    @Field(RESULT_FIELD)
+    private EventResult result;
+    @Field(RESULT_CODE_FIELD)
+    private String resultCode;
 
     /**
      * C'tor.
@@ -79,6 +93,38 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
 
     public void setObjectId(String objectId) {
         this.objectId = objectId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public EventResult getResult() {
+        return result;
+    }
+
+    public void setResult(EventResult result) {
+        this.result = result;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 
     @Override

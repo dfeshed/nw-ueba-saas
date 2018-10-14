@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.enriched.process;
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -29,6 +30,7 @@ public class EnrichedProcessRecord extends EnrichedRecord {
     public static final String DST_PROCESS_DIRECTORY_GROUPS_FIELD = "dstProcessDirectoryGroups";
     public static final String DST_PROCESS_CATEGORIES_FIELD = "dstProcessCategories";
     public static final String DST_PROCESS_CERTIFICATE_ISSUER_FIELD = "dstProcessCertificateIssuer";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
 
     @Field(USER_ID_FIELD)
     private String userId;
@@ -54,6 +56,8 @@ public class EnrichedProcessRecord extends EnrichedRecord {
     private List<String> dstProcessCategories;
     @Field(DST_PROCESS_CERTIFICATE_ISSUER_FIELD)
     private String dstProcessCertificateIssuer;
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
 
     /**
      * C'tor.
@@ -169,5 +173,13 @@ public class EnrichedProcessRecord extends EnrichedRecord {
 
     public void setDstProcessCertificateIssuer(String dstProcessCertificateIssuer) {
         this.dstProcessCertificateIssuer = dstProcessCertificateIssuer;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }

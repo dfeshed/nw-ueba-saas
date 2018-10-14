@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.enriched.registry;
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -29,6 +30,7 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
     public static final String REGISTRY_KEY_GROUP_FIELD = "registryKeyGroup";
     public static final String REGISTRY_KEY_FIELD = "registryKey";
     public static final String REGISTRY_VALUE_NAME_FIELD = "registryValueName";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
 
 
     @Field(USER_ID_FIELD)
@@ -51,6 +53,8 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
     private String registryKey;
     @Field(REGISTRY_VALUE_NAME_FIELD)
     private String registryValueName;
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
 
 
     /**
@@ -151,5 +155,13 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
 
     public void setRegistryValueName(String registryValueName) {
         this.registryValueName = registryValueName;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }
