@@ -25,6 +25,10 @@ public class RegistryRawEvent extends AbstractInputDocument {
     public static final String REGISTRY_KEY_GROUP_FIELD_NAME = "registryKeyGroup";
     public static final String REGISTRY_KEY_FIELD_NAME = "registryKey";
     public static final String REGISTRY_VALUE_NAME_FIELD_NAME = "registryValueName";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
 
 
     @Field(MACHINE_ID_FIELD_NAME)
@@ -66,6 +70,20 @@ public class RegistryRawEvent extends AbstractInputDocument {
     @NotEmpty
     private String registryValueName;
 
+    @Field(USER_ID_FIELD_NAME)
+    @NotEmpty
+    protected String userId;
+
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    @NotEmpty
+    protected String operationType;
+
+    @Field(USER_NAME_FIELD_NAME)
+    protected String userName;
+
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
+    protected String userDisplayName;
+
     public RegistryRawEvent() {
     }
 
@@ -82,11 +100,15 @@ public class RegistryRawEvent extends AbstractInputDocument {
         this.registryKeyGroup = other.registryKeyGroup;
         this.registryKey = other.registryKey;
         this.registryValueName = other.registryValueName;
+        this.userId = other.userId;
+        this.operationType = other.operationType;
+        this.userName = other.userName;
+        this.userDisplayName = other.userDisplayName;
     }
 
 
-    public RegistryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType, List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName, Map<String, String> additionalInfo, String resultCode, String machineId, String machineName, String machineOwner, String processDirectory, String processFileName, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer, String registryKeyGroup, String registryKey, String registryValueName) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategories, result, userName, userDisplayName, additionalInfo, resultCode);
+    public RegistryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType, String userName, String userDisplayName, Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String processDirectory, String processFileName, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer, String registryKeyGroup, String registryKey, String registryValueName) {
+        super(dateTime, eventId, dataSource, additionalInfo);
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;
@@ -98,6 +120,10 @@ public class RegistryRawEvent extends AbstractInputDocument {
         this.registryKeyGroup = registryKeyGroup;
         this.registryKey = registryKey;
         this.registryValueName = registryValueName;
+        this.userId = userId;
+        this.operationType = operationType;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
     }
 
 
@@ -187,6 +213,38 @@ public class RegistryRawEvent extends AbstractInputDocument {
 
     public void setRegistryValueName(String registryValueName) {
         this.registryValueName = registryValueName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 
     @Override

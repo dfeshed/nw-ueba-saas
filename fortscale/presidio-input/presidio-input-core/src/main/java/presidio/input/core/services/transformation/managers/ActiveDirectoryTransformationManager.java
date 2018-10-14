@@ -5,6 +5,7 @@ import presidio.input.core.services.transformation.transformer.OperationTypeCate
 import presidio.input.core.services.transformation.transformer.OperationTypeToCategoryTransformer;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ public class ActiveDirectoryTransformationManager implements TransformationManag
     public List<Transformer> getTransformers() {
         if (transformers == null) {
             transformers = new ArrayList<>();
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.ACTIVE_DIRECTORY)));
-            transformers.add(new OperationTypeCategoryHierarchyTransformer(operationTypeCategoryHierarchyMapping.get(Schema.ACTIVE_DIRECTORY)));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.ACTIVE_DIRECTORY), ActiveDirectoryRawEvent.OPERATION_TYPE_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
+            transformers.add(new OperationTypeCategoryHierarchyTransformer(operationTypeCategoryHierarchyMapping.get(Schema.ACTIVE_DIRECTORY), ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, ActiveDirectoryRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
         }
         return transformers;
     }

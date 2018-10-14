@@ -19,6 +19,7 @@ public class IocInputToOutputConverter implements InputOutputConverter {
         outputEvent.setLevel(transformedEvent.getLevel());
         outputEvent.setUserId(transformedEvent.getUserId());
         outputEvent.setUserName(transformedEvent.getUserName());
+        outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setMachineId(transformedEvent.getMachineId());
         outputEvent.setMachineName(transformedEvent.getMachineName());
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());

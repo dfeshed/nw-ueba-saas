@@ -1,6 +1,5 @@
 package presidio.sdk.api.domain.rawevents;
 
-import fortscale.domain.core.EventResult;
 import fortscale.domain.core.ioc.Level;
 import fortscale.domain.core.ioc.Tactic;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -10,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 @Document
@@ -22,6 +20,9 @@ public class IocRawEvent extends AbstractInputDocument {
     public static final String LEVEL_FIELD_NAME = "level";
     public static final String MACHINE_ID_FIELD_NAME = "machineId";
     public static final String MACHINE_NAME_FIELD_NAME = "machineName";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
 
     @NotEmpty
     @Field(NAME_FIELD_NAME)
@@ -41,6 +42,16 @@ public class IocRawEvent extends AbstractInputDocument {
     @Field(MACHINE_NAME_FIELD_NAME)
     private String machineName;
 
+    @Field(USER_ID_FIELD_NAME)
+    @NotEmpty
+    protected String userId;
+
+    @Field(USER_NAME_FIELD_NAME)
+    protected String userName;
+
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
+    protected String userDisplayName;
+
     public IocRawEvent() {
     }
 
@@ -51,17 +62,22 @@ public class IocRawEvent extends AbstractInputDocument {
         this.level = other.level;
         this.machineId = other.machineId;
         this.machineName = other.machineName;
+        this.userId = other.userId;
+        this.userName = other.userName;
+        this.userDisplayName = other.userDisplayName;
     }
 
-    public IocRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
-                       List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName,
-                       Map<String, String> additionalInfo, String name, Tactic tactic, Level level, String machineId, String machineName, String resultCode) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategories, result, userName, userDisplayName, additionalInfo, resultCode);
+    public IocRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String userName, String userDisplayName,
+                       Map<String, String> additionalInfo, String name, Tactic tactic, Level level, String machineId, String machineName) {
+        super(dateTime, eventId, dataSource, additionalInfo);
         this.name = name;
         this.tactic = tactic;
         this.level = level;
         this.machineId = machineId;
         this.machineName = machineName;
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
     }
 
     public String getName() {
@@ -102,6 +118,30 @@ public class IocRawEvent extends AbstractInputDocument {
 
     public void setMachineName(String machineName) {
         this.machineName = machineName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 
     @Override
