@@ -138,6 +138,12 @@ public class InputCoreConfiguration {
         return new ProcessTransformerManager();
     }
 
+    @Bean(name = "IOC.transformer")
+    @Lazy
+    public IocTransformerManager iocTransformerManager() {
+        return new IocTransformerManager();
+    }
+
     @Bean(name = "FILE.input-output-converter")
     @Lazy
     public FileInputToOutputConverter fileInputToOutputConverter() {
@@ -168,11 +174,16 @@ public class InputCoreConfiguration {
         return new PrintInputToOutputConverter();
     }
 
-
-    @Bean(name = "REEGISTRY.input-output-converter")
+    @Bean(name = "REGISTRY.input-output-converter")
     @Lazy
     public RegistryInputToOutputConverter registryInputToOutputConverter() {
         return new RegistryInputToOutputConverter();
+    }
+
+    @Bean(name = "IOC.input-output-converter")
+    @Lazy
+    public IocInputToOutputConverter iocInputToOutputConverter() {
+        return new IocInputToOutputConverter();
     }
 
     @Bean(name = "FILE.input-ade-converter")
@@ -209,5 +220,11 @@ public class InputCoreConfiguration {
     @Lazy
     public RegistryInputToAdeConverter registryInputToAdeConverter() {
         return new RegistryInputToAdeConverter();
+    }
+
+    @Bean(name = "IOC.input-ade-converter")
+    @Lazy
+    public IocInputToAdeConverter iocInputToAdeConverter() {
+        return new IocInputToAdeConverter();
     }
 }

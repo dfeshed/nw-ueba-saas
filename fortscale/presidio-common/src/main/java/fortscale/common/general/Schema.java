@@ -12,6 +12,7 @@ public enum Schema {
     ACTIVE_DIRECTORY("active_directory"),
     PROCESS("process"),
     REGISTRY("registry"),
+    IOC("ioc"),
     // Dlp file is used only in the ade tests
     DLPFILE("dlpfile");
 
