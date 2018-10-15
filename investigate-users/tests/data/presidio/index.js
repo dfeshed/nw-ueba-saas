@@ -13,6 +13,7 @@ import existAlertTypes from './exist_alert_types';
 import favoriteFilter from './favorite_filter';
 import userList from './user-list';
 import alertsList from './alerts-list';
+import alertsTimeline from './alert-by-day-and-severity';
 
 const urlMap = [{
   url: 'presidio/api/user?min_score=0&size=5',
@@ -59,6 +60,12 @@ const urlMap = [{
 }, {
   url: 'presidio/api/alerts?alert_start_range=1519948800000,1535587199000&fromPage=1&size=10&sort_direction=DESC&sort_field=startDate&total_severity_count=true',
   data: alertsList
+}, {
+  url: 'presidio/api/alerts/alert-by-day-and-severity',
+  data: alertsTimeline
+}, {
+  url: 'favoriteFilter',
+  data: true
 }];
 
 export default (req) => {

@@ -8,7 +8,7 @@
   &_filter {
     width: 25%;
     border: 1px solid text-color(primary);
-    border-top: 0px;
+    border-top: 0;
     height: 100%;
 
     > div {
@@ -28,7 +28,7 @@
         display: flex;
         flex-direction: row;
         @include rsa-font(default, small);
-        color: text-color(secondary, dark);
+        color: text-color(secondary, light);
 
         .rsa-form-button-wrapper {
           width: 100%;
@@ -36,7 +36,7 @@
 
         .rsa-form-button {
           padding: rsa-whitespace(least) rsa-whitespace(less);
-          color: text-color(secondary, dark);
+          color: text-color(secondary, light);
         }
 
         .rsa-form-button {
@@ -45,7 +45,7 @@
         }
 
         .rsa-form-button-clicked {
-          background-color: text-color(secondary, dark);
+          background-color: text-color(secondary, light);
 
           > button {
             color: text-color(primary, light);
@@ -82,7 +82,7 @@
       }
 
       .rsa-form-button-clicked {
-        background-color: text-color(secondary, dark);
+        background-color: text-color(secondary, light);
       }
     }
 
@@ -125,6 +125,31 @@
       flex-direction: column;
       bottom: 0;
       height: 80px;
+
+      &_save-as-favorites {
+        width: 300px;
+        padding: rsa-whitespace();
+
+        &_name {
+          padding: rsa-whitespace();
+          display: flex;
+          justify-content: space-between;
+
+          &_label {
+            padding: rsa-whitespace() 0;
+          }
+        }
+
+        &_save {
+          padding: rsa-whitespace();
+          justify-content: flex-end;
+          display: flex;
+
+          &_cancel {
+            padding-right: rsa-whitespace(less);
+          }
+        }
+      }
     }
   }
 
@@ -181,6 +206,7 @@
 
           > div {
             padding: 0 rsa-whitespace(least);
+
             > div {
               padding-top: rsa-whitespace(less);
               @include rsa-font(default, small);
@@ -204,7 +230,7 @@
 
       &_name {
         @include rsa-font(default, small);
-        color: text-color(secondary);
+        color: text-color(secondary, light);
       }
 
       &_watched {
@@ -222,14 +248,23 @@
         @include rsa-font();
         max-width: unset;
         padding: rsa-whitespace(less) rsa-whitespace();
+
+        .rsa-content-badge-score {
+          padding: rsa-whitespace(least);
+        }
+
+        .score {
+          @include rsa-font(default);
+        }
       }
 
-      .rsa-data-table-body-cell *, .rsa-data-table-header-cell * {
+      .rsa-data-table-body-cell *,
+      .rsa-data-table-header-cell * {
         max-width: unset;
       }
 
       &_alerts {
-        color: text-color(secondary);
+        color: text-color(secondary, light);
 
         &_panel {
           padding: rsa-whitespace(less);
@@ -256,7 +291,7 @@
 
             .link {
               @include rsa-font(default, smaller);
-              color: text-color(secondary, lighter);
+              color: text-color(secondary, light);
               padding-left: rsa-whitespace(less);
             }
 
