@@ -1,7 +1,7 @@
 import { UPDATE_ACTIVE_TAB } from './types';
 import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview } from './user-details';
-import { resetAlerts, getTopTenAlerts, updateFilter as updateFilterForALerts, getExistAnomalyTypesForAlert } from './alert-details';
-import { resetUsers, getSeverityDetailsForUserTabs, getExistAnomalyTypes, getExistAlertTypess, getFavorites, updateFilter } from './user-tab-actions';
+import { resetAlerts, getTopTenAlerts, updateFilter as updateFilterForALerts, getExistAnomalyTypesForAlert, getAlertsForTimeline } from './alert-details';
+import { resetUsers, getExistAnomalyTypes, getExistAlertTypess, getFavorites, updateFilter } from './user-tab-actions';
 
 /**
  * This function is responsible to trigger all respective action for overview tab.
@@ -15,6 +15,7 @@ const _overviewTabCreation = () => {
     dispatch(getWatchedUserCount());
     dispatch(getUserOverview());
     dispatch(getTopTenAlerts());
+    dispatch(getAlertsForTimeline());
   };
 };
 
@@ -31,7 +32,6 @@ const _usersTabCreation = (filter) => {
     dispatch(getAdminUserCount());
     dispatch(getRiskyUserCount());
     dispatch(getWatchedUserCount());
-    dispatch(getSeverityDetailsForUserTabs(filter));
     dispatch(updateFilter(filter));
     dispatch(getExistAnomalyTypes());
     dispatch(getExistAlertTypess());

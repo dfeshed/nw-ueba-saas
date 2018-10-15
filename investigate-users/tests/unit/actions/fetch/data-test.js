@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { fetchData } from 'investigate-users/actions/fetch/data';
+import { fetchData, exportData } from 'investigate-users/actions/fetch/data';
 import { later } from '@ember/runloop';
 import { initialFilterState } from 'investigate-users/reducers/users/selectors';
 import { patchFetch } from '../../../helpers/patch-fetch';
@@ -57,5 +57,13 @@ module('Unit | API | data', (hooks) => {
     later(() => {
       assert.deepEqual(response._result, severityBar);
     }, 400);
+  });
+
+  test('it can test export data for given filter', async(assert) => {
+    assert.expect(1);
+    window.URL.createObjectURL = () => {
+      assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    exportData('severityBarForUser', initialFilterState);
   });
 });

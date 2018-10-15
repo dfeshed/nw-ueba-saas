@@ -32,7 +32,6 @@
     {{#power-select-multiple
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
-      searchPlaceholder="Type to filter options"
       onchange=(action 'updateAnomalyFilter') as |option|}}
       {{option.name}}
     {{/power-select-multiple}}
@@ -44,5 +43,7 @@
 
 </div>
 <div class='alerts-tab_filter_control'>
-  {{#rsa-form-button isFullWidth=true click=(action 'updateFilter' initialFilterState)}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
+  {{#rsa-form-button isFullWidth=true click=(action 'updateFilter' null)}}
+    {{t 'investigateUsers.resetFilters'}}
+  {{/rsa-form-button}}
 </div>

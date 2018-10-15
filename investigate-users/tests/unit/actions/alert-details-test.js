@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { getTopTenAlerts, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
+import { exportAlerts, getTopTenAlerts, getAlertsForTimeline, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 
 export const initialFilterState = Immutable.from({
   sort_direction: 'DESC',
@@ -56,7 +56,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
   test('it can updateFilter', (assert) => {
     assert.expect(2);
     const done = assert.async();
-    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', 'INVESTIGATE_USER::RESET_ALERTS'];
+    const actions = ['INVESTIGATE_USER::GET_ALERTS', 'INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', 'INVESTIGATE_USER::RESET_ALERTS'];
     const dispatch = ({ type, payload }) => {
       if (type && payload) {
         assert.ok(actions.includes(type));
@@ -67,6 +67,19 @@ module('Unit | Actions | Alert Details', (hooks) => {
     updateFilter(initialFilterState)(dispatch);
   });
 
+  test('it can updateFilter without updating alerts', (assert) => {
+    assert.expect(4);
+    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', 'INVESTIGATE_USER::RESET_ALERTS'];
+    const dispatch = ({ type, payload }) => {
+      if (type && payload) {
+        assert.ok(actions.includes(type));
+        assert.equal(payload.sort_field, 'startDate');
+      }
+      assert.notOk('INVESTIGATE_USER::GET_ALERTS' === type);
+    };
+    updateFilter(initialFilterState, true)(dispatch);
+  });
+
   test('it can getExistAnomalyTypesForAlert', (assert) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
@@ -74,6 +87,26 @@ module('Unit | Actions | Alert Details', (hooks) => {
       assert.equal(payload.abnormal_active_directory_day_time_operation, 34);
     };
     getExistAnomalyTypesForAlert()(dispatch);
+  });
+
+  test('it can getAlertsForTimeline', (assert) => {
+    assert.expect(2);
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS_FOR_TIMELINE');
+      assert.equal(payload.data.length, 2);
+    };
+    getAlertsForTimeline()(dispatch);
+  });
+
+  test('it can exportAlerts', (assert) => {
+    assert.expect(1);
+    window.URL.createObjectURL = () => {
+      assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    exportAlerts(initialFilterState)(null, getState);
   });
 
   test('it can getAlertsForGivenTimeInterval', (assert) => {

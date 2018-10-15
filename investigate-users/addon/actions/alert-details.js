@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from './types';
-import { fetchData } from './fetch/data';
+import { fetchData, exportData } from './fetch/data';
 import { getFilter } from 'investigate-users/reducers/alerts/selectors';
 
 const getTopTenAlerts = () => {
@@ -36,7 +36,28 @@ const getExistAnomalyTypesForAlert = () => {
   };
 };
 
-const updateFilter = (filter) => {
+const getAlertsForTimeline = () => {
+  return (dispatch) => {
+    fetchData('alertTimeline').then((data) => {
+      dispatch({
+        type: ACTION_TYPES.GET_ALERTS_FOR_TIMELINE,
+        payload: data
+      });
+    });
+  };
+};
+
+const exportAlerts = () => {
+  return (dispatch, getState) => {
+    let filter = getFilter(getState());
+    if (filter) {
+      filter = filter.setIn(['fromPage'], 1);
+    }
+    exportData('alertsExport', filter, `alerts_${new Date().toISOString()}.csv`).then(() => {});
+  };
+};
+
+const updateFilter = (filter, needNotToPullAlerts) => {
   return (dispatch) => {
     dispatch(resetAlerts());
     if (filter) {
@@ -46,7 +67,9 @@ const updateFilter = (filter) => {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
       payload: filter
     });
-    dispatch(getAlertsForGivenTimeInterval(filter));
+    if (true !== needNotToPullAlerts) {
+      dispatch(getAlertsForGivenTimeInterval(filter));
+    }
   };
 };
 
@@ -57,5 +80,7 @@ export {
   getExistAnomalyTypesForAlert,
   updateFilter,
   getTopTenAlerts,
-  resetAlerts
+  resetAlerts,
+  getAlertsForTimeline,
+  exportAlerts
 };

@@ -63,6 +63,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('Highnon_standard_hours|Hourlyad') === 0);
     await click('.alerts-tab_body_body-table_body_row_alerts_alert');
     later(() => {
+      assert.ok(findAll('.severity')[2].title.indexOf(93) > -1);
       assert.equal(findAll('.rsa-data-table-body-row').length, 16);
       done();
     }, 500);

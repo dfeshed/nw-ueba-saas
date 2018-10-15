@@ -2,7 +2,9 @@
   {{severity-bar data=alertsSeverity}}
   <div class='alerts-tab_body_header_export'>
     <div>
-      {{#rsa-form-button }} {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} {{t 'investigateUsers.export'}} {{/rsa-form-button}}
+      {{#rsa-form-button click=(action 'exportAlerts')}} 
+        {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} {{t 'investigateUsers.export'}}
+      {{/rsa-form-button}}
     </div>
   </div>
 </div>

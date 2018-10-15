@@ -8,15 +8,15 @@ const endpoint = function(path) {
 };
 
 const _private = {
-  _fetch(path) {
+  _fetch(path, options) {
     const url = endpoint(path);
-    return fetch(url);
+    return fetch(url, options);
   }
 };
 
-export default function(path) {
+export default function(path, options) {
   return new Promise((resolve, reject) => {
-    return _private._fetch(path).then((response) => {
+    return _private._fetch(path, options).then((response) => {
       if (response.ok) {
         resolve(response);
       } else {

@@ -2,13 +2,81 @@ import endpoints from './endpoint-location';
 import fetch from 'component-lib/services/fetch';
 import _ from 'lodash';
 
-export const fetchData = (endpointLocation, filter = {}) => {
+const _downloadFile = (bodyBlob, fileName) => {
+  if (typeof window.navigator.msSaveBlob !== 'undefined') {
+    // IE doesn't allow using a blob object directly as link href.
+    // Workaround for "HTML7007: One or more blob URLs were
+    // revoked by closing the blob for which they were created.
+    // These URLs will no longer resolve as the data backing
+    // the URL has been freed."
+    window.navigator.msSaveBlob(bodyBlob, fileName);
+    return;
+  }
+  const blobURL = window.URL.createObjectURL(bodyBlob);
+  const tempLink = document.createElement('a');
+  tempLink.style.display = 'none';
+  tempLink.href = blobURL;
+  tempLink.setAttribute('download', fileName);
+  // Safari thinks _blank anchor are pop ups. We only want to set _blank
+  // target if the browser does not support the HTML5 download attribute.
+  // This allows you to download files in desktop safari if pop up blocking
+  // is enabled.
+  if (typeof tempLink.download === 'undefined') {
+    tempLink.setAttribute('target', '_blank');
+  }
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
+  setTimeout(() => {
+    // For Firefox it is necessary to delay revoking the ObjectURL
+    window.URL.revokeObjectURL(blobURL);
+  }, 100);
+};
+
+export const fetchData = (endpointLocation, data = {}, isPostCall, args) => {
   let fetchUrl = endpoints[endpointLocation];
-  _.forEach(filter, (value, key) => {
+  fetchUrl = args ? fetchUrl.replace(/{(.*)}/, args) : fetchUrl;
+  let options = null;
+  if (isPostCall) {
+    options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+  } else {
+    options = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    _.forEach(data, (value, key) => {
+      if (value !== null) {
+        value = (typeof value === 'object') ? value.join(',') : value;
+        fetchUrl = fetchUrl.concat(`${key}=${value}&`);
+      }
+    });
+  }
+  return fetch(fetchUrl, options).then((fetched) => {
+    return fetched.json();
+  });
+};
+
+export const exportData = (endpointLocation, data = {}, fileName) => {
+  let fetchUrl = endpoints[endpointLocation];
+  const options = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+  };
+  _.forEach(data, (value, key) => {
     if (value !== null) {
       value = (typeof value === 'object') ? value.join(',') : value;
       fetchUrl = fetchUrl.concat(`${key}=${value}&`);
     }
   });
-  return fetch(fetchUrl).then((fetched) => fetched.json());
+  return fetch(fetchUrl, options).then((fetched) => {
+    _downloadFile(fetched._bodyBlob, fileName);
+  });
 };

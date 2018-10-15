@@ -30,7 +30,7 @@
       <div class='alerts-tab_body_body-table_body_row_alerts {{if (eq timestamp timeLineClicked) 'expandRow'}}'>
         {{#each alertList as |alert|}}
           <div class='alerts-tab_body_body-table_body_row_alerts_alert' {{action 'expandAlert' alert.id}}>
-            <div class='severity'>
+            <div class='severity' title='{{t 'investigateUsers.alerts.score'}}: {{alert.score}}'>
               <span class='alerts-tab_body_body-table_body_row_date_icon'>
                 {{#if (eq alertClicked  alert.id)}}
                   {{rsa-icon size='small' style='lined' name='arrow-down-12'}}
