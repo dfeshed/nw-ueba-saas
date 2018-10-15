@@ -36,6 +36,8 @@
   .list-filter-option {
     padding: rsa-whitespace(least) 0;
     width: fit-content;
+    color: text-color(primary, lighter);
+    text-decoration: none;
   }
 
   .number-filter {

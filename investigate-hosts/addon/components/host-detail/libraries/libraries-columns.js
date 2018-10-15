@@ -31,10 +31,6 @@ const defaultColumns = [
     title: 'File Status'
   },
   {
-    field: 'machineCount',
-    title: 'MACHINE COUNT'
-  },
-  {
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE'
