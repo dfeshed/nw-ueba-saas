@@ -2,10 +2,7 @@ package presidio.output.forwarder.strategy;
 
 public class ForwarderConfiguration {
 
-    private final String forwarderStrategy;
-
-    public ForwarderConfiguration(String forwarderStrategy) {
-        this.forwarderStrategy = forwarderStrategy;
+    public ForwarderConfiguration() {
     }
 
     public boolean isForwardEntity(ForwarderStrategy.PAYLOAD_TYPE entityType) {
@@ -13,7 +10,7 @@ public class ForwarderConfiguration {
     }
 
     public String getForwardingStrategy(ForwarderStrategy.PAYLOAD_TYPE entityType) {
-        return forwarderStrategy;
+        return "rabbitMq";
     }
 
     public int getForwardBulkSize(ForwarderStrategy.PAYLOAD_TYPE entityType){
