@@ -157,6 +157,23 @@ const fetchRemediation = (thumbprints) => {
   });
 };
 
+/**
+ * Executes the web socket call for sending the checksum256 of selected files to reset risk score
+ * @param data
+ * @returns {*}
+ * @public
+ */
+const sendFileToResetRiskScore = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'resetRiskScore',
+    modelName: 'risk-score-server',
+    query: {
+      data
+    }
+  });
+};
+
 export default {
   fetchFiles,
   fileExport,
@@ -166,5 +183,6 @@ export default {
   getAllServices,
   getContext,
   getRiskScoreContext,
-  fetchRemediation
+  fetchRemediation,
+  sendFileToResetRiskScore
 };

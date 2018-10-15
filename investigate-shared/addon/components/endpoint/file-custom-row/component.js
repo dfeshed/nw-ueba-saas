@@ -85,6 +85,12 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
             }
           }
         ]
+      },
+      {
+        label: 'Reset Risk Score',
+        action() {
+          cntx.resetRiskScore(cntx.get('selections'));
+        }
       }
     ];
 

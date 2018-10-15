@@ -81,6 +81,10 @@ const ContextWrapper = Component.extend({
     },
     onAnalyzeFile() {
       // Placeholder for the next PR.
+    },
+
+    resetRiskScoreAction() {
+      // Placeholder for the next PR.
     }
   }
 

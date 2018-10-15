@@ -5,6 +5,7 @@ import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import makePackAction from '../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
 import { setupTest } from 'ember-qunit';
+import riskScoreReducer from 'investigate-shared/reducers/risk-score/reducer';
 
 module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
   setupTest(hooks);
@@ -76,6 +77,13 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     const result = reducer(previous, { type: ACTION_TYPES.RESET_FILTER });
     assert.equal(result.selectedFilter.id, 1);
     assert.equal(result.selectedFilter.criteria.expressionList.length, 0);
+  });
+
+  test('should return the initial state of risk-score', function(assert) {
+    const result = riskScoreReducer(undefined, {});
+    assert.deepEqual(result, {
+      isRiskScoreReset: true
+    });
   });
 
 });

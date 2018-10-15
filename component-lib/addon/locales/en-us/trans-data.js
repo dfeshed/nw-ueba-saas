@@ -2073,6 +2073,14 @@ export default {
       KnownGood: 'Known Good',
       Neutral: 'Neutral'
     },
+    riskScore: {
+      label: 'Reset Risk Score',
+      confirmMessage: 'Are you sure you want to reset the Risk Score for the selected file(s). All the events listed under the Severity Score will be deleted. Click Help for more information.',
+      cancel: 'Cancel',
+      reset: 'Reset',
+      success: 'The Risk Score has been successfully reset.',
+      error: ' The Risk Score cannot be reset.'
+    },
     filter: {
       allFiles: 'All',
       filter: 'Filters',
@@ -3373,7 +3381,8 @@ export default {
         fileName: 'File Name',
         md5: 'MD5',
         sha1: 'SHA1',
-        sha256: 'SHA256'
+        sha256: 'SHA256',
+        resetRiskScore: 'Reset Risk Score'
       },
       savedFilters: 'Saved Filters'
     }

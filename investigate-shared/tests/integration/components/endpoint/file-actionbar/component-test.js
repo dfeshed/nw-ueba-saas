@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -49,7 +49,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
   });
 
-  test('More action external lookup for google', async function(assert) {
+  skip('More action external lookup for google', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -59,11 +59,11 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await triggerEvent('.panel2', 'mouseover');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 8, 'All the list options should render.');
-    await click(findAll('.rsa-dropdown-action-list li')[2]);
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'Sub menu options should hide.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 9, 'All the list options should render.');
+    await click(findAll('.rsa-dropdown-action-list li')[6]);
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'Sub menu options should hide.');
     assert.equal(actionSpy.callCount, 2);
     actionSpy.reset();
     actionSpy.restore();
@@ -100,7 +100,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       selectedFileCount=2}}`);
 
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as Download Files options are not present.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, '3 list options should render as Download Files options are not present.');
 
   });
 
@@ -121,7 +121,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await click('.rsa-dropdown-action-list .panel3');
   });
 
@@ -185,5 +185,41 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
     await click('.more-action-button');
     await click('.rsa-dropdown-action-list .panel3');
+  });
+
+  test('Reset Risk score confirmation dialog is opened on click of action', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
+    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
+  });
+
+  test('Reset Risk score confirmation dialog is closed on cancel', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await click('.more-action-button');
+    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
+    await click('.closeReset');
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
+  });
+
+  test('Reset Risk score is disabled', async function(assert) {
+    this.set('itemList', []);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false}}`);
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list li')[2].classList.contains('disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
   });
 });

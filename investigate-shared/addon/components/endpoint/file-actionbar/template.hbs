@@ -71,6 +71,8 @@
             </ul>
           {{/rsa-content-tethered-panel}}
         </li>
+      {{else if (eq fileAction.name 'resetRiskScore')}}
+        <li class="{{if isEditStatusButtonDisabled 'disabled'}}" {{action 'onResetAction'}}>{{fileAction.title}}</li>
       {{else}}
         {{#if (eq fileAction.name 'downloadToServer')}}
           <hr class="divider actionSeperator">
@@ -82,3 +84,26 @@
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
+
+{{#if showResetScoreModal}}
+  {{#rsa-application-modal
+    class="reset-risk-score"
+    autoOpen=true
+    label=(t 'investigateFiles.riskScore.label')
+    onClose=(action 'onResetScoreModalClose')}}
+    <div class='modal-content reset-risk-score'>
+      <p>{{t 'investigateFiles.riskScore.confirmMessage'}}</p>
+      <hbox>
+        <vbox>
+          {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
+        </vbox>
+        <vbox>
+          {{#rsa-form-button style='primary' click=(action 'resetRiskScoreAction')}}
+            {{t 'investigateFiles.riskScore.reset'}}
+          {{/rsa-form-button}}
+        </vbox>
+      </hbox>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}
+

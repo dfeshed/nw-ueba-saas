@@ -436,4 +436,28 @@ module('Integration | Component | file list', function(hooks) {
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.files.fileList.selectedFileList.length, 1, 'One file selected');
   });
+
+  test('Reset risk score confirmation dialog is opened', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    this.set('showResetScoreModal', true);
+    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal}}`);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+  });
+
+  test('Reset risk score confirmation dialog is closed on click of cancel', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    this.set('showResetScoreModal', true);
+    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal}}`);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await click('.closeReset');
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
+  });
 });

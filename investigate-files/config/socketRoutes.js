@@ -110,6 +110,10 @@ const filesConfigGen = function(environment) {
       getFileContext: {
         subscriptionDestination: '/user/queue/risk/score/file/context/get',
         requestDestination: '/ws/risk/score/file/context/get'
+      },
+      resetRiskScore: {
+        subscriptionDestination: '/user/queue/risk/score/file/context/reset',
+        requestDestination: '/ws/risk/score/file/context/reset'
       }
     },
     filters: {

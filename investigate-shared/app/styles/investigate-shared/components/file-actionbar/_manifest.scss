@@ -88,3 +88,18 @@
 .actionSeperator {
   margin: 0.5rem rsa-whitespace();
 }
+
+.reset-risk-score {
+  padding: rsa-whitespace();
+  width: 400px;
+  height: 80px;
+  hbox {
+    position: absolute;
+    bottom: 0;
+    left: 60%;
+    padding-bottom: rsa-whitespace(less);
+  }
+  vbox {
+    padding-right: rsa-whitespace(less);
+  }
+}

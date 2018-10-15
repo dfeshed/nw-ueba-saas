@@ -64,6 +64,9 @@ export default Component.extend({
     },
     onCloseEditFileStatus() {
       this.set('showFileStatusModal', false);
+    },
+    resetRiskScoreAction() {
+      // Placeholder for the next PR.
     }
   }
 });

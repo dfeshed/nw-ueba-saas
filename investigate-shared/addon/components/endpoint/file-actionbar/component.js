@@ -17,7 +17,8 @@ const FileActionConf = [
     { name: 'md5', type: 'VirusTotal' },
     { name: 'sha1', type: 'VirusTotal' },
     { name: 'sha256', type: 'VirusTotal' }
-    ] }
+    ] },
+  { panelId: 'panel6', name: 'resetRiskScore' }
 ];
 
 export default Component.extend({
@@ -116,6 +117,20 @@ export default Component.extend({
             break;
         }
       }
+    },
+
+    onResetAction() {
+      this.set('showResetScoreModal', true);
+    },
+
+    onResetScoreModalClose() {
+      this.set('showResetScoreModal', false);
+    },
+
+    resetRiskScoreAction() {
+      const selectedList = this.get('itemList');
+      this.resetRiskScore(selectedList);
+      this.set('showResetScoreModal', false);
     }
   }
 

@@ -11,6 +11,8 @@ import {
   retrieveRemediationStatus
 } from 'investigate-files/actions/data-creators';
 import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-score-creators';
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
@@ -32,7 +34,8 @@ const dispatchToActions = {
   saveFileStatus,
   setEndpointServer,
   getSavedFileStatus,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  resetRiskScore
 };
 /**
  * Toolbar that provides search filtering.
@@ -46,6 +49,17 @@ const ToolBar = Component.extend({
   @computed('fileStatusData')
   data(fileStatusData) {
     return { ...fileStatusData };
+  },
+  actions: {
+    resetRiskScoreAction(itemsList) {
+      const callBackOptions = {
+        onSuccess: () => {
+          success('investigateFiles.riskScore.success');
+        },
+        onFailure: () => failure('investigateFiles.riskScore.error')
+      };
+      this.send('resetRiskScore', itemsList, callBackOptions);
+    }
   }
 });
 

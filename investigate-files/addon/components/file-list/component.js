@@ -28,7 +28,9 @@ import {
   setSelectedFile
 } from 'investigate-files/actions/data-creators';
 
-import { failure } from 'investigate-shared/utils/flash-messages';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-score-creators';
+
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
@@ -60,7 +62,8 @@ const dispatchToActions = {
   fetchHostNameList,
   getRiskScoreContext,
   retrieveRemediationStatus,
-  setSelectedFile
+  setSelectedFile,
+  resetRiskScore
 };
 
 /**
@@ -114,7 +117,11 @@ const FileList = Component.extend({
 
   showFileStatusModal: false,
 
+  showResetScoreModal: false,
+
   itemList: [],
+
+  selectedFiles: null,
 
   @computed('columnConfig')
   updatedColumns(columns) {
@@ -174,6 +181,24 @@ const FileList = Component.extend({
         }
       }
     },
+
+    showRiskScoreModal(fileList) {
+      this.set('selectedFiles', fileList);
+      this.set('showResetScoreModal', true);
+    },
+
+    resetRiskScoreAction() {
+      const callBackOptions = {
+        onSuccess: () => {
+          success('investigateFiles.riskScore.success');
+        },
+        onFailure: () => failure('investigateFiles.riskScore.error')
+      };
+      this.set('showResetScoreModal', false);
+      this.send('resetRiskScore', this.get('selectedFiles'), callBackOptions);
+      this.set('selectedFiles', null);
+    },
+
     toggleItemSelection(item) {
       this.send('toggleFileSelection', item);
     },
@@ -206,6 +231,10 @@ const FileList = Component.extend({
 
     onCloseEditFileStatus() {
       this.set('showFileStatusModal', false);
+    },
+
+    onResetScoreModalClose() {
+      this.set('showResetScoreModal', false);
     },
 
     beforeContextMenuShow(item) {
