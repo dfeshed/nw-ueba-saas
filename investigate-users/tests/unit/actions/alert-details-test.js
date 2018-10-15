@@ -93,7 +93,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
       assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS_FOR_TIMELINE');
-      assert.equal(payload.data.length, 2);
+      assert.equal(payload.length, 5);
     };
     getAlertsForTimeline()(dispatch);
   });
