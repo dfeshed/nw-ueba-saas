@@ -5,6 +5,7 @@
     isError=validator.showError
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
     focusOut=(action 'handleInputChange' value='target.value')
+    spellcheck=false
   }}
   {{#if validator.showError}}
     <span class="input-error">

@@ -15,7 +15,8 @@ import {
   // TODO when implemented isWizardValid
   isGroupLoading,
   policyList,
-  selectedPolicy
+  availablePolicySourceTypes,
+  assignedPolicyList
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -334,7 +335,8 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       policyType: 'edrPolicy',
       description: 'Default EDR Policy __default_edr_policy',
       lastPublishedOn: 1527489158739,
-      dirty: false
+      dirty: false,
+      defaultPolicy: true
     },
     {
       id: 'policy_001',
@@ -342,7 +344,8 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       policyType: 'edrPolicy',
       description: 'EMC 001 of policy policy_001',
       lastPublishedOn: 1527489158739,
-      dirty: true
+      dirty: true,
+      defaultPolicy: false
     },
     {
       id: 'policy_002',
@@ -350,21 +353,23 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       policyType: 'edrPolicy',
       description: 'EMC Reston 012 of policy policy_012',
       lastPublishedOn: 0,
-      dirty: true
+      dirty: true,
+      defaultPolicy: false
     },
     {
       id: 'policy_003',
       name: 'Policy 003',
-      policyType: 'WindowsPolicy',
+      policyType: 'windowsLogPolicy',
       description: 'EMC Reston 012 of policy policy_012',
       lastPublishedOn: 0,
-      dirty: true
+      dirty: true,
+      defaultPolicy: false
     }
   ];
 
   const groupPayload1 = {
     'id': 'group_001',
-    'name': 'Zebra 001',
+    'name': 'Group 001',
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
@@ -373,20 +378,20 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     }
   };
 
-  // const groupPayload2 = {
-  //   'id': 'group_001',
-  //   'name': 'Zebra 001',
-  //   'assignedPolicies': {
-  //     'edrPolicy': {
-  //       'referenceId': 'policy_001',
-  //       'name': 'EMC 001'
-  //     },
-  //     'windowsPolicy': {
-  //       'referenceId': 'policy_003',
-  //       'name': 'Policy 003'
-  //     }
-  //   }
-  // };
+  const groupPayload2 = {
+    'id': 'group_002',
+    'name': 'Group 002',
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'EMC 001'
+      },
+      'windowsLogPolicy': {
+        'referenceId': 'policy_003',
+        'name': 'Policy 003'
+      }
+    }
+  };
 
   test('policyList selector', function(assert) {
     const fullState = new ReduxDataHelper()
@@ -398,42 +403,95 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(policyListSelected, policyListPayload, 'The returned value from the policies selector is as expected');
   });
 
-  test('selectedPolicy selector', function(assert) {
+  test('availablePolicySourceTypes selector', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizGroup(groupPayload1)
       .groupWizPolicyList(policyListPayload)
       .build();
-    const policyListSelected = selectedPolicy(Immutable.from(fullState));
-    assert.deepEqual(policyListSelected, policyListPayload[1], 'The selectedPolicy selector value is as expected for single value');
+    const sourceTypes = availablePolicySourceTypes(Immutable.from(fullState));
+    assert.deepEqual(sourceTypes, ['edrPolicy', 'windowsLogPolicy'], 'The returned value from the availablePolicySourceTypes is as expected');
+  });
 
-    // MULTIPLE NOT IN PLACE YET
-    // const expectedMultipleValues = [
-    //   {
-    //     id: 'policy_001',
-    //     name: 'Policy 001',
-    //     policyType: 'edrPolicy',
-    //     description: 'EMC 001 of policy policy_001',
-    //     lastPublishedOn: 1527489158739,
-    //     dirty: true
-    //   },
-    //   {
-    //     id: 'policy_003',
-    //     name: 'Policy 003',
-    //     policyType: 'WindowsPolicy',
-    //     description: 'EMC Reston 012 of policy policy_012',
-    //     lastPublishedOn: 0,
-    //     dirty: true
-    //   }
-    // ];
+  test('assignedPolicyList selector - single assigned source type', function(assert) {
+    const expectedPolicyList = [
+      {
+        id: 'policy_001',
+        name: 'Policy 001',
+        policyType: 'edrPolicy',
+        description: 'EMC 001 of policy policy_001',
+        lastPublishedOn: 1527489158739,
+        dirty: true,
+        defaultPolicy: false
+      }
+    ];
 
-    // fullState = new ReduxDataHelper()
-    //   .groupWiz()
-    //   .groupWizGroup(groupPayload2)
-    //   .groupWizPolicyList(policyListPayload)
-    //   .build();
-    // policyListSelected = selectedPolicy(Immutable.from(fullState));
-    // assert.deepEqual(policyListSelected, expectedMultipleValues, 'The selectedPolicy selector value is as expected for multiple values');
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload1)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = assignedPolicyList(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from the assignedPolicyList is as expected');
+  });
+
+  test('assignedPolicyList selector - multiple assigned source type', function(assert) {
+    const expectedPolicyList = [
+      {
+        id: 'policy_001',
+        name: 'Policy 001',
+        policyType: 'edrPolicy',
+        description: 'EMC 001 of policy policy_001',
+        lastPublishedOn: 1527489158739,
+        dirty: true,
+        defaultPolicy: false
+      },
+      {
+        id: 'policy_003',
+        name: 'Policy 003',
+        policyType: 'windowsLogPolicy',
+        description: 'EMC Reston 012 of policy policy_012',
+        lastPublishedOn: 0,
+        dirty: true,
+        defaultPolicy: false
+      }
+    ];
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload2)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = assignedPolicyList(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from the assignedPolicyList is as expected');
+  });
+
+  test('assignedPolicyList selector - source type assignment only', function(assert) {
+    const expectedPolicyList = [
+      {
+        'id': 'placeholder',
+        'name': 'Select a Policy',
+        'policyType': 'edrPolicy'
+      }
+    ];
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'placeholder',
+          'name': 'Select a Policy'
+        }
+      }
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = assignedPolicyList(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from the assignedPolicyList is as expected');
   });
 
 });

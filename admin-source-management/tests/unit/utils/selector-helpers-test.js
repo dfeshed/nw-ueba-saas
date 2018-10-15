@@ -119,6 +119,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('notextnotallowed', 'validIPv6', true, true), { isError: true, showError: true }, '\'notextnotallowed\',validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('   ::1 ', 'validIPv6', true, true), { isError: false, showError: false }, '\   ::1 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1 ', 'validIPv6', false, true), { isError: true, showError: true }, '\'   ::1 \',  trim disabled validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('2041:0000:140F::875B:131B', 'validIPv6', true, true), { isError: false, showError: false }, '\'2041:0000:140F::875B:131B\' validation is good as expected');
   });
 
   test('groupExpressionValidator(validIPv6List)', function(assert) {

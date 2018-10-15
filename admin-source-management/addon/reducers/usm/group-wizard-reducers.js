@@ -32,7 +32,7 @@ const _GROUP_ATTRIBUTES_MAP = {
       ['CONTAINS',      'text-input',           'validHostnameChars'],
       ['STARTS_WITH',   'text-input',           'validHostnameChars'],
       ['ENDS_WITH',     'text-input',           'validHostnameChars'],
-      ['IN',            'text-input',           'validHostname']
+      ['IN',            'textarea-input',       'validHostnameList']
     ]],
     ['ipv4', [
       ['BETWEEN',       'between-text-input',   'validIPv4'],
@@ -107,7 +107,7 @@ export const initialState = {
       id: 'applyPolicyStep',
       prevStepId: 'defineGroupStep',
       nextStepId: 'reviewGroupStep',
-      title: 'adminUsm.groupWizard.applyPolicy',
+      title: 'adminUsm.groupWizard.applyPolicy.stepTitle',
       stepComponent: 'usm-groups/group-wizard/apply-policy-step',
       titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'

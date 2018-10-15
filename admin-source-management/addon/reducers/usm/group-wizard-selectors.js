@@ -6,6 +6,7 @@ const { createSelector } = reselect;
 
 const _groupWizardState = (state) => state.usm.groupWizard;
 export const group = (state) => _groupWizardState(state).group;
+export const assignedPolicies = (state) => _groupWizardState(state).group.assignedPolicies;
 export const groupList = (state) => _groupWizardState(state).groupList;
 export const policyList = (state) => _groupWizardState(state).policyList;
 export const visited = (state) => _groupWizardState(state).visited;
@@ -82,24 +83,46 @@ export const descriptionValidator = createSelector(
   }
 );
 
-export const selectedPolicy = createSelector(
-  group, policyList,
-  (group, policyList) => {
-    let selected = null;
-    if (group.assignedPolicies) {
+export const availablePolicySourceTypes = createSelector(
+  policyList,
+  (policyList) => {
+    const list = [];
+    for (let index = 0; index < policyList.length; index++) {
+      const sourceType = policyList[index].policyType;
+      if (!list.includes(sourceType)) {
+        list.push(sourceType);
+      }
+    }
+    return list;
+  }
+);
+
+export const assignedPolicyList = createSelector(
+  assignedPolicies, policyList,
+  (assignedPolicies, policyList) => {
+    const list = [];
+    if (assignedPolicies) {
+      let allowPlaceHolder = true;
       for (let p = 0; p < policyList.length; p++) {
         const policy = policyList[p];
-        if (group.assignedPolicies.hasOwnProperty(policy.policyType) &&
-            group.assignedPolicies[policy.policyType]) {
-          const groupPolicyId = group.assignedPolicies[policy.policyType].referenceId;
-          if (policy.id === groupPolicyId) {
-            selected = policy;
-            break;
+        if (assignedPolicies.hasOwnProperty(policy.policyType) && assignedPolicies[policy.policyType]) {
+          const groupPolicyId = assignedPolicies[policy.policyType].referenceId;
+          if (allowPlaceHolder && groupPolicyId === 'placeholder') {
+            const groupPolicyName = assignedPolicies[policy.policyType].name;
+            const placeholder = {
+              id: groupPolicyId,
+              name: groupPolicyName,
+              policyType: policy.policyType
+            };
+            list.push(placeholder);
+            allowPlaceHolder = false;
+          } else if (policy.id === groupPolicyId) {
+            list.push(policy);
           }
         }
       }
     }
-    return selected;
+    return list;
   }
 );
 

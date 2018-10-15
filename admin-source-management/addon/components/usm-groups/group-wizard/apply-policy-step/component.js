@@ -1,37 +1,33 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
 import {
-  policyList,
-  selectedPolicy
+  assignedPolicyList
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
+  addSourceType,
   editGroup
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
-  policyList: policyList(state),
-  selectedPolicy: selectedPolicy(state)
+  assignedPolicyList: assignedPolicyList(state)
 });
 
 const dispatchToActions = {
+  addSourceType,
   editGroup
 };
 
 const ApplyPolicyStep = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['apply-policy-step'],
+  sourceType: null,
+  policy: null,
 
-  actions: {
-
-    handlePolicyAssignment(value) {
-      const assignedPolicies = {};
-      const entity = {};
-      entity.referenceId = value.id;
-      assignedPolicies[value.policyType] = entity;
-      this.send('editGroup', 'group.assignedPolicies', assignedPolicies);
-    }
-
+  @computed('assignedPolicyList')
+  hasAssignments(assignedPolicyList) {
+    return (assignedPolicyList.length > 0);
   }
 });
 

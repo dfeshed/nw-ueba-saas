@@ -9,6 +9,7 @@ export default {
         id: policy.id,
         name: policy.name,
         policyType: policy.policyType,
+        defaultPolicy: policy.defaultPolicy,
         description: policy.description,
         createdOn: policy.createdOn,
         lastModifiedOn: policy.lastModifiedOn,

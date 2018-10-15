@@ -3789,10 +3789,19 @@ export default {
       // define-group-step
       defineGroup: 'Define Group',
       // apply-policy-step
-      applyPolicy: 'Apply Policy(ies)',
-      applyPolicyTitle: 'Apply Policy',
-      applyPolicyOptional: '(Optional)',
-      policyPlaceholder: 'Choose a policy',
+      applyPolicy: {
+        stepTitle: 'Apply Policy(ies)',
+        helpTitle: {
+          label1: 'A group does not need to apply a policy, however, for a policy to be active, it must be applied to a group.',
+          label2: 'If this step is skipped, policies can still be applied to this group later.',
+          label3: 'Skip this step if this group will not apply a policy or if the policy you wish to apply has not been created yet.',
+          label4: 'New policies can be created in the the Policies Tab.'
+        },
+        sourceType: 'Source Type',
+        selectedPolicy: 'Selected Policy',
+        policyPlaceholder: 'Select a Policy',
+        addSourceType: 'Add Another Source Type'
+      },
       // review-group-step
       reviewGroup: 'Review',
       // common titlebar

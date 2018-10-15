@@ -274,5 +274,61 @@ export default [
     primaryUdpBeaconInterval: 3,
     primaryUdpBeaconIntervalUnit: 'MINUTES',
     agentMode: 'FULL_MONITORING'
+  },
+  {
+    createdOn: 0,
+    lastModifiedOn: 0,
+    id: '__default_windows_log_policy',
+    policyType: 'windowsLogPolicy',
+    name: 'Default Windows Log Policy',
+    description: 'These are the settings that are applied when not defined in another policy applied to an agent.',
+    dirty: false,
+    defaultPolicy: true,
+    lastPublishedCopy: {
+      createdOn: 0,
+      lastModifiedOn: 0,
+      id: '__default_windows_log_policy',
+      policyType: 'windowsLogPolicy',
+      name: 'Default Windows Log Policy',
+      description: 'These are the settings that are applied when not defined in another policy applied to an agent.',
+      dirty: true,
+      defaultPolicy: false,
+      lastPublishedOn: 0,
+      enabled: false,
+      protocol: 'TLS',
+      sendTestLog: false
+    },
+    lastPublishedOn: 1514764800000,
+    associatedGroups: [
+      {
+        referenceId: '5bbe4b489343110375673dae',
+        name: 'sawan'
+      }
+    ],
+    enabled: false,
+    protocol: 'TLS',
+    sendTestLog: false
+  },
+  {
+    id: 'policy_WL001',
+    policyType: 'windowsLogPolicy',
+    name: 'WL001',
+    description: 'Windows Log Policy # WL001',
+    dirty: true,
+    defaultPolicy: false,
+    lastPublishedOn: 0,
+    lastPublishedCopy: null,
+    associatedGroups: []
+  },
+  {
+    id: 'policy_WL002',
+    policyType: 'windowsLogPolicy',
+    name: 'WL002',
+    description: 'Windows Log Policy # WL002',
+    dirty: true,
+    defaultPolicy: false,
+    lastPublishedOn: 0,
+    lastPublishedCopy: null,
+    associatedGroups: []
   }
 ];

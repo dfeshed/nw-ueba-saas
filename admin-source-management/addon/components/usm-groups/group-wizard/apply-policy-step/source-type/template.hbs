@@ -1,0 +1,36 @@
+<vbox>
+  <hbox class="control source-type-selector">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
+      </div>
+      {{#power-select
+        searchEnabled=true
+        tabIndex='1'
+        placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
+        options=limitedPolicySourceTypes
+        selected=selectedSourceType
+        searchField='name'
+        onchange=(action 'handleSourceTypeChange') as |option|
+      }}
+        {{t (concat 'adminUsm.policyTypes.' option)}}
+      {{/power-select}}
+    </label>
+  </hbox>
+  <hbox class="control policy-assignment-selector">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.groupWizard.applyPolicy.selectedPolicy'}}
+      </div>
+      {{#power-select
+        searchEnabled=false
+        placeholder=(t 'adminUsm.groupWizard.applyPolicy.policyPlaceholder')
+        options=availablePoliciesForSourceType
+        selected=selectedPolicy
+        disabled=(not selectedSourceType)        
+        onchange=(action 'handlePolicyAssignment') as |option|}}
+        {{option.name}}
+      {{/power-select}}
+    </label>
+  </hbox>
+</vbox>

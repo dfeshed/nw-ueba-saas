@@ -2,10 +2,23 @@
   
   .apply-policy-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
+    padding-left: rsa-whitespace();
+    margin-top: rsa-whitespace(more);
 
-    .control-label {
-      margin-top: rsa-whitespace(more);
-      @include rsa-font(header);
+    .help-title {
+      @include rsa-font(body, larger);
+      margin-bottom: rsa-whitespace(more);
+    }
+
+    .source-type-wrapper {
+      overflow-y: auto;
+      margin-bottom: rsa-whitespace();
+      border-bottom: 1px solid border-color(primary);
+    }
+
+    .add-source-type-button {
+      margin-top: rsa-whitespace();
+      margin-bottom: rsa-whitespace(most);
     }
   
     .control {
@@ -17,21 +30,6 @@
       }
     }
 
-    .control-with-error {
-      flex: none;
-      > label {
-        width: 45%;
-        margin-bottom: rsa-whitespace(least);
-      }
-    }
-
-    .control-input-error {
-      @include rsa-font(paragraph, small);
-      color: text-color(primary, lightest);
-      padding-left: rsa-whitespace(less);
-      padding-bottom: rsa-whitespace(more);
-    }
-    
   }
   
 }

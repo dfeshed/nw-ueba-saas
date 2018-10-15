@@ -5,6 +5,7 @@
     isError=firstValueValidator.showError
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
     focusOut=(action 'firstValueChange' value='target.value')
+    spellcheck=false
   }}
   <span>and</span>
   {{rsa-form-input class='operator-input secondValueInput'
@@ -13,6 +14,7 @@
     isError=secondValueValidator.showError
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
     focusOut=(action 'secondValueChange' value='target.value')
+    spellcheck=false    
   }}
   {{#if validator.showError}}
     <span class="input-error">

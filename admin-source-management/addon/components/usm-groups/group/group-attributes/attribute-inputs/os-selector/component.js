@@ -12,7 +12,7 @@ const dispatchToActions = {
 const OsSelector = Component.extend({
   tagName: 'label',
   classNames: ['os-selector'],
-  osSelector: ['Windows', 'Linux', 'MacOS'],
+  osSelector: ['Windows', 'Linux', 'Mac'],
 
   // cloneDeep is needed for OS Type power-selector-multiple as it is directly mutating the selected items
   // cloneDeep only data related to this power-selector-multiple.

@@ -1,19 +1,37 @@
 <vbox>
-  <span style="color:Tomato;"><br>TEMPORARY LOGIC TO ASSIGN AN EDR POLICY FOR END-TO-END TESTING (Sprint 3)<br><br></span>
-  <label class="control-label">
-    {{t 'adminUsm.groupWizard.applyPolicyTitle'}}
-    <span class="apply-policy-optional">{{t 'adminUsm.groupWizard.applyPolicyOptional'}}</span>
-  </label>
-  <hbox class="control policy-assignment">
-    <label class="rsa-form-label power-select">
-      {{#power-select
-        placeholder=(t 'adminUsm.groupWizard.policyPlaceholder')
-        options=policyList
-        selected=selectedPolicy
-        searchField='name'
-        onchange=(action 'handlePolicyAssignment') as |option|}}
-        {{option.name}}
-      {{/power-select}}
-    </label>
-  </hbox>
+  
+  <vbox class="step-help=text">
+    <span class="help-title">{{t 'adminUsm.groupWizard.applyPolicy.helpTitle.label1'}}</span>
+    <span class="help-title">{{t 'adminUsm.groupWizard.applyPolicy.helpTitle.label2'}}</span>
+  </vbox>
+
+  <vbox class="source-type-wrapper">
+    {{#if hasAssignments}}
+      {{#each assignedPolicyList as |policy|}}
+        {{#if (eq policy.id 'placeholder') }}
+          {{usm-groups/group-wizard/apply-policy-step/source-type
+            selectedSourceType=policy.policyType
+            selectedPolicy=null}}
+        {{else}}
+          {{usm-groups/group-wizard/apply-policy-step/source-type
+            selectedSourceType=policy.policyType
+            selectedPolicy=policy}}
+        {{/if}}
+      {{/each}}
+    {{else}}
+      {{usm-groups/group-wizard/apply-policy-step/source-type}}
+    {{/if}}
+  </vbox>
+
+  <vbox>
+    {{#rsa-form-button
+      class='add-source-type-button'
+      style='standard'
+      defaultAction='addSourceType'
+      isDisabled=(not isStepValid)
+    }}
+      {{t 'adminUsm.groupWizard.applyPolicy.addSourceType'}}
+    {{/rsa-form-button}}
+  </vbox>
+
 </vbox>

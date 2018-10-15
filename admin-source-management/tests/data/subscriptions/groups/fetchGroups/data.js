@@ -271,6 +271,10 @@ export default [
       'edrPolicy': {
         'referenceId': 'policy_002',
         'name': 'policy_02'
+      },
+      'windowsLogPolicy': {
+        'referenceId': 'policy_WL001',
+        'name': 'WL001'
       }
     },
     'groupCriteria': {
