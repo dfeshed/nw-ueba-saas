@@ -448,7 +448,7 @@ public class AlertServiceTest {
         for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            EnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories,
+            FileEnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories,
                     EventResult.FAILURE, "FAILURE", additionalInfo, "absoluteSrcFilePath", "absoluteDstFilePath",
                     "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
             mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));

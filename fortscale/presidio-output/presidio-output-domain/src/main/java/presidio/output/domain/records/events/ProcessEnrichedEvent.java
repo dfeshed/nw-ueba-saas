@@ -1,6 +1,5 @@
 package presidio.output.domain.records.events;
 
-import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
@@ -22,6 +21,7 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
     public static final String DST_PROCESS_DIRECTORY_GROUPS_FIELD_NAME = "dstProcessDirectoryGroups";
     public static final String DST_PROCESS_CATEGORIES_FIELD_NAME = "dstProcessCategories";
     public static final String DST_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME = "dstProcessCertificateIssuer";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
 
 
     @Field(MACHINE_ID_FIELD_NAME)
@@ -63,11 +63,15 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
     @Field(DST_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME)
     private String dstProcessCertificateIssuer;
 
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    private String operationType;
+
+
     public ProcessEnrichedEvent() {
     }
 
-    public ProcessEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, List<String> operationTypeCategories, EventResult result, String resultCode, Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String srcProcessDirectory, String srcProcessFileName, List<String> srcProcessDirectoryGroups, List<String> srcProcessCategories, String srcProcessCertificateIssuer, String dstProcessDirectory, String dstProcessFileName, List<String> dstProcessDirectoryGroups, List<String> dstProcessCategories, String dstProcessCertificateIssuer) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
+    public ProcessEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String srcProcessDirectory, String srcProcessFileName, List<String> srcProcessDirectoryGroups, List<String> srcProcessCategories, String srcProcessCertificateIssuer, String dstProcessDirectory, String dstProcessFileName, List<String> dstProcessDirectoryGroups, List<String> dstProcessCategories, String dstProcessCertificateIssuer) {
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;
@@ -81,6 +85,7 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
         this.dstProcessDirectoryGroups = dstProcessDirectoryGroups;
         this.dstProcessCategories = dstProcessCategories;
         this.dstProcessCertificateIssuer = dstProcessCertificateIssuer;
+        this.operationType = operationType;
     }
 
     public String getMachineId() {
@@ -186,4 +191,13 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
     public void setDstProcessCertificateIssuer(String dstProcessCertificateIssuer) {
         this.dstProcessCertificateIssuer = dstProcessCertificateIssuer;
     }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
 }

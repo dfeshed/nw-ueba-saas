@@ -4,6 +4,7 @@ import fortscale.domain.core.EventResult;
 import fortscale.domain.core.ioc.Level;
 import fortscale.domain.core.ioc.Tactic;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -44,7 +45,10 @@ public class IocEnrichedEvent extends EnrichedEvent {
                             Tactic tactic,
                             Level level,
                             String machineId,
-                            String machineName) {
+                            String machineName,
+                            String userId,
+                            String userName,
+                            String userDisplayName) {
         this.name = name;
         this.tactic = tactic;
         this.level = level;
@@ -60,17 +64,13 @@ public class IocEnrichedEvent extends EnrichedEvent {
                             String userName,
                             String userDisplayName,
                             String dataSource,
-                            String operationType,
-                            List<String> operationTypeCategories,
-                            EventResult result,
-                            String resultCode,
                             Map<String, String> additionalInfo,
                             String name,
                             Tactic tactic,
                             Level level,
                             String machineId,
                             String machineName) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
         this.name = name;
         this.tactic = tactic;
         this.level = level;

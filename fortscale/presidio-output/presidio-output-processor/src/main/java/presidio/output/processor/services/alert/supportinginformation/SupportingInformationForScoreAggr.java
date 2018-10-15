@@ -149,7 +149,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
                 indicatorConfig.getHistoricalData().getType());
 
-        Instant startInstant = EnrichedEvent.START_INSTANT_FIELD.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField()) ?
+        Instant startInstant = EnrichedEvent.START_INSTANT_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField()) ?
                 adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS) :
                 adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
@@ -197,7 +197,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                         indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features, eventsLimit, eventsPageSize);
 
         if (CollectionUtils.isNotEmpty(featureValues)) {
-            if (EnrichedEvent.START_INSTANT_FIELD.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
+            if (EnrichedEvent.START_INSTANT_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
                 distinctFeatureValues.add(featureValues.iterator().next());
             } else {
                 distinctFeatureValues.addAll(featureValues);

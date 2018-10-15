@@ -25,18 +25,16 @@ import java.util.Map;
 })
 public class EnrichedEvent {
 
-    public static final String EVENT_ID_FIELD = "eventId";
-    public static final String SCHEMA_FIELD = "schema";
-    public static final String DATA_SOURCE_FIELD = "dataSource";
-    public static final String OPERATION_TYPE_FIELD = "operationType";
-    public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
-    public static final String RESULT_FIELD = "result";
-    public static final String RESULT_CODE_FIELD = "resultCode";
-    public static final String USERNAME_FIELD = "userName";
-    public static final String USER_DISPLAY_NAME_FIELD = "userdisplayName";
-    public static final String ADDITIONAL_INFO = "additionalInfo";
-    public static final String USER_ID_FIELD = "userId";
-    public static final String START_INSTANT_FIELD = "eventDate";
+    public static final String EVENT_ID_FIELD_NAME= "eventId";
+    public static final String SCHEMA_FIELD_NAME = "schema";
+    public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
+    public static final String USERNAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userdisplayName";
+    public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String START_INSTANT_FIELD_NAME  = "eventDate";
+
+
 
     public static final String IS_USER_ADMIN = "isUserAdmin";
 
@@ -47,42 +45,30 @@ public class EnrichedEvent {
     @CreatedDate
     private Instant createdDate;
 
-    @Field(START_INSTANT_FIELD)
+    @Field(START_INSTANT_FIELD_NAME)
     @Indexed
     private Instant eventDate;
 
-    @Field(EVENT_ID_FIELD)
+    @Field(EVENT_ID_FIELD_NAME)
     private String eventId;
 
-    @Field(SCHEMA_FIELD)
+    @Field(SCHEMA_FIELD_NAME)
     private String schema;
 
     @Indexed
-    @Field(USER_ID_FIELD)
+    @Field(USER_ID_FIELD_NAME)
     private String userId;
 
-    @Field(USERNAME_FIELD)
+    @Field(USERNAME_FIELD_NAME)
     private String userName;
 
-    @Field(USER_DISPLAY_NAME_FIELD)
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
 
-    @Field(DATA_SOURCE_FIELD)
+    @Field(DATA_SOURCE_FIELD_NAME)
     private String dataSource;
 
-    @Field(OPERATION_TYPE_FIELD)
-    private String operationType;
-
-    @Field(OPERATION_TYPE_CATEGORIES_FIELD)
-    private List<String> operationTypeCategories;
-
-    @Field(RESULT_FIELD)
-    private EventResult result;
-
-    @Field(RESULT_CODE_FIELD)
-    private String resultCode;
-
-    @Field(ADDITIONAL_INFO)
+    @Field(ADDITIONAL_INFO_FIELD_NAME)
     private Map<String, String> additionalInfo;
 
     public EnrichedEvent() {
@@ -96,23 +82,15 @@ public class EnrichedEvent {
                          String userName,
                          String userDisplayName,
                          String dataSource,
-                         String operationType,
-                         List<String> operationTypeCategories,
-                         EventResult result,
-                         String resultCode,
                          Map<String, String> additionalInfo) {
         this.createdDate = createdDate;
         this.eventDate = eventDate;
         this.eventId = eventId;
         this.schema = schema;
+        this.dataSource = dataSource;
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
-        this.dataSource = dataSource;
-        this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
-        this.result = result;
-        this.resultCode = resultCode;
         this.additionalInfo = additionalInfo;
     }
 
@@ -136,32 +114,20 @@ public class EnrichedEvent {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
     public String getDataSource() {
         return dataSource;
     }
 
-    public String getOperationType() {
-        return operationType;
+    public String getUserName() {
+        return userName;
     }
 
-    public List<String> getOperationTypeCategories() {
-        return operationTypeCategories;
-    }
-
-    public EventResult getResult() {
-        return result;
-    }
-
-    public String getResultCode() {
-        return resultCode;
+    public String getUserDisplayName() {
+        return userDisplayName;
     }
 
     public void setUserName(String userName) {
@@ -172,40 +138,20 @@ public class EnrichedEvent {
         this.userDisplayName = userDisplayName;
     }
 
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
-    public void setOperationTypeCategories(List<String> operationTypeCategories) {
-        this.operationTypeCategories = operationTypeCategories;
-    }
-
-    public void setResult(EventResult result) {
-        this.result = result;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setAdditionalInfo(Map<String, String> additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
     public Map<String, String> getAdditionalInfo() {
         return additionalInfo;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public Instant getEventDate() {

@@ -1,6 +1,7 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,13 +23,22 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     public static final String SITE_FIELD = "site";
     public static final String CITY_FIELD = "city";
     public static final String COUNTRY_FIELD = "country";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
+    public static final String RESULT_FIELD = "result";
+    public static final String RESULT_CODE_FIELD = "resultCode";
+
 
     public AuthenticationEnrichedEvent() {
         super();
     }
 
     public AuthenticationEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, List<String> operationTypeCategories, EventResult result, String resultCode, Map<String, String> additionalInfo) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.result = result;
+        this.resultCode = resultCode;
     }
 
     @Field(SRC_MACHINE_ID_FIELD)
@@ -54,6 +64,18 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
 
     @Field(COUNTRY_FIELD)
     private String country;
+
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
+
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD)
+    private List<String> operationTypeCategories;
+
+    @Field(RESULT_FIELD)
+    private EventResult result;
+
+    @Field(RESULT_CODE_FIELD)
+    private String resultCode;
 
     public void setSrcMachineId(String srcMachineId) {
         SrcMachineId = srcMachineId;
@@ -118,4 +140,37 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public EventResult getResult() {
+        return result;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public void setResult(EventResult result) {
+        this.result = result;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
+
 }

@@ -1,13 +1,14 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-public class RegistryEnrichedEvent extends EnrichedEvent{
+public class RegistryEnrichedEvent extends EnrichedEvent {
 
     public static final String MACHINE_ID_FIELD_NAME = "machineId";
     public static final String MACHINE_NAME_FIELD_NAME = "machineName";
@@ -20,6 +21,7 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
     public static final String REGISTRY_KEY_GROUP_FIELD_NAME = "registryKeyGroup";
     public static final String REGISTRY_KEY_FIELD_NAME = "registryKey";
     public static final String REGISTRY_VALUE_NAME_FIELD_NAME = "registryValueName";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
 
 
     @Field(MACHINE_ID_FIELD_NAME)
@@ -55,12 +57,15 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
     @Field(REGISTRY_VALUE_NAME_FIELD_NAME)
     private String registryValueName;
 
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    private String operationType;
+
 
     public RegistryEnrichedEvent() {
     }
 
-    public RegistryEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, List<String> operationTypeCategories, EventResult result, String resultCode, Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String processDirectory, String processFileName, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer, String registryKeyGroup, String registryKey, String registryValueName) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
+    public RegistryEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String processDirectory, String processFileName, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer, String registryKeyGroup, String registryKey, String registryValueName) {
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;
@@ -72,9 +77,13 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
         this.registryKeyGroup = registryKeyGroup;
         this.registryKey = registryKey;
         this.registryValueName = registryValueName;
+        this.operationType = operationType;
     }
 
-    public RegistryEnrichedEvent(String machineId, String machineName, String machineOwner, String processDirectory, String processFileName, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer, String registryKeyGroup, String registryKey, String registryValueName) {
+    public RegistryEnrichedEvent(String machineId, String machineName, String machineOwner,
+                                 String processDirectory, String processFileName, List<String> processDirectoryGroups,
+                                 List<String> processCategories, String processCertificateIssuer, String registryKeyGroup,
+                                 String registryKey, String registryValueName, String userId, String userName, String userDisplayName, String operationType) {
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;
@@ -86,6 +95,7 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
         this.registryKeyGroup = registryKeyGroup;
         this.registryKey = registryKey;
         this.registryValueName = registryValueName;
+        this.operationType = operationType;
     }
 
     public String getMachineId() {
@@ -132,7 +142,7 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
         return processDirectoryGroups;
     }
 
-    public void setProcessDirectoryGroups(List<String>  processDirectoryGroups) {
+    public void setProcessDirectoryGroups(List<String> processDirectoryGroups) {
         this.processDirectoryGroups = processDirectoryGroups;
     }
 
@@ -174,5 +184,13 @@ public class RegistryEnrichedEvent extends EnrichedEvent{
 
     public void setRegistryValueName(String registryValueName) {
         this.registryValueName = registryValueName;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }
