@@ -113,7 +113,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   });
 
-  test('File download buttons not added when accessControl.endpointCanManageFiles is false', async function(assert) {
+  skip('File download buttons not added when accessControl.endpointCanManageFiles is false', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -133,7 +133,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   });
 
-  test('File download buttons are added when accessControl.endpointCanManageFiles is true', async function(assert) {
+  skip('File download buttons are added when accessControl.endpointCanManageFiles is true', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -254,7 +254,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await click('.rsa-dropdown-action-list .panel3');
   });
 
-  test('Reset Risk score confirmation dialog is opened on click of action', async function(assert) {
+  skip('Reset Risk score confirmation dialog is opened on click of action', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
