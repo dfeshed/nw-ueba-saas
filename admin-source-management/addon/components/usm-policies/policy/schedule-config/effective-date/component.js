@@ -2,7 +2,8 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import moment from 'moment';
 import {
-  startDate
+  startDate,
+  startDateValidator
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 import {
   updatePolicyProperty,
@@ -12,7 +13,8 @@ import {
 import { isEmpty } from '@ember/utils';
 
 const stateToComputed = (state) => ({
-  startDate: startDate(state)
+  startDate: startDate(state),
+  startDateValidator: startDateValidator(state)
 });
 
 const dispatchToActions = {
@@ -25,11 +27,12 @@ const EffectiveDate = Component.extend({
 
   classNames: 'scan-start-date',
 
+  selectedSettingId: null,
+
   actions: {
     onDateChange(selectedDates) {
-      if (!isEmpty(selectedDates[0])) {
-        this.send('updatePolicyProperty', 'scanStartDate', moment(selectedDates[0]).format('YYYY-MM-DD'));
-      }
+      const value = isEmpty(selectedDates[0]) ? '' : moment(selectedDates[0]).format('YYYY-MM-DD');
+      this.send('updatePolicyProperty', 'scanStartDate', value);
     }
   }
 });

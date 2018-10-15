@@ -24,7 +24,7 @@
   maxDate=maxDate
 }}
 
-{{#if errorMessage}}
+{{#if (and isError errorMessage)}}
   <div class="input-error">
     {{errorMessage}}
   </div>

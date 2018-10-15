@@ -9,7 +9,9 @@
     enableTime=false
     minDate='today'
     yearRange="currentYear, 2050"
-    value=(readonly startDate)
+    value=(readonly startDate)        
+    isError=startDateValidator.showError
+    errorMessage=(t startDateValidator.errorMessage)
     onChange=(action 'onDateChange')
   }}
 </hbox>

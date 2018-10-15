@@ -4,7 +4,10 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, fillIn, click } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
+import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
@@ -46,5 +49,24 @@ module('Integration | Component | usm-policies/policy/schedule-config/effective-
     const minusIcon = document.querySelector('.scan-start-date span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
+  });
+
+  test('It shows the error message when the scanStartDate is invalid', async function(assert) {
+    const setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+    const translation = this.owner.lookup('service:i18n');
+    const scanStartDate = '';
+    const visitedExpected = ['policy.scanStartDate'];
+    const expectedMessage = translation.t('adminUsm.policy.scanStartDateInvalidMsg');
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizScanStartDate(scanStartDate)
+      .policyWizVisited(visitedExpected)
+      .build();
+    await render(hbs`{{usm-policies/policy/schedule-config/effective-date selectedSettingId='scanStartDate'}}`);
+    assert.ok(findAll('.input-error').length, 1, 'Error is showing');
+    assert.equal(findAll('.input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
   });
 });

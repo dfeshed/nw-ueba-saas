@@ -6,13 +6,18 @@ import {
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   endpointServersList,
-  selectedEndpointSever
+  selectedEndpointSever,
+  primaryAddressValidator
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
-const stateToComputed = (state) => ({
-  endpointsList: endpointServersList(state),
-  selectedEndpointSever: selectedEndpointSever(state)
-});
+const stateToComputed = function stateToComputed(state) {
+  const [, { selectedSettingId }] = arguments;
+  return {
+    endpointsList: endpointServersList(state),
+    selectedEndpointSever: selectedEndpointSever(state),
+    primaryAddressValidator: primaryAddressValidator(state, selectedSettingId)
+  };
+};
 
 const dispatchToActions = {
   updatePolicyProperty,
@@ -21,7 +26,9 @@ const dispatchToActions = {
 
 const PrimaryAddress = Component.extend({
   tagName: 'box',
-  classNames: 'primary-address'
+  classNames: 'primary-address',
+  classNameBindings: ['selectedSettingId'],
+  selectedSettingId: null
 });
 
 export default connect(stateToComputed, dispatchToActions)(PrimaryAddress);

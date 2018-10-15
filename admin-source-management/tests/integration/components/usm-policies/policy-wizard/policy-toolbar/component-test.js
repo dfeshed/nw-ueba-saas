@@ -9,9 +9,10 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../../helpers/patch-socket';
+import Immutable from 'seamless-immutable';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState;
+let setState, setStateOldSchool;
 
 module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', function(hooks) {
   setupRenderingTest(hooks, {
@@ -21,6 +22,10 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   hooks.beforeEach(function() {
     setState = (state) => {
       patchReducer(this, state);
+    };
+    setStateOldSchool = (state) => {
+      const fullState = { usm: { policyWizard: state } };
+      patchReducer(this, Immutable.from(fullState));
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
@@ -46,7 +51,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  test('Toolbar appearance for Identify Policy step valid data', async function(assert) {
+  test('Toolbar appearance for Identify Policy step when no settings added', async function(assert) {
     assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
@@ -57,7 +62,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
     assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
     assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
-    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
@@ -136,10 +141,18 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   test('On failing to save a policy, an error flash message is shown', async function(assert) {
     const done = assert.async();
     assert.expect(2);
+    const newSelectedSettings = [
+      { index: 12, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
+      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+    ];
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
+      .policyWizBlockingEnabled(true)
       .build();
+    const initialState = state.usm.policyWizard;
+
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
     this.set('step', state.usm.policyWizard.steps[0]);
     await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
 
@@ -160,10 +173,20 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   test('On successfully saving a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
     const done = assert.async();
     assert.expect(3);
+    const newSelectedSettings = [
+      { index: 12, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
+      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+    ];
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
+      .policyWizBlockingEnabled(true)
       .build();
+
+    const initialState = state.usm.policyWizard;
+
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+
     this.set('step', state.usm.policyWizard.steps[0]);
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
@@ -188,11 +211,20 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   test('On failing to save and publish a policy, an error flash message is shown', async function(assert) {
     const done = assert.async();
     assert.expect(3);
+    const newSelectedSettings = [
+      { index: 12, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
+      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+    ];
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
+      .policyWizBlockingEnabled(true)
       .build();
-    this.set('step', state.usm.policyWizard.steps[3]);
+
+    const initialState = state.usm.policyWizard;
+
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+    this.set('step', state.usm.policyWizard.steps[1]);
     await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
     assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
 
@@ -213,11 +245,21 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   test('On successfully saving and publishing a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
     const done = assert.async();
     assert.expect(4);
+    const newSelectedSettings = [
+      { index: 12, id: 'invActionsHeader', label: 'adminUsm.policy.invasiveActions', isHeader: true, isEnabled: true },
+      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+    ];
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
+      .policyWizBlockingEnabled(true)
       .build();
-    this.set('step', state.usm.policyWizard.steps[3]);
+
+    const initialState = state.usm.policyWizard;
+
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+
+    this.set('step', state.usm.policyWizard.steps[1]);
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
     });

@@ -5,15 +5,11 @@
   </span>
 </h4>
 <span class="rsa-form-input">
-  {{input
+  {{rsa-form-input
     class='port-value'
-    type='number'
-    min=1
-    max=65535
     value=(readonly portValue)
-    focus-out=(action 'handlePortValueChange')
+    isError=isPortValid.showError
+    errorMessage=(t isPortValid.errorMessage)
+    focusOut=(action 'handlePortValueChange' value='target.value')
   }}
 </span>
-{{#if (not isPortValid)}}
-  <span class="port-error">{{t 'adminUsm.policy.portInvalidMsg'}}</span>
-{{/if}}

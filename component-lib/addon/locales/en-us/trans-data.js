@@ -3714,6 +3714,8 @@ export default {
       primaryAddress: 'Hostname',
       primaryHttpsPort: 'HTTPS Port',
       primaryUdpPort: 'UDP Port',
+      scanStartDateInvalidMsg: 'The scan start date should not be empty',
+      primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
       portInvalidMsg: 'The port should be between 1 and 65535',
       primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
       primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',

@@ -66,3 +66,13 @@ test('it can be disabled', function(assert) {
   const disabledCount = this.$().find('input[disabled]').length === 1;
   assert.equal(disabledCount, 1);
 });
+
+test('it does not show the error message if there is no error', function(assert) {
+  this.render(hbs `{{rsa-form-datetime isError=false errorMessage='There was an error' value=(readonly value) onChange=(action (mut dateValue))}}`);
+  assert.equal(this.$('.input-error').length, 0, 'The error message is not present');
+});
+
+test('it does show the error message if isError is true', function(assert) {
+  this.render(hbs `{{rsa-form-datetime isError=true errorMessage='There was an error' value=(readonly value) onChange=(action (mut dateValue))}}`);
+  assert.equal(this.$('.input-error').length, 1, 'The error message is present');
+});

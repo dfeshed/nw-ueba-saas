@@ -53,14 +53,16 @@ module('Integration | Component | usm-policies/policy/schedule-config/usm-ports'
   });
 
   test('It triggers the error message when the port is invalid', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policy.portInvalidMsg');
     await render(hbs`{{usm-policies/policy/schedule-config/usm-ports selectedSettingId='primaryHttpsPort'}}`);
     const inputEl = document.querySelector('.primaryHttpsPort input');
     await fillIn(inputEl, '55');
     await triggerEvent(inputEl, 'blur');
-    assert.equal(findAll('.port-error').length, 0, 'no error message when port is valid');
+    assert.equal(findAll('.input-error').length, 0, 'no error message when port is valid');
     await fillIn(inputEl, '-1');
     await triggerEvent(inputEl, 'blur');
-    assert.equal(findAll('.port-error').length, 1, 'expected to have error message when port is invalid');
-
+    assert.equal(findAll('.primaryHttpsPort .port-value .input-error').length, 1, 'expected to have error message when port is invalid');
+    assert.equal(findAll('.primaryHttpsPort .port-value .input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
   });
 });

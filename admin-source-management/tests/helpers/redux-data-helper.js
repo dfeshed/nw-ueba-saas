@@ -62,6 +62,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizSelectedSettings(selectedSettings) {
+    _set(this.state, 'usm.policyWizard.selectedSettings', selectedSettings);
+    return this;
+  }
+
   policyWizPolicy(policy) {
     _set(this.state, 'usm.policyWizard.policy', policy);
     return this;

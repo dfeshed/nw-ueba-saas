@@ -25,9 +25,12 @@ import {
   cpuMaxVm,
   radioButtonValue,
   radioButtonOption,
+  startDateValidator,
   portValue,
   isPortValid,
   beaconIntervalValue,
+  primaryAddress,
+  primaryAddressValidator,
   beaconIntervalValueValidator,
   beaconIntervalUnits,
   selectedBeaconIntervalUnit,
@@ -38,10 +41,8 @@ import {
   isIdentifyPolicyStepValid,
   endpointServersList,
   selectedEndpointSever,
-  // TODO when implemented isDefinePolicyStepvalid,
-  // TODO when implemented isApplyToGroupStepvalid,
-  // TODO when implemented isReviewPolicyStepvalid,
-  // TODO when implemented isWizardValid,
+  isDefinePolicyStepValid,
+  isWizardValid,
   isPolicyLoading
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 import {
@@ -246,6 +247,74 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
     assert.deepEqual(result, expectedState, `should return agentMode of ${expectedState}`);
   });
 
+  test('startDateValidator selector', function(assert) {
+    const settingId = 'scanStartDate';
+    const visited = [`policy.${settingId}`];
+    let startDate = '';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanStartDate(startDate)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policy.scanStartDateInvalidMsg'
+    };
+    let validActual = startDateValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${startDate}'`);
+
+    // valid value
+    startDate = '2018-01-10';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanStartDate(startDate)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = startDateValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${startDate}`);
+  });
+
+  test('primaryAddressValidator selector', function(assert) {
+    const settingId = 'primaryAddress';
+    const visited = [`policy.${settingId}`];
+    let addressValue = '';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAddress(addressValue)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policy.primaryAddressInvalidMsg'
+    };
+    let validActual = primaryAddressValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${addressValue}'`);
+
+    // valid value
+    addressValue = '10.10.10.10';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAddress(addressValue)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = primaryAddressValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${addressValue}`);
+  });
+
+  test('primaryAddress', function(assert) {
+    const primaryAddressExpected = '10.10.10.10';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAddress(primaryAddressExpected)
+      .build();
+    const resultPrimaryAddress = primaryAddress(fullState, 'primaryAddress');
+    assert.deepEqual(resultPrimaryAddress, primaryAddressExpected, `should return primary address ${primaryAddressExpected}`);
+  });
+
   test('primaryHttpsPort', function(assert) {
     const expectedValue = 555;
     const fullState = new ReduxDataHelper()
@@ -268,12 +337,14 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
   test('isPortValid returns correcly based on the validity of the port value', function(assert) {
     let portValue = 0;
+    const expectedErrorMsg = 'adminUsm.policy.portInvalidMsg';
     let fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPrimaryUdpPort(portValue)
       .build();
     let result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+    assert.equal(result.isError, true, `isPortValid returns error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, expectedErrorMsg, 'isPortValid returns expected error message');
 
     portValue = -1;
     fullState = new ReduxDataHelper()
@@ -281,7 +352,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+    assert.equal(result.isError, true, `isPortValid returns error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, expectedErrorMsg, 'isPortValid returns expected error message');
 
     portValue = -77777;
     fullState = new ReduxDataHelper()
@@ -289,7 +361,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+    assert.equal(result.isError, true, `isPortValid does not return error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, expectedErrorMsg, 'isPortValid returns expected error message');
 
     portValue = 77777;
     fullState = new ReduxDataHelper()
@@ -297,7 +370,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is ${portValue}`);
+    assert.equal(result.isError, true, `isPortValid does not return error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, expectedErrorMsg, 'isPortValid returns expected error message');
 
     portValue = '';
     fullState = new ReduxDataHelper()
@@ -305,7 +379,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, false, `isPortValid returns ${result} when port value is empty string`);
+    assert.equal(result.isError, true, `isPortValid returns error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, expectedErrorMsg, 'isPortValid returns expected error message');
 
     portValue = 443;
     fullState = new ReduxDataHelper()
@@ -313,7 +388,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpPort(portValue)
       .build();
     result = isPortValid(fullState, 'primaryUdpPort');
-    assert.deepEqual(result, true, `isPortValid returns ${result} when port value is ${portValue}`);
+    assert.equal(result.isError, false, `isPortValid does not return error when port value is ${portValue}`);
+    assert.equal(result.errorMessage, '', 'isPortValid returns expected error message');
   });
 
   test('beaconIntervalValue selector', function(assert) {
@@ -834,6 +910,114 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
     const stepsSelected = steps(Immutable.from(fullState));
     assert.deepEqual(stepsSelected, stepsExpected, 'The returned value from the steps selector is as expected');
     assert.deepEqual(stepsSelected[0].id, stepId0Expected, `steps[0].id is ${stepId0Expected}`);
+  });
+
+  test('isDefinePolicyStepValid selector', function(assert) {
+    const nameExpected = 'test';
+    const visitedExpected = ['policy.name'];
+    // at least one setting required
+    let selectedSettingsExpected = [];
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    let isDefinePolicyStepValidExpected = false;
+    let isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'at least one setting should be selected');
+
+    // start date selected but invalid
+    selectedSettingsExpected = [
+      { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizScanStartDate('')
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = false;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'start date is invalid');
+
+    // endpoint server selected but invalid
+    selectedSettingsExpected = [
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 15, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizPrimaryAddress('')
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = false;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'endpoint server is invalid');
+
+    // ports selected but invalid
+    selectedSettingsExpected = [
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+      { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizPrimaryHttpsPort(0)
+      .policyWizPrimaryUdpPort(444)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = false;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'https port is invalid');
+
+    // beacon intervals selected but invalid
+    selectedSettingsExpected = [
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+      { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizPrimaryHttpsBeaconInterval(0)
+      .policyWizPrimaryHttpsBeaconIntervalUnit('HOURS')
+      .policyWizPrimaryUdpBeaconInterval(15)
+      .policyWizPrimaryUdpBeaconIntervalUnit('HOURS')
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = false;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'https beacon interval is invalid');
+  });
+
+  test('isWizardValid selector', function(assert) {
+    const nameExpected = 'test';
+    const visitedExpected = ['policy.name'];
+    // at least one setting required
+    const selectedSettingsExpected = [];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    const isWizardValidExpected = false;
+    const isWizardValidSelected = isWizardValid(fullState);
+    assert.deepEqual(isWizardValidSelected, isWizardValidExpected, 'at least one setting should be selected');
   });
 
   test('isIdentifyPolicyStepValid selector', function(assert) {

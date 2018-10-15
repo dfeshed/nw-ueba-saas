@@ -45,6 +45,7 @@ export const selectedEndpointSever = createSelector(
   policy, endpointServersList,
   (policy, endpointServersList) => {
     let selected = null;
+
     for (let s = 0; s < endpointServersList.length; s++) {
       const endpointServer = endpointServersList[s];
       if (policy.primaryAddress === endpointServer.host) {
@@ -105,6 +106,39 @@ export const sortedSelectedSettings = createSelector(
 export const radioButtonValue = (state, selectedSettingId) => state.usm.policyWizard.policy[selectedSettingId];
 
 /**
+ * validates a primary address value
+ * returns error if value blank
+ * @public
+ */
+export const primaryAddressValidator = (state, selectedSettingId) => {
+  const value = primaryAddress(state, selectedSettingId);
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  // primary address cannot be blank
+  if (isBlank(value)) {
+    error = true;
+    enableMessage = true;
+    message = `adminUsm.policy.${selectedSettingId}InvalidMsg`;
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
+/**
+ * returns the priamryAddress value from state based on the selectedSettingId.
+ * @public
+ */
+export const primaryAddress = (state, selectedSettingId) => {
+  return state.usm.policyWizard.policy[selectedSettingId];
+};
+
+
+/**
  * It returns the port value (primaryHttpsPort or primaryUdpPort) from state based on the selectedSettingId.
  * @public
  */
@@ -118,7 +152,21 @@ export const portValue = (state, selectedSettingId) => {
  */
 export const isPortValid = (state, selectedSettingId) => {
   const value = portValue(state, selectedSettingId);
-  return isBetween(value);
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  const validPort = isBetween(value);
+  if (!validPort) {
+    error = true;
+    enableMessage = true;
+    message = 'adminUsm.policy.portInvalidMsg';
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
 };
 
 /**
@@ -252,6 +300,31 @@ export const startDate = createSelector(
   }
 );
 
+/**
+ * returns a scan start date validator object with values set for
+ * - isError, errorMessage
+ * @public
+ */
+export const startDateValidator = (state) => {
+  const value = startDate(state);
+
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  // start date cannot be blank
+  if (isBlank(value)) {
+    error = true;
+    enableMessage = true;
+    message = 'adminUsm.policy.scanStartDateInvalidMsg';
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
 export const startTime = createSelector(
   policy,
   (policy) => policy.scanStartTime // only format/return what is in state - the reducer is responsible for the defaults for each setting
@@ -380,28 +453,44 @@ export const isIdentifyPolicyStepValid = createSelector(
   }
 );
 
-// TODO implement real check
-export const isDefinePolicyStepvalid = createSelector(
-  policy,
-  (policy) => policy.name === policy.name
-);
+const _state = (state) => state;
 
-// TODO implement real check
-export const isApplyToGroupStepvalid = createSelector(
-  policy,
-  (policy) => policy.name === policy.name
-);
+/**
+ * Map to hold validator functions for settings
+ * if a setting is selected on the right side,
+ * its validator is invoked
+ * @private
+ */
+const validatorFnMap = {
+  'scanStartDate': startDateValidator,
+  'primaryAddress': primaryAddressValidator,
+  'primaryHttpsPort': isPortValid,
+  'primaryUdpPort': isPortValid,
+  'primaryHttpsBeaconInterval': beaconIntervalValueValidator,
+  'primaryUdpBeaconInterval': beaconIntervalValueValidator
+};
 
-// TODO implement real check
-export const isReviewPolicyStepvalid = createSelector(
-  policy,
-  (policy) => policy.name === policy.name
+export const isDefinePolicyStepValid = createSelector(
+  _state, selectedSettings,
+  (_state, selectedSettings) => {
+    // at least one setting required to save a policy
+    let isValid = selectedSettings.length > 0;
+    for (let i = 0; i < selectedSettings.length; i++) {
+      const el = selectedSettings[i];
+      const selectedSettingId = el.id;
+      const validator = validatorFnMap[selectedSettingId];
+      if (!el.isHeader && validator) {
+        // call validator function
+        isValid = isValid && validator(_state, selectedSettingId).isError === false;
+      }
+    }
+    return isValid;
+  }
 );
 
 export const isWizardValid = createSelector(
-  isIdentifyPolicyStepValid, isDefinePolicyStepvalid, isApplyToGroupStepvalid, isReviewPolicyStepvalid,
-  (isIdentifyPolicyStepValid, isDefinePolicyStepvalid, isApplyToGroupStepvalid, isReviewPolicyStepvalid) => {
-    return isIdentifyPolicyStepValid && isDefinePolicyStepvalid &&
-      isApplyToGroupStepvalid && isReviewPolicyStepvalid;
+  isIdentifyPolicyStepValid, isDefinePolicyStepValid,
+  (isIdentifyPolicyStepValid, isDefinePolicyStepValid) => {
+    return isIdentifyPolicyStepValid && isDefinePolicyStepValid;
   }
 );

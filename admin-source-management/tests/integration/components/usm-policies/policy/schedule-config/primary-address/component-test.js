@@ -59,4 +59,25 @@ module('Integration | Component | usm-policies/policy/schedule-config/primary-ad
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
   });
+
+  test('It shows the error message when the primaryAddress is invalid', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const primaryAddress = '';
+    const visitedExpected = ['policy.primaryAddress'];
+    const expectedMessage = translation.t('adminUsm.policy.primaryAddressInvalidMsg');
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policy(primaryAddress)
+      .policyWizEndpointServers()
+      .policyWizVisited(visitedExpected)
+      .build();
+    await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
+    assert.equal(findAll('.primary-address__list .selector-error').length, 1, 'Error is showing');
+    assert.equal(findAll('.input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+
+    // valid input
+    await selectChoose('.primary-address__list', '.ember-power-select-option', 0);
+    assert.equal(findAll('.primary-address__list .selector-error').length, 0, 'Error is not showing for valid input');
+    assert.equal(findAll('.input-error')[0].innerText, '', 'No error message when valid input');
+  });
 });

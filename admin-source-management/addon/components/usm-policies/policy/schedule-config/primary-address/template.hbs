@@ -4,16 +4,24 @@
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>
+
 <div class="primary-address__list">
   {{#power-select
     placeholder=(t 'packager.placeholder')
     options=endpointsList
     searchField="name"
-    triggerClass=errorClass
+    triggerClass=(if primaryAddressValidator.showError 'selector-error')
     dropdownClass=errorClass
     searchPlaceholder=(t 'packager.searchPlaceholder')
-    selected=selectedEndpointSever
-    onchange=(action 'updatePolicyProperty' 'primaryAddress') as |list|}}
+    selected=selectedEndpointSever    
+    onchange=(action 'updatePolicyProperty' 'primaryAddress') as |list|
+  }}
     {{list.name}}
-  {{/power-select}}
+  {{/power-select}}  
+</div>
+
+<div class="input-error">
+  {{#if primaryAddressValidator.showError}}
+    {{t primaryAddressValidator.errorMessage}}
+  {{/if}}
 </div>
