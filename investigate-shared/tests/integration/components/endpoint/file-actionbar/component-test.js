@@ -4,6 +4,7 @@ import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import sinon from 'sinon';
+import EmberObject from '@ember/object';
 
 module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   setupRenderingTest(hooks);
@@ -54,9 +55,17 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     const actionSpy = sinon.spy(window, 'open');
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      accessControl=accessControl
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
@@ -104,12 +113,57 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   });
 
+  test('File download buttons not added when accessControl.endpointCanManageFiles is false', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', false);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as File permissions are not present.');
+
+  });
+
+  test('File download buttons are added when accessControl.endpointCanManageFiles is true', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '5 list options should render as File permissions are present.');
+
+  });
+
   test('More action, Download to server', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+
     this.set('downloadFiles', function() {
       assert.ok('External function called on click of button');
     });
@@ -118,6 +172,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       downloadFiles=downloadFiles
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -130,6 +185,9 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('saveLocalCopy', function() {
       assert.ok('External function called on click of button');
@@ -139,6 +197,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       saveLocalCopy=saveLocalCopy
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -150,6 +209,9 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
       assert.ok('External function called on click of button');
@@ -159,6 +221,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       analyzeFile=analyzeFile
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -171,6 +234,9 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('downloadFiles', function() {
       assert.ok('External function called on click of button');
@@ -181,6 +247,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       downloadFiles=downloadFiles
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');

@@ -73,8 +73,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('Download to server websocket called', async function(assert) {
 
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+
     new ReduxDataHelper(setState).drivers(drivers).build();
-    await render(hbs`{{host-detail/utils/file-context-wrapper storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     assert.expect(3);
 

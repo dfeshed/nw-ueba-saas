@@ -30,6 +30,8 @@ export default Component.extend({
 
   i18n: service(),
 
+  accessControl: service(),
+
   showOnlyIcons: false,
 
   serviceList: null,
@@ -70,9 +72,10 @@ export default Component.extend({
   fileActionOptions(fileDownloadButtonStatus) {
 
     const i18n = this.get('i18n');
+    const canManageFiles = this.get('accessControl.endpointCanManageFiles');
     let fileActionConfClone = [...FileActionConf];
 
-    if (fileDownloadButtonStatus) {
+    if (fileDownloadButtonStatus && canManageFiles) {
       const { isDownloadToServerDisabled, isSaveLocalAndFileAnalysisDisabled } = fileDownloadButtonStatus;
       // Additional menu options enabled and disabled based on selected file's download status.
       fileActionConfClone = [

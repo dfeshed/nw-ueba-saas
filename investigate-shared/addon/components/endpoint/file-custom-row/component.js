@@ -11,6 +11,8 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
   eventBus: service(),
 
+  accessControl: service(),
+
   showServiceModal: false,
 
   serviceList: null,
@@ -23,6 +25,8 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
   @computed('item')
   contextItems() {
     const cntx = this;
+    const canManageFiles = cntx.get('accessControl.endpointCanManageFiles');
+
     const contextConf = [
       {
         label: 'editFileStatus',
@@ -94,7 +98,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       }
     ];
 
-    if (cntx.get('fileDownloadButtonStatus')) {
+    if (cntx.get('fileDownloadButtonStatus') && canManageFiles) {
 
       const fileDownloadButtons = [
         {
