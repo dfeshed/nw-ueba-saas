@@ -1,0 +1,28 @@
+
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.process.startInstant.userId.process.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    }
+  ]
+}
