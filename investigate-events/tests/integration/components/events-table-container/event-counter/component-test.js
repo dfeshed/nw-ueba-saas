@@ -39,6 +39,7 @@ module('Integration | Component | Event Counter', function(hooks) {
 
     await render(hbs`{{events-table-container/event-counter}}`);
 
+    assert.notOk(find('.rsa-investigate-event-counter').getAttribute('title'), 'Expected no title');
     assert.equal(findAll('.rsa-investigate-event-counter__plus').length, 0, 'Expected to not find plus DOM element.');
   });
 
@@ -50,6 +51,7 @@ module('Integration | Component | Event Counter', function(hooks) {
 
     await render(hbs`{{events-table-container/event-counter}}`);
 
+    assert.equal(find('.rsa-investigate-event-counter').getAttribute('title'), 'Event count hit configured maximum query threshold.', 'Expected no title');
     assert.equal(findAll('.rsa-investigate-event-counter__plus').length, 1, 'Expected to find plus DOM element.');
   });
 
