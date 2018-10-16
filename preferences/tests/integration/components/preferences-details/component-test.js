@@ -90,12 +90,12 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(getTextFromDOMArray(options), 'DownloadLogDownloadCSVDownloadXMLDownloadJSON');
   });
 
-  test('Preferences panel comes with valid options for meta format', async function(assert) {
+  test('Nehal Preferences panel comes with valid options for meta format', async function(assert) {
     await renderApplicationContent(this, assert);
     await clickTrigger('.rsa-preferences-field-content:nth-child(3)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadTextDownloadXMLDownloadCSVDownloadTSV');
+    assert.equal(getTextFromDOMArray(options), 'DownloadTextDownloadCSVDownloadTSVDownloadJSON');
   });
 
   test('Preferences panel comes with valid options for packet format', async function(assert) {

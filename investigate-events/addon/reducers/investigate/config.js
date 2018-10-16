@@ -47,9 +47,9 @@ export default {
     type: 'dropdown',
     options: [
       'TEXT',
-      'XML',
       'CSV',
-      'TSV'
+      'TSV',
+      'JSON'
     ],
     field: 'eventAnalysisPreferences.defaultMetaFormat'
   },
