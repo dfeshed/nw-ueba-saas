@@ -8,9 +8,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rsa.asoc.respond.api.alert.AlertHeader;
+import com.rsa.asoc.respond.api.alert.AlertMessage;
 import fortscale.utils.logging.Logger;
 import presidio.output.forwarder.ForwardMassage;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
@@ -30,6 +31,9 @@ public class SqsForwarderStrategy implements ForwarderStrategy {
 
     private String queueUrl;
     private AmazonSQSExtendedClient extendedSqs;
+    private static final TypeReference<HashMap<String, Object>> TYPE = new TypeReference<HashMap<String, Object>>() {
+    };
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String getName() {
@@ -53,78 +57,54 @@ public class SqsForwarderStrategy implements ForwarderStrategy {
     }
 
     @Override
-    public void forward(List<ForwardMassage> messages, PAYLOAD_TYPE type) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+    public void forward(List<ForwardMassage> messages, PAYLOAD_TYPE type) {
         messages.forEach(forwardMassage -> {
             try {
-                AlertMessage m = new AlertMessage();
-                m.header = getHeaders();
-                TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
-                m.payload = mapper.readValue(forwardMassage.getPayload(), typeRef);
-                extendedSqs.sendMessage(queueUrl, mapper.writeValueAsString(m));
-            }
-            catch (JsonProcessingException e) {
-                logger.error("Could not convert {}", forwardMassage);
+                AlertMessage alertMessage = generateAlertMessage(forwardMassage);
+                extendedSqs.sendMessage(queueUrl, mapper.writeValueAsString(alertMessage));
             }
             catch (IOException e) {
                 logger.error(e.getMessage(), e);
+                throw new IllegalArgumentException(e.getMessage(), e);
             }
         });
 
     }
 
-    private AlertHeader getHeaders() {
+    private AlertMessage generateAlertMessage(ForwardMassage forwardMassage) throws IOException {
+        AlertMessage alertMessage = new AlertMessage();
+        alertMessage.setHeader(populateHeaders(forwardMassage));
+        alertMessage.setPayload(mapper.readValue(forwardMassage.getPayload(), TYPE));
+        return alertMessage;
+    }
+
+    private AlertHeader populateHeaders(ForwardMassage forwardMassage) {
+
         AlertHeader alertHeader = new AlertHeader();
         //constant headers
-        alertHeader.signatureId = "UEBAIOC";
-        alertHeader.deviceVendor = "RSA";
-        alertHeader.deviceVersion = "1.0.0";
-        alertHeader.deviceProduct = "User Entity Behavior Analytics";
+        alertHeader.setSignatureId("UEBAIOC");
+        alertHeader.setDeviceVendor("RSA");
+        alertHeader.setDeviceVersion("1.0.0");
+        alertHeader.setDeviceProduct("User Entity Behavior Analytics");
+        alertHeader.setTimestamp(Instant.now().getEpochSecond());
 
-        alertHeader.timestamp = Instant.now().getEpochSecond();
+        Map forwardMassageHeader = forwardMassage.getHeader();
 
+        // indicator
+        if (forwardMassageHeader != null) {
+            alertHeader.setName((String) forwardMassageHeader.get("carlos.event.name"));
+            // this might generate class cast exception
+            Double severity = (Double) forwardMassageHeader.get("carlos.event.severity");
+            alertHeader.setSeverity(severity.intValue());
+
+            String timestamp = (String) forwardMassageHeader.get("carlos.event.timestamp");
+            alertHeader.setTimestamp(Instant.parse(timestamp).getEpochSecond());
+        }
         return alertHeader;
     }
 
     @Override
     public void close() {
         extendedSqs.shutdown();
-    }
-
-    private static class AlertMessage {
-
-        private AlertMessage() {
-        }
-
-        private AlertMessage(AlertHeader header, Map<String, Object> payload) {
-            this.header = header;
-            this.payload = payload;
-        }
-
-        private AlertHeader header;
-
-        private Map<String, Object> payload;
-
-    }
-
-    private static class AlertHeader {
-
-        private String name;
-
-        private String description;
-
-        private int version;
-
-        private int severity;
-
-        private long timestamp;
-
-        private String signatureId;
-
-        private String deviceVendor;
-
-        private String deviceProduct;
-
-        private String deviceVersion;
     }
 }

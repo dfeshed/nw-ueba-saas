@@ -6,8 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.util.EC2MetadataUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import fortscale.utils.logging.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,15 +23,20 @@ import java.util.Properties;
  */
 class Helper {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = Logger.getLogger(Helper.class);
     private static final String CUSTOMER_ID_KEY = "customerId";
+    private static final String QUEUE_FIELD = "messagesQueueName";
+    private static final String BUCKET_FIELD = "messagesBucketName";
 
     private AmazonDynamoDB ddb;
     private AmazonSQS sqs;
+    private final String customerId;
+
 
     Helper(AmazonDynamoDB ddb, AmazonSQS sqs) {
         this.ddb = ddb;
         this.sqs = sqs;
+        this.customerId = getCustomerId();
     }
 
     /**
@@ -60,7 +64,7 @@ class Helper {
             props.load(is);
         }
         catch (IOException e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
         return props;
@@ -102,17 +106,28 @@ class Helper {
     }
 
     private GetItemResult getCustomerRecord() {
-        return ddb.getItem(makeRequest(getTableName(), getCustomerId()));
+        return ddb.getItem(makeRequest(getTableName(), customerId));
     }
 
     String getQueueUrl() {
         Map<String, AttributeValue> item = getCustomerRecord().getItem();
-        String queueName = item.get("messagesQueueName").getS();
+        String queueName = null;
+        try {
+            queueName = item.get(QUEUE_FIELD).getS();
+        }
+        catch (NullPointerException e) {
+            LOGGER.error("no {} field in customer record", QUEUE_FIELD);
+            throw new IllegalStateException("");
+        }
         return sqs.getQueueUrl(queueName).getQueueUrl();
     }
 
     String getMessagesBucketName() {
-        Map<String, AttributeValue> item = getCustomerRecord().getItem();
-        return  item.get("messagesBucketName").getS();
+        try {
+            return getCustomerRecord().getItem().get(BUCKET_FIELD).getS();
+        }
+        catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 }
