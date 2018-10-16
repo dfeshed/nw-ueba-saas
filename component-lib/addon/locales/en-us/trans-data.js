@@ -4048,6 +4048,9 @@ export default {
     },
     resetFilters: 'Reset Filters',
     addToFavorites: 'Add To Favorites',
+    filterName: 'Filter Name :',
+    save: 'Save',
+    cancel: 'Cancel',
     severity: {
       Critical: 'Critical',
       High: 'High',

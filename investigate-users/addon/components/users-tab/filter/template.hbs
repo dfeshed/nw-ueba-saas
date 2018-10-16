@@ -4,6 +4,30 @@
   {{users-tab/filter/favorites}}
 </div>
 <div class='users-tab_filter_controls'>
-  {{#rsa-form-button isFullWidth=true}}{{t 'investigateUsers.addToFavorites'}}{{/rsa-form-button}}
-  {{#rsa-form-button isFullWidth=true click=(action 'resetFilters')}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
+  {{#rsa-application-modal
+    label='Save As Favorites'
+    eventId='saveAsFavorites'}}
+    <div class='modal-trigger'>
+      {{#rsa-form-button isFullWidth=true}}{{t 'investigateUsers.addToFavorites'}}{{/rsa-form-button}}
+    </div>
+    <div class='modal-content users-tab_filter_controls_save-as-favorites'>
+      <div class='users-tab_filter_controls_save-as-favorites_name'>
+        <div class='users-tab_filter_controls_save-as-favorites_name_label'>
+          {{t 'investigateUsers.filterName'}}
+        </div>
+        <div>
+          {{rsa-form-input value=name maxLength=40}}
+        </div> 
+      </div>
+      <div class='users-tab_filter_controls_save-as-favorites_save'>
+        <div class='users-tab_filter_controls_save-as-favorites_save_cancel'>
+          {{#rsa-form-button click=(action 'closeFilter')}}{{t 'investigateUsers.cancel'}}{{/rsa-form-button}}
+        </div>
+        <div>
+          {{#rsa-form-button style='primary' click=(action 'createFilter') isDisabled=isDisabled}}{{t 'investigateUsers.save'}}{{/rsa-form-button}}
+        </div>
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+  {{#rsa-form-button isFullWidth=true click=(action 'updateFilter' null)}}{{t 'investigateUsers.resetFilters'}}{{/rsa-form-button}}
 </div>

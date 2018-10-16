@@ -1,6 +1,13 @@
 import * as ACTION_TYPES from './types';
 import { fetchData } from './fetch/data';
 import { getUserFilter } from 'investigate-users/reducers/users/selectors';
+import _ from 'lodash';
+
+const _filterPropertiesToPickFromCurrentFilterForPosting = ['alertTypes', 'indicatorTypes', 'isWatched', 'minScore', 'severity', 'sortDirection', 'sortField'];
+
+const _removeUnwantedPropertyFromObject = (obj = {}) => {
+  return _.pick(obj, _filterPropertiesToPickFromCurrentFilterForPosting);
+};
 
 const getSeverityDetailsForUserTabs = (filter) => {
   return (dispatch) => {
@@ -73,6 +80,15 @@ const updateFilter = (filter) => {
   };
 };
 
+const saveAsFavorite = (name) => {
+  return (dispatch, getState) => {
+    const filterForPost = _removeUnwantedPropertyFromObject(getUserFilter(getState()));
+    fetchData('createfavoriteFilter', filterForPost, true, name).then(() => {
+      dispatch(getFavorites());
+    });
+  };
+};
+
 const resetUsers = () => ({ type: ACTION_TYPES.RESET_USERS });
 
 export {
@@ -82,5 +98,6 @@ export {
   getFavorites,
   resetUsers,
   updateFilter,
-  getUsers
+  getUsers,
+  saveAsFavorite
 };
