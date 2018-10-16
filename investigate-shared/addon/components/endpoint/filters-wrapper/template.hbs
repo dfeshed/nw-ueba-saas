@@ -13,7 +13,7 @@
   resetFilters=(action 'resetAllFilters' filterType)}}
 
 {{#if showSaveFilter}}
-  {{#rsa-application-modal autoOpen=true eventId='save-search' label=(t displayProperties.label)}}
+  {{#rsa-application-modal autoOpen=true onClose=(action 'closeSaveFilterModal') label=(t displayProperties.label)}}
     <div class='modal-content rsa-save-search rsa-p-md save-search'>
       <label class="rsa-form-label">
         {{t 'investigateFiles.filter.customFilters.save.description'}}

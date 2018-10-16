@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { filters, isSystemFilter, selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import computed from 'ember-computed-decorators';
-import { inject as service } from '@ember/service';
 import layout from './template';
 import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
@@ -86,8 +85,6 @@ export default Component.extend({
 
   saveFilterName: null,
 
-  eventBus: service(),
-
   selectedFilter: null,
 
   filterState: null,
@@ -153,7 +150,6 @@ export default Component.extend({
     closeSaveFilterModal() {
       this.set('saveFilterName', '');
       this.set('showSaveFilter', false);
-      this.get('eventBus').trigger('rsa-application-modal-close-save-search');
     },
 
 
