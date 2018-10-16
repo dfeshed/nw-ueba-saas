@@ -37,9 +37,11 @@ export default Mixin.create({
 
   iframeSrcWatcher: observer('iframeSrc', function() {
     const source = this.get('iframeSrc');
-    if (source !== null) {
-      this.send('didDownloadFiles');
-    }
+    next(() => {
+      if (source !== null) {
+        this.send('didDownloadFiles');
+      }
+    });
   }),
 
   actions: {
