@@ -79,7 +79,7 @@ const CertificateStatus = Component.extend({
     saveStatus() {
       const callbackOptions = {
         onSuccess: () => success('configure.endpoint.certificates.status.success'),
-        onFailure: () => failure('configure.endpoint.certificates.status.failure')
+        onFailure: () => failure('configure.endpoint.certificates.status.error')
       };
       this.set('showModal', false);
       this.send('saveCertificateStatus', this.get('selections').mapBy('thumbprint'), this.get('data'), callbackOptions);
