@@ -460,4 +460,26 @@ module('Integration | Component | file list', function(hooks) {
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });
+
+  test('On click of Reset, confirmation dialog is closed ', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    const selectedFiles = [{
+      checksumMd5: '6cd1505286a119d0dfde50ad926d2edf',
+      checksumSha1: '180c43e4dc1f217c6001a7bb607931b25247e321',
+      checksumSha256: '14593a583e15660f6a64742af4217573953a0c1eeb7aa1115c9d24273f73dc2d',
+      fileName: 'xt_conntrack.ko',
+      id: '6cd1505286a119d0dfde50ad926d2edf'
+    }];
+    this.set('showResetScoreModal', true);
+    this.set('selectedFiles', selectedFiles);
+    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal selectedFiles=selectedFiles}}`);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await click('.resetButton');
+    assert.equal(this.get('showResetScoreModal'), false);
+    assert.equal(this.get('selectedFiles'), null);
+  });
 });

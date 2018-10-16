@@ -91,7 +91,8 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         ]
       },
       {
-        label: 'Reset Risk Score',
+        label: 'resetRiskScore',
+        prefix: 'investigateShared.endpoint.fileActions.',
         action() {
           cntx.resetRiskScore(cntx.get('selections'));
         }
