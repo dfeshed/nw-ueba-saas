@@ -1,3 +1,4 @@
+import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initProcessAnalysis } from 'investigate-process-analysis/actions/creators/init-creators';
@@ -16,12 +17,18 @@ export default Route.extend({
     et: { refreshModel: true },      // end time
     sid: { refreshModel: true },       // service id
     vid: { replace: true },        // process identification
-    hn: { refreshModel: true }   // host name
+    hn: { refreshModel: true },  // host name
+    serverId: { refreshModel: true }   // serverId
   },
 
 
   model(params) {
     const redux = this.get('redux');
+    const request = lookup('service:request');
+    const { serverId } = params;
+    if (serverId) {
+      request.registerPersistentStreamOptions({ socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' });
+    }
     run.next(() => {
       redux.dispatch(initProcessAnalysis(params));
       redux.dispatch(getServices());
@@ -34,6 +41,8 @@ export default Route.extend({
   },
   deactivate() {
     document.getElementsByTagName('body')[0].classList.remove('process-analysis');
+    const request = lookup('service:request');
+    request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
   },
 
   actions: {

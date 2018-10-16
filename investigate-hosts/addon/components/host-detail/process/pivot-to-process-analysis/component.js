@@ -15,7 +15,8 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   isJazzAgent: isJazzAgent(state),
-  isEcatAgent: isEcatAgent(state)
+  isEcatAgent: isEcatAgent(state),
+  serverId: state.endpointQuery.serverId
 });
 
 const PivotToPA = Component.extend({
@@ -72,10 +73,11 @@ const PivotToPA = Component.extend({
       const { zoneId } = this.get('timezone.selected');
       const { item, agentId, osType, hostName } = this.getProperties('item', 'agentId', 'osType', 'hostName');
       const { name, checksumSha256, vpid } = item;
+      const serverId = this.get('serverId');
       const timeRange = buildTimeRange(1, 'days', zoneId);
       const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
       const osTypeParam = `osType=${osType}&vid=${vpid}`;
-      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}`;
+      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}&serverId=${serverId}`;
 
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
       this._closeModal();

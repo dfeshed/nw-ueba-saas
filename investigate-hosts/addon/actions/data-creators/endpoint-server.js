@@ -60,3 +60,5 @@ export const getEndpointServers = () => {
     });
   };
 };
+
+export const setSelectedEndpointServer = (id) => ({ type: ACTION_TYPES.ENDPOINT_SERVER_SELECTED, payload: id });

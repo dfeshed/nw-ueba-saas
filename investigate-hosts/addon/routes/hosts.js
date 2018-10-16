@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 import { initializeHostPage } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
-import { getEndpointServers, isEndpointServerOffline } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { getEndpointServers, isEndpointServerOffline, setSelectedEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -72,6 +72,7 @@ export default Route.extend({
       } else {
         // get host details
         request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
+        redux.dispatch(setSelectedEndpointServer(sid));
         return request.ping('endpoint-server-ping')
         .then(() => {
           const { machineId, tabName = 'OVERVIEW' } = params;

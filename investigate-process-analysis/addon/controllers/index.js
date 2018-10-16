@@ -10,7 +10,8 @@ export default Controller.extend({
     'sid',
     'osType', // metaPanelSize
     'vid', // Process identification
-    'hn' // Host name
+    'hn', // Host name
+    'serverId' // Server Id
   ],
   actions: {
     controllerExecuteQuery() {
