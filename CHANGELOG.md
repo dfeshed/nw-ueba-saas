@@ -1,3 +1,16 @@
+# [9.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.5.0)
+## Features
+* [ASOC-59805](https://bedfordjira.na.rsa.net/browse/ASOC-59805):&emsp;Meta Download Preference
+* [ASOC-59809](https://bedfordjira.na.rsa.net/browse/ASOC-59809):&emsp;Download Drop-down - Download Options from Preferences
+* [ASOC-62505](https://bedfordjira.na.rsa.net/browse/ASOC-62505):&emsp;Design session w/ UX to alter layout of event templates
+* [ASOC-62509](https://bedfordjira.na.rsa.net/browse/ASOC-62509):&emsp;Support RE/MA/WTD/ECAT (legacy) formats
+* [ASOC-63370](https://bedfordjira.na.rsa.net/browse/ASOC-63370):&emsp;Tech Debt: Upgrade Respond to latest spring-data-mongo
+* [ASOC-64123](https://bedfordjira.na.rsa.net/browse/ASOC-64123):&emsp;Display meta key and pretty name
+* [ASOC-64141](https://bedfordjira.na.rsa.net/browse/ASOC-64141):&emsp;E2E Validation of BE and FE for Incident event details
+* [ASOC-65045](https://bedfordjira.na.rsa.net/browse/ASOC-65045):&emsp;Extract event list components for reuse across other engines in sa-ui
+* [ASOC-65887](https://bedfordjira.na.rsa.net/browse/ASOC-65887):&emsp;Automated tests for validation of Incident event details
+
+
 # [9.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.4.0)
 ## Features
 * [ASOC-58476](https://bedfordjira.na.rsa.net/browse/ASOC-58476):&emsp;Inter-Pill Keyboard Interaction - Navigation
