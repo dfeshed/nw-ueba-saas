@@ -3,9 +3,9 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>fortscale</artifactId>
-        <version>2.16.1-SNAPSHOT</version>
+        <version>2.16.1</version>
     </parent>
-    <version>2.16.1-SNAPSHOT</version>
+    <version>2.16.1</version>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>presidio-domain</artifactId>
     <name>presidio-domain</name>

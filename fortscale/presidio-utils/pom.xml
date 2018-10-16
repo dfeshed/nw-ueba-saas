@@ -4,9 +4,9 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>fortscale</artifactId>
-        <version>2.16.1-SNAPSHOT</version>
+        <version>2.16.1</version>
     </parent>
-    <version>2.16.1-SNAPSHOT</version>
+    <version>2.16.1</version>
     <artifactId>presidio-utils</artifactId>
     <name>presidio-utils</name>
     <packaging>jar</packaging>
