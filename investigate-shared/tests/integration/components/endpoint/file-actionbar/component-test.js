@@ -113,7 +113,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   });
 
-  skip('File download buttons not added when accessControl.endpointCanManageFiles is false', async function(assert) {
+  test('File download buttons not added when accessControl.endpointCanManageFiles is false', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -126,14 +126,16 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as File permissions are not present.');
+
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, '3 list options should render as File permissions are not present.');
 
   });
 
-  skip('File download buttons are added when accessControl.endpointCanManageFiles is true', async function(assert) {
+  test('File download buttons are added when accessControl.endpointCanManageFiles is true', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -147,10 +149,12 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '5 list options should render as File permissions are present.');
+
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, '6 list options should render as File permissions are present.');
 
   });
 
@@ -254,13 +258,21 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await click('.rsa-dropdown-action-list .panel3');
   });
 
-  skip('Reset Risk score confirmation dialog is opened on click of action', async function(assert) {
+  test('Reset Risk score confirmation dialog is opened on click of action', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      accessControl=accessControl
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
