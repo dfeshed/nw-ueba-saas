@@ -58,8 +58,8 @@ module('Unit | Selectors | event-results', function(hooks) {
     // number of options in download as per the number of preferences x number of options per preference
     // TODO change when more options from remaining preferences are added
     assert.equal(result.length, 3, '3 options for download available');
-    assert.equal(result[0].name.string, 'Logs as LOG', 'Logs download option');
-    assert.equal(result[1].name.string, 'Visible Meta as TEXT', 'Meta download option');
+    assert.equal(result[0].name.string, 'Logs as Log', 'Logs download option');
+    assert.equal(result[1].name.string, 'Visible Meta as Text', 'Meta download option');
     assert.equal(result[2].name.string, 'Network as PCAP', 'Network download option');
   });
   // TODO add assert to check disabled

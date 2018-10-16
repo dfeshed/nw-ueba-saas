@@ -271,9 +271,13 @@
     }
   }
 }
-
-.ember-power-select-options {
-  span.right {
-    float: right;
+.download-dropdown {
+  width: auto !important;
+  min-width: 218px !important;
+  .ember-power-select-options {
+    span.right {
+      padding-left: rsa-whitespace(less);
+      float: right;
+    }
   }
 }

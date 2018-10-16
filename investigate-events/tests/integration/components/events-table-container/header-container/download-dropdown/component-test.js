@@ -116,8 +116,8 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    await assertForDownloadOptions(assert, options, 0, 'Logs as LOG', '1/2');
-    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as TEXT', '2/2');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '1/2');
+    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as Text', '2/2');
     await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '1/2');
   });
 
@@ -133,8 +133,8 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    await assertForDownloadOptions(assert, options, 0, 'Logs as LOG', '');
-    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as TEXT', '2/2');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '');
+    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as Text', '2/2');
     await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '2/2');
   });
 

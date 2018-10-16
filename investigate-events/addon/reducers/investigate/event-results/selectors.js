@@ -118,7 +118,7 @@ export const getDownloadOptions = createSelector(
       dropDownItems.forEach((item) => {
 
         const [,, eventType ] = item.name.split('.');
-        const option = eventAnalysisPreferences[eventType];
+        const option = i18n.t(`investigate.events.download.options.${eventAnalysisPreferences[eventType]}`);
         const num = _getCountForEventType(eventType, selectedEventIds, resultsData);
         downloadOptions.push({
           name: i18n.t(`investigate.events.download.${item.name}`, { option }),

@@ -502,6 +502,18 @@ export default {
             defaultMetaFormat: 'Visible Meta as {{option}}',
             defaultPacketFormat: 'Network as {{option}}'
           }
+        },
+        options: {
+          LOG: 'Log',
+          CSV: 'CSV',
+          TSV: 'TSV',
+          TEXT: 'Text',
+          XML: 'XML',
+          JSON: 'JSON',
+          PCAP: 'PCAP',
+          PAYLOAD: 'All Payloads',
+          PAYLOAD1: 'Request Payload',
+          PAYLOAD2: 'Response Payload'
         }
       },
       error: 'An unexpected error occurred when executing this query.',
