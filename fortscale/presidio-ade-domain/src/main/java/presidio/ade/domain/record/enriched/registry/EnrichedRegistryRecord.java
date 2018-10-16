@@ -1,7 +1,6 @@
 package presidio.ade.domain.record.enriched.registry;
 
 import fortscale.common.general.Schema;
-import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
