@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 import layout from './template';
 import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
+import moment from 'moment';
 
 const DATE_COLUMNS = [
   'agentStatus.lastSeenTime',
@@ -19,9 +20,9 @@ const _isFilterHasValues = (filter) => {
 const _dateValues = (values, unit) => {
   return values.map((item) => {
     return {
-      value: item.value,
+      value: item.value || moment.now(),
       relativeValueType: unit,
-      relative: true,
+      relative: !!unit,
       valueType: 'DATE'
     };
   });

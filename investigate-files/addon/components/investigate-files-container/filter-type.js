@@ -17,9 +17,9 @@ const FILTER_TYPES = [
       },
       format: {
         validator: (value) => {
-          return !(/^([!-~])*$/.test(value));
+          return /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~`]+/.test(value);
         },
-        message: 'investigateFiles.filter.invalidCharacters'
+        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
       }
     }
   },

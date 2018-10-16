@@ -2580,6 +2580,9 @@ export default {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
         'context.error': 'Context service is not reachable. Check your service connectivity.'
       },
+      button: {
+        close: 'Close Panel'
+      },
       filterMessage: 'Filtered {{filterCount}} out of {{totalCount}}'
     },
     systemInformation: {
