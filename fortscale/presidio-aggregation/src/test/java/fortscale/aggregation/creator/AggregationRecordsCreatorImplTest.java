@@ -1,8 +1,7 @@
 package fortscale.aggregation.creator;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,11 +50,13 @@ public class AggregationRecordsCreatorImplTest {
         FeatureBucket featureBucket = new FeatureBucket();
         featureBucket.setStartTime(startTime);
         featureBucket.setEndTime(endTime);
-        Map<String, Double> value = new HashMap<>();
-        value.put("server_app_1", 14.0);
-        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(value, 1L);
 
-        Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", aggrFeatureValue);
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+        multiKeyFeature.add("server", "app_1");
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+        multiKeyHistogram.set(multiKeyFeature, 14.0);
+
+        Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", multiKeyHistogram);
 
         HashMap<String, Feature> aggregatedFeatures = new HashMap<>();
         aggregatedFeatures.put("normalized_src_machine_to_highest_score_map", aggrFeature);

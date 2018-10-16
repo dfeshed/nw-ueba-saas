@@ -40,7 +40,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 
 		FeatureValue value = aggrFeature.getValue();
 		if (value == null) {
-			value = new AggrFeatureValue(0D, 0L);
+			value = new AggrFeatureValue(0D);
 			aggrFeature.setValue(value);
 		} else if (!(value instanceof AggrFeatureValue && ((AggrFeatureValue) value).getValue() instanceof Double)) {
 			throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s containig %s",
@@ -51,7 +51,6 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		Double oldSum = (Double) aggrFeatureValue.getValue();
 		double addend = getFeatureValueToSum(aggregatedFeatureConf, features);
 		aggrFeatureValue.setValue(new Double(oldSum + addend));
-		aggrFeatureValue.setTotal(aggrFeatureValue.getTotal() + 1);
 
 		return aggrFeatureValue;
 	}
@@ -83,7 +82,6 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		}
 
 		double sum = 0;
-		long total = 0;
 		String featureNameToSum = getFeatureNameToSum(aggrFeatureEventConf.getAggregatedFeatureNamesMap(), false);
 		for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
 			Feature featureToSum = aggrFeatures.get(featureNameToSum);
@@ -95,15 +93,14 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 							Double.class.getSimpleName()));
 				}
 				sum += (Double) ((AggrFeatureValue) featureToSum.getValue()).getValue();
-				total += ((AggrFeatureValue) featureToSum.getValue()).getTotal();
 			}
 		}
 
-        if (total == 0) {
+        if (sum == 0) {
             return null;
         }
 
-		return new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(sum, total));
+		return new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(sum));
 	}
 
 	private static String getFeatureNameToSum(Map<String, List<String>> aggregatedFeatureNamesMap, boolean forgiving) {

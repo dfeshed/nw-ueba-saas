@@ -4,8 +4,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -114,16 +113,17 @@ public class EpochtimeToHighestDoubleMapRetrieverTest {
         while (currentStartInstant.isBefore(lastEndInstant)) {
             Instant currentBucketStartInstant = currentStartInstant;
             Instant currentEndInstant = currentStartInstant.plus(fixedDurationStrategy.toDuration());
-            Map<String, Double> epochtimeToHighestDoubleMap = new HashMap<>();
+            MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
             while (currentBucketStartInstant.isBefore(currentEndInstant)) {
                 String epochtime = String.valueOf(currentBucketStartInstant.getEpochSecond());
-                String key = String.format("%s#%s", FEATURE_NAME, epochtime);
-                epochtimeToHighestDoubleMap.put(key, cyclicIntegerIterator.next().doubleValue());
+                MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+                multiKeyFeature.add(FEATURE_NAME,epochtime);
+                multiKeyHistogram.set(multiKeyFeature, cyclicIntegerIterator.next().doubleValue());
                 currentBucketStartInstant = currentBucketStartInstant.plus(epochtimeResolution);
             }
 
-            Feature feature = new Feature(FEATURE_NAME, new AggrFeatureValue(epochtimeToHighestDoubleMap, 0L));
+            Feature feature = new Feature(FEATURE_NAME, multiKeyHistogram);
             FeatureBucket featureBucket = new FeatureBucket();
             featureBucket.setStartTime(currentStartInstant);
             featureBucket.setEndTime(currentEndInstant);

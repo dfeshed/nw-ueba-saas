@@ -3,14 +3,9 @@ package fortscale.aggregation.feature.functions;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.FeatureValue;
-import org.apache.commons.lang3.StringUtils;
+import fortscale.common.feature.*;
+import fortscale.utils.AggrFeatureFunctionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,17 +22,15 @@ import java.util.Map;
  * 1. groupBy: a list containing the names of the features whose values should be used as a key of the resulting map.
  * 2. maximize: the name of the feature whose numeric value should be extracted and maximized.
  */
-@JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureMultiKeyToMaxFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
-    public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
-    public static final String FEATURE_GROUP_SEPARATOR_KEY = "# # #";
-    public static final String FEATURE_SEPARATOR_KEY = "#";
+public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
+    public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_keys_to_max_func";
     public static final String GROUP_BY_FIELD_NAME = "groupBy";
     public static final String MAXIMIZE_FIELD_NAME = "maximize";
 
@@ -60,43 +53,29 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         FeatureValue value = aggrFeature.getValue();
 
         if (value == null) {
-            value = new AggrFeatureValue(new HashMap<>(), 0L);
+            value = new MultiKeyHistogram();
             aggrFeature.setValue(value);
-        } else if (!(value instanceof AggrFeatureValue && ((AggrFeatureValue)value).getValue() instanceof Map)) {
-            throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s and contain a %s.",
-                    aggrFeature.getName(), AggrFeatureValue.class.getSimpleName(), Map.class.getSimpleName()));
+        } else if (!(value instanceof MultiKeyHistogram)) {
+            throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s.",
+                    aggrFeature.getName(), MultiKeyHistogram.class.getSimpleName()));
         }
 
-        AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)value;
-        Map<String, Double> featureToMaxMap = (Map<String, Double>)aggrFeatureValue.getValue();
+        MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram)value;
 
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
-            String groupByFeatureValues = extractGroupByFeatureValues(features, groupByFeatureNames);
+            MultiKeyFeature multiKeyFeature = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
             Feature maximizeFeatureValue = features.get(maximizeFeatureName);
 
-            if (groupByFeatureValues != null && maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
-                Double max = featureToMaxMap.get(groupByFeatureValues);
+            if (multiKeyFeature != null && maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
                 double potentialMax = ((FeatureNumericValue)maximizeFeatureValue.getValue()).getValue().doubleValue();
-                featureToMaxMap.put(groupByFeatureValues, max == null ? potentialMax : Math.max(max, potentialMax));
-                aggrFeatureValue.setTotal(aggrFeatureValue.getTotal() + 1);
+                Double max = multiKeyHistogram.getCount(multiKeyFeature);
+                multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
             }
         }
 
         return value;
     }
 
-    private String extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
-        if (groupByFeatureNames == null) return StringUtils.EMPTY;
-        List<String> groupByFeatureNamesAndValues = new ArrayList<>(groupByFeatureNames.size());
-
-        for (String groupByFeatureName : groupByFeatureNames) {
-            Feature groupByFeatureValue = features.get(groupByFeatureName);
-            if (groupByFeatureValue == null || groupByFeatureValue.getValue() == null) return null;
-            groupByFeatureNamesAndValues.add(groupByFeatureName + FEATURE_SEPARATOR_KEY + groupByFeatureValue.getValue().toString());
-        }
-
-        return String.join(FEATURE_GROUP_SEPARATOR_KEY, groupByFeatureNamesAndValues);
-    }
 }
