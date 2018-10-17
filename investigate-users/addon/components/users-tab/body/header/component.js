@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getUsersSeverity, getSortField, getFilterSeverity, getTotalUsers, getUserFilter } from 'investigate-users/reducers/users/selectors';
-import { updateFilter } from 'investigate-users/actions/user-tab-actions';
+import { updateFilter, exportUsers } from 'investigate-users/actions/user-tab-actions';
 import { sortOptions } from 'investigate-users/utils/column-config';
 
 const stateToComputed = (state) => ({
@@ -13,7 +13,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updateFilter
+  updateFilter,
+  exportUsers
 };
 
 const UsersTabBodyHeaderComponent = Component.extend({

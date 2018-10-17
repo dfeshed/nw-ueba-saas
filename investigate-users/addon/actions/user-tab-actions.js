@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from './types';
-import { fetchData } from './fetch/data';
+import { fetchData, exportData } from './fetch/data';
 import { getUserFilter } from 'investigate-users/reducers/users/selectors';
 import _ from 'lodash';
 
@@ -89,6 +89,16 @@ const saveAsFavorite = (name) => {
   };
 };
 
+const exportUsers = () => {
+  return (dispatch, getState) => {
+    let filter = getUserFilter(getState());
+    if (filter) {
+      filter = filter.setIn(['fromPage'], 1);
+    }
+    exportData('usersExport', filter, false, null, true, `users_${new Date().toISOString()}.csv`).then(() => {});
+  };
+};
+
 const resetUsers = () => ({ type: ACTION_TYPES.RESET_USERS });
 
 export {
@@ -99,5 +109,6 @@ export {
   resetUsers,
   updateFilter,
   getUsers,
-  saveAsFavorite
+  saveAsFavorite,
+  exportUsers
 };

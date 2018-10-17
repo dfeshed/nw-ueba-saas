@@ -22,9 +22,8 @@
     </div>
     <div class='users-tab_body_header_bar_control'>
       <div>
-        {{#rsa-form-button }} 
-          {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} 
-          {{t 'investigateUsers.export'}} 
+        {{#rsa-form-button click=(action 'exportUsers')}} 
+          {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} {{t 'investigateUsers.export'}}
         {{/rsa-form-button}}
       </div>
       <div>

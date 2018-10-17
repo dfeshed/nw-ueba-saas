@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
+import { exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
 
 export const initialFilterState = Immutable.from({
   addAlertsAndDevices: true,
@@ -134,5 +134,16 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
       });
     };
     saveAsFavorite('Test')(dispatch, getState);
+  });
+
+  test('it can exportUsers', (assert) => {
+    assert.expect(1);
+    window.URL.createObjectURL = () => {
+      assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    const getState = () => {
+      return { users: { filter: initialFilterState } };
+    };
+    exportUsers(initialFilterState)(null, getState);
   });
 });

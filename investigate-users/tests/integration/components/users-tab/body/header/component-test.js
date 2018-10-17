@@ -30,6 +30,7 @@ module('Integration | Component | users-tab/body/header', function(hooks) {
   });
 
   test('it renders with proper user count', async function(assert) {
+    assert.expect(2);
     new ReduxDataHelper(setState).userSeverity([{
       Critical: { userCount: 10 },
       High: { userCount: 17 },
@@ -39,5 +40,20 @@ module('Integration | Component | users-tab/body/header', function(hooks) {
     await render(hbs`{{users-tab/body/header}}`);
     assert.equal(find('.severity-bar').textContent.replace(/\s/g, ''), '10Critical17High1Medium13Low');
     assert.equal(find('.users-tab_body_header_bar_count').textContent.replace(/\s/g, ''), '120UsersSortBy:RiskScore');
+  });
+
+  test('it should export user for given filter', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState).userSeverity([{
+      Critical: { userCount: 10 },
+      High: { userCount: 17 },
+      Low: { userCount: 13 },
+      Medium: { userCount: 1 }
+    }]).totalUsers(120).build();
+    await render(hbs`{{users-tab/body/header}}`);
+    window.URL.createObjectURL = () => {
+      assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    await this.$("button:contains('Export')").click();
   });
 });
