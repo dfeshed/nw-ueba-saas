@@ -30,6 +30,7 @@ export default Component.extend({
   value: null,
   spellcheck: true,
   autofocus: false,
+  onKeyUp: null,
 
   resolvedDisabled: or('isDisabled', 'isReadOnly')
 });
