@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import * as Alerts from 'investigate-users/reducers/alerts/selectors';
 import alertOverview from '../../data/presidio/alert_overview';
 import existAnomalyTypesAlerts from '../../data/presidio/exist_anomaly_types_alerts';
+import alertByDayAndSeverity from '../../data/presidio/alert-by-day-and-severity';
 import alertsList from '../../data/presidio/alerts-list';
 import Immutable from 'seamless-immutable';
 
@@ -11,6 +12,7 @@ const state = Immutable.from({
   alerts: {
     topAlerts: alertOverview,
     alertList: alertsList,
+    alertsForTimeline: alertByDayAndSeverity,
     totalAlerts: 50,
     alertsSeverity: { total_severity_count: { Critical: 50, High: 10, Medium: 30, Low: 12 } },
     existAnomalyTypes: existAnomalyTypesAlerts,
@@ -48,6 +50,20 @@ test('test Selected FeedBack should return correct feedback', function(assert) {
 
 test('test Selected Severity', function(assert) {
   assert.equal(Alerts.getSelectedSeverity(state)[0], 'high');
+});
+
+test('test getAlertsForTimeline', function(assert) {
+  assert.equal(Alerts.getAlertsForTimeline(state).length, 5);
+  assert.deepEqual(Alerts.getAlertsForTimeline(state)[0], { Critical: 16, High: 0, Medium: 0, Low: 0, day: 1533686400000, total: 16 });
+});
+
+test('test getAlertsForTimeline for null', function(assert) {
+  const newState = Immutable.from({
+    alerts: {
+      alertsForTimeline: null
+    }
+  });
+  assert.equal(Alerts.getAlertsForTimeline(newState), null);
 });
 
 test('test Alerts Severity', function(assert) {

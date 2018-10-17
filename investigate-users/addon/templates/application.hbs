@@ -11,4 +11,4 @@
     <div class="label">{{t 'investigateUsers.alerts.title'}}</div>
   {{/rsa-nav-tab}}
 </div> 
-{{user-container applyUserFilter=(action 'controllerApplyUserFilter')}}
+{{user-container applyUserFilter=(action 'controllerApplyUserFilter') applyAlertsFilter=(action 'controllerApplyAlertsFilter')}}

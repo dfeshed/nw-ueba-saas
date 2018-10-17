@@ -113,6 +113,11 @@ export default class DataHelper {
     return this;
   }
 
+  alertTimeLine(obj) {
+    _set(this.state, 'alerts.alertsForTimeline', obj);
+    return this;
+  }
+
   existAnomalyTypesForUsers(existAnomalyTypes) {
     _set(this.state, 'users.existAnomalyTypes', existAnomalyTypes);
     return this;

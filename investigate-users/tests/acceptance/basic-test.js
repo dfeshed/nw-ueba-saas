@@ -3,17 +3,18 @@ import { visit, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { patchFetch } from '../helpers/patch-fetch';
 import { Promise } from 'rsvp';
+import dataIndex from '../data/presidio';
 
 module('Acceptance | investigate-users', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-    patchFetch(() => {
+    patchFetch((url) => {
       return new Promise(function(resolve) {
         resolve({
           ok: true,
           json() {
-            return {};
+            return dataIndex(url);
           }
         });
       });

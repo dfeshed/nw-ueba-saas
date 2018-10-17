@@ -27,7 +27,7 @@ module('Integration | Component | user-container/body', function(hooks) {
     assert.equal(find('.user-overview-tab_upper_users').textContent.trim(), 'High Risk Users');
     assert.equal(find('.user-overview-tab_upper_alerts').textContent.trim(), 'Top Alerts');
     assert.equal(find('.user-overview-tab_lower_users').textContent.replace(/\s/g, ''), 'AllUsers0RiskyUsers0Watched0Admin');
-    assert.equal(find('.user-overview-tab_lower_alerts').textContent.trim(), 'All Alerts');
+    assert.equal(find('.user-overview-tab_lower_alerts').textContent.replace(/\s/g, ''), 'AllAlertsLoading');
   });
 
   test('it should render user-container/body for users', async function(assert) {

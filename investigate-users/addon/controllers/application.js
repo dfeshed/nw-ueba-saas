@@ -29,6 +29,9 @@ export default Controller.extend({
     },
     controllerApplyUserFilter(filterFor) {
       this.send('applyUserFilter', filterFor);
+    },
+    controllerApplyAlertsFilter(filterFor) {
+      this.send('applyAlertsFilter', filterFor);
     }
   }
 });

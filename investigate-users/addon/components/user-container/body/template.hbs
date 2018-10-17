@@ -1,5 +1,5 @@
 {{#if (eq activeTabName 'overview')}}
-  {{overview-tab applyUserFilter=applyUserFilter}}
+  {{overview-tab applyUserFilter=applyUserFilter applyAlertsFilter=applyAlertsFilter}}
 {{else if (eq activeTabName 'users')}}
   {{users-tab}}
 {{else if (eq activeTabName 'alerts')}}

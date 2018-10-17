@@ -1,3 +1,11 @@
 <div class='user-overview-tab_title'>
   {{t 'investigateUsers.alerts.all'}}
 </div>
+<div class='user-overview-tab_lower_alerts_graph'>
+  <svg width="100%" height="100%" id='alertTimeline'></svg>
+  {{#unless alertsTimeline}}
+    <center class='center'>
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    </center>
+  {{/unless}}
+</div>

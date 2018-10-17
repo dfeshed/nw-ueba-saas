@@ -9,7 +9,9 @@ const _alertsSeverity = (state) => state.alerts.alertsSeverity;
 
 const _existAnomalyTypes = (state) => state.alerts.existAnomalyTypes;
 
-export const severityFilter = ['critical', 'high', 'medium', 'low'];
+const _alertsForTimeline = (state) => state.alerts.alertsForTimeline;
+
+export const severityFilter = ['low', 'medium', 'high', 'critical'];
 
 export const feedbackFilter = ['none', 'rejected'];
 
@@ -57,4 +59,22 @@ export const getSelectedAnomalyTypes = createSelector(
   [getFilter, getExistAnomalyTypes],
   (filter, anomalyTypes) => {
     return _.filter(anomalyTypes, ({ id }) => filter.indicator_types && filter.indicator_types.includes(id));
+  });
+
+export const getAlertsForTimeline = createSelector(
+  [_alertsForTimeline],
+  (alertsForTimeline) => {
+    if (!alertsForTimeline) {
+      return null;
+    }
+    return alertsForTimeline.map((alert) => {
+      const alertObj = { day: alert.day };
+      let total = 0;
+      alert.severities.forEach((severityMap) => {
+        alertObj[severityMap.severity] = severityMap.count;
+        total += severityMap.count;
+      });
+      alertObj.total = total;
+      return alertObj;
+    });
   });

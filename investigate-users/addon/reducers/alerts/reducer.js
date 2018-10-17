@@ -18,6 +18,7 @@ const initialState = Immutable.from({
   topAlerts: [],
   alertList: [],
   existAnomalyTypes: null,
+  alertsForTimeline: null,
   alertsSeverity: {
     total_severity_count: {
       Critical: null,
@@ -33,6 +34,7 @@ const initialState = Immutable.from({
 const tabs = handleActions({
   [ACTION_TYPES.RESTORE_DEFAULT]: () => (Immutable.from(initialState)),
   [ACTION_TYPES.GET_TOP_ALERTS]: (state, { payload }) => state.set('topAlerts', [].concat(payload)),
+  [ACTION_TYPES.GET_ALERTS_FOR_TIMELINE]: (state, { payload }) => state.set('alertsForTimeline', payload),
   [ACTION_TYPES.GET_ALERTS]: (state, { payload: { data, info, total } }) => {
     // Concat data for requested page.
     let newState = state.set('alertList', state.getIn(['alertList']).concat(data));

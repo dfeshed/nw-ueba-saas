@@ -5,12 +5,14 @@ import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-users/actions/types';
 import alertOverview from '../../data/presidio/alert_overview';
 import existAnomalyTypesAlerts from '../../data/presidio/exist_anomaly_types_alerts';
+import alertByDayAndSeverity from '../../data/presidio/alert-by-day-and-severity';
 import alertsList from '../../data/presidio/alerts-list';
 
 const resetState = Immutable.from({
   topAlerts: [],
   alertList: [],
   existAnomalyTypes: null,
+  alertsForTimeline: null,
   alertsSeverity: {
     total_severity_count: {
       Critical: null,
@@ -62,6 +64,16 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     });
 
     assert.equal(result.existAnomalyTypes.abnormal_active_directory_day_time_operation, 34);
+  });
+
+  test('test alerts For Timeline', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.GET_ALERTS_FOR_TIMELINE,
+      payload: alertByDayAndSeverity
+    });
+
+    assert.equal(result.alertsForTimeline.length, 5);
   });
 
   test('test update filter for alerts', (assert) => {

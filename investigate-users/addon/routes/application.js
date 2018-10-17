@@ -1,7 +1,8 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initialFilterState } from 'investigate-users/reducers/users/selectors';
 import { updateFilter } from 'investigate-users/actions/user-tab-actions';
+import { updateFilter as updateAlertsFilter } from 'investigate-users/actions/alert-details';
+import Immutable from 'seamless-immutable';
 
 export default Route.extend({
   accessControl: service(),
@@ -17,9 +18,12 @@ export default Route.extend({
       this.transitionTo(routeName);
     },
     applyUserFilter(filterFor) {
-      const filter = initialFilterState.merge(filterFor);
-      this.get('redux').dispatch(updateFilter(filter));
+      this.get('redux').dispatch(updateFilter(filterFor, true));
       this.transitionTo('users');
+    },
+    applyAlertsFilter(filterFor) {
+      this.get('redux').dispatch(updateAlertsFilter(Immutable.from(filterFor), true));
+      this.transitionTo('alerts');
     }
   }
 });
