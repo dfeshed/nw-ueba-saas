@@ -3346,13 +3346,13 @@ export default {
       },
       riskProperties: {
         alerts: {
-          heading: 'Alerts',
+          heading: 'Alerts Severity',
           events: '{{count}} events',
-          critical: 'Critical',
-          high: 'High',
-          medium: 'Medium',
-          low: 'Low',
-          all: 'All'
+          critical: 'CRITICAL',
+          high: 'HIGH',
+          medium: 'MEDIUM',
+          low: 'LOW',
+          all: 'ALL'
         }
       },
       riskPanel: {

@@ -1,6 +1,7 @@
 .risk-properties {
   .alert-heading {
     margin-top: rsa-whitespace(less);
+    margin-left: rsa-whitespace(less);
     @include rsa-font(header, small, bold);
     color: text-color(neutral);
     font-size: 12px;
@@ -9,15 +10,36 @@
     margin: rsa-whitespace(less);
     font-size: 30px;
     color: text-color(neutral);
-    font-weight: 500;
     text-align: center;
   }
   .tab-text {
     font-size: 11px;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     padding-bottom: .35rem;
+    padding-top: .35rem;
+    padding-left: .15rem;
   }
+
+  .risk-color-indicator {
+      display: inline-block;
+      width: 6px;
+      height: 20px;
+      background-color: background-color(neutral);
+      border-radius: 4px;
+
+      &.red {
+        background-color: background-color(accentOne);
+      }
+
+      &.orange {
+        background-color: background-color(accentThree);
+      }
+
+      &.yellow {
+        background-color: background-color(accentFour);
+      }
+    }
 
   .rsa-nav-tab.is-center-aligned-primary {
     padding: rsa-whitespace() 0;
@@ -25,6 +47,7 @@
     padding-bottom: rsa-whitespace(least);
     .label {
       text-transform: none;
+      letter-spacing: .1em;
     }
   }
 }

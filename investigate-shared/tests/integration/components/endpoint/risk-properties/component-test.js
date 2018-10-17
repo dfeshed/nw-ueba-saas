@@ -83,11 +83,11 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       this.set('activeRiskSeverityTab', 'high');
     });
 
-    await render(hbs`{{endpoint/risk-properties 
-      activeRiskSeverityTab=activeRiskSeverityTab 
+    await render(hbs`{{endpoint/risk-properties
+      activeRiskSeverityTab=activeRiskSeverityTab
       setSelectedAlert=(action setSelectedAlert)
       riskScoreContext=riskScoreContext defaultAction=(action activate)}}`);
 
-    assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'High', 'high tab is selected');
+    assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'HIGH', 'high tab is selected');
   });
 });

@@ -7,7 +7,7 @@
       <div class="alert-count">{{tab.count}}</div>
       <div class="label">
         {{#if tab.color}}
-          {{endpoint/color-indicator color=tab.color size='medium'}}
+          <span class="risk-color-indicator {{tab.color}}"></span>
         {{/if}}
         <span class="tab-text">{{t tab.label}}</span>
       </div>
