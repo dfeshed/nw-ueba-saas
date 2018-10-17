@@ -32,7 +32,7 @@ public class AuthenticationEventsGeneratorTemplateFactory {
     public AuthenticationEventsGenerator getSuccessRemoteLogonAuthenticationGenerator() throws  GeneratorException {
         AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
         AuthenticationOperationGenerator opGenerator = new AuthenticationOperationGenerator();
-        AuthenticationOperationTypeCyclicGenerator opTypeGenerator = new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.USER_LOGGED_ON_INTERACTIVELY_FROM_A_REMOTE_COMPUTER.value));
+        AuthenticationOperationTypeCyclicGenerator opTypeGenerator = new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.REMOTE_INTERACTIVE.value));
         opGenerator.setOperationTypeGenerator(opTypeGenerator);
         generator.setAuthenticationOperationGenerator(opGenerator);
         StringCyclicValuesGenerator resultGenerator = new StringCyclicValuesGenerator(OPERATION_RESULT.SUCCESS.value);
@@ -49,7 +49,7 @@ public class AuthenticationEventsGeneratorTemplateFactory {
     public AuthenticationEventsGenerator getSuccessLogonAuthenticationGenerator() throws GeneratorException {
         AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
         AuthenticationOperationGenerator opGenerator = new AuthenticationOperationGenerator();
-        AuthenticationOperationTypeCyclicGenerator opTypeGenerator = new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.USER_LOGGED_ON_INTERACTIVELY.value));
+        AuthenticationOperationTypeCyclicGenerator opTypeGenerator = new AuthenticationOperationTypeCyclicGenerator(new OperationType(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE.value));
         opGenerator.setOperationTypeGenerator(opTypeGenerator);
         generator.setAuthenticationOperationGenerator(opGenerator);        StringCyclicValuesGenerator resultGenerator = new StringCyclicValuesGenerator(OPERATION_RESULT.SUCCESS.value);
         QuestADMachineGenerator srcMachineGenerator = new QuestADMachineGenerator();

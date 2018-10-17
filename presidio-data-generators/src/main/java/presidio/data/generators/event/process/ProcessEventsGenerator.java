@@ -1,40 +1,46 @@
-package presidio.data.generators.event.file;
+package presidio.data.generators.event.process;
 
 import presidio.data.domain.FileSystemEntity;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.domain.event.file.FileOperation;
+import presidio.data.domain.event.process.ProcessEvent;
+import presidio.data.domain.event.process.ProcessOperation;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
+import presidio.data.generators.event.file.FileDescriptionGenerator;
+import presidio.data.generators.event.file.IFileDescriptionGenerator;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.QuestADMachineGenerator;
+import presidio.data.generators.processop.IProcessOperationGenerator;
+import presidio.data.generators.processop.ProcessOperationGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
 
-public class FileEventsGenerator extends AbstractEventGenerator {
+public class ProcessEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIdGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
-    private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
+    private IProcessOperationGenerator processOperationGenerator;
     private IMachineGenerator machineEntityGenerator;
-    private IFileDescriptionGenerator fileDescriptionGenerator;
+    private IProcessDescriptionGenerator processDescriptionGenerator;
 
-    public FileEventsGenerator() throws GeneratorException {
+    public ProcessEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
     }
 
-    public FileEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public ProcessEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
         super(timeGenerator);
         setFieldDefaultGenerators();
     }
@@ -43,33 +49,31 @@ public class FileEventsGenerator extends AbstractEventGenerator {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
-        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
-        fileOperationGenerator = new FileOperationGenerator();
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Process"});
+        processOperationGenerator = new ProcessOperationGenerator();
         machineEntityGenerator = new QuestADMachineGenerator();
-        fileDescriptionGenerator = new FileDescriptionGenerator();
+        processDescriptionGenerator = new ProcessDescriptionGenerator();
     }
 
     @Override
-    public FileEvent generateNext() throws GeneratorException {
+    public ProcessEvent generateNext() throws GeneratorException {
         User user = getUserGenerator().getNext();
         String username = user.getUsername();
         Instant time = getTimeGenerator().getNext();
         String eventId = getEventIdGenerator().getNext();
-        FileOperation fileOperation = getFileOperationGenerator().getNext();
-        FileSystemEntity fileSystem = new FileSystemEntityGenerator(username).getNext();
+        ProcessOperation processOperation = getProcessOperationGenerator().getNext();
         String dataSource = getDataSourceGenerator().getNext();
         MachineEntity machine = getMachineEntityGenerator().getNext();
 
-        FileEvent fileEvent = new FileEvent(
-                user,
-                time,
+        ProcessEvent processEvent = new ProcessEvent(
                 eventId,
-                fileOperation,
+                time,
                 dataSource,
-                fileSystem,
+                user,
+                processOperation,
                 machine);
-        fileDescriptionGenerator.updateFileDescription(fileEvent);
-       return fileEvent;
+        processDescriptionGenerator.updateProcessDescription(processEvent);
+        return processEvent;
     }
 
     public IStringGenerator getEventIdGenerator() {
@@ -80,6 +84,14 @@ public class FileEventsGenerator extends AbstractEventGenerator {
         this.eventIdGenerator = eventIdGenerator;
     }
 
+    public IStringGenerator getDataSourceGenerator() {
+        return dataSourceGenerator;
+    }
+
+    public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
+        this.dataSourceGenerator = dataSourceGenerator;
+    }
+
     public IUserGenerator getUserGenerator() {
         return userGenerator;
     }
@@ -88,20 +100,12 @@ public class FileEventsGenerator extends AbstractEventGenerator {
         this.userGenerator = userGenerator;
     }
 
-    public IFileOperationGenerator getFileOperationGenerator() {
-        return fileOperationGenerator;
+    public IProcessOperationGenerator getProcessOperationGenerator() {
+        return processOperationGenerator;
     }
 
-    public void setFileOperationGenerator(IFileOperationGenerator fileOperationGenerator) {
-        this.fileOperationGenerator = fileOperationGenerator;
-    }
-
-    public IStringGenerator getDataSourceGenerator() {
-        return dataSourceGenerator;
-    }
-
-    public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
-        this.dataSourceGenerator = dataSourceGenerator;
+    public void setProcessOperationGenerator(IProcessOperationGenerator processOperationGenerator) {
+        this.processOperationGenerator = processOperationGenerator;
     }
 
     public IMachineGenerator getMachineEntityGenerator() {
@@ -112,11 +116,11 @@ public class FileEventsGenerator extends AbstractEventGenerator {
         this.machineEntityGenerator = machineEntityGenerator;
     }
 
-    public IFileDescriptionGenerator getFileDescriptionGenerator() {
-        return fileDescriptionGenerator;
+    public IProcessDescriptionGenerator getProcessDescriptionGenerator() {
+        return processDescriptionGenerator;
     }
 
-    public void setFileDescriptionGenerator(IFileDescriptionGenerator fileDescriptionGenerator) {
-        this.fileDescriptionGenerator = fileDescriptionGenerator;
+    public void setProcessDescriptionGenerator(IProcessDescriptionGenerator processDescriptionGenerator) {
+        this.processDescriptionGenerator = processDescriptionGenerator;
     }
 }

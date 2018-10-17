@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
-import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
-import presidio.data.generators.authenticationop.AuthenticationOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
@@ -77,8 +75,8 @@ public class AuthenticationEventsGeneratorTest {
         Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_FAILED_TO_LOG_ON_INTERACTIVELY.value, events.get(0).getAuthenticationOperation().getOperationType().getName());
         Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_FAILED_TO_LOG_ON_INTERACTIVELY_FROM_A_REMOTE_COMPUTER.value, events.get(1).getAuthenticationOperation().getOperationType().getName());
         Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_FAILED_TO_AUTHENTICATE_THROUGH_KERBEROS.value, events.get(2).getAuthenticationOperation().getOperationType().getName());
-        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_LOGGED_ON_INTERACTIVELY.value, events.get(3).getAuthenticationOperation().getOperationType().getName());
-        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_LOGGED_ON_INTERACTIVELY_FROM_A_REMOTE_COMPUTER.value, events.get(4).getAuthenticationOperation().getOperationType().getName());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE.value, events.get(3).getAuthenticationOperation().getOperationType().getName());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.REMOTE_INTERACTIVE.value, events.get(4).getAuthenticationOperation().getOperationType().getName());
         Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.USER_AUTHENTICATED_THROUGH_KERBEROS.value, events.get(5).getAuthenticationOperation().getOperationType().getName());
     }
 
