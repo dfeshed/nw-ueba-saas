@@ -1,13 +1,11 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.EventResult;
 import fortscale.domain.core.ioc.Level;
 import fortscale.domain.core.ioc.Tactic;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 import presidio.sdk.api.domain.rawevents.IocRawEvent;
 
 import javax.validation.ConstraintViolation;

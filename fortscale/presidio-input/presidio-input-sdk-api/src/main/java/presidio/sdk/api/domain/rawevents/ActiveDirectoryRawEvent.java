@@ -1,6 +1,5 @@
 package presidio.sdk.api.domain.rawevents;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,48 +21,38 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
-
-    @Field(IS_USER_ADMIN_FIELD_NAME)
-    private boolean isUserAdmin;
 
     @Field(OBJECT_ID_FIELD_NAME)
     private String objectId;
 
     @Field(USER_ID_FIELD_NAME)
     @NotEmpty
-    protected String userId;
+    private String userId;
 
     @Field(OPERATION_TYPE_FIELD_NAME)
     @NotEmpty
-    protected String operationType;
+    private String operationType;
 
     @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
-    protected List<String> operationTypeCategories;
+    private List<String> operationTypeCategories;
 
     @Field(RESULT_FIELD_NAME)
-    protected EventResult result;
+    private EventResult result;
 
     @Field(USER_NAME_FIELD_NAME)
-    protected String userName;
+    private String userName;
 
     @Field(USER_DISPLAY_NAME_FIELD_NAME)
-    protected String userDisplayName;
+    private String userDisplayName;
 
     @Field(RESULT_CODE_FIELD_NAME)
-    protected String resultCode;
-
-    {
-        additionalInfo = new HashMap<>();
-        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(false));
-    }
+    private String resultCode;
 
     public ActiveDirectoryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                    List<String> operationTypeCategories, EventResult result, String userName,
-                                   String userDisplayName, Map<String, String> additionalInfo, boolean isUserAdmin,
+                                   String userDisplayName, Map<String, String> additionalInfo,
                                    String objectId, String resultCode) {
         super(dateTime, eventId, dataSource, additionalInfo);
-        this.isUserAdmin = isUserAdmin;
         this.objectId = objectId;
         this.userId = userId;
         this.operationType = operationType;
@@ -76,11 +64,11 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     }
 
     public ActiveDirectoryRawEvent() {
+        super();
     }
 
     public ActiveDirectoryRawEvent(ActiveDirectoryRawEvent other) {
         super(other);
-        this.isUserAdmin = other.isUserAdmin;
         this.objectId = other.objectId;
         this.userId = other.userId;
         this.operationType = other.operationType;
@@ -91,30 +79,12 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.resultCode = other.resultCode;
     }
 
-    @JsonProperty(value = IS_USER_ADMIN_FIELD_NAME)
-    public boolean getIsUserAdministrator() {
-        return isUserAdmin;
-    }
-
-    public void setIsUserAdministrator(boolean userAdministrator) {
-        isUserAdmin = userAdministrator;
-        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(isUserAdmin));
-    }
-
     public String getObjectId() {
         return objectId;
     }
 
     public void setObjectId(String objectId) {
         this.objectId = objectId;
-    }
-
-    public boolean isUserAdmin() {
-        return isUserAdmin;
-    }
-
-    public void setUserAdmin(boolean userAdmin) {
-        isUserAdmin = userAdmin;
     }
 
     public EventResult getResult() {
@@ -177,17 +147,16 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     @Override
     public String toString() {
         return "ActiveDirectoryRawEvent{" +
-                "isUserAdmin=" + isUserAdmin +
                 ", objectId='" + objectId + '\'' +
-                ", eventId='" + eventId + '\'' +
-                ", dataSource='" + dataSource + '\'' +
+                ", eventId='" + getEventId() + '\'' +
+                ", dataSource='" + getDataSource() + '\'' +
                 ", userId='" + userId + '\'' +
                 ", operationType='" + operationType + '\'' +
                 ", operationTypeCategories=" + operationTypeCategories +
                 ", result=" + result +
                 ", userName='" + userName + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
-                ", additionalInfo=" + additionalInfo +
+                ", additionalInfo=" + getAdditionalInfo() +
                 ", dateTime=" + dateTime +
                 '}';
     }

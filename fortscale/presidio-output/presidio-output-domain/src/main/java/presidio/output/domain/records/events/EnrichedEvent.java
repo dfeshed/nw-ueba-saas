@@ -1,6 +1,5 @@
 package presidio.output.domain.records.events;
 
-import fortscale.domain.core.EventResult;
 import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -10,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,14 +26,11 @@ public class EnrichedEvent {
     public static final String EVENT_ID_FIELD_NAME= "eventId";
     public static final String SCHEMA_FIELD_NAME = "schema";
     public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
-    public static final String USERNAME_FIELD_NAME = "userName";
-    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userdisplayName";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
     public static final String USER_ID_FIELD_NAME = "userId";
-    public static final String START_INSTANT_FIELD_NAME  = "eventDate";
-
-
-
+    public static final String EVENT_DATE_FIELD_NAME = "eventDate";
     public static final String IS_USER_ADMIN = "isUserAdmin";
 
     @Id
@@ -45,7 +40,7 @@ public class EnrichedEvent {
     @CreatedDate
     private Instant createdDate;
 
-    @Field(START_INSTANT_FIELD_NAME)
+    @Field(EVENT_DATE_FIELD_NAME)
     @Indexed
     private Instant eventDate;
 
@@ -59,7 +54,7 @@ public class EnrichedEvent {
     @Field(USER_ID_FIELD_NAME)
     private String userId;
 
-    @Field(USERNAME_FIELD_NAME)
+    @Field(USER_NAME_FIELD_NAME)
     private String userName;
 
     @Field(USER_DISPLAY_NAME_FIELD_NAME)

@@ -98,8 +98,7 @@ public class ActiveDirectoryRawEventTest {
     public ActiveDirectoryRawEvent createEvent() {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                false, "objectId", "resultCode");
+                EventResult.SUCCESS, "userName", "userDisplayName", null, "objectId", "resultCode");
         return activeDirectoryRawEvent;
     }
 }

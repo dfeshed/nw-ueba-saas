@@ -1,15 +1,12 @@
 package presidio.output.domain.records.events;
 
-import fortscale.domain.core.EventResult;
 import fortscale.domain.core.ioc.Level;
 import fortscale.domain.core.ioc.Tactic;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 
@@ -45,10 +42,7 @@ public class IocEnrichedEvent extends EnrichedEvent {
                             Tactic tactic,
                             Level level,
                             String machineId,
-                            String machineName,
-                            String userId,
-                            String userName,
-                            String userDisplayName) {
+                            String machineName) {
         this.name = name;
         this.tactic = tactic;
         this.level = level;

@@ -1,7 +1,5 @@
 package presidio.output.domain.records.events;
 
-import fortscale.domain.core.EventResult;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
@@ -83,7 +81,7 @@ public class RegistryEnrichedEvent extends EnrichedEvent {
     public RegistryEnrichedEvent(String machineId, String machineName, String machineOwner,
                                  String processDirectory, String processFileName, List<String> processDirectoryGroups,
                                  List<String> processCategories, String processCertificateIssuer, String registryKeyGroup,
-                                 String registryKey, String registryValueName, String userId, String userName, String userDisplayName, String operationType) {
+                                 String registryKey, String registryValueName, String operationType) {
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;

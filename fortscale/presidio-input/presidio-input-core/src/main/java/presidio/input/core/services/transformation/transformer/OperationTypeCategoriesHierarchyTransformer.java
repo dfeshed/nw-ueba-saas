@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -7,14 +8,16 @@ import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.util.*;
 
-public class OperationTypeCategoryHierarchyTransformer implements Transformer {
+public class OperationTypeCategoriesHierarchyTransformer implements Transformer {
 
-    final Map<String, List<String>> operationTypeCategoryHierarchyMapping;
+    private static final Logger logger = Logger.getLogger(OperationTypeCategoriesHierarchyTransformer.class);
+
+    private final Map<String, List<String>> operationTypeCategoriesHierarchyMapping;
     private final String inputFieldName;
     private final String outputFieldName;
 
-    public OperationTypeCategoryHierarchyTransformer(Map<String, List<String>> operationTypeCategoryHierarchyMapping, String inputFieldName, String outputFieldName) {
-        this.operationTypeCategoryHierarchyMapping = operationTypeCategoryHierarchyMapping;
+    public OperationTypeCategoriesHierarchyTransformer(Map<String, List<String>> operationTypeCategoriesHierarchyMapping, String inputFieldName, String outputFieldName) {
+        this.operationTypeCategoriesHierarchyMapping = operationTypeCategoriesHierarchyMapping;
         this.inputFieldName = inputFieldName;
         this.outputFieldName = outputFieldName;
     }
@@ -22,7 +25,7 @@ public class OperationTypeCategoryHierarchyTransformer implements Transformer {
     @Override
     public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
 
-        if (MapUtils.isNotEmpty(operationTypeCategoryHierarchyMapping)) {
+        if (MapUtils.isNotEmpty(operationTypeCategoriesHierarchyMapping)) {
             documents.forEach((AbstractInputDocument inputDocument) -> {
 
                 List<String> operationTypeCategories =  (List<String>) ReflectionUtils.getFieldValue(inputDocument, inputFieldName);
@@ -36,7 +39,7 @@ public class OperationTypeCategoryHierarchyTransformer implements Transformer {
                         try {
                             ReflectionUtils.setFieldValue(inputDocument, outputFieldName, new ArrayList<>(additionalCategories));
                         } catch (IllegalAccessException e) {
-                            e.printStackTrace();
+                            logger.error("error setting the {} field value", outputFieldName, e);
                         }
                     }
                 }
@@ -46,9 +49,9 @@ public class OperationTypeCategoryHierarchyTransformer implements Transformer {
         return documents;
     }
 
-    private List<String> getAdditionalCategories(String operationType) {
+    private List<String> getAdditionalCategories(String operationTypeCategory) {
         List<String> result = new ArrayList<>();
-        List<String> additionalCategories = operationTypeCategoryHierarchyMapping.get(operationType);
+        List<String> additionalCategories = operationTypeCategoriesHierarchyMapping.get(operationTypeCategory);
         if (CollectionUtils.isNotEmpty(additionalCategories)) {
             result.addAll(additionalCategories);
             additionalCategories.forEach(s -> {

@@ -1,7 +1,6 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
@@ -20,10 +19,10 @@ public class PrintEnrichedEvent extends EnrichedEvent {
     public static final String SRC_FOLDER_PATH_FIELD_NAME = "srcFolderPath";
     public static final String SRC_FILE_EXTENSION_FIELD_NAME = "srcFileExtension";
     public static final String PRINTER_CLUSTER_FIELD_NAME = "printerCluster";
-    public static final String OPERATION_TYPE_FIELD = "operationType";
-    public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
-    public static final String RESULT_FIELD = "result";
-    public static final String RESULT_CODE_FIELD = "resultCode";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategories";
+    public static final String RESULT_FIELD_NAME = "result";
+    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -55,16 +54,16 @@ public class PrintEnrichedEvent extends EnrichedEvent {
     @Field(NUM_OF_PAGES_FIELD_NAME)
     private Long numOfPages;
 
-    @Field(OPERATION_TYPE_FIELD)
+    @Field(OPERATION_TYPE_FIELD_NAME)
     private String operationType;
 
-    @Field(OPERATION_TYPE_CATEGORIES_FIELD)
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
     private List<String> operationTypeCategories;
 
-    @Field(RESULT_FIELD)
+    @Field(RESULT_FIELD_NAME)
     private EventResult result;
 
-    @Field(RESULT_CODE_FIELD)
+    @Field(RESULT_CODE_FIELD_NAME)
     private String resultCode;
 
     public PrintEnrichedEvent() {

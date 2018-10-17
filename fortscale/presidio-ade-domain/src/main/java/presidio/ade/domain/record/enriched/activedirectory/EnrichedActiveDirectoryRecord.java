@@ -20,7 +20,6 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
-    public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
     public static final String OBJECT_ID_FIELD = "objectId";
     public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
@@ -33,8 +32,6 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     private String srcMachineId;
     @Field(SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String srcMachineNameRegexCluster;
-    @Field(IS_USER_ADMIN_FIELD)
-    private Boolean isUserAdmin;
     @Field(OBJECT_ID_FIELD)
     private String objectId;
     @Field(OPERATION_TYPE_FIELD)
@@ -77,14 +74,6 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
 
     public void setSrcMachineNameRegexCluster(String srcMachineNameRegexCluster) {
         this.srcMachineNameRegexCluster = srcMachineNameRegexCluster;
-    }
-
-    public Boolean getUserAdmin() {
-        return isUserAdmin;
-    }
-
-    public void setUserAdmin(Boolean isUserAdmin) {
-        this.isUserAdmin = isUserAdmin;
     }
 
     public String getObjectId() {

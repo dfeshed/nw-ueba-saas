@@ -1,7 +1,6 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -15,11 +14,11 @@ import java.util.Map;
 @Document
 public class AuthenticationEnrichedEvent extends EnrichedEvent {
 
-    public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
-    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER = "srcMachineNameRegexCluster";
-    public static final String DST_MACHINE_NAME_REGEX_CLUSTER = "dstMachineNameRegexCluster";
-    public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
+    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
+    public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
+    public static final String DST_MACHINE_DOMAIN_FIELD = "dstMachineDomain";
     public static final String SITE_FIELD = "site";
     public static final String CITY_FIELD = "city";
     public static final String COUNTRY_FIELD = "country";
@@ -42,18 +41,18 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     }
 
     @Field(SRC_MACHINE_ID_FIELD)
-    private String SrcMachineId;
+    private String srcMachineId;
 
     @Field(DST_MACHINE_ID_FIELD)
     private String dstMachineId;
 
-    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER)
+    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String srcMachineNameRegexCluster;
 
-    @Field(DST_MACHINE_NAME_REGEX_CLUSTER)
+    @Field(DST_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String dstMachineNameRegexCluster;
 
-    @Field(DST_MACHINE_DOMAIN)
+    @Field(DST_MACHINE_DOMAIN_FIELD)
     private String dstMachineDomain;
 
     @Field(SITE_FIELD)
@@ -78,7 +77,7 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     private String resultCode;
 
     public void setSrcMachineId(String srcMachineId) {
-        SrcMachineId = srcMachineId;
+        this.srcMachineId = srcMachineId;
     }
 
     public void setDstMachineId(String dstMachineId) {
@@ -98,7 +97,7 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     }
 
     public String getSrcMachineId() {
-        return SrcMachineId;
+        return srcMachineId;
     }
 
     public String getDstMachineId() {

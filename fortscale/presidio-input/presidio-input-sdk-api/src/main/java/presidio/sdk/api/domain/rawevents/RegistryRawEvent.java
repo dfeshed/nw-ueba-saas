@@ -72,19 +72,20 @@ public class RegistryRawEvent extends AbstractInputDocument {
 
     @Field(USER_ID_FIELD_NAME)
     @NotEmpty
-    protected String userId;
+    private String userId;
 
     @Field(OPERATION_TYPE_FIELD_NAME)
     @NotEmpty
-    protected String operationType;
+    private String operationType;
 
     @Field(USER_NAME_FIELD_NAME)
-    protected String userName;
+    private String userName;
 
     @Field(USER_DISPLAY_NAME_FIELD_NAME)
-    protected String userDisplayName;
+    private String userDisplayName;
 
     public RegistryRawEvent() {
+        super();
     }
 
     public RegistryRawEvent(RegistryRawEvent other) {

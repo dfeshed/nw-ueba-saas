@@ -126,7 +126,7 @@ public class AlertServiceTest {
         AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(startDate, endDate, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
-        EnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(Instant.now(), eventTime, "eventId" + "_only_static", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "USER_ACCOUNT_TYPE_CHANGED", new ArrayList<String>(), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(Instant.now(), eventTime, "eventId" + "_only_static", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "USER_ACCOUNT_TYPE_CHANGED", new ArrayList<String>(), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), "objectId");
         mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         EnrichedRecord activeDirectoryEnrichedRecord = new EnrichedActiveDirectoryRecord(activeDirectoryEvent.getEventDate());
@@ -304,7 +304,7 @@ public class AlertServiceTest {
                 startDate.plus(10, ChronoUnit.MINUTES), "eventId1", Schema.ACTIVE_DIRECTORY.toString(), "userId",
                 "username", "userDisplayName", "dataSource", "USER_ACCOUNT_ENABLED",
                 Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"), EventResult.SUCCESS, "resultCode",
-                new HashMap<>(), Boolean.FALSE, "objectId");
+                new HashMap<>(), "objectId");
         mongoTemplate.save(activeDirectoryEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
@@ -312,7 +312,7 @@ public class AlertServiceTest {
                 startDate.plus(20, ChronoUnit.MINUTES), "eventId2", Schema.ACTIVE_DIRECTORY.toString(), "userId",
                 "username", "userDisplayName", "dataSource", "USER_ACCOUNT_RE_ENABLED",
                 Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"), EventResult.SUCCESS, "resultCode",
-                new HashMap<>(), Boolean.FALSE, "objectId");
+                new HashMap<>(), "objectId");
         mongoTemplate.save(activeDirectoryEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
@@ -320,7 +320,7 @@ public class AlertServiceTest {
                 startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId",
                 "username", "userDisplayName", "dataSource", "MEMBER_REMOVED_FROM_SECURITY_ENABLED_LOCAL_GROUP",
                 Arrays.asList("GROUP_MEMBERSHIP_OPERATION", "SECURITY_SENSITIVE_OPERATION"), EventResult.SUCCESS, "resultCode",
-                new HashMap<>(), Boolean.FALSE, "objectId");
+                new HashMap<>(), "objectId");
         mongoTemplate.save(activeDirectoryEvent3, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
@@ -502,7 +502,7 @@ public class AlertServiceTest {
         for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId" + UUID.randomUUID(), schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false, "");
+            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId" + UUID.randomUUID(), schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), "");
             mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
             // generate ade events

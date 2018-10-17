@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
-public class OperationTypeToCategoryTransformerTest {
+public class OperationTypeToCategoriesTransformerTest {
     @Test
     public void test() {
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
@@ -29,8 +29,8 @@ public class OperationTypeToCategoryTransformerTest {
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
 
-        OperationTypeToCategoryTransformer operationTypeToCategoryTransformer = new OperationTypeToCategoryTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        List<AbstractInputDocument> transformed = operationTypeToCategoriesTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
     }
@@ -47,8 +47,8 @@ public class OperationTypeToCategoryTransformerTest {
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
 
-        OperationTypeToCategoryTransformer operationTypeToCategoryTransformer = new OperationTypeToCategoryTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        List<AbstractInputDocument> transformed = operationTypeToCategoriesTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
         Assert.assertNull(((FileRawEvent)transformed.get(0)).getOperationTypeCategories());
@@ -66,8 +66,8 @@ public class OperationTypeToCategoryTransformerTest {
         operationCategories.add("category");
         operationTypeMap.put("operationType", operationCategories);
 
-        OperationTypeToCategoryTransformer operationTypeToCategoryTransformer = new OperationTypeToCategoryTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer(operationTypeMap,  FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        List<AbstractInputDocument> transformed = operationTypeToCategoriesTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
         Assert.assertEquals(2, ((FileRawEvent)transformed.get(0)).getOperationTypeCategories().size());
@@ -82,8 +82,8 @@ public class OperationTypeToCategoryTransformerTest {
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
 
-        OperationTypeToCategoryTransformer operationTypeToCategoryTransformer = new OperationTypeToCategoryTransformer(null,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer(null,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        List<AbstractInputDocument> transformed = operationTypeToCategoriesTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
         Assert.assertNull(((AuthenticationRawEvent)transformed.get(0)).getOperationTypeCategories());
@@ -98,8 +98,8 @@ public class OperationTypeToCategoryTransformerTest {
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
 
-        OperationTypeToCategoryTransformer operationTypeToCategoryTransformer = new OperationTypeToCategoryTransformer(null,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
-        List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
+        OperationTypeToCategoriesTransformer operationTypeToCategoriesTransformer = new OperationTypeToCategoriesTransformer(null,  AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME);
+        List<AbstractInputDocument> transformed = operationTypeToCategoriesTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
         Assert.assertNull(((AuthenticationRawEvent)transformed.get(0)).getOperationTypeCategories());

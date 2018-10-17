@@ -76,52 +76,6 @@
       ]
     },
     {
-      "name": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "contextFieldNames": [
-        "userId"
-      ],
-      "adeEventTypes": [
-        "scored_enriched.active_directory.adminPasswordChanged.userId.activeDirectory.score"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "adminPasswordChangedScore",
-          "featureNamesMap": {
-            "maximize": [
-              "score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "contextFieldNames": [
-        "userId"
-      ],
-      "adeEventTypes": [
-        "scored_enriched.active_directory.nonAdminPasswordChanged.userId.activeDirectory.score"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "nonAdminPasswordChangedScore",
-          "featureNamesMap": {
-            "maximize": [
-              "score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        }
-      ]
-    },
-    {
       "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "contextFieldNames": [
         "userId"

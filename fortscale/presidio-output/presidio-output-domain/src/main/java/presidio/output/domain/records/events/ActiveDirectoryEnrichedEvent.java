@@ -1,7 +1,6 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -15,18 +14,13 @@ import java.util.Map;
 @Document
 public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
 
-    public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
-    public static final String OBJECT_ID = "objectId";
+    public static final String OBJECT_ID_FIELD = "objectId";
     public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
     public static final String RESULT_FIELD = "result";
     public static final String RESULT_CODE_FIELD = "resultCode";
 
-
-    @Field(IS_USER_ADMIN_FIELD)
-    private Boolean isUserAdmin;
-
-    @Field(OBJECT_ID)
+    @Field(OBJECT_ID_FIELD)
     private String objectId;
 
     @Field(OPERATION_TYPE_FIELD)
@@ -57,10 +51,8 @@ public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
                                         EventResult result,
                                         String resultCode,
                                         Map<String, String> additionalInfo,
-                                        Boolean isUserAdmin,
                                         String objectId) {
         super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
-        this.isUserAdmin = isUserAdmin;
         this.objectId = objectId;
         this.operationType = operationType;
         this.operationTypeCategories = operationTypeCategories;
@@ -68,16 +60,8 @@ public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
         this.resultCode = resultCode;
     }
 
-    public Boolean getIsUserAdmin() {
-        return isUserAdmin;
-    }
-
     public String getObjectId() {
         return objectId;
-    }
-
-    public void setIsUserAdmin(Boolean userAdmin) {
-        isUserAdmin = userAdmin;
     }
 
     public void setObjectId(String objectId) {

@@ -1,10 +1,7 @@
 package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
-import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
-import presidio.input.core.services.transformation.transformer.OperationTypeToCategoryTransformer;
-import presidio.input.core.services.transformation.transformer.PatternReplacementTransformer;
-import presidio.input.core.services.transformation.transformer.Transformer;
+import presidio.input.core.services.transformation.transformer.*;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
@@ -18,10 +15,12 @@ public class AuthenticationTransformerManager implements TransformationManager {
     public static final String CLUSTER_REPLACEMENT_PATTERN = "[0-9]";
     public static final String CLUSTER_POST_REPLACEMENT_CONDITION = "(.*[a-zA-Z]){5}.*";
     private List<Transformer> transformers;
-    private Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping;
+    private Map<Schema, Map<String, List<String>>> operationTypeToCategoriesMapping;
+    private Map<Schema, Map<String, List<String>>> operationTypeCategoriesHierarchyMapping;
 
-    public AuthenticationTransformerManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping) {
-        this.operationTypeToCategoryMapping = operationTypeToCategoryMapping;
+    public AuthenticationTransformerManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoriesMapping, Map<Schema, Map<String, List<String>>> operationTypeCategoriesHierarchyMapping) {
+        this.operationTypeToCategoriesMapping = operationTypeToCategoriesMapping;
+        this.operationTypeCategoriesHierarchyMapping = operationTypeCategoriesHierarchyMapping;
     }
 
     @Override
@@ -45,7 +44,8 @@ public class AuthenticationTransformerManager implements TransformationManager {
             transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.DST_MACHINE_ID_FIELD_NAME,
                     AuthenticationTransformedEvent.DST_MACHINE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
 
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION), AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
+            transformers.add(new OperationTypeToCategoriesTransformer(operationTypeToCategoriesMapping.get(Schema.AUTHENTICATION), AuthenticationRawEvent.OPERATION_TYPE_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
+            transformers.add(new OperationTypeCategoriesHierarchyTransformer(operationTypeCategoriesHierarchyMapping.get(Schema.AUTHENTICATION), AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, AuthenticationRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
         }
         return transformers;
     }

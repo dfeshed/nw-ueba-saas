@@ -29,7 +29,6 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -57,31 +56,27 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
 
     @Field(USER_ID_FIELD_NAME)
     @NotEmpty
-    protected String userId;
+    private String userId;
 
     @Field(OPERATION_TYPE_FIELD_NAME)
     @NotEmpty
-    protected String operationType;
+    private String operationType;
 
     @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
-    protected List<String> operationTypeCategories;
+    private List<String> operationTypeCategories;
 
     @Field(RESULT_FIELD_NAME)
-    protected EventResult result;
+    private EventResult result;
 
     @Field(USER_NAME_FIELD_NAME)
-    protected String userName;
+    private String userName;
 
     @Field(USER_DISPLAY_NAME_FIELD_NAME)
-    protected String userDisplayName;
+    private String userDisplayName;
 
     @Field(RESULT_CODE_FIELD_NAME)
-    protected String resultCode;
+    private String resultCode;
 
-    {
-        additionalInfo = new HashMap<>();
-        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(false));
-    }
 
     public AuthenticationRawEvent(AuthenticationRawEvent other) {
         super(other);
@@ -103,6 +98,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     }
 
     public AuthenticationRawEvent() {
+        super();
     }
 
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
@@ -256,15 +252,15 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
                 ", dstMachineId='" + dstMachineId + '\'' +
                 ", dstMachineName='" + dstMachineName + '\'' +
                 ", dstMachineDomain='" + dstMachineDomain + '\'' +
-                ", eventId='" + eventId + '\'' +
-                ", dataSource='" + dataSource + '\'' +
+                ", eventId='" + getEventId() + '\'' +
+                ", dataSource='" + getDataSource() + '\'' +
                 ", userId='" + userId + '\'' +
                 ", operationType='" + operationType + '\'' +
                 ", operationTypeCategories=" + operationTypeCategories +
                 ", result=" + result +
                 ", userName='" + userName + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +
-                ", additionalInfo=" + additionalInfo +
+                ", additionalInfo=" + getAdditionalInfo() +
                 ", dateTime=" + dateTime +
                 ", site=" + site +
                 ", city=" + city +

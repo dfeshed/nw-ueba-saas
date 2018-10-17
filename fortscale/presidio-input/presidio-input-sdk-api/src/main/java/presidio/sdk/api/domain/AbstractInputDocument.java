@@ -18,18 +18,14 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
 
     @NotEmpty
     @Field(EVENT_ID_FIELD_NAME)
-    protected String eventId;
+    private String eventId;
 
     @Field(DATA_SOURCE_FIELD_NAME)
     @NotEmpty
-    protected String dataSource;
+    private String dataSource;
 
     @Field(ADDITIONAL_INFO_FIELD_NAME)
-    protected Map<String, String> additionalInfo;
-
-    {
-        additionalInfo = new HashMap<>();
-    }
+    private Map<String, String> additionalInfo;
 
     public AbstractInputDocument(AbstractInputDocument other) {
         super(other);
@@ -39,7 +35,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     }
 
     public AbstractInputDocument() {
-
+        additionalInfo = new HashMap<>();
     }
 
     public AbstractInputDocument(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo) {

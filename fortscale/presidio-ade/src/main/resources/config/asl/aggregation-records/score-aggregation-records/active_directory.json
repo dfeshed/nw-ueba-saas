@@ -46,36 +46,6 @@
       }
     },
     {
-      "name": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "type": "P",
-      "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "adminPasswordChangedScore"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func"
-      }
-    },
-    {
-      "name": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "type": "P",
-      "bucketConfName": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "nonAdminPasswordChangedScore"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func"
-      }
-    },
-    {
       "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",

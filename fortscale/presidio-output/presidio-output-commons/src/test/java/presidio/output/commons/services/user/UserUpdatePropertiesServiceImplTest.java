@@ -275,7 +275,7 @@ public class UserUpdatePropertiesServiceImplTest {
     private void generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
         EnrichedEvent event = new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
                 userId, userName, userDisplayName, "dataSource", "USER_ACCOUNT_TYPE_CHANGED",
-                new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, Boolean.FALSE, "objectId");
+                new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, "objectId");
         saveEvent(event, Schema.ACTIVE_DIRECTORY);
     }
 

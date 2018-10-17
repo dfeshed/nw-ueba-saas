@@ -30,7 +30,6 @@ public class PrintRawEvent extends AbstractInputDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
 
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
@@ -58,35 +57,31 @@ public class PrintRawEvent extends AbstractInputDocument {
     private Long numOfPages;
 
     public PrintRawEvent() {
+        super();
     }
 
     @Field(USER_ID_FIELD_NAME)
     @NotEmpty
-    protected String userId;
+    private String userId;
 
     @Field(OPERATION_TYPE_FIELD_NAME)
     @NotEmpty
-    protected String operationType;
+    private String operationType;
 
     @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
-    protected List<String> operationTypeCategories;
+    private List<String> operationTypeCategories;
 
     @Field(RESULT_FIELD_NAME)
-    protected EventResult result;
+    private EventResult result;
 
     @Field(USER_NAME_FIELD_NAME)
-    protected String userName;
+    private String userName;
 
     @Field(USER_DISPLAY_NAME_FIELD_NAME)
-    protected String userDisplayName;
+    private String userDisplayName;
 
     @Field(RESULT_CODE_FIELD_NAME)
-    protected String resultCode;
-
-    {
-        additionalInfo = new HashMap<>();
-        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(false));
-    }
+    private String resultCode;
 
     public PrintRawEvent(PrintRawEvent other) {
         super(other);
@@ -261,15 +256,15 @@ public class PrintRawEvent extends AbstractInputDocument {
                 .append("isSrcDriveShared", isSrcDriveShared)
                 .append("fileSize", fileSize)
                 .append("numOfPages", numOfPages)
-                .append("eventId", eventId)
-                .append("dataSource", dataSource)
+                .append("eventId", getEventId())
+                .append("dataSource", getDataSource())
                 .append("userId", userId)
                 .append("operationType", operationType)
                 .append("operationTypeCategories", operationTypeCategories)
                 .append("result", result)
                 .append("userName", userName)
                 .append("userDisplayName", userDisplayName)
-                .append("additionalInfo", additionalInfo)
+                .append("additionalInfo", getAdditionalInfo())
                 .append("resultCode", resultCode)
                 .append("dateTime", dateTime)
                 .toString();

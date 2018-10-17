@@ -103,13 +103,13 @@ public class InputCoreConfigurationTest {
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getMapping());
+        return new AuthenticationTransformerManager(getMapping(), getMapping());
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getMapping());
+        return new FileTransformerManager(getMapping(), getMapping());
     }
 
     @Bean(name = "PRINT.transformer")
