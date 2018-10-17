@@ -8,7 +8,7 @@ import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, wai
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { createBasicPill, isIgnoredInitialEvent, doubleClick } from '../pill-util';
+import { createBasicPill, doubleClick, isIgnoredInitialEvent } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -199,10 +199,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     // Click back on meta and verify that 1 down-selected option is visible
     await click(PILL_SELECTORS.meta);
     await focus(PILL_SELECTORS.metaTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1);
     // Clear input to show all meta options
     await fillIn(PILL_SELECTORS.metaInput, '');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
     // Select meta options B
     await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 1);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'b');
@@ -409,11 +409,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
 
     this.set('handleMessage', (messageType, data, position) => {
-      assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, 'Message sent for pill create is not correct');
-      assert.deepEqual(data.id, undefined, 'Pill data goes not contain an id');
-      assert.equal(position, 12, 'Message sent for pill entered contains correct pill position');
-
-      done();
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        assert.deepEqual(data.id, undefined, 'Pill data goes not contain an id');
+        assert.equal(position, 12, 'Message sent for pill entered contains correct pill position');
+        done();
+      }
     });
 
     await render(hbs`
@@ -424,6 +424,7 @@ module('Integration | Component | Query Pill', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
+    await click(PILL_SELECTORS.meta);
   });
 
   test('When nothing is chosen and component loses focus the component messages up a pill has cancelled', async function(assert) {
@@ -761,8 +762,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
   });
 
-  // Ember 3.3
-  skip('edited pill will send message up when user indicates they would like to escape', async function(assert) {
+  test('edited pill will send message up when user indicates they would like to escape', async function(assert) {
     assert.expect(3);
     const pillData = _setPillData(this);
 
@@ -1040,8 +1040,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
   });
 
-  // Ember 3.3
-  skip('An edited pill, when supplied with meta and operator that does not accept a value, will send a message to create', async function(assert) {
+  test('An edited pill, when supplied with meta and operator that does not accept a value, will send a message to create', async function(assert) {
     const done = assert.async();
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
@@ -1052,10 +1051,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('pillData', enrichedPill);
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data, position) => {
-      assert.equal(messageType, MESSAGE_TYPES.PILL_EDITED, 'Message sent for pill create is not correct');
-      assert.deepEqual(data, { id: '1', isSelected: false, isFocused: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
-      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
-      done();
+      if (messageType === MESSAGE_TYPES.PILL_EDITED) {
+        assert.deepEqual(data, { id: '1', isSelected: false, isFocused: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
+        assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+        done();
+      }
     });
 
     await render(hbs`
@@ -1068,13 +1068,13 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
     // Double click to enter edit mode
-    doubleClick(PILL_SELECTORS.queryPill);
+    await doubleClick(PILL_SELECTORS.queryPill);
     // Click on operator
     await click(PILL_SELECTORS.operator);
     // Delete selected option to bring up full list
-    await fillIn(PILL_SELECTORS.operatorSelectInput, '');
+    await typeInSearch(PILL_SELECTORS.operator, '');
     // Choose the third operator option which does not require a value
-    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0); // option exists
   });
 
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, message is sent up', async function(assert) {
@@ -1197,7 +1197,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY);
   });
 
-  test('it sends a message up to create a free-form pill', async function(assert) {
+  test('it sends a message up from meta to create a free-form pill', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1221,5 +1221,33 @@ module('Integration | Component | Query Pill', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it sends a message up from operator to create a free-form pill', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'a foobar', 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.queryPill);
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 });

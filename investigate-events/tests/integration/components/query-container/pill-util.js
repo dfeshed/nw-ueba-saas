@@ -1,4 +1,4 @@
-import { click, fillIn, focus, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, focus, settled, triggerKeyEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -87,7 +87,7 @@ export const isIgnoredInitialEvent = (event) => {
  *
  * Note: this is not an async function
  */
-export const doubleClick = (selector, skipExtraEvents) => {
+export const doubleClick = async (selector, skipExtraEvents) => {
   const element = document.querySelector(selector);
   const opts = { view: window, bubbles: true, cancelable: true };
 
@@ -102,6 +102,7 @@ export const doubleClick = (selector, skipExtraEvents) => {
   }
 
   element.dispatchEvent(new MouseEvent('dblclick', opts));
+  return settled();
 };
 
 export const elementIsVisible = (el) => {

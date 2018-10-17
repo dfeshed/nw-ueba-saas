@@ -868,8 +868,17 @@ export default Component.extend({
   },
 
   _createFreeFormPill(data) {
+    const selectedMeta = this.get('selectedMeta');
+    // If there's a selected meta, prepend that to the incoming text from
+    // operator, and send that along. Otherwise, assume this was coming from
+    // meta.
+    if (selectedMeta) {
+      const { metaName } = selectedMeta;
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, `${metaName} ${data}`);
+    } else {
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, data);
+    }
     this._reset();
-    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, data);
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //

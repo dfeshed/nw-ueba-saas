@@ -342,16 +342,16 @@ module('Integration | Component | Pill Meta', function(hooks) {
     `);
     await focus(PILL_SELECTORS.metaTrigger);
     // assert number of options
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
     // perform a search that down-selects the list of options
     await typeInSearch('c');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 8);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
     // blur and assert no options present
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', TAB_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.metaTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 21);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
     return settled();
   });
 

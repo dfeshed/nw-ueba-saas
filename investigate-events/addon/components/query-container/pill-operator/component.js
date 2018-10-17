@@ -70,6 +70,14 @@ export default Component.extend({
     return relevantOperators(meta);
   },
 
+  init() {
+    this._super(...arguments);
+    this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: () => this._createFreeFormPill(),
+      [MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION]: (d) => this.set('_highlightedAfterOption', d)
+    });
+  },
+
   didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('isActive')) {
@@ -88,6 +96,22 @@ export default Component.extend({
   },
 
   actions: {
+    /**
+     * Handler for all messages coming from afterOptionsComponent.
+     * @param {string} type The event type from `message-types`
+     * @param {Object} data The event data
+     * @public
+     */
+    handleMessage(type, data) {
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn(data);
+      } else {
+        // Any messages that do not match expected message types get send up
+        // to the query-pill component.
+        this._broadcast(type, data);
+      }
+    },
     onChange(selection /* powerSelectAPI, event */) {
       const timer = this.get('operationSelectedTimer');
       if (timer) {
@@ -162,6 +186,7 @@ export default Component.extend({
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
+        const _highlightedAfterOption = this.get('_highlightedAfterOption');
         if (selection && selected && selection === selected) {
           // This is called before the change event. We need to delay
           // performing this action to see if a change event occures. If it
@@ -170,6 +195,13 @@ export default Component.extend({
             type: MESSAGE_TYPES.OPERATOR_SELECTED,
             data: selection
           }, 100));
+        } else if (selected === null && _highlightedAfterOption === 'Free Form Filter') {
+          // If the user presses ENTER while all the operators are filtered out,
+          // the assumption is that they want to create a free-form filter.
+          // Since we have access to the power-select API, we'll perform an
+          // empty search to restore all the options in the dropdown.
+          this._createFreeFormPill();
+          powerSelectAPI.actions.search('');
         }
       } else if (isBackspace(event) && event.target.value === '') {
         next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
@@ -208,6 +240,20 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+
+  _createFreeFormPill() {
+    // get input text
+    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const { value } = el;
+    // cleanup (close dropdown, etc)
+    el.value = '';
+    this._focusOnPowerSelectTrigger();
+    // send value up to create a complex pill
+    if (value && value.length > 0) {
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, value);
+    }
   },
 
   _focusOnPowerSelectTrigger() {

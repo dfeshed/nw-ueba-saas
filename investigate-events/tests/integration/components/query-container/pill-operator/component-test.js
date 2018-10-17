@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -362,5 +362,46 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);
     await blur(PILL_SELECTORS.operatorTrigger);
     assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '=');
+  });
+
+  test('it broadcasts a message to create a free-form pill when the ENTER key is pressed', async function(assert) {
+    const done = assert.async();
+    this.set('meta', meta);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'foobar', 'correct data');
+        assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '', 'meta input was reset');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it does NOT broadcasts a message to create a free-form pill if no value is entered', async function(assert) {
+    assert.expect(0);
+    this.set('meta', meta);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.notOk('should not get here');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 });

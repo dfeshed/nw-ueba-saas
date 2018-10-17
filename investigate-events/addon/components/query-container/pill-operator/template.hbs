@@ -5,13 +5,17 @@
     https://github.com/cibernox/ember-power-select-typeahead/issues/71
   --}}
   {{#power-select-typeahead
+    afterOptionsComponent=(
+      component 'query-container/power-select-after-options'
+      sendMessage=(action 'handleMessage')
+    )
     allowClear=false
     defaultHighlighted=undefined
     extra=(hash labelPath='displayName')
     initiallyOpened=false
     matcher=_matcher
     matchTriggerWidth=false
-    noMatchesMessage='All Operators Filtered out'
+    noMatchesMessage='All operators filtered out'
     onchange=(action 'onChange')
     onfocus=(action 'onFocus')
     oninput=(action 'onInput')

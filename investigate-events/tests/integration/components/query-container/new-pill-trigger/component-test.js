@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
-import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -198,7 +198,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT_KEY);
   });
 
-  test('it broadcasts a message when creating a free-form pill', async function(assert) {
+  test('it broadcasts a message when creating a free-form pill from meta', async function(assert) {
     const done = assert.async(4);
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
@@ -219,5 +219,29 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it broadcasts a message when creating a free-form pill from operator', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data, position) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.equal(data, 'a foobar', 'Correct data');
+        assert.equal(position, 0, 'Correct position of the pill');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 });
