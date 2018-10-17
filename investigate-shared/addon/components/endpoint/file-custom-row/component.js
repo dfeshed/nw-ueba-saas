@@ -93,6 +93,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       {
         label: 'resetRiskScore',
         prefix: 'investigateShared.endpoint.fileActions.',
+        className: ' divider cntxBorder',
         action() {
           cntx.resetRiskScore(cntx.get('selections'));
         }

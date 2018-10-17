@@ -300,5 +300,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, 'All the list options should render.');
     assert.equal(findAll('.rsa-dropdown-action-list li')[2].classList.contains('disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.rsa-dropdown-action-list hr')[0].className, 'divider actionSeperator', 'Seperator is available for reset Risk score button');
   });
 });

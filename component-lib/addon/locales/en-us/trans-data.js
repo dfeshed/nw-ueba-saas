@@ -2088,7 +2088,7 @@ export default {
     },
     riskScore: {
       label: 'Reset Risk Score',
-      confirmMessage: 'Are you sure you want to reset the Risk Score for the selected file(s). All the events listed under the Severity Score will be deleted. Click Help for more information.',
+      confirmMessage: 'Are you sure you want to reset the Risk Score for the selected file(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0. Click Help for more information.',
       cancel: 'Cancel',
       reset: 'Reset',
       success: 'The Risk Score has been successfully reset.',
