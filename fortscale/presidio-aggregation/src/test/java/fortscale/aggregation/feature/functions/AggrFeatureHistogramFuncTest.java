@@ -24,26 +24,6 @@ import java.util.Map;
 public class AggrFeatureHistogramFuncTest {
     private static final double DELTA = 0.00001;
 
-    private AggregatedFeatureConf createAggrFeatureConf(int num) {
-        List<String> featureNames = new ArrayList<>();
-        for (int i = 1; i <= num; i++) {
-            featureNames.add(String.format("feature%d", i));
-        }
-        Map<String, List<String>> featureNamesMap = new HashMap<>();
-        featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
-    }
-
-    private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
-        List<String> list = new ArrayList<>();
-        for (int i = 1; i <= num; i++) {
-            list.add(String.format("feature%d", i));
-        }
-        Map<String, List<String>> map = new HashMap<>();
-        map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, new JSONObject());
-    }
-
     @Test
     public void testUpdateAggregatedFeature() {
         GenericHistogram histogram = new GenericHistogram();
@@ -69,7 +49,7 @@ public class AggrFeatureHistogramFuncTest {
         );
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(3);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
@@ -114,7 +94,7 @@ public class AggrFeatureHistogramFuncTest {
         );
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(3);
 
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
@@ -160,7 +140,7 @@ public class AggrFeatureHistogramFuncTest {
 
         FeatureValue nullValue = null;
         Feature aggrFeature = new Feature("MyAggrFeature", nullValue);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
@@ -235,7 +215,7 @@ public class AggrFeatureHistogramFuncTest {
         Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>("feature1", 2)
         );
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(12);
         String str = "I'm a string, not histogram";
         Feature aggrFeature = new Feature("MyAggrFeature", str);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
@@ -247,7 +227,7 @@ public class AggrFeatureHistogramFuncTest {
         Map<String, Feature> featureMap1 = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>("feature1", 2)
         );
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, null);
@@ -274,7 +254,7 @@ public class AggrFeatureHistogramFuncTest {
         histogram.add(2.0, 30.0);
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(12);
 
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
 
@@ -331,7 +311,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map3);
 
         IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
-        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+        Feature actual = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 1), listOfMaps);
 
         Assert.assertNotNull(actual);
         Assert.assertEquals(confName, actual.getName());
@@ -388,7 +368,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map2);
 
         IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
-        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+        Feature actual = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 1), listOfMaps);
 
         Assert.assertNotNull(actual);
         Assert.assertEquals(confName, actual.getName());
@@ -431,7 +411,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map2);
 
         IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
-        function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+        function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 1), listOfMaps);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -455,7 +435,7 @@ public class AggrFeatureHistogramFuncTest {
         listOfMaps.add(map2);
 
         IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
-        function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+        function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 1), listOfMaps);
     }
 
     @Test
@@ -480,14 +460,14 @@ public class AggrFeatureHistogramFuncTest {
         String confName = "testCalculateAggrFeatureWithNullAggregatedFeaturesMapList";
 
         IAggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
-        Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 3), null));
+        Assert.assertNull(function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 3), null));
     }
 
     @Test
     public void testUpdate_FeatureWithEmptyValue() {
         GenericHistogram histogram = new GenericHistogram();
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
+        AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(12);
         IAggrFeatureFunction func = new AggrFeatureHistogramFunc();
         Map<String, Feature> features = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>("feature1", "")

@@ -12,8 +12,8 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_histogram_key_value_func",
-        "key": "SUCCESS"
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [{"result":"SUCCESS"}]
       }
     },
     {
@@ -28,8 +28,8 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_histogram_key_value_func",
-        "key": "FAILURE"
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [{"result":"FAILURE"}]
       }
     },
     {
@@ -44,7 +44,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
     },
     {
@@ -59,7 +59,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
     },
     {
@@ -74,7 +74,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
     },
     {
@@ -89,7 +89,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
     },
     {
@@ -104,7 +104,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
     }
   ]

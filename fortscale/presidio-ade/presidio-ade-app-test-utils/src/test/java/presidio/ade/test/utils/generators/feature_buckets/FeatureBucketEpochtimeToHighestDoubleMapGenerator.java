@@ -1,16 +1,12 @@
 package presidio.ade.test.utils.generators.feature_buckets;
 
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.common.util.GenericHistogram;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY;
 
 public class FeatureBucketEpochtimeToHighestDoubleMapGenerator extends FeatureBucketEpochtimeMapGenerator {
     public FeatureBucketEpochtimeToHighestDoubleMapGenerator(
@@ -26,15 +22,17 @@ public class FeatureBucketEpochtimeToHighestDoubleMapGenerator extends FeatureBu
     public Map<String, Feature> getNext() {
         Map<String, Feature> next = super.getNext();
         Feature feature = next.get(featureName);
-        Map<String, Double> map = new HashMap<>();
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
 
         for (Entry<String, Double> entry : ((GenericHistogram)feature.getValue()).getHistogramMap().entrySet()) {
-            String key = String.format("%s%s%s", featureName, FEATURE_SEPARATOR_KEY, entry.getKey());
-            map.put(key, entry.getValue());
+            MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+            multiKeyFeature.add(featureName,entry.getKey());
+            Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);
+            Double newValCount = oldCount != null ? entry.getValue() + oldCount : entry.getValue();
+            multiKeyHistogram.set(multiKeyFeature, newValCount);
         }
 
-        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(map, 0L);
-        feature.setValue(aggrFeatureValue);
+        feature.setValue(multiKeyHistogram);
         return next;
     }
 }
