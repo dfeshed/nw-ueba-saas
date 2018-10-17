@@ -28,7 +28,20 @@
 }
 
 .events-list-endpoint-detail {
-  @include border-top(1px, solid, primary);
-  padding: 10px;
-  display: flex;
+  @include border-top(1px, solid, primary, base, somewhat-opaque);
+  padding: rsa-whitespace(less);
+
+  hbox {
+    margin-top: -10px;
+
+    & > dl {
+      &:first-of-type {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        width: 100%;
+      }
+    }
+  }
 }

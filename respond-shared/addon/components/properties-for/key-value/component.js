@@ -15,7 +15,6 @@ function capitalizeResult(value) {
 
 export default Component.extend({
   layout,
-  tagName: 'tr',
   testId: 'keyValueRow',
   classNames: ['key'],
   attributeBindings: ['testId:test-id'],

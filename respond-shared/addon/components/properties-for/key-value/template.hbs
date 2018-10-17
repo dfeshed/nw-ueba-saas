@@ -1,10 +1,10 @@
-<td test-id="keyName" class="key-name">
+<dt test-id="keyName" class="key-name">
   {{formattedName}}
-</td>
-<td test-id="keyValue" class="key-value">
+</dt>
+<dd test-id="keyValue" class="key-value">
   {{#if member.isNestedValue}}
     {{component "properties-for" item=item itemPath=itemPath}}
   {{else}}
     {{member.value}}
   {{/if}}
-</td>
+</dd>

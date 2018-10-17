@@ -5,7 +5,7 @@ import { isEmpty, typeOf } from '@ember/utils';
 
 export default Component.extend({
   layout,
-  tagName: 'table',
+  tagName: 'dl',
   testId: 'propertiesFor',
   attributeBindings: ['testId:test-id'],
   classNames: ['properties-for'],

@@ -25,11 +25,11 @@
     position: relative;
 
     .events-list-rows {
-      padding-bottom: 6em;
+      padding-bottom: 6.2em;
       border-spacing: 10px;
       border-collapse: separate;
 
-      li:nth-child(odd) {
+      li.events-list-table-row:nth-child(odd) {
         &:not(.expanded) {
           background-color: background-color(primary, darkest);
         }
@@ -44,7 +44,7 @@
         }
       }
 
-      li:nth-child(even) {
+      li.events-list-table-row:nth-child(even) {
         &:not(.expanded) {
           background-color: background-color(primary, darker);
         }

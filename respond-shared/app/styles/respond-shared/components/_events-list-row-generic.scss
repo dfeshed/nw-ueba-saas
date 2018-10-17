@@ -24,7 +24,20 @@
 }
 
 .events-list-generic-detail {
-  @include border-top(1px, solid, primary);
+  @include border-top(1px, solid, primary, base, somewhat-opaque);
   padding: rsa-whitespace(less);
-  display: flex;
+
+  hbox {
+    margin-top: -10px;
+
+    & > dl {
+      &:first-of-type {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        width: 100%;
+      }
+    }
+  }
 }
