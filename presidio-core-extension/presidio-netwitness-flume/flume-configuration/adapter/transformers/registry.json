@@ -107,7 +107,7 @@
     {
       "type": "copy_value",
       "name": "copy-action-to-operation-type",
-      "sourceKey": "action",
+      "sourceKey": "action[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "operationType"
@@ -116,7 +116,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "machine-id-normalization",
-      "sourceKey": "alias-host",
+      "sourceKey": "alias-host[0]",
       "destinationKey": "machineId",
       "captureAndFormatConfigurations": [
         {
@@ -159,7 +159,7 @@
     {
       "type": "copy_value",
       "name": "copy-alias-host-to-machine-name",
-      "sourceKey": "alias-host",
+      "sourceKey": "alias-host[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "machineName"
