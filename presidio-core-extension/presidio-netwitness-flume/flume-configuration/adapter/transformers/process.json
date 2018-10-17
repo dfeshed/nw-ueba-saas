@@ -20,7 +20,6 @@
         "dataSource"
       ]
     },
-    ,
     {
       "type": "regex_captor_and_formatter",
       "name": "user-id-normalization",
@@ -102,7 +101,7 @@
     {
       "type": "copy_value",
       "name": "copy-action-to-operation-type",
-      "sourceKey": "action",
+      "sourceKey": "action[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "operationType"
@@ -111,7 +110,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "machine-id-normalization",
-      "sourceKey": "alias_host",
+      "sourceKey": "alias_host[0]",
       "destinationKey": "machineId",
       "captureAndFormatConfigurations": [
         {
@@ -154,78 +153,10 @@
     {
       "type": "copy_value",
       "name": "rename-alias-host-to-machine-name",
-      "sourceKey": "alias_host",
+      "sourceKey": "alias_host[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "machineName"
-      ]
-    },
-    {
-      "type": "regex_captor_and_formatter",
-      "name": "machine-owner-normalization",
-      "sourceKey": "owner",
-      "destinationKey": "machine_owner",
-      "captureAndFormatConfigurations": [
-        {
-          "pattern": "CN=([^,]+)",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        },
-        {
-          "pattern": "CN=([^,]+),.+",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        },
-        {
-          "pattern": "(.+\\\\)+(.+)@.+",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 2,
-              "caseFormat": "LOWER"
-            }
-          ]
-        },
-        {
-          "pattern": "(.+\\\\)+([^@]+)",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 2,
-              "caseFormat": "LOWER"
-            }
-          ]
-        },
-        {
-          "pattern": "(.+)@.+",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        },
-        {
-          "pattern": ".+",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 0,
-              "caseFormat": "LOWER"
-            }
-          ]
-        }
       ]
     },
     {
@@ -243,44 +174,8 @@
       "sourceKey": "filename_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "srcProcessFilename"
+        "srcProcessFileName"
       ]
-    },
-    {
-      "type": "regex_captor_and_formatter",
-      "name": "src-process-directory-group-transformer",
-      "sourceKey": "context",
-      "destinationKey": "srcProcessDirectoryGroup",
-      "captureAndFormatConfigurations": [
-        {
-            "pattern": "dir\\.(.*)",
-            "format": "%s",
-            "capturingGroupConfigurations": [
-              {
-                "index": 1,
-                "caseFormat": "LOWER"
-              }
-            ]
-          }
-        ]
-    },
-    {
-      "type": "regex_captor_and_formatter",
-      "name": "src-process-categories-transformer",
-      "sourceKey": "context",
-      "destinationKey": "srcProcessCategories",
-      "captureAndFormatConfigurations": [
-        {
-          "pattern": "process\\.(.*)",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        }
-      }
     },
     {
       "type": "copy_value",
@@ -291,7 +186,6 @@
         "srcProcessCertificateIssuer"
       ]
     },
-    ,
     {
       "type": "copy_value",
       "name": "rename-directory-dst",
@@ -304,46 +198,10 @@
     {
       "type": "copy_value",
       "name": "rename-file-dst",
-      "sourceKey": "filename.dst",
+      "sourceKey": "filename_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstProcessFilename"
-      ]
-    },
-    {
-      "type": "regex_captor_and_formatter",
-      "name": "dst-process-directory-group-transformer",
-      "sourceKey": "context_target",
-      "destinationKey": "dstProcessDirectoryGroup",
-      "captureAndFormatConfigurations": [
-        {
-          "pattern": "dir\\.(.*)",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        ]
-      }
-    },
-    {
-      "type": "regex_captor_and_formatter",
-      "name": "dst-process-categories-transformer",
-      "sourceKey": "context_target",
-      "destinationKey": "dstProcessCategories",
-      "captureAndFormatConfigurations": [
-        {
-          "pattern": "process\\.(.*)",
-          "format": "%s",
-          "capturingGroupConfigurations": [
-            {
-              "index": 1,
-              "caseFormat": "LOWER"
-            }
-          ]
-        }
+        "dstProcessFileName"
       ]
     },
     {
