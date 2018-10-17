@@ -1,9 +1,11 @@
 .file-header {
   padding: rsa-whitespace(less);
+  border-bottom: 1px solid text-color(primary, dark);
   .title-bar {
     line-height: 3px;
 
     &__file-title {
+      padding-right: rsa-whitespace();
       @include rsa-font(header, larger);
       text-transform: capitalize;
       border-bottom-width: 3px;
@@ -18,12 +20,21 @@
   .file-summary {
     margin: rsa-whitespace(less) 0;
     svg {
-      padding-right: rsa-whitespace();
+      padding-right: rsa-whitespace(more);
     }
     .rsa-content-definition {
       padding-right: rsa-whitespace(more);
       padding-top: rsa-whitespace();
       height: 3rem;
+      .label {
+        @include rsa-font(header, small);
+        color: text-color(primary, light);;
+        margin-bottom: rsa-whitespace(less);
+      }
+      .value {
+        color: text-color(primary, lightest);
+        font-weight: bold;
+      }
     }
   }
 

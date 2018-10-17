@@ -2286,7 +2286,7 @@ export default {
       riskProperties: 'Risk Properties',
       fileDetails: 'File Details',
       hosts: 'HOSTS',
-      overview: 'Overview',
+      overview: 'Details',
       analysis: 'Analysis'
     }
   },

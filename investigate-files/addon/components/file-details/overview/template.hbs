@@ -10,16 +10,8 @@
           selectedAlert=selectedAlert}}
       </box>
       <box class="events">
-        {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
-          {{rsa-icon name='layout-2'}}
-        {{/rsa-form-button}}
         {{file-details/overview/events-list-container}}
       </box>
     </hbox>
   {{/layout.center}}
-  {{#layout.right as |right|}}
-    {{right.header}}
-    <vbox class="file-properties-box">
-    </vbox>
-  {{/layout.right}}
 {{/rsa-page-layout}}
