@@ -25,7 +25,8 @@ import {
   fetchHostNameList,
   getRiskScoreContext,
   retrieveRemediationStatus,
-  setSelectedFile
+  setSelectedFile,
+  resetRiskContext
 } from 'investigate-files/actions/data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-score-creators';
@@ -63,7 +64,8 @@ const dispatchToActions = {
   getRiskScoreContext,
   retrieveRemediationStatus,
   setSelectedFile,
-  resetRiskScore
+  resetRiskScore,
+  resetRiskContext
 };
 
 /**
@@ -168,6 +170,7 @@ const FileList = Component.extend({
         const openRiskPanel = this.get('openRiskPanel');
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
+          this.send('resetRiskContext');
           this.send('fetchFileContext', item.firstFileName);
           this.send('setSelectedFile', item);
           this.send('fetchHostNameList', item.checksumSha256);

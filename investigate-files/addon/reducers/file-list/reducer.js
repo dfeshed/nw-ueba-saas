@@ -31,7 +31,8 @@ const fileListState = Immutable.from({
   riskScoreContext: null,
   riskScoreContextError: null,
   isRemediationAllowed: true,
-  selectedFile: {}
+  selectedFile: {},
+  selectedDetailFile: null
 });
 
 const _handleAppendFiles = (action) => {
@@ -65,6 +66,9 @@ const _toggleSelectedFile = (state, payload) => {
 
 };
 const fileListReducer = handleActions({
+  [ACTION_TYPES.INITIALIZE_FILE_DETAIL]: (state, { payload }) => {
+    return state.set('selectedDetailFile', Object.values(state.fileData).find((file) => file.id === payload));
+  },
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('loadMoreStatus', 'streaming'),
@@ -125,6 +129,10 @@ const fileListReducer = handleActions({
       success: (s) => s.set('riskScoreContext', action.payload.data),
       failure: (s) => s.set('riskScoreContextError', action.payload.meta)
     });
+  },
+
+  [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
+    return state.set('riskScoreContext', null);
   },
 
   [ACTION_TYPES.SAVE_FILE_STATUS]: (state, action) => {

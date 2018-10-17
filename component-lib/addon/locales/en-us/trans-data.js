@@ -2175,7 +2175,7 @@ export default {
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
-      machineCount: 'Hosts',
+      machineCount: 'Host Count',
       remediationAction: 'Remediation Action',
       elf: {
         classType: 'ELF.Class Type',

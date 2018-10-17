@@ -77,8 +77,37 @@ test('should return the initial state', function(assert) {
     riskScoreContext: null,
     riskScoreContextError: null,
     isRemediationAllowed: true,
-    selectedFile: {}
+    selectedFile: {},
+    selectedDetailFile: null
   });
+});
+
+test('INITIALIZE_FILE_DETAIL sets the selected file', function(assert) {
+  const previous = Immutable.from({
+    fileData: {
+      'checksum-123': { firstFileName: 'dtf.exe', id: 'checksum-123' },
+      'checksum-456': { firstFileName: 'powershell.exe', id: 'checksum-456' }
+    },
+    selectedDetailFile: null
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: 'checksum-123' });
+  assert.equal(result.selectedDetailFile.id, 'checksum-123', 'File matching with id is returned');
+});
+
+test('RESET_RISK_CONTEXT resets riskScoreContext', function(assert) {
+  const previous = Immutable.from({
+    riskScoreContext: [{
+      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+      alertCount: {
+        critical: 1,
+        high: 10,
+        medium: 20
+      },
+      categorizedAlerts: {}
+    }]
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
+  assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
 });
 
 test('The RESET_DOWNLOAD_ID action reset the export link', function(assert) {

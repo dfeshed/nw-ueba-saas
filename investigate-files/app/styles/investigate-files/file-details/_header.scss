@@ -1,0 +1,36 @@
+.file-header {
+  padding: rsa-whitespace(less);
+  .title-bar {
+    line-height: 3px;
+
+    &__file-title {
+      @include rsa-font(header, larger);
+      text-transform: capitalize;
+      border-bottom-width: 3px;
+      line-height: 2.25rem;
+      .divider {
+        height: 1.75rem;
+      }
+    }
+
+  }
+
+  .file-summary {
+    margin: rsa-whitespace(less) 0;
+    svg {
+      padding-right: rsa-whitespace();
+    }
+    .rsa-content-definition {
+      padding-right: rsa-whitespace(more);
+      padding-top: rsa-whitespace();
+      height: 3rem;
+    }
+  }
+
+  .divider {
+    @include border-left(1px, solid, primary);
+    height: 1.5rem;
+    margin: rsa-whitespace(least);
+    margin-left: rsa-whitespace();
+  }
+}

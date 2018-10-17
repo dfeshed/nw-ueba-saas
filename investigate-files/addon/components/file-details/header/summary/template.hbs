@@ -1,0 +1,8 @@
+{{rsa-risk-score score=summary.score size='large'}}
+{{rsa-content-definition label=(t 'investigateFiles.fields.machineCount') value=summary.machineCount}}
+{{rsa-content-definition label=(t 'investigateFiles.fields.signature.features') value=summary.signature}}
+{{#rsa-content-definition label=(t 'investigateFiles.fields.size')}}
+  {{rsa-content-memsize size=summary.size}}
+{{/rsa-content-definition}}
+{{rsa-content-definition label=(t 'investigateFiles.fields.fileStatus') value=summary.fileStatus}}
+{{rsa-content-definition label=(t 'investigateFiles.fields.machineOsType') value=summary.machineOsType}}

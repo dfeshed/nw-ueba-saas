@@ -7,7 +7,8 @@ const stateToComputed = (state) => ({
 });
 
 const DetailComponent = Component.extend({
-  tagName: ''
+  tagName: 'page',
+  classNames: ['rsa-investigate-files']
 });
 
 export default connect(stateToComputed)(DetailComponent);

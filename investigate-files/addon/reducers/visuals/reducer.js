@@ -13,6 +13,9 @@ const visuals = handleActions({
   },
   [ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeRiskSeverityTab', tabName);
+  },
+  [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
+    return state.set('activeRiskSeverityTab', 'critical');
   }
 }, visualsInitialState);
 

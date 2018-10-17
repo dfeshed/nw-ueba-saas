@@ -12,7 +12,7 @@
 @import 'respond-shared/manifest';
 
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
-body.investigate-files-engine-dummy {
+body.rsa-investigate-files-dummy {
   color: text-color(primary, light);
 
   .rsa-logo {
@@ -28,7 +28,7 @@ body.investigate-files-engine-dummy {
   }
 }
 
-.investigate-files-engine {
+.rsa-investigate-files-dummy {
   .background-icon {
     font-size: 15rem;
     color: text-color(accentOne, dark);

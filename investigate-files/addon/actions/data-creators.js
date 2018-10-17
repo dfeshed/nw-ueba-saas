@@ -215,6 +215,23 @@ const getRiskScoreContext = (checksum, severity) => ({
   promise: File.getRiskScoreContext(prepareQuery(checksum, severity))
 });
 
+const getUpdatedRiskScoreContext = (checksum, tabName) => {
+  return (dispatch) => {
+    dispatch(activeRiskSeverityTab(tabName));
+    dispatch(getRiskScoreContext(checksum, tabName));
+  };
+};
+
+const initializeFileDetails = (checksum) => {
+  return (dispatch) => {
+    dispatch(resetRiskContext());
+    dispatch({ type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: checksum });
+    dispatch(getRiskScoreContext(checksum));
+  };
+};
+
+const resetRiskContext = () => ({ type: ACTION_TYPES.RESET_RISK_CONTEXT });
+
 const fetchFileContext = (fileName) => {
   return (dispatch) => {
     const query = {
@@ -360,13 +377,6 @@ const setSelectedAlert = (context) => {
   };
 };
 
-const getUpdatedRiskScoreContext = (checksum, tabName) => {
-  return (dispatch) => {
-    dispatch(activeRiskSeverityTab(tabName));
-    dispatch(getRiskScoreContext(checksum, tabName));
-  };
-};
-
 const retrieveRemediationStatus = (selections) => {
   const thumbprints = selections.mapBy('signature.thumbprint').compact();
   if (thumbprints && thumbprints.length) {
@@ -423,11 +433,13 @@ export {
   getFirstPageOfFiles,
   activeRiskSeverityTab,
   getRiskScoreContext,
+  initializeFileDetails,
   getUpdatedRiskScoreContext,
   retrieveRemediationStatus,
   getAlertEvents,
   setSelectedAlert,
   setSelectedFile,
   userLeftFilesPage,
-  expandEvent
+  expandEvent,
+  resetRiskContext
 };

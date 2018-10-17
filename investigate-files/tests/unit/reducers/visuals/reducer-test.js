@@ -38,3 +38,11 @@ test('The ACTIVE_RISK_SEVERITY_TAB sets new tab to state', function(assert) {
   const endState = reducer(previous, { type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName: 'high' } });
   assert.deepEqual(endState, expectedEndState);
 });
+
+test('The RESET_RISK_CONTEXT sets new tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeRiskSeverityTab: 'high'
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
+  assert.equal(result.activeRiskSeverityTab, 'critical', 'Active tab is reset to critical');
+});
