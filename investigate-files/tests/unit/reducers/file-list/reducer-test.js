@@ -5,7 +5,7 @@ import * as ACTION_TYPES from 'investigate-files/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 
-module('Unit | Reducers | investigate-files');
+module('Unit | Reducers | file-list');
 
 const FILE_LIST = [
   {
@@ -59,7 +59,7 @@ test('should return the initial state', function(assert) {
     pageNumber: -1,
     totalItems: 0,
     hasNext: false,
-    sortField: 'firstSeenTime',
+    sortField: 'score',
     isSortDescending: true,
     downloadStatus: 'completed',
     downloadId: null,

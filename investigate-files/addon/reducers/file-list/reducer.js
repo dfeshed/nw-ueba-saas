@@ -12,7 +12,7 @@ const fileListState = Immutable.from({
   pageNumber: -1,
   totalItems: 0,
   hasNext: false,
-  sortField: 'firstSeenTime',
+  sortField: 'score',
   isSortDescending: true,
   downloadStatus: 'completed',
   downloadId: null,

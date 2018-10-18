@@ -115,6 +115,8 @@ const FileList = Component.extend({
     }
   ],
 
+  CONFIG_FIXED_COLUMNS: ['firstFileName', 'score'],
+
   showServiceModal: false,
 
   showFileStatusModal: false,
@@ -127,7 +129,7 @@ const FileList = Component.extend({
 
   @computed('columnConfig')
   updatedColumns(columns) {
-    const UPDATED_COLUMNS = columns.filter((column) => column.field !== 'firstFileName');
+    const UPDATED_COLUMNS = columns.filter((column) => !this.CONFIG_FIXED_COLUMNS.includes(column.field));
     return this._sortList(UPDATED_COLUMNS);
   },
 

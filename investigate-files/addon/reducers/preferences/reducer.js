@@ -6,6 +6,7 @@ const DEFAULT_FILE_PREFERENCES = {
   filePreference: {
     visibleColumns: [
       'firstFileName',
+      'score',
       'reputationStatus',
       'firstSeenTime',
       'machineOsType',
@@ -15,7 +16,7 @@ const DEFAULT_FILE_PREFERENCES = {
       'entropy',
       'fileStatus'
     ],
-    sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
+    sortField: '{ "sortField": "score", "isSortDescending": false }'
   }
 };
 

@@ -24,6 +24,7 @@ test('should return the initial state', function(assert) {
       filePreference: {
         visibleColumns: [
           'firstFileName',
+          'score',
           'reputationStatus',
           'firstSeenTime',
           'machineOsType',
@@ -33,7 +34,7 @@ test('should return the initial state', function(assert) {
           'entropy',
           'fileStatus'
         ],
-        sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
+        sortField: '{ "sortField": "score", "isSortDescending": false }'
       }
     }
   });
@@ -68,7 +69,7 @@ test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert
 test('The SET_SORT_BY  action will set sortField', function(assert) {
   // Initial state
   const initialResult = reducer(undefined, {});
-  assert.equal(initialResult.preferences.filePreference.sortField, '{ "sortField": "firstSeenTime", "isSortDescending": false }', 'original sortField value');
+  assert.equal(initialResult.preferences.filePreference.sortField, '{ "sortField": "score", "isSortDescending": false }', 'original sortField value');
 
   const response = { 'sortField': 'firstSeenTime', 'isSortDescending': true };
 
