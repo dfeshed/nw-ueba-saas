@@ -2,6 +2,8 @@ package presidio.input.core.services.transformation.managers;
 
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.rawevents.ProcessRawEvent;
+import presidio.sdk.api.domain.transformedevents.ProcessTransformedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,6 @@ public class ProcessTransformerManager implements TransformationManager {
 
     @Override
     public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
-        return (U) rawEvent;
+        return (U) new ProcessTransformedEvent((ProcessRawEvent) rawEvent);
     }
 }
