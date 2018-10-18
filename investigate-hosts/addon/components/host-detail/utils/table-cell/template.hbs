@@ -15,7 +15,7 @@
     {{rsa-risk-score score=(get item column.field) size='small'}}
   </centered>
 {{else if (eq column.field 'fileProperties.fileStatus')}}
-    {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
+  {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
 {{else}}
   {{get item column.field}}
 {{/if}}

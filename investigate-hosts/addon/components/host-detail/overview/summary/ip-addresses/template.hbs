@@ -10,13 +10,13 @@
           metaName='machineIpv4'
           metaValue=ipv4
           showAsRightClick=true}}
-          {{ipv4}}{{#unless (eq ipv4 ip.ipv4.lastObject)}}, {{/unless}}
+          {{ipv4}}{{#if (not-eq ipv4 ip.ipv4.lastObject)}}, {{/if}}
         {{/pivot-to-investigate}}
       {{/each}}
       {{#each ip.ipv6 as |ipv6|}}
         {{#if (eq ipv6 ip.ipv6.firstObject)}} <span class="ip-divider">/</span> {{/if}}
         {{ipv6}}
-        {{#unless (eq ipv6 ip.ipv6.lastObject)}}, {{/unless}}
+        {{#if (not-eq ipv6 ip.ipv6.lastObject)}}, {{/if}}
       {{/each}}
       <span class="ip-divider">|</span> MAC Address: {{ip.macAddress}}
     </hbox>

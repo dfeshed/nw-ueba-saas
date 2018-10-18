@@ -5,17 +5,17 @@
   columnsConfig=updatedColumns
   onRowClick=(action 'toggleSelectedRow')}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
-     {{#if (eq column.dataType "checkbox")}}
-       <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
-          {{rsa-form-checkbox
-            checked=isALlSelected
-            change=(action 'toggleAllSelection')}}
-        </label>
-     {{else}}
+    {{#if (eq column.dataType "checkbox")}}
+      <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
+        {{rsa-form-checkbox
+          checked=isALlSelected
+          change=(action 'toggleAllSelection')}}
+      </label>
+    {{else}}
       <span class='js-move-handle'>
         {{t column.title}}
       </span>
-     {{/if}}
+    {{/if}}
     {{! COLUMN SORT }}
     {{#unless column.disableSort}}
       {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}
@@ -84,7 +84,7 @@
         {{/file-list/body-cell}}
       {{/if}}
     {{/file-list/body}}
-      {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
+    {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
   {{/if}}
 {{/rsa-data-table}}
 

@@ -1,11 +1,11 @@
 <vbox xs="3" class="process-list-box">
   <div class="process-list-header">
     <span class="title">{{t 'investigateHosts.process.title'}}</span>
-    {{#unless isNavigatedFromExplore}}
+    {{#if (not isNavigatedFromExplore)}}
       <span class="toggle-icon" {{action 'toggleProcessView'}}>
         {{rsa-icon active=isTreeView class="tree-icon" name='flow-chart-3' is-filled=true}}
       </span>
-    {{/unless}}
+    {{/if}}
   </div>
   {{#if isTreeView}}
     {{host-detail/process/process-tree}}
@@ -18,7 +18,7 @@
     {{rsa-loader size='large'}}
   </centered>
 {{else}}
-  {{#unless isProcessDataEmpty}}
+  {{#if (not isProcessDataEmpty)}}
     <vbox xs="6" class="process-content-box panel-shadow">
       <vbox class='process-content-box-wrapper'>
         {{host-detail/process/summary-items config=summaryConfig data=process}}
@@ -49,7 +49,7 @@
         data=process
         title=(t 'investigateHosts.process.properties')}}
     </vbox>
-  {{/unless}}
+  {{/if}}
 {{/if}}
 
 

@@ -7,7 +7,9 @@
     {{#if items}}
       {{#each items as |item|}}
         <div class='host_details_link'>
-          <a class='host_list_content navigate_host_details' href="#" target="_blank" {{action "openHost" item}}> {{item}} </a>
+          <a class='host_list_content navigate_host_details' href='#' target='_blank' rel='noopener' {{action 'openHost' item}}>
+            {{item}}
+          </a>
         </div>
         <span class='host_list_content divider'></span>
         {{endpoint/pivot-to-investigate
