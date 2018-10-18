@@ -5,8 +5,7 @@
   <div class="process-list-box processTreeBox {{unless isEventPanelExpanded 'collapse-event-panel' ''}} {{if isEventsSelected 'collapse' 'expand'}}">
     {{process-tree queryInput=queryInput}}
   </div>
-
   <div class="process-list-box processDetailsBox {{unless isEventPanelExpanded 'collapse-event-panel' ''}} {{unless isEventsSelected 'collapse' 'expand'}}">
-   {{process-details}}
+    {{process-details}}
   </div>
 {{/if}}
