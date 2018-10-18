@@ -172,12 +172,14 @@ def promoteProjectVersion(
         // Parameters with default values.
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
+        String baseBranch = env.BASE_BRANCH,
         String version = env.VERSION,
         String reviewers = env.REVIEWERS) {
 
     cloneAsocRepository(userName, userPassword, repositoryName)
 
     dir(repositoryName) {
+        checkoutBranch(baseBranch)
         String branchName = buildBranchName(version)
         checkoutNewBranch(branchName)
 
@@ -196,11 +198,11 @@ def promoteProjectVersion(
             }
         }
 
-        String message = "Promote project to version ${version}."
+        String message = "Promote project to version ${version} in branch ${baseBranch}"
         commitAll(message)
         createAnnotatedTag(branchName, message)
         pushToOriginWithTags(branchName, branchName)
-        String response = createAsocPullRequest(message, branchName, "master", repositoryName, userName, userPassword)
+        String response = createAsocPullRequest(message, branchName, baseBranch, repositoryName, userName, userPassword)
 
         // Extract the pull request number from the response and save it.
         String pullRequestNumber = response.substring(response.indexOf("\"number\": "))
@@ -250,6 +252,10 @@ def configGlobalUserEmail(String userEmail) {
 
 def cloneAsocRepository(String userName, String userPassword, String repositoryName) {
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/${repositoryName}.git"
+}
+
+def checkoutBranch(String branchName) {
+    sh "git checkout ${branchName}"
 }
 
 def checkoutNewBranch(String branchName) {
