@@ -6,7 +6,7 @@
 
     <groupId>com.rsa.netwitness.presidio</groupId>
     <artifactId>rsa-nw-presidio-ext-netwitness</artifactId>
-    <version>2.16.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <parent>
         <artifactId>rpm-builder</artifactId>
         <groupId>com.rsa.netwitness.infrastructure.rpm</groupId>
@@ -38,6 +38,7 @@
         <presidio.username>presidio</presidio.username>
         <presidio.groupname>presidio</presidio.groupname>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <presidio-app-venv.directory>${presidio-app.directory}/airflow/venv</presidio-app-venv.directory>
     </properties>
 
     <dependencies>
@@ -114,6 +115,9 @@
                         <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
                         <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
                     </defineStatements>
+                    <preinstallScriptlet>
+                        <script>[ -d ${presidio-app-venv.directory} ] &amp;&amp; chown -R ${presidio.username}:${presidio.groupname} ${presidio-app-venv.directory}</script>
+                    </preinstallScriptlet>
                     <defaultGroupname>${presidio.groupname}</defaultGroupname>
                     <defaultUsername>${presidio.username}</defaultUsername>
                     <mappings>
