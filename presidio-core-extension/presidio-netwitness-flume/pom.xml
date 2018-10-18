@@ -20,6 +20,7 @@
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <junit.version>RELEASE</junit.version>
         <copyDependencies.version>3.0.1</copyDependencies.version>
+        <cba-aws-api.version>0.3.0-SNAPSHOT</cba-aws-api.version>
     </properties>
 
     <build>
@@ -165,6 +166,12 @@
             <groupId>com.rsa.asoc.libraries</groupId>
             <artifactId>record-streams-source-netwitness</artifactId>
             <version>1.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rsa.netwitness.cba</groupId>
+            <artifactId>cba-aws-api</artifactId>
+            <version>${cba-aws-api.version}</version>
         </dependency>
 
 
