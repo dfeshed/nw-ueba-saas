@@ -241,7 +241,7 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
 
 function buildCheckbox($content, item, opts) {
   const elClass = opts.isChecked ? 'rsa-form-checkbox-label checked' : 'rsa-form-checkbox-label';
-  $content.append('div').append('label').attr('class', elClass);
+  $content.append('label').attr('class', elClass);
 }
 
 /**
