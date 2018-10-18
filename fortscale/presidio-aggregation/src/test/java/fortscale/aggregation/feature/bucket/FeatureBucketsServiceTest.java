@@ -3,8 +3,7 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
@@ -53,6 +52,7 @@ public class FeatureBucketsServiceTest {
 
     private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test1###normalized_username_dlpfile_hourly";
     private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test2###normalized_username_dlpfile_hourly";
+    private static final String BUCKET_ID3 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test3###source_path_to_highest_score_dlpfile_hourly";
 
     @Before
     public void initialize() {
@@ -110,16 +110,21 @@ public class FeatureBucketsServiceTest {
 
         enrichedDlpFileRecord.setUserId("normalized_username_test2");
         AdeScoredDlpFileRecord adeRecord2 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 10.0, new ArrayList<>(), enrichedDlpFileRecord);
-
-
         AdeScoredDlpFileRecord adeRecord3 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 70.0, new ArrayList<>(), enrichedDlpFileRecord);
-
         AdeScoredDlpFileRecord adeRecord4 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 60.0, new ArrayList<>(), enrichedDlpFileRecord);
+
+        enrichedDlpFileRecord.setUserId("normalized_username_test3");
+        enrichedDlpFileRecord.setSrcMachineId("pc1");
+        enrichedDlpFileRecord.setSourcePath("source_path_test");
+        AdeScoredDlpFileRecord adeRecord5 = new AdeScoredDlpFileRecord(Instant.now(), "source_path","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
+        AdeScoredDlpFileRecord adeRecord6 = new AdeScoredDlpFileRecord(Instant.now(), "source_path","dlpfile", 90.0, new ArrayList<>(), enrichedDlpFileRecord);
 
         adeScoredDlpFileRecords.add(adeRecord1);
         adeScoredDlpFileRecords.add(adeRecord2);
         adeScoredDlpFileRecords.add(adeRecord3);
         adeScoredDlpFileRecords.add(adeRecord4);
+        adeScoredDlpFileRecords.add(adeRecord5);
+        adeScoredDlpFileRecords.add(adeRecord6);
     }
 
     /**
@@ -145,9 +150,9 @@ public class FeatureBucketsServiceTest {
                         if (!expectedFeature.getName().equals(feature.getName())) {
                             assertTrue(false);
                         } else {
-                            AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
-                            AggrFeatureValue expectedAggrFeatureValue = (AggrFeatureValue) expectedFeature.getValue();
-                            if (!aggrFeatureValue.equals(expectedAggrFeatureValue)) {
+                            MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram) feature.getValue();
+                            MultiKeyHistogram expectedAggrFeatureValue = (MultiKeyHistogram) expectedFeature.getValue();
+                            if (!isEqual(multiKeyHistogram,expectedAggrFeatureValue)) {
                                 assertTrue(false);
                             }
                         }
@@ -171,11 +176,9 @@ public class FeatureBucketsServiceTest {
         FeatureBucket featureBucket1 = new FeatureBucket();
         featureBucket1.setBucketId(BUCKET_ID1);
         Map<String, Feature> aggregatedFeatures = new HashMap<>();
-        long total = 1;
-        Map<String, Double> aggrResult = new HashMap<>();
-        aggrResult.put("", 80.0);
-        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
-        Feature feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        double total = 1d;
+        MultiKeyHistogram multiKeyHistogram = createMultiKeyHistogram(new HashMap<>(), 80.0, total);
+        Feature feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
         featureBucket1.setAggregatedFeatures(aggregatedFeatures);
 
@@ -184,17 +187,45 @@ public class FeatureBucketsServiceTest {
         featureBucket2.setBucketId(BUCKET_ID2);
         aggregatedFeatures = new HashMap<>();
         total = 2;
-        aggrResult = new HashMap<>();
-        aggrResult.put("", 70.0);
-        aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
-        feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        multiKeyHistogram = createMultiKeyHistogram(new HashMap<>(), 70.0, total);
+        feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
         featureBucket2.setAggregatedFeatures(aggregatedFeatures);
 
+        FeatureBucket featureBucket3 = new FeatureBucket();
+        featureBucket3.setBucketId(BUCKET_ID3);
+        aggregatedFeatures = new HashMap<>();
+        total = 2;
+        Map<String, String> featureNameToValue = new HashMap<>();
+        featureNameToValue.put("context.sourcePath","source_path_test");
+        featureNameToValue.put("context.srcMachineId","pc1");
+        multiKeyHistogram = createMultiKeyHistogram(featureNameToValue, 90.0, total);
+        feature = new Feature("srcpath_and_srcmachine_to_highest_score_map", multiKeyHistogram);
+        aggregatedFeatures.put("srcpath_and_srcmachine_to_highest_score_map", feature);
+        featureBucket3.setAggregatedFeatures(aggregatedFeatures);
 
         featureBuckets.put(BUCKET_ID1, featureBucket1);
         featureBuckets.put(BUCKET_ID2, featureBucket2);
+        featureBuckets.put(BUCKET_ID3, featureBucket3);
         return featureBuckets;
+    }
+
+    private MultiKeyHistogram createMultiKeyHistogram(Map<String, String> featureNameToValue, double count, double total){
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+        featureNameToValue.forEach(multiKeyFeature::add);
+        multiKeyHistogram.set(multiKeyFeature, count);
+        return multiKeyHistogram;
+    }
+
+
+    public boolean isEqual(MultiKeyHistogram m1, MultiKeyHistogram m2) {
+        for (Map.Entry<MultiKeyFeature, Double> m1Entry : m1.getHistogram().entrySet()) {
+            if (!m2.getHistogram().get(m1Entry.getKey()).equals(m1Entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -48,9 +48,9 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     private Query buildQuery(String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
         Query query = new Query()
-                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD)
+                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME)
                         .is(userId))
-                .addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+                .addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
 
@@ -65,7 +65,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
         if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
-        query.with(new Sort(EnrichedEvent.START_INSTANT_FIELD));
+        query.with(new Sort(EnrichedEvent.EVENT_DATE_FIELD_NAME));
         return query;
     }
 
@@ -87,8 +87,8 @@ public class EventMongoRepositoryImpl implements EventRepository {
     @Override
     public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNamesPrioritized) {
         Query query = new Query()
-                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD).is(userId))
-                .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedEvent.START_INSTANT_FIELD));
+                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME).is(userId))
+                .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedEvent.EVENT_DATE_FIELD_NAME));
         List<EnrichedEvent> enrichedEvents = null;
         for (String collection : collectionNamesPrioritized) {
             enrichedEvents = mongoTemplate.find(query, EnrichedEvent.class, collection);
@@ -112,10 +112,10 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     private Query createDateRangeQuery(Instant startDate, Instant endDate) {
         if (startDate.equals(Instant.EPOCH)) {
-            return new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                     .lt(endDate));
         } else {
-            return new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                     .gte(startDate)
                     .lt(endDate));
         }

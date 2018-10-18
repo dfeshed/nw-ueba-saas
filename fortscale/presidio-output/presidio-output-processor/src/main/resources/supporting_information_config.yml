@@ -341,40 +341,6 @@ indicators:
     type: hourly_aggregations
   classification: abnormal_ad_changes
 
-- id: adminPasswordChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: admin_changed_his_own_password
-  adeEventType: scored_enriched.active_directory.adminPasswordChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-    anomalyField: operationType
-    anomalyValue: USER_PASSWORD_CHANGED
-    anomalyFilters:
-        fieldName: isUserAdmin
-        fieldValue: true
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: admin_password_change
-
-- id: nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: user_password_changed
-  adeEventType: scored_enriched.active_directory.nonAdminPasswordChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-    anomalyField: operationType
-    anomalyValue: USER_PASSWORD_CHANGED
-    anomalyFilters:
-      fieldName: isUserAdmin
-      fieldValue: false
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
 - id: userAccountEnabledScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
   name: user_account_enabled

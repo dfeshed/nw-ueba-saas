@@ -19,6 +19,10 @@ public class PrintEnrichedEvent extends EnrichedEvent {
     public static final String SRC_FOLDER_PATH_FIELD_NAME = "srcFolderPath";
     public static final String SRC_FILE_EXTENSION_FIELD_NAME = "srcFileExtension";
     public static final String PRINTER_CLUSTER_FIELD_NAME = "printerCluster";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategories";
+    public static final String RESULT_FIELD_NAME = "result";
+    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -50,6 +54,18 @@ public class PrintEnrichedEvent extends EnrichedEvent {
     @Field(NUM_OF_PAGES_FIELD_NAME)
     private Long numOfPages;
 
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    private String operationType;
+
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
+    private List<String> operationTypeCategories;
+
+    @Field(RESULT_FIELD_NAME)
+    private EventResult result;
+
+    @Field(RESULT_CODE_FIELD_NAME)
+    private String resultCode;
+
     public PrintEnrichedEvent() {
     }
 
@@ -59,8 +75,7 @@ public class PrintEnrichedEvent extends EnrichedEvent {
                               Map<String, String> additionalInfo, String srcMachineId, String srcMachineCluster,
                               String printerId, String printerCluster, String srcFilePath, String srcFolderPath,
                               String srcFileExtension, Boolean isSrcDriveShared, Long fileSize, Long numOfPages) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType,
-                operationTypeCategories, result, resultCode, additionalInfo);
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, additionalInfo);
         this.srcMachineId = srcMachineId;
         this.srcMachineCluster = srcMachineCluster;
         this.printerId = printerId;
@@ -71,6 +86,10 @@ public class PrintEnrichedEvent extends EnrichedEvent {
         this.isSrcDriveShared = isSrcDriveShared;
         this.fileSize = fileSize;
         this.numOfPages = numOfPages;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.result = result;
+        this.resultCode = resultCode;
     }
 
     public String getSrcMachineId() {
@@ -151,5 +170,37 @@ public class PrintEnrichedEvent extends EnrichedEvent {
 
     public void setNumOfPages(Long numOfPages) {
         this.numOfPages = numOfPages;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public EventResult getResult() {
+        return result;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public void setResult(EventResult result) {
+        this.result = result;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 }

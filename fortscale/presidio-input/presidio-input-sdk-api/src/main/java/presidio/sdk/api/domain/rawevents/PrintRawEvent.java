@@ -2,11 +2,13 @@ package presidio.sdk.api.domain.rawevents;
 
 import fortscale.domain.core.EventResult;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,14 @@ public class PrintRawEvent extends AbstractInputDocument {
     public static final String FILE_SIZE_FIELD_NAME = "fileSize";
     public static final String IS_SRC_DRIVE_SHARED_FIELD_NAME = "isSrcDriveShared";
     public static final String NUM_OF_PAGES_FIELD_NAME = "numOfPages";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String RESULT_FIELD_NAME = "result";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategories";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
+    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
+
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -47,7 +57,31 @@ public class PrintRawEvent extends AbstractInputDocument {
     private Long numOfPages;
 
     public PrintRawEvent() {
+        super();
     }
+
+    @Field(USER_ID_FIELD_NAME)
+    @NotEmpty
+    private String userId;
+
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    @NotEmpty
+    private String operationType;
+
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
+    private List<String> operationTypeCategories;
+
+    @Field(RESULT_FIELD_NAME)
+    private EventResult result;
+
+    @Field(USER_NAME_FIELD_NAME)
+    private String userName;
+
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
+    private String userDisplayName;
+
+    @Field(RESULT_CODE_FIELD_NAME)
+    private String resultCode;
 
     public PrintRawEvent(PrintRawEvent other) {
         super(other);
@@ -59,13 +93,20 @@ public class PrintRawEvent extends AbstractInputDocument {
         this.isSrcDriveShared = other.isSrcDriveShared;
         this.fileSize = other.fileSize;
         this.numOfPages = other.numOfPages;
+        this.userId = other.userId;
+        this.operationType = other.operationType;
+        this.operationTypeCategories = other.operationTypeCategories;
+        this.result = other.result;
+        this.userName = other.userName;
+        this.userDisplayName = other.userDisplayName;
+        this.resultCode = other.resultCode;
     }
 
     public PrintRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
-                         List<String> operationTypeCategory, EventResult result, String userName, String userDisplayName,
+                         List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName,
                          Map<String, String> additionalInfo, String resultCode, String srcMachineId, String srcMachineName,
                          String printerId, String printerName, String srcFilePath, Boolean isSrcDriveShared, Long fileSize, Long numOfPages) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
+        super(dateTime, eventId, dataSource, additionalInfo);
         this.srcMachineId = srcMachineId;
         this.srcMachineName = srcMachineName;
         this.printerId = printerId;
@@ -74,6 +115,13 @@ public class PrintRawEvent extends AbstractInputDocument {
         this.isSrcDriveShared = isSrcDriveShared;
         this.fileSize = fileSize;
         this.numOfPages = numOfPages;
+        this.userId = userId;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.result = result;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.resultCode = resultCode;
     }
 
     public String getSrcMachineId() {
@@ -140,6 +188,62 @@ public class PrintRawEvent extends AbstractInputDocument {
         this.numOfPages = numOfPages;
     }
 
+    public EventResult getResult() {
+        return result;
+    }
+
+    public void setResult(EventResult result) {
+        this.result = result;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
+
 
     @Override
     public String toString() {
@@ -152,15 +256,15 @@ public class PrintRawEvent extends AbstractInputDocument {
                 .append("isSrcDriveShared", isSrcDriveShared)
                 .append("fileSize", fileSize)
                 .append("numOfPages", numOfPages)
-                .append("eventId", eventId)
-                .append("dataSource", dataSource)
+                .append("eventId", getEventId())
+                .append("dataSource", getDataSource())
                 .append("userId", userId)
                 .append("operationType", operationType)
                 .append("operationTypeCategories", operationTypeCategories)
                 .append("result", result)
                 .append("userName", userName)
                 .append("userDisplayName", userDisplayName)
-                .append("additionalInfo", additionalInfo)
+                .append("additionalInfo", getAdditionalInfo())
                 .append("resultCode", resultCode)
                 .append("dateTime", dateTime)
                 .toString();

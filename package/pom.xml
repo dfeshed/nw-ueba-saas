@@ -19,7 +19,7 @@
     <parent>
         <artifactId>rpm-builder</artifactId>
         <groupId>com.rsa.netwitness.infrastructure.rpm</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <repositories>
         <!-- ASOC Tier-2 repository -->

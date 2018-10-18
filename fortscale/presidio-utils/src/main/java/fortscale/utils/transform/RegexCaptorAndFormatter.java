@@ -2,7 +2,10 @@ package fortscale.utils.transform;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.json.IJsonValueExtractor;
+import fortscale.utils.json.JsonPointerValueExtractor;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
 import org.json.JSONObject;
@@ -18,7 +21,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 /**
  * Takes from a given {@link JSONObject} the string associated with {@link #sourceKey} and looks for the first
  * {@link CaptureAndFormatConfiguration} x, such that the string matches x's pattern (the configurations are traversed
- * in order). If a match is found, the {@link JsonRegexCaptorAndFormatter} creates a formatted string using x's format
+ * in order). If a match is found, the {@link RegexCaptorAndFormatter} creates a formatted string using x's format
  * and the arguments configured by x's {@link CaptureAndFormatConfiguration#capturingGroupConfigurations}. Then it puts
  * the key-value pair {@link #destinationKey}-{newly created formatted string} in the given {@link JSONObject}. If a
  * match isn't found, the {@link #destinationKey} is associated with null.
@@ -40,6 +43,9 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
     private String destinationKey;
     private List<CaptureAndFormatConfiguration> captureAndFormatConfigurations;
 
+    @JsonIgnore
+    private IJsonValueExtractor jsonValueExtractor;
+
     @JsonCreator
     public RegexCaptorAndFormatter(
             @JsonProperty("name") String name,
@@ -51,13 +57,15 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
         this.sourceKey = notBlank(sourceKey, "sourceKey cannot be blank, empty or null.");
         this.destinationKey = notBlank(destinationKey, "destinationKey cannot be blank, empty or null.");
         this.captureAndFormatConfigurations = notEmpty(captureAndFormatConfigurations, "captureAndFormatConfigurations cannot be empty or null.");
+        this.jsonValueExtractor = new JsonPointerValueExtractor(sourceKey);
     }
 
     @Override
     public JSONObject transform(JSONObject jsonObject) {
-        Object sourceObj = jsonObject.opt(sourceKey);
+
+        Object sourceObj = jsonValueExtractor.getValue(jsonObject);
         if (sourceObj == null || JSONObject.NULL.equals(sourceObj)) return jsonObject;
-        String sourceValue = jsonObject.getString(sourceKey);
+        String sourceValue = sourceObj.toString();
         Object destinationValue = JSONObject.NULL;
 
         for (CaptureAndFormatConfiguration captureAndFormatConfiguration : captureAndFormatConfigurations) {

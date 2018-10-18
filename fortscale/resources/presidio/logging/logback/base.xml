@@ -7,6 +7,9 @@
     <logger name="org.springframework.data.mongodb" level="INFO"/>
     <logger name="org.springframework.data" level="INFO"/>
     <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter">
+        <AllowedRepetitions>50</AllowedRepetitions>
+    </turboFilter>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
     <root level="INFO">
         <appender-ref ref="CONSOLE" />

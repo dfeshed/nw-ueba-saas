@@ -16,14 +16,16 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 	public static final String FEATURE_VALUE_TYPE = "aggr_feature_value";
 
 	private Object value;
-	private Long total;
 
 	public AggrFeatureValue() {
 	}
 
+	public AggrFeatureValue(Object value) {
+		this.value = value;
+	}
+
 	public AggrFeatureValue(Object value, Long total) {
 		this.value = value;
-		this.total = total;
 	}
 
 	public Object getValue() {
@@ -34,19 +36,11 @@ public class AggrFeatureValue implements Serializable, FeatureValue {
 		this.value = value;
 	}
 
-	public Long getTotal() {
-		return total;
-	}
-
-	public void setTotal(Long total) {
-		this.total = total;
-	}
-
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		if (obj == this) return true;
 		if (obj.getClass() != getClass()) return false;
 		AggrFeatureValue other = (AggrFeatureValue)obj;
-		return new EqualsBuilder().append(this.value, other.value).append(this.total, other.total).isEquals();
+		return new EqualsBuilder().append(this.value, other.value).isEquals();
 	}
 }

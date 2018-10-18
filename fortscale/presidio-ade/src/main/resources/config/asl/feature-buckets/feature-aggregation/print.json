@@ -18,7 +18,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -41,7 +41,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -64,7 +64,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -87,7 +87,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -110,7 +110,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]
@@ -133,7 +133,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           }
         }
       ]

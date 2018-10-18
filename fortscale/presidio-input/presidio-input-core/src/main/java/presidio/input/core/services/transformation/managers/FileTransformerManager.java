@@ -3,7 +3,8 @@ package presidio.input.core.services.transformation.managers;
 import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.services.transformation.transformer.FolderPathByOperationTypeTransformer;
-import presidio.input.core.services.transformation.transformer.OperationTypeToCategoryTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeCategoriesHierarchyTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeToCategoriesTransformer;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
@@ -19,10 +20,12 @@ public class FileTransformerManager implements TransformationManager {
     @Value("${folder.operation.types}")
     private String[] folderOperationTypes;
     private List<Transformer> transformers;
-    private Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping;
+    private Map<Schema, Map<String, List<String>>> operationTypeToCategoriesMapping;
+    private Map<Schema, Map<String, List<String>>> operationTypeCategoriesHierarchyMapping;
 
-    public FileTransformerManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping) {
-        this.operationTypeToCategoryMapping = operationTypeToCategoryMapping;
+    public FileTransformerManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoriesMapping,  Map<Schema, Map<String, List<String>>> operationTypeCategoriesHierarchyMapping) {
+        this.operationTypeToCategoriesMapping = operationTypeToCategoriesMapping;
+        this.operationTypeCategoriesHierarchyMapping = operationTypeCategoriesHierarchyMapping;
     }
 
     @Override
@@ -35,7 +38,8 @@ public class FileTransformerManager implements TransformationManager {
                     FileTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
             transformers.add(new FolderPathByOperationTypeTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
                     FileTransformedEvent.DST_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE)));
+            transformers.add(new OperationTypeToCategoriesTransformer(operationTypeToCategoriesMapping.get(Schema.FILE), FileRawEvent.OPERATION_TYPE_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME,  FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
+            transformers.add(new OperationTypeCategoriesHierarchyTransformer(operationTypeCategoriesHierarchyMapping.get(Schema.FILE), FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME, FileRawEvent.OPERATION_TYPE_CATEGORIES_FIELD_NAME));
         }
         return transformers;
     }

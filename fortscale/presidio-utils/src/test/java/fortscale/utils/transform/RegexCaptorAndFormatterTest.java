@@ -156,7 +156,7 @@ public class RegexCaptorAndFormatterTest extends TransformerTest{
     private void testNormalization(String configuration, String sourceValue, String destValue) {
         JSONObject jsonObject = new JSONObject();
 
-        String userDstKey = "user.dst";
+        String userDstKey = "user_dst";
         String userIdKey = "userId";
 
         jsonObject.put(userDstKey, sourceValue);
@@ -168,7 +168,7 @@ public class RegexCaptorAndFormatterTest extends TransformerTest{
 
     private String buildTransformerConfiguration(String patterns){
         String transformerConfiguration =
-                "{\"name\":\"userNameNormalizer\",\"type\":\"regex_captor_and_formatter\",\"sourceKey\":\"user.dst\",\"destinationKey\":\"userId\",\"captureAndFormatConfigurations\":["
+                "{\"name\":\"userNameNormalizer\",\"type\":\"regex_captor_and_formatter\",\"sourceKey\":\"user_dst\",\"destinationKey\":\"userId\",\"captureAndFormatConfigurations\":["
                         + (StringUtils.isBlank(patterns) ? StringUtils.EMPTY : patterns + ",")
                         + "{\"pattern\":\"(.+)\",\"format\":\"%s\",\"capturingGroupConfigurations\":[{\"index\":1,\"caseFormat\":\"LOWER\"}]}]}";
         return transformerConfiguration;

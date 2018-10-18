@@ -38,11 +38,67 @@ public class ActiveDirectoryRawEventTest {
 
     }
 
+    @Test
+    public void testNoUserId() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setUserId(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(activeDirectoryRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoOperationType() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setOperationType(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(activeDirectoryRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoOperationTypeCategory() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setOperationTypeCategories(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(activeDirectoryRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserName() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setUserName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(activeDirectoryRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserDisplayName() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setUserDisplayName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(activeDirectoryRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
     public ActiveDirectoryRawEvent createEvent() {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                false, "objectId", "resultCode");
+                EventResult.SUCCESS, "userName", "userDisplayName", null, "objectId", "resultCode");
         return activeDirectoryRawEvent;
     }
 }

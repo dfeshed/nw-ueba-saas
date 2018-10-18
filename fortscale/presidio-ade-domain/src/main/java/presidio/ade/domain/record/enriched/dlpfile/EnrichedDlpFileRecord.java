@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.enriched.dlpfile;
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,6 +9,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * The enriched DLP file event POJO.
@@ -30,6 +32,10 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String WAS_CLASSIFIED_FIELD = "wasClassified";
     public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
     public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
+    public static final String RESULT_FIELD = "result";
+    public static final String RESULT_CODE_FIELD = "resultCode";
 
     @Field(USER_ID_FIELD)
     private String userId;
@@ -57,6 +63,14 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     private String malwareScanResult;
     @Field(EXECUTING_APPLICATION_FIELD)
     private String executingApplication;
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD)
+    private List<String> operationTypeCategories;
+    @Field(RESULT_FIELD)
+    private EventResult result;
+    @Field(RESULT_CODE_FIELD)
+    private String resultCode;
 
     /**
      * C'tor.
@@ -181,6 +195,38 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
 
     public void setExecutingApplication(String executingApplication) {
         this.executingApplication = executingApplication;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public EventResult getResult() {
+        return result;
+    }
+
+    public void setResult(EventResult result) {
+        this.result = result;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 
     @Transient

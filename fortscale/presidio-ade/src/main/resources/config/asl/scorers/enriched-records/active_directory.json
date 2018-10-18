@@ -95,32 +95,6 @@
               }
             },
             {
-              "type": "boolean-conditional-scorer",
-              "name": "adminPasswordChanged.userId.activeDirectory.score",
-              "conditional-field": "isUserAdmin",
-              "conditional-value": true,
-              "scorer": {
-                "type": "constant-regex-scorer",
-                "name": "adminPasswordChanged.userId.activeDirectory.score",
-                "regex": "USER_PASSWORD_CHANGED",
-                "regex-field-name": "operationType",
-                "constant-score": 10
-              }
-            },
-            {
-              "type": "boolean-conditional-scorer",
-              "name": "nonAdminPasswordChanged.userId.activeDirectory.score",
-              "conditional-field": "isUserAdmin",
-              "conditional-value": false,
-              "scorer": {
-                "type": "constant-regex-scorer",
-                "name": "nonAdminPasswordChanged.userId.activeDirectory.score",
-                "regex": "USER_PASSWORD_CHANGED",
-                "regex-field-name": "operationType",
-                "constant-score": 10
-              }
-            },
-            {
               "type": "constant-regex-scorer",
               "name": "userAccountEnabled.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_ENABLED",
