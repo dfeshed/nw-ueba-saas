@@ -13,6 +13,7 @@ public class RegistryInputToOutputConverter implements InputOutputConverter {
         outputEvent.setEventId(transformedEvent.getEventId());
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
+        outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setMachineId(transformedEvent.getMachineId());
         outputEvent.setProcessDirectory(transformedEvent.getProcessDirectory());
@@ -23,6 +24,7 @@ public class RegistryInputToOutputConverter implements InputOutputConverter {
         outputEvent.setRegistryKeyGroup(transformedEvent.getRegistryKeyGroup());
         outputEvent.setRegistryKey(transformedEvent.getRegistryKey());
         outputEvent.setRegistryValueName(transformedEvent.getRegistryValueName());
+        outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
 
         return outputEvent;
     }

@@ -1,9 +1,9 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.EventResult;
 import fortscale.domain.core.ioc.Level;
 import fortscale.domain.core.ioc.Tactic;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.sdk.api.domain.rawevents.IocRawEvent;
@@ -63,11 +63,34 @@ public class IocRawEventTest {
         Assert.assertEquals(CollectionUtils.size(violations),1);
     }
 
+    @Test
+    public void testNoUserId() {
+        IocRawEvent iocRawEvent = createEvent();
+        iocRawEvent.setUserId(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(iocRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoUserName() {
+        IocRawEvent iocRawEvent = createEvent();
+        iocRawEvent.setUserName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(iocRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+
     public IocRawEvent createEvent() {
         IocRawEvent iocRawEvent = new IocRawEvent(Instant.now(), "eventId", "dataSource",
-                "userId", "operationType", null, EventResult.SUCCESS,
-                "userName", "userDisplayName", null, "ioc name",
-                Tactic.PERSISTENCE, Level.CRITICAL, "machine_id", "machine_name", "resultCode");
+                "userId", "userName", "userDisplayName", null, "ioc name",
+                Tactic.PERSISTENCE, Level.CRITICAL, "machine_id", "machine_name");
         return iocRawEvent;
     }
 }

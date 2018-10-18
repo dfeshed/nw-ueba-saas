@@ -27,6 +27,10 @@ public class ProcessRawEvent extends AbstractInputDocument {
     public static final String DST_PROCESS_DIRECTORY_GROUPS_FIELD_NAME = "dstProcessDirectoryGroups";
     public static final String DST_PROCESS_CATEGORIES_FIELD_NAME = "dstProcessCategories";
     public static final String DST_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME = "dstProcessCertificateIssuer";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
 
 
     @Field(MACHINE_ID_FIELD_NAME)
@@ -74,7 +78,22 @@ public class ProcessRawEvent extends AbstractInputDocument {
     @Field(DST_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME)
     private String dstProcessCertificateIssuer;
 
+    @Field(USER_ID_FIELD_NAME)
+    @NotEmpty
+    private String userId;
+
+    @Field(OPERATION_TYPE_FIELD_NAME)
+    @NotEmpty
+    private String operationType;
+
+    @Field(USER_NAME_FIELD_NAME)
+    private String userName;
+
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
+    private String userDisplayName;
+
     public ProcessRawEvent() {
+        super();
     }
 
 
@@ -93,12 +112,15 @@ public class ProcessRawEvent extends AbstractInputDocument {
         this.dstProcessDirectoryGroups = other.dstProcessDirectoryGroups;
         this.dstProcessCategories = other.dstProcessCategories;
         this.dstProcessCertificateIssuer = other.dstProcessCertificateIssuer;
+        this.userId = other.userId;
+        this.operationType = other.operationType;
+        this.userName = other.userName;
+        this.userDisplayName = other.userDisplayName;
     }
 
-    public ProcessRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
-                           List<String> operationTypeCategories, EventResult result, String userName, String userDisplayName,
-                           Map<String, String> additionalInfo, String resultCode, String machineId, String machineName, String machineOwner, String srcProcessDirectory, String srcProcessFileName, List<String> srcProcessDirectoryGroups, List<String> srcProcessCategories, String srcProcessCertificateIssuer, String dstProcessDirectory, String dstProcessFileName, List<String> dstProcessDirectoryGroups, List<String> dstProcessCategories, String dstProcessCertificateIssuer) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategories, result, userName, userDisplayName, additionalInfo, resultCode);
+    public ProcessRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType, String userName, String userDisplayName,
+                           Map<String, String> additionalInfo, String machineId, String machineName, String machineOwner, String srcProcessDirectory, String srcProcessFileName, List<String> srcProcessDirectoryGroups, List<String> srcProcessCategories, String srcProcessCertificateIssuer, String dstProcessDirectory, String dstProcessFileName, List<String> dstProcessDirectoryGroups, List<String> dstProcessCategories, String dstProcessCertificateIssuer) {
+        super(dateTime, eventId, dataSource, additionalInfo);
         this.machineId = machineId;
         this.machineName = machineName;
         this.machineOwner = machineOwner;
@@ -112,6 +134,10 @@ public class ProcessRawEvent extends AbstractInputDocument {
         this.dstProcessDirectoryGroups = dstProcessDirectoryGroups;
         this.dstProcessCategories = dstProcessCategories;
         this.dstProcessCertificateIssuer = dstProcessCertificateIssuer;
+        this.userId = userId;
+        this.operationType = operationType;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
     }
 
     public String getMachineId() {
@@ -216,6 +242,38 @@ public class ProcessRawEvent extends AbstractInputDocument {
 
     public void setDstProcessCertificateIssuer(String dstProcessCertificateIssuer) {
         this.dstProcessCertificateIssuer = dstProcessCertificateIssuer;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 
     @Override

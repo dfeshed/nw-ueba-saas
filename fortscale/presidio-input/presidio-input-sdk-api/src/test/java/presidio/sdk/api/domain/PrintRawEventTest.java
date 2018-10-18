@@ -2,8 +2,10 @@ package presidio.sdk.api.domain;
 
 import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 
 import javax.validation.ConstraintViolation;
@@ -121,6 +123,63 @@ public class PrintRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<PrintRawEvent>> violations = validator.validate(printRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserId() {
+        PrintRawEvent printRawEvent = createRawEvent();
+        printRawEvent.setUserId(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(printRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoOperationType() {
+        PrintRawEvent printRawEvent = createRawEvent();
+        printRawEvent.setOperationType(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(printRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoOperationTypeCategory() {
+        PrintRawEvent printRawEvent = createRawEvent();
+        printRawEvent.setOperationTypeCategories(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(printRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserName() {
+        PrintRawEvent printRawEvent = createRawEvent();
+        printRawEvent.setUserName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(printRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserDisplayName() {
+        PrintRawEvent printRawEvent = createRawEvent();
+        printRawEvent.setUserDisplayName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(printRawEvent);
         Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 

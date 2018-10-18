@@ -19,7 +19,6 @@ public class ProcessInputToOutputConverter implements InputOutputConverter {
         outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setMachineId(transformedEvent.getMachineId());
         outputEvent.setMachineName(transformedEvent.getMachineName());
-        outputEvent.setMachineOwner(transformedEvent.getMachineOwner());
         outputEvent.setSrcProcessDirectory(transformedEvent.getSrcProcessDirectory());
         outputEvent.setSrcProcessFileName(transformedEvent.getSrcProcessFileName());
         outputEvent.setSrcProcessDirectoryGroups(transformedEvent.getSrcProcessDirectoryGroups());
@@ -30,6 +29,7 @@ public class ProcessInputToOutputConverter implements InputOutputConverter {
         outputEvent.setDstProcessDirectoryGroups(transformedEvent.getDstProcessDirectoryGroups());
         outputEvent.setDstProcessCategories(transformedEvent.getDstProcessCategories());
         outputEvent.setDstProcessCertificateIssuer(transformedEvent.getDstProcessCertificateIssuer());
+        outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         return outputEvent;
     }
 }

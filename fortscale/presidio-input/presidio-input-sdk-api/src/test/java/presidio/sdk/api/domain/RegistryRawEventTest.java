@@ -1,7 +1,7 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.sdk.api.domain.rawevents.RegistryRawEvent;
@@ -102,11 +102,55 @@ public class RegistryRawEventTest {
         Assert.assertEquals(CollectionUtils.size(violations),1);
     }
 
-    private RegistryRawEvent createRawEvent() {
+    @Test
+    public void testNoUserId() {
+        RegistryRawEvent authenticationRawEvent = createRawEvent();
+        authenticationRawEvent.setUserId(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
 
-        return new RegistryRawEvent(Instant.now(), "eventId", "dataSource", "userId",
-                "operationType", Collections.EMPTY_LIST, EventResult.SUCCESS, "userName",
-                "userDisplayName", null, "resultCode", "machineId","machineName","machineOwner","processDirectory","processFileName",Collections.EMPTY_LIST,Collections.EMPTY_LIST,"processCertificateIssuer","RUN_KEY","registryKey","registryValueName");
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(authenticationRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoOperationType() {
+        RegistryRawEvent registryRawEvent = createRawEvent();
+        registryRawEvent.setOperationType(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(registryRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    }
+
+    @Test
+    public void testNoUserName() {
+        RegistryRawEvent registryRawEvent = createRawEvent();
+        registryRawEvent.setUserName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(registryRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testNoUserDisplayName() {
+        RegistryRawEvent registryRawEvent = createRawEvent();
+        registryRawEvent.setUserDisplayName(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AbstractInputDocument>> violations = validator.validate(registryRawEvent);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    private RegistryRawEvent createRawEvent() {
+            return new RegistryRawEvent(Instant.now(), "eventId", "dataSource", "userId", "operationType", "userName",
+                "userDisplayName", null, "machineId","machineName","machineOwner","processDirectory","processFileName",Collections.EMPTY_LIST,Collections.EMPTY_LIST,"processCertificateIssuer","RUN_KEY","registryKey","registryValueName");
 
     }
 }

@@ -111,13 +111,13 @@ public class InputCoreConfiguration {
     @Bean(name = "AUTHENTICATION.transformer")
     @Lazy
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
+        return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "FILE.transformer")
     @Lazy
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
+        return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "REGISTRY.transformer")

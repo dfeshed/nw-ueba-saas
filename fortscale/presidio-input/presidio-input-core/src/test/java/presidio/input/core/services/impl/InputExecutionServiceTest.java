@@ -223,7 +223,7 @@ public class InputExecutionServiceTest {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(eventTime, "eventId",
                 "dataSource", "userId", "operationType", operationTypeCategory,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
-                false, "objectId", "resultCode");
+                 "objectId", "resultCode");
         return activeDirectoryRawEvent;
     }
 }
