@@ -50,4 +50,9 @@
       letter-spacing: .1em;
     }
   }
+
+  .severity-tab-disable {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }

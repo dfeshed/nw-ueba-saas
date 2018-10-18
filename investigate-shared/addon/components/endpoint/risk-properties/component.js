@@ -87,7 +87,7 @@ export default Component.extend({
       }
     }
 
-    if (nextLandingTab != activeRiskSeverityTab) {
+    if (nextLandingTab !== activeRiskSeverityTab) {
       next(() => {
         if (this.get('defaultAction')) {
           this.get('defaultAction')(checksum, nextLandingTab);

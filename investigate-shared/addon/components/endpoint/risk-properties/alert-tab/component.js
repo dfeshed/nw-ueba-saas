@@ -11,7 +11,7 @@ export default Component.extend({
 
   actions: {
     activate(checksum, tabName, alertCount) {
-      if (alertCount != 0 && this.get('defaultAction')) {
+      if (alertCount !== 0 && this.get('defaultAction')) {
         this.get('defaultAction')(checksum, tabName);
       }
     }

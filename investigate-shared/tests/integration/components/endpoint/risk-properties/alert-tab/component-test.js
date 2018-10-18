@@ -66,6 +66,8 @@ module('Integration | Component | endpoint/risk-properties/alert-tab', function(
     // Clicking on high severity tab with 0 alerts
     await click(document.querySelectorAll('.rsa-nav-tab')[1]);
 
+    assert.equal(find('.severity-tab-disable').textContent.trim(), 'high', 'severity tab called high is disabled.');
+
     assert.equal(find('.rsa-nav-tab.is-active').textContent.trim(), 'critical', 'critical tab is selected');
 
     // Clicking on medium severity tab with 1 alerts
