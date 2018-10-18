@@ -178,6 +178,10 @@ export default [
       {
         field: 'administrator',
         labelKey: 'machine.users.isAdministrator'
+      },
+      {
+        field: 'groups',
+        labelKey: 'machine.users.groups'
       }
     ]
   },
