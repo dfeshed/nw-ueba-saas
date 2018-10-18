@@ -9,7 +9,7 @@ import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
 import { inject as service } from '@ember/service';
-import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
+import { isEndpointEvent, isLogEvent, isHttpData } from 'recon/reducers/meta/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import {
   renderedText,
@@ -24,6 +24,7 @@ const stateToComputed = ({ recon }) => ({
   dataIndex: recon.data.index,
   eventTotal: recon.data.total,
   hasTextContent: hasTextContent(recon),
+  isHttpEvent: isHttpData(recon),
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),
   metaToHighlight: recon.text.metaToHighlight,
@@ -58,10 +59,18 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   @computed('renderedText.length', 'numberOfItems')
   hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
 
-  @computed('isEndpointEvent')
-  noResultsMessage(isEndpointEvent) {
+  @computed('isEndpointEvent', 'isHttpEvent')
+  noResultsMessage(isEndpointEvent, isHttpEvent) {
     const i18n = this.get('i18n');
-    return !isEndpointEvent ? i18n.t('recon.error.noTextContentData') : '';
+    let label;
+    if (isHttpEvent) {
+      label = i18n.t('recon.error.noTextContentDataWithCompressedPayloads');
+    } else if (!isEndpointEvent) {
+      label = i18n.t('recon.error.noTextContentData');
+    } else {
+      label = '';
+    }
+    return label;
   },
 
   @alias('contextualHelp.invTextAnalysis') topic: null,

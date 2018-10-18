@@ -59,8 +59,9 @@ test('renders spinner when data present but in the process of being rendered', f
   });
 });
 
-test('renders error when no data present', function(assert) {
+test('renders error when no data present and is network event', function(assert) {
   new DataHelper(this.get('redux'))
+    .initializeData({ meta: [['service', 80]] })
     .setViewToText()
     .noTexts();
   this.render(hbs`{{recon-event-detail/text-content}}`);
@@ -70,11 +71,21 @@ test('renders error when no data present', function(assert) {
   });
 });
 
+test('renders error when no data present and is log event', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .noTexts();
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    const str = this.$('.rsa-panel-message').text().trim().replace(/\s/g, '');
+    assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
+  });
+});
+
 test('renders nothing when data present, but hidden by request/response', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToText()
     .populateTexts();
-
   this.get('redux').dispatch(VisualActions.toggleRequestData());
   this.get('redux').dispatch(VisualActions.toggleResponseData());
 
