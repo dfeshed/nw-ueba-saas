@@ -33,9 +33,9 @@ export default Component.extend({
 
   circleStroke: computed('score', function() {
     const riskScore = this.get('score');
-    if (riskScore <= 29) {
+    if (riskScore <= 30) {
       return 'is-low';
-    } else if (riskScore <= 59) {
+    } else if (riskScore <= 69) {
       return 'is-medium';
     } else if (riskScore <= 99) {
       return 'is-high';

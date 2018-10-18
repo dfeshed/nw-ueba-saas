@@ -20,8 +20,8 @@ module('Integration | Component | rsa-risk-score', function(hooks) {
   });
 
   test('it sets the medium circle stroke and class when size is small', async function(assert) {
-    await render(hbs`{{rsa-risk-score score=40 size='small' }}`);
-    assert.equal(this.element.textContent.trim(), 40);
+    await render(hbs`{{rsa-risk-score score=69 size='small' }}`);
+    assert.equal(this.element.textContent.trim(), 69);
     assert.equal(this.$('.is-small').length, 1);
     assert.equal(this.$('.is-medium').length, 1);
   });
