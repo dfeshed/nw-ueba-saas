@@ -6,6 +6,11 @@ import { set, computed } from '@ember/object';
 import { setupRenderingTest } from 'ember-qunit';
 import DataHelper from '../../../../helpers/data-helper';
 import { click, render, find, findAll, settled } from '@ember/test-helpers';
+import sinon from 'sinon';
+
+import * as InteractionCreators from 'recon/actions/interaction-creators';
+
+const didDownloadCreatorsStub = sinon.stub(InteractionCreators, 'didDownloadFiles');
 
 const data = {
   eventType: { name: 'NETWORK' }
@@ -22,6 +27,14 @@ module('Integration | Component | recon event actionbar/export packet', function
         return true;
       })
     }));
+  });
+
+  hooks.afterEach(function() {
+    didDownloadCreatorsStub.reset();
+  });
+
+  hooks.after(function() {
+    didDownloadCreatorsStub.restore();
   });
 
   test('The caption properly updates when locale is changed', async function(assert) {
@@ -159,7 +172,7 @@ module('Integration | Component | recon event actionbar/export packet', function
   });
 
   test('the extracted file must be downloaded automatically', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const fileLink = 'http://extracted-file-download-link/';
 
@@ -168,9 +181,9 @@ module('Integration | Component | recon event actionbar/export packet', function
         .initializeData()
         .setAutoDownloadPreference(true)
         .setExtractedFileLink(fileLink);
-
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
+    assert.equal(didDownloadCreatorsStub.callCount, 1, 'didDownload interaction creator called one time');
     const selector = '.js-export-packet-iframe';
     const iframe = findAll(selector);
     assert.equal(iframe.length, 1);

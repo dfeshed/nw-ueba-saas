@@ -27,5 +27,10 @@
       {{/recon-button-menu}}
     {{/click-outside}}
   </hbox>
-  <iframe src="{{iframeSrc}}" class="export-logs-iframe js-export-logs-iframe"></iframe>
+  {{rsa-download-export
+    extractLink=extractLink
+    isAutoDownloadFile=isAutoDownloadFile
+    iframeClass='export-logs-iframe js-export-logs-iframe'
+    sendMessage=(action 'didDownloadFiles')
+  }}
 {{/unless}}

@@ -90,8 +90,12 @@ test('the button is hidden when accessControl.hasInvestigateContentExportAccess 
 });
 
 test('it renders proper label when downloading log data', function(assert) {
+  const _data = {
+    ...data,
+    fileExtractStatus: 'wait'
+  };
   new DataHelper(this.get('redux'))
-    .initializeData(data)
+    .initializeData(_data)
     .startDownloadingData();
 
   this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
@@ -123,11 +127,9 @@ test('the extracted file must be downloaded automatically', function(assert) {
       .setExtractedFileLink(fileLink);
   this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
 
-  return wait().then(() => {
-    const iframe = this.$('.js-export-logs-iframe');
-    assert.equal(iframe.length, 1);
-    assert.equal(iframe[0].src, fileLink);
-  });
+  const iframe = this.$('.js-export-logs-iframe');
+  assert.equal(iframe.length, 1);
+  assert.equal(iframe[0].src, fileLink);
 });
 
 test('the extracted file must not be downloaded automatically', function(assert) {

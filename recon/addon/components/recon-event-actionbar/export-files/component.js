@@ -1,11 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed, { not } from 'ember-computed-decorators';
+import computed, { not, match } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import { selectedFiles } from 'recon/reducers/files/selectors';
-import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { files } }) => ({
@@ -20,9 +19,12 @@ const dispatchToActions = {
   didDownloadFiles
 };
 
-const ExportFilesComponent = Component.extend(ReconExport, {
+const ExportFilesComponent = Component.extend({
   accessControl: service(),
   layout,
+
+  @match('status', /init|wait/)
+  isDownloading: false,
 
   @computed('isDownloading', 'selectedFiles.length')
   caption(isDownloading, count) {

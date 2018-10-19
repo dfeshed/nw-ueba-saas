@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed, { not } from 'ember-computed-decorators';
+import computed, { not, match } from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
-import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { hasPayload } from 'recon/reducers/packets/selectors';
 import { inject as service } from '@ember/service';
@@ -34,7 +33,7 @@ const menuOffsetsStyle = (el) => {
   }
 };
 
-const DownloadPacketComponent = Component.extend(ReconExport, {
+const DownloadPacketComponent = Component.extend({
   accessControl: service(),
   layout,
 
@@ -45,6 +44,9 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
   offsetsStyle: null,
 
   downloadFormats: downloadFormat,
+
+  @match('status', /init|wait/)
+  isDownloading: false,
 
   @computed('isDownloading', 'defaultPacketFormat', 'i18n.locale')
   caption(isDownloading, defaultPacketFormat) {

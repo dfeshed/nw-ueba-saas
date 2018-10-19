@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import computed, { not } from 'ember-computed-decorators';
+import computed, { not, match } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import {
@@ -9,7 +9,6 @@ import {
   extractFiles
 } from 'recon/actions/interaction-creators';
 
-import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
 const stateToComputed = ({ recon: { files, visuals } }) => ({
@@ -38,7 +37,7 @@ const menuOffsetsStyle = (el) => {
   }
 };
 
-const DownloadLogsComponent = Component.extend(ReconExport, {
+const DownloadLogsComponent = Component.extend({
 
   accessControl: service(),
   layout,
@@ -46,6 +45,9 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
   isExpanded: false,
   offsetsStyle: null,
   downloadFormats: downloadFormat,
+
+  @match('status', /init|wait/)
+  isDownloading: false,
 
   @computed('isDownloading')
   isDisabled(isDownloading) {
