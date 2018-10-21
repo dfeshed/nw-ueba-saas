@@ -8,6 +8,8 @@ import presidio.data.generators.event.process.ICertificateIssuerGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
 
+import java.util.List;
+
 /**
  * Default generator for Process entity.
  *

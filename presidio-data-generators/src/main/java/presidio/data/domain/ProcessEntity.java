@@ -1,7 +1,6 @@
 package presidio.data.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ProcessEntity {
     private final static String[] DIRECTORY_GROUPS = {"system32","temp", "downloads"};
@@ -9,16 +8,32 @@ public class ProcessEntity {
     String processFileName;
     String processDirectory;
     List<String> processDirectoryGroups;
+    List<String> processCategories;
     String processCertificateIssuer;
+
+    private static final Map<String, List<String>> PROCESS_CATEGORIES_MAP = createCategoriesMap();
+    private static Map<String, List<String>> createCategoriesMap()
+    {
+        Map<String,List<String>> categoriesMap = new HashMap<String,List<String>>();
+        categoriesMap.put("word.exe", Arrays.asList("OFFICE", "WORD_PROCESSOR"));
+        categoriesMap.put("excel.exe", Arrays.asList("OFFICE", "SPREADSHEET"));
+        return categoriesMap;
+    }
 
     public ProcessEntity(FileEntity processFile, String processCertificateIssuer) {
         this.processFileName = processFile.getFileName();
         this.processDirectory = processFile.getFilePath();
-        this.processDirectoryGroups = getDirectoryGroups(this.processDirectory);
+        this.processDirectoryGroups = assignDirectoryGroups(this.processDirectory);
+        this.processCategories = assignProcessCategories(this.processFileName);
         this.processCertificateIssuer = processCertificateIssuer;
     }
 
-    private List<String> getDirectoryGroups(String directory) {
+    private List<String> assignProcessCategories(String processFileName) {
+
+        return PROCESS_CATEGORIES_MAP.get(processFileName);
+    }
+
+    private List<String> assignDirectoryGroups(String directory) {
         List<String> directoryGroups = new ArrayList<>();
         // Simple directory group assignment by substring contained in directory path
         for ( String group : DIRECTORY_GROUPS) {
@@ -45,11 +60,11 @@ public class ProcessEntity {
         this.processFileName = processFileName;
     }
 
-    public List<String> getProcessDirectoryGroup() {
+    public List<String> getProcessDirectoryGroups() {
         return processDirectoryGroups;
     }
 
-    public void setProcessDirectoryGroup(List<String> processDirectoryGroup) {
+    public void setProcessDirectoryGroups(List<String> processDirectoryGroup) {
         this.processDirectoryGroups = processDirectoryGroup;
     }
 
@@ -59,6 +74,14 @@ public class ProcessEntity {
 
     public void setProcessCertificateIssuer(String processCertificateIssuer) {
         this.processCertificateIssuer = processCertificateIssuer;
+    }
+
+    public List<String> getProcessCategories() {
+        return processCategories;
+    }
+
+    public void setProcessCategories(List<String> processCategories) {
+        this.processCategories = processCategories;
     }
 
     @Override
