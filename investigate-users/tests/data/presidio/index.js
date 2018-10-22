@@ -64,6 +64,9 @@ const urlMap = [{
   url: 'presidio/api/alerts/alert-by-day-and-severity',
   data: alertsTimeline
 }, {
+  url: 'presidio/api/user/favoriteFilter/',
+  data: true
+}, {
   url: 'favoriteFilter',
   data: true
 }];

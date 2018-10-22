@@ -83,7 +83,15 @@ const updateFilter = (filter) => {
 const saveAsFavorite = (name) => {
   return (dispatch, getState) => {
     const filterForPost = _removeUnwantedPropertyFromObject(getUserFilter(getState()));
-    fetchData('createfavoriteFilter', filterForPost, true, name).then(() => {
+    fetchData('createfavoriteFilter', filterForPost, 'POST', name).then(() => {
+      dispatch(getFavorites());
+    });
+  };
+};
+
+const deleteFavorite = (filterId) => {
+  return (dispatch) => {
+    fetchData('deletefavoriteFilter', null, 'DELETE', filterId).then(() => {
       dispatch(getFavorites());
     });
   };
@@ -110,5 +118,6 @@ export {
   updateFilter,
   getUsers,
   saveAsFavorite,
-  exportUsers
+  exportUsers,
+  deleteFavorite
 };

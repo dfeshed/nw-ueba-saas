@@ -9,6 +9,7 @@ import favorite from '../../../../../data/presidio/favorite_filter';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
+import { later } from '@ember/runloop';
 
 let setState;
 
@@ -35,6 +36,7 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     });
   });
 
+
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/favorites}}`);
     assert.equal(find('.users-tab_filter_favorites').textContent.replace(/\s/g, ''), 'Favorites');
@@ -44,11 +46,35 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
     new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
     const done = assert.async();
     await render(hbs`{{users-tab/filter/favorites}}`);
-    assert.equal(findAll('.rsa-data-table-body-row').length, 2);
+    assert.equal(findAll('.users-tab_filter_favorites_filter').length, 2);
     click('.rsa-form-button');
     return settled().then(() => {
-      assert.equal(findAll('.rsa-form-button-clicked').length, 1);
+      assert.equal(findAll('.rsa-form-button-clicked').length, 2);
       done();
     });
+  });
+
+  test('it should delete favorite', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState).usersFavorites(favorite.data).build();
+    await render(hbs`{{users-tab/filter/favorites}}`);
+    assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 2);
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return {
+              data: []
+            };
+          }
+        });
+      });
+    });
+    await this.$('.rsa-icon-close-filled:first').click();
+    later(() => {
+      assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 0);
+      done();
+    }, 1000);
   });
 });

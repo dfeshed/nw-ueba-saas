@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
+import { deleteFavorite, exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
 
 export const initialFilterState = Immutable.from({
   addAlertsAndDevices: true,
@@ -145,5 +145,17 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
       return { users: { filter: initialFilterState } };
     };
     exportUsers(initialFilterState)(null, getState);
+  });
+
+  test('it can deleteFavorite', (assert) => {
+    assert.expect(1);
+    const done = assert.async();
+    const dispatch = (fn) => {
+      fn(({ type }) => {
+        assert.equal(type, 'INVESTIGATE_USER::GET_FAVORITES');
+        done();
+      });
+    };
+    deleteFavorite('TestId')(dispatch);
   });
 });

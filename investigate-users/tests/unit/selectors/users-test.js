@@ -23,7 +23,7 @@ const state = Immutable.from({
     existAnomalyTypes,
     existAlertTypes: existAlertTypes.data,
     users: userList,
-    favorites: favoriteFilter,
+    favorites: favoriteFilter.data,
     totalUsers: 100,
     filter: {
       addAlertsAndDevices: true,
@@ -107,7 +107,10 @@ test('test Selected Anomaly Types', (assert) => {
 });
 
 test('test Favorites', (assert) => {
-  assert.equal(Users.getFavorites(state).data.length, 2);
+  assert.equal(favoriteFilter.data[0].filterName, 'test');
+  const favFilter = Users.getFavorites(state);
+  assert.equal(favFilter.length, 2);
+  assert.equal(favFilter[0].filterName, 'Test1');
 });
 
 test('test Users', (assert) => {

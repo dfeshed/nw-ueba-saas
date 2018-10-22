@@ -9,6 +9,8 @@ const _existAlertTypes = (state) => state.users.existAlertTypes;
 
 const _sortField = (state) => state.users.filter.sortField;
 
+export const _favorites = (state) => state.users.favorites;
+
 export const riskyUserCount = (state) => state.users.riskyUserCount;
 
 export const adminUserCount = (state) => state.users.adminUserCount;
@@ -19,12 +21,16 @@ export const getTotalUsers = (state) => state.users.totalUsers;
 
 export const getTopRiskyUsers = (state) => state.users.topUsers;
 
-export const getFavorites = (state) => state.users.favorites;
-
 export const getUsers = (state) => state.users.users;
 
 
 export const getUserFilter = (state) => state.users.filter;
+
+export const getFavorites = createSelector(
+  [_favorites],
+  (favorites) => {
+    return _.sortBy(favorites, ['filterName']);
+  });
 
 export const getSortField = createSelector(
   [_sortField],

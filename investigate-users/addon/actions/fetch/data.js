@@ -33,13 +33,13 @@ const _downloadFile = (bodyBlob, fileName) => {
   }, 100);
 };
 
-export const fetchData = (endpointLocation, data = {}, isPostCall, args) => {
+export const fetchData = (endpointLocation, data = {}, method, args) => {
   let fetchUrl = endpoints[endpointLocation];
   fetchUrl = args ? fetchUrl.replace(/{(.*)}/, args) : fetchUrl;
   let options = null;
-  if (isPostCall) {
+  if (method) {
     options = {
-      method: 'POST',
+      method,
       headers: {
         'Content-Type': 'application/json'
       },

@@ -29,6 +29,7 @@
         flex-direction: row;
         @include rsa-font(default, small);
         color: text-color(secondary, light);
+        padding: 1px 0;
 
         .rsa-form-button-wrapper {
           width: 100%;
@@ -45,7 +46,7 @@
         }
 
         .rsa-form-button-clicked {
-          background-color: text-color(secondary, light);
+          background-color: text-color(secondary, darkest);
 
           > button {
             color: text-color(primary, light);
@@ -53,15 +54,15 @@
         }
 
         .risky {
-          color: text-color(accentFour, dark);
+          color: text-color(accentFour, light);
         }
 
         .admin {
-          color: text-color(primary);
+          color: text-color(primary, light);
         }
 
         .watched {
-          color: text-color(accentThree, dark);
+          color: text-color(accentThree, light);
         }
 
         > div {
@@ -71,18 +72,37 @@
     }
 
     &_favorites {
-      padding: rsa-whitespace(less);
-      color: text-color(primary);
+      color: text-color(primary, lighter);
       @include rsa-font(default, medium);
+
+      &_title {
+        padding: rsa-whitespace();
+        @include rsa-font(default, large);
+      }
+
+      &_filter {
+        display: inline-flex;
+        justify-content: space-around;
+        padding-bottom: rsa-whitespace(least);
+        &_select {
+          width: calc(100% - 30px);
+        }
+        
+        &_close {
+          width: 30px;
+        }
+      }
 
       .rsa-form-button {
         border: none;
         text-align: start;
         color: text-color(primary, light);
+        padding: none;
+        height: 35px;
       }
 
       .rsa-form-button-clicked {
-        background-color: text-color(secondary, light);
+        background-color: text-color(secondary, darkest);
       }
     }
 

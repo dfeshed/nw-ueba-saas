@@ -23,5 +23,6 @@ export default {
   usersExport: '/presidio/api/user/export?',
   followUsers: '/presidio/api/user/true/followUsers', // Post call with filters
   unfollowUsers: '/presidio/api/user/false/followUsers', // Post call with filters
-  createfavoriteFilter: '/presidio/api/user/{filterName}/favoriteFilter' // Post call with filters
+  createfavoriteFilter: '/presidio/api/user/{filterName}/favoriteFilter', // Post call with filters
+  deletefavoriteFilter: '/presidio/api/user/favoriteFilter/{filterId}'
 };
