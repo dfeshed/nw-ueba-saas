@@ -59,8 +59,14 @@ module('Unit | Selectors | event-results', function(hooks) {
     // TODO change when more options from remaining preferences are added
     assert.equal(result.length, 3, '3 options for download available');
     assert.equal(result[0].name.string, 'Logs as Log', 'Logs download option');
+    assert.equal(result[0].eventType, 'LOG');
+    assert.equal(result[0].fileType, 'LOG');
     assert.equal(result[1].name.string, 'Visible Meta as Text', 'Meta download option');
+    assert.equal(result[1].eventType, 'META');
+    assert.equal(result[1].fileType, 'TEXT');
     assert.equal(result[2].name.string, 'Network as PCAP', 'Network download option');
+    assert.equal(result[2].eventType, 'NETWORK');
+    assert.equal(result[2].fileType, 'PCAP');
   });
   // TODO add assert to check disabled
   test('getDownloadOptions returns appropriate counts for options when network events are selected', function(assert) {
@@ -74,8 +80,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     // number of options in download as per the number of preferences x number of options per preference
     // TODO change/add when more options from remaining preferences are added
     assert.equal(result[0].count, '', 'No log event selected');
+    assert.deepEqual(result[0].sessionIds, [], 'No log event selected');
     assert.equal(result[1].count, '2/2', '2 Meta events selected');
+    assert.deepEqual(result[1].sessionIds, [1, 2], '2 Meta events selected');
     assert.equal(result[2].count, '2/2', '2 Network events selected');
+    assert.deepEqual(result[2].sessionIds, [1, 2], '2 Network events selected');
   });
 
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', function(assert) {
@@ -89,8 +98,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     // number of options in download as per the number of preferences x number of options per preference
     // TODO change/add when more options from remaining preferences are added
     assert.equal(result[0].count, '1/2', '1 log event selected');
+    assert.deepEqual(result[0].sessionIds, [3], '1 log event selected');
     assert.equal(result[1].count, '2/2', '2 Meta events selected');
+    assert.deepEqual(result[1].sessionIds, [1, 3], '2 Meta events selected');
     assert.equal(result[2].count, '1/2', '1 Network event selected');
+    assert.deepEqual(result[2].sessionIds, [1], '1 Network event selected');
   });
 
   test('isEventResultsError is false when status is not error', function(assert) {

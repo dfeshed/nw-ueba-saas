@@ -497,13 +497,9 @@ export default {
       download: {
         selected: 'Download',
         all: 'Download All',
-        preferences: {
-          'investigate-events': {
-            defaultLogFormat: 'Logs as {{option}}',
-            defaultMetaFormat: 'Visible Meta as {{option}}',
-            defaultPacketFormat: 'Network as {{option}}'
-          }
-        },
+        LOG: 'Logs as {{option}}',
+        META: 'Visible Meta as {{option}}',
+        NETWORK: 'Network as {{option}}',
         options: {
           LOG: 'Log',
           CSV: 'CSV',

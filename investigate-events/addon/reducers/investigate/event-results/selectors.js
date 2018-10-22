@@ -117,11 +117,16 @@ export const getDownloadOptions = createSelector(
       // preferredOptions
       dropDownItems.forEach((item) => {
 
-        const [,, eventType ] = item.name.split('.');
-        const option = i18n.t(`investigate.events.download.options.${eventAnalysisPreferences[eventType]}`);
-        const num = _getCountForEventType(eventType, selectedEventIds, resultsData);
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventType } = item;
+        const option = i18n.t(`investigate.events.download.options.${eventAnalysisPreferences[defaultEventType]}`);
+        const getIdsForEventType = _getIdsForEventType(eventType, selectedEventIds, resultsData);
+        const num = getIdsForEventType.length;
         downloadOptions.push({
-          name: i18n.t(`investigate.events.download.${item.name}`, { option }),
+          name: i18n.t(`investigate.events.download.${eventType}`, { option }),
+          eventType,
+          fileType: eventAnalysisPreferences[defaultEventType],
+          sessionIds: getIdsForEventType,
           count: (num > 0 && !isAllEventsSelected) ? `${num}/${total}` : ''
         });
       });
@@ -159,15 +164,15 @@ const _indexOfBy = (arr, key, value) => {
 };
 
 /**
- * Returns count for each download type based on number of events of the type selected
+ * Returns sessionIds for each download type based on number of events of the type selected
  * @private
  */
-const _getCountForEventType = (eventType, selectedEventIds, resultsData) => {
-  if (eventType === 'defaultMetaFormat') {
-    return selectedEventIds.length;
+const _getIdsForEventType = (eventType, selectedEventIds, resultsData) => {
+  if (eventType === 'META') {
+    return selectedEventIds;
   }
   const selectedEvents = resultsData.filter((event) => selectedEventIds.indexOf(event.sessionId) >= 0);
-  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? 'defaultLogFormat' : 'defaultPacketFormat'));
-  return selectedEventsOfType.length;
+  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? 'LOG' : 'NETWORK'));
+  return selectedEventsOfType.map((event) => event.sessionId);
 };
 
