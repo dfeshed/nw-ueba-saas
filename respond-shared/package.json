@@ -65,6 +65,7 @@
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "paths": [
+      "../context",
       "../test-helpers",
       "../component-lib"
     ]

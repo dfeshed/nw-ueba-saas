@@ -39,7 +39,7 @@ export const assertDetailRowParent = (assert, { column, row, label, value }) => 
   return element;
 };
 
-export const assertDetailRowChild = (assert, { parentElement, label, value, subRowIndex }) => {
+export const assertDetailRowChild = (assert, { parentElement, label, value, subRowIndex, metaKey }) => {
   const index = subRowIndex || 1;
   const child = parentElement.querySelector(`${selectors.column}:nth-of-type(1)`);
   const childElement = document.getElementById(child.getAttribute('id'));
@@ -47,5 +47,10 @@ export const assertDetailRowChild = (assert, { parentElement, label, value, subR
   assert.equal(theChild.querySelector(selectors.key).textContent.trim(), label);
   const parent = theChild.querySelector(selectors.value);
   assert.equal(textWithoutChildren(parent), value);
+  if (metaKey) {
+    assert.equal(parent.attributes['data-entity-id'].nodeValue, value);
+    assert.equal(parent.attributes['data-meta-key'].nodeValue, metaKey);
+    assert.equal(parent.classList.contains('entity'), true);
+  }
   return childElement;
 };

@@ -55,21 +55,24 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: sourceRowChildOneElement,
       subRowIndex: 2,
       label: 'IP Address',
-      value: '10.4.61.97'
+      value: '10.4.61.97',
+      metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: sourceRowChildOneElement,
       subRowIndex: 3,
       label: 'MAC Address',
-      value: '00:50:56:33:18:18'
+      value: '00:50:56:33:18:18',
+      metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: sourceRowChildOneElement,
       subRowIndex: 4,
       label: 'Port',
-      value: '36749'
+      value: '36749',
+      metaKey: 'port'
     });
 
     generic.assertDetailRowChild(assert, {
@@ -104,21 +107,24 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: destRowChildOneElement,
       subRowIndex: 2,
       label: 'IP Address',
-      value: '10.4.61.44'
+      value: '10.4.61.44',
+      metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildOneElement,
       subRowIndex: 3,
       label: 'MAC Address',
-      value: '00:50:56:33:18:15'
+      value: '00:50:56:33:18:15',
+      metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildOneElement,
       subRowIndex: 4,
       label: 'Port',
-      value: '5671'
+      value: '5671',
+      metaKey: 'port'
     });
 
     generic.assertDetailRowChild(assert, {
@@ -161,7 +167,8 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: dataRowChildOneElement,
       subRowIndex: 1,
       label: 'Size',
-      value: '4175'
+      value: '4175',
+      metaKey: 'size'
     });
 
     generic.assertDetailRow(assert, {
@@ -266,21 +273,24 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: sourceRowChildOneElement,
       subRowIndex: 2,
       label: 'IP Address',
-      value: '192.168.100.185'
+      value: '192.168.100.185',
+      metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: sourceRowChildOneElement,
       subRowIndex: 3,
       label: 'MAC Address',
-      value: '00:00:46:8F:F4:20'
+      value: '00:00:46:8F:F4:20',
+      metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: sourceRowChildOneElement,
       subRowIndex: 4,
       label: 'Port',
-      value: '123'
+      value: '123',
+      metaKey: 'port'
     });
 
     generic.assertDetailRowChild(assert, {
@@ -315,63 +325,72 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: destRowChildTwoElement,
       subRowIndex: 1,
       label: 'City',
-      value: 'Gaithersburg'
+      value: 'Gaithersburg',
+      metaKey: 'city'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildTwoElement,
       subRowIndex: 2,
       label: 'Country',
-      value: 'United States'
+      value: 'United States',
+      metaKey: 'country'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildTwoElement,
       subRowIndex: 3,
       label: 'Domain/Host',
-      value: 'nist.gov'
+      value: 'nist.gov',
+      metaKey: 'domain'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildTwoElement,
       subRowIndex: 4,
       label: 'Latitude',
-      value: '39'
+      value: '39',
+      metaKey: 'latitude'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildTwoElement,
       subRowIndex: 5,
       label: 'Longitude',
-      value: '-77'
+      value: '-77',
+      metaKey: 'longitude'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildTwoElement,
       subRowIndex: 6,
       label: 'Organization',
-      value: 'National Bureau of Standards'
+      value: 'National Bureau of Standards',
+      metaKey: 'organization'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildOneElement,
       subRowIndex: 2,
       label: 'IP Address',
-      value: '129.6.15.28'
+      value: '129.6.15.28',
+      metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildOneElement,
       subRowIndex: 3,
       label: 'MAC Address',
-      value: '00:00:00:00:5E:00'
+      value: '00:00:00:00:5E:00',
+      metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
       parentElement: destRowChildOneElement,
       subRowIndex: 4,
       label: 'Port',
-      value: '123'
+      value: '123',
+      metaKey: 'port'
     });
 
     generic.assertDetailRowChild(assert, {
@@ -421,7 +440,8 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       parentElement: dataRowChildOneElement,
       subRowIndex: 1,
       label: 'Size',
-      value: '180'
+      value: '180',
+      metaKey: 'size'
     });
 
     generic.assertDetailRow(assert, {

@@ -1,9 +1,17 @@
 'use strict';
 
+const socketRouteGenerator = require('../../../config/socketRoutes');
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
+const useMockServer = !process.env.NOMOCK;
+
 module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'dummy',
     environment,
+    mockServerUrl,
+    useMockServer,
+    mockPort,
     rootURL: '/',
     locationType: 'auto',
     EmberENV: {
@@ -46,6 +54,8 @@ module.exports = function(environment) {
   if (environment === 'production') {
     // here you can enable a production-specific feature
   }
+
+  ENV.socketRoutes = socketRouteGenerator(environment);
 
   return ENV;
 };

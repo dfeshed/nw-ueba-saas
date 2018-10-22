@@ -101,7 +101,8 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     endpoint.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
       label: 'Product Name',
-      value: 'nwendpoint'
+      value: 'nwendpoint',
+      metaKey: 'product_name'
     });
 
     endpoint.assertDetailRow(assert, {
@@ -127,7 +128,8 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     endpoint.assertDetailRowChild(assert, {
       parentElement: dataRowChildOneElement,
       label: 'Size',
-      value: '41'
+      value: '41',
+      metaKey: 'size'
     });
 
     endpoint.assertDetailRow(assert, {
