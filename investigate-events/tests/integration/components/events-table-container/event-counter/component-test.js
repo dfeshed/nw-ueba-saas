@@ -31,28 +31,4 @@ module('Integration | Component | Event Counter', function(hooks) {
     assert.equal(find('.rsa-investigate-event-counter').textContent.trim(), '55', 'Expected count value to be displayed in DOM.');
   });
 
-  test('it does not show + if threshold is less than count', async function(assert) {
-    new ReduxDataHelper(setState)
-      .eventCount(55)
-      .eventThreshold(100)
-      .build();
-
-    await render(hbs`{{events-table-container/event-counter}}`);
-
-    assert.notOk(find('.rsa-investigate-event-counter').getAttribute('title'), 'Expected no title');
-    assert.equal(findAll('.rsa-investigate-event-counter__plus').length, 0, 'Expected to not find plus DOM element.');
-  });
-
-  test('it shows + icon if threshold is equal to count', async function(assert) {
-    new ReduxDataHelper(setState)
-      .eventCount(100)
-      .eventThreshold(100)
-      .build();
-
-    await render(hbs`{{events-table-container/event-counter}}`);
-
-    assert.equal(find('.rsa-investigate-event-counter').getAttribute('title'), 'Event count hit configured maximum query threshold.', 'Expected no title');
-    assert.equal(findAll('.rsa-investigate-event-counter__plus').length, 1, 'Expected to find plus DOM element.');
-  });
-
 });
