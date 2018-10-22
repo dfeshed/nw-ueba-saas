@@ -1,0 +1,29 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "process",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "process-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.process.score",
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.process"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-timestamp-count": 8,
+              "max-num-of-rare-timestamps": 8,
+              "use-certainty-to-calculate-score": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
