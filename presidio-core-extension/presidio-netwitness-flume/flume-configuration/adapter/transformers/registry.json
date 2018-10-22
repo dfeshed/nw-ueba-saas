@@ -193,42 +193,8 @@
       ]
     },
     {
-      "type": "if_else",
-      "name": "registry-key-group-normalization",
-      "predicate": {
-        "type": "key_exist",
-        "name": "registry-key-group-exist",
-        "key": "ec_subject",
-        "testNull": false
-      },
-      "ifTransformer": {
-        "type": "regex_captor_and_formatter",
-        "name": "registry-key-group-normalization-on-ec-subject",
-        "sourceKey": "ec_subject",
-        "destinationKey": "registryKeyGroup",
-        "captureAndFormatConfigurations": [
-          {
-            "pattern": "(RUN_KEY|SERVICES_IMAGE_PATH|FIREWALL_POLICY|LUA_SETTING_REGISTRY_EDITOR_SETTING|SECURITY_CENTER_CONFIGURATION|TASK_MANAGER_SETTING|WINDOWS_SYSTEM_POLICY|INTERNET_ZONE_SETTINGS|BAD_CERTIFICATE_WARNING_SETTING)",
-            "format": "%s",
-            "capturingGroupConfigurations": [
-              {
-                "index": 1,
-                "caseFormat": "LOWER"
-              }
-            ]
-          }
-        ]
-      },
-      "elseTransformer": {
-        "type": "set_value",
-        "name": "registry-key-group",
-        "key": "registryKeyGroup",
-        "value": null
-      }
-    },
-    {
       "type": "copy_value",
-      "name": "copy-registry-key-group",
+      "name": "copy-registry-key",
       "sourceKey": "registry_key",
       "isRemoveSourceKey": true,
       "destinationKeys": [
