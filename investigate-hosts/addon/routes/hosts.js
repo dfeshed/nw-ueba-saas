@@ -67,6 +67,7 @@ export default Route.extend({
         redux.dispatch(resetDetailsInputAndContent());
       }
       if (!sid) {
+        redux.dispatch(setSelectedEndpointServer(null));
         // get host list
         redux.dispatch(getEndpointServers());
       } else {
