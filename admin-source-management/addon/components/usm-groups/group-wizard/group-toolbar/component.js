@@ -7,13 +7,14 @@ import { inject } from '@ember/service';
 import {
   group,
   isIdentifyGroupStepValid,
-  isDefineGroupStepvalid,
-  isApplyPolicyStepvalid,
-  isReviewGroupStepvalid,
+  isDefineGroupStepValid,
+  isApplyPolicyStepValid,
+  isReviewGroupStepValid,
   isWizardValid
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
+  editGroup,
   saveGroup,
   savePublishGroup
 } from 'admin-source-management/actions/creators/group-wizard-creators';
@@ -21,13 +22,14 @@ import {
 const stateToComputed = (state) => ({
   group: group(state),
   isIdentifyGroupStepValid: isIdentifyGroupStepValid(state),
-  isDefineGroupStepvalid: isDefineGroupStepvalid(state),
-  isApplyPolicyStepvalid: isApplyPolicyStepvalid(state),
-  isReviewGroupStepvalid: isReviewGroupStepvalid(state),
+  isDefineGroupStepValid: isDefineGroupStepValid(state),
+  isApplyPolicyStepValid: isApplyPolicyStepValid(state),
+  isReviewGroupStepValid: isReviewGroupStepValid(state),
   isWizardValid: isWizardValid(state)
 });
 
 const dispatchToActions = {
+  editGroup,
   saveGroup,
   savePublishGroup
 };
@@ -42,18 +44,34 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   // closure action required to be passed in
   transitionToStep: undefined,
 
-  @computed('step', 'isIdentifyGroupStepValid', 'isDefineGroupStepvalid', 'isApplyPolicyStepvalid', 'isReviewGroupStepvalid')
-  isStepValid(step, isIdentifyGroupStepValid, isDefineGroupStepvalid, isApplyPolicyStepvalid, isReviewGroupStepvalid) {
+  @computed('step', 'isIdentifyGroupStepValid', 'isDefineGroupStepValid', 'isApplyPolicyStepValid', 'isReviewGroupStepValid')
+  isStepValid(step, isIdentifyGroupStepValid, isDefineGroupStepValid, isApplyPolicyStepValid, isReviewGroupStepValid) {
     if (step.id === 'identifyGroupStep') {
       return isIdentifyGroupStepValid;
     } else if (step.id === 'defineGroupStep') {
-      return isDefineGroupStepvalid;
+      return isDefineGroupStepValid;
     } else if (step.id === 'applyPolicyStep') {
-      return isApplyPolicyStepvalid;
+      return isApplyPolicyStepValid;
     } else if (step.id === 'reviewGroupStep') {
-      return isReviewGroupStepvalid;
+      return isReviewGroupStepValid;
     }
     return false;
+  },
+
+  setVisited() {
+    switch (this.step.id) {
+      case 'identifyGroupStep':
+        this.send('editGroup', 'steps.0.isVisited', true);
+        break;
+      case 'defineGroupStep':
+        this.send('editGroup', 'steps.1.isVisited', true);
+        break;
+      case 'applyPolicyStep':
+        this.send('editGroup', 'steps.2.isVisited', true);
+        break;
+      default:
+        break;
+    }
   },
 
   actions: {
@@ -63,7 +81,12 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     },
 
     transitionToNextStep() {
-      this.get('transitionToStep')(this.get('step').nextStepId);
+      if (this.isStepValid) {
+        this.get('transitionToStep')(this.get('step').nextStepId);
+      } else {
+        this.setVisited();
+        this.send('failure', 'adminUsm.groupWizard.actionMessages.nextFailure');
+      }
     },
 
     save(publish) {

@@ -32,6 +32,7 @@ module('Integration | Component | os-selector', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.notEmpty');
     new ReduxDataHelper(setState)
       .groupWiz()
+      .groupWizStepVisited('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'IN', 'os-selector', [] ]);

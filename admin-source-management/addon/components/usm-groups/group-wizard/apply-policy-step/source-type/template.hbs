@@ -11,6 +11,7 @@
         options=limitedPolicySourceTypes
         selected=selectedSourceType
         searchField='name'
+        allowClear=true
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
         {{t (concat 'adminUsm.policyTypes.' option)}}

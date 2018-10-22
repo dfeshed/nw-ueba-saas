@@ -1,6 +1,7 @@
 import reselect from 'reselect';
-import { isBlank } from '@ember/utils';
-import { exceedsLength, isNameInList } from './util/selector-helpers';
+import { isBlank, isEmpty } from '@ember/utils';
+import { exceedsLength, isNameInList, groupExpressionValidator } from './util/selector-helpers';
+import { getValidatorForExpression } from 'admin-source-management/reducers/usm/group-wizard-reducers';
 
 const { createSelector } = reselect;
 
@@ -24,65 +25,6 @@ export const isGroupLoading = createSelector(
   (groupWizardState) => {
     return groupWizardState.groupStatus === 'wait' ||
       groupWizardState.initGroupFetchPoliciesStatus === 'wait';
-  }
-);
-
-/**
- * returns a name validator object with values set for
- * - isError, errorMessage, isVisited
- * @public
- */
-export const nameValidator = createSelector(
-  groupList, group, visited,
-  (groupList, group, visited) => {
-    let error = false;
-    let enableMessage = false;
-    let message = '';
-    if (isBlank(group.name)) {
-      error = true;
-      // only blank value requires visited
-      if (visited.includes('group.name')) {
-        enableMessage = true;
-        message = 'adminUsm.groupWizard.nameRequired';
-      }
-    } else if (exceedsLength(group.name, 256)) {
-      error = true;
-      enableMessage = true;
-      message = 'adminUsm.groupWizard.nameExceedsMaxLength';
-    } else if (isNameInList(groupList, group.id, group.name)) {
-      error = true;
-      enableMessage = true;
-      message = 'adminUsm.groupWizard.nameExists';
-    }
-    return {
-      isError: error,
-      showError: enableMessage,
-      errorMessage: message
-    };
-  }
-);
-
-/**
- * returns a description validator object with values set for
- * - isError, errorMessage, isVisited
- * @public
- */
-export const descriptionValidator = createSelector(
-  group,
-  (group) => {
-    let error = false;
-    let enableMessage = false;
-    let message = '';
-    if (exceedsLength(group.description, 8000)) {
-      error = true;
-      enableMessage = true;
-      message = 'adminUsm.groupWizard.descriptionExceedsMaxLength';
-    }
-    return {
-      isError: error,
-      showError: enableMessage,
-      errorMessage: message
-    };
   }
 );
 
@@ -129,6 +71,141 @@ export const assignedPolicyList = createSelector(
   }
 );
 
+// Validation related selectors
+// ----------------------------------------
+
+export const isIdentifyGroupStepVisited = createSelector(
+  steps,
+  (steps) => {
+    return steps[0].isVisited;
+  }
+);
+
+export const isDefineGroupStepVisited = createSelector(
+  steps,
+  (steps) => {
+    return steps[1].isVisited;
+  }
+);
+
+export const isApplyPolicyStepVisited = createSelector(
+  steps,
+  (steps) => {
+    return steps[2].isVisited;
+  }
+);
+
+/**
+ * returns a name validator object with values set for
+ * - isError, errorMessage, isVisited
+ * @public
+ */
+export const nameValidator = createSelector(
+  groupList, group, visited, isIdentifyGroupStepVisited,
+  (groupList, group, visited, isStepVisited) => {
+    let error = false;
+    let enableMessage = false;
+    let message = '';
+    if (isBlank(group.name)) {
+      error = true;
+      // only blank value requires visited
+      if (isStepVisited || visited.includes('group.name')) {
+        enableMessage = true;
+        message = 'adminUsm.groupWizard.nameRequired';
+      }
+    } else if (exceedsLength(group.name, 256)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.groupWizard.nameExceedsMaxLength';
+    } else if (isNameInList(groupList, group.id, group.name)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.groupWizard.nameExists';
+    }
+    return {
+      isError: error,
+      showError: enableMessage,
+      errorMessage: message
+    };
+  }
+);
+
+/**
+ * returns a description validator object with values set for
+ * - isError, errorMessage, isVisited
+ * @public
+ */
+export const descriptionValidator = createSelector(
+  group,
+  (group) => {
+    let error = false;
+    let enableMessage = false;
+    let message = '';
+    if (exceedsLength(group.description, 8000)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.groupWizard.descriptionExceedsMaxLength';
+    }
+    return {
+      isError: error,
+      showError: enableMessage,
+      errorMessage: message
+    };
+  }
+);
+
+export const groupCriteriaValidator = createSelector(
+  groupCriteria,
+  (groupCriteria) => {
+    let error = false;
+    if (isEmpty(groupCriteria)) {
+      error = true;
+    } else {
+      for (let index = 0; index < groupCriteria.length; index++) {
+        const expression = groupCriteria[index];
+        const validator = getValidatorForExpression(expression);
+        if (validator) {
+          const [ /* attribute */, /* operator */, values ] = expression;
+          error = groupExpressionValidator(values, validator, true, true).isError;
+          if (error) {
+            break;
+          }
+        }
+      }
+    }
+    return {
+      isError: error
+    };
+  }
+);
+
+export const policyAssignmentValidator = createSelector(
+  assignedPolicies, policyList,
+  (assignedPolicies, policyList) => {
+    let error = false;
+    for (const sourceType in assignedPolicies) {
+      if (assignedPolicies.hasOwnProperty(sourceType) && assignedPolicies[sourceType]) {
+        const groupPolicyId = assignedPolicies[sourceType].referenceId;
+        let found = false;
+        for (let index = 0; index < policyList.length; index++) {
+          const policy = policyList[index];
+          if ((policy.policyType === sourceType) && (policy.id === groupPolicyId)) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          error = true;
+          break;
+        }
+      }
+    }
+    return {
+      isError: error
+    };
+  }
+);
+
 export const isIdentifyGroupStepValid = createSelector(
   nameValidator, descriptionValidator,
   (nameValidator, descriptionValidator) => {
@@ -136,28 +213,31 @@ export const isIdentifyGroupStepValid = createSelector(
   }
 );
 
-// TODO implement real check
-export const isDefineGroupStepvalid = createSelector(
-  group,
-  (group) => group.name === group.name
+export const isDefineGroupStepValid = createSelector(
+  groupCriteriaValidator,
+  (groupCriteriaValidator) => {
+    return groupCriteriaValidator.isError === false;
+  }
 );
 
-// TODO implement real check
-export const isApplyPolicyStepvalid = createSelector(
-  group,
-  (group) => group.name === group.name
+export const isApplyPolicyStepValid = createSelector(
+  policyAssignmentValidator,
+  (policyAssignmentValidator) => {
+    return policyAssignmentValidator.isError === false;
+  }
 );
 
+
 // TODO implement real check
-export const isReviewGroupStepvalid = createSelector(
+export const isReviewGroupStepValid = createSelector(
   group,
   (group) => group.name === group.name
 );
 
 export const isWizardValid = createSelector(
-  isIdentifyGroupStepValid, isDefineGroupStepvalid, isApplyPolicyStepvalid, isReviewGroupStepvalid,
-  (isIdentifyGroupStepValid, isDefineGroupStepvalid, isApplyPolicyStepvalid, isReviewGroupStepvalid) => {
-    return isIdentifyGroupStepValid && isDefineGroupStepvalid &&
-      isApplyPolicyStepvalid && isReviewGroupStepvalid;
+  isIdentifyGroupStepValid, isDefineGroupStepValid, isApplyPolicyStepValid, isReviewGroupStepValid,
+  (isIdentifyGroupStepValid, isDefineGroupStepValid, isApplyPolicyStepValid, isReviewGroupStepValid) => {
+    return isIdentifyGroupStepValid && isDefineGroupStepValid &&
+    isApplyPolicyStepValid && isReviewGroupStepValid;
   }
 );

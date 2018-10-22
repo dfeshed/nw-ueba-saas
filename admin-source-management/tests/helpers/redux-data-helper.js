@@ -270,6 +270,22 @@ export default class DataHelper {
     return this;
   }
 
+  groupWizStepVisited(stepId, visited) {
+    switch (stepId) {
+      case 'identifyGroupStep':
+        _set(this.state, 'usm.groupWizard.steps.0.isVisited', visited);
+        break;
+      case 'defineGroupStep':
+        _set(this.state, 'usm.groupWizard.steps.1.isVisited', visited);
+        break;
+      case 'applyPolicyStep':
+        _set(this.state, 'usm.groupWizard.steps.2.isVisited', visited);
+        break;
+      default:
+        break;
+    }
+    return this;
+  }
   groupWizGroup(group) {
     _set(this.state, 'usm.groupWizard.group', group);
     return this;

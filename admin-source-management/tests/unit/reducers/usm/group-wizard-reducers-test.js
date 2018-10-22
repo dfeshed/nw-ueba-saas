@@ -21,7 +21,7 @@ const initialState = Immutable.from({
   }
 });
 
-module('Unit | Reducers | group Wizard Reducers', function() {
+module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('should return the initial state', function(assert) {
     const endState = reducers(undefined, {});

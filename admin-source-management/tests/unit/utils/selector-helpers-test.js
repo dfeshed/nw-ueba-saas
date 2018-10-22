@@ -111,7 +111,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('', 'validIPv6', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
     assert.deepEqual(groupExpressionValidator([], 'validIPv6', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
     assert.deepEqual(groupExpressionValidator([''], 'validIPv6', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('1,2,3,4', 'validIPv6', true, true), { isError: true, showError: true }, '\'1,2,3,4\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('1.2.3.4', 'validIPv6', true, true), { isError: true, showError: true }, '\'1.2.3.4\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('::1', 'validIPv6', true, true), { isError: false, showError: false }, '\'::1\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('::1  ', 'validIPv6', false, true), { isError: true, showError: true }, '\'::1  \' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('2001:0db8:85a3:0000:0000:8a2e:0370:7334', 'validIPv6', true, true), { isError: false, showError: false }, '\'2001:0db8:85a3:0000:0000:8a2e:0370:7334\' validation is good as expected');
@@ -131,4 +131,5 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', true, true), { isError: false, showError: false }, '\   ::1, ::1 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', false, true), { isError: false, showError: false }, '\'   ::1, ::1 \',  trim disabled validation is good as expected, list trims automatically');
   });
+
 });

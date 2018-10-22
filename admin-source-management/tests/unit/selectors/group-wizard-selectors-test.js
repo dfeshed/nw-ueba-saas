@@ -9,14 +9,19 @@ import {
   descriptionValidator,
   steps,
   isIdentifyGroupStepValid,
-  // TODO when implemented isDefineGroupStepvalid,
-  // TODO when implemented isApplyPolicyStepvalid,
-  // TODO when implemented isReviewGroupStepvalid,
+  isIdentifyGroupStepVisited,
+  isDefineGroupStepValid,
+  isDefineGroupStepVisited,
+  isApplyPolicyStepValid,
+  isApplyPolicyStepVisited,
+  // TODO when implemented isReviewGroupStepValid,
   // TODO when implemented isWizardValid
   isGroupLoading,
   policyList,
   availablePolicySourceTypes,
-  assignedPolicyList
+  assignedPolicyList,
+  groupCriteriaValidator,
+  policyAssignmentValidator
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -43,42 +48,49 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(visitedSelected, visitedExpected, 'The returned value from the visited selector is as expected');
   });
 
-  test('nameValidator selector', function(assert) {
-    // isBlank & not visited
-    let nameExpected = '';
-    let visitedExpected = [];
-    let fullState = new ReduxDataHelper()
+  test('nameValidator selector - isBlank & not visited', function(assert) {
+    const nameExpected = '';
+    const visitedExpected = [];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizName(nameExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    let nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: true,
       showError: false,
       errorMessage: ''
     };
-    let nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & not visited) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = false;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // isBlank & visited
-    nameExpected = '';
-    visitedExpected = ['group.name'];
-    fullState = new ReduxDataHelper()
+  test('nameValidator selector - isBlank & visited', function(assert) {
+    const nameExpected = '';
+    const visitedExpected = ['group.name'];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizName(nameExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: true,
       showError: true,
       errorMessage: 'adminUsm.groupWizard.nameRequired'
     };
-    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & visited) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = false;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // nameExists
-    nameExpected = 'existingName';
-    visitedExpected = ['group.name'];
+  test('nameValidator selector - nameExists', function(assert) {
+    const nameExpected = 'existingName';
+    const visitedExpected = ['group.name'];
     const groupListPayload = [
       {
         id: 'group_000',
@@ -91,24 +103,28 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       }
     ];
 
-    fullState = new ReduxDataHelper()
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizName(nameExpected)
       .groupWizVisited(visitedExpected)
       .groupWizGroupList(groupListPayload)
       .build();
-    nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: true,
       showError: true,
       errorMessage: 'adminUsm.groupWizard.nameExists'
     };
-    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExists) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = false;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // nameExists for self check
-    nameExpected = 'existingName';
+  test('nameValidator selector - nameExists for self check', function(assert) {
+    const nameExpected = 'existingName';
     const idExpected = 'group_000';
-    visitedExpected = ['group.name'];
+    const visitedExpected = ['group.name'];
     const groupListPayload2 = [
       {
         id: 'group_000',
@@ -121,190 +137,154 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       }
     ];
 
-    fullState = new ReduxDataHelper()
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizId(idExpected)
       .groupWizName(nameExpected)
       .groupWizVisited(visitedExpected)
       .groupWizGroupList(groupListPayload2)
       .build();
-    nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: false,
       showError: false,
       errorMessage: ''
     };
-    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExists) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = true;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
 
-    // no error & visited
-    nameExpected = 'test name';
-    visitedExpected = ['group.name'];
-    fullState = new ReduxDataHelper()
+  });
+
+  test('nameValidator selector - no error & visited', function(assert) {
+    const nameExpected = 'test name';
+    const visitedExpected = ['group.name'];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizName(nameExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: false,
       showError: false,
       errorMessage: ''
     };
-    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (no error & visited) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = true;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
 
-    // exceedsLength
+  });
+
+  test('nameValidator selector - exceedsLength', function(assert) {
+    let nameExpected = 'test name';
     for (let index = 0; index < 10; index++) {
       nameExpected += 'the-name-is-greater-than-256-';
     }
-    fullState = new ReduxDataHelper()
+    const fullState = new ReduxDataHelper()
       .groupWiz()
       .groupWizName(nameExpected)
       .build();
-    nameValidatorExpected = {
+    const nameValidatorExpected = {
       isError: true,
       showError: true,
       errorMessage: 'adminUsm.groupWizard.nameExceedsMaxLength'
     };
-    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    const nameValidatorSelected = nameValidator(Immutable.from(fullState));
     assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExceedsMaxLength) returned value from the nameValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = false;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
   });
 
-  test('descriptionValidator selector', function(assert) {
-    // isBlank & not visited
-    let descExpected = '';
-    let visitedExpected = [];
-    let fullState = new ReduxDataHelper()
+  test('descriptionValidator selector - isBlank & not visited', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = '';
+    const visitedExpected = [];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
+      .groupWizName(nameExpected)
       .groupWizDescription(descExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    let descriptionValidatorExpected = {
+    const descriptionValidatorExpected = {
       isError: false,
       showError: false,
       errorMessage: ''
     };
-    let descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    const descValidatorSelected = descriptionValidator(Immutable.from(fullState));
     assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (isBlank & not visited) returned value from the descriptionValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = true;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // isBlank & visited
-    descExpected = '';
-    visitedExpected = ['group.description'];
-    fullState = new ReduxDataHelper()
+  test('descriptionValidator selector - isBlank & visited', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = '';
+    const visitedExpected = ['group.description'];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
+      .groupWizName(nameExpected)
       .groupWizDescription(descExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    descriptionValidatorExpected = {
+    const descriptionValidatorExpected = {
       isError: false,
       showError: false,
       errorMessage: ''
     };
-    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    const descValidatorSelected = descriptionValidator(Immutable.from(fullState));
     assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (isBlank & visited) returned value from the descriptionValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = true;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // no error & visited
-    descExpected = 'test description';
-    visitedExpected = ['group.description'];
-    fullState = new ReduxDataHelper()
+  test('descriptionValidator selector - no error & visited', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = 'test description';
+    const visitedExpected = ['group.description'];
+    const fullState = new ReduxDataHelper()
       .groupWiz()
+      .groupWizName(nameExpected)
       .groupWizDescription(descExpected)
       .groupWizVisited(visitedExpected)
       .build();
-    descriptionValidatorExpected = {
+    const descriptionValidatorExpected = {
       isError: false,
       showError: false,
       errorMessage: ''
     };
-    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    const descValidatorSelected = descriptionValidator(Immutable.from(fullState));
     assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (no error & visited) returned value from the descriptionValidator selector is as expected');
+    const isIdentifyGroupStepValidExpected = true;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+  });
 
-    // descriptionExceedsMaxLength & visited
+  test('descriptionValidator selector - exceedsMaxLength & visited', function(assert) {
+    const nameExpected = 'test name';
+    let descExpected = '';
     for (let index = 0; index < 220; index++) {
       descExpected += 'the-description-is-greater-than-8000-';
     }
-    fullState = new ReduxDataHelper()
+    const fullState = new ReduxDataHelper()
       .groupWiz()
+      .groupWizName(nameExpected)
       .groupWizDescription(descExpected)
       .build();
-    descriptionValidatorExpected = {
+    const descriptionValidatorExpected = {
       isError: true,
       showError: true,
       errorMessage: 'adminUsm.groupWizard.descriptionExceedsMaxLength'
     };
-    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    const descValidatorSelected = descriptionValidator(Immutable.from(fullState));
     assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (descriptionExceedsMaxLength) returned value from the descriptionValidator selector is as expected');
-  });
-
-  test('steps selector', function(assert) {
-    const stepId0Expected = 'identifyGroupStep';
-    const fullState = new ReduxDataHelper().groupWiz().build();
-    const stepsExpected = _.cloneDeep(fullState.usm.groupWizard.steps);
-    const stepsSelected = steps(Immutable.from(fullState));
-    assert.deepEqual(stepsSelected, stepsExpected, 'The returned value from the steps selector is as expected');
-    assert.deepEqual(stepsSelected[0].id, stepId0Expected, `steps[0].id is ${stepId0Expected}`);
-  });
-
-  test('isIdentifyGroupStepValid selector', function(assert) {
-    // invalid name
-    let nameExpected = '';
-    let visitedExpected = ['group.name'];
-    let fullState = new ReduxDataHelper()
-      .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizVisited(visitedExpected)
-      .build();
-    let isIdentifyGroupStepValidExpected = false;
-    let isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
-    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
-
-    // valid name and invalid desc
-    nameExpected = 'test';
-    visitedExpected = ['group.name', 'group.description'];
-    let descExpected = '';
-    for (let index = 0; index < 220; index++) {
-      descExpected += 'the-description-is-greater-than-8000-';
-    }
-    fullState = new ReduxDataHelper()
-      .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizDescription(descExpected)
-      .groupWizVisited(visitedExpected)
-      .build();
-    isIdentifyGroupStepValidExpected = false;
-    isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
-    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
-
-    // invalid name and invalid desc
-    nameExpected = '';
-    for (let index = 0; index < 10; index++) {
-      nameExpected += 'the-name-is-greater-than-256-';
-    }
-    visitedExpected = ['group.name', 'group.description'];
-    descExpected = '';
-    for (let index = 0; index < 220; index++) {
-      descExpected += 'the-description-is-greater-than-8000-';
-    }
-
-    fullState = new ReduxDataHelper()
-      .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizDescription(descExpected)
-      .groupWizVisited(visitedExpected)
-      .build();
-    isIdentifyGroupStepValidExpected = false;
-    isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
-    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
-
-    // valid
-    nameExpected = 'test name';
-    visitedExpected = ['group.name'];
-    fullState = new ReduxDataHelper()
-      .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizVisited(visitedExpected)
-      .build();
-    isIdentifyGroupStepValidExpected = true;
-    isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    const isIdentifyGroupStepValidExpected = false;
+    const isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
     assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
   });
 
@@ -326,6 +306,63 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     isGroupLoadingExpected = false;
     isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is false when groupStatus is complete');
+  });
+
+  test('steps selector', function(assert) {
+    const stepId0Expected = 'identifyGroupStep';
+    const fullState = new ReduxDataHelper().groupWiz().build();
+    const stepsExpected = _.cloneDeep(fullState.usm.groupWizard.steps);
+    const stepsSelected = steps(Immutable.from(fullState));
+    assert.deepEqual(stepsSelected, stepsExpected, 'The returned value from the steps selector is as expected');
+    assert.deepEqual(stepsSelected[0].id, stepId0Expected, `steps[0].id is ${stepId0Expected}`);
+  });
+
+  test('isIdentifyGroupStepVisited selector - false', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('identifyGroupStep', false)
+      .build();
+    assert.equal(isIdentifyGroupStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+  });
+
+  test('isIdentifyGroupStepVisited selector - true', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('identifyGroupStep', true)
+      .build();
+    assert.equal(isIdentifyGroupStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
+  });
+
+  test('isDefineGroupStepVisited selector - false', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('defineGroupStep', false)
+      .build();
+    assert.equal(isDefineGroupStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+  });
+
+  test('isDefineGroupStepVisited selector - true', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('defineGroupStep', true)
+      .build();
+    assert.equal(isDefineGroupStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
+  });
+
+  test('isApplyPolicyStepVisited selector - false', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('applyPolicyStep', false)
+      .build();
+    assert.equal(isApplyPolicyStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+  });
+
+  test('isApplyPolicyStepVisited selector - true', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepVisited('applyPolicyStep', true)
+      .build();
+    assert.equal(isApplyPolicyStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
   });
 
   const policyListPayload = [
@@ -492,6 +529,138 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       .build();
     const policyList = assignedPolicyList(Immutable.from(fullState));
     assert.deepEqual(policyList, expectedPolicyList, 'The returned value from the assignedPolicyList is as expected');
+  });
+
+  test('groupCriteriaValidator selector - no criteria', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {},
+      'assignedPolicies': {}
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(groupCriteriaValidator(Immutable.from(fullState)), { isError: true }, 'The returned value from the groupCriteriaValidator is as expected');
+
+    const isDefineGroupStepValidExpected = false;
+    const isDefineGroupStepValidSelected = isDefineGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isDefineGroupStepValidSelected, isDefineGroupStepValidExpected, 'The returned value from the isDefineGroupStepValid selector is as expected');
+  });
+
+  test('groupCriteriaValidator selector - invalid criteria', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {
+        'conjunction': 'AND',
+        'criteria': [
+          ['osType', 'IN', []]
+        ]
+      },
+      'assignedPolicies': {}
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(groupCriteriaValidator(Immutable.from(fullState)), { isError: true }, 'The returned value from the groupCriteriaValidator is as expected');
+
+    const isDefineGroupStepValidExpected = false;
+    const isDefineGroupStepValidSelected = isDefineGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isDefineGroupStepValidSelected, isDefineGroupStepValidExpected, 'The returned value from the isDefineGroupStepValid selector is as expected');
+  });
+
+  test('groupCriteriaValidator selector - valid criteria', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {
+        'conjunction': 'AND',
+        'criteria': [
+          ['osType', 'IN', ['Windows']],
+          ['osType', 'IN', ['Linux']],
+          ['osDescription', 'ENDS_WITH', ['hebjc']],
+          ['ipv4', 'NOT_IN', ['125.1.1.227,125.1.1.78\n']],
+          ['hostname', 'EQUAL', ['trbkx']],
+          ['osDescription', 'CONTAINS', ['xltbk']],
+          ['ipv4', 'NOT_BETWEEN', ['1.1.1.45', '1.1.2.193']]
+        ]
+      },
+      'assignedPolicies': {}
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(groupCriteriaValidator(Immutable.from(fullState)), { isError: false }, 'The returned value from the groupCriteriaValidator is as expected');
+
+    const isDefineGroupStepValidExpected = true;
+    const isDefineGroupStepValidSelected = isDefineGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isDefineGroupStepValidSelected, isDefineGroupStepValidExpected, 'The returned value from the isDefineGroupStepValid selector is as expected');
+  });
+
+  test('policyAssignmentValidator selector - no assignments', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {}
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(policyAssignmentValidator(Immutable.from(fullState)), { isError: false }, 'The returned value from the policyAssignmentValidator is as expected');
+
+    const isApplyPolicyStepValidExpected = true;
+    const isApplyPolicyStepValidSelected = isApplyPolicyStepValid(Immutable.from(fullState));
+    assert.deepEqual(isApplyPolicyStepValidSelected, isApplyPolicyStepValidExpected, 'The returned value from the isApplyPolicyStepValid selector is as expected');
+  });
+
+  test('policyAssignmentValidator selector - invalid assignments', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'placeholder',
+          'name': 'Select a Policy'
+        }
+      }
+    };
+
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(policyAssignmentValidator(Immutable.from(fullState)), { isError: true }, 'The returned value from the policyAssignmentValidator is as expected');
+
+    const isApplyPolicyStepValidExpected = false;
+    const isApplyPolicyStepValidSelected = isApplyPolicyStepValid(Immutable.from(fullState));
+    assert.deepEqual(isApplyPolicyStepValidSelected, isApplyPolicyStepValidExpected, 'The returned value from the isApplyPolicyStepValid selector is as expected');
+  });
+
+  test('policyAssignmentValidator selector - valid assignments', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload1)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(policyAssignmentValidator(Immutable.from(fullState)), { isError: false }, 'The returned value from the policyAssignmentValidator is as expected');
+
+    const isApplyPolicyStepValidExpected = true;
+    const isApplyPolicyStepValidSelected = isApplyPolicyStepValid(Immutable.from(fullState));
+    assert.deepEqual(isApplyPolicyStepValidSelected, isApplyPolicyStepValidExpected, 'The returned value from the isApplyPolicyStepValid selector is as expected');
   });
 
 });

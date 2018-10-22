@@ -53,9 +53,12 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
 
   @computed('policyList', 'selectedSourceType')
   availablePoliciesForSourceType(policyList, sourceType) {
-    let list = [];
-    if (sourceType) {
-      list = policyList.filter((policy) => policy.policyType === sourceType);
+    const list = [];
+    for (let index = 0; index < policyList.length; index++) {
+      const policy = policyList[index];
+      if ((policy.policyType === sourceType) && (policy.lastPublishedOn > 0)) {
+        list.push(policy);
+      }
     }
     return list;
   },
@@ -63,16 +66,20 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
   actions: {
 
     handleSourceTypeChange(value) {
-      const previousType = this.get('selectedSourceType');
-      const newAssignments = { ...(this.get('assignedPolicies')) };
-      delete newAssignments[previousType];
-      // Build the placeholder for policy selection
-      // We only need id and name
-      const i18n = lookup('service:i18n');
-      const placeholderName = i18n.t('adminUsm.groupWizard.applyPolicy.policyPlaceholder').toString();
-      const reference = { referenceId: 'placeholder', name: placeholderName };
-      newAssignments[value] = reference;
-      this.send('editGroup', 'group.assignedPolicies', newAssignments);
+      if (value) {
+        const previousType = this.get('selectedSourceType');
+        const newAssignments = { ...(this.get('assignedPolicies')) };
+        delete newAssignments[previousType];
+        // Build the placeholder for policy selection
+        // We only need id and name
+        const i18n = lookup('service:i18n');
+        const placeholderName = i18n.t('adminUsm.groupWizard.applyPolicy.policyPlaceholder').toString();
+        const reference = { referenceId: 'placeholder', name: placeholderName };
+        newAssignments[value] = reference;
+        this.send('editGroup', 'group.assignedPolicies', newAssignments);
+      } else {
+        this.send('editGroup', 'group.assignedPolicies', {});
+      }
     },
 
     handlePolicyAssignment(value) {

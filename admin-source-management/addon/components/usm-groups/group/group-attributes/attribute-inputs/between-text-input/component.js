@@ -3,6 +3,11 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { groupExpressionValidator } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import { updateGroupCriteria } from 'admin-source-management/actions/creators/group-wizard-creators';
+import { isDefineGroupStepVisited } from 'admin-source-management/reducers/usm/group-wizard-selectors';
+
+const stateToComputed = (state) => ({
+  stepVisited: isDefineGroupStepVisited(state)
+});
 
 const dispatchToActions = {
   updateGroupCriteria
@@ -22,14 +27,14 @@ const BetweenTextInput = Component.extend({
     return value[1];
   },
 
-  @computed('firstValue', 'validation')
-  firstValueValidator(firstValue, validation) {
-    return groupExpressionValidator(firstValue, validation, true, true);
+  @computed('value', 'validation', 'stepVisited')
+  firstValueValidator(value, validation, stepVisited) {
+    return groupExpressionValidator(value[0], validation, true, stepVisited);
   },
 
-  @computed('secondValue', 'validation')
-  secondValueValidator(secondValue, validation) {
-    return groupExpressionValidator(secondValue, validation, true, true);
+  @computed('value', 'validation', 'stepVisited')
+  secondValueValidator(value, validation, stepVisited) {
+    return groupExpressionValidator(value[1], validation, true, stepVisited);
   },
 
   actions: {
@@ -42,4 +47,4 @@ const BetweenTextInput = Component.extend({
     }
   }
 });
-export default connect(undefined, dispatchToActions)(BetweenTextInput);
+export default connect(stateToComputed, dispatchToActions)(BetweenTextInput);

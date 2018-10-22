@@ -32,9 +32,9 @@ module('Integration | Component | textarea-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validIPv4List');
     new ReduxDataHelper(setState)
       .groupWiz()
+      .groupWizStepVisited('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
-    // this.set('criteria', state.usm.groupWizard.group.groupCriteria.criteria[0]);
     this.set('criteria', [ 'IN', 'textarea-input', '' ]);
     this.set('criteriaPath', '');
     this.set('index', '2');
@@ -64,9 +64,9 @@ module('Integration | Component | textarea-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validHostnameList');
     new ReduxDataHelper(setState)
       .groupWiz()
+      .groupWizStepVisited('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
-    // this.set('criteria', state.usm.groupWizard.group.groupCriteria.criteria[0]);
     this.set('criteria', [ 'IN', 'textarea-input', '' ]);
     this.set('criteriaPath', '');
     this.set('index', '2');

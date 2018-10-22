@@ -4,10 +4,6 @@ import { handle } from 'redux-pack';
 import _ from 'lodash';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
-// const ATTRBT = ['osType', 'osDescription', 'hostname', 'ipv4', 'ipv6'];
-// const OPRTR = ['IN', 'EQUAL', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'NOT_IN', 'BETWEEN', 'NOT_BETWEEN'];
-// const INPT = ['text-input', 'os-selector', 'between-text-input', 'textarea-input'];
-// const VLDTR = ['none', 'notEmpty', 'maxLength255', 'validHostname', 'validHostnameList', 'validHostnameChars', 'validIPv4', 'validIPv4List', 'validIPv6', 'validIPv6List'];
 // In the future the _GROUP_ATTRIBUTES_MAP may be initialize with an API call
 // _GROUP_ATTRIBUTES_MAP is derived from https://wiki.na.rsa.net/display/RPA/Cycle+9+Attributes
 // The _GROUP_ATTRIBUTES_MAP is used to draw dynamically the selectors for attributes and operators and also the associated input/s
@@ -50,6 +46,22 @@ const _GROUP_ATTRIBUTES_MAP = {
 };
 /* eslint-enable no-multi-spaces */
 
+export const getValidatorForExpression = (expression) => {
+  let validator = null;
+  if (expression) {
+    const [attribute, operator] = expression;
+    const attrIndex = _GROUP_ATTRIBUTES_MAP.attribute.indexOf(attribute);
+    for (let index = 0; index < _GROUP_ATTRIBUTES_MAP.map[attrIndex][1].length; index++) {
+      const element = _GROUP_ATTRIBUTES_MAP.map[attrIndex][1][index];
+      if (element[0] === operator) {
+        validator = element[2];
+        break;
+      }
+    }
+  }
+  return validator;
+};
+
 export const initialState = {
   // the group object to be created/updated/saved
   group: {
@@ -87,6 +99,7 @@ export const initialState = {
   steps: [
     {
       id: 'identifyGroupStep',
+      isVisited: false,
       prevStepId: '',
       nextStepId: 'defineGroupStep',
       title: 'adminUsm.groupWizard.identifyGroup',
@@ -96,6 +109,7 @@ export const initialState = {
     },
     {
       id: 'defineGroupStep',
+      isVisited: false,
       prevStepId: 'identifyGroupStep',
       nextStepId: 'applyPolicyStep',
       title: 'adminUsm.groupWizard.defineGroup',
@@ -105,19 +119,11 @@ export const initialState = {
     },
     {
       id: 'applyPolicyStep',
+      isVisited: false,
       prevStepId: 'defineGroupStep',
-      nextStepId: 'reviewGroupStep',
+      nextStepId: '',
       title: 'adminUsm.groupWizard.applyPolicy.stepTitle',
       stepComponent: 'usm-groups/group-wizard/apply-policy-step',
-      titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
-      toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
-    },
-    {
-      id: 'reviewGroupStep',
-      prevStepId: 'applyPolicyStep',
-      nextStepId: '',
-      title: 'adminUsm.groupWizard.reviewGroup',
-      stepComponent: 'usm-groups/group-wizard/review-group-step',
       titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
       toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
     }

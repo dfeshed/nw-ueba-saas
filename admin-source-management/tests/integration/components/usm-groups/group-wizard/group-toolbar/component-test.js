@@ -1,15 +1,13 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled } from '@ember/test-helpers';
-import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../../helpers/patch-socket';
-import groupWizardCreators from 'admin-source-management/actions/creators/group-wizard-creators';
 
 let setState;
 
@@ -34,39 +32,71 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.equal(findAll('.group-wizard-toolbar').length, 1, 'The component appears in the DOM');
   });
 
-  test('Toolbar appearance for Identify Group step with invalid data', async function(assert) {
+  const policyListPayload = [
+    {
+      id: '__default_edr_policy',
+      name: 'Default EDR Policy',
+      policyType: 'edrPolicy',
+      description: 'Default EDR Policy __default_edr_policy',
+      lastPublishedOn: 1527489158739,
+      dirty: false,
+      defaultPolicy: true
+    },
+    {
+      id: 'policy_001',
+      name: 'Policy 001',
+      policyType: 'edrPolicy',
+      description: 'EMC 001 of policy policy_001',
+      lastPublishedOn: 1527489158739,
+      dirty: true,
+      defaultPolicy: false
+    }
+  ];
+
+  const groupPayloadIdentifyGroupStep = {
+    id: 'group_001',
+    name: 'Group 001',
+    groupCriteria: {},
+    assignedPolicies: {}
+  };
+
+  test('Identify Group Step - Toolbar appearance with invalid data', async function(assert) {
     assert.expect(5);
     const state = new ReduxDataHelper(setState).groupWiz().build();
     this.set('step', state.usm.groupWizard.steps[0]);
     await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
     assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
-    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
     assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
     assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  test('Toolbar appearance for Identify Group step valid data', async function(assert) {
+  test('Identify Group Step - Toolbar appearance with valid data', async function(assert) {
     assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadIdentifyGroupStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
     this.set('step', state.usm.groupWizard.steps[0]);
     await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
     assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
     assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
     assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
-    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  test('Toolbar closure actions for Identify Group step with valid data', async function(assert) {
+  test('Identify Group Step - Toolbar closure actions with valid data', async function(assert) {
     const done = assert.async(2);
-    assert.expect(2);
+    assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadIdentifyGroupStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
     this.set('step', state.usm.groupWizard.steps[0]);
     this.set('transitionToStep', () => {});
@@ -76,6 +106,10 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       transitionToStep=(action transitionToStep)
       transitionToClose=(action transitionToClose)}}`
     );
+    await settled();
+    assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
 
     // skip prev-button & publish-button since they aren't rendered
 
@@ -98,16 +132,67 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     await click(cancelBtnEl);
   });
 
-  // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set
-  skip('Toolbar save action for Identify Group step with valid data', async function(assert) {
-    const done = assert.async(2);
-    assert.expect(3);
-    const actionSpy = sinon.spy(groupWizardCreators, 'saveGroup');
+  const groupPayloadDefineGroupStep = {
+    id: 'group_001',
+    name: 'Group 001',
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'osType',
+          'IN',
+          [
+            'Linux'
+          ]
+        ]
+      ]
+    },
+    assignedPolicies: {}
+  };
+
+  test('Define Group Step - Toolbar appearance with invalid data', async function(assert) {
+    assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadIdentifyGroupStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
-    this.set('step', state.usm.groupWizard.steps[0]);
+    this.set('step', state.usm.groupWizard.steps[1]);
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
+    assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
+    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+  });
+
+  test('Define Group Step - Toolbar appearance with valid data', async function(assert) {
+    assert.expect(5);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadDefineGroupStep)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[1]);
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
+    assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+  });
+
+  test('Define Group Step - Toolbar closure actions with valid data', async function(assert) {
+    const done = assert.async(3);
+    assert.expect(6);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadDefineGroupStep)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[1]);
     this.set('transitionToStep', () => {});
     this.set('transitionToClose', () => {});
     await render(hbs`{{usm-groups/group-wizard/group-toolbar
@@ -115,33 +200,188 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       transitionToStep=(action transitionToStep)
       transitionToClose=(action transitionToClose)}}`
     );
-    done();
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
 
-    // skip prev-button & publish-button since they aren't rendered
-
-    // clicking the save-button should dispatch the saveGroup action
-    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
-    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
-    await focus(saveBtnEl);
-    await click(saveBtnEl);
-    return settled().then(() => {
-      assert.ok(actionSpy.calledOnce, 'The saveGroup action was called  once by Save');
-      // only checking first arg as second arg will be a Function that lives in the Component
-      assert.equal(actionSpy.getCall(0).args[0], state.usm.groupWizard.group);
-      actionSpy.restore();
+    // clicking the prev-button should call transitionToStep() with the correct stepId
+    // update transitionToStep for prev-button
+    this.set('transitionToStep', (stepId) => {
+      assert.equal(stepId, this.get('step').prevStepId, `transitionToStep(${stepId}) was called with the correct stepId by Previous`);
       done();
     });
+    const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
+    await click(prevBtnEl);
+
+    // clicking the next-button should call transitionToStep() with the correct stepId
+    // update transitionToStep for next-button
+    this.set('transitionToStep', (stepId) => {
+      assert.equal(stepId, this.get('step').nextStepId, `transitionToStep(${stepId}) was called with the correct stepId by Next`);
+      done();
+    });
+    const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
+    await click(nextBtnEl);
+
+    // clicking the cancel-button should call transitionToClose()
+    // update transitionToClose for cancel-button
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+      done();
+    });
+    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
+    await click(cancelBtnEl);
   });
+
+  const groupPayloadApplyPolicyStepInvalidData = {
+    id: 'group_001',
+    name: 'Group 001',
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'osType',
+          'IN',
+          [
+            'Linux'
+          ]
+        ]
+      ]
+    },
+    assignedPolicies: {
+      edrPolicy: {
+        name: 'Select a Policy',
+        referenceId: 'placeholder'
+      }
+    }
+  };
+
+  test('Apply Policy Step - Toolbar appearance with invalid data', async function(assert) {
+    assert.expect(4);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadApplyPolicyStepInvalidData)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.publish-button.is-disabled').length, 1, 'The Publish button appears in the DOM and is disabled');
+    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+  });
+
+  const groupPayloadApplyPolicyStep = {
+    id: 'group_001',
+    name: 'Group 001',
+    groupCriteria: {
+      conjunction: 'AND',
+      criteria: [
+        [
+          'osType',
+          'IN',
+          [
+            'Linux'
+          ]
+        ]
+      ]
+    },
+    assignedPolicies: {
+      edrPolicy: {
+        referenceId: 'policy_001',
+        name: 'Policy 001'
+      }
+    }
+  };
+
+  test('Apply Policy Step - Toolbar appearance with valid data', async function(assert) {
+    assert.expect(4);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+  });
+
+  test('Apply Policy Step - Toolbar closure actions with valid data', async function(assert) {
+    const done = assert.async(4);
+    assert.expect(8);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+
+    // clicking the prev-button should call transitionToStep() with the correct stepId
+    // update transitionToStep for prev-button
+    this.set('transitionToStep', (stepId) => {
+      assert.equal(stepId, this.get('step').prevStepId, `transitionToStep(${stepId}) was called with the correct stepId by Previous`);
+      done();
+    });
+    const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
+    await click(prevBtnEl);
+
+    // clicking the publish-button should call transitionToClose()
+    // update transitionToClose for publish-button
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+      done();
+    });
+    const [publishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
+    await click(publishBtnEl);
+
+    // clicking the save-button should call transitionToClose()
+    // update transitionToClose for save-button
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+      done();
+    });
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
+    await click(saveBtnEl);
+
+    // clicking the cancel-button should call transitionToClose()
+    // update transitionToClose for cancel-button
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+      done();
+    });
+    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
+    await click(cancelBtnEl);
+  });
+
 
   test('On failing to save a group, an error flash message is shown', async function(assert) {
     const done = assert.async();
     assert.expect(2);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
-    this.set('step', state.usm.groupWizard.steps[0]);
+    this.set('step', state.usm.groupWizard.steps[2]);
     await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
 
     throwSocket();
     patchFlash((flash) => {
@@ -162,9 +402,10 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.expect(3);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
-    this.set('step', state.usm.groupWizard.steps[0]);
+    this.set('step', state.usm.groupWizard.steps[2]);
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
     });
@@ -190,7 +431,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.expect(3);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
     this.set('step', state.usm.groupWizard.steps[3]);
     await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
@@ -215,7 +457,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.expect(4);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizName('test name')
+      .groupWizGroup(groupPayloadApplyPolicyStep)
+      .groupWizPolicyList(policyListPayload)
       .build();
     this.set('step', state.usm.groupWizard.steps[3]);
     this.set('transitionToClose', () => {
@@ -237,26 +480,6 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
 
     const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
     await click(savePublishBtnEl);
-  });
-
-  test('Name and description errors do not enable Next and Save buttons', async function(assert) {
-    assert.expect(5);
-    let testDesc = '';
-    for (let index = 0; index < 220; index++) {
-      testDesc += 'the-description-is-greater-than-8000-';
-    }
-    const state = new ReduxDataHelper(setState)
-      .groupWiz()
-      .groupWizName('')
-      .groupWizDescription(testDesc)
-      .build();
-    this.set('step', state.usm.groupWizard.steps[0]);
-    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
-    assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
-    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is NOT enabled');
-    assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
-    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is NOT enabled');
-    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
 });

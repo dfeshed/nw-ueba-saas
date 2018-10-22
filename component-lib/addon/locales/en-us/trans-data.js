@@ -3658,7 +3658,7 @@ export default {
         },
         publishGroups: {
           title: 'Publish Group(s)',
-          confirm: 'Are you sure you want to publish the {{numItems}} selected UnPublished Group(s)?',
+          confirm: 'Are you sure you want to publish the {{numItems}} selected Unpublished Group(s)?',
           ok: 'Publish Group(s)',
           success: 'Successfully published selected Group(s)',
           failure: 'There was an unexpected problem publishing the Group(s)'
@@ -3693,7 +3693,7 @@ export default {
         },
         publishPolicies: {
           title: 'Publish Policy(ies)',
-          confirm: 'Are you sure you want to publish the {{numItems}} selected UnPublished Policy(ies)?',
+          confirm: 'Are you sure you want to publish the {{numItems}} selected Unpublished Policy(ies)?',
           ok: 'Publish Policy(ies)',
           success: 'Successfully published selected Policy(ies)',
           failure: 'There was an unexpected problem publishing the Policy(ies)'
@@ -3836,6 +3836,7 @@ export default {
       addCondition: 'Add Condition',
       maxTenCriteria: 'This group contains the maximum number of conditions',
       actionMessages: {
+        nextFailure: 'Please fix all the validation errors before continuing to next step',
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
@@ -3894,12 +3895,12 @@ export default {
       }
     },
     policyTypes: {
-      edrPolicy: 'EndPointScan',
-      windowsLogPolicy: 'EndPointWindowsLogs'
+      edrPolicy: 'EndpointEDR',
+      windowsLogPolicy: 'EndpointWindows'
     },
     publishStatus: {
-      unpublished: 'UnPublished',
-      unpublishedEdits: 'UnPublished Edits',
+      unpublished: 'Unpublished',
+      unpublishedEdits: 'Unpublished Edits',
       published: 'Published'
     },
     groupCriteria: {

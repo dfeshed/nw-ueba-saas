@@ -4,6 +4,11 @@ import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 import { groupExpressionValidator } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import { updateGroupCriteria } from 'admin-source-management/actions/creators/group-wizard-creators';
+import { isDefineGroupStepVisited } from 'admin-source-management/reducers/usm/group-wizard-selectors';
+
+const stateToComputed = (state) => ({
+  stepVisited: isDefineGroupStepVisited(state)
+});
 
 const dispatchToActions = {
   updateGroupCriteria
@@ -21,9 +26,9 @@ const OsSelector = Component.extend({
     return _.cloneDeep(value);
   },
 
-  @computed('selectedValues', 'validation')
-  validator(selectedValues, validation) {
-    return groupExpressionValidator(selectedValues, validation, false, true);
+  @computed('selectedValues', 'validation', 'stepVisited')
+  validator(selectedValues, validation, stepVisited) {
+    return groupExpressionValidator(selectedValues, validation, true, stepVisited);
   },
 
   actions: {
@@ -32,4 +37,4 @@ const OsSelector = Component.extend({
     }
   }
 });
-export default connect(undefined, dispatchToActions)(OsSelector);
+export default connect(stateToComputed, dispatchToActions)(OsSelector);
