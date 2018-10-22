@@ -1,0 +1,27 @@
+.group-ranking  {
+  .choose-source-step {
+    .loading {
+      min-height: 40px;
+      margin-left: rsa-whitespace(more);
+    }
+    .source-type-top-text, .source-type-selector {
+      margin-top: rsa-whitespace();
+      margin-bottom: rsa-whitespace(more);
+      margin-left: rsa-whitespace();
+    }
+  }
+  .edit-ranking-step {
+    table {
+      width: 900px;
+      margin: rsa-whitespace();
+      th, td {
+        padding: rsa-whitespace();
+        border-bottom: 1px solid border-color(primary);
+      }
+      th {
+        border-top: 1px solid border-color(primary);
+        text-align: left;
+      }
+    }
+  }
+}

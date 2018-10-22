@@ -55,6 +55,40 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     assert.deepEqual(result.group, expectedResult);
   });
 
+  test('on FETCH_GROUP_RANKING, get-all wait', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupRanking('wait')
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUP_RANKING });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'group renking is not-set and groupRankingStatus is wait');
+  });
+
+  test('on FETCH_GROUP_RANKING, get-all complete', function(assert) {
+    const fetchGroupPayload = {
+      data: [
+        {
+          'id': 'group_001',
+          'name': 'Zebra 001',
+          'description': 'Zebra 001 of group group_001',
+          'dirty': false
+        }
+      ]
+    };
+    const expectedEndState = new ReduxDataHelper()
+    .groupWiz()
+    .groupRanking('complete')
+    .groupRankingWithData(fetchGroupPayload)
+    .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_GROUP_RANKING,
+      payload: { data: fetchGroupPayload }
+    });
+    const result = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(result, expectedEndState);
+  });
+
   test('on ADD_OR_OPERATOR, set to AND', function(assert) {
     const initialState2 = Immutable.from({
       group: {

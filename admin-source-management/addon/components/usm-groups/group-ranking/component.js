@@ -2,13 +2,11 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import {
-  rankingSteps,
-  isGroupLoading
+  rankingSteps
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const stateToComputed = (state) => ({
-  rankingSteps: rankingSteps(state),
-  isGroupLoading: isGroupLoading(state)
+  rankingSteps: rankingSteps(state)
 });
 
 const GroupRanking = Component.extend({

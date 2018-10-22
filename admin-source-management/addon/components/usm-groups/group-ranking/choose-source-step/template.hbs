@@ -1,2 +1,32 @@
-<h1>choose-source-step</h1>
-<br><br><br><br><br>
+<vbox>
+  <hbox class="source-type-top-text">
+    {{t 'adminUsm.groupRankingWizard.chooseSourceTopText'}}
+  </hbox>
+  <hbox class="source-type-selector">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
+      </div>
+      {{#power-select
+        searchEnabled=true
+        placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
+        selected=selectedSourceType
+        options=availablePolicySourceTypes
+        onchange=(action 'fetchGroupRanking') as |option|
+      }}
+        {{t (concat 'adminUsm.policyTypes.' option)}}
+      {{/power-select}}
+    </label>
+  </hbox>
+  <hbox class='loading'>
+    {{#if (eq groupRankingStatus 'wait')}}
+      <span class='loading-spinner'>
+        {{rsa-loader size='medium'}}
+      </span>
+    {{else if (eq groupRankingStatus 'error')}}
+      <span class='loading-error'>
+        {{t 'adminUsm.groupRankingWizard.error.generic'}}
+      </span>
+    {{/if}}
+  </hbox>
+</vbox>

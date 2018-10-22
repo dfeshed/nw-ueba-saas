@@ -3834,7 +3834,7 @@ export default {
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
       addCondition: 'Add Condition',
-      maxTenCriteria: 'A maximum of ten criteria is allowed',
+      maxTenCriteria: 'This group contains the maximum number of conditions',
       actionMessages: {
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully.',
@@ -3843,8 +3843,18 @@ export default {
       }
     },
     groupRankingWizard: {
+      column: {
+        rank: 'Rank',
+        groupNamw: 'Group Name',
+        policyApplied: 'Policy Applied',
+        nSources: 'No. Sources'
+      },
       chooseSource: 'Choose Source Type',
-      editRanking: 'Edit Ranking'
+      editRanking: 'Edit Ranking',
+      chooseSourceTopText: 'Ranking is establiched per source type.  Select a source type to continue.',
+      error: {
+        generic: 'An unexpected error has occurred attempting to retrieve this data'
+      }
     },
     policyWizard: {
       // identify-policy-step

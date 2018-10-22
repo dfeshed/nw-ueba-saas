@@ -228,6 +228,17 @@ export default class DataHelper {
     return this;
   }
 
+  groupRanking(status) {
+    _set(this.state, 'usm.groupWizard.groupRankingStatus', status);
+    return this;
+  }
+
+  groupRankingWithData(data) {
+    const groupRanking = data ? data : groups;
+    _set(this.state, 'usm.groupWizard.groupRanking', groupRanking);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   fetchGroupStatus(status) {
     _set(this.state, 'usm.group.itemsStatus', status);

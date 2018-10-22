@@ -5,9 +5,17 @@ import Notifications from 'component-lib/mixins/notifications';
 import { inject } from '@ember/service';
 
 import {
+  groupRankingStatus
+} from 'admin-source-management/reducers/usm/group-wizard-selectors';
+
+import {
   saveGroup,
   savePublishGroup
 } from 'admin-source-management/actions/creators/group-wizard-creators';
+
+const stateToComputed = (state) => ({
+  groupRankingStatus: groupRankingStatus(state)
+});
 
 const dispatchToActions = {
   saveGroup,
@@ -24,13 +32,12 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   // closure action required to be passed in
   transitionToStep: undefined,
 
-  @computed()
-  isStepValid() {
-    return true;
+  @computed('groupRankingStatus')
+  isStepValid(groupRankingStatus) {
+    return groupRankingStatus == 'complete';
   },
 
   actions: {
-
     transitionToPrevStep() {
       this.get('transitionToStep')(this.get('step').prevStepId);
     },
@@ -50,4 +57,4 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
 });
 
-export default connect(undefined, dispatchToActions)(GroupWizardToolbar);
+export default connect(stateToComputed, dispatchToActions)(GroupWizardToolbar);

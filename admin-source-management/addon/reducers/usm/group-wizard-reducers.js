@@ -144,7 +144,10 @@ export const initialState = {
   ],
   // keeps track of the form fields visited by the user
   visited: [],
-  groupAttributesMap: _GROUP_ATTRIBUTES_MAP
+  groupAttributesMap: _GROUP_ATTRIBUTES_MAP,
+  groupRanking: [],
+  selectedSourceType: null,
+  groupRankingStatus: null
 };
 
 export default reduxActions.handleActions({
@@ -306,6 +309,31 @@ export default reduxActions.handleActions({
       }
     };
     return state.set('group', editedGroup);
+  },
+
+  [ACTION_TYPES.FETCH_GROUP_RANKING]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          groupRanking: [],
+          groupRankingStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('groupRankingStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          groupRanking: action.payload.data,
+          groupRankingStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.SOURCE_TYPE]: (state, action) => {
+    const { sourceType } = action.payload;
+    return state.set('selectedSourceType', sourceType);
   },
 
   [ACTION_TYPES.SAVE_GROUP]: (state, action) => (

@@ -27,4 +27,9 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step').length, 1, 'The component appears in the DOM');
   });
+  test('Show group list', async function(assert) {
+    new ReduxDataHelper(setState).groupRankingWithData().build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step tr').length, 15, 'All 15 groups are showing');
+  });
 });

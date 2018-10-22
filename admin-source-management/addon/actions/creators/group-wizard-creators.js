@@ -117,6 +117,30 @@ const handleAndOrOperator = (andOr) => {
   };
 };
 
+const fetchGroupRanking = (sourceType) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_GROUP_RANKING,
+      promise: groupsAPI.fetchGroupRanking(sourceType),
+      meta: {
+        onSuccess() {
+          dispatch(handleSourceType(sourceType));
+        }
+      }
+    });
+  };
+};
+
+const handleSourceType = (sourceType) => {
+  const payload = {
+    sourceType
+  };
+  return {
+    type: ACTION_TYPES.SOURCE_TYPE,
+    payload
+  };
+};
+
 const saveGroup = (group, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.SAVE_GROUP,
@@ -159,5 +183,7 @@ export {
   savePublishGroup,
   addCriteria,
   removeCriteria,
-  handleAndOrOperator
+  handleAndOrOperator,
+  fetchGroupRanking,
+  handleSourceType
 };

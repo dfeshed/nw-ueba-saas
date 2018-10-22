@@ -21,6 +21,10 @@ const adminUsmConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/usm/group/get',
         requestDestination: '/ws/usm/group/get'
       },
+      fetchGroupRanking: {
+        subscriptionDestination: '/user/queue/usm/group/rank/get-all',
+        requestDestination: '/ws/usm/group/rank/get-all'
+      },
       remove: {
         subscriptionDestination: '/user/queue/usm/groups/remove',
         requestDestination: '/ws/usm/groups/remove'

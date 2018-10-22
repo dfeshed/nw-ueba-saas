@@ -5,6 +5,9 @@ import { exceedsLength, isNameInList } from './util/selector-helpers';
 const { createSelector } = reselect;
 
 const _groupWizardState = (state) => state.usm.groupWizard;
+export const selectedSourceType = (state) => _groupWizardState(state).selectedSourceType;
+export const groupRanking = (state) => _groupWizardState(state).groupRanking;
+export const groupRankingStatus = (state) => _groupWizardState(state).groupRankingStatus;
 export const group = (state) => _groupWizardState(state).group;
 export const assignedPolicies = (state) => _groupWizardState(state).group.assignedPolicies;
 export const groupList = (state) => _groupWizardState(state).groupList;

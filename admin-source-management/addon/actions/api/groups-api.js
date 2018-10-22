@@ -43,6 +43,19 @@ function fetchGroup(id) {
 }
 
 /**
+ * Fetches group ranking.
+ * @public
+ */
+function fetchGroupRanking(sourceType) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'fetchGroupRanking',
+    query: { data: sourceType }
+  });
+}
+
+/**
  * Deletes one or more groups from list of group IDs.
  * The server API is the same for both...
  * @param {*} ids
@@ -113,5 +126,6 @@ export default {
   fetchGroup,
   publishGroups,
   saveGroup,
-  savePublishGroup
+  savePublishGroup,
+  fetchGroupRanking
 };
