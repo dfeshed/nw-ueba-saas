@@ -29,7 +29,7 @@ const LogParsersToolbar = Component.extend({
   showToolTip: false,
   @computed('selectedLogParser', 'accessControl.canManageLogParsers')
   cannotDeleteParser(selectedLogParser, canManageLogParsers) {
-    return !canManageLogParsers || !selectedLogParser || selectedLogParser.outOfBox || selectedLogParser.deployed;
+    return !canManageLogParsers || !selectedLogParser || selectedLogParser.outOfBox;
   },
 
   actions: {

@@ -672,9 +672,9 @@ export default {
           title: 'Delete Parser',
           confirm: 'Are you sure you want to delete Parser \'{{parserName}}\'?',
           ok: 'Delete Parser',
-          success: 'You successfully deleted parser \'{{parserName}}\'',
-          failure: 'There was an unexpected problem deleting \'{{parserName}}\'',
-          beenDeployed: 'This parser has been deployed and cannot be deleted'
+          success: 'Successfully deleted parser \'{{parserName}}\' from all Log Decoders',
+          failure:'Failed to delete log parser \'{{parserName}}\' from all Log Decoders',
+          outOfBox: 'This parser is out of the Box and cannot be deleted'
         },
         deployLogParser: {
           title: 'Deploy Parser',
