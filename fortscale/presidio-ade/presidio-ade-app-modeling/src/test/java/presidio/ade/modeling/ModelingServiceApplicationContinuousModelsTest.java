@@ -52,7 +52,8 @@ import java.util.stream.Collectors;
 @ContextConfiguration
 @RunWith(SpringRunner.class)
 public class ModelingServiceApplicationContinuousModelsTest {
-    private static final String GENERATOR_CONTEXT_ID_PATTERN = "userId\\#[a-g]{1}[1-2]{1}";
+    private static final String GENERATOR_CONTEXT_PATTERN = "[a-g]{1}[1-2]{1}";
+    private static final String CONTEXT_KEY = "userId";
     private static final int GENERATOR_END_HOUR_OF_DAY = 16;
     private static final int GENERATOR_START_HOUR_OF_DAY = 5;
     @Autowired
@@ -174,8 +175,8 @@ public class ModelingServiceApplicationContinuousModelsTest {
             String featureName = conf.getName();
 
             AccumulatedAggregationFeatureRecordHourlyGenerator generator =
-                    new AccumulatedAggregationFeatureRecordHourlyGenerator(featureName, GENERATOR_CONTEXT_ID_PATTERN,
-                            aggregatedFeatureValuesMap, GENERATOR_START_HOUR_OF_DAY, GENERATOR_END_HOUR_OF_DAY);
+                    new AccumulatedAggregationFeatureRecordHourlyGenerator(featureName, GENERATOR_CONTEXT_PATTERN,
+                            CONTEXT_KEY, aggregatedFeatureValuesMap, GENERATOR_START_HOUR_OF_DAY, GENERATOR_END_HOUR_OF_DAY);
             List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = generator.generate();
             accumulationDataStore.store(accumulatedAggregationFeatureRecords, new StoreMetadataProperties());
         }
