@@ -2,8 +2,6 @@ package presidio.data.generators.event.registry;
 
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
-import presidio.data.domain.event.process.ProcessEvent;
-import presidio.data.domain.event.process.ProcessOperation;
 import presidio.data.domain.event.registry.RegistryEvent;
 import presidio.data.domain.event.registry.RegistryOperation;
 import presidio.data.generators.FixedDataSourceGenerator;
@@ -12,12 +10,8 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.process.IProcessDescriptionGenerator;
-import presidio.data.generators.event.process.ProcessDescriptionGenerator;
+import presidio.data.generators.machine.EndPointMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.QuestADMachineGenerator;
-import presidio.data.generators.processop.IProcessOperationGenerator;
-import presidio.data.generators.processop.ProcessOperationGenerator;
 import presidio.data.generators.registryop.IRegistryOperationGenerator;
 import presidio.data.generators.registryop.RegistryOperationGenerator;
 import presidio.data.generators.user.IUserGenerator;
@@ -48,7 +42,7 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Registry"});
         registryOperationGenerator = new RegistryOperationGenerator();
-        machineEntityGenerator = new QuestADMachineGenerator();
+        machineEntityGenerator = new EndPointMachineGenerator();
     }
 
     @Override
