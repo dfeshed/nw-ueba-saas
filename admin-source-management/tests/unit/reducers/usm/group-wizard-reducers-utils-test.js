@@ -22,9 +22,9 @@ module('Unit | Reducers | Group Wizard Reducers Utils', function(hooks) {
 
   test('getValidatorForExpression(hostname)', function(assert) {
     assert.equal(getValidatorForExpression(['hostname', 'EQUAL', []]), 'validHostname', 'Validator for \'EQUAL\' is \'validHostname\' as expected');
-    assert.equal(getValidatorForExpression(['hostname', 'CONTAINS', []]), 'validHostnameChars', 'Validator for \'CONTAINS\' is \'validHostnameChars\' as expected');
-    assert.equal(getValidatorForExpression(['hostname', 'STARTS_WITH', []]), 'validHostnameChars', 'Validator for \'STARTS_WITH\' is \'validHostnameChars\' as expected');
-    assert.equal(getValidatorForExpression(['hostname', 'ENDS_WITH', []]), 'validHostnameChars', 'Validator for \'ENDS_WITH\' is \'validHostnameChars\' as expected');
+    assert.equal(getValidatorForExpression(['hostname', 'CONTAINS', []]), 'validHostnameContains', 'Validator for \'CONTAINS\' is \'validHostnameContains\' as expected');
+    assert.equal(getValidatorForExpression(['hostname', 'STARTS_WITH', []]), 'validHostnameStartsWith', 'Validator for \'STARTS_WITH\' is \'validHostnameStartsWith\' as expected');
+    assert.equal(getValidatorForExpression(['hostname', 'ENDS_WITH', []]), 'validHostnameEndsWith', 'Validator for \'ENDS_WITH\' is \'validHostnameEndsWith\' as expected');
     assert.equal(getValidatorForExpression(['hostname', 'IN', []]), 'validHostnameList', 'Validator for \'ENDS_WITH\' is \'validHostnameList\' as expected');
   });
 

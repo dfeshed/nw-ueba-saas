@@ -28,9 +28,11 @@ const isNameInList = (list, id, name) => {
 // hostname sources:
 // http://regexlib.com/Search.aspx?k=host
 // https://en.wikipedia.org/wiki/Hostname
-// const VALID_HOSTNAME_REGEX = /(?=^.{1,254}$)(^(?:(?!\d+\.|-)[a-zA-Z0-9_\-]{1,63}(?<!-)\.?)+(?:[a-zA-Z]{2,})$)/;  // orginal required 3 chars min
-const VALID_HOSTNAME_REGEX = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/;
-const VALID_HOSTNAMECHARS_REGEX = /^[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\-_\s,][^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\s,]{0,253}$/;
+// const VALID_HOSTNAME_REGEX = /(?=^.{1,254}$)(^(?:(?!\d+\.|-)[a-zA-Z0-9_\-]{1,63}(?<!-)\.?)+(?:[a-zA-Z]{2,})$)/;
+const VALID_HOSTNAME_REGEX = /^([^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\.\-_\s,][^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\s,]{0,253}){0,1}[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\.\-_\s,]$/;
+const VALID_HOSTNAME_REGEX_STARTS_WITH = /^[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\.\-_\s,][^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\s,]{0,254}$/;
+const VALID_HOSTNAME_REGEX_ENDS_WITH = /^[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\s,]{0,254}[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\.\-_\s,]$/;
+const VALID_HOSTNAME_REGEX_CONTAINS = /^[^~`!@#\$%\^&\*\(\)\[\]\{\}:;\'\"\?\/<>\s,]{1,255}$/;
 
 // Ipv4 sources:
 // https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch08s16.html
@@ -78,10 +80,16 @@ const groupExpressionValidator = (value, validation, trimInput, visited) => {
       case 'validHostname':
         // PO request to keep hostname validation simplier
         // so we just match likely characters
-        inputValid = (VALID_HOSTNAMECHARS_REGEX.test(value));
+        inputValid = (VALID_HOSTNAME_REGEX.test(value));
         break;
-      case 'validHostnameChars':
-        inputValid = (VALID_HOSTNAMECHARS_REGEX.test(value));
+      case 'validHostnameStartsWith':
+        inputValid = (VALID_HOSTNAME_REGEX_STARTS_WITH.test(value));
+        break;
+      case 'validHostnameEndsWith':
+        inputValid = (VALID_HOSTNAME_REGEX_ENDS_WITH.test(value));
+        break;
+      case 'validHostnameContains':
+        inputValid = (VALID_HOSTNAME_REGEX_CONTAINS.test(value));
         break;
       case 'validHostnameList':
         {

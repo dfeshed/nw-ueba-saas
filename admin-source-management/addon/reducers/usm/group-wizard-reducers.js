@@ -25,9 +25,9 @@ const _GROUP_ATTRIBUTES_MAP = {
     ]],
     ['hostname', [
       ['EQUAL',         'text-input',           'validHostname'],
-      ['CONTAINS',      'text-input',           'validHostnameChars'],
-      ['STARTS_WITH',   'text-input',           'validHostnameChars'],
-      ['ENDS_WITH',     'text-input',           'validHostnameChars'],
+      ['CONTAINS',      'text-input',           'validHostnameContains'],
+      ['STARTS_WITH',   'text-input',           'validHostnameStartsWith'],
+      ['ENDS_WITH',     'text-input',           'validHostnameEndsWith'],
       ['IN',            'textarea-input',       'validHostnameList']
     ]],
     ['ipv4', [

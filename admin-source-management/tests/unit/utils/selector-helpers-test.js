@@ -60,8 +60,41 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator([], 'validHostname', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('-error', 'validHostname', true, true), { isError: true, showError: true }, '\'-error\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('ABC', 'validHostname', true, true), { isError: false, showError: false }, '\'ABC\', validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('A', 'validHostname', true, true), { isError: false, showError: false }, '\'A\', validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC ', 'validHostname', true, true), { isError: false, showError: false }, '\'  ABC \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator(' ABC ', 'validHostname', false, true), { isError: true, showError: true }, '\'  ABC \', trim disabled validation is bad as expected');
+  });
+
+  test('groupExpressionValidator(validHostnameContains)', function(assert) {
+    assert.deepEqual(groupExpressionValidator('', 'validHostnameContains', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([], 'validHostnameContains', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([''], 'validHostnameContains', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('123$', 'validHostnameContains', true, true), { isError: true, showError: true }, '\'123$\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('.ABC-RST', 'validHostnameContains', true, true), { isError: false, showError: false }, '\'.ABC-RST\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameContains', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameContains', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
+  });
+
+  test('groupExpressionValidator(validHostnameStartsWith)', function(assert) {
+    assert.deepEqual(groupExpressionValidator('', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([], 'validHostnameStartsWith', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([''], 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('.123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'.123\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('@123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'@123\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('-123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'-123\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('ABC', 'validHostnameStartsWith', true, true), { isError: false, showError: false }, '\'ABC\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameStartsWith', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameStartsWith', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
+  });
+
+  test('groupExpressionValidator(validHostnameEndsWith)', function(assert) {
+    assert.deepEqual(groupExpressionValidator('', 'validHostnameEndsWith', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([], 'validHostnameEndsWith', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator([''], 'validHostnameEndsWith', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('123-', 'validHostnameEndsWith', true, true), { isError: true, showError: true }, '\'123-\' validation is bad as expected');
+    assert.deepEqual(groupExpressionValidator('-ABC', 'validHostnameEndsWith', true, true), { isError: false, showError: false }, '\'-ABC\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameEndsWith', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameEndsWith', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
   });
 
   test('groupExpressionValidator(validHostnameList)', function(assert) {
@@ -72,16 +105,6 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('ABC, 1WW.com', 'validHostnameList', true, true), { isError: false, showError: false }, '\'ABC, 1WW\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC 1WW.com', 'validHostnameList', true, true), { isError: false, showError: false }, '\'  ABC 1WW.com\', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC 1WW.com', 'validHostnameList', false, true), { isError: false, showError: false }, '\'  ABC 1WW.com\', trim disabled validation is good as expected, list trims automatically');
-  });
-
-  test('groupExpressionValidator(validHostnameChars)', function(assert) {
-    assert.deepEqual(groupExpressionValidator('', 'validHostnameChars', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator([], 'validHostnameChars', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator([''], 'validHostnameChars', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('123$', 'validHostnameChars', true, true), { isError: true, showError: true }, '\'123$\' validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('ABC', 'validHostnameChars', true, true), { isError: false, showError: false }, '\'ABC\ validation is good as expected');
-    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameChars', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
-    assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameChars', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
   });
 
   test('groupExpressionValidator(validIPv4)', function(assert) {
