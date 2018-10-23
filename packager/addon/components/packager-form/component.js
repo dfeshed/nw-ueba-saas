@@ -85,10 +85,6 @@ const formComponent = Component.extend({
 
   autoUninstall: null,
 
-  isFullAgentEnabled: false,
-
-  isMonitorModeEnabled: true,
-
   status: 'enabled',
 
   @computed('status')
@@ -119,37 +115,28 @@ const formComponent = Component.extend({
     return `winLogCollectionTooltip-${this.get('elementId')}`;
   },
 
-  @computed('isFullAgentEnabled', 'configData.packageConfig.driverDisplayName')
-  driverDisplayName(isFullAgentEnabled, displayName) {
-    if (isFullAgentEnabled) {
-      if (displayName) {
-        return displayName;
-      }
-      return this.get('defaultDriverDisplayName') || '';
+  @computed('configData.packageConfig.driverDisplayName')
+  driverDisplayName(displayName) {
+    if (displayName) {
+      return displayName;
     }
-    return null;
+    return this.get('defaultDriverDisplayName') || '';
   },
 
-  @computed('isFullAgentEnabled', 'configData.packageConfig.driverServiceName')
-  driverServiceName(isFullAgentEnabled, serviceName) {
-    if (isFullAgentEnabled) {
-      if (serviceName) {
-        return serviceName;
-      }
-      return this.get('defaultDriverServiceName') || '';
+  @computed('configData.packageConfig.driverServiceName')
+  driverServiceName(serviceName) {
+    if (serviceName) {
+      return serviceName;
     }
-    return null;
+    return this.get('defaultDriverServiceName') || '';
   },
 
-  @computed('isFullAgentEnabled', 'configData.packageConfig.driverDescription')
-  driverDescription(isFullAgentEnabled, driverDescription) {
-    if (isFullAgentEnabled) {
-      if (driverDescription) {
-        return driverDescription;
-      }
-      return this.get('defaultDriverDescription') || '';
+  @computed('configData.packageConfig.driverDescription')
+  driverDescription(driverDescription) {
+    if (driverDescription) {
+      return driverDescription;
     }
-    return null;
+    return this.get('defaultDriverDescription') || '';
   },
 
   resetErrorProperties() {
@@ -239,19 +226,12 @@ const formComponent = Component.extend({
       } else {
         this.set('configData.packageConfig.autoUninstall', null);
       }
-      if (!this.get('isFullAgentEnabled')) {
-        this.set('configData.packageConfig.driverServiceName', undefined);
-        this.set('configData.packageConfig.driverDisplayName', undefined);
-        this.set('configData.packageConfig.driverDescription', undefined);
-        this.set('configData.packageConfig.monitoringModeEnabled', undefined);
-        this.set('configData.packageConfig.fullAgent', false);
-      } else {
-        this.set('configData.packageConfig.driverServiceName', this.get('driverServiceName'));
-        this.set('configData.packageConfig.driverDisplayName', this.get('driverDisplayName'));
-        this.set('configData.packageConfig.driverDescription', this.get('driverDescription'));
-        this.set('configData.packageConfig.monitoringModeEnabled', this.get('isMonitorModeEnabled'));
-        this.set('configData.packageConfig.fullAgent', this.get('isFullAgentEnabled'));
-      }
+
+      this.set('configData.packageConfig.driverServiceName', this.get('driverServiceName'));
+      this.set('configData.packageConfig.driverDisplayName', this.get('driverDisplayName'));
+      this.set('configData.packageConfig.driverDescription', this.get('driverDescription'));
+      this.set('configData.packageConfig.monitoringModeEnabled', true);
+
       if (!this.get('isLogCollectionEnabled')) {
         // only package data need to be send when windows log collection is not enable
         const error = validatePackageConfig(this.get('configData.packageConfig'));
@@ -355,10 +335,8 @@ const formComponent = Component.extend({
     },
     onForceOverwiteChange() {
       this.toggleProperty('configData.packageConfig.forceOverwrite');
-    },
-    enableFullAgent() {
-      this.toggleProperty('isFullAgentEnabled');
     }
+
   }
 
 });

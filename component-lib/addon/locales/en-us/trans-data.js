@@ -2054,7 +2054,11 @@ export default {
       filter: 'FILTER *',
       event: 'EVENT ID *',
       empty: ''
-    }
+    },
+    agentConfiguration: 'AGENT CONFIGURATION',
+    service: 'SERVICE',
+    driver: 'DRIVER',
+    agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.'
   },
   investigateFiles: {
     title: 'Files',

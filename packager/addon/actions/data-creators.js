@@ -52,14 +52,13 @@ const setConfig = (configData, configType, callback, serverId) => {
       meta: {
         onSuccess: (response) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
-          const { request: { data: { packageConfig } } } = response;
-          const agentMode = packageConfig && packageConfig.fullAgent ? 'Full' : 'Insights';
+
           let url = '';
           if (response.data.id) {
             if (serverId) {
-              url = `/rsa/endpoint/${serverId}/packager/download?id=${response.data.id}&agentMode=${agentMode}`;
+              url = `/rsa/endpoint/${serverId}/packager/download?id=${response.data.id}&agentMode=Full`;
             } else {
-              url = `/rsa/endpoint/packager/download?id=${response.data.id}&agentMode=${agentMode}`;
+              url = `/rsa/endpoint/packager/download?id=${response.data.id}&agentMode=Full`;
             }
             if (configType === 'LOG_CONFIG') {
               if (serverId) {

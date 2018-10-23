@@ -101,3 +101,9 @@
 .device {
   padding-right: rsa-whitespace(more);
 }
+
+[class*='agentConfiguration'] {
+  h3 {
+    color: text-color(secondary);
+  }
+}

@@ -75,19 +75,6 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(serviceName.value, 'NWE Agent', 'Expected to match the value "NWE Agent" in DOM.');
   });
 
-  test('full agent ui is rendered', async function(assert) {
-    assert.expect(2);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .setData('devices', devices)
-      .build();
-
-    await render(hbs`{{packager-form isFullAgentEnabled=false}}`);
-    assert.equal(findAll('.x-toggle-container-checked').length, 0, 'Lite Agent is enabled');
-    await click('.x-toggle-btn');
-    assert.equal(findAll('.x-toggle-container-checked').length, 1, 'Full Agent is enabled');
-  });
-
   test('Channel filter table has pre-populated values', async function(assert) {
     assert.expect(1);
     new ReduxDataHelper(setState)
@@ -299,21 +286,32 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(disableTestLog, false);
   });
 
-  test('required fields are rendered when full agent is enabled', async function(assert) {
-    assert.expect(6);
-    await render(hbs`{{packager-form isFullAgentEnabled=true}}`);
-    const driverServiceEl = findAll('.driver-server-input-group');
-    const driverServiceNameEl = findAll('.driver-server-input-group .service-name-js input');
-    const driverDisplayNameEl = findAll('.driver-server-input-group .display-name-js input');
-    const driverDescriptionEl = findAll('.driver-description-section input');
-    const monitoringModeCheckboxEl = findAll('.monitoring-mode-section');
-    const enableMonitoringChecked = findAll('.monitoring-mode-section label.checked');
+  test('required fields are rendered in the AGENT CONFIGURATION section', async function(assert) {
+
+    await render(hbs`{{packager-form}}`);
+
+    assert.equal(find('.agentConfigNote').textContent.trim(), 'For a subsequent installation/upgrade, use the same service names.', 'Note is present');
+    const agentConfigurationDriverEl = findAll('.agentConfiguration .agentConfigurationDriver');
+    const driverServiceEl = findAll('.agentConfigurationDriver .driver-server-input-group');
+    const driverServiceNameEl = findAll('.agentConfigurationDriver .driver-server-input-group .service-name-js input');
+    const driverDisplayNameEl = findAll('.agentConfigurationDriver .driver-server-input-group .display-name-js input');
+    const driverDescriptionEl = findAll('.agentConfigurationDriver .driver-description-section input');
+    assert.equal(agentConfigurationDriverEl.length, 1, 'Driver section present under agent configuration.');
     assert.equal(driverServiceEl.length, 1, 'driver section is rendered');
     assert.equal(driverServiceNameEl.length, 1, 'driver service name input is rendered');
     assert.equal(driverDisplayNameEl.length, 1, 'driver display name is rendered');
     assert.equal(driverDescriptionEl.length, 1, 'driver description is rendered');
-    assert.equal(monitoringModeCheckboxEl.length, 1, 'monitoring mode is rendered');
-    assert.equal(enableMonitoringChecked.length, 1, 'monitoring mode is checked by default');
+
+    const agentConfigurationServiceEl = findAll('.agentConfiguration .agentConfigurationService');
+    const serviceEl = findAll('.agentConfigurationService .server-input-group');
+    const serviceNameEl = findAll('.agentConfigurationService .server-input-group .service-name-js input');
+    const serviceDisplayNameEl = findAll('.agentConfigurationService .server-input-group .display-name-js input');
+    const serviceDescriptionEl = findAll('.agentConfigurationService .service-description-section input');
+    assert.equal(agentConfigurationServiceEl.length, 1, 'Service section present under agent configuration.');
+    assert.equal(serviceEl.length, 1, 'Service section is rendered');
+    assert.equal(serviceNameEl.length, 1, 'Service service name input is rendered');
+    assert.equal(serviceDisplayNameEl.length, 1, 'Service display name is rendered');
+    assert.equal(serviceDescriptionEl.length, 1, 'Service description is rendered');
   });
 
   test('Enabled is selected when status is enabled', async function(assert) {
