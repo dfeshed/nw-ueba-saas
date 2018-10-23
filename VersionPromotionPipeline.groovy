@@ -163,9 +163,9 @@ pipeline {
     }
 }
 
-/****************************
- * Version Promotion Pipeline
- ****************************/
+/******************************
+ * Version Promotion Pipeline *
+ ******************************/
 def promoteProjectVersion(
         String repositoryName,
         List<MavenExecution> mavenExecutions,
@@ -179,9 +179,11 @@ def promoteProjectVersion(
     cloneAsocRepository(userName, userPassword, repositoryName)
 
     dir(repositoryName) {
-        checkoutBranch(baseBranch)
-        String branchName = buildBranchName(version)
-        checkoutNewBranch(branchName)
+        // Checkout locally the base branch.
+        checkoutBranch(false, baseBranch)
+        // Create and checkout locally the temporary side branch.
+        String sideBranch = buildBranchName(version)
+        checkoutBranch(true, sideBranch)
 
         mavenExecutions.each { mavenExecution ->
             // Promote the version of the project.
@@ -200,9 +202,9 @@ def promoteProjectVersion(
 
         String message = "Promote project to version ${version} in branch ${baseBranch}"
         commitAll(message)
-        createAnnotatedTag(branchName, message)
-        pushToOriginWithTags(branchName, branchName)
-        String response = createAsocPullRequest(message, branchName, baseBranch, repositoryName, userName, userPassword)
+        createAnnotatedTag(sideBranch, message)
+        pushToOriginWithTags(sideBranch, sideBranch)
+        String response = createAsocPullRequest(message, sideBranch, baseBranch, repositoryName, userName, userPassword)
 
         // Extract the pull request number from the response and save it.
         String pullRequestNumber = response.substring(response.indexOf("\"number\": "))
@@ -211,7 +213,7 @@ def promoteProjectVersion(
 
         createAsocReviewRequest(reviewers, repositoryName, pullRequestNumber, userName, userPassword)
         mergeAsocPullRequest(repositoryName, pullRequestNumber, userName, userPassword)
-        deleteAsocBranch(repositoryName, branchName, userName, userPassword)
+        deleteAsocBranch(repositoryName, sideBranch, userName, userPassword)
     }
 }
 
@@ -254,12 +256,8 @@ def cloneAsocRepository(String userName, String userPassword, String repositoryN
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/${repositoryName}.git"
 }
 
-def checkoutBranch(String branchName) {
-    sh "git checkout ${branchName}"
-}
-
-def checkoutNewBranch(String branchName) {
-    sh "git checkout -b ${branchName}"
+def checkoutBranch(boolean newBranch, String branchName) {
+    sh "git checkout ${newBranch ? "-b" : ""} ${branchName}"
 }
 
 def commitAll(String message) {
