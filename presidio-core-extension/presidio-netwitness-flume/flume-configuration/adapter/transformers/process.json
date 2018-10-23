@@ -178,8 +178,8 @@
       ]
     },
     {
-      "type": "rename-cert-common",
-      "name": "rename-cert.common",
+      "type": "copy_value",
+      "name": "rename-cert-common",
       "sourceKey": "cert_common",
       "isRemoveSourceKey": true,
       "destinationKeys": [
