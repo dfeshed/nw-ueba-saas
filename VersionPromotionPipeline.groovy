@@ -204,7 +204,9 @@ def promoteProjectVersion(
         commitAll(message)
         createAnnotatedTag(sideBranch, message)
         pushToOriginWithTags(sideBranch, sideBranch)
-        String response = createAsocPullRequest(message, sideBranch, baseBranch, repositoryName, userName, userPassword)
+        // Since the project was already built and tested, there is no need for the automated
+        // PR-triggered Jenkins job to run, therefore "[skip ci]" is added to the PR body.
+        String response = createAsocPullRequest(message, sideBranch, baseBranch, "[skip ci]", repositoryName, userName, userPassword)
 
         // Extract the pull request number from the response and save it.
         String pullRequestNumber = response.substring(response.indexOf("\"number\": "))
@@ -298,11 +300,9 @@ def setProjectPropertyVersion(
 /******************
  * cURL Utilities *
  ******************/
-def createAsocPullRequest(
-        String title, String head, String base, String repositoryName, String userName, String userPassword) {
-
+def createAsocPullRequest(String title, String head, String base, String body, String repositoryName, String userName, String userPassword) {
     sh(returnStdout: true, script: """\
-        curl -d '{"title": "${title}", "head": "refs/heads/${head}", "base": "refs/heads/${base}"}'\
+        curl -d '{"title": "${title}", "head": "refs/heads/${head}", "base": "refs/heads/${base}", "body": "${body}"}'\
         -X POST ${rsaAsocGitHubApiUrl}${repositoryName}/pulls\
         -u ${userName}:${userPassword}\
     """).trim()
