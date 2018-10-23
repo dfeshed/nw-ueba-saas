@@ -57,7 +57,7 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
         String username = user.getUsername();
         Instant time = getTimeGenerator().getNext();
         String eventId = getEventIdGenerator().getNext();
-        RegistryOperation processOperation = getRegistryOperationGenerator().getNext();
+        RegistryOperation registryOperation = getRegistryOperationGenerator().getNext();
         String dataSource = getDataSourceGenerator().getNext();
         MachineEntity machine = getMachineEntityGenerator().getNext();
 
@@ -66,7 +66,7 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
                 time,
                 dataSource,
                 user,
-                processOperation,
+                registryOperation,
                 machine);
         return registryEvent;
     }
@@ -99,9 +99,6 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
         return registryOperationGenerator;
     }
 
-    public void setProcessOperationGenerator(IProcessOperationGenerator processOperationGenerator) {
-        this.registryOperationGenerator = registryOperationGenerator;
-    }
 
     public IMachineGenerator getMachineEntityGenerator() {
         return machineEntityGenerator;
@@ -111,4 +108,7 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
         this.machineEntityGenerator = machineEntityGenerator;
     }
 
+    public void setRegistryOperationGenerator(IRegistryOperationGenerator registryOperationGenerator) {
+        this.registryOperationGenerator = registryOperationGenerator;
+    }
 }
