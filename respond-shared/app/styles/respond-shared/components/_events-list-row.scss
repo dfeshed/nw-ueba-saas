@@ -78,5 +78,10 @@
     &:focus {
       outline: none;
     }
+
+    .has-context-data {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+    }
   }
 }

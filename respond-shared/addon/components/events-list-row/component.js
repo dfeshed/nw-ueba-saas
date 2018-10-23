@@ -2,13 +2,16 @@ import layout from './template';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { guidFor } from '@ember/object/internals';
+import HighlightsEntities from 'context/mixins/highlights-entities';
 
 const GENERIC = 'events-list-row/generic';
 const ENDPOINT = 'events-list-row/endpoint';
 
-export default Component.extend({
+export default Component.extend(HighlightsEntities, {
   layout,
   tagName: 'li',
+  entityEndpointId: 'IM',
+  autoHighlightEntities: true,
   testId: 'eventsListRow',
   classNameBindings: ['expanded'],
   classNames: ['events-list-table-row'],
@@ -30,23 +33,16 @@ export default Component.extend({
   },
 
   @computed('item.device_type')
-  componentClass(deviceType) {
-    return deviceType === 'nwendpoint' ? ENDPOINT : GENERIC;
-  },
-
-  @computed('componentClass')
-  headerComponentClass(componentClass) {
-    return `${componentClass}/header`;
-  },
-
-  @computed('componentClass')
-  footerComponentClass(componentClass) {
-    return `${componentClass}/footer`;
-  },
-
-  @computed('componentClass')
-  detailComponentClass(componentClass) {
-    return `${componentClass}/detail`;
+  componentClasses(deviceType) {
+    const componentClass = deviceType === 'nwendpoint' ? ENDPOINT : GENERIC;
+    const header = `${componentClass}/header`;
+    const footer = `${componentClass}/footer`;
+    const detail = `${componentClass}/detail`;
+    return {
+      header,
+      footer,
+      detail
+    };
   },
 
   @computed()

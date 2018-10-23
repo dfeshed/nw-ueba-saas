@@ -1553,8 +1553,8 @@ const storyLineEvents = {
               category: '',
               data: [
                 {
-                  filename: '',
-                  hash: '',
+                  filename: 'foobarbaz.sh',
+                  hash: '123987def',
                   size: 180
                 }
               ],
@@ -1583,14 +1583,14 @@ const storyLineEvents = {
                   ad_domain: '',
                   ad_username: '',
                   email_address: '',
-                  username: ''
+                  username: 'xor'
                 }
               },
               destination_parameter: '',
               detected_by: '',
               detector: {
                 device_class: '',
-                ip_address: '',
+                ip_address: '127.0.0.1',
                 product_name: ''
               },
               device_type: '',
@@ -1638,7 +1638,7 @@ const storyLineEvents = {
                   ad_domain: '',
                   ad_username: '',
                   email_address: '',
-                  username: ''
+                  username: 'tbozo'
                 }
               },
               source_filename: '',

@@ -36,9 +36,15 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     generic.assertRowHeader(assert, {
       eventType: 'Network',
-      detectorIp: '',
-      fileName: '',
-      fileHash: ''
+      detectorIp: '127.0.0.1',
+      fileName: 'foobarbaz.sh',
+      fileHash: '123987def'
+    });
+
+    generic.assertRowHeaderContext(assert, {
+      detectorIp: '127.0.0.1',
+      fileName: 'foobarbaz.sh',
+      fileHash: '123987def'
     });
 
     generic.assertTableColumns(assert);
@@ -48,7 +54,13 @@ module('Integration | Component | events-list-row', function(hooks) {
       port: '123',
       host: '',
       mac: '00:00:46:8F:F4:20',
-      user: ''
+      user: 'tbozo'
+    });
+
+    generic.assertTableSourceContext(assert, {
+      ip: '192.168.100.185',
+      mac: '00:00:46:8F:F4:20',
+      user: 'tbozo'
     });
 
     generic.assertTableTarget(assert, {
@@ -56,7 +68,13 @@ module('Integration | Component | events-list-row', function(hooks) {
       port: '123',
       host: '',
       mac: '00:00:00:00:5E:00',
-      user: ''
+      user: 'xor'
+    });
+
+    generic.assertTableTargetContext(assert, {
+      ip: '129.6.15.28',
+      mac: '00:00:00:00:5E:00',
+      user: 'xor'
     });
   });
 
@@ -84,6 +102,12 @@ module('Integration | Component | events-list-row', function(hooks) {
       fileHash: ''
     });
 
+    generic.assertRowHeaderContext(assert, {
+      detectorIp: '',
+      fileName: '',
+      fileHash: ''
+    });
+
     generic.assertTableColumns(assert);
 
     generic.assertTableSource(assert, {
@@ -94,10 +118,22 @@ module('Integration | Component | events-list-row', function(hooks) {
       user: ''
     });
 
+    generic.assertTableSourceContext(assert, {
+      ip: '10.4.61.97',
+      mac: '00:50:56:33:18:18',
+      user: ''
+    });
+
     generic.assertTableTarget(assert, {
       ip: '10.4.61.44',
       port: '5671',
       host: '',
+      mac: '00:50:56:33:18:15',
+      user: ''
+    });
+
+    generic.assertTableTargetContext(assert, {
+      ip: '10.4.61.44',
       mac: '00:50:56:33:18:15',
       user: ''
     });
@@ -130,6 +166,12 @@ module('Integration | Component | events-list-row', function(hooks) {
       fileHash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
     });
 
+    endpoint.assertRowHeaderContext(assert, {
+      hostname: 'INENMENONS4L2C',
+      userAccount: 'foobar',
+      fileHash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+    });
+
     endpoint.assertTableColumns(assert);
 
     endpoint.assertTableSource(assert, {
@@ -139,10 +181,20 @@ module('Integration | Component | events-list-row', function(hooks) {
       hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6'
     });
 
+    endpoint.assertTableSourceContext(assert, {
+      fileName: 'dtf.exe',
+      hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6'
+    });
+
     endpoint.assertTableTarget(assert, {
       fileName: 'cmd.EXE',
       launch: 'PowerShell.exe --run',
       path: '/bar/baz',
+      hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+    });
+
+    endpoint.assertTableTargetContext(assert, {
+      fileName: 'cmd.EXE',
       hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
     });
   });

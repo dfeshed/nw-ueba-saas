@@ -3,8 +3,8 @@
 <dt test-id="eventTypeLabel">{{t 'respond.eventsList.generic.type'}}</dt>
 <dd test-id="eventTypeValue">{{item.type}}</dd>
 <dt test-id="eventDetectorIpLabel">{{t 'respond.eventsList.generic.detectorIP'}}</dt>
-<dd test-id="eventDetectorIpValue">{{item.detector.ip_address}}</dd>
+{{properties-for/meta-value key="ip_address" value=item.detector.ip_address testId="eventDetectorIpValue"}}
 <dt test-id="eventFileNameLabel">{{t 'respond.eventsList.generic.fileName'}}</dt>
-<dd test-id="eventFileNameValue">{{item.data.0.filename}}</dd>
+{{properties-for/meta-value key="filename" value=item.data.0.filename testId="eventFileNameValue"}}
 <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.generic.fileHash'}}</dt>
-<dd test-id="eventFileHashValue">{{item.data.0.hash}}</dd>
+{{properties-for/meta-value key="hash" value=item.data.0.hash testId="eventFileHashValue"}}

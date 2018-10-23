@@ -4,14 +4,14 @@
     <h3 class="inline-alert-name" test-id="eventsAlertName">{{associatedAlert.name}}</h3>
     <span class="inline-events-summary" test-id="eventsAlertSummary">({{t 'respond.eventsList.eventOfTotal' eventIndex=eventIndex numEvents=associatedAlert.numEvents}})</span>
   </div>
-  {{component headerComponentClass item=item}}
+  {{component componentClasses.header item=item}}
 {{/events-list-row/trigger}}
 {{#unless expanded}}
-  {{component footerComponentClass item=item}}
+  {{component componentClasses.footer item=item}}
 {{/unless}}
 <div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" hidden={{collapsed}}>
   <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
   {{#if expanded}}
-    {{component detailComponentClass item=item}}
+    {{component componentClasses.detail item=item}}
   {{/if}}
 </div>

@@ -407,12 +407,18 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       value: 'zap'
     });
 
-    generic.assertDetailRow(assert, {
+    const detectorRowElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 4,
       label: 'Detector',
-      value: '',
-      nestedColumns: 1
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 1,
+      label: 'IP Address',
+      value: '127.0.0.1'
     });
 
     generic.assertDetailRow(assert, {
@@ -439,6 +445,22 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     generic.assertDetailRowChild(assert, {
       parentElement: dataRowChildOneElement,
       subRowIndex: 1,
+      label: 'Filename',
+      value: 'foobarbaz.sh',
+      metaKey: 'filename'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 2,
+      label: 'Hash',
+      value: '123987def',
+      metaKey: 'hash'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 3,
       label: 'Size',
       value: '180',
       metaKey: 'size'

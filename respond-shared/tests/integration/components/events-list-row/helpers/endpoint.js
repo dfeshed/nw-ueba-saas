@@ -1,6 +1,10 @@
 import { findAll, find } from '@ember/test-helpers';
 import { selectors, endpoint } from './selectors';
 
+const ENTITY_CLASS = 'entity';
+const DATA_ENTITY_ID = 'data-entity-id';
+const DATA_META_KEY = 'data-meta-key';
+
 export const assertRowPresent = (assert) => {
   assert.equal(findAll(selectors.row).length, 1);
   assert.equal(findAll(selectors.endpointHeader).length, 1);
@@ -13,6 +17,18 @@ export const assertRowAlertDetails = (assert, { name, summary, score }) => {
   assert.equal(find(selectors.alertName).textContent.trim(), name);
   assert.equal(find(selectors.alertScore).textContent.trim(), score);
   assert.equal(find(selectors.eventSummary).textContent.trim(), summary);
+};
+
+export const assertRowHeaderContext = (assert, { hostname, userAccount, fileHash }) => {
+  assert.equal(find(endpoint.eventHostnameValue).attributes[DATA_ENTITY_ID].nodeValue, hostname);
+  assert.equal(find(endpoint.eventHostnameValue).attributes[DATA_META_KEY].nodeValue, 'dns_hostname');
+  assert.equal(find(endpoint.eventHostnameValue).classList.contains(ENTITY_CLASS), true);
+  assert.equal(find(endpoint.eventUserAccountValue).attributes[DATA_ENTITY_ID].nodeValue, userAccount);
+  assert.equal(find(endpoint.eventUserAccountValue).attributes[DATA_META_KEY].nodeValue, 'username');
+  assert.equal(find(endpoint.eventUserAccountValue).classList.contains(ENTITY_CLASS), true);
+  assert.equal(find(endpoint.eventFileHashValue).attributes[DATA_ENTITY_ID].nodeValue, fileHash);
+  assert.equal(find(endpoint.eventFileHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
+  assert.equal(find(endpoint.eventFileHashValue).classList.contains(ENTITY_CLASS), true);
 };
 
 export const assertRowHeader = (assert, { eventType, category, action, hostname, userAccount, operatingSystem, fileHash }) => {
@@ -41,12 +57,30 @@ export const assertTableColumns = (assert) => {
   assert.equal(find(endpoint.eventTableHashLabel).textContent.trim(), 'HASH');
 };
 
+export const assertTableSourceContext = (assert, { fileName, hash }) => {
+  assert.equal(find(endpoint.eventSourceFileNameValue).attributes[DATA_ENTITY_ID].nodeValue, fileName);
+  assert.equal(find(endpoint.eventSourceFileNameValue).attributes[DATA_META_KEY].nodeValue, 'filename');
+  assert.equal(find(endpoint.eventSourceFileNameValue).classList.contains(ENTITY_CLASS), true);
+  assert.equal(find(endpoint.eventSourceHashValue).attributes[DATA_ENTITY_ID].nodeValue, hash);
+  assert.equal(find(endpoint.eventSourceHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
+  assert.equal(find(endpoint.eventSourceHashValue).classList.contains(ENTITY_CLASS), true);
+};
+
 export const assertTableSource = (assert, { fileName, launch, path, hash }) => {
   assert.equal(find(endpoint.eventSourceLabel).textContent.trim(), 'Source');
   assert.equal(find(endpoint.eventSourceFileNameValue).textContent.trim(), fileName);
   assert.equal(find(endpoint.eventSourceLaunchValue).textContent.trim(), launch);
   assert.equal(find(endpoint.eventSourcePathValue).textContent.trim(), path);
   assert.equal(find(endpoint.eventSourceHashValue).textContent.trim(), hash);
+};
+
+export const assertTableTargetContext = (assert, { fileName, hash }) => {
+  assert.equal(find(endpoint.eventTargetFileNameValue).attributes[DATA_ENTITY_ID].nodeValue, fileName);
+  assert.equal(find(endpoint.eventTargetFileNameValue).attributes[DATA_META_KEY].nodeValue, 'filename');
+  assert.equal(find(endpoint.eventTargetFileNameValue).classList.contains(ENTITY_CLASS), true);
+  assert.equal(find(endpoint.eventTargetHashValue).attributes[DATA_ENTITY_ID].nodeValue, hash);
+  assert.equal(find(endpoint.eventTargetHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
+  assert.equal(find(endpoint.eventTargetHashValue).classList.contains(ENTITY_CLASS), true);
 };
 
 export const assertTableTarget = (assert, { fileName, launch, path, hash }) => {
