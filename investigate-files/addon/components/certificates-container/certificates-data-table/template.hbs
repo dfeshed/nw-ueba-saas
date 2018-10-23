@@ -1,0 +1,34 @@
+{{#rsa-data-table
+  columnsConfig=certificatesColumns
+  items=certificatesItems
+  onRowClick=(action 'toggleSelectedRow')}}
+  {{#rsa-data-table/header as |column|}}
+    {{#if (not-eq column.dataType "radio")}}
+      <span class='js-move-handle'>
+        {{t column.title}}
+      </span>
+    {{/if}}
+  {{/rsa-data-table/header}}
+
+  {{#if areCertificatesLoading}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+  {{else}}
+    {{#rsa-data-table/body
+      noResultsMessage=(t 'configure.endpoint.certificates.noResultsMessage') as |item index column|}}
+      {{#rsa-data-table/body-cell column=column}}
+        {{#if (eq column.dataType "radio")}}
+          <label class='rsa-form-radio-label certificate-radio 
+          {{if (is-selected selections item) 'checked'}}'>
+            {{radio-button
+              radioClass='certificate-row-radio'}}
+          </label>
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+    {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfCertificates')}}
+  {{/if}}
+{{/rsa-data-table}}

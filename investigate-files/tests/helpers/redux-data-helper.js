@@ -144,4 +144,30 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.fetchMetaValueLoading', status);
     return this;
   }
+  certificatesItems(items) {
+    _set(this.state, 'certificate.list.certificatesList', items);
+    return this;
+  }
+
+  certificatesLoadingStatus(status) {
+    _set(this.state, 'certificate.list.certificatesLoadingStatus', status);
+    return this;
+  }
+  loadMoreCertificateStatus(status) {
+    _set(this.state, 'certificate.list.loadMoreStatus', status);
+    return this;
+  }
+
+  totalCertificates(items) {
+    _set(this.state, 'certificate.list.totalItems', items);
+    return this;
+  }
+  selectedCertificatesList(items) {
+    _set(this.state, 'certificate.list.selectedCertificateList', items);
+    return this;
+  }
+  certificateStatusData(status) {
+    _set(this.state, 'certificate.list.certificateDataStatus', status);
+    return this;
+  }
 }

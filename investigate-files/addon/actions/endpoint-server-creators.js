@@ -3,6 +3,7 @@ import * as ACTION_TYPES from './types';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-files/actions/fetch/server';
 import { fetchSchemaInfo, getFirstPageOfFiles } from 'investigate-files/actions/data-creators';
+import { getCertificates } from 'investigate-files/actions/certificate-data-creators';
 
 export const initializeEndpoint = () => {
   return (dispatch, getState) => {
@@ -31,6 +32,8 @@ export const setEndpointServer = (server) => {
         dispatch(isEndpointServerOffline(false));
         // reset files state every time a different endpoint server is selected.
         dispatch({ type: ACTION_TYPES.RESET_FILES });
+        dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
+        dispatch(getCertificates());
         dispatch(getFirstPageOfFiles());
       })
       .catch(function() {

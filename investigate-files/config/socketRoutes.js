@@ -4,6 +4,7 @@
 const common = require('../../common');
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const licenseConfigGen = require('../../license').socketRouteGenerator;
+const contextConfigGen = require('../../context').socketRouteGenerator;
 let mergedConfig;
 
 const filesConfigGen = function(environment) {
@@ -116,6 +117,20 @@ const filesConfigGen = function(environment) {
         requestDestination: '/ws/risk/score/file/context/reset'
       }
     },
+    'endpoint-certificates': {
+      socketUrl,
+      getCertificates: {
+        subscriptionDestination: '/user/queue/endpoint/certificate/search',
+        requestDestination: '/ws/endpoint/certificate/search'
+      }
+    },
+    'context-data': {
+      socketUrl: contextSocketUrl,
+      setCertificateStatus: {
+        subscriptionDestination: '/user/queue/contexthub/certificate/status/set',
+        requestDestination: '/ws/contexthub/certificate/status/set'
+      }
+    },
     filters: {
       socketUrl,
       saveFilter: {
@@ -146,7 +161,7 @@ module.exports = function(environment) {
     return {};
   }
 
-  const configGenerators = [filesConfigGen, preferencesConfigGen, licenseConfigGen];
+  const configGenerators = [contextConfigGen, filesConfigGen, preferencesConfigGen, licenseConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

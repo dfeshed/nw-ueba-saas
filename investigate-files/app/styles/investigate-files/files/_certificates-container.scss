@@ -1,0 +1,74 @@
+$zoneBorderColor: border-color(primary, darker, nearly-transparent);
+.certificates-container {
+  @include rsa-vendor-prefix(transition-property, background-color, color);
+  @include rsa-vendor-prefix(transition-duration, 0.3s);
+  position: absolute;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  .main-zone {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+  .certificates-action-bar {
+    padding: 8px;
+    .padding-right {
+        padding-right: 1rem;
+    }
+    .padding-left {
+        padding-left: 1rem;
+    }
+    .divider {
+      @include border-left(1px, solid, primary);
+      border-top: 0;
+      height: 2rem;
+      margin: .1rem 0 .25rem 0;
+    }
+    .certificate-label {
+      padding: 6px 4px 1px 13px;
+      font-size: 21px;
+    }
+    
+  }
+  .certificates-footer {
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
+    border-top: 1px solid $zoneBorderColor;
+    .certificates-info {
+      position: absolute;
+      top: rsa-whitespace(less);
+      left: rsa-whitespace();
+      text-align: right;
+      width:97%;
+    }
+  }
+  .show-left-zone {
+    .title-header {
+      display: none;
+    }
+  }
+  .certificates-body {
+    .rsa-data-table {
+      height: 100vh;
+      .rsa-form-checkbox-label .rsa-form-checkbox {
+        position: inherit;
+      }
+      .certificate-radio {
+        font-size: 20px;
+      }
+      .rsa-data-table-body-row.is-selected {
+        .content-context-menu {
+          background-color: background-color(secondary, dark);
+        }
+      }
+    }
+  }
+}
+
+.license-banner.shown + .certificates-container {
+  // When license banner is shown, the absolute top position has to be adjusted
+  top: 86px;
+}

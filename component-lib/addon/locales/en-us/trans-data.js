@@ -673,7 +673,7 @@ export default {
           confirm: 'Are you sure you want to delete Parser \'{{parserName}}\'?',
           ok: 'Delete Parser',
           success: 'Successfully deleted parser \'{{parserName}}\' from all Log Decoders',
-          failure:'Failed to delete log parser \'{{parserName}}\' from all Log Decoders',
+          failure: 'Failed to delete log parser \'{{parserName}}\' from all Log Decoders',
           outOfBox: 'This parser is out of the Box and cannot be deleted'
         },
         deployLogParser: {
@@ -2064,12 +2064,15 @@ export default {
     title: 'Files',
     deleteTitle: 'Confirm Delete',
     noManagePermissions: 'You do not have permissions to make edits to file(s) status',
+    certificatePageTitle: 'Certificates',
     button: {
       exportToCSV: 'Export to CSV',
       downloading: 'Downloading',
       save: 'Save',
       reset: 'Reset',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      viewCertificates: 'View Certificates',
+      backToFiles: 'Back to Files'
     },
     message: {
       noResultsMessage: 'No matching files were found',

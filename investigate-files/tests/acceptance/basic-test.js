@@ -32,7 +32,7 @@ test('visiting /investigate-files', function(assert) {
   });
 });
 
-test('visiting /investigate-files/1234', function(assert) {
+skip('visiting /investigate-files/1234', function(assert) {
   assert.expect(1);
 
   const done = waitForSockets();

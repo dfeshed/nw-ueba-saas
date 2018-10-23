@@ -2,6 +2,7 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
 $filterPanelMinWidth: 250px;
 $risk-panel-width: 500px;
 @import "service-modal";
+@import "certificates-container";
 
 page.investigate-files-engine {
   min-height: 100vh;

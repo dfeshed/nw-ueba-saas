@@ -6,6 +6,9 @@
 <hbox class="toolbar-actions">
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
   {{files-toolbar/export-button}}
+  {{#rsa-form-button class="view-certificate-button" click=(action 'toggleCertificateView')}}
+    {{t 'investigateFiles.button.viewCertificates'}}
+  {{/rsa-form-button}}  
   <div class="divider"/>
   {{endpoint/file-actionbar
     onSaveFileStatus = (action 'saveFileStatus' checksums)

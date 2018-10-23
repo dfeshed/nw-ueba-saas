@@ -38,6 +38,7 @@ test('Investigate files toolbar', function(assert) {
   this.render(hbs`{{files-toolbar}}`);
   assert.equal(this.$('.title-header').length, 1, 'Files toolbar present');
   assert.equal(this.$('.export-button').length, 1, 'Export button present');
+  assert.equal(this.$('.view-certificate-button').length, 1, 'View certificate button present');
   return wait().then(() => {
     actionStub.restore();
     done();

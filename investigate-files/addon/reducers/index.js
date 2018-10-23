@@ -8,9 +8,11 @@ import preferences from './preferences/reducer';
 import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
 import investigateQuery from './investigate-query/reducer';
+import certificate from './certificates/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
 const reducerPredicate = (action) => action.meta && action.meta.belongsTo === 'FILE';
+const certificateReducerPredicate = (action) => action.meta && action.meta.belongsTo === 'CERTIFICATE';
 
 export default combineReducers({
   files: combineReducers({
@@ -23,5 +25,9 @@ export default combineReducers({
   preferences,
   endpointServer,
   endpointQuery,
-  investigateQuery
+  investigateQuery,
+  certificate: combineReducers({
+    list: certificate,
+    filter: createFilteredReducer(filter, certificateReducerPredicate)
+  })
 });

@@ -42,7 +42,8 @@ const stateToComputed = (state) => ({
   filesFilters: state.files.filter.savedFilterList,
   selectedFilterId: selectedFilterId(state.files),
   savedFilter: savedFilter(state.files),
-  selectedFile: state.files.fileList.selectedFile
+  selectedFile: state.files.fileList.selectedFile,
+  isCertificateView: state.certificate.list.isCertificateView
 });
 
 const dispatchToActions = {
