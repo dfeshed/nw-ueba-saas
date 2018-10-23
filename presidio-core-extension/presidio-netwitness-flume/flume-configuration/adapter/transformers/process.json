@@ -1,6 +1,6 @@
 {
   "type": "chain",
-  "name": "file-windows-audit-transformer",
+  "name": "process-transformer",
   "transformerList": [
     {
       "type": "copy_value",
@@ -178,7 +178,7 @@
       ]
     },
     {
-      "type": "copy_value",
+      "type": "rename-cert-common",
       "name": "rename-cert.common",
       "sourceKey": "cert_common",
       "isRemoveSourceKey": true,
