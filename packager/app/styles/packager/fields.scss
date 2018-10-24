@@ -102,8 +102,19 @@
   padding-right: rsa-whitespace(more);
 }
 
+.agentConfiguration {
+  margin-left: rsa-whitespace(less);
+  .agentConfigNote {
+    margin: 0 0 rsa-whitespace() rsa-whitespace(less);
+    line-height: 1.2rem;
+    color: text-color(primary, light);
+    @include rsa-font(body, small);
+  }
+}
+
 [class*='agentConfiguration'] {
   h3 {
     color: text-color(secondary);
+    font-weight: bold;
   }
 }
