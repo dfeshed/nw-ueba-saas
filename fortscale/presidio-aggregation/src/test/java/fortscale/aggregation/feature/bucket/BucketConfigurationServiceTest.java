@@ -64,7 +64,7 @@ public class BucketConfigurationServiceTest {
     @Test
     public void testGetRelatedBucketConfs() {
         AdeRecordReader reader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader.getAdeEventType(), "fixed_duration_hourly", "context.userId");
+        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader.getAdeEventType(), "fixed_duration_hourly", "context.userId", Collections.emptyList());
         Assert.assertEquals(1, bc.size());
         FeatureBucketConf fbc = bc.get(0);
         Assert.assertEquals("normalized_username_dlpfile_hourly", fbc.getName());

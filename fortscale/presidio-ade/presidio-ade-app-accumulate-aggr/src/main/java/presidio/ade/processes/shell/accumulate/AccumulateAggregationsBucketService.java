@@ -23,6 +23,6 @@ public interface AccumulateAggregationsBucketService {
      * @param featureBucketDuration
      * @param accumulatorService
      */
-    void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName, FixedDurationStrategy featureBucketDuration, Accumulator accumulatorService);
+    void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName, List<String> excludeContextFieldNames, FixedDurationStrategy featureBucketDuration, Accumulator accumulatorService);
 
 }

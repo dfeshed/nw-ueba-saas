@@ -42,7 +42,8 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
         this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
-    public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
+    public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName,
+                                       List<String> excludeContextFieldNames, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
         while (pageIterator.hasNext()) {
             List<? extends AdeRecord> adeRecords = pageIterator.next();
             Map<Instant, List<AdeRecord>> startDateToRecords = getStartDateToRecordsOrderedMap(adeRecords, featureBucketStrategy);
@@ -51,7 +52,9 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
             while (entries.hasNext()) {
                 Map.Entry<Instant, List<AdeRecord>> entry = entries.next();
                 FeatureBucketStrategyData strategyData = createFeatureBucketStrategyData(entry.getKey(), featureBucketStrategy);
-                List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName);
+                List<FeatureBucketConf> featureBucketConfs =
+                        bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
+                                contextFieldName, excludeContextFieldNames);
                 featureBucketAggregator.aggregate(entry.getValue(), featureBucketConfs, strategyData);
 
                 // Should be closed if it is not last entry or if it is last page in iterator

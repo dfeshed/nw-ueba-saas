@@ -77,7 +77,9 @@ public class FeatureBucketsServiceTest {
         }
         for (List<AdeRecord> records: adeEventTypeToAdeRecords.values()){
             String adeEventType = records.get(0).getAdeEventType();
-            List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName);
+            List<FeatureBucketConf> featureBucketConfs =
+                    bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
+                            contextFieldName, Collections.emptyList());
             featureBucketAggregator.aggregate(records, featureBucketConfs, strategyData);
         }
 

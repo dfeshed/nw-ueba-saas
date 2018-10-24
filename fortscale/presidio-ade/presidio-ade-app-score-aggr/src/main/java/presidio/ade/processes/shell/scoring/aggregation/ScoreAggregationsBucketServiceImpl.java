@@ -33,7 +33,8 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
     }
 
     @Override
-    public void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName, FeatureBucketStrategyData strategyData) {
+    public void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName,
+                              List<String> excludeContextFieldNames, FeatureBucketStrategyData strategyData) {
         if(adeRecordList.isEmpty()){
             return;
         }
@@ -42,7 +43,9 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
             String adeEventType = record.getAdeEventType();
             List<FeatureBucketConf> featureBucketConfs = adeEventTypeToFeatureBucketConfList.get(adeEventType);
             if(featureBucketConfs == null){
-                featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName);
+                featureBucketConfs =
+                        bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
+                                contextFieldName, excludeContextFieldNames);
                 adeEventTypeToFeatureBucketConfList.put(adeEventType, featureBucketConfs);
             }
             featureBucketAggregator.aggregate(record, featureBucketConfs, strategyData);

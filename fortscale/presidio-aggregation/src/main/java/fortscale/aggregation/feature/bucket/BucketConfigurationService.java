@@ -89,15 +89,15 @@ public class BucketConfigurationService extends AslConfigurationService {
 	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(
-			String adeEventType, String strategyName, String contextFieldName) {
+			String adeEventType, String strategyName, String contextFieldName, List<String> excludeContextFieldNames) {
 		if (StringUtils.isEmpty(adeEventType)) return null;
 
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType);
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType, excludeContextFieldNames);
 
 		return featureBucketConfs;
 	}
 
-	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType) {
+	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType, List<String> excludeContextFieldNames) {
 		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldName,adeEventType);
 		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.get(featureBucketConfCacheKey);
 		if(cachedFeatureBucketConfs  == null)
@@ -108,6 +108,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
 							featureBucketConf.getStrategyName().equals(strategyName) &&
+									Collections.disjoint(excludeContextFieldNames, featureBucketConf.getContextFieldNames()) &&
 									featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
 			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
