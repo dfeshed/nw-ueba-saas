@@ -5,7 +5,7 @@ import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
-
+import moment from 'moment';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 
 
@@ -129,7 +129,7 @@ const PivotToInvestigate = Component.extend({
     const mf = this._buildFilter();
     const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
     const query = encodeURI(encodeURIComponent(mf));
-    const path = `${baseURL}/${query}/date/${startTime.tz('utc').format()}/${endTime.tz('utc').format()}`;
+    const path = `${baseURL}/${query}/date/${moment(startTime).tz('UTC').format()}/${moment(endTime).tz('UTC').format()}`;
     this._closeModal();
     window.open(path);
   },

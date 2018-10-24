@@ -20,6 +20,7 @@ module('Integration | Component | file found on machines', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.lookup('service:timezone').set('selected', { zoneId: 'UTC' });
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };

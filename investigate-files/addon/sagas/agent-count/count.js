@@ -1,6 +1,8 @@
 import { call, all, put, takeLatest, select } from 'redux-saga/effects';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import fetchDistinctCount from 'investigate-shared/actions/api/events/event-count-distinct';
+import { lookup } from 'ember-dependency-lookup';
+import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import _ from 'lodash';
 
 const MAX_PENDING_QUERIES = 15; // SDK configuration, currently hardcoded for UI
@@ -28,7 +30,11 @@ const MAX_PENDING_QUERIES = 15; // SDK configuration, currently hardcoded for UI
 function* fetchAgentCountAsync({ payload }) {
   const state = yield select();
   try {
-    const { serviceId, startTime, endTime } = state.investigateQuery;
+    const { serviceId, timeRange: { value, unit } } = state.investigate;
+    const timeZone = lookup('service:timezone');
+    const { zoneId } = timeZone.get('selected');
+    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+
     // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
     // children into chunks
     const childrenChunks = _.chunk(payload, MAX_PENDING_QUERIES);

@@ -25,7 +25,7 @@ export const buildTimeRange = (value, unit, zoneId) => {
   const endTime = moment().endOf('minute');
   const startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
   return {
-    startTime: getTimezoneTime(startTime, zoneId),
-    endTime: getTimezoneTime(endTime, zoneId)
+    startTime: getTimezoneTime(startTime, zoneId).tz('utc').format('X'),
+    endTime: getTimezoneTime(endTime, zoneId).tz('utc').format('X')
   };
 };

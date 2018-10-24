@@ -3,11 +3,11 @@ import schema from './schema/reducer';
 import fileList from './file-list/reducer';
 import filter from 'investigate-shared/reducers/endpoint-filter/reducer';
 import risk from 'investigate-shared/reducers/risk/reducer';
+import investigate from 'investigate-shared/reducers/investigate/reducer';
 import visuals from './visuals/reducer';
 import preferences from './preferences/reducer';
 import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
-import investigateQuery from './investigate-query/reducer';
 import certificate from './certificates/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
@@ -22,10 +22,10 @@ export default combineReducers({
     risk: createFilteredReducer(risk, reducerPredicate),
     visuals
   }),
+  investigate: createFilteredReducer(investigate, reducerPredicate),
   preferences,
   endpointServer,
   endpointQuery,
-  investigateQuery,
   certificate: combineReducers({
     list: certificate,
     filter: createFilteredReducer(filter, certificateReducerPredicate)

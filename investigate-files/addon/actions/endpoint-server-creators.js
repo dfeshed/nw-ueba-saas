@@ -4,6 +4,7 @@ import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-files/actions/fetch/server';
 import { fetchSchemaInfo, getFirstPageOfFiles } from 'investigate-files/actions/data-creators';
 import { getCertificates } from 'investigate-files/actions/certificate-data-creators';
+import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
 export const initializeEndpoint = () => {
   return (dispatch, getState) => {
@@ -37,6 +38,7 @@ export const setEndpointServer = (server) => {
         dispatch(isEndpointServerOffline(false));
         dispatch(getCertificates());
         dispatch(getFirstPageOfFiles());
+        dispatch(getServiceId('FILE'));
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));

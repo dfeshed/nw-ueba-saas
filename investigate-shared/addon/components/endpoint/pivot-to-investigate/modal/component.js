@@ -1,22 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
-import { buildTimeRange } from 'investigate-shared/utils/time-util';
-
-
-const INVESTIGATE_META_MAPPING = {
-  'machine.machineName': 'alias.host',
-  'userName': ['username', 'user.dst', 'user.src'],
-  'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
-  'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6'],
-  'checksumSha256': 'checksum',
-  'checksumMd5': 'checksum',
-  'firstFileName': 'filename'
-};
-
-const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];
+import { navigateToInvestigateEventsAnalysis, navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
 
 export default Component.extend({
   layout,
@@ -44,68 +29,6 @@ export default Component.extend({
 
   onClose: null,
 
-  _buildFilter() {
-    const { metaName, metaValue, itemList } = this.getProperties('metaName', 'metaValue', 'itemList');
-    const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    const value = metaValue || get(itemList[0], metaName); // if metaValue not passed get the value from itemList
-    // If list meta then add || in query
-    if (Array.isArray(investigateMeta)) {
-      const query = investigateMeta.map((meta) => {
-        return this._getQuery(meta, value);
-      });
-      return query.join('||');
-    }
-    return this._getQuery(investigateMeta, value);
-  },
-
-
-  _getQuery(metaName, metaValue) {
-    if (SKIP_QUOTES.includes(metaName)) {
-      return `${metaName} = ${metaValue}`;
-    }
-    return `${metaName} = "${metaValue}"`;
-  },
-
-  /**
-   * Opens the investigate page with events query
-   * @private
-   */
-  _navigateToInvestigateEventsAnalysis(serviceId) {
-    const { zoneId } = this.get('timezone.selected');
-    const { value, unit } = this.get('timeRange');
-    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
-    const mf = this._buildFilter();
-    const queryParams = {
-      sid: serviceId, // Service Id
-      mf: encodeURI(encodeURIComponent(mf)), // Meta filter
-      st: startTime.tz('utc').format('X'), // Stat time
-      et: endTime.tz('utc').format('X'), // End time
-      mps: 'default', // Meta panel size
-      rs: 'max' // Recon size
-    };
-    const query = serializeQueryParams(queryParams);
-    const path = `${window.location.origin}/investigate/events?${query}}`;
-    this._closeModal();
-    window.open(path);
-  },
-  /**
-   * Opens the investigate/navigate page with query
-   * @private
-   */
-  _navigateToInvestigateNavigate(serviceId) {
-    const { zoneId } = this.get('timezone.selected');
-    const { value, unit } = this.get('timeRange');
-    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
-    const mf = this._buildFilter();
-    const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
-    const query = encodeURI(encodeURIComponent(mf));
-    const path = `${baseURL}/${query}/date/${startTime.tz('utc').format()}/${endTime.tz('utc').format()}`;
-    this._closeModal();
-    window.open(path);
-  },
-
   _closeModal() {
     const closeModal = this.get('closeModal');
     if (closeModal) {
@@ -120,11 +43,30 @@ export default Component.extend({
     },
 
     pivotToInvestigateEventAnalysis(serviceId) {
-      this._navigateToInvestigateEventsAnalysis(serviceId);
+      const {
+        metaName,
+        metaValue,
+        itemList,
+        timeRange
+      } = this.getProperties('metaName', 'metaValue', 'itemList', 'timeRange');
+
+      const { zoneId } = this.get('timezone.selected');
+
+      this._closeModal();
+      navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId);
     },
 
     pivotToInvestigateNavigate(serviceId) {
-      this._navigateToInvestigateNavigate(serviceId);
+      const {
+        metaName,
+        metaValue,
+        itemList,
+        timeRange
+      } = this.getProperties('metaName', 'metaValue', 'itemList', 'timeRange');
+
+      const { zoneId } = this.get('timezone.selected');
+      this._closeModal();
+      navigateToInvestigateNavigate({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId);
     }
   }
 });

@@ -16,6 +16,10 @@ const hostsConfigGen = function(env) {
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/investigate/servers',
         requestDestination: '/ws/endpoint/investigate/servers'
+      },
+      serviceId: {
+        subscriptionDestination: '/user/queue/endpoint/investigate/service-id',
+        requestDestination: '/ws/endpoint/investigate/service-id'
       }
     },
     'endpoint-server': {

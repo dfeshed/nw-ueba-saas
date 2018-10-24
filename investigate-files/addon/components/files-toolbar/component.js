@@ -14,6 +14,7 @@ import { setEndpointServer } from 'investigate-files/actions/endpoint-server-cre
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
@@ -26,7 +27,9 @@ const stateToComputed = (state) => ({
   servers: state.endpointServer,
   serverId: state.endpointQuery.serverId,
   fileStatusData: state.files.fileList.fileStatusData,
-  remediationStatus: state.files.fileList.isRemediationAllowed
+  remediationStatus: state.files.fileList.isRemediationAllowed,
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const dispatchToActions = {

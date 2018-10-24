@@ -100,6 +100,7 @@ module('Integration | Component | file list', function(hooks) {
     this.set('timeFormat.selected', 'HR24', 'HR24');
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.timezone.set('selected', { zoneId: 'UTC' });
   });
 
   hooks.afterEach(function() {

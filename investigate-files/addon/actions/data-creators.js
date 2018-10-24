@@ -20,6 +20,7 @@ import _ from 'lodash';
 import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { buildTimeRange } from 'investigate-shared/utils/time-util';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -123,11 +124,7 @@ const initializeFilesPreferences = () => {
           });
         }
       }
-      // Bellow code is temp, will be removed once server side preference is implemented
-      const json = localStorage.getItem('investigatePreference');
-      const storedState = json ? JSON.parse(json) : null;
       // *****/
-      dispatch({ type: ACTION_TYPES.SET_QUERY_INPUT, payload: storedState || {} });
       dispatch(getFilter(initializeEndpoint, 'FILE'));
     });
   };
@@ -240,6 +237,17 @@ const setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, paylo
 
 const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onComplete }) => {
   const query = { ...queryNode };
+
+  // Now we will be provided with only timeRange, later we might add startTime and EndTime
+  if (query.timeRange) {
+    const { timeRange: { value, unit } } = query;
+    const timeZone = lookup('service:timezone');
+    const { zoneId } = timeZone.get('selected');
+    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+    query.startTime = startTime;
+    query.endTime = endTime;
+  }
+
   query.metaFilter = {
     conditions: [
       {
@@ -282,7 +290,7 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
 
 const fetchHostNameList = (checksum) => {
   return (dispatch, getState) => {
-    const queryNode = getState().investigateQuery;
+    const queryNode = getState().investigate;
 
     // Get the size for mata value
     const { fileList: { agentCountMapping } } = getState().files;
@@ -302,7 +310,7 @@ const fetchHostNameList = (checksum) => {
 
 const fetchAgentId = (hostName, callBack) => {
   return (dispatch, getState) => {
-    const queryNode = getState().investigateQuery;
+    const queryNode = getState().investigate;
     const input = {
       queryNode,
       filter: { value: `(alias.host = \'${hostName}\')` },

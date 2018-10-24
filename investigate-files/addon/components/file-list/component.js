@@ -26,9 +26,9 @@ import {
   setSelectedFile
 } from 'investigate-files/actions/data-creators';
 
-
 import { resetRiskScore, getRiskScoreContext, resetRiskContext } from 'investigate-shared/actions/data-creators/risk-creators';
-
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
@@ -45,7 +45,9 @@ const stateToComputed = (state) => ({
   checksums: checksums(state),
   agentCountMapping: state.files.fileList.agentCountMapping,
   fileStatusData: state.files.fileList.fileStatusData,
-  remediationStatus: state.files.fileList.isRemediationAllowed
+  remediationStatus: state.files.fileList.isRemediationAllowed,
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const dispatchToActions = {
@@ -74,6 +76,8 @@ const FileList = Component.extend({
   tagName: '',
 
   accessControl: service(),
+
+  timezone: service(),
 
   FIXED_COLUMNS: [
     {
@@ -223,7 +227,14 @@ const FileList = Component.extend({
 
     showServiceList(item) {
       this.set('itemList', [item]);
-      this.set('showServiceModal', true);
+      const serviceId = this.get('serviceId');
+      if (serviceId !== '-1') {
+        const { itemList, timeRange } = this.getProperties('itemList', 'timeRange');
+        const { zoneId } = this.get('timezone.selected');
+        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', itemList }, serviceId, timeRange, zoneId);
+      } else {
+        this.set('showServiceModal', true);
+      }
     },
 
     onCloseServiceModal() {
