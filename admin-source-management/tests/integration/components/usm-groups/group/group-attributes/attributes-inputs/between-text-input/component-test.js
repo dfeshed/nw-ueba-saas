@@ -32,7 +32,7 @@ module('Integration | Component | between-text-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validIPv4');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'BETWEEN', 'between-text-input', [''] ]);
@@ -56,7 +56,7 @@ module('Integration | Component | between-text-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validIPv4');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'BETWEEN', 'between-text-input', [''] ]);
@@ -80,7 +80,7 @@ module('Integration | Component | between-text-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validIPv4');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'BETWEEN', 'between-text-input', [''] ]);
@@ -102,7 +102,7 @@ module('Integration | Component | between-text-input', function(hooks) {
     assert.expect(4);
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'BETWEEN', 'between-text-input', [''] ]);

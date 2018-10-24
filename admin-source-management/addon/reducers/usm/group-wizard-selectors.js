@@ -74,24 +74,24 @@ export const assignedPolicyList = createSelector(
 // Validation related selectors
 // ----------------------------------------
 
-export const isIdentifyGroupStepVisited = createSelector(
+export const identifyGroupStepShowErrors = createSelector(
   steps,
   (steps) => {
-    return steps[0].isVisited;
+    return steps[0].showErrors;
   }
 );
 
-export const isDefineGroupStepVisited = createSelector(
+export const defineGroupStepShowErrors = createSelector(
   steps,
   (steps) => {
-    return steps[1].isVisited;
+    return steps[1].showErrors;
   }
 );
 
-export const isApplyPolicyStepVisited = createSelector(
+export const applyPolicyStepShowErrors = createSelector(
   steps,
   (steps) => {
-    return steps[2].isVisited;
+    return steps[2].showErrors;
   }
 );
 
@@ -101,15 +101,15 @@ export const isApplyPolicyStepVisited = createSelector(
  * @public
  */
 export const nameValidator = createSelector(
-  groupList, group, visited, isIdentifyGroupStepVisited,
-  (groupList, group, visited, isStepVisited) => {
+  groupList, group, visited, identifyGroupStepShowErrors,
+  (groupList, group, visited, stepShowErrors) => {
     let error = false;
     let enableMessage = false;
     let message = '';
     if (isBlank(group.name)) {
       error = true;
       // only blank value requires visited
-      if (isStepVisited || visited.includes('group.name')) {
+      if (stepShowErrors || visited.includes('group.name')) {
         enableMessage = true;
         message = 'adminUsm.groupWizard.nameRequired';
       }

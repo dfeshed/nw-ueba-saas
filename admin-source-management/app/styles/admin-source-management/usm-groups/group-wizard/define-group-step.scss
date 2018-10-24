@@ -1,6 +1,8 @@
 .usm-group-wizard {
   .define-group-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
+    
     .maxTenCriteria {
       position: absolute;
       left: 160px;

@@ -3840,6 +3840,7 @@ export default {
       maxTenCriteria: 'This group contains the maximum number of conditions',
       actionMessages: {
         nextFailure: 'Please fix all the validation errors before continuing to next step',
+        isWizardValidFailure: 'Please fix all the validation errors before Saving or Publishing',
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',

@@ -413,6 +413,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       step=step
       transitionToClose=(action transitionToClose)}}`
     );
+    await settled();
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
@@ -434,8 +435,10 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       .groupWizGroup(groupPayloadApplyPolicyStep)
       .groupWizPolicyList(policyListPayload)
       .build();
-    this.set('step', state.usm.groupWizard.steps[3]);
+    this.set('step', state.usm.groupWizard.steps[2]);
     await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+
     assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
 
     throwSocket();
@@ -460,7 +463,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       .groupWizGroup(groupPayloadApplyPolicyStep)
       .groupWizPolicyList(policyListPayload)
       .build();
-    this.set('step', state.usm.groupWizard.steps[3]);
+    this.set('step', state.usm.groupWizard.steps[2]);
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
     });
@@ -468,6 +471,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
       step=step
       transitionToClose=(action transitionToClose)}}`
     );
+    await settled();
+
     assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
 
     patchFlash((flash) => {

@@ -34,7 +34,7 @@ module('Integration | Component | text-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.maxLength255');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'EQUAL', 'textarea-input', '' ]);
@@ -59,7 +59,7 @@ module('Integration | Component | text-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validHostname');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'EQUAL', 'textarea-input', '' ]);

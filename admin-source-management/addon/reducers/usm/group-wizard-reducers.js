@@ -99,7 +99,7 @@ export const initialState = {
   steps: [
     {
       id: 'identifyGroupStep',
-      isVisited: false,
+      showErrors: false,
       prevStepId: '',
       nextStepId: 'defineGroupStep',
       title: 'adminUsm.groupWizard.identifyGroup',
@@ -109,7 +109,7 @@ export const initialState = {
     },
     {
       id: 'defineGroupStep',
-      isVisited: false,
+      showErrors: false,
       prevStepId: 'identifyGroupStep',
       nextStepId: 'applyPolicyStep',
       title: 'adminUsm.groupWizard.defineGroup',
@@ -119,7 +119,7 @@ export const initialState = {
     },
     {
       id: 'applyPolicyStep',
-      isVisited: false,
+      showErrors: false,
       prevStepId: 'defineGroupStep',
       nextStepId: '',
       title: 'adminUsm.groupWizard.applyPolicy.stepTitle',

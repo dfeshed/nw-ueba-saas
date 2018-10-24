@@ -3,10 +3,10 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { groupExpressionValidator } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import { updateGroupCriteria } from 'admin-source-management/actions/creators/group-wizard-creators';
-import { isDefineGroupStepVisited } from 'admin-source-management/reducers/usm/group-wizard-selectors';
+import { defineGroupStepShowErrors } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const stateToComputed = (state) => ({
-  stepVisited: isDefineGroupStepVisited(state)
+  stepShowErrors: defineGroupStepShowErrors(state)
 });
 
 const dispatchToActions = {
@@ -24,9 +24,9 @@ const TextAreaInput = Component.extend({
     }
   },
 
-  @computed('value', 'validation', 'stepVisited')
-  validator(value, validation, stepVisited) {
-    return groupExpressionValidator(value, validation, true, stepVisited);
+  @computed('value', 'validation', 'stepShowErrors')
+  validator(value, validation, stepShowErrors) {
+    return groupExpressionValidator(value, validation, true, stepShowErrors);
   },
 
   actions: {

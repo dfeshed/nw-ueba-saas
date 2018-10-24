@@ -32,7 +32,7 @@ module('Integration | Component | textarea-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validIPv4List');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'IN', 'textarea-input', '' ]);
@@ -64,7 +64,7 @@ module('Integration | Component | textarea-input', function(hooks) {
     const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validHostnameList');
     new ReduxDataHelper(setState)
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
     const state = this.owner.lookup('service:redux').getState();
     this.set('criteria', [ 'IN', 'textarea-input', '' ]);

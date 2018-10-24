@@ -9,11 +9,11 @@ import {
   descriptionValidator,
   steps,
   isIdentifyGroupStepValid,
-  isIdentifyGroupStepVisited,
+  identifyGroupStepShowErrors,
   isDefineGroupStepValid,
-  isDefineGroupStepVisited,
+  defineGroupStepShowErrors,
   isApplyPolicyStepValid,
-  isApplyPolicyStepVisited,
+  applyPolicyStepShowErrors,
   // TODO when implemented isReviewGroupStepValid,
   // TODO when implemented isWizardValid
   isGroupLoading,
@@ -317,52 +317,52 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(stepsSelected[0].id, stepId0Expected, `steps[0].id is ${stepId0Expected}`);
   });
 
-  test('isIdentifyGroupStepVisited selector - false', function(assert) {
+  test('identifyGroupStepShowErrors selector - false', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('identifyGroupStep', false)
+      .groupWizStepShowErrors('identifyGroupStep', false)
       .build();
-    assert.equal(isIdentifyGroupStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(identifyGroupStepShowErrors(Immutable.from(fullState)), false, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
-  test('isIdentifyGroupStepVisited selector - true', function(assert) {
+  test('identifyGroupStepShowErrors selector - true', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('identifyGroupStep', true)
+      .groupWizStepShowErrors('identifyGroupStep', true)
       .build();
-    assert.equal(isIdentifyGroupStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(identifyGroupStepShowErrors(Immutable.from(fullState)), true, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
-  test('isDefineGroupStepVisited selector - false', function(assert) {
+  test('defineGroupStepShowErrors selector - false', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', false)
+      .groupWizStepShowErrors('defineGroupStep', false)
       .build();
-    assert.equal(isDefineGroupStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(defineGroupStepShowErrors(Immutable.from(fullState)), false, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
-  test('isDefineGroupStepVisited selector - true', function(assert) {
+  test('defineGroupStepShowErrors selector - true', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('defineGroupStep', true)
+      .groupWizStepShowErrors('defineGroupStep', true)
       .build();
-    assert.equal(isDefineGroupStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(defineGroupStepShowErrors(Immutable.from(fullState)), true, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
-  test('isApplyPolicyStepVisited selector - false', function(assert) {
+  test('applyPolicyStepShowErrors selector - false', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('applyPolicyStep', false)
+      .groupWizStepShowErrors('applyPolicyStep', false)
       .build();
-    assert.equal(isApplyPolicyStepVisited(Immutable.from(fullState)), false, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(applyPolicyStepShowErrors(Immutable.from(fullState)), false, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
-  test('isApplyPolicyStepVisited selector - true', function(assert) {
+  test('applyPolicyStepShowErrors selector - true', function(assert) {
     const fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizStepVisited('applyPolicyStep', true)
+      .groupWizStepShowErrors('applyPolicyStep', true)
       .build();
-    assert.equal(isApplyPolicyStepVisited(Immutable.from(fullState)), true, 'isIdentifyGroupStepVisited is true when next button is visited');
+    assert.equal(applyPolicyStepShowErrors(Immutable.from(fullState)), true, 'identifyGroupStepShowErrors is true when next button is visited');
   });
 
   const policyListPayload = [

@@ -2,8 +2,9 @@
   
   .apply-policy-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
-    margin-top: rsa-whitespace(more);
+    // margin-top: rsa-whitespace(more);
 
     .help-title {
       @include rsa-font(body, larger);
