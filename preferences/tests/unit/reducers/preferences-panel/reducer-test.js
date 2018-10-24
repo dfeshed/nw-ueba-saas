@@ -18,8 +18,8 @@ const initialState = Immutable.from({
 });
 
 const preferences = {
-  defaultPacketFormat: 'downloadPCAP',
   defaultMetaFormat: 'downloadText',
+  defaultPacketFormat: 'downloadPCAP',
   defaultLogFormat: 'downloadLog',
   currentReconView: 'PACKET',
   isHeaderOpen: true,

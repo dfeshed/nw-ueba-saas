@@ -60,9 +60,9 @@ module('Integration | Component | Preferences Details', function(hooks) {
     str = selectedItems[1].textContent.trim();
     assert.equal(str, 'Download Log');
     str = selectedItems[2].textContent.trim();
-    assert.equal(str, 'Download Text');
-    str = selectedItems[3].textContent.trim();
     assert.equal(str, 'Download PCAP');
+    str = selectedItems[3].textContent.trim();
+    assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
   });
@@ -90,21 +90,22 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(getTextFromDOMArray(options), 'DownloadLogDownloadCSVDownloadXMLDownloadJSON');
   });
 
-  test('Preferences panel comes with valid options for meta format', async function(assert) {
+  test('Preferences panel comes with valid options for packet format', async function(assert) {
     await renderApplicationContent(this, assert);
     await clickTrigger('.rsa-preferences-field-content:nth-child(3)');
+    const options = findAll('.ember-power-select-option');
+    assert.equal(options.length, 4);
+    assert.equal(getTextFromDOMArray(options), 'DownloadPCAPDownloadAllPayloadsDownloadRequestPayloadDownloadResponsePayload');
+  });
+
+  test('Preferences panel comes with valid options for meta format', async function(assert) {
+    await renderApplicationContent(this, assert);
+    await clickTrigger('.rsa-preferences-field-content:nth-child(4)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
     assert.equal(getTextFromDOMArray(options), 'DownloadTextDownloadCSVDownloadTSVDownloadJSON');
   });
 
-  test('Preferences panel comes with valid options for packet format', async function(assert) {
-    await renderApplicationContent(this, assert);
-    await clickTrigger('.rsa-preferences-field-content:nth-child(4)');
-    const options = findAll('.ember-power-select-option');
-    assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadPCAPDownloadAllPayloadsDownloadRequestPayloadDownloadResponsePayload');
-  });
 
   test('Preferences panel saves new Analysis on change', async function(assert) {
     await renderApplicationContent(this, assert);
@@ -122,14 +123,14 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await assertForPreferencesPanelSelectedOptions(assert, 2, 1, 'Download Log');
   });
 
-  test('Preferences panel defaults the dowloadMetaFormat to the user selected value', async function(assert) {
-    await renderApplicationContent(this, assert);
-    await assertForPreferencesPanelSelectedOptions(assert, 3, 2, 'Download Text');
-  });
-
   test('Preferences panel defaults the dowloadPacketFormat to the user selected value', async function(assert) {
     await renderApplicationContent(this, assert);
-    await assertForPreferencesPanelSelectedOptions(assert, 4, 3, 'Download PCAP');
+    await assertForPreferencesPanelSelectedOptions(assert, 3, 2, 'Download PCAP');
+  });
+
+  test('Preferences panel defaults the dowloadMetaFormat to the user selected value', async function(assert) {
+    await renderApplicationContent(this, assert);
+    await assertForPreferencesPanelSelectedOptions(assert, 4, 3, 'Download Text');
   });
 
   test('Preferences panel should change Time format Settings on click', async function(assert) {

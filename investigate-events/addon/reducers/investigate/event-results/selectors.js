@@ -127,7 +127,27 @@ export const getDownloadOptions = createSelector(
           eventType,
           fileType: eventAnalysisPreferences[defaultEventType],
           sessionIds: getIdsForEventType,
-          count: (num > 0 && !isAllEventsSelected) ? `${num}/${total}` : ''
+          count: !isAllEventsSelected ? `${num}/${total}` : ''
+        });
+      });
+
+      // remaining options
+      dropDownItems.forEach((item) => {
+        // array of downloadFormat options minus the preferred option
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventType } = item;
+        const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
+        const getIdsForEventType = _getIdsForEventType(eventType, selectedEventIds, resultsData);
+        const num = getIdsForEventType.length;
+        remainingOptions.forEach((option) => {
+          const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
+          downloadOptions.push({
+            name: i18n.t(`investigate.events.download.${eventType}`, { option: optionLabel }),
+            eventType,
+            fileType: option,
+            sessionIds: getIdsForEventType,
+            count: !isAllEventsSelected ? `${num}/${total}` : ''
+          });
         });
       });
       return downloadOptions;

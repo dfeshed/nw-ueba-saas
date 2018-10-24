@@ -47,7 +47,18 @@ module('Unit | Selectors | event-results', function(hooks) {
     data: eventResultsData
   };
 
-  test('getDownloadOptions returns options', function(assert) {
+  const assertForDownloadOptions = async function(assert, result, optionNumber, eventType, fileType, nameString) {
+    assert.equal(result[optionNumber].name.string, nameString, 'Option');
+    assert.equal(result[optionNumber].eventType, eventType, 'Event Type');
+    assert.equal(result[optionNumber].fileType, fileType, 'File Type');
+  };
+
+  const assertForCountsAndSessionIds = async function(assert, result, optionNumber, count, sessionIds) {
+    assert.equal(result[optionNumber].count, count);
+    assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
+  };
+
+  test('getDownloadOptions returns options with no counts when selectAll is checked', async function(assert) {
     const state = {
       investigate: {
         data: preferenceData,
@@ -56,20 +67,22 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     const result = getDownloadOptions(state);
     // number of options in download as per the number of preferences x number of options per preference
-    // TODO change when more options from remaining preferences are added
-    assert.equal(result.length, 3, '3 options for download available');
-    assert.equal(result[0].name.string, 'Logs as Log', 'Logs download option');
-    assert.equal(result[0].eventType, 'LOG');
-    assert.equal(result[0].fileType, 'LOG');
-    assert.equal(result[1].name.string, 'Visible Meta as Text', 'Meta download option');
-    assert.equal(result[1].eventType, 'META');
-    assert.equal(result[1].fileType, 'TEXT');
-    assert.equal(result[2].name.string, 'Network as PCAP', 'Network download option');
-    assert.equal(result[2].eventType, 'NETWORK');
-    assert.equal(result[2].fileType, 'PCAP');
+    assert.equal(result.length, 12, '12 options for download available');
+    await assertForDownloadOptions(assert, result, 0, 'LOG', 'LOG', 'Logs as Log');
+    await assertForDownloadOptions(assert, result, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
+    await assertForDownloadOptions(assert, result, 2, 'META', 'TEXT', 'Visible Meta as Text');
+    await assertForDownloadOptions(assert, result, 3, 'LOG', 'CSV', 'Logs as CSV');
+    await assertForDownloadOptions(assert, result, 6, 'NETWORK', 'PAYLOAD', 'Network as All Payloads');
+    await assertForDownloadOptions(assert, result, 9, 'META', 'CSV', 'Visible Meta as CSV');
+    // preferred LOG option
+    await assertForCountsAndSessionIds(assert, result, 0, '', []);
+    // preferred Network option
+    await assertForCountsAndSessionIds(assert, result, 1, '', []);
+    // preffered Meta option
+    await assertForCountsAndSessionIds(assert, result, 2, '', []);
   });
   // TODO add assert to check disabled
-  test('getDownloadOptions returns appropriate counts for options when network events are selected', function(assert) {
+  test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
     const state = {
       investigate: {
         data: preferenceData,
@@ -77,17 +90,15 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     const result = getDownloadOptions(state);
-    // number of options in download as per the number of preferences x number of options per preference
-    // TODO change/add when more options from remaining preferences are added
-    assert.equal(result[0].count, '', 'No log event selected');
-    assert.deepEqual(result[0].sessionIds, [], 'No log event selected');
-    assert.equal(result[1].count, '2/2', '2 Meta events selected');
-    assert.deepEqual(result[1].sessionIds, [1, 2], '2 Meta events selected');
-    assert.equal(result[2].count, '2/2', '2 Network events selected');
-    assert.deepEqual(result[2].sessionIds, [1, 2], '2 Network events selected');
+    // preferred LOG option
+    await assertForCountsAndSessionIds(assert, result, 0, '0/2', []);
+    // preferred Network option
+    await assertForCountsAndSessionIds(assert, result, 1, '2/2', [1, 2]);
+    // preffered Meta option
+    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 2]);
   });
 
-  test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', function(assert) {
+  test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
     const state = {
       investigate: {
         data: preferenceData,
@@ -95,14 +106,12 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     const result = getDownloadOptions(state);
-    // number of options in download as per the number of preferences x number of options per preference
-    // TODO change/add when more options from remaining preferences are added
-    assert.equal(result[0].count, '1/2', '1 log event selected');
-    assert.deepEqual(result[0].sessionIds, [3], '1 log event selected');
-    assert.equal(result[1].count, '2/2', '2 Meta events selected');
-    assert.deepEqual(result[1].sessionIds, [1, 3], '2 Meta events selected');
-    assert.equal(result[2].count, '1/2', '1 Network event selected');
-    assert.deepEqual(result[2].sessionIds, [1], '1 Network event selected');
+    // preferred LOG option
+    await assertForCountsAndSessionIds(assert, result, 0, '1/2', [3]);
+    // preferred Network option
+    await assertForCountsAndSessionIds(assert, result, 1, '1/2', [1]);
+    // preffered Meta option
+    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 3]);
   });
 
   test('isEventResultsError is false when status is not error', function(assert) {

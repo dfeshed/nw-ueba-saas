@@ -91,7 +91,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
   });
 
-  test('download dropdown should show options', async function(assert) {
+  test('download dropdown should show options without count if selectAll is checked', async function(assert) {
     new ReduxDataHelper(setState)
       .allEventsSelected(true)
       .isEventResultsError(false)
@@ -101,7 +101,12 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
-    assert.equal(findAll(`${downloadOptions} li`).length, 3, '3 options found');
+    const options = findAll(`${downloadOptions} li`);
+    assert.equal(options.length, 12, '12 options found');
+
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '');
+    await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '');
   });
 
   test('download dropdown should show appropriate options if log and Network events are selected ', async function(assert) {
@@ -117,8 +122,8 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
     await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '1/2');
-    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as Text', '2/2');
-    await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '1/2');
+    await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '1/2');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
   test('download dropdown should show appropriate options if only Network events are selected ', async function(assert) {
@@ -133,9 +138,9 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '');
-    await assertForDownloadOptions(assert, options, 1, 'Visible Meta as Text', '2/2');
-    await assertForDownloadOptions(assert, options, 2, 'Network as PCAP', '2/2');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '0/2');
+    await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/2');
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
 });

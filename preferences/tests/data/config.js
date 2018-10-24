@@ -42,18 +42,6 @@ export default {
     field: 'eventAnalysisPreferences.defaultLogFormat'
   },
   {
-    name: 'preferences.investigate-events.defaultMetaFormat',
-    type: 'dropdown',
-    eventType: 'META',
-    options: [
-      'TEXT',
-      'CSV',
-      'TSV',
-      'JSON'
-    ],
-    field: 'eventAnalysisPreferences.defaultMetaFormat'
-  },
-  {
     name: 'preferences.investigate-events.defaultPacketFormat',
     type: 'dropdown',
     eventType: 'NETWORK',
@@ -64,6 +52,18 @@ export default {
       'PAYLOAD2'
     ],
     field: 'eventAnalysisPreferences.defaultPacketFormat'
+  },
+  {
+    name: 'preferences.investigate-events.defaultMetaFormat',
+    type: 'dropdown',
+    eventType: 'META',
+    options: [
+      'TEXT',
+      'CSV',
+      'TSV',
+      'JSON'
+    ],
+    field: 'eventAnalysisPreferences.defaultMetaFormat'
   },
   {
     name: 'preferences.investigate-events.queryTimeFormat',
@@ -84,8 +84,8 @@ export default {
     eventAnalysisPreferences: {
       currentReconView: 'TEXT',
       defaultLogFormat: 'LOG',
-      defaultMetaFormat: 'TEXT',
       defaultPacketFormat: 'PCAP',
+      defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true
     },
     eventPreferences: {

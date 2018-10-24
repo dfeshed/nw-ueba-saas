@@ -32,8 +32,8 @@ test('get the current preferences to save', function(assert) {
       visuals: {
         currentReconView: 'TEXT',
         defaultLogFormat: 'LOG',
-        defaultMetaFormat: 'TEXT',
         defaultPacketFormat: 'PCAP',
+        defaultMetaFormat: 'TEXT',
         isReconExpanded: false
       },
       packets: {
