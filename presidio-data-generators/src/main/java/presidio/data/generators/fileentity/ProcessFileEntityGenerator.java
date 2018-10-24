@@ -42,6 +42,10 @@ public class ProcessFileEntityGenerator implements IFileEntityGenerator {
         fileNameAndDirGenerator = new CyclicPairsGenerator(DEFAULT_PROCESS_FILES);
     }
 
+    public ProcessFileEntityGenerator(Pair[] nameAndDirPairs) throws GeneratorException {
+        fileNameAndDirGenerator = new CyclicPairsGenerator(nameAndDirPairs);
+    }
+
     @Override
     public FileEntity getNext(){
         Pair<String, String> fileNameAndDir = fileNameAndDirGenerator.getNext();

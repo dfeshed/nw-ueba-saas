@@ -102,7 +102,6 @@ public class RegistryEvent extends Event implements Serializable {
                 ", user=" + user.toString() +
                 ", registryOperation=" + registryOperation.toString() +
                 ", machineEntity=" + machineEntity.toString() +
-                ", registryEntry=" + registryEntry.toString() +
                 '}';
     }
 }

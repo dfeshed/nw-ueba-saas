@@ -29,6 +29,13 @@ public class RegistryEntryGenerator implements IRegistryEntryGenerator {
 
     }
 
+    public RegistryEntryGenerator(String[] keys, String[] keyGroups, String[] valueNames) throws GeneratorException {
+        registryKeyGenerator = new StringCyclicValuesGenerator(keys);
+        registryKeyGroupGenerator = new StringCyclicValuesGenerator(keyGroups);
+        registryValueNameGenerator = new StringCyclicValuesGenerator(valueNames);
+
+    }
+
     public RegistryEntry getNext(){
 
         String registryKey = getRegistryKeyGenerator().getNext();
