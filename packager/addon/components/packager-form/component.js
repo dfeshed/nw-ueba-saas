@@ -117,26 +117,17 @@ const formComponent = Component.extend({
 
   @computed('configData.packageConfig.driverDisplayName')
   driverDisplayName(displayName) {
-    if (displayName) {
-      return displayName;
-    }
-    return this.get('defaultDriverDisplayName') || '';
+    return displayName || this.get('defaultDriverDisplayName') || '';
   },
 
   @computed('configData.packageConfig.driverServiceName')
   driverServiceName(serviceName) {
-    if (serviceName) {
-      return serviceName;
-    }
-    return this.get('defaultDriverServiceName') || '';
+    return serviceName || this.get('defaultDriverServiceName') || '';
   },
 
   @computed('configData.packageConfig.driverDescription')
   driverDescription(driverDescription) {
-    if (driverDescription) {
-      return driverDescription;
-    }
-    return this.get('defaultDriverDescription') || '';
+    return driverDescription || this.get('defaultDriverDescription') || '';
   },
 
   resetErrorProperties() {

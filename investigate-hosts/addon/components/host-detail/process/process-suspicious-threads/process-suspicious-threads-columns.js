@@ -5,22 +5,19 @@ export default {
     field: 'signature',
     title: 'investigateHosts.process.suspiciousThreads.signature',
     format: 'SIGNATURE',
-    width: '19%'
+    width: 50
   },
   {
     field: 'dllFileName',
-    title: 'investigateHosts.process.suspiciousThreads.dllFileName',
-    width: '19%'
+    title: 'investigateHosts.process.suspiciousThreads.dllFileName'
   },
   {
     field: 'startAddress',
-    title: 'investigateHosts.process.suspiciousThreads.startAddress',
-    width: '19%'
+    title: 'investigateHosts.process.suspiciousThreads.startAddress'
   },
   {
     field: 'tid',
-    title: 'investigateHosts.process.suspiciousThreads.tid',
-    width: '10%'
+    title: 'investigateHosts.process.suspiciousThreads.tid'
   },
   {
     field: 'teb',

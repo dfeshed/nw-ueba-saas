@@ -4,23 +4,20 @@ export default {
   windows: [{
     field: 'type',
     title: 'investigateHosts.process.imageHooks.type',
-    width: '15%'
+    width: 50
   },
   {
     field: 'signature',
     title: 'investigateHosts.process.imageHooks.signature',
-    format: 'SIGNATURE',
-    width: '15%'
+    format: 'SIGNATURE'
   },
   {
     field: 'dllFileName',
-    title: 'investigateHosts.process.imageHooks.dllFileName',
-    width: '19%'
+    title: 'investigateHosts.process.imageHooks.dllFileName'
   },
   {
     field: 'hookFileName',
-    title: 'investigateHosts.process.imageHooks.hookFileName',
-    width: '19%'
+    title: 'investigateHosts.process.imageHooks.hookFileName'
   },
   {
     field: 'symbol',

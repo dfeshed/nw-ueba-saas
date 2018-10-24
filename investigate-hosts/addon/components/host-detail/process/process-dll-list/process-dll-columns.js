@@ -5,18 +5,16 @@ const defaultColumnsConfig = [
   {
     field: 'fileName',
     title: 'investigateHosts.process.dll.dllName',
-    width: '20%'
+    width: 50
   },
   {
     field: 'signature',
     title: 'investigateHosts.process.signature',
-    format: 'SIGNATURE',
-    width: '20%'
+    format: 'SIGNATURE'
   },
   {
     field: 'path',
-    title: 'investigateHosts.process.dll.filePath',
-    width: '20%'
+    title: 'investigateHosts.process.dll.filePath'
   }
 ];
 
