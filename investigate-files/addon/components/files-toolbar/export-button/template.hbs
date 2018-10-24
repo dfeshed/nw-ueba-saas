@@ -1,13 +1,15 @@
 {{#if isExportButtonDisabled}}
-  {{#rsa-form-button class="export-button" isDisabled=true}}{{t 'investigateFiles.button.exportToCSV'}}{{/rsa-form-button}}
+  {{#rsa-form-button class="export-button" isIconOnly=true isDisabled=true}}
+    {{rsa-icon title=(t 'investigateFiles.button.exportToCSV') name='download-2' style='filled'}}
+  {{/rsa-form-button}}
 {{else}}
   {{#if (eq downloadStatus 'completed')}}
-    {{#rsa-form-button class="export-button" click=(action 'exportFileAsCSV')}}
-      {{t 'investigateFiles.button.exportToCSV'}}
+    {{#rsa-form-button class="export-button" isIconOnly=true click=(action 'exportFileAsCSV')}}
+      {{rsa-icon title=(t 'investigateFiles.button.exportToCSV') name='download-2' style='filled'}}
     {{/rsa-form-button}}
   {{else}}
-    {{#rsa-form-button class="export-button" isDisabled=true}}
-      {{rsa-loader}} {{t 'investigateFiles.button.downloading'}}
+    {{#rsa-form-button class="export-button" isIconOnly=true isDisabled=true}}
+      {{rsa-loader}}
     {{/rsa-form-button}}
   {{/if}}
 {{/if}}

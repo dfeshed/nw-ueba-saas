@@ -1,13 +1,13 @@
 <hbox class='host-table__toolbar-buttons'>
   <h2 class="title-header">
-    {{#rsa-form-button class='close-zone' isIconOnly=true click=openFilterPanel }}
+    {{#rsa-form-button class='close-zone' click=openFilterPanel }}
       {{rsa-icon name='filter-2'}}
+      <span>{{t 'investigateFiles.filter.filter'}}</span>
     {{/rsa-form-button}}
   </h2>
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
   {{host-scan/scan-command command='START_SCAN'}}
   {{host-scan/scan-command command='STOP_SCAN'}}
-  {{host-list/host-table/action-bar/export-button}}
   {{#rsa-button-with-confirmation
     isDisabled=noHostsSelected
     class='delete-host-button'
@@ -16,6 +16,7 @@
     onConfirm=( action 'handleDeleteHosts')}}
     {{t 'investigateHosts.hosts.button.delete'}}
   {{/rsa-button-with-confirmation}}
+  {{host-list/host-table/action-bar/export-button}}
 </hbox>
 
 

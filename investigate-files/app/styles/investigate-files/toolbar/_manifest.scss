@@ -6,12 +6,14 @@
   }
 }
 .rsa-files-toolbar {
-  hbox {
+  .files-toolbar {
     height: 70px;
+  }
+  hbox {
     align-items: center;
   }
   color: text-color(primary, lightest);
-  padding: 0 rsa-whitespace();
+  padding: 0 rsa-whitespace(less);
 
   .selection-count {
     padding-right: rsa-whitespace();
@@ -29,12 +31,21 @@
   }
 
   .toolbar-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
     .divider {
       @include border-left(1px, solid, primary);
       height: 2rem;
       margin: .1rem 0 .25rem 0;
     }
-    .export-button, .view-certificate-button {
+    .export-button {
+      position: absolute;
+      right: 0;
+      i {
+        font-size: 14px;
+      }
+    }
+    .view-certificate-button {
       padding-right: rsa-whitespace();
       padding-left: rsa-whitespace(less);
     }

@@ -17,7 +17,7 @@
   disabled=pivotInvestigateDisabled}}
 
 {{#rsa-content-tethered-panel-trigger
-  panel='file-status-more-actions'
+  panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')
   triggerEvent='click'
 }}
   {{#rsa-form-button
@@ -26,7 +26,7 @@
     withDropdown=true
     isDisabled=isEditStatusButtonDisabled
     class='watch-button more-action-button'}}
-    {{rsa-icon name='navigation-show-more-1'}}
+    {{rsa-icon name='navigation-show-more-2' size='small'}}
     {{#unless showOnlyIcons}}
       {{t 'investigateShared.endpoint.fileActions.moreActions'}}
     {{/unless}}

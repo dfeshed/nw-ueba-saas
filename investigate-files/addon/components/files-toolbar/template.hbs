@@ -1,14 +1,14 @@
 <h2 class="title-header">
-  {{#rsa-form-button class='close-zone' isIconOnly=true click=openFilterPanel }}
+  {{#rsa-form-button class='close-zone' click=openFilterPanel }}
     {{rsa-icon name='filter-2'}}
+    <span>{{t 'investigateFiles.filter.filter'}}</span>
   {{/rsa-form-button}}
 </h2>
-<hbox class="toolbar-actions">
+<div class="toolbar-actions">
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
-  {{files-toolbar/export-button}}
   {{#rsa-form-button class="view-certificate-button" click=(action 'toggleCertificateView')}}
     {{t 'investigateFiles.button.viewCertificates'}}
-  {{/rsa-form-button}}  
+  {{/rsa-form-button}}
   <div class="divider"/>
   {{endpoint/file-actionbar
     onSaveFileStatus = (action 'saveFileStatus' checksums)
@@ -22,4 +22,5 @@
     getAllServices=(action 'getAllServices')
     isRemediationAllowed=remediationStatus
     retrieveRemediationStatus=(action 'retrieveRemediationStatus')}}
-</hbox>
+  {{files-toolbar/export-button}}
+</div>

@@ -11,8 +11,9 @@
     position: absolute;
     top: rsa-whitespace(less);
     left: rsa-whitespace();
-    text-align: right;
+    text-align: center;
     width: 97%;
+    font-size: 14px;
   }
   .lighter {
     color: text-color(primary, lighter);

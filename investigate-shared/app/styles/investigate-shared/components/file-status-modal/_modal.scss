@@ -2,7 +2,7 @@ $modalHeaderHeight: 52px;
 $footerHeight: 43px;
 $modalWidth: 500px;
 
-.rsa-application-modal.file-status-modal footer {
+.rsa-application-modal.file-status-modal {
   display: none;
 }
 
@@ -32,9 +32,12 @@ $modalWidth: 500px;
       font-size: 1rem;
       line-height: 2rem;
     }
-    .file-status-radio, .remediation-action-radio, .blacklist-category-title {
-      height: 14px;
-      margin-bottom: rsa-whitespace(less);
+    .file-status-radio {
+      width: fit-content;
+      .remediation-action-radio, .blacklist-category-title {
+        height: 14px;
+        margin-bottom: rsa-whitespace(less);
+      }
     }
     .comment-box .rsa-form-textarea {
       textarea {

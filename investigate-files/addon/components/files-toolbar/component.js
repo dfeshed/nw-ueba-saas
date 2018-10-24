@@ -46,6 +46,8 @@ const dispatchToActions = {
 const ToolBar = Component.extend({
   tagName: 'hbox',
 
+  classNames: 'files-toolbar',
+
   flashMessage: service(),
 
   @computed('fileStatusData')

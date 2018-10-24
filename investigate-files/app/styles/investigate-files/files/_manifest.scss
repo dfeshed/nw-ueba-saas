@@ -60,7 +60,7 @@ page.investigate-files-engine {
   }
   .file-name {
     text-decoration: underline;
-    color: text-color(secondary);
+    color: text-color(secondary,lightest);
     cursor: pointer;
   }
   .filter-zone {
@@ -210,6 +210,15 @@ page.investigate-files-engine {
         margin: 0px;
       }
 
+    }
+    h3 {
+      text-align: center;
+      width: 230px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 5rem;
+      padding-right: 5rem;
+      font-size: 1rem;
     }
   }
   .machine-count, .machine-count * {

@@ -12,6 +12,8 @@ const dispatchToActions = {
   exportAsFile
 };
 
-const ExportButton = Component.extend({ });
+const ExportButton = Component.extend({
+  classNames: 'export-button'
+});
 
 export default connect(stateToComputed, dispatchToActions)(ExportButton);

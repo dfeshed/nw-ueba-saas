@@ -44,7 +44,7 @@
     {{/layout.center}}
     {{#layout.right as |rightPanel|}}
       {{#rightPanel.header  class="investigate-file-tab"}}
-        <h3 class='title'>
+        <h3 class='title' title={{selectedFile.firstFileName}}>
           {{selectedFile.firstFileName}}
         </h3>
         {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}

@@ -18,7 +18,7 @@
   }
   .host-name {
     text-decoration: underline;
-    color: text-color(secondary);
+    color: text-color(secondary, lightest);
     cursor: pointer;
   }
   .rsa-data-table-body-cell {
@@ -67,9 +67,16 @@
 .host-table__toolbar-buttons {
   height: 70px;
   align-items: center;
-  padding: 0 rsa-whitespace();
+  padding: 0 rsa-whitespace(less);
   .rsa-form-button-wrapper {
     margin-right: rsa-whitespace(less);
+  }
+  .export-button {
+    position: absolute;
+    right: 0;
+    i {
+      font-size: 14px;
+    }
   }
 }
 
@@ -111,4 +118,5 @@
 }
 .rsa-investigate-query-container__service-selector {
   height: auto;
+  margin-left: 0.5rem;
 }

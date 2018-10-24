@@ -4,7 +4,8 @@ import { fileCount, fileCountForDisplay } from 'investigate-files/reducers/file-
 
 const stateToComputed = (state) => ({
   fileTotal: fileCountForDisplay(state), // Total number of files in search result
-  fileIndex: fileCount(state)
+  fileIndex: fileCount(state),
+  selectedFileCount: state.files.fileList.selectedFileList.length
 });
 
 const Pager = Component.extend({

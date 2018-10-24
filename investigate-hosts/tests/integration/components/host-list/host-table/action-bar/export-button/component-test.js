@@ -35,7 +35,6 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 1, 'loader is rendered');
-    assert.equal(find('.rsa-form-button-wrapper button').textContent.trim(), 'Downloading', 'downloading export button is rendered');
   });
 
   test('it renders host table action bar export button when exportStatus is completed', async function(assert) {
@@ -46,6 +45,7 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 0, 'loader is not present');
-    assert.equal(find('.rsa-form-button-wrapper button').textContent.trim(), 'Export to CSV', 'default export button is rendered');
+    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-download-2-filled').length, 1, 'default export button is rendered');
+    assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-download-2-filled').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
   });
 });

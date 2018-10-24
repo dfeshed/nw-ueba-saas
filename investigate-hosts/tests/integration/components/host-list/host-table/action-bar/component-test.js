@@ -59,14 +59,13 @@ module('Integration | Component | host table action bar', function(hooks) {
 
   test('it renders action bar export to csv button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(5) button').textContent.trim(), 'Export to CSV', 'action bar export to csv button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(4) .is-disabled').length, 1, 'action bar export to csv button is disabled by default');
+    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(5) .is-disabled').length, 1, 'action bar export to csv button is disabled by default');
   });
 
   test('it renders action bar delete button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(6) button').textContent.trim(), 'Delete', 'action bar delete button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar div:nth-of-type(5) .is-disabled').length, 1, 'action bar delete button is disabled');
+    assert.equal(document.querySelector('.host-table__toolbar-buttons div:nth-child(5) button').textContent.trim(), 'Delete', 'action bar delete button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar div:nth-of-type(4) .is-disabled').length, 1, 'action bar delete button is disabled');
   });
 
   test('it renders action bar start button when some hosts are selected', async function(assert) {

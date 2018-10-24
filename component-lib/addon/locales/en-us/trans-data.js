@@ -2082,7 +2082,7 @@ export default {
       serviceDown: 'Endpoint Server is offline',
       serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
     },
-    footer: '{{count}} of {{total}} {{label}}',
+    footer: 'Showing {{count}} of {{total}} {{label}} | {{selectedItems}} selected',
     fileStatus: {
       Blacklist: 'Blacklisted',
       Graylist: 'Graylisted',
@@ -3225,7 +3225,7 @@ export default {
       }
     },
     files: {
-      footer: '{{count}} of {{total}} {{label}}',
+      footer: '{{count}} of {{total}} {{label}} | {{selectedItems}} selected',
       filter: {
         filters: 'Saved Filters',
         newFilter: 'New Filter',
@@ -3393,7 +3393,7 @@ export default {
         watch: 'Watch',
         downloadToServer: 'Download to Server',
         more: 'More',
-        moreActions: 'More Actions',
+        moreActions: 'More',
         saveLocalCopy: 'Save a Local Copy',
         analyzeFile: 'Analyze File',
         virusTotalLookup: 'VirusTotal Lookup',

@@ -239,6 +239,7 @@ const FileList = Component.extend({
     },
 
     beforeContextMenuShow(item) {
+      this.closeRiskPanel();
       this.set('itemList', [item]);
       if (!this.isAlreadySelected(this.get('selections'), item)) {
         this.send('deSelectAllFiles');

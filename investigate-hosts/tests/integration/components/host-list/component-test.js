@@ -40,6 +40,7 @@ module('Integration | Component | host-list', function(hooks) {
     .hostList(hostListState.machines.hostList)
     .hostSortField('machine.machineName')
     .isEndpointServerOffline(false)
+    .selectedHostList([])
     .build();
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');

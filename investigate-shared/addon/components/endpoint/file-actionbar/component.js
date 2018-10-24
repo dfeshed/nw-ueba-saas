@@ -26,7 +26,7 @@ export default Component.extend({
 
   tagName: 'hbox',
 
-  classNames: ['file-actionbar'],
+  classNames: ['file-actionbar flexi-fit'],
 
   i18n: service(),
 
