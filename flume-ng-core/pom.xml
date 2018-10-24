@@ -427,6 +427,10 @@ limitations under the License.
                     <groupId>org.springframework.data</groupId>
                     <artifactId>spring-data-elasticsearch</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -454,6 +458,10 @@ limitations under the License.
                 <exclusion>
                     <groupId>org.elasticsearch.client</groupId>
                     <artifactId>transport</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -509,6 +517,10 @@ limitations under the License.
                     <groupId>com.github.fge</groupId>
                     <artifactId>json-patch</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -525,6 +537,10 @@ limitations under the License.
                     <groupId>org.slf4j</groupId>
                     <artifactId>log4j-over-slf4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -535,6 +551,10 @@ limitations under the License.
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
