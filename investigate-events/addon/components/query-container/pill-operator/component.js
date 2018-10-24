@@ -252,7 +252,7 @@ export default Component.extend({
     this._focusOnPowerSelectTrigger();
     // send value up to create a complex pill
     if (value && value.length > 0) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, value);
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'operator']);
     }
   },
 

@@ -132,9 +132,11 @@ export default Component.extend({
         this._broadcast(type, data);
       }
     },
+
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
+
     onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
       const targetValue = event.target.value;
@@ -160,6 +162,7 @@ export default Component.extend({
       }
       powerSelectAPI.actions.open();
     },
+
     /**
      * This function is called on every `input` event from the power-select's
      * trigger element. It's looking for an input string that ends with a space.
@@ -188,6 +191,7 @@ export default Component.extend({
         next(this, () => powerSelectAPI.actions.highlight(null));
       }
     },
+
     /**
      * This function is called every time a key is pressed, and is invoked
      * before power-select reacts to the key that was pressed.
@@ -209,18 +213,21 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         const _highlightedAfterOption = this.get('_highlightedAfterOption');
-        if (selection && selected && selection === selected) {
+        if (_highlightedAfterOption === 'Free Form Filter') {
+          // If the user presses ENTER while the "after option" is set, the
+          // assumption is that they want to create a free-form filter. We check
+          // this first because it's possible to have a `selection` and a
+          // `selected` that matches the `if` case below because this code runs
+          // before power-select reacts to the key press.
+          // We'll also perform some cleanup.
+          this._createFreeFormPill();
+          powerSelectAPI.actions.search('');
+          this.set('_highlightedAfterOption', null);
+        } else if (selection && selected && selection === selected) {
           // If the user presses ENTER, selecting a meta that was already
           // selected, power-select does nothing. We want the focus to move onto
           // the pill operator.
           this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
-        } else if (selected === null && _highlightedAfterOption === 'Free Form Filter') {
-          // If the user presses ENTER while all the meta was filtered out, the
-          // assumption is that they want to create a free-form filter. Since
-          // we have access to the power-select API, we'll perform an empty
-          // search to restore all the options in the dropdown.
-          this._createFreeFormPill();
-          powerSelectAPI.actions.search('');
         } else {
           dropFocus();
           next(this, () => {
@@ -261,6 +268,7 @@ export default Component.extend({
         });
       }
     },
+
     onOptionMouseDown() {
       // An option mouse down is the precursor to a click
       // of a power select option which causes a focus out
@@ -293,7 +301,7 @@ export default Component.extend({
     this._focusOnPowerSelectTrigger();
     // send value up to create a complex pill
     if (value && value.length > 0) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, value);
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'meta']);
     }
   },
 

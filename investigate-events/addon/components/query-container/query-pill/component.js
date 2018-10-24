@@ -224,7 +224,7 @@ export default Component.extend({
       },
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data) => this._createFreeFormPill(data)
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource)
     });
 
     if (this.get('isExistingPill')) {
@@ -867,18 +867,40 @@ export default Component.extend({
     }
   },
 
-  _createFreeFormPill(data) {
-    const selectedMeta = this.get('selectedMeta');
-    // If there's a selected meta, prepend that to the incoming text from
-    // operator, and send that along. Otherwise, assume this was coming from
-    // meta.
-    if (selectedMeta) {
-      const { metaName } = selectedMeta;
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, `${metaName} ${data}`);
-    } else {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, data);
-    }
+  _createFreeFormPill(data, dataSource) {
+    const textString = this._getFreeFormString(data, dataSource);
+    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, textString);
     this._reset();
+  },
+
+  /**
+   * Constructs a string to be used for a Free-Form filter
+   * @param {string} data The data.
+   * @param {string} dataSource Where the `data` came from. Acceptable values
+   * are "meta", "operator", or "value".
+   * @return A String value.
+   * @private
+   */
+  _getFreeFormString(data, dataSource) {
+    const metaStr = this.get('selectedMeta.metaName');
+    const operatorStr = this.get('selectedOperator.displayName');
+    return this._getStringFromSource({
+      'meta': data,
+      'operator': `${metaStr} ${data}`,
+      'value': `${metaStr} ${operatorStr} ${data}`
+    })(dataSource);
+  },
+
+  /**
+   * Creates a function that will return a formatted string given a key that
+   * matches the supplied `source` map.
+   * @param {Object} sources A map of source to string interpolations.
+   * @return A function that will return the desired string given a key that
+   * matches a source from the `sources` hash.
+   * @private
+   */
+  _getStringFromSource(sources) {
+    return (key) => sources.hasOwnProperty(key) ? sources[key] : null;
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //

@@ -369,7 +369,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('meta', meta);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'foobar', 'correct data');
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'operator'], 'correct data');
         assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '', 'meta input was reset');
         done();
       }

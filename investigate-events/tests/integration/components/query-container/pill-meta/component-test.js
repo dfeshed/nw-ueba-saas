@@ -380,7 +380,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'foobar', 'correct data');
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'meta'], 'correct data');
         assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
         done();
       }
