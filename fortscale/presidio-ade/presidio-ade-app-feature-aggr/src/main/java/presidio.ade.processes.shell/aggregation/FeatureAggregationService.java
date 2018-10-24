@@ -64,13 +64,12 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         featureAggregationScoringService.resetModelCache();
 
         //For now we don't have multiple contexts so we pass just list of size 1.
-        List<String> contextTypes = Collections.singletonList(contextType);
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
-            List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
+            List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
             List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, storeMetadataProperties);

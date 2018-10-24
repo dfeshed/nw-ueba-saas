@@ -74,9 +74,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
         enrichedEventsScoringService.resetModelCache();
 
-        //For now we don't have multiple contexts so we pass just list of size 1.
-        List<String> contextTypes = new ArrayList<>();
-        contextTypes.add(contextType);
         boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
@@ -86,7 +83,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
                 List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange, storeMetadataProperties);
-                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
+                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextType, featureBucketStrategyData);
             }
 
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();

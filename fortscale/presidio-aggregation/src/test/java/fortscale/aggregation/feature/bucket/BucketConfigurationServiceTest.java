@@ -49,7 +49,6 @@ public class BucketConfigurationServiceTest {
     }
 
     public void featureBucketsServiceInitialize() {
-        IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
         recordReaderFactories.add(new AdeRecordReaderFactory());
@@ -65,9 +64,7 @@ public class BucketConfigurationServiceTest {
     @Test
     public void testGetRelatedBucketConfs() {
         AdeRecordReader reader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-        List<String> contextFieldNames = new ArrayList<>();
-        contextFieldNames.add("context.userId");
-        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader, "fixed_duration_hourly", contextFieldNames);
+        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader.getAdeEventType(), "fixed_duration_hourly", "context.userId");
         Assert.assertEquals(1, bc.size());
         FeatureBucketConf fbc = bc.get(0);
         Assert.assertEquals("normalized_username_dlpfile_hourly", fbc.getName());

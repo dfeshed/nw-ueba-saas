@@ -146,7 +146,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
             }
         });
 
-        List<String> contextTypes = Collections.singletonList(CommonStrings.CONTEXT_USERID);
+        String contextType = CommonStrings.CONTEXT_USERID;
 
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
         Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd(), FixedDurationStrategy.DAILY.toDuration());
@@ -164,7 +164,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
                     new FeatureBucketStrategyData(FixedDurationStrategy.DAILY.toStrategyName(),
                             FixedDurationStrategy.DAILY.toStrategyName(),
                             dayPartition);
-            featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData));
+            featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, schema.getName(), contextType, featureBucketStrategyData));
             if (CollectionUtils.isNotEmpty(featureBucketsInMemory)) {
                 //TODO: check how to run featureBuckets on single feature only
                 // filter only feature buckets with the given feature bucket conf
@@ -200,12 +200,12 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
             // create feature bucket per hour
             for (TimeRange hourPartition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(dayPartition, FixedDurationStrategy.HOURLY)) {
                 PageIterator<EnrichedRecord> pageIterator = getEnrichedRecordPageIterator(contextValue, schema, hourPartition);
-                List<String> contextTypes = Collections.singletonList(CommonStrings.CONTEXT_USERID);
+                String contextType = CommonStrings.CONTEXT_USERID;
                 FeatureBucketStrategyData featureBucketStrategyData =
                         new FeatureBucketStrategyData(FixedDurationStrategy.HOURLY.toStrategyName(),
                                 FixedDurationStrategy.HOURLY.toStrategyName(),
                                 hourPartition);
-                featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData));
+                featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, schema.getName(), contextType, featureBucketStrategyData));
             }
 
             // aggregate the entire day

@@ -16,7 +16,7 @@ public interface ScoreAggregationsBucketService {
      * @param contextFieldNames
      * @param strategyData
      */
-    void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, List<String> contextFieldNames, FeatureBucketStrategyData strategyData);
+    void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName, FeatureBucketStrategyData strategyData);
 
     /**
      * once buckets are closed they should not be updated for that specific session

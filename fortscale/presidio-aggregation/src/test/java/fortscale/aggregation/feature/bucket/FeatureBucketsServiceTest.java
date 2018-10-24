@@ -43,7 +43,7 @@ public class FeatureBucketsServiceTest {
     private FeatureBucketsAggregatorInMemory featureBucketsAggregatorStore;
     private FeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketStrategyData strategyData;
-    private List<String> contextFieldNames;
+    private String contextFieldName;
     private List<AdeRecord> adeScoredDlpFileRecords;
 
     private static final long DEFAULT_END_TIME_DELTA_IN_SECONDS = 300; // 5 minutes
@@ -59,13 +59,28 @@ public class FeatureBucketsServiceTest {
         featureBucketsAggregatorStore = new FeatureBucketsAggregatorInMemory();
         featureBucketAggregatorInitialize(featureBucketsAggregatorStore);
         strategyDataInitialize();
-        contextFieldNamesInitialize();
+        contextFieldNameInitialize();
         adeRecordsInitialize();
     }
 
     @Test
     public void testFeatureBucketAggregator() {
-        featureBucketAggregator.aggregate(adeScoredDlpFileRecords, contextFieldNames, strategyData);
+        Map<String, List<AdeRecord>> adeEventTypeToAdeRecords = new HashMap<>();
+        for(AdeRecord record: adeScoredDlpFileRecords){
+            String adeEventType = record.getAdeEventType();
+            List<AdeRecord> records = adeEventTypeToAdeRecords.get(adeEventType);
+            if(records == null){
+                records = new ArrayList<>();
+                adeEventTypeToAdeRecords.put(adeEventType, records);
+            }
+            records.add(record);
+        }
+        for (List<AdeRecord> records: adeEventTypeToAdeRecords.values()){
+            String adeEventType = records.get(0).getAdeEventType();
+            List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName);
+            featureBucketAggregator.aggregate(records, featureBucketConfs, strategyData);
+        }
+
         List<FeatureBucket> featureBuckets = featureBucketsAggregatorStore.getAllFeatureBuckets();
         Map<String, FeatureBucket> featureBucketsExpectedResults = buildExpectedResult();
         checkExpectedResults(featureBucketsExpectedResults, featureBuckets);
@@ -79,7 +94,7 @@ public class FeatureBucketsServiceTest {
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
         recordReaderFactories.add(new AdeRecordReaderFactory());
         RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
-        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
+        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
     /**
@@ -92,11 +107,10 @@ public class FeatureBucketsServiceTest {
     }
 
     /**
-     * Create contextFieldNames
+     * Create contextFieldName
      */
-    public void contextFieldNamesInitialize() {
-        contextFieldNames = new ArrayList<>();
-        contextFieldNames.add("context.userId");
+    public void contextFieldNameInitialize() {
+        contextFieldName = "context.userId";
     }
 
     /**

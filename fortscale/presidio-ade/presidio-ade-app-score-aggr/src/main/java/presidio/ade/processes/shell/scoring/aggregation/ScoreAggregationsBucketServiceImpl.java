@@ -1,15 +1,14 @@
 package presidio.ade.processes.shell.scoring.aggregation;
 
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketAggregator;
-import fortscale.aggregation.feature.bucket.FeatureBucketsAggregatorInMemory;
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by barak_schuster on 6/14/17.
@@ -30,12 +29,24 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
 
     private void initFeatureBucketAggregator(){
         this.featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
-        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,bucketConfigurationService,recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
+        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
     @Override
-    public void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
-        featureBucketAggregator.aggregate(adeRecordList, contextFieldNames, strategyData);
+    public void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName, FeatureBucketStrategyData strategyData) {
+        if(adeRecordList.isEmpty()){
+            return;
+        }
+        Map<String, List<FeatureBucketConf>> adeEventTypeToFeatureBucketConfList = new HashMap<>();
+        for(AdeScoredEnrichedRecord record: adeRecordList){
+            String adeEventType = record.getAdeEventType();
+            List<FeatureBucketConf> featureBucketConfs = adeEventTypeToFeatureBucketConfList.get(adeEventType);
+            if(featureBucketConfs == null){
+                featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName);
+                adeEventTypeToFeatureBucketConfList.put(adeEventType, featureBucketConfs);
+            }
+            featureBucketAggregator.aggregate(record, featureBucketConfs, strategyData);
+        }
     }
 
     @Override
