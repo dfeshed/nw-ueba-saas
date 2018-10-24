@@ -108,7 +108,7 @@
     </span>
 
     <hbox class="form-save-controls">
-      {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToRules')}}
+      {{#rsa-form-button class='cancel-button' defaultAction=transitionToRules}}
         {{t 'forms.cancel'}}
       {{/rsa-form-button}}
       {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
