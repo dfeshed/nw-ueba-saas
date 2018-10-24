@@ -6,7 +6,9 @@ import { getAllSchemas, getPageOfMachines } from 'investigate-hosts/actions/data
 
 export const initializeEndpoint = () => {
   return (dispatch, getState) => {
-    const server = getState().endpointServer.serviceData ? getState().endpointServer.serviceData[0] : {};
+    const persistedServerId = localStorage.getItem('endpoint:persistedServerId') != 'null' ? localStorage.getItem('endpoint:persistedServerId') : null;
+    let [server] = getState().endpointServer.serviceData || [];
+    server = persistedServerId ? { id: persistedServerId } : server;
     dispatch(setEndpointServer(server));
   };
 };
@@ -20,22 +22,21 @@ export const setEndpointServer = (server) => {
   return (dispatch, getState) => {
     const { serverId } = getState().endpointQuery;
     const request = lookup('service:request');
-    if (serverId !== server.id) {
+    if (server && serverId !== server.id) {
       dispatch({
         type: ACTION_TYPES.ENDPOINT_SERVER_SELECTED,
         payload: server.id
       });
+      localStorage.setItem('endpoint:persistedServerId', server.id);
       request.registerPersistentStreamOptions({ socketUrlPostfix: server.id, requiredSocketUrl: 'endpoint/socket' });
+      dispatch({ type: ACTION_TYPES.RESET_HOSTS });
       return request.ping('endpoint-server-ping')
       .then(() => {
         dispatch(isEndpointServerOffline(false));
-        // reset files state every time a different endpoint server is selected.
-        dispatch({ type: ACTION_TYPES.RESET_HOSTS });
         dispatch(getPageOfMachines());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));
-        dispatch({ type: ACTION_TYPES.RESET_HOSTS });
       });
     }
   };
