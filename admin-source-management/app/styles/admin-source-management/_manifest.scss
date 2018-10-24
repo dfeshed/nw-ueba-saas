@@ -3,13 +3,8 @@
 
 @import "admin-usm-engine";
 
-/* deprecate & delete these by end of 11.3 */
 @import "usm-create";
 @import "usm-listing";
-@import "schedule-config/manifest";
-
-/* TODO all group related component styles */
-/* @import "usm-groups/manifest"; */
 
 /* all policy and group related component styles */
 @import "usm-policies/manifest";

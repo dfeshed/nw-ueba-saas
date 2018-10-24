@@ -5,14 +5,14 @@ import { render, findAll, click } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
 
-module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/vm-max', function(hooks) {
+module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/cpu-max', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -38,23 +38,23 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/vm
     spys.forEach((s) => s.restore());
   });
 
-  test('should render the virtual machine max component', async function(assert) {
+  test('should render the cpu max component', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizCpuMaxVm(85)
+      .policyWizCpuMax(75)
       .build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
-    assert.equal(findAll('.vm-max').length, 1, 'expected to have root element in DOM');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
+    assert.equal(findAll('.cpu-max').length, 1, 'expected to have root element in DOM');
   });
 
   test('should trigger the updatePolicyProperty ac on slider change', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizCpuMaxVm(85)
+      .policyWizCpuMax(75)
       .build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');
-    const sliderDiv = document.querySelector('.vm-max .noUi-tooltip');
+    const sliderDiv = document.querySelector('.cpu-max .noUi-tooltip');
     // change the value of the slider
     sliderDiv.textContent = 55;
     await click(sliderDiv);
@@ -64,10 +64,10 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/vm
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizCpuMaxVm(75)
+      .policyWizCpuMax(75)
       .build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
-    const minusIcon = document.querySelector('.vm-max span .rsa-icon');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
+    const minusIcon = document.querySelector('.cpu-max span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
   });

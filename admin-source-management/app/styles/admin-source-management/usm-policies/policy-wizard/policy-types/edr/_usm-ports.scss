@@ -1,9 +1,10 @@
 .usm-ports {
-  padding: rsa-whitespace() rsa-whitespace() 0 0;
+  padding: rsa-whitespace() 0 rsa-whitespace() 0;
   input {
     max-width: 75px;
   }
   .title {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: text-color(primary, light);

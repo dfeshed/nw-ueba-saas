@@ -344,17 +344,17 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     initialStateCopy.policy.scanType = 'SCHEDULED';
     initialStateCopy.availableSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
     ];
 
     const expectedEndState = {
       availableSettings: [
-        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
-        { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+        { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
       ],
       selectedSettings: [
-        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/scan-schedule', defaults: [{ field: 'scanType', value: 'MANUAL' }] }
+        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanType', value: 'MANUAL' }] }
       ]
     };
 
@@ -368,7 +368,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateCopy = _.cloneDeep(initialStateEdr);
 
     initialStateCopy.selectedSettings = [
-      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, component: 'usm-policies/policy/schedule-config/effective-date' }
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' }
     ];
     const action = { type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, payload };
     const endState = reducers(Immutable.from(initialStateCopy), action);
@@ -390,14 +390,14 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateCopy = _.cloneDeep(initialStateEdr);
 
     initialStateCopy.selectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy/schedule-config/scan-schedule' },
-      { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date' },
-      { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios' }
+      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' },
+      { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' },
+      { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
     ];
 
     const expectedEndState = {
       selectedSettings: [
-        { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios' }
+        { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
       ]
     };
 

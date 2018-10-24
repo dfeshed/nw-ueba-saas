@@ -3940,7 +3940,7 @@ export default {
         requestScanOnRegistration: 'Auto Scan New Systems When Added',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
-        invasiveActions: 'Invasive Actions',
+        invasiveActions: 'Response Actions',
         blockingEnabled: 'Blocking',
         endpointServerSettings: 'Endpoint Server',
         primaryAddress: 'Hostname',

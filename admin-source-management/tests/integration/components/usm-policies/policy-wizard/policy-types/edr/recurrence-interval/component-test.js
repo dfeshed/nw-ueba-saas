@@ -7,8 +7,8 @@ import wait from 'ember-test-helpers/wait';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 let setState, updatePolicyPropertySpy;

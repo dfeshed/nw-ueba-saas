@@ -5,8 +5,8 @@ import { render, findAll, click } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { setFlatpickrDate } from 'ember-flatpickr/test-support/helpers';
 import sinon from 'sinon';
-import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 

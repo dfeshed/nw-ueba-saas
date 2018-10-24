@@ -6,8 +6,8 @@ import { render, find, findAll, fillIn, triggerEvent, click } from '@ember/test-
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
-import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
