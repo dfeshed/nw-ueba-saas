@@ -13,6 +13,15 @@ import {
   selectedSourceType,
   enabledAvailableSettings,
   sortedSelectedSettings,
+  nameValidator,
+  descriptionValidator,
+  steps,
+  isIdentifyPolicyStepValid,
+  isDefinePolicyStepValid,
+  isWizardValid,
+  isPolicyLoading
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import {
   scanType,
   startDate,
   startTime,
@@ -30,21 +39,14 @@ import {
   isPortValid,
   beaconIntervalValue,
   primaryAddress,
-  primaryAddressValidator,
   beaconIntervalValueValidator,
   beaconIntervalUnits,
   selectedBeaconIntervalUnit,
   runIntervalConfig,
-  nameValidator,
-  descriptionValidator,
-  steps,
-  isIdentifyPolicyStepValid,
   endpointServersList,
   selectedEndpointSever,
-  isDefinePolicyStepValid,
-  isWizardValid,
-  isPolicyLoading
-} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+  primaryAddressValidator
+} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
   SCAN_SCHEDULE_CONFIG,
   CAPTURE_CODE_CONFIG,
@@ -53,7 +55,7 @@ import {
   REQUEST_SCAN_CONFIG,
   BLOCKING_ENABLED_CONFIG,
   AGENT_MODE_CONFIG
-} from 'admin-source-management/utils/settings';
+} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-settings';
 
 module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
   setupTest(hooks);
@@ -259,7 +261,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
     let validExpected = {
       isError: true,
       showError: true,
-      errorMessage: 'adminUsm.policy.scanStartDateInvalidMsg'
+      errorMessage: 'adminUsm.policyWizard.edrPolicy.scanStartDateInvalidMsg'
     };
     let validActual = startDateValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${startDate}'`);
@@ -288,7 +290,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
     let validExpected = {
       isError: true,
       showError: true,
-      errorMessage: 'adminUsm.policy.primaryAddressInvalidMsg'
+      errorMessage: 'adminUsm.policyWizard.edrPolicy.primaryAddressInvalidMsg'
     };
     let validActual = primaryAddressValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${addressValue}'`);
@@ -337,7 +339,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
   test('isPortValid returns correcly based on the validity of the port value', function(assert) {
     let portValue = 0;
-    const expectedErrorMsg = 'adminUsm.policy.portInvalidMsg';
+    const expectedErrorMsg = 'adminUsm.policyWizard.edrPolicy.portInvalidMsg';
     let fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPrimaryUdpPort(portValue)
@@ -436,7 +438,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -448,7 +450,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -472,7 +474,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -484,7 +486,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -511,7 +513,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -523,7 +525,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -547,7 +549,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
 
@@ -559,7 +561,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
       .policyWizVisited(visited)
       .build();
-    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policy.${settingId}InvalidMsg` };
+    validExpected = { isError: true, showError: true, errorMessage: `adminUsm.policyWizard.edrPolicy.${settingId}InvalidMsg` };
     validActual = beaconIntervalValueValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${intervalValue} ${intervalUnit}`);
   });
@@ -568,15 +570,15 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
     const i18n = lookup('service:i18n');
 
     let settingId = 'primaryHttpsBeaconInterval';
-    const httpsMinsText = i18n.t(`adminUsm.policy.${settingId}_MINUTES`);
-    const httpsHourText = i18n.t(`adminUsm.policy.${settingId}_HOURS`);
+    const httpsMinsText = i18n.t(`adminUsm.policyWizard.edrPolicy.${settingId}_MINUTES`);
+    const httpsHourText = i18n.t(`adminUsm.policyWizard.edrPolicy.${settingId}_HOURS`);
     let unitsExpected = [{ unit: 'MINUTES', label: httpsMinsText }, { unit: 'HOURS', label: httpsHourText }];
     let unitsActual = beaconIntervalUnits(settingId);
     assert.deepEqual(unitsActual, unitsExpected, `${settingId} units options are as expected`);
 
     settingId = 'primaryUdpBeaconInterval';
-    const udpMinsText = i18n.t(`adminUsm.policy.${settingId}_SECONDS`);
-    const udpHourText = i18n.t(`adminUsm.policy.${settingId}_MINUTES`);
+    const udpMinsText = i18n.t(`adminUsm.policyWizard.edrPolicy.${settingId}_SECONDS`);
+    const udpHourText = i18n.t(`adminUsm.policyWizard.edrPolicy.${settingId}_MINUTES`);
     unitsExpected = [{ unit: 'SECONDS', label: udpMinsText }, { unit: 'MINUTES', label: udpHourText }];
     unitsActual = beaconIntervalUnits(settingId);
     assert.deepEqual(unitsActual, unitsExpected, `${settingId} units options are as expected`);
@@ -700,7 +702,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
       .build();
     const expectedWeekOptions = {
-      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY',
+      label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.week.SUNDAY',
       week: 'SUNDAY',
       isActive: true
     };
@@ -716,7 +718,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
       .build();
     const expectedConfig = {
       'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
-      'runLabel': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.intervalText.WEEKS'
+      'runLabel': 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.intervalText.WEEKS'
     };
     const resultConfig = runIntervalConfig(fullState);
     assert.deepEqual(resultConfig, expectedConfig, 'should return the processed run interval configuration');
@@ -930,8 +932,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
     // start date selected but invalid
     selectedSettingsExpected = [
-      { index: 1, id: 'scanType', label: 'adminUsm.policy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
-      { index: 2, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
+      { index: 1, id: 'scanType', label: 'adminUsm.policyWizard.edrPolicy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 2, id: 'scanStartDate', label: 'adminUsm.policyWizard.edrPolicy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy/schedule-config/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
     ];
     fullState = new ReduxDataHelper()
       .policyWiz()
@@ -947,8 +949,8 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
     // endpoint server selected but invalid
     selectedSettingsExpected = [
-      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
-      { index: 15, id: 'primaryAddress', label: 'adminUsm.policy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] }
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }] }
     ];
     fullState = new ReduxDataHelper()
       .policyWiz()
@@ -964,9 +966,9 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
     // ports selected but invalid
     selectedSettingsExpected = [
-      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
-      { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
-      { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] }
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryHttpsPort', value: 443 }] },
+      { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] }
     ];
     fullState = new ReduxDataHelper()
       .policyWiz()
@@ -983,9 +985,9 @@ module('Unit | Selectors | Policy Wizard Selectors', function(hooks) {
 
     // beacon intervals selected but invalid
     selectedSettingsExpected = [
-      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policy.endpointServerSettings', isHeader: true, isEnabled: true },
-      { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
-      { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] }
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+      { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] }
     ];
     fullState = new ReduxDataHelper()
       .policyWiz()

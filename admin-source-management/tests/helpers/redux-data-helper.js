@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
-import { initialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard-reducers';
+import { buildInitialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-reducers';
 import { initialState as groupWizInitialState } from 'admin-source-management/reducers/usm/group-wizard-reducers';
 import {
   groups,
@@ -57,8 +57,8 @@ export default class DataHelper {
     return this;
   }
 
-  policyWiz() {
-    _set(this.state, 'usm.policyWizard', _.cloneDeep(policyWizInitialState));
+  policyWiz(policyType = 'edrPolicy') {
+    _set(this.state, 'usm.policyWizard', _.cloneDeep(policyWizInitialState(Immutable.from({}), policyType)));
     return this;
   }
 

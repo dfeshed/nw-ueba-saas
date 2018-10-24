@@ -5,7 +5,7 @@ import {
   policy,
   steps,
   isPolicyLoading
-} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 // import {
 //   editPolicy

@@ -9,7 +9,7 @@ import {
   isIdentifyPolicyStepValid,
   isDefinePolicyStepValid,
   isWizardValid
-} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 import {
   savePolicy,

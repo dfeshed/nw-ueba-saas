@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { isBetween } from 'admin-source-management/utils/settings';
+import { isBetween } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-settings';
 
-module('Unit | Utils | utils/settings', function(hooks) {
+module('Unit | Utils | edr-settings', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     initialize(this.owner);

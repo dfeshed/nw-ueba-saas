@@ -12,7 +12,7 @@ import policyWizardCreators from 'admin-source-management/actions/creators/polic
 let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
 
-module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', function(hooks) {
+module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/cpu-max', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -39,7 +39,11 @@ module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', 
   });
 
   test('should render the cpu max component', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/cpu-max}}`);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMax(75)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
     assert.equal(findAll('.cpu-max').length, 1, 'expected to have root element in DOM');
   });
 
@@ -48,7 +52,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', 
       .policyWiz()
       .policyWizCpuMax(75)
       .build();
-    await render(hbs`{{usm-policies/policy/schedule-config/cpu-max}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');
     const sliderDiv = document.querySelector('.cpu-max .noUi-tooltip');
     // change the value of the slider
@@ -58,7 +62,11 @@ module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', 
   });
 
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/cpu-max}}`);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMax(75)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/cpu-max}}`);
     const minusIcon = document.querySelector('.cpu-max span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');

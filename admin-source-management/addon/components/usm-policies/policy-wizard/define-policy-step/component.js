@@ -4,7 +4,7 @@ import { connect } from 'ember-redux';
 import {
   enabledAvailableSettings,
   sortedSelectedSettings
-} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 import {
   addToSelectedSettings

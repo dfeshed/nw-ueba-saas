@@ -1,0 +1,26 @@
+<h4 class='title'>
+  {{t (concat 'adminUsm.policyWizard.edrPolicy.' selectedSettingId)}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' selectedSettingId}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+<hbox>
+  {{rsa-form-input
+    class='beacon-interval-value'
+    value=(readonly beaconIntervalValue)
+    isError=beaconIntervalValueValidator.showError
+    errorMessage=(t beaconIntervalValueValidator.errorMessage)
+    focusOut=(action 'handleBeaconIntervalValueChange' value='target.value')
+  }}
+  <div class="beacon-interval-unit">
+    {{#power-select
+      class='beacon-interval-unit'
+      options=beaconIntervalUnits
+      selected=selectedBeaconIntervalUnit
+      searchField='label'
+      onchange=(action 'handleBeaconIntervalUnitChange') as |option|
+    }}
+      {{option.label}}
+    {{/power-select}}
+  </div>
+</hbox>

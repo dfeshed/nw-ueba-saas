@@ -1,0 +1,15 @@
+<h4 class='title'>
+  {{t (concat 'adminUsm.policyWizard.edrPolicy.' selectedSettingId)}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' selectedSettingId}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+<span class="rsa-form-input">
+  {{rsa-form-input
+    class='port-value'
+    value=(readonly portValue)
+    isError=isPortValid.showError
+    errorMessage=(t isPortValid.errorMessage)
+    focusOut=(action 'handlePortValueChange' value='target.value')
+  }}
+</span>

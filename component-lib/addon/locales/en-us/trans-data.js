@@ -3703,95 +3703,95 @@ export default {
         }
       }
     },
-    policy: {
-      name: 'Policy Name',
-      namePlaceholder: 'Enter a unique policy name',
-      description: 'Policy Description',
-      descPlaceholder: 'Enter a description',
-      availableSettings: 'Available Settings',
-      selectedSettings: 'Selected Settings',
-      scanSchedule: 'Scan Schedule',
-      schedOrManScan: 'Scheduled or Manual Scan',
-      effectiveDate: 'Effective Date',
-      scanFrequency: 'Scan Frequency',
-      startTime: 'Start Time',
-      cpuMax: 'CPU Maximum',
-      vmMaximum: 'Virtual Machine Maximum',
-      captureFloatingCode: 'Capture Floating Code',
-      downloadMbr: 'Download Master Boot Record',
-      filterSignedHooks: 'Include Hooks With Signed Modules',
-      advScanSettings: 'Advanced Scan Settings',
-      requestScanOnRegistration: 'Auto Scan New Systems When Added',
-      blockingEnabled: 'Blocking',
-      agentSettings: 'Agent Settings',
-      agentMode: 'Monitoring Mode',
-      noMonitoring: 'No Monitoring',
-      fullMonitoring: 'Full Monitoring',
-      invasiveActions: 'Invasive Actions',
-      radioOptionEnabled: 'Enabled',
-      radioOptionDisabled: 'Disabled',
-      endpointServerSettings: 'Endpoint Server',
-      primaryAddress: 'Hostname',
-      primaryHttpsPort: 'HTTPS Port',
-      primaryUdpPort: 'UDP Port',
-      scanStartDateInvalidMsg: 'The scan start date should not be empty',
-      primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
-      portInvalidMsg: 'The port should be between 1 and 65535',
-      primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
-      primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',
-      primaryHttpsBeaconInterval_MINUTES: 'Minutes',
-      primaryHttpsBeaconInterval_HOURS: 'Hours',
-      primaryUdpBeaconInterval: 'UDP Beacon Interval',
-      primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
-      primaryUdpBeaconInterval_SECONDS: 'Seconds',
-      primaryUdpBeaconInterval_MINUTES: 'Minutes',
-      scheduleConfiguration: {
-        scanType: {
-          title: 'Scheduled or Manual Scan',
-          options: {
-            manual: 'Manual',
-            scheduled: 'Scheduled'
-          }
-        },
-        title: 'Scan Schedule',
-        save: 'Save',
-        enable: 'Enable',
-        effectiveDate: 'Effective Date',
-        startTime: 'Start Time',
-        recurrenceInterval: {
-          title: 'Scan Frequency',
-          options: {
-            daily: 'Days',
-            weekly: 'Weeks',
-            monthly: 'Months'
-          },
-          every: 'Scan every',
-          on: 'on',
-          intervalText: {
-            DAYS: 'day(s)',
-            WEEKS: 'week(s)',
-            MONTHS: 'month(s)'
-          },
-          week: {
-            MONDAY: 'M',
-            TUESDAY: 'T',
-            WEDNESDAY: 'W',
-            THURSDAY: 'T',
-            FRIDAY: 'F',
-            SATURDAY: 'S',
-            SUNDAY: 'S'
-          }
-        },
-        runAtTime: 'Start Time',
-        cpuThrottling: {
-          title: 'Agent CPU Throttling',
-          cpuMax: 'CPU Maximum ( % )',
-          vmMax: 'Virtual Machine Maximum ( % ) '
-        }
-      },
-      saveFailure: 'A problem occurred while trying to save the policy.',
-      saveSuccess: 'The policy has been saved successfully.'
-    },
+    // policy: {
+    //   name: 'Policy Name',
+    //   namePlaceholder: 'Enter a unique policy name',
+    //   description: 'Policy Description',
+    //   descPlaceholder: 'Enter a description',
+    //   availableSettings: 'Available Settings',
+    //   selectedSettings: 'Selected Settings',
+    //   scanSchedule: 'Scan Schedule',
+    //   schedOrManScan: 'Scheduled or Manual Scan',
+    //   effectiveDate: 'Effective Date',
+    //   scanFrequency: 'Scan Frequency',
+    //   startTime: 'Start Time',
+    //   cpuMax: 'CPU Maximum',
+    //   vmMaximum: 'Virtual Machine Maximum',
+    //   captureFloatingCode: 'Capture Floating Code',
+    //   downloadMbr: 'Download Master Boot Record',
+    //   filterSignedHooks: 'Include Hooks With Signed Modules',
+    //   advScanSettings: 'Advanced Scan Settings',
+    //   requestScanOnRegistration: 'Auto Scan New Systems When Added',
+    //   blockingEnabled: 'Blocking',
+    //   agentSettings: 'Agent Settings',
+    //   agentMode: 'Monitoring Mode',
+    //   noMonitoring: 'No Monitoring',
+    //   fullMonitoring: 'Full Monitoring',
+    //   invasiveActions: 'Invasive Actions',
+    //   radioOptionEnabled: 'Enabled',
+    //   radioOptionDisabled: 'Disabled',
+    //   endpointServerSettings: 'Endpoint Server',
+    //   primaryAddress: 'Hostname',
+    //   primaryHttpsPort: 'HTTPS Port',
+    //   primaryUdpPort: 'UDP Port',
+    //   scanStartDateInvalidMsg: 'The scan start date should not be empty',
+    //   primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
+    //   portInvalidMsg: 'The port should be between 1 and 65535',
+    //   primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
+    //   primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',
+    //   primaryHttpsBeaconInterval_MINUTES: 'Minutes',
+    //   primaryHttpsBeaconInterval_HOURS: 'Hours',
+    //   primaryUdpBeaconInterval: 'UDP Beacon Interval',
+    //   primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
+    //   primaryUdpBeaconInterval_SECONDS: 'Seconds',
+    //   primaryUdpBeaconInterval_MINUTES: 'Minutes',
+    //   scheduleConfiguration: {
+    //     scanType: {
+    //       title: 'Scheduled or Manual Scan',
+    //       options: {
+    //         manual: 'Manual',
+    //         scheduled: 'Scheduled'
+    //       }
+    //     },
+    //     title: 'Scan Schedule',
+    //     save: 'Save',
+    //     enable: 'Enable',
+    //     effectiveDate: 'Effective Date',
+    //     startTime: 'Start Time',
+    //     recurrenceInterval: {
+    //       title: 'Scan Frequency',
+    //       options: {
+    //         daily: 'Days',
+    //         weekly: 'Weeks',
+    //         monthly: 'Months'
+    //       },
+    //       every: 'Scan every',
+    //       on: 'on',
+    //       intervalText: {
+    //         DAYS: 'day(s)',
+    //         WEEKS: 'week(s)',
+    //         MONTHS: 'month(s)'
+    //       },
+    //       week: {
+    //         MONDAY: 'M',
+    //         TUESDAY: 'T',
+    //         WEDNESDAY: 'W',
+    //         THURSDAY: 'T',
+    //         FRIDAY: 'F',
+    //         SATURDAY: 'S',
+    //         SUNDAY: 'S'
+    //       }
+    //     },
+    //     runAtTime: 'Start Time',
+    //     cpuThrottling: {
+    //       title: 'Agent CPU Throttling',
+    //       cpuMax: 'CPU Maximum ( % )',
+    //       vmMax: 'Virtual Machine Maximum ( % ) '
+    //     }
+    //   },
+    //   saveFailure: 'A problem occurred while trying to save the policy.',
+    //   saveSuccess: 'The policy has been saved successfully.'
+    // },
     groupWizard: {
       // identify-group-step
       identifyGroup: 'Identify Group',
@@ -3878,6 +3878,8 @@ export default {
       descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
       definePolicy: 'Define Policy',
+      availableSettings: 'Available Settings',
+      selectedSettings: 'Selected Settings',
       // apply-to-group-step
       applyToGroup: 'Apply to Group',
       // review-policy-step
@@ -3895,6 +3897,69 @@ export default {
         saveSuccess: 'The policy has been saved successfully.',
         savePublishFailure: 'A problem occurred while trying to save and publish the policy: {{errorType}}',
         savePublishSuccess: 'The policy has been saved and published successfully.'
+      },
+      // edr policy settings
+      edrPolicy: {
+        scanSchedule: 'Scan Schedule',
+        schedOrManScan: 'Scheduled or Manual Scan',
+        scanTypeManual: 'Manual',
+        scanTypeScheduled: 'Scheduled',
+        effectiveDate: 'Effective Date',
+        scanStartDateInvalidMsg: 'The scan start date should not be empty',
+        scanFrequency: 'Scan Frequency',
+        recurrenceInterval: {
+          options: {
+            daily: 'Days',
+            weekly: 'Weeks',
+            monthly: 'Months'
+          },
+          every: 'Scan every',
+          on: 'on',
+          intervalText: {
+            DAYS: 'day(s)',
+            WEEKS: 'week(s)',
+            MONTHS: 'month(s)'
+          },
+          week: {
+            MONDAY: 'M',
+            TUESDAY: 'T',
+            WEDNESDAY: 'W',
+            THURSDAY: 'T',
+            FRIDAY: 'F',
+            SATURDAY: 'S',
+            SUNDAY: 'S'
+          }
+        },
+        startTime: 'Start Time',
+        cpuMax: 'CPU Maximum',
+        vmMax: 'Virtual Machine Maximum',
+        advScanSettings: 'Advanced Scan Settings',
+        captureFloatingCode: 'Capture Floating Code',
+        downloadMbr: 'Download Master Boot Record',
+        filterSignedHooks: 'Include Hooks With Signed Modules',
+        requestScanOnRegistration: 'Auto Scan New Systems When Added',
+        radioOptionEnabled: 'Enabled',
+        radioOptionDisabled: 'Disabled',
+        invasiveActions: 'Invasive Actions',
+        blockingEnabled: 'Blocking',
+        endpointServerSettings: 'Endpoint Server',
+        primaryAddress: 'Hostname',
+        primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
+        primaryHttpsPort: 'HTTPS Port',
+        primaryUdpPort: 'UDP Port',
+        portInvalidMsg: 'The port should be between 1 and 65535',
+        primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
+        primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',
+        primaryHttpsBeaconInterval_MINUTES: 'Minutes',
+        primaryHttpsBeaconInterval_HOURS: 'Hours',
+        primaryUdpBeaconInterval: 'UDP Beacon Interval',
+        primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
+        primaryUdpBeaconInterval_SECONDS: 'Seconds',
+        primaryUdpBeaconInterval_MINUTES: 'Minutes',
+        agentSettings: 'Agent Settings',
+        agentMode: 'Monitoring Mode',
+        noMonitoring: 'No Monitoring',
+        fullMonitoring: 'Full Monitoring'
       }
     },
     policyTypes: {

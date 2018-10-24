@@ -8,10 +8,11 @@ import {
   selectedSourceType,
   nameValidator,
   descriptionValidator
-} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 import {
-  editPolicy
+  updatePolicyType,
+  updatePolicyProperty
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -24,7 +25,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  editPolicy
+  updatePolicyType,
+  updatePolicyProperty
 };
 
 const IdentifyPolicyStep = Component.extend({
@@ -51,24 +53,16 @@ const IdentifyPolicyStep = Component.extend({
   // step object required to be passed in
   // step: null, // the wizard passes this in but we're not using it (yet anyway) - uncomment if/when needed
 
-  // edit the policy using fully qualified field name (e.g., 'policy.name')
-  edit(field, value) {
-    if (field && value !== undefined) {
-      this.send('editPolicy', field, value);
-    }
-  },
-
   actions: {
     handleSourceTypeChange(value) {
-      // power-select passes the whole object, we only want the type
-      this.edit('policy.type', value.type);
+      // power-select passes the whole object, we only want the policy type
+      this.send('updatePolicyType', value.policyType);
     },
-
     handleNameChange(value) {
-      this.edit('policy.name', value.trim());
+      this.send('updatePolicyProperty', 'name', value.trim());
     },
     handleDescriptionChange(value) {
-      this.edit('policy.description', value.trim());
+      this.send('updatePolicyProperty', 'description', value.trim());
     }
   }
 });

@@ -1,7 +1,7 @@
 <hbox class="all-settings">
   <vbox xs="5" class="available-settings">
     <div class="control">
-      <div class="label">{{t 'adminUsm.policy.availableSettings'}}</div>
+      <div class="label">{{t 'adminUsm.policyWizard.availableSettings'}}</div>
       {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
         {{#if enabledAvailableSetting.isHeader}}
           <div class="heading">{{t enabledAvailableSetting.label}}</div>
@@ -19,7 +19,7 @@
   </vbox>
   <vbox xs="4" class="selected-settings">
     <div class="control">
-      <div class="label">{{t 'adminUsm.policy.selectedSettings'}}</div>
+      <div class="label">{{t 'adminUsm.policyWizard.selectedSettings'}}</div>
       {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
         {{#if sortedSelectedSetting.isHeader}}
           <div class="heading">{{t sortedSelectedSetting.label}}</div>

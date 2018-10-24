@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import computed from 'ember-computed-decorators';
 import { lookup } from 'ember-dependency-lookup';
-import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import {
   policyList,
   assignedPolicies,

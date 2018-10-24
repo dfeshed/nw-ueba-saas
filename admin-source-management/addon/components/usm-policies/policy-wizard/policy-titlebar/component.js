@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
-import { policy } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
+import { policy } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import { descriptionsForDisplay } from 'admin-source-management/reducers/usm/util/selector-helpers';
 
 

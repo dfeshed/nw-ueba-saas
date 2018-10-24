@@ -1,0 +1,14 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.edrPolicy.cpuMax'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMax'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+{{range-slider
+  start=[cpuMax]
+  format=format
+  min=5
+  step=1
+  connect=false
+  on-change=(action 'updatePolicyProperty' 'cpuMax')
+}}

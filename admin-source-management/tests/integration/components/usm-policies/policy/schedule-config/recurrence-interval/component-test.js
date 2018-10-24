@@ -14,7 +14,7 @@ import policyWizardCreators from 'admin-source-management/actions/creators/polic
 let setState, updatePolicyPropertySpy;
 const spys = [];
 
-module('Integration | Component | usm-policies/policy/schedule-config/recurrence-interval', function(hooks) {
+module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/recurrence-interval', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -40,12 +40,12 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   });
 
   test('should render recurrence interval fields', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(findAll('.recurrence-interval').length, 1, 'expected to have root element in DOM');
   });
 
   test('should display daily and weekly recurrence type', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(findAll('.recurrence-type').length, 2, 'expected to have two radio button in dom');
   });
 
@@ -55,7 +55,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
       .policyWizRecurrenceInterval(1)
       .policyWizRecurrenceUnit('DAYS')
       .build();
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(this.$('.recurrence-interval input:eq(0)').val(), 'DAYS', 'expected to render DAYS as first field');
     assert.equal(findAll('.recurrence-run-interval').length, 1, 'expected to render dropdown for run interval');
     assert.equal(findAll('input[type=radio]:checked').length, 1, 'Expected to select default radio button');
@@ -69,7 +69,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
   skip('should trigger the updatePolicyProperty action creator on clicking the Daily or Weekly radio button', async function(assert) {
     assert.expect(2);
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no click is registered');
     await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
     return settled().then(() => {
@@ -78,14 +78,14 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   });
 
   test('should display weeks recurrence field options on clicking the Weekly radio button', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
     assert.equal(this.$('input[type=radio]:eq(1):checked').length, 1, 'Expected to select Weekly radio button');
     assert.equal(findAll('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
   });
 
   test('should select the week on clicking the available week options', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
     assert.equal(this.$('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
     await click('.week-button');
@@ -95,7 +95,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
   skip('should trigger the updatePolicyProperty action creator when clicking the week schedule', async function(assert) {
     assert.expect(2);
-    await render(hbs`{{usm-policies/policy/schedule-config/recurrence-interval}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no week is selected');
     // change toggle to weeks. This would bring up a div of buttons for each day of the week (S, M, T, W etc)
     await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');

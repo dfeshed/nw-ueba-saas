@@ -1,0 +1,17 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.edrPolicy.effectiveDate'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'scanStartDate'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+<hbox class="date-time">
+  {{rsa-form-datetime
+    enableTime=false
+    minDate='today'
+    yearRange="currentYear, 2050"
+    value=(readonly startDate)        
+    isError=startDateValidator.showError
+    errorMessage=(t startDateValidator.errorMessage)
+    onChange=(action 'onDateChange')
+  }}
+</hbox>

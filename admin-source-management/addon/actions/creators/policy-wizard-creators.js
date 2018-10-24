@@ -1,33 +1,57 @@
+import RSVP from 'rsvp';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 
 const scanScheduleId = 'scanType';
+const noop = () => {};
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
+/**
+ * Initialize the policy wizard for create-new policy & editing an existing policy.
+ * - create-new initializes everything assuming a blank policy with a default policyType (currently 'edrPolicy')
+ * - passing in an existing policy ID initializes everything by loading the policy by the ID,
+ *   and then initializing actions specific to the fetched policy by policyType
+ * @param policyId
+ * @public
+ */
 const initializePolicy = (policyId) => {
-  return (dispatch /* , getState */) => {
-    // const state = getState();
+  return async (dispatch, getState) => {
     if (policyId === 'create-new') {
       dispatch(newPolicy());
     } else {
-      dispatch(fetchPolicy(policyId));
+      await _initializeFetchPolicy(policyId, dispatch, getState);
     }
 
-    // init policy lists
+    // init policy list, which is used to validate policy name uniqueness
     dispatch(fetchPolicyList());
+    // init type specific actions
+    _initializePolicyType(getState().usm.policyWizard.policy.policyType, dispatch);
+  };
+};
+
+/**
+ * Wraps the fetching of a policy in a promise
+ * @see fetchPolicy
+ * @private
+ */
+const _initializeFetchPolicy = (policyId, dispatch, getState) => {
+  return new RSVP.Promise((resolve, reject) => {
+    fetchPolicy(policyId, callbacksDefault, resolve, reject)(dispatch, getState);
+  });
+};
+
+/**
+ * Dispatches actions needed to initialize a specific policy type for:
+ * - NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
+ * @private
+ */
+const _initializePolicyType = (policyType, dispatch) => {
+  // init type specific actions
+  if (policyType === 'edrPolicy') {
     dispatch(fetchEndpointServers());
-  };
+  } /* else if (policyType === 'windowsLogPolicy') {
+  } */
 };
-
-const fetchPolicyList = () => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.FETCH_POLICY_LIST,
-      promise: policyAPI.fetchPolicyList()
-    });
-  };
-};
-
 
 /**
  * Replaces any previous policy state with the template for a brand new policy
@@ -40,7 +64,7 @@ const newPolicy = () => ({ type: ACTION_TYPES.NEW_POLICY });
  * so that correct headers will be intact for the policy that is fetched.
  * @public
  */
-const fetchPolicy = (id, callbacks = callbacksDefault) => {
+const fetchPolicy = (id, callbacks = callbacksDefault, resolve = noop, reject = noop) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.FETCH_POLICY,
@@ -49,12 +73,56 @@ const fetchPolicy = (id, callbacks = callbacksDefault) => {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
           dispatch(_updateHeadersForAllSettings());
+          resolve();
         },
         onFailure: (response) => {
           callbacks.onFailure(response);
+          reject();
         }
       }
     });
+  };
+};
+
+/**
+ * Saves the given policy to the server.
+ * @param policy
+ * @param callbacks
+ * @public
+ */
+const savePolicy = (policy, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.SAVE_POLICY,
+    promise: policyAPI.savePolicy(policy),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
+/**
+ * Saves & Publishes the given policy to the server.
+ * @param policy
+ * @param callbacks
+ * @public
+ */
+const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.SAVE_PUBLISH_POLICY,
+    promise: policyAPI.savePublishPolicy(policy),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
   };
 };
 
@@ -115,34 +183,33 @@ const _updateHeadersForAllSettings = () => {
 };
 
 /**
- * Edits a policy prop in Redux state by specifying the field name (fully qualified, e.g., 'policy.name')
- * and the new value that should be set
- * @param field
- * @param value
+ * Updates the policy.policyType prop and reinitializes the rest of the state
+ * @param policyType
  * @public
  */
-const editPolicy = (field, value) => {
-  const payload = {
-    field,
-    value
-  };
-  return {
-    type: ACTION_TYPES.EDIT_POLICY,
-    payload
+const updatePolicyType = (policyType) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_POLICY_TYPE,
+      payload: policyType
+    });
+    // init type specific actions
+    _initializePolicyType(policyType, dispatch);
   };
 };
 
 /**
- * Basically the same as editPolicy except the payload here is a nested object
- * TODO - flatten the policy settings so we can merge together with editPolicy eh!
- * @param {*} field
- * @param {*} value
+ * Updates policy prop(s) in Redux state by specifying the field name(s) (fully qualified, e.g., 'policy.name')
+ * and the new value(s) that should be set
+ * @param field
+ * @param value
  * @public
  */
 const updatePolicyProperty = (field, value) => {
   let type = ACTION_TYPES.UPDATE_POLICY_PROPERTY;
   let payload = {};
   switch (field) {
+    // edrPolicy specific props
     case 'scanType':
       type = ACTION_TYPES.TOGGLE_SCAN_TYPE;
       payload = value;
@@ -161,44 +228,32 @@ const updatePolicyProperty = (field, value) => {
         { field: 'policy.primaryAddress', value: value.host }
       ];
       break;
+    // windowsLogPolicy specific props
+    // case 'someWinLogProp':
+    //   // do something
+    //   break;
     default:
-      payload = [
-        { field: `policy.${field}`, value }
-      ];
+      payload = [{ field: `policy.${field}`, value }];
   }
   return { type, payload };
 };
 
-const savePolicy = (policy, callbacks = callbacksDefault) => {
-  return {
-    type: ACTION_TYPES.SAVE_POLICY,
-    promise: policyAPI.savePolicy(policy),
-    meta: {
-      onSuccess: (response) => {
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        callbacks.onFailure(response);
-      }
-    }
+/**
+ * Fetches list of policies used to validate policy name uniqueness
+ * @public
+ */
+const fetchPolicyList = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.FETCH_POLICY_LIST,
+      promise: policyAPI.fetchPolicyList()
+    });
   };
 };
 
-const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
-  return {
-    type: ACTION_TYPES.SAVE_PUBLISH_POLICY,
-    promise: policyAPI.savePublishPolicy(policy),
-    meta: {
-      onSuccess: (response) => {
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        callbacks.onFailure(response);
-      }
-    }
-  };
-};
-
+// ===================================================
+// edrPolicy specific action creators
+// ===================================================
 const fetchEndpointServers = () => {
   return {
     type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS,
@@ -206,16 +261,29 @@ const fetchEndpointServers = () => {
   };
 };
 
+// ===================================================
+// windowsLogPolicy specific action creators
+// ===================================================
+// const someWindosLogPolicyThing = () => {
+//   return {
+//     type: ACTION_TYPES.SOME_WINDOWS_LOG_THING,
+//     promise: policyAPI.fetchSomeWindowsLogThing()
+//   };
+// };
+
 export {
   initializePolicy,
-  fetchPolicyList,
   newPolicy,
   fetchPolicy,
-  addToSelectedSettings,
-  removeFromSelectedSettings,
-  editPolicy,
-  updatePolicyProperty,
   savePolicy,
   savePublishPolicy,
+  addToSelectedSettings,
+  removeFromSelectedSettings,
+  updatePolicyType,
+  updatePolicyProperty,
+  fetchPolicyList,
+  // edrPolicy specific action creators
   fetchEndpointServers
+  // windowsLogPolicy specific action creators
+  // someWindosLogPolicyThing
 };

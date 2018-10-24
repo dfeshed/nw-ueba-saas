@@ -13,7 +13,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
 
-module('Integration | Component | usm-policies/policy/schedule-config/primary-address', function(hooks) {
+module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/primary-address', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -39,7 +39,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/primary-ad
   });
 
   test('should render primaryAddress component when id is primaryAddress', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/primary-address selectedSettingId='primaryAddress'}}`);
     assert.equal(findAll('.primary-address').length, 1, 'expected to have primaryAddress root input element in DOM');
   });
 
@@ -48,13 +48,13 @@ module('Integration | Component | usm-policies/policy/schedule-config/primary-ad
         .policyWiz()
         .policyWizEndpointServers()
         .build();
-    await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/primary-address selectedSettingId='primaryAddress'}}`);
     await selectChoose('.primary-address__list', '.ember-power-select-option', 0);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/primary-address selectedSettingId='primaryAddress'}}`);
     const minusIcon = document.querySelector('.primary-address span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
@@ -64,14 +64,14 @@ module('Integration | Component | usm-policies/policy/schedule-config/primary-ad
     const translation = this.owner.lookup('service:i18n');
     const primaryAddress = '';
     const visitedExpected = ['policy.primaryAddress'];
-    const expectedMessage = translation.t('adminUsm.policy.primaryAddressInvalidMsg');
+    const expectedMessage = translation.t('adminUsm.policyWizard.edrPolicy.primaryAddressInvalidMsg');
     new ReduxDataHelper(setState)
       .policyWiz()
       .policy(primaryAddress)
       .policyWizEndpointServers()
       .policyWizVisited(visitedExpected)
       .build();
-    await render(hbs`{{usm-policies/policy/schedule-config/primary-address selectedSettingId='primaryAddress'}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/primary-address selectedSettingId='primaryAddress'}}`);
     assert.equal(findAll('.primary-address__list .selector-error').length, 1, 'Error is showing');
     assert.equal(findAll('.input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
 

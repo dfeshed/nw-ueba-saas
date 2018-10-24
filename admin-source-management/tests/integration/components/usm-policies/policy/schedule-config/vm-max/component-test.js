@@ -12,7 +12,7 @@ import policyWizardCreators from 'admin-source-management/actions/creators/polic
 let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
 const spys = [];
 
-module('Integration | Component | usm-policies/policy/schedule-config/vm-max', function(hooks) {
+module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/vm-max', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -39,7 +39,11 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
   });
 
   test('should render the virtual machine max component', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/vm-max}}`);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMaxVm(85)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
     assert.equal(findAll('.vm-max').length, 1, 'expected to have root element in DOM');
   });
 
@@ -48,7 +52,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
       .policyWiz()
       .policyWizCpuMaxVm(85)
       .build();
-    await render(hbs`{{usm-policies/policy/schedule-config/vm-max}}`);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when the date stays the same');
     const sliderDiv = document.querySelector('.vm-max .noUi-tooltip');
     // change the value of the slider
@@ -58,7 +62,11 @@ module('Integration | Component | usm-policies/policy/schedule-config/vm-max', f
   });
 
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy/schedule-config/vm-max}}`);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMaxVm(75)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max}}`);
     const minusIcon = document.querySelector('.vm-max span .rsa-icon');
     await click(minusIcon);
     assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');

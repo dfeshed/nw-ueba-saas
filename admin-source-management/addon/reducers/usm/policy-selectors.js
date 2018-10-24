@@ -2,7 +2,7 @@ import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
 import _ from 'lodash';
 import moment from 'moment';
-import { RADIO_BUTTONS_CONFIG, SCAN_SCHEDULE_CONFIG } from 'admin-source-management/utils/settings';
+import { RADIO_BUTTONS_CONFIG, SCAN_SCHEDULE_CONFIG } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-settings';
 
 const { createSelector } = reselect;
 

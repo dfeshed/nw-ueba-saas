@@ -1,0 +1,14 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.edrPolicy.vmMax'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMaxVm'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+{{range-slider
+  min=5
+  start=[cpuMaxVm]
+  format=format
+  step=1
+  connect=false
+  on-change=(action 'updatePolicyProperty' 'cpuMaxVm')
+}}
