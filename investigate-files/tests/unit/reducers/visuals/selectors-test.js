@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
-import { selectedTabComponent, getFileDetailTabs } from 'investigate-files/reducers/visuals/selectors';
+import { selectedTabComponent, getFileDetailTabs, getDataSourceTab } from 'investigate-files/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
 
@@ -35,4 +35,16 @@ test('selectedTabComponent for different tab', function(assert) {
   });
   const result = selectedTabComponent(state);
   assert.equal(result, undefined, 'returns the selected tab component class for ANALYSIS');
+});
+
+test('getDataSourceTab', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        activeDataSourceTab: 'RISK_PROPERTIES'
+      }
+    }
+  });
+  const result = getDataSourceTab(state).findBy('name', 'RISK_PROPERTIES');
+  assert.equal(result.selected, true, 'Incidents Tab should be selected');
 });

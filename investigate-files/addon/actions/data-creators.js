@@ -19,7 +19,7 @@ import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/fil
 import _ from 'lodash';
 import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/alert-event';
+import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -51,6 +51,13 @@ const _fetchFiles = () => {
   };
 };
 
+const initializeFileDetails = (checksum) => {
+  return (dispatch) => {
+    dispatch(resetRiskContext());
+    dispatch({ type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: checksum });
+    dispatch(getRiskScoreContext(checksum));
+  };
+};
 /**
  * Action Creator to retrieve the paged files. Increments the current page number and updates the state.
  * @return {function} redux-thunk
@@ -198,63 +205,6 @@ const getAllServices = () => ({
 
 const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName } });
 
-const activeRiskSeverityTab = (tabName) => ({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName } });
-
-const prepareQuery = (checksum, severity = 'Critical') => {
-  const categoryValue = _.upperFirst(severity);
-  return {
-    filter: [
-      { field: 'hash', value: checksum },
-      { field: 'category', value: categoryValue }
-    ]
-  };
-};
-
-const getRiskScoreContext = (checksum, severity) => ({
-  type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
-  promise: File.getRiskScoreContext(prepareQuery(checksum, severity))
-});
-
-const getUpdatedRiskScoreContext = (checksum, tabName) => {
-  return (dispatch) => {
-    dispatch(activeRiskSeverityTab(tabName));
-    dispatch(getRiskScoreContext(checksum, tabName));
-  };
-};
-
-const initializeFileDetails = (checksum) => {
-  return (dispatch) => {
-    dispatch(resetRiskContext());
-    dispatch({ type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: checksum });
-    dispatch(getRiskScoreContext(checksum));
-  };
-};
-
-const resetRiskContext = () => ({ type: ACTION_TYPES.RESET_RISK_CONTEXT });
-
-const fetchFileContext = (fileName) => {
-  return (dispatch) => {
-    const query = {
-      filter: [
-        { field: 'meta', value: 'FILE_NAME' },
-        { field: 'value', value: fileName }
-      ]
-    };
-    File.getContext(query, {
-      initState: () => {
-        dispatch({ type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
-      },
-      onResponse: ({ data }) => {
-        dispatch({ type: ACTION_TYPES.SET_CONTEXT_DATA, payload: data });
-      },
-      onError: ({ meta }) => {
-        const error = (meta && meta.message) ? meta.message : 'context.error';
-        dispatch({ type: ACTION_TYPES.CONTEXT_ERROR, payload: `investigateHosts.context.error.${error}` });
-      }
-    });
-  };
-};
-
 const toggleFileSelection = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: selectedFile });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
@@ -368,14 +318,6 @@ const fetchAgentId = (hostName, callBack) => {
   };
 };
 
-const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB, payload: { tabName } });
-
-const setSelectedAlert = (context) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context });
-    dispatch(getAlertEvents(context));
-  };
-};
 
 const retrieveRemediationStatus = (selections) => {
   const thumbprints = selections.mapBy('signature.thumbprint').compact();
@@ -389,26 +331,6 @@ const retrieveRemediationStatus = (selections) => {
 
 const userLeftFilesPage = () => ({ type: ACTION_TYPES.USER_LEFT_FILES_PAGE });
 
-const getAlertEvents = (context) => {
-  return (dispatch) => {
-    const handlers = {
-      onResponse(response) {
-        const { data } = response || {};
-        dispatch({ type: ACTION_TYPES.GET_EVENTS, payload: data });
-      },
-      onError() {
-        dispatch({ type: ACTION_TYPES.GET_EVENTS_ERROR });
-      },
-      onCompleted() {
-        dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED });
-      }
-    };
-
-    fetchStreamingAlertEvents(context.context, handlers);
-  };
-};
-
-const expandEvent = (id) => ({ type: ACTION_TYPES.EXPANDED_EVENT, id });
 
 export {
   getPageOfFiles,
@@ -419,8 +341,6 @@ export {
   resetDownloadId,
   getAllServices,
   initializeFilesPreferences,
-  setDataSourceTab,
-  fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles,
@@ -429,17 +349,10 @@ export {
   getSavedFileStatus,
   fetchHostNameList,
   fetchAgentId,
-  setNewFileTab,
   getFirstPageOfFiles,
-  activeRiskSeverityTab,
-  getRiskScoreContext,
-  initializeFileDetails,
-  getUpdatedRiskScoreContext,
   retrieveRemediationStatus,
-  getAlertEvents,
-  setSelectedAlert,
   setSelectedFile,
   userLeftFilesPage,
-  expandEvent,
-  resetRiskContext
+  setDataSourceTab,
+  initializeFileDetails
 };

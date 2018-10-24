@@ -12,7 +12,7 @@ import {
 } from 'investigate-files/actions/data-creators';
 import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
-import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-score-creators';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 
 const stateToComputed = (state) => ({

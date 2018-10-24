@@ -94,22 +94,6 @@ test('INITIALIZE_FILE_DETAIL sets the selected file', function(assert) {
   assert.equal(result.selectedDetailFile.id, 'checksum-123', 'File matching with id is returned');
 });
 
-test('RESET_RISK_CONTEXT resets riskScoreContext', function(assert) {
-  const previous = Immutable.from({
-    riskScoreContext: [{
-      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
-      alertCount: {
-        critical: 1,
-        high: 10,
-        medium: 20
-      },
-      categorizedAlerts: {}
-    }]
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
-  assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
-});
-
 test('The RESET_DOWNLOAD_ID action reset the export link', function(assert) {
   const previous = Immutable.from({
     downloadId: '123'
@@ -311,15 +295,6 @@ test('The GET_LIST_OF_SERVICES will set listOfServices', function(assert) {
   assert.deepEqual(result.listOfServices, [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }], 'listOfServices value is set');
 });
 
-test('The CHANGE_DATASOURCE_TAB action sets the newly selected tab to state', function(assert) {
-  const previous = Immutable.from({
-    activeDataSourceTab: 'ALERT'
-  });
-  const expectedEndState = { activeDataSourceTab: 'INCIDENT' };
-  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName: 'INCIDENT' } });
-  assert.deepEqual(result, expectedEndState);
-});
-
 test('Fetch the data from context server', function(assert) {
   const previous = Immutable.from({
     lookupData: [{}]
@@ -463,32 +438,6 @@ test('Fetch Complete will set to false', function(assert) {
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.META_VALUE_COMPLETE });
   assert.equal(newEndState.fetchMetaValueLoading, false);
-});
-
-test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {
-  // Initial state
-  const initialResult = reducer(undefined, {});
-  assert.equal(initialResult.riskScoreContext, null, 'original riskScoreContext value');
-
-  const response = [{
-    hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
-    alertCount: {
-      critical: 1,
-      high: 10,
-      medium: 20
-    },
-    categorizedAlerts: {}
-  }
-  ];
-
-  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
-    payload: { data: response }
-  });
-
-  const result = reducer(initialResult, newAction);
-  assert.deepEqual(result.riskScoreContext, response, 'riskScoreContext value is set');
-
 });
 
 test('FETCH_REMEDIATION_STATUS', function(assert) {

@@ -131,46 +131,12 @@ const getContext = (query, handlers) => {
   });
 };
 
-/**
- * Executes a websocket fetch call for file context and returns a Promise.
- *
- * @method getRiskScoreContext
- * @param query
- * @public
- * @returns {Promise}
- */
-const getRiskScoreContext = (query) => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'getFileContext',
-    modelName: 'risk-score-server',
-    query
-  });
-};
-
 const fetchRemediation = (thumbprints) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getRemediation',
     modelName: 'files',
     query: { data: thumbprints }
-  });
-};
-
-/**
- * Executes the web socket call for sending the checksum256 of selected files to reset risk score
- * @param data
- * @returns {*}
- * @public
- */
-const sendFileToResetRiskScore = (data) => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'resetRiskScore',
-    modelName: 'risk-score-server',
-    query: {
-      data
-    }
   });
 };
 
@@ -182,7 +148,5 @@ export default {
   deleteFilter,
   getAllServices,
   getContext,
-  getRiskScoreContext,
-  fetchRemediation,
-  sendFileToResetRiskScore
+  fetchRemediation
 };

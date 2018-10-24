@@ -75,7 +75,8 @@
       "../streaming-data",
       "../rsa-context-menu",
       "../rsa-data-filters",
-      "../license"
+      "../license",
+      "../respond-shared"
     ]
   }
 }

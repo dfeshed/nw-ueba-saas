@@ -1,4 +1,8 @@
 import Component from '@ember/component';
+import {
+  riskScoreContext, riskScoreContextError, activeRiskSeverityTab,
+  alertsError, selectedAlert
+} from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
@@ -31,6 +35,21 @@ export default Component.extend({
   layout,
 
   classNames: ['risk-properties'],
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const state = {
+      risk: this.get('riskState')
+    };
+
+    this.setProperties({
+      activeRiskSeverityTab: activeRiskSeverityTab(state),
+      riskScoreContext: riskScoreContext(state),
+      riskScoreContextError: riskScoreContextError(state),
+      alertsError: alertsError(state),
+      selectedAlert: selectedAlert(state)
+    });
+  },
 
   @computed('activeRiskSeverityTab', 'riskScoreContext')
   tabs(activeRiskSeverityTab, riskScoreContext) {

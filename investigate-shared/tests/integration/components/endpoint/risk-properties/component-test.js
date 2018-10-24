@@ -7,8 +7,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    this.set('activeRiskSeverityTab', 'critical');
-    await render(hbs`{{endpoint/risk-properties activeRiskSeverityTab=activeRiskSeverityTab}}`);
+    this.set('riskState', { activeRiskSeverityTab: 'critical' });
+    await render(hbs`{{endpoint/risk-properties riskState=riskState}}`);
 
     assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
     assert.equal(findAll('.risk-properties .rsa-loader').length, 1, 'loading icon is present');
@@ -39,9 +39,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         }
       }
     };
-    this.set('riskScoreContext', riskScoreContext);
-    this.set('activeRiskSeverityTab', 'critical');
-    await render(hbs`{{endpoint/risk-properties activeRiskSeverityTab=activeRiskSeverityTab riskScoreContext=riskScoreContext}}`);
+    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
+    await render(hbs`{{endpoint/risk-properties riskState=riskState}}`);
 
     assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
     assert.equal(findAll('.risk-properties .rsa-nav-tab').length, 4, '4 tabs are present');
@@ -73,20 +72,19 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         }
       }
     };
-    this.set('riskScoreContext', riskScoreContext);
-    this.set('activeRiskSeverityTab', 'critical');
+    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
     this.set('setSelectedAlert', (context) => {
       assert.equal(context.context['decoder-id1'].length, 2, '2 events are grouped in decoder-id1');
     });
 
     this.set('activate', () => {
-      this.set('activeRiskSeverityTab', 'high');
+      this.set('riskState', { activeRiskSeverityTab: 'high', riskScoreContext });
     });
 
     await render(hbs`{{endpoint/risk-properties
-      activeRiskSeverityTab=activeRiskSeverityTab
+      riskState=riskState
       setSelectedAlert=(action setSelectedAlert)
-      riskScoreContext=riskScoreContext defaultAction=(action activate)}}`);
+      defaultAction=(action activate)}}`);
 
     assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'HIGH', 'high tab is selected');
   });

@@ -3,8 +3,8 @@ import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 import { normalize } from 'normalizr';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
-import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 import { fileListSchema } from './schema';
+import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const fileListState = Immutable.from({
   areFilesLoading: 'wait',
@@ -159,8 +159,6 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.SET_AGENT_COUNT]: (state, { payload }) => state.set('agentCountMapping', { ...state.agentCountMapping, ...payload }),
 
   [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null),
-
-  [ACTION_TYPES.CHANGE_DATASOURCE_TAB]: (state, { payload: { tabName } }) => state.set('activeDataSourceTab', tabName),
 
   [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));

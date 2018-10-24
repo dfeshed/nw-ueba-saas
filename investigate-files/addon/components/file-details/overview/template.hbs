@@ -5,12 +5,12 @@
         {{endpoint/risk-properties
           defaultAction=(action 'getUpdatedRiskScoreContext')
           setSelectedAlert=(action 'setSelectedAlert')
-          activeRiskSeverityTab=activeRiskSeverityTab
-          riskScoreContext=riskScoreContext
-          selectedAlert=selectedAlert}}
+          riskState=risk}}
       </box>
       <box class="events">
-        {{file-details/overview/events-list-container}}
+        {{endpoint/risk-properties/events-list-container
+          riskState=risk
+          expandEvent=(action "expandEvent")}}
       </box>
     </hbox>
   {{/layout.center}}

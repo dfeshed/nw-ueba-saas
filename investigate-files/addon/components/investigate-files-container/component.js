@@ -9,16 +9,20 @@ import {
 } from 'investigate-shared/actions/data-creators/filter-creators';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
-import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
+import { hasFiles, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
+import { getDataSourceTab, riskState } from 'investigate-files/reducers/visuals/selectors';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import {
   resetDownloadId,
   setDataSourceTab,
   toggleRiskPanel,
-  getFirstPageOfFiles,
-  getUpdatedRiskScoreContext
+  getFirstPageOfFiles
 } from 'investigate-files/actions/data-creators';
+
+import {
+  getUpdatedRiskScoreContext
+} from 'investigate-shared/actions/data-creators/risk-creators';
+
 import { inject as service } from '@ember/service';
 
 import { FILTER_TYPES } from './filter-type';
@@ -29,16 +33,10 @@ const stateToComputed = (state) => ({
   hasFiles: hasFiles(state),
   dataSourceTabs: getDataSourceTab(state),
   context: selectedFileStatusHistory(state),
-  contextError: state.files.fileList.contextError,
-  alertsCount: getAlertsCount(state),
-  incidentsCount: getIncidentsCount(state),
-  activeDataSourceTab: state.files.fileList.activeDataSourceTab,
-  contextLoadingStatus: state.files.fileList.contextLoadingStatus,
+  activeDataSourceTab: state.files.visuals.activeDataSourceTab,
   isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError,
   filter: state.files.filter,
-  activeRiskSeverityTab: state.files.visuals.activeRiskSeverityTab,
-  riskScoreContext: state.files.fileList.riskScoreContext,
-  alertsData: state.files.fileList.alertsData,
+  risk: riskState(state),
   filesFilters: state.files.filter.savedFilterList,
   selectedFilterId: selectedFilterId(state.files),
   savedFilter: savedFilter(state.files),

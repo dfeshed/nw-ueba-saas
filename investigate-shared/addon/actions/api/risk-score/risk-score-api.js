@@ -14,6 +14,25 @@ const sendDataToResetRiskScore = (query) => {
     query
   });
 };
+
+/**
+ * Executes a websocket fetch call for file context and returns a Promise.
+ *
+ * @method getRiskScoreContext
+ * @param query
+ * @public
+ * @returns {Promise}
+ */
+const getRiskScoreContext = (query) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getFileContext',
+    modelName: 'risk-score-server',
+    query
+  });
+};
+
 export default {
-  sendDataToResetRiskScore
+  sendDataToResetRiskScore,
+  getRiskScoreContext
 };

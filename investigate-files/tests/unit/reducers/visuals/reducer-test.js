@@ -9,7 +9,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeFileDetailTab: 'OVERVIEW',
-    activeRiskSeverityTab: 'critical'
+    activeDataSourceTab: 'RISK_PROPERTIES'
   });
 });
 
@@ -26,23 +26,11 @@ test('The CHANGE_FILE_DETAIL_TAB sets new tab to state', function(assert) {
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('The ACTIVE_RISK_SEVERITY_TAB sets new tab to state', function(assert) {
+test('The CHANGE_DATASOURCE_TAB action sets the newly selected tab to state', function(assert) {
   const previous = Immutable.from({
-    activeRiskSeverityTab: 'critical'
+    activeDataSourceTab: 'ALERT'
   });
-
-  const expectedEndState = {
-    activeRiskSeverityTab: 'high'
-  };
-
-  const endState = reducer(previous, { type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName: 'high' } });
-  assert.deepEqual(endState, expectedEndState);
-});
-
-test('The RESET_RISK_CONTEXT sets new tab to state', function(assert) {
-  const previous = Immutable.from({
-    activeRiskSeverityTab: 'high'
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
-  assert.equal(result.activeRiskSeverityTab, 'critical', 'Active tab is reset to critical');
+  const expectedEndState = { activeDataSourceTab: 'INCIDENT' };
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName: 'INCIDENT' } });
+  assert.deepEqual(result, expectedEndState);
 });

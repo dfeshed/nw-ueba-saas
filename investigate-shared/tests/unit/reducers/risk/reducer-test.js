@@ -1,21 +1,28 @@
 import { setupTest } from 'ember-qunit';
 import { test, module } from 'qunit';
-import reducer from 'investigate-files/reducers/file-detail/reducer';
-import * as ACTION_TYPES from 'investigate-files/actions/types';
+import reducer from 'investigate-shared/reducers/risk/reducer';
+import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import Immutable from 'seamless-immutable';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 
-module('Unit | Reducers | file-detail', function(hooks) {
+module('Unit | Reducers | risk', function(hooks) {
   setupTest(hooks);
 
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
-    assert.deepEqual(result, {
-      eventsData: null,
-      eventsLoadingStatus: null,
-      expandedEventId: null,
-      alertsError: null,
-      selectedAlert: null
-    });
+    assert.deepEqual(result,
+      {
+        activeRiskSeverityTab: 'critical',
+        alertsError: null,
+        eventsData: [],
+        eventsLoadingStatus: null,
+        expandedEventId: null,
+        isRiskScoreReset: true,
+        riskScoreContext: null,
+        riskScoreContextError: null,
+        selectedAlert: null
+      });
   });
 
   test('The GET_EVENTS action will reset the loading status', function(assert) {
@@ -48,7 +55,7 @@ module('Unit | Reducers | file-detail', function(hooks) {
     const previous = Immutable.from({
       selectedAlert: 'some alert'
     });
-    const result = reducer(previous, { type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB });
+    const result = reducer(previous, { type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName: 'high' } });
     assert.equal(result.selectedAlert, null);
   });
 
@@ -69,5 +76,47 @@ module('Unit | Reducers | file-detail', function(hooks) {
     assert.equal(result.expandedEventId, 2, 'expanded id is 2');
     result = reducer(previous, { type: ACTION_TYPES.EXPANDED_EVENT, id: 1 });
     assert.equal(result.expandedEventId, undefined, 'expanded id is reset');
+  });
+
+  test('RESET_RISK_CONTEXT resets riskScoreContext', function(assert) {
+    const previous = Immutable.from({
+      riskScoreContext: [{
+        hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+        alertCount: {
+          critical: 1,
+          high: 10,
+          medium: 20
+        },
+        categorizedAlerts: {}
+      }]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
+    assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
+  });
+
+  test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {
+    // Initial state
+    const initialResult = reducer(undefined, {});
+    assert.equal(initialResult.riskScoreContext, null, 'original riskScoreContext value');
+
+    const response = [{
+      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+      alertCount: {
+        critical: 1,
+        high: 10,
+        medium: 20
+      },
+      categorizedAlerts: {}
+    }
+    ];
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+      payload: { data: response }
+    });
+
+    const result = reducer(initialResult, newAction);
+    assert.deepEqual(result.riskScoreContext, response, 'riskScoreContext value is set');
+
   });
 });

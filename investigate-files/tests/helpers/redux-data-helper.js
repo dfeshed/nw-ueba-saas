@@ -137,7 +137,7 @@ export default class DataHelper {
     return this;
   }
   activeDataSourceTab(tab) {
-    _set(this.state, 'files.fileList.activeDataSourceTab', tab);
+    _set(this.state, 'files.visuals.activeDataSourceTab', tab);
     return this;
   }
   fetchMetaValueLoading(status) {

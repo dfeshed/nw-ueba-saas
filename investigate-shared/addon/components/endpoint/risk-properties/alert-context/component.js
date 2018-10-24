@@ -20,7 +20,7 @@ export default Component.extend({
 
   actions: {
     handleClick(context) {
-      this.get('setAlertAction')(context);
+      this.setAlertAction(context);
     }
   }
 });

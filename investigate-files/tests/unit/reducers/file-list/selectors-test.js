@@ -7,7 +7,6 @@ import {
   fileExportLink,
   fileCountForDisplay,
   serviceList,
-  getDataSourceTab,
   getContext,
   isAllSelected,
   selectedFileStatusHistory,
@@ -116,18 +115,6 @@ test('serviceList', function(assert) {
   assert.deepEqual(listOfServicesNull, null, 'Supported services available is null');
 });
 
-test('getDataSourceTab', function(assert) {
-  const state = Immutable.from({
-    files: {
-      fileList: {
-        activeDataSourceTab: 'RISK_PROPERTIES'
-      }
-    }
-  });
-  const result = getDataSourceTab(state).findBy('name', 'RISK_PROPERTIES');
-  assert.equal(result.selected, true, 'Incidents Tab should be selected');
-});
-
 test('getContext returns incidents', function(assert) {
   const state = Immutable.from({
     files: {
@@ -136,7 +123,9 @@ test('getContext returns incidents', function(assert) {
           Incidents: {
             resultList: [{ _id: 'INC-18409', name: 'RespondAlertsESA for user199' }]
           }
-        }],
+        }]
+      },
+      visuals: {
         activeDataSourceTab: 'INCIDENT'
       }
     }
@@ -168,7 +157,9 @@ test('getContext returns alerts', function(assert) {
               }]
             }
           }
-        ],
+        ]
+      },
+      visuals: {
         activeDataSourceTab: 'ALERT'
       }
     }

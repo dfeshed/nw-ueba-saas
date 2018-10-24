@@ -15,7 +15,6 @@ import _ from 'lodash';
 import {
   sortBy,
   getPageOfFiles,
-  fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles,
@@ -23,13 +22,12 @@ import {
   saveFileStatus,
   getSavedFileStatus,
   fetchHostNameList,
-  getRiskScoreContext,
   retrieveRemediationStatus,
-  setSelectedFile,
-  resetRiskContext
+  setSelectedFile
 } from 'investigate-files/actions/data-creators';
 
-import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-score-creators';
+
+import { resetRiskScore, getRiskScoreContext, resetRiskContext } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
@@ -53,7 +51,6 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   sortBy,
   getPageOfFiles,
-  fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles,
@@ -173,7 +170,6 @@ const FileList = Component.extend({
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
           this.send('resetRiskContext');
-          this.send('fetchFileContext', item.firstFileName);
           this.send('setSelectedFile', item);
           this.send('fetchHostNameList', item.checksumSha256);
           this.send('getRiskScoreContext', item.checksumSha256, 'critical');

@@ -1,9 +1,16 @@
 /* eslint-env node */
+const socketRouteGenerator = require('../../../config/socketRoutes');
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
+const useMockServer = !process.env.NOMOCK;
 
 module.exports = function(environment) {
   const ENV = {
     modulePrefix: 'dummy',
     environment,
+    mockServerUrl,
+    useMockServer,
+    mockPort,
     rootURL: '/',
     locationType: 'auto',
     EmberENV: {
@@ -45,5 +52,7 @@ module.exports = function(environment) {
   if (environment === 'production') {
     // Intentionally left blank
   }
+  ENV.contextMetas = ['IP'];
+  ENV.socketRoutes = socketRouteGenerator(environment);
   return ENV;
 };

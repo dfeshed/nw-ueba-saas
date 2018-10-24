@@ -1,23 +1,22 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { events } from 'investigate-files/reducers/file-detail/selectors';
 
 import {
+  setSelectedAlert,
   getUpdatedRiskScoreContext,
-  setSelectedAlert
-} from 'investigate-files/actions/data-creators';
+  expandEvent
+} from 'investigate-shared/actions/data-creators/risk-creators';
+
+import { riskState } from 'investigate-files/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({
-  activeRiskSeverityTab: state.files.visuals.activeRiskSeverityTab,
-  eventsLoadingStatus: state.files.fileDetail.eventsLoadingStatus,
-  riskScoreContext: state.files.fileList.riskScoreContext,
-  selectedAlert: state.files.fileDetail.selectedAlert,
-  events: events(state)
+  risk: riskState(state)
 });
 
 const dispatchToActions = {
   getUpdatedRiskScoreContext,
-  setSelectedAlert
+  setSelectedAlert,
+  expandEvent
 };
 
 const Overview = Component.extend({
