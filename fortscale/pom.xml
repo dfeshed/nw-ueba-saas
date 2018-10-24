@@ -131,6 +131,7 @@
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
         <auto-service.version>1.0-rc3</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
+        <spring-test.version>4.3.20.RELEASE</spring-test.version>
     </properties>
 
     <dependencyManagement>
