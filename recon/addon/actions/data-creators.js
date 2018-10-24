@@ -592,7 +592,9 @@ const initializeNotifications = () => {
         // that the download is ready, but we do not want to download
         // from every browser, just the browser where the download originated.
         const extractStatus = getState().recon.files.fileExtractStatus;
-        if (['init', 'wait'].includes(extractStatus)) {
+        const { fileExtractJobId } = getState().recon.files;
+        const [,,,, responseJobId] = data.link.split('/');
+        if (['init', 'wait'].includes(extractStatus) && fileExtractJobId === responseJobId) {
           dispatch({
             type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
             payload: data

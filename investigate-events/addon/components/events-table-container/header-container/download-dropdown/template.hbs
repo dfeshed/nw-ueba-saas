@@ -7,10 +7,15 @@
       triggerClass='is-small'
       dropdownClass="download-dropdown"
       disabled=isDisabled
-      onchange=(action 'downloadByPreference') as |option|}}
+      onchange=(action 'downloadFiles') as |option|}}
       <span title="{{option.name}}">{{option.name}}</span>
       <span class='right'>{{option.count}}</span>
     {{/power-select}}
   </label>
+  {{rsa-download-export
+    extractLink=extractLink
+    isAutoDownloadFile=isAutoDownloadFile
+    iframeClass='export-events-iframe'
+    sendMessage=(action 'didDownloadFiles')}}
 {{/if}}
 

@@ -67,7 +67,7 @@ test('renders error when no data present and is network event', function(assert)
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$('.rsa-panel-message').text().trim().replace(/\s/g, '');
-    assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.TryenablingDisplayCompressedPayloadsbuttonorchecktheotherreconstructionviews.');
+    assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.TryenablingtheDisplayCompressedPayloadsbuttonorchecktheotherreconstructionviews.');
   });
 });
 

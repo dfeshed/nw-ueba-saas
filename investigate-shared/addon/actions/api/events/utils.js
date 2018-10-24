@@ -198,3 +198,105 @@ export const addSessionIdFilter = (filter, startSessionId) => {
   }
   return out.join(' && ');
 };
+// *******
+// BEGIN - Should be moved with Download Manager's extract api call
+// *******
+export const _addFilter = (query, field, value, valueKey = 'value') => {
+  if (!query.filter) {
+    query.filter = [];
+  }
+
+  const obj = { field };
+  obj[valueKey] = value;
+
+  query.filter.push(obj);
+  return query;
+};
+
+export const endpointFilter = (endpointId) => {
+  const query = {
+    filter: [{
+      field: 'endpointId',
+      value: endpointId
+    }]
+  };
+
+  return query;
+};
+
+export const addQueryFilters = (query, value) => {
+  return _addFilter(
+    query,
+    'query',
+    value
+  );
+};
+
+export const addTimerangeFilter = (query, start, end) => {
+  if (!query.filter) {
+    query.filter = [];
+  }
+  const obj = {
+    field: 'timeRange',
+    range: {
+      from: start,
+      to: end
+    }
+  };
+  query.filter.push(obj);
+  return query;
+};
+
+export const addFileTypeFilter = (query, type) => {
+  return _addFilter(
+    query,
+    'filetype',
+    type
+  );
+};
+
+export const addEventTypeFilter = (query, type) => {
+  return _addFilter(
+    query,
+    'eventtype',
+    type
+  );
+};
+
+export const addSessionIdsFilter = (query, ids) => {
+  return _addFilter(
+    query,
+    'sessionIds',
+    ids,
+    'values'
+  );
+};
+
+export const addFilenameFilter = (query, filename) => {
+  if (filename) {
+    query = _addFilter(
+      query,
+      'filename',
+      filename
+    );
+  }
+  return query;
+};
+
+export const createFilename = (eventType, fileType, serviceId) => {
+  /*
+   If the file name is empty, the service will return a UUID filename.  And
+   if we do not have the required paramters to make a file name, it is best
+   to allow the service assign an UUID instead of the UI giving an undefined.
+   */
+  let fileName = '';
+
+  if (serviceId && eventType && fileType) {
+    fileName = `${serviceId}_${eventType}_AS_${fileType}`;
+  }
+
+  return fileName;
+};
+// *******
+// END - Should be moved with Download Manager's extract api call
+// *******

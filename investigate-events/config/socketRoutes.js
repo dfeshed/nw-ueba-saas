@@ -97,6 +97,20 @@ const investigateConfigGen = function(env) {
         subscriptionDestination: '/user/queue/investigate/predicate/get-by-query',
         requestDestination: '/ws/investigate/predicate/get-by-query'
       }
+    },
+    'extract-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/file',
+        requestDestination: '/ws/investigate/extract/file'
+      }
+    },
+    'investigate-notification': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/notification',
+        requestDestination: '/ws/investigate/notification'
+      }
     }
   };
 };
