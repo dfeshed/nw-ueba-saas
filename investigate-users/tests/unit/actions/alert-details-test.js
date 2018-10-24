@@ -4,17 +4,19 @@ import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { exportAlerts, getTopTenAlerts, getAlertsForTimeline, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
+import moment from 'moment';
+import { later } from '@ember/runloop';
+import { updateDateRangeFilter, exportAlerts, getTopTenAlerts, getAlertsForTimeline, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 
 export const initialFilterState = Immutable.from({
+  fromPage: 1,
   sort_direction: 'DESC',
   sort_field: 'startDate',
   total_severity_count: true,
   severity: null,
   feedback: null,
   indicator_types: null,
-  alert_start_range: null,
-  fromPage: 1,
+  alert_start_range: `${moment().subtract('months', 3).unix() * 1000},${moment().unix() * 1000}`,
   size: 25
 });
 
@@ -115,7 +117,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     const dispatch = ({ type, payload }) => {
       if (type === 'INVESTIGATE_USER::GET_ALERTS') {
         assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS');
-        assert.equal(payload.data.length, 10);
+        assert.equal(payload.data.length, 3);
         done();
       }
     };
@@ -123,5 +125,100 @@ module('Unit | Actions | Alert Details', (hooks) => {
       return { alerts: { filter: initialFilterState } };
     };
     getAlertsForGivenTimeInterval()(dispatch, getState);
+  });
+
+  test('it can updateDateRangeFilter for relative date', (assert) => {
+    assert.expect(2);
+    const done = assert.async();
+    const filterValue = {
+      name: 'alertTimeRange',
+      operator: 'GREATER_THAN',
+      value: [3],
+      unit: 'Months'
+    };
+    const dispatch = (fn) => {
+      fn(({ type, payload }) => {
+        if (type && payload) {
+          const alertDateRange = payload.alert_start_range.split(',');
+          assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
+          assert.equal(new Date(alertDateRange[1] - alertDateRange[0]).getMonth(), 3);
+          done();
+        }
+      });
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    updateDateRangeFilter(filterValue)(dispatch, getState);
+  });
+
+  test('it can updateDateRangeFilter for wrong custom date', (assert) => {
+    const done = assert.async();
+    assert.expect(0);
+    const filterValue = {
+      name: 'alertTimeRange',
+      operator: 'BETWEEN',
+      value: [null, 1540381527100],
+      unit: 'Months'
+    };
+    const dispatch = (fn) => {
+      fn(() => {
+        assert.notOk(true, 'This should not execute');
+      });
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    updateDateRangeFilter(filterValue)(dispatch, getState);
+    later(() => {
+      done();
+    }, 500);
+  });
+
+  test('it can updateDateRangeFilter for invalid custom date', (assert) => {
+    const done = assert.async();
+    assert.expect(0);
+    const filterValue = {
+      name: 'alertTimeRange',
+      operator: 'BETWEEN',
+      value: [1540381627100, 1540381527100],
+      unit: 'Months'
+    };
+    const dispatch = (fn) => {
+      fn(() => {
+        assert.notOk(true, 'This should not execute');
+      });
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    updateDateRangeFilter(filterValue)(dispatch, getState);
+    later(() => {
+      done();
+    }, 500);
+  });
+
+  test('it can updateDateRangeFilter for valid custom date', (assert) => {
+    const done = assert.async();
+    assert.expect(2);
+    const filterValue = {
+      name: 'alertTimeRange',
+      operator: 'BETWEEN',
+      value: [1540381627100, 1540481527100],
+      unit: 'Months'
+    };
+    const dispatch = (fn) => {
+      fn(({ type, payload }) => {
+        if (type && payload) {
+          assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
+          assert.equal(payload.alert_start_range, '1540381627100,1540481527100');
+          done();
+        }
+      });
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    updateDateRangeFilter(filterValue)(dispatch, getState);
   });
 });

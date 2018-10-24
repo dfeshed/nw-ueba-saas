@@ -58,7 +58,7 @@ const urlMap = [{
   url: 'presidio/api/alerts/exist-anomaly-types',
   data: existAnomalyTypesAlerts
 }, {
-  url: 'presidio/api/alerts?alert_start_range=1519948800000,1535587199000&fromPage=1&size=10&sort_direction=DESC&sort_field=startDate&total_severity_count=true',
+  url: 'presidio/api/alerts?',
   data: alertsList
 }, {
   url: 'presidio/api/alerts/alert-by-day-and-severity',

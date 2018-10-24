@@ -16,7 +16,7 @@ module('Integration | Component | alerts-tab', function(hooks) {
 
     await render(hbs`{{alerts-tab}}`);
 
-    assert.equal(find('.alerts-tab_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityFeedbackIndicatorsDateRange:-:ResetFilters');
+    assert.equal(find('.alerts-tab_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityFeedbackIndicatorsDateRangeCustomDateLast3Monthago×ResetFilters');
     assert.equal(find('.alerts-tab_body').textContent.replace(/\s/g, ''), 'CriticalHighLowMediumExportAlertNameEntityNameStartTimeIndicatorCountStatusLoading');
   });
 });

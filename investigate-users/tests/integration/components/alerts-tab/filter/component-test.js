@@ -37,7 +37,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
 
   test('it should render alert tab filter', async function(assert) {
     await render(hbs`{{alerts-tab/filter}}`);
-    assert.equal(find('.alerts-tab_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityFeedbackIndicatorsDateRange:-:ResetFilters');
+    assert.equal(find('.alerts-tab_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityFeedbackIndicatorsDateRangeCustomDateLast3Monthago×ResetFilters');
   });
 
   test('it should render alert tab filter for update filters', async function(assert) {

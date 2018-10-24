@@ -4140,7 +4140,9 @@ export default {
       LAST_TWO_DAYS: 'Last 2 Days ago',
       LAST_SEVEN_DAYS: 'Last 7 Days ago',
       LAST_TWO_WEEKS: 'Last 2 Weeks ago',
-      LAST_ONE_MONTH: 'Last 1 Month ago'
+      LAST_ONE_MONTH: 'Last 1 Month ago',
+      LAST_THREE_MONTH: 'Last 3 Month ago',
+      LAST_SIX_MONTH: 'Last 6 Month ago'
     },
     startDate: 'Start Date',
     endDate: 'End Date',

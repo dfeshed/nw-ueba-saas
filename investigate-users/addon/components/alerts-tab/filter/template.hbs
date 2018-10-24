@@ -36,9 +36,11 @@
       {{option.name}}
     {{/power-select-multiple}}
   </label>
-  <div class="label-text">
-    {{t 'investigateUsers.alerts.filters.dateRange'}}
-    {{time-selector startTime=startTime endTime=endTime }}
+  <div>
+    <div class="label-text">
+      {{t 'investigateUsers.alerts.filters.dateRange'}}
+    </div>
+    {{rsa-data-filters/filters/date-filter filterOptions=filterOptions onChange=(action 'updateDateRangeFilter')}}
   </div>
 
 </div>

@@ -1,15 +1,16 @@
 import * as ACTION_TYPES from '../../actions/types';
 import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
+import moment from 'moment';
 
 export const initialFilterState = Immutable.from({
+  alert_start_range: `${moment().subtract('months', 3).unix() * 1000},${moment().unix() * 1000}`,
   sort_direction: 'DESC',
   sort_field: 'startDate',
   total_severity_count: true,
   severity: null,
   feedback: null,
   indicator_types: null,
-  alert_start_range: null,
   fromPage: 1,
   size: 25
 });

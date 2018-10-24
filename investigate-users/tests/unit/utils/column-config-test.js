@@ -1,4 +1,4 @@
-import { columnsDataForIndicatorTable, columnConfigForUsers, severityMap, columnDataForFavorites, sortOptions } from 'investigate-users/utils/column-config';
+import { columnsDataForIndicatorTable, columnConfigForUsers, severityMap, columnDataForFavorites, sortOptions, dateTimeFilterOptionsForAlerts } from 'investigate-users/utils/column-config';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | column-config', function() {
@@ -24,5 +24,11 @@ module('Unit | Utility | column-config', function() {
 
   test('test sortOptions have all columns', (assert) => {
     assert.ok(sortOptions.length === 3);
+  });
+
+  test('test dateTimeFilterOptionsForAlerts have all columns', (assert) => {
+    assert.ok(dateTimeFilterOptionsForAlerts.name === 'alertTimeRange');
+    assert.ok(dateTimeFilterOptionsForAlerts.filterValue.value[0] === 3);
+    assert.ok(dateTimeFilterOptionsForAlerts.filterValue.unit === 'Months');
   });
 });

@@ -39,11 +39,12 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
   setupTest(hooks);
 
   test('test restore default should reset state back', (assert) => {
-    const result = reducer(Immutable.from({}), {
+    let result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.RESTORE_DEFAULT
     });
-
-    assert.deepEqual(result, resetState);
+    result = result.without('filter');
+    const newResetState = resetState.without('filter');
+    assert.deepEqual(result, newResetState);
   });
 
   test('test top 10 alerts', (assert) => {
