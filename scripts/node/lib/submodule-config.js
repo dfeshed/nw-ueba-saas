@@ -22,7 +22,6 @@ const ALL_SUBMODULES = [
   'preferences',
   'license',
   'test-helpers',
-  'ember-route-action-helper',
   'ember-cli-document-title',
   'investigate-process-analysis',
   'rsa-context-menu',
@@ -154,7 +153,6 @@ const saModuleDependants = {
     'style-guide'
   ],
   'test-helpers': [],
-  'ember-route-action-helper': [],
   'rsa-data-filters': [
     'sa',
     'investigate-hosts',
