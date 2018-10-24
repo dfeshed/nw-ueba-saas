@@ -2,7 +2,6 @@ import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from 'configure/actions/types/endpoint';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'configure/actions/api/endpoint/server';
-import { getCertificates } from 'configure/actions/creators/endpoint/certificates-creator';
 
 const _initializeEndpoint = () => {
   return (dispatch, getState) => {
@@ -30,8 +29,6 @@ export const setEndpointServer = (server) => {
       return request.ping('endpoint-server-ping')
       .then(function() {
         dispatch(isEndpointServerOffline(false));
-        dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
-        dispatch(getCertificates());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));

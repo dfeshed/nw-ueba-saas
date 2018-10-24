@@ -10,9 +10,6 @@ export default buildRoutes(function() {
   this.route('content', function() {
     this.route('log-parser-rules');
   });
-  this.route('endpoint', function() {
-    this.route('certificates');
-  });
   this.route('hosts-scan');
   this.route('not-found', { path: '*invalidconfigurepath' });
 });

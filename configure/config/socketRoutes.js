@@ -134,24 +134,6 @@ const configureConfigGen = function(environment) {
         requestDestination: '/ws/respond/notifications/update'
       }
     },
-    'endpoint-certificates': {
-      socketUrl: socketUrlEndpoint,
-      getCertificates: {
-        subscriptionDestination: '/user/queue/endpoint/certificate/search',
-        requestDestination: '/ws/endpoint/certificate/search'
-      }
-    },
-    'context-data': {
-      socketUrl: contextSocketUrl,
-      setCertificateStatus: {
-        subscriptionDestination: '/user/queue/contexthub/certificate/status/set',
-        requestDestination: '/ws/contexthub/certificate/status/set'
-      },
-      getCertificateStatus: {
-        subscriptionDestination: '/user/queue/contexthub/context/data-source/find',
-        requestDestination: '/ws/contexthub/context/data-source/find'
-      }
-    },
     'endpoint-server': {
       socketUrl: socketUrlEndpoint,
       findAll: {

@@ -238,40 +238,6 @@ export default class DataHelper {
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', index);
     return this;
   }
-
-  certificatesItems(items) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.certificatesList', items);
-    return this;
-  }
-
-  certificatesLoadingStatus(status) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.certificatesLoadingStatus', status);
-    return this;
-  }
-
-  loadMoreStatus(status) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.loadMoreStatus', status);
-    return this;
-  }
-
-  totalCertificates(items) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.totalItems', items);
-    return this;
-  }
-  selectedCertificatesList(items) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.selectedCertificateList', items);
-    return this;
-  }
-  certificateStatusData(status) {
-    this._setBaseState();
-    _set(this.state, 'endpoint.certificates.list.certificateDataStatus', status);
-    return this;
-  }
   isEndpointServerOffline(status) {
     _set(this.state, 'endpoint.server.isSummaryRetrieveError', status);
     return this;
