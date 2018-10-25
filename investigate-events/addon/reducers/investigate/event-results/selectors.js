@@ -127,7 +127,8 @@ export const getDownloadOptions = createSelector(
           eventType,
           fileType: eventAnalysisPreferences[defaultEventType],
           sessionIds: getIdsForEventType,
-          count: !isAllEventsSelected ? `${num}/${total}` : ''
+          count: !isAllEventsSelected ? `${num}/${total}` : '',
+          disabled: !isAllEventsSelected && num < 1
         });
       });
 
@@ -146,7 +147,8 @@ export const getDownloadOptions = createSelector(
             eventType,
             fileType: option,
             sessionIds: getIdsForEventType,
-            count: !isAllEventsSelected ? `${num}/${total}` : ''
+            count: !isAllEventsSelected ? `${num}/${total}` : '',
+            disabled: !isAllEventsSelected && num < 1
           });
         });
       });

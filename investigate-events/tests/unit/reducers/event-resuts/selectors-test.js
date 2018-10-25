@@ -53,9 +53,10 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[optionNumber].fileType, fileType, 'File Type');
   };
 
-  const assertForCountsAndSessionIds = async function(assert, result, optionNumber, count, sessionIds) {
+  const assertForCountsAndSessionIds = async function(assert, result, optionNumber, count, sessionIds, isDisabled) {
     assert.equal(result[optionNumber].count, count);
     assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
+    assert.equal(result[optionNumber].disabled, isDisabled);
   };
 
   test('getDownloadOptions returns options with no counts when selectAll is checked', async function(assert) {
@@ -75,11 +76,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     await assertForDownloadOptions(assert, result, 6, 'NETWORK', 'PAYLOAD', 'Network as All Payloads');
     await assertForDownloadOptions(assert, result, 9, 'META', 'CSV', 'Visible Meta as CSV');
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, result, 0, '', []);
+    await assertForCountsAndSessionIds(assert, result, 0, '', [], false);
     // preferred Network option
-    await assertForCountsAndSessionIds(assert, result, 1, '', []);
+    await assertForCountsAndSessionIds(assert, result, 1, '', [], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, result, 2, '', []);
+    await assertForCountsAndSessionIds(assert, result, 2, '', [], false);
   });
   // TODO add assert to check disabled
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
@@ -91,11 +92,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     const result = getDownloadOptions(state);
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, result, 0, '0/2', []);
+    await assertForCountsAndSessionIds(assert, result, 0, '0/2', [], true);
     // preferred Network option
-    await assertForCountsAndSessionIds(assert, result, 1, '2/2', [1, 2]);
+    await assertForCountsAndSessionIds(assert, result, 1, '2/2', [1, 2], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 2]);
+    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 2], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
@@ -107,11 +108,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     const result = getDownloadOptions(state);
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, result, 0, '1/2', [3]);
+    await assertForCountsAndSessionIds(assert, result, 0, '1/2', [3], false);
     // preferred Network option
-    await assertForCountsAndSessionIds(assert, result, 1, '1/2', [1]);
+    await assertForCountsAndSessionIds(assert, result, 1, '1/2', [1], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 3]);
+    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 3], false);
   });
 
   test('isEventResultsError is false when status is not error', function(assert) {
