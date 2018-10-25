@@ -22,7 +22,7 @@
       },
       "elseTransformer": {
         "type": "if_else",
-        "name": "username-extract-for-nic-device-type-if-transformer",
+        "name": "username-extract-for-nic-and-endpoint-device-type-if-transformer",
         "predicate": {
           "type": "regex",
           "name": "reference-id-equal-4740",
@@ -67,7 +67,7 @@
             "type": "regex",
             "name": "device-type-snare-or-nic",
             "sourceKey": "device_type",
-            "regex": "winevent_snare|winevent_nic"
+            "regex": "winevent_snare|winevent_nic|windows"
           }
         ]
       },

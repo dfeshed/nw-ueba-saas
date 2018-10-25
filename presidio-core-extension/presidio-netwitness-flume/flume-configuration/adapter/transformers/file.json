@@ -20,7 +20,7 @@
             "type": "regex",
             "name": "device-type-snare-or-nic",
             "sourceKey": "device_type",
-            "regex": "winevent_snare|winevent_nic"
+            "regex": "winevent_snare|winevent_nic|windows"
           }
         ]
       },
