@@ -300,7 +300,11 @@ function transformTextToPillData(queryText, availableMeta) {
   // 2. Then check to see if there IS an operator,
   // no operator = complex
   const operator = operators.find((option) => {
-    return queryText.includes(option);
+    // This regex looks for the patterns <space><operator><space> or
+    // <space><operator><end of string>. If it finds that, it assumes that's
+    // the operator you're looking for.
+    const regex = new RegExp(`(\\s${option}(\\s|$))`);
+    return !!queryText.match(regex);
   });
 
   if (!operator) {
