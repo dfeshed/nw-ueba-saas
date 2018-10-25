@@ -19,7 +19,6 @@ import java.util.Map;
 public class FeatureBucketAggregator {
     private static final Logger logger = Logger.getLogger(FeatureBucketAggregator.class);
 
-//    private BucketConfigurationService bucketConfigurationService;
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
@@ -27,7 +26,6 @@ public class FeatureBucketAggregator {
 
     public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
         this.featureBucketsAggregatorStore = featureBucketsAggregatorStore;
-//        this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
         this.metricsContainer = featureBucketAggregatorMetricsContainer;
@@ -56,7 +54,6 @@ public class FeatureBucketAggregator {
      */
     public void aggregate(AdeRecord adeRecord, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
         AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-//        List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeRecordReader, strategyData.getStrategyName(), contextFieldNames.get(0));
 
         for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
             try {
