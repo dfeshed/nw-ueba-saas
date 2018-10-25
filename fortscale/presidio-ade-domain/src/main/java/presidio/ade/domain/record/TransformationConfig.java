@@ -1,8 +1,11 @@
 package presidio.ade.domain.record;
 
 import fortscale.utils.recordreader.transformation.EpochtimeTransformation;
+import fortscale.utils.recordreader.transformation.JoinerTransformation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 /**
  * @author Barak Schuster
@@ -22,5 +25,10 @@ public class TransformationConfig {
     @Bean
     public EpochtimeTransformation oneHourResolutionEpochtimeTransformation() {
         return new EpochtimeTransformation("one_hour_resolution_epochtime", "startInstant", 3600);
+    }
+
+    @Bean
+    public JoinerTransformation processFilePath(){
+        return new JoinerTransformation("processFilePath", Arrays.asList("processDirectory", "processFileName"), "\\");
     }
 }
