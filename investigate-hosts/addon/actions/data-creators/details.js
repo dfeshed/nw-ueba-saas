@@ -6,6 +6,7 @@ import { getFileContext, getPaginatedFileContext } from './file-context';
 import { fetchHostContext, getAllServices } from './host';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
+import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch) => {
@@ -62,6 +63,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());
+            dispatch(getServiceId('MACHINE'));
             dispatch(fetchHostContext(response.data.machine.machineName));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);

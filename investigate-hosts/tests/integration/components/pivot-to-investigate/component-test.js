@@ -12,6 +12,7 @@ moduleForComponent('pivot-to-investigate', 'Integration | Component | Pivot to i
   beforeEach() {
     initialize(this);
     this.inject.service('timezone');
+    this.get('timezone').set('selected', { zoneId: 'UTC' });
     this.registry.injection('component', 'i18n', 'service:i18n');
   }
 });
@@ -23,7 +24,9 @@ test('it renders', function(assert) {
 
 test('on clicking the icon renders the service modal', function(assert) {
   this.set('serviceList', new Array(5));
-  this.render(hbs`{{pivot-to-investigate serviceList=serviceList}}`);
+  this.set('metaName', 'checksum');
+  this.set('itemList', { checksum: 123 });
+  this.render(hbs`{{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}`);
   this.$('.rsa-icon').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -43,8 +46,9 @@ test('should render the service list', function(assert) {
     { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR' },
     { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-broker', 'name': 'BROKER' }
   ]);
-  this.render(hbs`
-    {{pivot-to-investigate serviceList=serviceList}}`);
+  this.set('metaName', 'checksum');
+  this.set('itemList', { checksum: 123 });
+  this.render(hbs`{{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}`);
   this.$('.rsa-icon').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -58,7 +62,9 @@ test('should enable the navigate button on selecting the service', function(asse
     { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR' },
     { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-broker', 'name': 'BROKER' }
   ]);
-  this.render(hbs`{{pivot-to-investigate metaName='machine.machineName' serviceList=serviceList}}`);
+  this.set('metaName', 'checksum');
+  this.set('itemList', { 'machine.machineName': 123 });
+  this.render(hbs`{{pivot-to-investigate metaName='machine.machineName' item=itemList serviceList=serviceList}}`);
   this.$('.rsa-icon').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -73,7 +79,6 @@ test('should enable the navigate button on selecting the service', function(asse
 });
 
 test('should open the investigate page in new window', function(assert) {
-  this.get('timezone').set('selected', { zoneId: 'UTC' });
   const actionSpy = sinon.spy(window, 'open');
   this.set('serviceList', [
     { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR' },

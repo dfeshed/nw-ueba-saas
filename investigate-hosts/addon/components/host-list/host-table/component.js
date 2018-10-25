@@ -16,6 +16,8 @@ import {
   setSelectedHost
 } from 'investigate-hosts/actions/ui-state-creators';
 
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+
 const stateToComputed = (state) => ({
   hostList: processedHostList(state),
   serviceList: serviceList(state),
@@ -24,7 +26,9 @@ const stateToComputed = (state) => ({
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
   loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus,
   serverId: state.endpointQuery.serverId,
-  selectedHostsCount: state.endpoint.machines.selectedHostList.length
+  selectedHostsCount: state.endpoint.machines.selectedHostList.length,
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const dispatchToActions = {

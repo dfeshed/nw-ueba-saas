@@ -1,22 +1,9 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
-import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
-import moment from 'moment';
-import { buildTimeRange } from 'investigate-shared/utils/time-util';
-
-
-const INVESTIGATE_META_MAPPING = {
-  'machine.machineName': 'alias.host',
-  'userName': ['username', 'user.dst', 'user.src'],
-  'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
-  'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6']
-};
-
-const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];
+import { navigateToInvestigateEventsAnalysis, navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
 
 const dispatchToActions = {
   getAllServices
@@ -58,80 +45,10 @@ const PivotToInvestigate = Component.extend({
       {
         label: 'Analyze Events',
         action() {
-          cntx.send('toggleServiceSelection');
+          cntx.send('pivotToInvestigate');
         }
       }
     ];
-  },
-
-  _escapeBackslash: (value) => {
-    return value.replace(/\\\\?(?!')/g, '\\\\');
-  },
-
-  _buildFilter() {
-    const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
-    const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    let value = metaValue || get(item, metaName); // if metaValue not passed get the value from item
-    // If list meta then add || in query
-    if (metaName === 'userName') {
-      value = this._escapeBackslash(value);
-    }
-
-    if (Array.isArray(investigateMeta)) {
-      const query = investigateMeta.map((meta) => {
-        return this._getQuery(meta, value);
-      });
-      return query.join('||');
-    }
-    return this._getQuery(investigateMeta, value);
-  },
-
-
-  _getQuery(metaName, metaValue) {
-    if (SKIP_QUOTES.includes(metaName)) {
-      return `${metaName} = ${metaValue}`;
-    }
-    return `${metaName} = "${metaValue}"`;
-  },
-
-  /**
-   * Opens the investigate page with events query
-   * @private
-   */
-  _navigateToInvestigateEventsAnalysis(serviceId) {
-    const { zoneId } = this.get('timezone.selected');
-    const { value, unit } = this.get('timeRange');
-    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
-    const mf = this._buildFilter();
-    const queryParams = {
-      sid: serviceId, // Service Id
-      mf: encodeURI(encodeURIComponent(mf)), // Meta filter
-      st: startTime.tz('utc').format('X'), // Stat time
-      et: endTime.tz('utc').format('X'), // End time
-      mps: 'default', // Meta panel size
-      rs: 'max' // Recon size
-    };
-    const query = serializeQueryParams(queryParams);
-    const path = `${window.location.origin}/investigate/events?${query}}`;
-    this._closeModal();
-    window.open(path);
-  },
-  /**
-   * Opens the investigate/navigate page with query
-   * @private
-   */
-  _navigateToInvestigateNavigate(serviceId) {
-    const { zoneId } = this.get('timezone.selected');
-    const { value, unit } = this.get('timeRange');
-    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
-    const mf = this._buildFilter();
-    const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
-    const query = encodeURI(encodeURIComponent(mf));
-    const path = `${baseURL}/${query}/date/${moment(startTime).tz('UTC').format()}/${moment(endTime).tz('UTC').format()}`;
-    this._closeModal();
-    window.open(path);
   },
 
   _closeModal() {
@@ -140,12 +57,25 @@ const PivotToInvestigate = Component.extend({
 
   actions: {
 
-    toggleServiceSelection() {
-      const serviceList = this.get('serviceList');
-      if (!(serviceList && serviceList.length)) {
-        this.send('getAllServices');
+    pivotToInvestigate() {
+      const serviceId = this.get('serviceId');
+      if (serviceId && serviceId !== '-1') {
+        const {
+          metaName,
+          metaValue,
+          item,
+          timeRange
+        } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
+
+        const { zoneId } = this.get('timezone.selected');
+        navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
+      } else {
+        const serviceList = this.get('serviceList');
+        if (!(serviceList && serviceList.length)) {
+          this.send('getAllServices');
+        }
+        this.set('showServiceModal', true);
       }
-      this.set('showServiceModal', true);
     },
 
     onCancel() {
@@ -153,11 +83,29 @@ const PivotToInvestigate = Component.extend({
     },
 
     pivotToInvestigateEventAnalysis(serviceId) {
-      this._navigateToInvestigateEventsAnalysis(serviceId);
+      const {
+        metaName,
+        metaValue,
+        item,
+        timeRange
+      } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
+
+      const { zoneId } = this.get('timezone.selected');
+      this._closeModal();
+      navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
     },
 
     pivotToInvestigateNavigate(serviceId) {
-      this._navigateToInvestigateNavigate(serviceId);
+      const {
+        metaName,
+        metaValue,
+        item,
+        timeRange
+      } = this.getProperties('metaName', 'metaValue', 'item', 'timeRange');
+
+      const { zoneId } = this.get('timezone.selected');
+      this._closeModal();
+      navigateToInvestigateNavigate({ metaName, metaValue, itemList: [item] }, serviceId, timeRange, zoneId);
     },
 
     onModalClose() {

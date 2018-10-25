@@ -13,6 +13,7 @@ import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 import fileContext from './details/file-context/reducer';
+import investigate from 'investigate-shared/reducers/investigate/reducer';
 
 const reducerPredicate = (type) => {
   return (action) => {
@@ -41,6 +42,7 @@ export default combineReducers({
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE'))
   }),
+  investigate: createFilteredReducer(investigate, reducerPredicate('MACHINE')),
   preferences,
   endpointServer,
   endpointQuery

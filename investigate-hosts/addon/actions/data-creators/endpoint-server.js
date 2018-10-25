@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-hosts/actions/api/server';
 import { getAllSchemas, getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
+import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
 export const initializeEndpoint = () => {
   return (dispatch, getState) => {
@@ -34,6 +35,7 @@ export const setEndpointServer = (server) => {
       .then(() => {
         dispatch(isEndpointServerOffline(false));
         dispatch(getPageOfMachines());
+        dispatch(getServiceId('MACHINE'));
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));

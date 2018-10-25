@@ -8,6 +8,7 @@ import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { isJazzAgent } from 'investigate-hosts/reducers/details/process/selectors';
 import { isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
 
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const dispatchToActions = {
   getAllServices
@@ -16,7 +17,9 @@ const dispatchToActions = {
 const stateToComputed = (state) => ({
   isJazzAgent: isJazzAgent(state),
   isEcatAgent: isEcatAgent(state),
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const PivotToPA = Component.extend({
@@ -71,25 +74,36 @@ const PivotToPA = Component.extend({
      */
     navigateToProcessAnalysis(serviceId) {
       const { zoneId } = this.get('timezone.selected');
-      const { item, agentId, osType, hostName } = this.getProperties('item', 'agentId', 'osType', 'hostName');
+      const {
+        item,
+        agentId,
+        osType,
+        hostName,
+        timeRange } = this.getProperties('item', 'agentId', 'osType', 'hostName', 'timeRange');
       const { name, checksumSha256, vpid } = item;
+      const { value, unit } = timeRange;
       const serverId = this.get('serverId');
-      const timeRange = buildTimeRange(1, 'days', zoneId);
-      const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
+      const range = buildTimeRange(value, unit, zoneId);
+      const timeStr = `st=${range.startTime}&et=${range.endTime}`;
       const osTypeParam = `osType=${osType}&vid=${vpid}`;
       const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}&serverId=${serverId}`;
-
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
       this._closeModal();
     },
 
     toggleServiceSelection(item) {
-      this.set('showServiceModal', true);
+      const serviceId = this.get('serviceId');
       this.set('item', item);
-      this.send('getAllServices');
-      next(() => {
-        this.get('eventBus').trigger('rsa-application-modal-open-service-modal');
-      });
+      if (serviceId) {
+        this.send('navigateToProcessAnalysis', serviceId);
+      } else {
+        this.set('showServiceModal', true);
+
+        this.send('getAllServices');
+        next(() => {
+          this.get('eventBus').trigger('rsa-application-modal-open-service-modal');
+        });
+      }
     },
 
     onCancel() {

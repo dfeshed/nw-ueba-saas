@@ -1,6 +1,7 @@
 import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { get } from '@ember/object';
+import moment from 'moment';
 
 const INVESTIGATE_META_MAPPING = {
   'machine.machineName': 'alias.host',
@@ -14,9 +15,18 @@ const INVESTIGATE_META_MAPPING = {
 
 const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];
 
+const _escapeBackslash = (value) => {
+  return value.replace(/\\\\?(?!')/g, '\\\\');
+};
+
 const _buildFilter = (metaName, metaValue, itemList) => {
   const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-  const value = metaValue || get(itemList[0], metaName); // if metaValue not passed get the value from itemList
+  let value = metaValue || get(itemList[0], metaName); // if metaValue not passed get the value from itemList
+
+  if (metaName === 'userName') {
+    value = _escapeBackslash(value);
+  }
+
   // If list meta then add || in query
   if (Array.isArray(investigateMeta)) {
     const query = investigateMeta.map((meta) => {
@@ -68,7 +78,7 @@ const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList }, servic
   const mf = _buildFilter(metaName, metaValue, itemList);
   const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
   const query = encodeURI(encodeURIComponent(mf));
-  const path = `${baseURL}/${query}/date/${startTime}/${endTime}`;
+  const path = `${baseURL}/${query}/date/${moment(startTime).tz('UTC').format()}/${moment(endTime).tz('UTC').format()}`;
   window.open(path);
 };
 

@@ -19,6 +19,7 @@ import {
   downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
   fileProperty: fileContextFileProperty(state, storeName),
@@ -27,7 +28,9 @@ const stateToComputed = (state, { storeName }) => ({
   fileStatus: fileStatus(state, storeName),
   selectedFileChecksums: selectedFileChecksums(state, storeName),
   isRemediationAllowed: isRemediationAllowed(state, storeName),
-  agentId: state.endpoint.detailsInput.agentId
+  agentId: state.endpoint.detailsInput.agentId,
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const dispatchToActions = {

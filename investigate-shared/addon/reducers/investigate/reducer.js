@@ -5,7 +5,7 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 
 const investigateState = Immutable.from({
-  serviceId: null,
+  serviceId: '-1',
   timeRange: {
     unit: 'hours',
     value: 24
