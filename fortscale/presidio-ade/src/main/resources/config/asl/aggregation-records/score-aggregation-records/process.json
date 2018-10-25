@@ -14,6 +14,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func"
       }
+    },
+    {
+      "name": "sumOfHighestDstProcessFileNameScoresUserIdProcessHourly",
+      "type": "P",
+      "bucketConfName": "dstProcessFileNameToHighestScoreMapUserIdProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstProcessFileNameToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
     }
   ]
 }

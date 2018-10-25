@@ -20,6 +20,38 @@
               "max-rare-timestamp-count": 8,
               "max-num-of-rare-timestamps": 8,
               "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "dstProcessFileName.userId.process.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstProcessFileName.userId.process.score",
+                "model": {
+                  "name": "dstProcessFileName.userId.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.dstProcessFileName.process.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.dstProcessFileName.process.score",
+                  "model": {
+                    "name": "userId.dstProcessFileName.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
             }
           ]
         }
