@@ -1,24 +1,23 @@
 package fortscale.utils.recordreader.transformation;
 
-import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JoinerTransformation implements Transformation<String> {
     private String featureName;
-    private Collection<String> requiredFieldNames;
+    private List<String> requiredFieldNames;
     private String delimiter;
 
     /**
      * C'tor.
      *
      * @param featureName         the name of the new epochtime feature
-     * @param instantFieldName    the name of the required instant field
-     * @param resolutionInSeconds the resolution in seconds of the new epochtime feature
+     * @param requiredFieldNames    the names of the fields that will contain the joined values
+     * @param delimiter the join delimiter
      */
-    public JoinerTransformation(String featureName, Collection<String> requiredFieldNames, String delimiter) {
+    public JoinerTransformation(String featureName, List<String> requiredFieldNames, String delimiter) {
         this.featureName = featureName;
         this.requiredFieldNames = requiredFieldNames;
         this.delimiter = delimiter;
@@ -36,7 +35,7 @@ public class JoinerTransformation implements Transformation<String> {
 
     @Override
     public String transform(Map<String, Object> requiredFieldNameToValueMap) {
-        boolean isMissingValue = requiredFieldNames.stream().filter(fieldName -> !requiredFieldNameToValueMap.containsKey(fieldName)).findFirst().isPresent();
+        boolean isMissingValue = requiredFieldNames.stream().anyMatch(fieldName -> requiredFieldNameToValueMap.get(fieldName) == null);
         if(isMissingValue){
             return null;
         }
