@@ -7,8 +7,8 @@ import * as ACTION_TYPES from 'investigate-shared/actions/types';
 const investigateState = Immutable.from({
   serviceId: '-1',
   timeRange: {
-    unit: 'hours',
-    value: 24
+    unit: 'days',
+    value: 7
   }
 });
 

@@ -21,13 +21,13 @@ $rightZoneMinWidth: 400px;
 
   &.show-left-zone.show-right-zone {
     .center-zone {
-      max-width: calc(100% - 800px);
+      min-width: calc(100% - 800px);
     }
   }
 
   &.show-left-zone {
     .center-zone {
-      max-width: calc(100% - 400px);
+      min-width: calc(100% - 401px);
     }
     .left-zone {
       max-width: $leftZoneMinWidth;
@@ -45,13 +45,13 @@ $rightZoneMinWidth: 400px;
       opacity: opacity-value(opaque);
     }
     .center-zone {
-      max-width: calc(100% - 400px);
+      min-width: calc(100% - 401px);
     }
   }
   .center-zone {
-    @include rsa-vendor-prefix(transition-property, max-width);
+    @include rsa-vendor-prefix(transition-property, min-width);
     @include rsa-vendor-prefix(transition-duration, 0.3s);
-    max-width: 100%;
+    min-width: 100%;
   }
 }
 
