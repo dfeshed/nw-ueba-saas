@@ -87,9 +87,12 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
         return featureName;
     }
 
-
     public Map<String, String> getContext() {
         return context;
     }
 
+    public void setContext(Map<String, String> context) {
+        this.context = context;
+        setContextId(getAggregatedFeatureContextId(context));
+    }
 }

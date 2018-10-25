@@ -9,7 +9,6 @@ import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by maria_dorohin on 7/30/17.
