@@ -20,6 +20,8 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
 
     @Field
     private Map<Integer, Double> aggregatedFeatureValues;
+    @Field
+    private Map<String, String> context;
 
     @Transient
     private String featureName;
@@ -28,10 +30,11 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
         super();
     }
 
-    public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
-        super(startInstant, endInstant, contextId);
+    public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, Map<String,String> context, String featureName) {
+        super(startInstant, endInstant, getAggregatedFeatureContextId(context));
         this.featureName = featureName;
         this.aggregatedFeatureValues = new HashMap<>();
+        this.context = context;
     }
 
     /**
@@ -82,5 +85,14 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
      */
     public String getFeatureName() {
         return featureName;
+    }
+
+    public Map<String, String> getContext() {
+        return context;
+    }
+
+    public void setContext(Map<String, String> context) {
+        this.context = context;
+        setContextId(getAggregatedFeatureContextId(context));
     }
 }
