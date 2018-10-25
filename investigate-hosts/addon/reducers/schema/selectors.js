@@ -3,19 +3,19 @@ import { RESTRICTION_TYPE } from './restriction-type';
 import Immutable from 'seamless-immutable';
 
 const COLUMN_WIDTH = {
-  'agentStatus.scanStatus': 130,
-  'machine.scanStartTime': 150,
-  'agentStatus.lastSeenTime': 150,
-  'analysisData.machineRiskScore': 100,
-  'machine.machineOsType': 120,
-  'machine.networkInterfaces.ipv4': 130,
-  'machine.users.name': 130
+  'agentStatus.scanStatus': '6vw',
+  'machine.scanStartTime': '6vw',
+  'agentStatus.lastSeenTime': '6vw',
+  'analysisData.machineRiskScore': '6vw',
+  'machine.machineOsType': '5vw',
+  'machine.networkInterfaces.ipv4': '5vw',
+  'machine.users.name': '5vw'
 };
 
 const DEFAULT_COLUMN = Immutable.from([
   {
     dataType: 'checkbox',
-    width: 22,
+    width: '1vw',
     class: 'rsa-form-row-checkbox',
     componentClass: 'rsa-form-checkbox',
     visible: true,
@@ -24,7 +24,7 @@ const DEFAULT_COLUMN = Immutable.from([
   },
   {
     dataType: 'string',
-    width: 300,
+    width: '15vw',
     visible: true,
     field: 'machine.machineName',
     searchable: true,
@@ -62,7 +62,7 @@ export const getHostTableColumns = createSelector(
           searchable,
           values,
           title: `investigateHosts.hosts.column.${field}`,
-          width: COLUMN_WIDTH[field]
+          width: COLUMN_WIDTH[field] || '10vw'
         };
       });
 
