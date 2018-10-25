@@ -12,7 +12,7 @@ import {
 } from '../../../data/data';
 
 const initialStateEdr = new ReduxDataHelper().policyWiz().build().usm.policyWizard;
-const initialStateWinodwsLog = new ReduxDataHelper().policyWiz('windowsLogPolicy').build().usm.policyWizard;
+const initialStateWinLog = new ReduxDataHelper().policyWiz('windowsLogPolicy').build().usm.policyWizard;
 const scanScheduleId = 'scanType';
 const scanStartDateId = 'scanStartDate';
 
@@ -24,8 +24,8 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
-    assert.equal(initialStateWinodwsLog.policy.policyType, 'windowsLogPolicy', 'correct policyType is loaded in initialState when type is windowsLogPolicy');
-    assert.equal(initialStateWinodwsLog.availableSettings.length, 1, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
+    assert.equal(initialStateWinLog.policy.policyType, 'windowsLogPolicy', 'correct policyType is loaded in initialState when type is windowsLogPolicy');
+    assert.equal(initialStateWinLog.availableSettings.length, 3, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
   });
 
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
@@ -37,6 +37,16 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const action = { type: ACTION_TYPES.NEW_POLICY };
     const endState = reducers(Immutable.from(initialStateEdr), action);
     assert.deepEqual(endState, expectedEndState, 'state reset to the initial state');
+  });
+
+  test('on UPDATE_POLICY_TYPE, state is reset & policyType is properly set', function(assert) {
+    const expectedPolicyType = 'windowsLogPolicy';
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz(expectedPolicyType)
+      .build().usm.policyWizard;
+    const action = { type: ACTION_TYPES.UPDATE_POLICY_TYPE, payload: expectedPolicyType };
+    const endState = reducers(Immutable.from(initialStateEdr), action);
+    assert.deepEqual(endState, expectedEndState, `state reset and policyType is ${expectedPolicyType}`);
   });
 
   test('on UPDATE_POLICY_PROPERTY, name, description, etc. are properly set', function(assert) {

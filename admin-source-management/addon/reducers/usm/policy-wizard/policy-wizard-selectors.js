@@ -3,6 +3,7 @@ import { isBlank } from '@ember/utils';
 import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
+import { windowsLogPolicyValidatorFnMap } from './windowsLogPolicy/windowsLog-selectors';
 
 const { createSelector } = reselect;
 
@@ -153,8 +154,8 @@ const _state = (state) => state;
  * @private
  */
 const validatorFnMap = {
-  'edrPolicy': edrPolicyValidatorFnMap
-  // 'windowsLogPolicy': windowsLogPolicyValidatorFnMap
+  'edrPolicy': edrPolicyValidatorFnMap,
+  'windowsLogPolicy': windowsLogPolicyValidatorFnMap
 };
 
 export const isDefinePolicyStepValid = createSelector(

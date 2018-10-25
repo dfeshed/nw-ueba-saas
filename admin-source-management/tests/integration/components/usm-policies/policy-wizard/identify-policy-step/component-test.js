@@ -2,6 +2,7 @@ import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { blur, find, findAll, focus, render, settled } from '@ember/test-helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -56,6 +57,23 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     assert.equal(nameEl.value, testName, `Policy Name is ${testName}`);
     const [descEl] = findAll('.control-with-error .policy-description textarea');
     assert.equal(descEl.value, testDesc, `Policy Description is ${testDesc}`);
+  });
+
+  // TODO - the spy props are not getting set
+  skip('Changing the source type select control dispatches the updatePolicyType action creator', async function(assert) {
+    const actionSpy = sinon.spy(policyWizardCreators, 'updatePolicyType');
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    const expectedValue = 'windowsLogPolicy';
+    const translation = this.owner.lookup('service:i18n');
+    const optionText = translation.t('adminUsm.policyWizard.windowsLogSourceType');
+    await selectChoose('.control.source-type', optionText);
+    assert.equal(actionSpy.callCount, 1, 'updatePolicyType action creator was called once');
+    assert.equal(actionSpy.calledWith(expectedValue), true, 'updatePolicyType action creator was called with expected args');
+    actionSpy.restore();
   });
 
   // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set

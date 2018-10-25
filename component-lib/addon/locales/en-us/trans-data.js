@@ -3967,6 +3967,15 @@ export default {
         agentMode: 'Monitoring Mode',
         noMonitoring: 'No Monitoring',
         fullMonitoring: 'Full Monitoring'
+      },
+      // windowsLog policy settings
+      windowsLogPolicy: {
+        windowsLogSettingsHeader: 'Windows Log Settings',
+        radioOptionEnabled: 'Enabled',
+        radioOptionDisabled: 'Disabled',
+        enabled: 'Windows Log Collection', // 'Status',
+        sendTestLog: 'Send Test Log',
+        channelFiltersSettingsHeader: 'Channel Filter Settings'
       }
     },
     policyTypes: {

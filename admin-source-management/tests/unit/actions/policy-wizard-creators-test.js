@@ -63,6 +63,44 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     thunk(dispatch);
   });
 
+  test('updatePolicyType action creator returns proper type(s), payload(s), and/or promise(s) when policyType is edrPolicy', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_TYPE:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_TYPE, 'action has the correct type of UPDATE_POLICY_TYPE');
+          assert.equal(action.payload, 'edrPolicy', 'action has the correct payload of edrPolicy');
+          break;
+        case ACTION_TYPES.FETCH_ENDPOINT_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_ENDPOINT_SERVERS, 'action has the correct type of FETCH_ENDPOINT_SERVERS');
+          assert.ok(action.promise, 'action has a fetchEndpointServers promise');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
+    };
+    const thunk = policyWizardCreators.updatePolicyType('edrPolicy');
+    thunk(dispatch);
+  });
+
+  test('updatePolicyType action creator returns proper type(s), payload(s), and/or promise(s) when policyType is windowsLogPolicy', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_TYPE:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_TYPE, 'action has the correct type of UPDATE_POLICY_TYPE');
+          assert.equal(action.payload, 'windowsLogPolicy', 'action has the correct payload of windowsLogPolicy');
+          break;
+        // case ACTION_TYPES.SOME_WIN_LOG_THING:
+        //   assert.equal(action.type, ACTION_TYPES.SOME_WIN_LOG_THING, 'action has the correct type of SOME_WIN_LOG_THING');
+        //   assert.ok(action.promise, 'action has a someWinLogThing promise');
+        //   break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
+    };
+    const thunk = policyWizardCreators.updatePolicyType('windowsLogPolicy');
+    thunk(dispatch);
+  });
+
   test('updatePolicyProperty action creator returns proper type and payload when field is scanType', function(assert) {
     const expectedAction = {
       type: ACTION_TYPES.TOGGLE_SCAN_TYPE,

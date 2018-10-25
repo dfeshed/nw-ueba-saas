@@ -14,13 +14,19 @@ export default {
     // ==========================================
     // start Windows Log Policy specific props
     // ==========================================
-    captureFloatingCode: null // true or false
+    enabled: null, // true or false
+    sendTestLog: null // true or false
   },
 
   // define-policy-step - available settings to render the left col
   // * make sure the id is always the same as the policy property name
   availableSettings: [
-    { index: 0, id: 'captureFloatingCode', label: 'adminUsm.policyWizard.edrPolicy.captureFloatingCode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'captureFloatingCode', value: true }] }
+    { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
+    { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
+    { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+    // 3, 4, 5, 6
+    // { index: 7, id: 'channelFiltersSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFiltersSettingsHeader', isHeader: true, isEnabled: true }
+    // 8 - channelFilters
   ]
 
 };
