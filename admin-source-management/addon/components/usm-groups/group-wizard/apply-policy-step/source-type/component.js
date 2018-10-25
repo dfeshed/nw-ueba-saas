@@ -86,8 +86,12 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
       const pathGroupAssignedPolicies = 'group.assignedPolicies.';
       const reference = { referenceId: value.id, name: value.name };
       this.send('editGroup', pathGroupAssignedPolicies + value.policyType, reference);
+    },
+    handlePolicyRemove(value) {
+      const pathGroupAssignedPolicies = 'group.assignedPolicies.';
+      const reference = { referenceId: 'placeholder', name: '' };
+      this.send('editGroup', pathGroupAssignedPolicies + value.policyType, reference);
     }
-
   }
 });
 

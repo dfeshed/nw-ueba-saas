@@ -18,20 +18,62 @@
       {{/power-select}}
     </label>
   </hbox>
-  <hbox class="control policy-assignment-selector">
-    <label class="rsa-form-label power-select">
-      <div class="label-text">
-        {{t 'adminUsm.groupWizard.applyPolicy.selectedPolicy'}}
-      </div>
-      {{#power-select
-        searchEnabled=false
-        placeholder=(t 'adminUsm.groupWizard.applyPolicy.policyPlaceholder')
-        options=availablePoliciesForSourceType
-        selected=selectedPolicy
-        disabled=(not selectedSourceType)        
-        onchange=(action 'handlePolicyAssignment') as |option|}}
-        {{option.name}}
-      {{/power-select}}
-    </label>
+  <hbox class="control">
+    <table class='policy-assignment'>
+      <tr>
+        <td class='available-selected'>
+          <div class="label-header">
+            {{t 'adminUsm.groupWizard.applyPolicy.available'}}
+          </div>
+          <table>
+            <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
+            {{#each availablePoliciesForSourceType as |item|}}
+              <tr>
+                <td>
+                  {{item.name}}
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  {{item.description}}
+                </td>
+                <td>
+                  <span class="assign-policy" {{action 'handlePolicyAssignment' item}}>
+                    {{rsa-icon size='large' name="add-circle-1" style="lined"}}
+                  </span>
+                </td>
+              </tr>
+            {{/each}}
+          </table>
+        </td>
+        <td class='available-selected'>
+          <div class="label-header">
+            {{t 'adminUsm.groupWizard.applyPolicy.selected'}}
+          </div>
+          <table>
+            <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
+            {{#if selectedPolicy}}
+              <tr>
+                <td>
+                  {{selectedPolicy.name}}
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  {{selectedPolicy.description}}
+                </td>
+                <td>
+                  <span class="remove-policy" {{action 'handlePolicyRemove' selectedPolicy}}>
+                    {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+                  </span>
+                </td>
+              </tr>
+            {{/if}}
+          </table>
+        </td>
+      </tr>
+    </table>
   </hbox>
 </vbox>

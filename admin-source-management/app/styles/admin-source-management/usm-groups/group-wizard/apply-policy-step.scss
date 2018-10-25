@@ -4,13 +4,36 @@
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
-    // margin-top: rsa-whitespace(more);
-
+    margin-top: rsa-whitespace(more);
+    .policy-assignment {
+      width: 100%;
+    }
+    .available-selected {
+      width: 50%;
+    }
+    .remove-policy, .assign-policy {
+      cursor: pointer;
+    }
     .help-title {
       @include rsa-font(body, larger);
       margin-bottom: rsa-whitespace(more);
     }
-
+    .label-header {
+      font-size: 24.15px;
+      line-height: 24.15px;
+    }
+    th {
+      text-align: left;
+      padding-top: rsa-whitespace(more);
+      padding-bottom: rsa-whitespace(less);
+      padding-right: rsa-whitespace();
+      padding-left: rsa-whitespace();
+    }
+    td {
+      padding-top: rsa-whitespace();
+      padding-right: rsa-whitespace();
+      padding-left: rsa-whitespace();
+    }
     .source-type-wrapper {
       overflow-y: auto;
       margin-bottom: rsa-whitespace();

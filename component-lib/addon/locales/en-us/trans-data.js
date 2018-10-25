@@ -2836,8 +2836,7 @@ export default {
         groupPolicy: {
           groups: {
             name: 'Agent Groups'
-          },
-          policyStatus: 'Policy Status'
+          }
         },
         machine: {
           machineOsType: 'Operating System',
@@ -3823,7 +3822,13 @@ export default {
         sourceType: 'Source Type',
         selectedPolicy: 'Selected Policy',
         policyPlaceholder: 'Select a Policy',
-        addSourceType: 'Add Another Source Type'
+        addSourceType: 'Add Another Source Type',
+        policyStatus: 'Policy Status',
+        policyName: 'POLICY NAME',
+        appliedToGroup: 'APPLIED TO GROUP(S)',
+        description: 'POLICY DESCRIPTION',
+        available: 'Available Policies',
+        selected: 'Selected Policy'
       },
       // review-group-step
       reviewGroup: 'Review',
@@ -3857,7 +3862,7 @@ export default {
       },
       chooseSource: 'Choose Source Type',
       editRanking: 'Edit Ranking',
-      chooseSourceTopText: 'Ranking is establiched per source type.  Select a source type to continue.',
+      chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data'
       }
