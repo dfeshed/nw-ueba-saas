@@ -11,23 +11,35 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  const itemList = [{
-    signature: {
-      signer: 'Microsoft Signed'
+  const itemList = [
+    {
+      fileName: 'test',
+      signature: {
+        signer: 'Microsoft Signed'
+      },
+      size: 100
     },
-    size: 100
-  }];
+    {
+      fileName: 'test1',
+      signature: {
+        signer: 'Microsoft Signed'
+      },
+      size: 100
+    }
+  ];
 
   test('on click renders the file edit status modal', async function(assert) {
     this.set('itemList', itemList);
-    await render(hbs`{{endpoint/edit-file-status/modal itemList=itemList}}`);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList itemList=itemList}}`);
     assert.equal((document.querySelectorAll('#modalDestination .file-status-modal')).length, 1, 'File status modal has rendered.');
   });
 
   test('file status values', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
-    await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     assert.equal(findAll('.file-status-radio').length, 5, 'Four file status values have been rendered');
     assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'first file status');
   });
@@ -35,10 +47,33 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
   test('toggle blacklist additional options', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
-    await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'blacklist file status');
     await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[0]);
     assert.equal(findAll('.black-list-options').length, 1, 'blacklist options have been rendered');
   });
 
+  test('it shows the white list warning message', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', itemList);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[3]);
+    assert.equal(findAll('.whitelist-alert').length, 1, 'Warning displayed');
+  });
+
+  test('it disable the white list radio for single selection', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [{
+      fileName: 'test',
+      signature: {
+        signer: 'Microsoft Signed'
+      },
+      size: 100
+    }]);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
+  });
 });

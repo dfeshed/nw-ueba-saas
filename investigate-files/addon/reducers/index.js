@@ -4,6 +4,7 @@ import fileList from './file-list/reducer';
 import filter from 'investigate-shared/reducers/endpoint-filter/reducer';
 import risk from 'investigate-shared/reducers/risk/reducer';
 import investigate from 'investigate-shared/reducers/investigate/reducer';
+import fileStatus from 'investigate-shared/reducers/file-status/reducer';
 import visuals from './visuals/reducer';
 import preferences from './preferences/reducer';
 import endpointServer from './endpoint-server/reducer';
@@ -23,6 +24,7 @@ export default combineReducers({
     visuals
   }),
   investigate: createFilteredReducer(investigate, reducerPredicate),
+  fileStatus: createFilteredReducer(fileStatus, reducerPredicate),
   preferences,
   endpointServer,
   endpointQuery,

@@ -46,6 +46,7 @@ const stateToComputed = (state) => ({
   agentCountMapping: state.files.fileList.agentCountMapping,
   fileStatusData: state.files.fileList.fileStatusData,
   remediationStatus: state.files.fileList.isRemediationAllowed,
+  restrictedFileList: state.fileStatus.restrictedFileList,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isCertificateView: state.certificate.list.isCertificateView

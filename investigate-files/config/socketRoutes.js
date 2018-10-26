@@ -111,6 +111,12 @@ const filesConfigGen = function(environment) {
         requestDestination: '/ws/contexthub/context/data-source/find'
       }
     },
+    endpoint: {
+      restrictedList: {
+        subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
+        requestDestination: '/ws/endpoint/file/status/restricted'
+      }
+    },
     'endpoint-server': {
       socketUrl,
       findAll: {

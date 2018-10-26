@@ -8,13 +8,22 @@
     <box class='radio-controls rsa-form-radio-group' fit>
       <h4 class='rsa-form-radio-group-label file-status-title'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
       {{#each radioButtons as |radio|}}
-        <label class='rsa-form-radio-label file-status-radio {{if (eq radio.value formData.fileStatus) 'checked'}}'>
+        <label class='rsa-form-radio-label file-status-radio {{if (and (eq radio.value 'Whitelist') disableRadio) 'disabled'}} {{if (eq radio.value formData.fileStatus) 'checked'}}'>
           {{radio-button
             radioClass='status-type'
             value=radio.value
+            disabled=(if (and (eq radio.value 'Whitelist') disableRadio) true)
             groupValue=formData.fileStatus}}
           {{t radio.label}}
         </label>
+        {{#if (eq radio.value 'Whitelist')}}
+          {{#if (and (eq formData.fileStatus 'Whitelist') showWhiteListWarning)}}
+            <span class='whitelist-alert'>
+              {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+              {{t 'investigateFiles.editFileStatus.whiteListAlert.message'}}
+            </span>
+          {{/if}}
+        {{/if}}
         {{#if (eq radio.value 'Blacklist')}}
           {{#if (eq formData.fileStatus 'Blacklist')}}
             {{endpoint/edit-file-status/modal/file-remediation

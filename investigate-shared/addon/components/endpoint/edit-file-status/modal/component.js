@@ -4,7 +4,7 @@ import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import { lookup } from 'ember-dependency-lookup';
-
+import { hasRestrictedEntry } from 'investigate-shared/utils/file-status-util';
 const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
 
 export default Component.extend({
@@ -56,6 +56,16 @@ export default Component.extend({
   @computed('formData.comment', 'formData.fileStatus')
   isSaveButtonDisabled(comment, fileStatus) {
     return isEmpty(comment) || isEmpty(fileStatus);
+  },
+
+  @computed('itemList', 'restrictedFileList')
+  showWhiteListWarning(itemList, restrictedFileList) {
+    return hasRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
+  },
+
+  @computed('itemList', 'showWhiteListWarning')
+  disableRadio(itemList, showWhiteListWarning) {
+    return itemList && itemList.length === 1 && showWhiteListWarning;
   },
 
   actions: {

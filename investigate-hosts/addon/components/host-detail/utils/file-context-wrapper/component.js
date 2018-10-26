@@ -30,7 +30,8 @@ const stateToComputed = (state, { storeName }) => ({
   isRemediationAllowed: isRemediationAllowed(state, storeName),
   agentId: state.endpoint.detailsInput.agentId,
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  restrictedFileList: state.fileStatus.restrictedFileList
 });
 
 const dispatchToActions = {

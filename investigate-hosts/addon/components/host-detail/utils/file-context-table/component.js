@@ -29,6 +29,7 @@ import {
   resetSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
 
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
   listOfFiles: listOfFiles(state, storeName),
@@ -41,7 +42,10 @@ const stateToComputed = (state, { storeName }) => ({
   selectedFileChecksums: selectedFileChecksums(state, storeName),
   totalItems: totalItems(state, storeName),
   contextLoadMoreStatus: contextLoadMoreStatus(state, storeName),
-  isRemediationAllowed: isRemediationAllowed(state, storeName)
+  isRemediationAllowed: isRemediationAllowed(state, storeName),
+  serviceId: serviceId(state),
+  timeRange: timeRange(state),
+  restrictedFileList: state.fileStatus.restrictedFileList
 });
 
 const dispatchToActions = {

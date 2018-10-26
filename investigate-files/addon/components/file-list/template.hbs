@@ -100,6 +100,7 @@
 {{#if showFileStatusModal}}
   {{endpoint/edit-file-status/modal
     itemList=selections
+    restrictedFileList=restrictedFileList
     isRemediationAllowed=remediationStatus
     onSaveFileStatus=(action 'saveFileStatus' checksums)
     data=data

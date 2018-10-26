@@ -62,6 +62,10 @@ const hostsConfigGen = function(env) {
       getHostFileContext: {
         subscriptionDestination: '/user/queue/endpoint/machine/process/get-all',
         requestDestination: '/ws/endpoint/machine/process/get-all'
+      },
+      restrictedList: {
+        subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
+        requestDestination: '/ws/endpoint/file/status/restricted'
       }
     },
     filters: {

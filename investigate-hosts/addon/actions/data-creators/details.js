@@ -7,6 +7,7 @@ import { fetchHostContext, getAllServices } from './host';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
+import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch) => {
@@ -213,6 +214,7 @@ const initializeAgentDetails = (input, loadSnapshot) => {
     // If selected host/agentId is same as previously loaded then don't load the data as it already in the state
     if (dataState.agentId !== agentId || (scanTime && scanTime !== dataState.scanTime)) {
       dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: input });
+      dispatch(getRestrictedFileList('MACHINE'));
       if (loadSnapshot) {
         dispatch(_getAllSnapShots(agentId));
       } else {

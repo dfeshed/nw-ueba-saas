@@ -14,6 +14,7 @@ import endpointQuery from './endpoint-query/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 import fileContext from './details/file-context/reducer';
 import investigate from 'investigate-shared/reducers/investigate/reducer';
+import fileStatus from 'investigate-shared/reducers/file-status/reducer';
 
 const reducerPredicate = (type) => {
   return (action) => {
@@ -42,6 +43,7 @@ export default combineReducers({
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE'))
   }),
+  fileStatus: createFilteredReducer(fileStatus, reducerPredicate),
   investigate: createFilteredReducer(investigate, reducerPredicate('MACHINE')),
   preferences,
   endpointServer,

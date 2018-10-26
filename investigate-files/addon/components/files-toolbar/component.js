@@ -28,6 +28,7 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   fileStatusData: state.files.fileList.fileStatusData,
   remediationStatus: state.files.fileList.isRemediationAllowed,
+  restrictedFileList: state.fileStatus.restrictedFileList,
   serviceId: serviceId(state),
   timeRange: timeRange(state)
 });

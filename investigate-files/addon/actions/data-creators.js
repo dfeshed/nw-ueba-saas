@@ -21,6 +21,8 @@ import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
+import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
+import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -124,7 +126,7 @@ const initializeFilesPreferences = () => {
           });
         }
       }
-      // *****/
+      dispatch(getRestrictedFileList('FILE'));
       dispatch(getFilter(initializeEndpoint, 'FILE'));
     });
   };
@@ -209,7 +211,13 @@ const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
 const deSelectAllFiles = () => ({ type: ACTION_TYPES.DESELECT_ALL_FILES });
 
 const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { fileStatus: { restrictedFileList }, files: { fileList: { selectedFileList } } } = state;
+    if (data.fileStatus === 'Whitelist') {
+      checksums = checksumsWithoutRestricted(selectedFileList, restrictedFileList);
+    }
+
     dispatch({
       type: ACTION_TYPES.SAVE_FILE_STATUS,
       promise: setFileStatus({ ...data, checksums }),

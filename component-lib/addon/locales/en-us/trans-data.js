@@ -2279,6 +2279,9 @@ export default {
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.',
         osNotToBlock: 'Files on Linux and Mac hosts cannot be blocked.'
       },
+      whiteListAlert: {
+        message: 'Some file(s) you have selected will be ignored for whitelisting'
+      },
       remediationActionOptions: {
         blockFile: 'Block',
         blockQuarantineFile: 'Block and Quarantine'

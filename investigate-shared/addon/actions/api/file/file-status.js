@@ -45,7 +45,21 @@ const getFileStatus = (selections) => {
   });
 };
 
+const getRestrictedFileList = () => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'restrictedList',
+    modelName: 'endpoint',
+    streamOptions: { requireRequestId: true },
+    query: {
+      data: 'Whitelist'
+    }
+  });
+};
+
+
 export {
   setFileStatus,
-  getFileStatus
+  getFileStatus,
+  getRestrictedFileList
 };
