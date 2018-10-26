@@ -13,6 +13,7 @@ const filesConfigGen = function(environment) {
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
   const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
   const riskScoreSocketUrl = common.determineSocketUrl(environment, '/risk/score/socket');
+  const respondSocketUrl = common.determineSocketUrl(environment, '/respond/socket');
 
 
   return {
@@ -21,6 +22,13 @@ const filesConfigGen = function(environment) {
     },
     'contexthub-server-ping': {
       socketUrl: contextSocketUrl
+    },
+    'respond-server': {
+      socketUrl: respondSocketUrl,
+      'alert-events': {
+        subscriptionDestination: '/user/queue/alerts/events',
+        requestDestination: '/ws/respond/alerts/events'
+      }
     },
     'investigate-service': {
       socketUrl,

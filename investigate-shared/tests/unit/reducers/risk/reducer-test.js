@@ -51,6 +51,38 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.eventsLoadingStatus, 'error');
   });
 
+  test('The CLEAR_EVENTS action will set reset events', function(assert) {
+    const previous = Immutable.from({
+      eventsData: [{}, {}, {}]
+    });
+    assert.equal(previous.eventsData.length, 3, 'Initial length is 3');
+    const result = reducer(previous, { type: ACTION_TYPES.CLEAR_EVENTS });
+    assert.equal(result.eventsData.length, 0, 'Events are cleared');
+  });
+
+  test('The GET_RESPOND_EVENTS action will set append new events', function(assert) {
+    const previous = Immutable.from({
+      eventsData: [{ 'agent_id': '123-abc', 'device_type': 'nwendpoint' }],
+      eventsLoadingStatus: null
+    });
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_RESPOND_EVENTS });
+    const endState = reducer(previous, startAction);
+
+    assert.equal(endState.eventsLoadingStatus, 'loading');
+    assert.equal(previous.eventsData.length, 1, 'Initial length is 1');
+
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_RESPOND_EVENTS,
+      payload: { data: [{ 'agent_id': '123-xyz', 'device_type': 'nwendpoint' }] },
+      meta: { indicatorId: '123-456' }
+    });
+    const newEndState = reducer(previous, successAction);
+
+    assert.equal(newEndState.eventsLoadingStatus, 'completed');
+    assert.equal(newEndState.eventsData[1].id, '123-456:0', 'unique id is properly set for each event');
+    assert.equal(newEndState.eventsData.length, 2);
+  });
+
   test('The ACTIVE_RISK_SEVERITY_TAB action will reset the selected alert', function(assert) {
     const previous = Immutable.from({
       selectedAlert: 'some alert'

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { eventsData } from './data';
+import { respondData } from './respond-data';
 import { selectors } from '../../../../../integration/components/events-list/selectors';
 
 module('Integration | Component | endpoint/risk-properties/events-list-container', function(hooks) {
@@ -10,12 +10,11 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
 
   test('renders endpoint row templates', async function(assert) {
     this.set('state', {
-      eventsData,
+      eventsData: respondData,
       expandedEventId: null,
       eventsLoadingStatus: 'completed'
     });
     await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
-
     assert.equal(findAll(selectors.list).length, 1);
     assert.equal(findAll(selectors.row).length, 2);
     assert.equal(findAll(selectors.endpointHeader).length, 2);
@@ -26,14 +25,14 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
 
   test('onclick the table row main will expand the event showing any details for the given type', async function(assert) {
     this.set('state', {
-      eventsData,
-      expandedId: null,
+      eventsData: respondData,
+      expandedEventId: null,
       eventsLoadingStatus: 'completed'
     });
     this.set('expand', () => {
       this.set('state', {
-        eventsData,
-        expandedEventId: 6019,
+        eventsData: respondData,
+        expandedEventId: 0,
         eventsLoadingStatus: 'completed'
       });
     });
@@ -47,7 +46,7 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
 
   test('loading spinner present when storyline event status not completed', async function(assert) {
     this.set('state', {
-      eventsData,
+      eventsData: respondData,
       expandedEventId: null,
       eventsLoadingStatus: 'loading'
     });

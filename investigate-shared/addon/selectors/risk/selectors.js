@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { transform } from 'investigate-shared/utils/meta-util';
 
 const _eventsData = (state) => state.risk.eventsData || [];
 export const activeRiskSeverityTab = (state) => state.risk.activeRiskSeverityTab;
@@ -13,6 +12,6 @@ export const expandedEventId = (state) => state.risk.expandedEventId;
 export const events = createSelector(
   _eventsData,
   (events) => {
-    return events.map(transform);
+    return events;
   }
 );

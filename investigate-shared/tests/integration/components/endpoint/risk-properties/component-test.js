@@ -18,7 +18,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
   test('Risk Score related severity and context are rendered', async function(assert) {
     const riskScoreContext = {
       'hash': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
-      'alertCount': {
+      'distinctAlertCount': {
         'critical': 1,
         'high': 2,
         'medium': 3
@@ -58,7 +58,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.expect(2);
     const riskScoreContext = {
       'hash': 'test-hash',
-      'alertCount': {
+      'distinctAlertCount': {
         'critical': 0,
         'high': 1,
         'medium': 3
@@ -74,7 +74,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     };
     this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
     this.set('setSelectedAlert', (context) => {
-      assert.equal(context.context['decoder-id1'].length, 2, '2 events are grouped in decoder-id1');
+      assert.equal(context.context.length, 2, '2 events are present');
     });
 
     this.set('activate', () => {

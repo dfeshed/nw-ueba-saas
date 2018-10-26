@@ -53,8 +53,7 @@ export default Component.extend({
 
   @computed('activeRiskSeverityTab', 'riskScoreContext')
   tabs(activeRiskSeverityTab, riskScoreContext) {
-
-    const alertCount = riskScoreContext ? { ...riskScoreContext.alertCount } : [];
+    const alertCount = riskScoreContext ? { ...riskScoreContext.distinctAlertCount } : [];
 
     // Count All alerts by adding alerts of critical, high and medium severities.
     alertCount.all = alertCount.critical + alertCount.high + alertCount.medium;
@@ -80,7 +79,7 @@ export default Component.extend({
         alertName: key,
         alertCount: alertContext[key].alertCount,
         eventCount: alertContext[key].eventContexts.length,
-        context: _.groupBy(alertContext[key].eventContexts, 'sourceId')
+        context: alertContext[key].eventContexts
       }));
     }
     return null;

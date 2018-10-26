@@ -1,6 +1,6 @@
 export default {
   'hash': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
-  'alertCount': {
+  'distinctAlertCount': {
     'critical': 1,
     'high': 2,
     'medium': 3
@@ -74,12 +74,14 @@ export default {
       'Random Critical Endpoint Alert 1': {
         'alertCount': 10,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '1',
+          'sourceId': 'Respond-id',
+          'source': 'Respond'
         },
         {
-          'id': 'decoder-id2',
-          'sourceId': '2'
+          'id': '2',
+          'sourceId': 'Respond-id',
+          'source': 'Respond'
         }]
       }
     },
@@ -87,19 +89,22 @@ export default {
       'Random High Endpoint Alert 1': {
         'alertCount': 20,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '3',
+          'sourceId': 'Respond-id',
+          'source': 'Respond'
         }]
       },
       'Random High Endpoint Alert 2': {
         'alertCount': 30,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '4',
+          'sourceId': 'Respond-id',
+          'source': 'Respond'
         },
         {
-          'id': 'decoder-id2',
-          'sourceId': '2'
+          'id': '5',
+          'sourceId': 'Respond-id',
+          'source': 'Respond'
         }]
       }
     },
@@ -107,34 +112,40 @@ export default {
       'Random Medium Endpoint Alert 1': {
         'alertCount': 20,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '1',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         }]
       },
       'Random Medium Endpoint Alert 2': {
         'alertCount': 30,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '2',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         },
         {
-          'id': 'decoder-id2',
-          'sourceId': '2'
+          'id': '3',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         }]
       },
       'Random Medium Endpoint Alert 3': {
         'alertCount': 10,
         'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
+          'id': '4',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         },
         {
-          'id': 'decoder-id2',
-          'sourceId': '2'
+          'id': '5',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         },
         {
-          'id': 'decoder-id3',
-          'sourceId': '3'
+          'id': '6',
+          'sourceId': 'Development Concentrator',
+          'source': 'ESA'
         }]
       }
     }

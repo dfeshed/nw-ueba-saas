@@ -2,6 +2,7 @@ import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import api from 'investigate-shared/actions/api/risk-score/risk-score-api';
 import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/alert-event';
 import _ from 'lodash';
+import { next } from '@ember/runloop';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -88,7 +89,31 @@ const activeRiskSeverityTab = (tabName) => {
 const setSelectedAlert = (context) => {
   return (dispatch, getState) => {
     dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context, meta: { belongsTo: getRiskType(getState) } });
-    dispatch(getAlertEvents(context));
+    dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: getRiskType(getState) } });
+    next(() => {
+      context.context.forEach((event) => {
+        if (event.source === 'Respond') {
+          // High and Critical alerts are fetched from Respond server
+          dispatch(getRepondAlertEvents(event.id));
+        } else {
+          // Medium alerts will be fetch from Decoder
+          dispatch(getAlertEvents(context));
+        }
+      });
+    });
+  };
+};
+
+const getRepondAlertEvents = (alertId) => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ACTION_TYPES.GET_RESPOND_EVENTS,
+      promise: api.getAlertEvents(alertId),
+      meta: {
+        belongsTo: getRiskType(getState),
+        indicatorId: alertId
+      }
+    });
   };
 };
 
@@ -106,7 +131,6 @@ const getAlertEvents = (context) => {
         dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED, meta: { belongsTo: getRiskType(getState) } });
       }
     };
-
     fetchStreamingAlertEvents(context.context, handlers);
   };
 };

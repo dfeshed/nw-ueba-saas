@@ -3,6 +3,8 @@ import Immutable from 'seamless-immutable';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
+import { transform } from 'investigate-shared/utils/meta-util';
+import fixNormalizedEvents from './util';
 
 const riskScoreState = Immutable.from({
   isRiskScoreReset: true,
@@ -15,6 +17,31 @@ const riskScoreState = Immutable.from({
   selectedAlert: null,
   expandedEventId: null
 });
+
+const _handleAppendEvents = (action, isRespondEvent) => {
+  return (state) => {
+    const { payload: { data }, meta: { indicatorId } } = action;
+    const { eventsData } = state;
+    data.forEach((evt, index) => {
+      // Tag each retrieved event with its parent indicator id.
+      // This is useful downstream for mapping events back to their parent.
+      evt.indicatorId = indicatorId;
+      evt.eventIndex = index;
+
+      // Ensure each event has an id.
+      // This is useful for selecting individual events in the UI.
+      if (!evt.id) {
+        evt.id = `${indicatorId}:${index}`;
+      }
+    });
+    if (isRespondEvent) {
+      fixNormalizedEvents(data);
+    } else {
+      transform(data);
+    }
+    return state.set('eventsData', [ ...eventsData, ...data ]);
+  };
+};
 
 const riskScoreReducer = handleActions({
 
@@ -42,6 +69,16 @@ const riskScoreReducer = handleActions({
   },
   [ACTION_TYPES.GET_EVENTS]: (state, { payload }) => {
     return state.merge({ eventsData: payload, eventsLoadingStatus: 'loading' });
+  },
+  [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.set('eventsLoadingStatus', 'loading'),
+      success: _handleAppendEvents(action, true),
+      finish: (s) => s.set('eventsLoadingStatus', 'completed')
+    });
+  },
+  [ACTION_TYPES.CLEAR_EVENTS]: (state) => {
+    return state.set('eventsData', []);
   },
   [ACTION_TYPES.GET_EVENTS_COMPLETED]: (state) => {
     return state.set('eventsLoadingStatus', 'completed');
