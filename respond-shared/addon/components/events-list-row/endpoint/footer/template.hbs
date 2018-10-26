@@ -15,14 +15,14 @@
       {{properties-for/meta-value key="filename" value=item.source_filename tagName="td" testId="eventSourceFileNameValue"}}
       <td class="launch-args" test-id="eventSourceLaunchValue">{{item.launch_argument_src}}</td>
       <td test-id="eventSourcePathValue">{{item.source_path}}</td>
-      {{properties-for/meta-value key="hash" value=item.source_hash tagName="td" testId="eventSourceHashValue"}}
+      {{properties-for/meta-value class="hash" key="hash" value=item.source_hash tagName="td" testId="eventSourceHashValue"}}
     </tr>
     <tr>
       <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.endpoint.targetLabel'}}</th>
       {{properties-for/meta-value key="filename" value=item.target_filename tagName="td" testId="eventTargetFileNameValue"}}
       <td class="launch-args" test-id="eventTargetLaunchValue">{{item.launch_argument_dst}}</td>
       <td test-id="eventTargetPathValue">{{item.target_path}}</td>
-      {{properties-for/meta-value key="hash" value=item.target_hash tagName="td" testId="eventTargetHashValue"}}
+      {{properties-for/meta-value class="hash" key="hash" value=item.target_hash tagName="td" testId="eventTargetHashValue"}}
     </tr>
   </tbody>
 </table>

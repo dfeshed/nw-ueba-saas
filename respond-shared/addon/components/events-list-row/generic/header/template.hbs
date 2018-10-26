@@ -1,10 +1,22 @@
-<dt test-id="eventTimeLabel">{{t 'respond.eventsList.generic.time'}}</dt>
-<dd test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
-<dt test-id="eventTypeLabel">{{t 'respond.eventsList.generic.type'}}</dt>
-<dd test-id="eventTypeValue">{{item.type}}</dd>
-<dt test-id="eventDetectorIpLabel">{{t 'respond.eventsList.generic.detectorIP'}}</dt>
-{{properties-for/meta-value key="ip_address" value=item.detector.ip_address testId="eventDetectorIpValue"}}
-<dt test-id="eventFileNameLabel">{{t 'respond.eventsList.generic.fileName'}}</dt>
-{{properties-for/meta-value key="filename" value=item.data.0.filename testId="eventFileNameValue"}}
-<dt test-id="eventFileHashLabel">{{t 'respond.eventsList.generic.fileHash'}}</dt>
-{{properties-for/meta-value key="hash" value=item.data.0.hash testId="eventFileHashValue"}}
+<div class="row">
+  <div class="column verbose">
+    <dt test-id="eventTimeLabel">{{t 'respond.eventsList.generic.time'}}</dt>
+    <dd class="datetime" test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventTypeLabel">{{t 'respond.eventsList.generic.type'}}</dt>
+    <dd test-id="eventTypeValue">{{item.type}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventDetectorIpLabel">{{t 'respond.eventsList.generic.detectorIP'}}</dt>
+    {{properties-for/meta-value key="ip_address" value=item.detector.ip_address testId="eventDetectorIpValue"}}
+  </div>
+  <div class="column">
+    <dt test-id="eventFileNameLabel">{{t 'respond.eventsList.generic.fileName'}}</dt>
+    {{properties-for/meta-value key="filename" value=item.data.0.filename testId="eventFileNameValue"}}
+  </div>
+  <div class="column hash">
+    <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.generic.fileHash'}}</dt>
+    {{properties-for/meta-value key="hash" value=item.data.0.hash testId="eventFileHashValue"}}
+  </div>
+</div>

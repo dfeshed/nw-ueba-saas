@@ -15,16 +15,13 @@
     }
   }
 
-  & dl.events-list-endpoint-header, dl.events-list-generic-header {
+  & dl.events-list-endpoint-header.row.column, dl.events-list-generic-header.row.column {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     align-items: flex-start;
     height: 2em;
-
-    dd, dt {
-      flex-basis: 50%;
-    }
+    justify-content: space-between;
   }
 
   table th, dt {
@@ -84,4 +81,40 @@
       text-decoration-style: dashed;
     }
   }
+
+  .events-list-generic-header .row .column.verbose, .events-list-endpoint-header .row .column.verbose {
+    flex: 1 0 5%;
+  }
+  .events-list-generic-header .row .column.hash, .events-list-endpoint-header .row .column.hash {
+    flex: 1 0 26%;
+  }
+
+  .events-list-endpoint-header, .events-list-generic-header {
+    padding: 10px;
+    padding-left: 1.8em;
+    padding-right: 1.8em;
+
+    .row {
+      display: flex;
+      flex-direction: row;
+
+      .column {
+        min-width: 0;
+        flex: 1 1 auto;
+        flex-basis: 1%;
+
+        dd {
+          line-height: 1.4;
+
+          &:not(.datetime) {
+            flex: 1 1 auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+
 }

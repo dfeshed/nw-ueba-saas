@@ -1,16 +1,34 @@
-<dt test-id="eventTimeLabel">{{t 'respond.eventsList.endpoint.time'}}</dt>
-<dd test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
-<dt test-id="eventTypeLabel">{{t 'respond.eventsList.endpoint.type'}}</dt>
-<dd test-id="eventTypeValue">{{item.type}}</dd>
-<dt test-id="eventCategoryLabel">{{t 'respond.eventsList.endpoint.category'}}</dt>
-<dd test-id="eventCategoryValue">{{item.category}}</dd>
-<dt test-id="eventActionLabel">{{t 'respond.eventsList.endpoint.action'}}</dt>
-<dd test-id="eventActionValue">{{item.action}}</dd>
-<dt test-id="eventHostnameLabel">{{t 'respond.eventsList.endpoint.hostname'}}</dt>
-{{properties-for/meta-value key="dns_hostname" value=item.hostname testId="eventHostnameValue"}}
-<dt test-id="eventUserAccountLabel">{{t 'respond.eventsList.endpoint.userAccount'}}</dt>
-{{properties-for/meta-value key="username" value=item.user_account testId="eventUserAccountValue"}}
-<dt test-id="eventOperatingSystemLabel">{{t 'respond.eventsList.endpoint.operatingSystem'}}</dt>
-<dd test-id="eventOperatingSystemValue">{{item.operating_system}}</dd>
-<dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.fileHash'}}</dt>
-{{properties-for/meta-value key="hash" value=item.file_SHA256 testId="eventFileHashValue"}}
+<div class="row">
+  <div class="column verbose">
+    <dt test-id="eventTimeLabel">{{t 'respond.eventsList.endpoint.time'}}</dt>
+    <dd class="datetime" test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventTypeLabel">{{t 'respond.eventsList.endpoint.type'}}</dt>
+    <dd test-id="eventTypeValue">{{item.type}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventCategoryLabel">{{t 'respond.eventsList.endpoint.category'}}</dt>
+    <dd test-id="eventCategoryValue">{{item.category}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventActionLabel">{{t 'respond.eventsList.endpoint.action'}}</dt>
+    <dd test-id="eventActionValue">{{item.action}}</dd>
+  </div>
+  <div class="column">
+    <dt test-id="eventHostnameLabel">{{t 'respond.eventsList.endpoint.hostname'}}</dt>
+    {{properties-for/meta-value key="dns_hostname" value=item.hostname testId="eventHostnameValue"}}
+  </div>
+  <div class="column">
+    <dt test-id="eventUserAccountLabel">{{t 'respond.eventsList.endpoint.userAccount'}}</dt>
+    {{properties-for/meta-value key="username" value=item.user_account testId="eventUserAccountValue"}}
+  </div>
+  <div class="column">
+    <dt test-id="eventOperatingSystemLabel">{{t 'respond.eventsList.endpoint.operatingSystem'}}</dt>
+    <dd test-id="eventOperatingSystemValue">{{item.operating_system}}</dd>
+  </div>
+  <div class="column hash">
+    <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.fileHash'}}</dt>
+    {{properties-for/meta-value key="hash" value=item.file_SHA256 testId="eventFileHashValue"}}
+  </div>
+</div>
