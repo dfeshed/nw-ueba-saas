@@ -11,7 +11,7 @@ import files from '../../state/files';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 let initState;
 
-module('Integration | Component | file found on machines', function(hooks) {
+module('Integration | Component | Investigate-files-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
   });
@@ -42,10 +42,11 @@ module('Integration | Component | file found on machines', function(hooks) {
   test('it renders error page when endpointserver is offline', async function(assert) {
     new ReduxDataHelper(initState)
       .isEndpointServerOffline(true)
+      .isCertificateView(false)
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.files-body').length, 0, 'file list is not rendered');
-    assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');
+    assert.equal(findAll('.error-page').length, 2, 'endpoint server is offline');
   });
 
   test('it renders file list when endpointserver is online', async function(assert) {

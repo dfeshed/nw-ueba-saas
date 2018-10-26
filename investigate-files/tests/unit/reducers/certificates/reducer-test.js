@@ -10,6 +10,15 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
   setupTest(hooks);
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
+    const DefaultCertificateColumns = [
+      'radio',
+      'friendlyName',
+      'certificateStatus',
+      'issuer',
+      'thumbprint',
+      'notValidBeforeUtcDate',
+      'notValidAfterUtcDate'
+    ];
     assert.deepEqual(result, {
       certificatesList: [],
       sortField: 'friendlyName',
@@ -22,7 +31,8 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
       selectedCertificateList: [],
       certificateStatusData: {},
       statusData: {},
-      isCertificateView: false
+      isCertificateView: false,
+      certificateVisibleColumns: DefaultCertificateColumns
     });
   });
 
@@ -157,7 +167,13 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
       statusData: {},
       totalCertificates: 0
     };
-
     assert.deepEqual(result, resetState, 'initial state');
+  });
+  test('update column visibilty certificate data', function(assert) {
+    const previous = Immutable.from({
+      certificateVisibleColumns: []
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: { selected: true, field: 'someColumn' } });
+    assert.equal(result.certificateVisibleColumns.length, 1, 'Visual column added');
   });
 });

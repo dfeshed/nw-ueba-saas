@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import certificatesColumnConfig, { certificatesLoading } from 'investigate-files/reducers/certificates/selectors';
+import { certificatesLoading, columns } from 'investigate-files/reducers/certificates/selectors';
 import { connect } from 'ember-redux';
 import {
   getPageOfCertificates,
@@ -11,7 +11,9 @@ const stateToComputed = (state) => ({
   certificatesItems: state.certificate.list.certificatesList,
   loadMoreStatus: state.certificate.list.loadMoreStatus,
   selections: state.certificate.list.selectedCertificateList,
-  areCertificatesLoading: certificatesLoading(state)
+  areCertificatesLoading: certificatesLoading(state),
+  isCertificateView: state.certificate.list.isCertificateView,
+  certificatesColumns: columns(state)
 });
 
 const dispatchToActions = {
@@ -23,8 +25,6 @@ const Certificates = Component.extend({
   tagName: '',
 
   classNames: ['certificates-data-table'],
-
-  certificatesColumns: certificatesColumnConfig.certificatesColumns,
 
   isAllSelected: true,
 

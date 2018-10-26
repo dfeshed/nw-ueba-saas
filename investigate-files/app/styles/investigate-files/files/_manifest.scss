@@ -256,6 +256,19 @@ page.investigate-files-engine {
       height: 70vh;
     }
   }
+  .certificate-view {
+    z-index: 200;
+    .certificates-container {
+      @include rsa-vendor-prefix(transition-property, left);
+      @include rsa-vendor-prefix(transition-duration, 0.4s);
+      left: 100%;
+    }
+  }
+  .is-show-certificate {
+    .certificates-container {
+      left: 0;
+    }
+  }
 }
 
 .license-banner.shown + .rsa-investigate-files {

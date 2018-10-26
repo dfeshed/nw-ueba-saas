@@ -47,7 +47,8 @@ const stateToComputed = (state) => ({
   fileStatusData: state.files.fileList.fileStatusData,
   remediationStatus: state.files.fileList.isRemediationAllowed,
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  isCertificateView: state.certificate.list.isCertificateView
 });
 
 const dispatchToActions = {
@@ -127,6 +128,11 @@ const FileList = Component.extend({
   itemList: [],
 
   selectedFiles: null,
+
+  @computed('isCertificateView')
+  showColumnChooser(isCertificateView) {
+    return !isCertificateView;
+  },
 
   @computed('columnConfig')
   updatedColumns(columns) {

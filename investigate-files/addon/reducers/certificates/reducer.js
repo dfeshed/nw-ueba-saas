@@ -3,6 +3,15 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import { handle } from 'redux-pack';
 
+const DefaultCertificateColumns = [
+  'radio',
+  'friendlyName',
+  'certificateStatus',
+  'issuer',
+  'thumbprint',
+  'notValidBeforeUtcDate',
+  'notValidAfterUtcDate'
+];
 const certificateState = Immutable.from({
   isCertificateView: false,
   certificatesList: [],
@@ -15,7 +24,8 @@ const certificateState = Immutable.from({
   certificatesLoadingStatus: 'wait',
   selectedCertificateList: [],
   certificateStatusData: {},
-  statusData: {}
+  statusData: {},
+  certificateVisibleColumns: DefaultCertificateColumns
 });
 
 
@@ -94,7 +104,19 @@ const certificatesReducer = handleActions({
     selectedCertificateList: [],
     certificateStatusData: {},
     statusData: {}
-  })
+  }),
+
+  [ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY]: (state, { payload }) => {
+    const visibleColumns = state.certificateVisibleColumns;
+    const { selected, field } = payload;
+    if (selected) {
+      const updatedVisibleColumns = visibleColumns.concat([field]);
+      return state.set('certificateVisibleColumns', updatedVisibleColumns);
+    } else {
+      const newColumns = visibleColumns.filter((column) => column !== field);
+      return state.setIn('certificateVisibleColumns', newColumns);
+    }
+  }
 
 }, certificateState);
 

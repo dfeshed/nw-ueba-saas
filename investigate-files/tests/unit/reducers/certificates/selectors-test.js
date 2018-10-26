@@ -7,7 +7,8 @@ import {
   certificatesCount,
   certificatesCountForDisplay,
   certificatesLoading,
-  isAllSelected
+  isAllSelected,
+  columns
 } from 'investigate-files/reducers/certificates/selectors';
 
 const STATE = Immutable.from({
@@ -90,5 +91,26 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     });
     const result = isAllSelected(stateNew);
     assert.equal(result, false, 'isAllCertificates selected false.');
+  });
+
+  test('columns', function(assert) {
+    let stateNew = Immutable.from({
+      certificate: {
+        list: {
+          certificateVisibleColumns: []
+        }
+      }
+    });
+    let result = columns(stateNew);
+    assert.equal(result.length, 11, 'no visible columns.');
+    stateNew = Immutable.from({
+      certificate: {
+        list: {
+          certificateVisibleColumns: ['friendlyName']
+        }
+      }
+    });
+    result = columns(stateNew);
+    assert.equal(result[1].visible, true, 'visible column updated.');
   });
 });

@@ -1,68 +1,67 @@
-{{#if isCertificateView}}
+<div class='certificate-view {{if isCertificateView 'is-show-certificate'}}'>
   {{certificates-container}}
-{{else}}
-  {{#rsa-page-layout showRightZone=false as |layout|}}
-    {{#layout.left as |leftPanel|}}
-      {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
-      {{endpoint/filters-wrapper
-        filterState=filter
-        savedFilter=savedFilter
-        savedFilters=filesFilters
-        selectedFilterId=selectedFilterId
-        filterType='FILE'
-        filterTypes=filterTypes
-        resetFilters=(action 'resetFilters')
-        applyFilters=(action 'applyFilters' (action 'getFirstPageOfFiles'))
-        applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfFiles'))
-        deleteFilter=(action 'deleteFilter')
-        createCustomSearch=(action 'createCustomSearch')}}
-    {{/layout.left}}
-    {{#layout.center}}
-      <section class="rsa-files-toolbar flexi-fit">
-        {{files-toolbar openFilterPanel=(action layout.open 'left')}}
-      </section>
-      {{#if isEndpointServerOnline}}
-        <box class="files-body">
-          {{#if (eq areFilesLoading 'wait')}}
-            <centered>
-              {{rsa-loader size='larger'}}
-            </centered>
-          {{else}}
-            {{#if isSchemaLoaded}}
-              {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
-            {{/if}}
+</div>
+{{#rsa-page-layout showRightZone=false as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
+    {{endpoint/filters-wrapper
+      filterState=filter
+      savedFilter=savedFilter
+      savedFilters=filesFilters
+      selectedFilterId=selectedFilterId
+      filterType='FILE'
+      filterTypes=filterTypes
+      resetFilters=(action 'resetFilters')
+      applyFilters=(action 'applyFilters' (action 'getFirstPageOfFiles'))
+      applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfFiles'))
+      deleteFilter=(action 'deleteFilter')
+      createCustomSearch=(action 'createCustomSearch')}}
+  {{/layout.left}}
+  {{#layout.center}}
+    <section class="rsa-files-toolbar flexi-fit">
+      {{files-toolbar openFilterPanel=(action layout.open 'left')}}
+    </section>
+    {{#if isEndpointServerOnline}}
+      <box class="files-body">
+        {{#if (eq areFilesLoading 'wait')}}
+          <centered>
+            {{rsa-loader size='larger'}}
+          </centered>
+        {{else}}
+          {{#if isSchemaLoaded}}
+            {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
           {{/if}}
-        </box>
-        <box class="files-footer">
-          {{file-pager}}
-        </box>
-      {{else}}
-        {{error-page
-          errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
-          title=(t 'investigateFiles.errorPage.serviceDown')}}
-      {{/if}}
-    {{/layout.center}}
-    {{#layout.right as |rightPanel|}}
-      {{#rightPanel.header  class="investigate-file-tab"}}
-        <h3 class='title' title={{selectedFile.firstFileName}}>
-          {{selectedFile.firstFileName}}
-        </h3>
-        {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-          <div class="label">{{t tab.label}}</div>
-        {{/title-bar}}
-        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
-          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-        {{/rsa-form-button}}
-      {{/rightPanel.header}}
-      {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
-        {{endpoint/risk-properties
-          defaultAction=(action 'getUpdatedRiskScoreContext')
-          riskState=risk}}
-      {{else if (eq activeDataSourceTab 'HOSTS')}}
-        {{file-found-on-hosts}}
-      {{else}}
-        {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
-      {{/if}}
-    {{/layout.right}}
-  {{/rsa-page-layout}}
-{{/if}}
+        {{/if}}
+      </box>
+      <box class="files-footer">
+        {{file-pager}}
+      </box>
+    {{else}}
+      {{error-page
+        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
+        title=(t 'investigateFiles.errorPage.serviceDown')}}
+    {{/if}}
+  {{/layout.center}}
+  {{#layout.right as |rightPanel|}}
+    {{#rightPanel.header  class="investigate-file-tab"}}
+      <h3 class='title' title={{selectedFile.firstFileName}}>
+        {{selectedFile.firstFileName}}
+      </h3>
+      {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+        <div class="label">{{t tab.label}}</div>
+      {{/title-bar}}
+      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+        {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+      {{/rsa-form-button}}
+    {{/rightPanel.header}}
+    {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
+      {{endpoint/risk-properties
+        defaultAction=(action 'getUpdatedRiskScoreContext')
+        riskState=risk}}
+    {{else if (eq activeDataSourceTab 'HOSTS')}}
+      {{file-found-on-hosts}}
+    {{else}}
+      {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
+    {{/if}}
+  {{/layout.right}}
+{{/rsa-page-layout}}

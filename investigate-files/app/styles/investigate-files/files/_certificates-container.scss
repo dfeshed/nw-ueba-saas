@@ -1,7 +1,8 @@
 $zoneBorderColor: border-color(primary, darker, nearly-transparent);
 .certificates-container {
-  @include rsa-vendor-prefix(transition-property, background-color, color);
-  @include rsa-vendor-prefix(transition-duration, 0.3s);
+  background-color: text-color(primary, darkest);
+  overflow: hidden;
+  flex-wrap: nowrap;
   position: absolute;
   top: 0px;
   bottom: 0;
@@ -28,9 +29,8 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
     }
     .certificate-label {
       padding: 6px 4px 1px 13px;
-      font-size: 21px;
-    }
-    
+      font-size: 1.28rem;
+    }   
   }
   .certificates-footer {
     max-height: 2rem;
@@ -60,14 +60,19 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
         font-size: 20px;
       }
       .rsa-data-table-body-row.is-selected {
+        background-color: text-color(primary, darker);
+        .rsa-data-table-body-cell {
+          background-color: text-color(primary, darker);
+        }
         .content-context-menu {
           background-color: background-color(secondary, dark);
         }
       }
     }
   }
+  @include rsa-vendor-prefix(transition-property, width);
+  @include rsa-vendor-prefix(transition-duration, 0.3s);
 }
-
 .license-banner.shown + .certificates-container {
   // When license banner is shown, the absolute top position has to be adjusted
   top: 86px;

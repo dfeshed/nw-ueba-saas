@@ -2,13 +2,13 @@
   columnsConfig=certificatesColumns
   items=certificatesItems
   onRowClick=(action 'toggleSelectedRow')}}
-  {{#rsa-data-table/header as |column|}}
+  {{#certificates-container/certificates-data-table/header  translateTitles=true enableColumnSelector=isCertificateView as |column|}}
     {{#if (not-eq column.dataType "radio")}}
       <span class='js-move-handle'>
         {{t column.title}}
       </span>
     {{/if}}
-  {{/rsa-data-table/header}}
+  {{/certificates-container/certificates-data-table/header}}
 
   {{#if areCertificatesLoading}}
     <centered>

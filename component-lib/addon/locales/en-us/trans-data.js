@@ -2065,6 +2065,11 @@ export default {
     deleteTitle: 'Confirm Delete',
     noManagePermissions: 'You do not have permissions to make edits to file(s) status',
     certificatePageTitle: 'Certificates',
+    certificate: {
+      editCertificateStatus: {
+        actionNote: 'Applies to all files signed by this certificate'
+      }
+    },
     button: {
       exportToCSV: 'Export to CSV',
       downloading: 'Downloading',
@@ -2072,7 +2077,7 @@ export default {
       reset: 'Reset',
       cancel: 'Cancel',
       viewCertificates: 'View Certificates',
-      backToFiles: 'Back to Files'
+      backToFiles: 'Files'
     },
     message: {
       noResultsMessage: 'No matching files were found',

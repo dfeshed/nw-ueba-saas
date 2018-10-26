@@ -70,6 +70,7 @@ const getSavedCertificateStatus = (selections) => ({
 
 const toggleCertificateSelection = (selectedCertificate) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE, payload: selectedCertificate });
 
+const updateCertificateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: column });
 
 export {
   toggleCertificateView,
@@ -78,5 +79,6 @@ export {
   getFirstPageOfCertificates,
   getSavedCertificateStatus,
   saveCertificateStatus,
-  toggleCertificateSelection
+  toggleCertificateSelection,
+  updateCertificateColumnVisibility
 };

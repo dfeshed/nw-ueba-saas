@@ -4,7 +4,7 @@
   agentCountMapping=agentCountMapping
   columnsConfig=updatedColumns
   onRowClick=(action 'toggleSelectedRow')}}
-  {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
+  {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=showColumnChooser as |column|}}
     {{#if (eq column.dataType "checkbox")}}
       <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
         {{rsa-form-checkbox

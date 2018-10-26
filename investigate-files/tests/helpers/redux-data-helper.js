@@ -170,4 +170,12 @@ export default class DataHelper {
     _set(this.state, 'certificate.list.certificateDataStatus', status);
     return this;
   }
+  isCertificateView(status) {
+    _set(this.state, 'certificate.list.isCertificateView', status);
+    return this;
+  }
+  certificateVisibleColumns(columns) {
+    _set(this.state, 'certificate.list.certificateVisibleColumns', columns);
+    return this;
+  }
 }

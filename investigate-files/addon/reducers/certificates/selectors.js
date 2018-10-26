@@ -8,24 +8,22 @@ const _certificatesLoadingStatus = (state) => state.certificate.list.certificate
 
 const _selectedCertificateList = (state) => state.certificate.list.selectedCertificateList || [];
 
-export const certificatesColumns = [
+export const CERTIFICATE_COLUMNS = [
   {
     field: 'radio',
     dataType: 'radio',
-    width: 50
+    width: 20,
+    class: 'rsa-form-row-radio',
+    componentClass: 'rsa-form-radio',
+    visible: true,
+    disableSort: true,
+    headerComponentClass: 'rsa-form-radio'
   },
   {
     field: 'friendlyName',
     title: 'configure.endpoint.certificates.columns.friendlyName',
     label: 'Friendly Name',
     width: 350,
-    disableSort: false
-  },
-  {
-    field: 'subject',
-    title: 'configure.endpoint.certificates.columns.subject',
-    label: 'Subject',
-    width: 300,
     disableSort: false
   },
   {
@@ -36,31 +34,10 @@ export const certificatesColumns = [
     disableSort: true
   },
   {
-    field: 'subjectKey',
-    title: 'configure.endpoint.certificates.columns.subjectKey',
-    label: 'Subject Key',
-    width: 280,
-    disableSort: false
-  },
-  {
-    field: 'serial',
-    title: 'configure.endpoint.certificates.columns.serial',
-    label: 'Serial',
-    width: 260,
-    disableSort: false
-  },
-  {
     field: 'issuer',
     title: 'configure.endpoint.certificates.columns.issuer',
     label: 'Issuer',
     width: 300,
-    disableSort: false
-  },
-  {
-    field: 'authorityKey',
-    title: 'configure.endpoint.certificates.columns.authorityKey',
-    label: 'Authority Key',
-    width: 260,
     disableSort: false
   },
   {
@@ -83,8 +60,58 @@ export const certificatesColumns = [
     label: 'notValidAfterUtcDate',
     width: 200,
     disableSort: false
+  },
+  {
+    field: 'subject',
+    title: 'configure.endpoint.certificates.columns.subject',
+    label: 'Subject',
+    width: 300,
+    disableSort: false
+  },
+  {
+    field: 'subjectKey',
+    title: 'configure.endpoint.certificates.columns.subjectKey',
+    label: 'Subject Key',
+    width: 280,
+    disableSort: false
+  },
+  {
+    field: 'serial',
+    title: 'configure.endpoint.certificates.columns.serial',
+    label: 'Serial',
+    width: 260,
+    disableSort: false
+  },
+  {
+    field: 'authorityKey',
+    title: 'configure.endpoint.certificates.columns.authorityKey',
+    label: 'Authority Key',
+    width: 260,
+    disableSort: false
   }
 ];
+const _visibleColumns = (state) => state.certificate.list.certificateVisibleColumns || [];
+
+export const columns = createSelector(
+  [_visibleColumns],
+  (_visibleColumns) => {
+    const updatedSchema = CERTIFICATE_COLUMNS.map((item) => {
+      const { dataType, field, searchable, values, width, disableSort, title } = item;
+
+      return {
+        visible: _visibleColumns.includes(field),
+        dataType,
+        field,
+        searchable,
+        values,
+        title,
+        width,
+        disableSort
+      };
+    });
+    return updatedSchema;
+  }
+);
 
 export const certificatesCount = createSelector(
   certificatesList,

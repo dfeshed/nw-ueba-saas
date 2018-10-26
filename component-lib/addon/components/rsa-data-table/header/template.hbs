@@ -16,7 +16,7 @@
       {{/if}}
       <ul>
         {{#each filterColumnChooser as |column|}}
-          {{#if (not-eq column.dataType "checkbox")}}
+          {{#if (and (not-eq column.dataType "checkbox") (not-eq column.dataType "radio"))}}
             <li>
               <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
                 {{rsa-form-checkbox

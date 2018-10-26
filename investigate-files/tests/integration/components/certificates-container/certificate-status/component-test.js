@@ -60,7 +60,7 @@ module('Integration | Component | certificates-container/certificate-status', fu
       .build();
     await render(hbs`{{certificates-container/certificate-status}}`);
     await click('.certificate-status-button button');
-    assert.equal(document.querySelectorAll('#modalDestination .certificate-status-radio').length, 3, 'Expecting to render 3 radio button');
+    assert.equal(document.querySelectorAll('#modalDestination .file-status-radio').length, 3, 'Expecting to render 3 radio button');
   });
 
   test('it should close the modal on clicking the cancel', async function(assert) {
@@ -81,7 +81,7 @@ module('Integration | Component | certificates-container/certificate-status', fu
       .build();
     await render(hbs`{{certificates-container/certificate-status}}`);
     await click('.certificate-status-button button');
-    await click(document.querySelectorAll('.certificate-status-radio')[0]);
+    await click(document.querySelectorAll('.file-status-radio')[0]);
     await fillIn('.comment-box textarea', 'test');
     assert.equal(document.querySelectorAll('#modalDestination .modal-content').length, 1, 'Expecting to render modal');
     await click('.save-certificate-status button');
