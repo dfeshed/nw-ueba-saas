@@ -1,0 +1,19 @@
+{{#if (eq downloadState.status 'Error')}}
+
+  {{#rsa-content-tethered-panel-trigger panel=panelId}}
+    {{rsa-icon name='delete-1' class="rsa-red-color"}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel style="error" position='top' panelId=panelId}}
+    <section>{{downloadState.error}}</section>
+  {{/rsa-content-tethered-panel}}
+
+{{else if (eq downloadState.status 'Downloaded')}}
+
+  {{rsa-icon name='check-2' class="rsa-green-color"}}
+
+{{else}}
+
+  <span class='not-downloaded'>--</span>
+
+{{/if}}

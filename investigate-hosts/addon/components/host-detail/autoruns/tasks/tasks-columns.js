@@ -17,6 +17,14 @@ const defaultColumns = [
     title: 'HASH'
   },
   {
+    field: 'fileProperties.downloadInfo',
+    title: 'downloaded',
+    label: 'investigateHosts.files.fields.downloaded',
+    disableSort: true,
+    format: 'DOWNLOADSTATUS',
+    width: 100
+  },
+  {
     field: 'fileProperties.fileStatus',
     title: 'File Status',
     width: '15%'

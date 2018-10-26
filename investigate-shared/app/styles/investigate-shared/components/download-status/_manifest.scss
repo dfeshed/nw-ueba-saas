@@ -1,0 +1,17 @@
+.download-status {
+  line-height: .85rem;
+  overflow: hidden;
+  > span {
+      width: 100%;
+      overflow: hidden;
+  }
+  i {
+    line-height: 1.1rem;
+    width: 1.1rem;
+    margin: 0px 36%;
+  }
+  .not-downloaded {
+    margin: 0 36%;
+    width: 1.1rem;
+  }
+}

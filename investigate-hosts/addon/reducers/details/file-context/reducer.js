@@ -39,13 +39,13 @@ const _handleAppendFiles = (action) => {
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
   const { id, fileName, fileProperties, machineOsType, path } = payload;
-  const { signature, size, checksumSha256, checksumSha1, checksumMd5 } = fileProperties;
+  const { signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
   let selectedList = [];
   // Previously selected driver
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path }];
+    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {}, isRemediationAllowed: true });
 

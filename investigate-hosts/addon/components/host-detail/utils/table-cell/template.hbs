@@ -8,6 +8,8 @@
   {{rsa-round-decimal value=(get item column.field)}}
 {{else if (eq column.format 'SIGNATURE')}}
   {{signature-text (get item column.field) (get item column.signer)}}
+{{else if (eq column.format 'DOWNLOADSTATUS')}}
+  {{endpoint/download-status downloadInfo=(get item column.field) checksum=item.fileProperties.checksumSha256}}
 {{else if (eq column.field 'status')}}
   {{itemStatus}}
 {{else if (eq column.field 'fileProperties.score')}}

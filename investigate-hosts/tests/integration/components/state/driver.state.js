@@ -131,7 +131,8 @@ export default {
         entropy: 6.396224503180511,
         format: 'pe',
         fileStatus: 'Neutral',
-        remediationAction: 'Unblock'
+        remediationAction: 'Unblock',
+        downloadInfo: { 'status': 'NotDownloaded' }
       },
       imageBase: 2193625088,
       imageSize: 4268032,
@@ -257,7 +258,8 @@ export default {
         entropy: 6.807332968445067,
         format: 'pe',
         fileStatus: 'Neutral',
-        remediationAction: 'Unblock'
+        remediationAction: 'Unblock',
+        downloadInfo: { 'status': 'Downloaded' }
       },
       imageBase: 2197893120,
       imageSize: 225280,
@@ -373,7 +375,8 @@ export default {
         entropy: 6.6499771139494355,
         format: 'pe',
         fileStatus: 'Neutral',
-        remediationAction: 'Unblock'
+        remediationAction: 'Unblock',
+        downloadInfo: { 'status': 'Error' }
       },
       imageBase: 2159677440,
       imageSize: 32768,
@@ -406,7 +409,8 @@ export default {
         signer: 'Microsoft Windows'
       },
       size: 274304,
-      machineOsType: 'windows'
+      machineOsType: 'windows',
+      downloadInfo: { 'status': 'Error' }
     },
     {
       id: 'drivers_73',
@@ -426,7 +430,8 @@ export default {
         signer: 'Microsoft Windows'
       },
       size: 338944,
-      machineOsType: 'windows'
+      machineOsType: 'windows',
+      downloadInfo: { 'status': 'Downloaded' }
     }
   ],
   sortConfig: null,

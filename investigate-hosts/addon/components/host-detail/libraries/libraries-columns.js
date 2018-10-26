@@ -40,6 +40,14 @@ const defaultColumns = [
     title: 'FILE PATH'
   },
   {
+    field: 'fileProperties.downloadInfo',
+    title: 'downloaded',
+    label: 'investigateHosts.files.fields.downloaded',
+    disableSort: true,
+    format: 'DOWNLOADSTATUS',
+    width: 100
+  },
+  {
     field: 'checksumSha256',
     title: 'HASH',
     width: '20%'

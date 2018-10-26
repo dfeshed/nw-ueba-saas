@@ -59,12 +59,13 @@ const ContextWrapper = Component.extend({
 
   @computed('fileContextSelections')
   fileDownloadButtonStatus(fileContextSelections) {
-    // if selectedFilesLength be 1 and file download status be true then isDownloadToServerDisabled should return true
+    // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
     const selectedFilesLength = fileContextSelections.length;
+    const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => item.downloadInfo.status !== 'Downloaded');
 
     return {
-      isDownloadToServerDisabled: (selectedFilesLength === 0), // and file's downloaded status is true
-      isSaveLocalAndFileAnalysisDisabled: (selectedFilesLength !== 1) // and once file's downloaded status is true else false
+      isDownloadToServerDisabled: ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer)), // and file's downloaded status is true
+      isSaveLocalAndFileAnalysisDisabled: ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer) // or file's downloaded status is true
     };
   },
 

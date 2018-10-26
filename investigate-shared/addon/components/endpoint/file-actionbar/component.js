@@ -78,6 +78,7 @@ export default Component.extend({
     if (fileDownloadButtonStatus && canManageFiles) {
       const { isDownloadToServerDisabled, isSaveLocalAndFileAnalysisDisabled } = fileDownloadButtonStatus;
       // Additional menu options enabled and disabled based on selected file's download status.
+
       fileActionConfClone = [
         ...fileActionConfClone,
         { panelId: 'panel3', name: 'downloadToServer', disabled: isDownloadToServerDisabled },

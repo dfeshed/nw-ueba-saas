@@ -29,6 +29,14 @@ export default {
     title: 'score'
   },
   {
+    field: 'fileProperties.downloadInfo',
+    title: 'downloaded',
+    label: 'investigateHosts.files.fields.downloaded',
+    disableSort: true,
+    format: 'DOWNLOADSTATUS',
+    width: 100
+  },
+  {
     field: 'fileProperties.reputationStatus',
     title: 'reputationStatus'
   },

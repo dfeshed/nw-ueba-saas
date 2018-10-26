@@ -103,6 +103,14 @@ const defaultColumns = [
     'width': 65
   },
   {
+    'field': 'fileProperties.downloadInfo',
+    'title': 'downloaded',
+    'label': 'investigateHosts.files.fields.downloaded',
+    'disableSort': true,
+    'format': 'DOWNLOADSTATUS',
+    'width': 100
+  },
+  {
     'field': 'path',
     'title': 'Path',
     'label': 'investigateHosts.files.fields.path',

@@ -2245,7 +2245,8 @@ export default {
       sectionNames: 'Section Names',
       importedLibraries: 'Imported Libraries',
       size: 'Size',
-      fileStatus: 'File Status'
+      fileStatus: 'File Status',
+      downloaded: 'Downloaded'
     },
     sort: {
       fileNameDescending: 'Filename (descending)',
