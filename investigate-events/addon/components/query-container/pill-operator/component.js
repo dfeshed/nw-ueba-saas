@@ -251,9 +251,7 @@ export default Component.extend({
     el.value = '';
     this._focusOnPowerSelectTrigger();
     // send value up to create a complex pill
-    if (value && value.length > 0) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'operator']);
-    }
+    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'operator']);
   },
 
   _focusOnPowerSelectTrigger() {
