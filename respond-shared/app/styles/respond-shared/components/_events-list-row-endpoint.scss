@@ -1,6 +1,7 @@
 .events-list-endpoint-footer {
   table {
     width: 100%;
+    table-layout: fixed;
     padding-left: 1.5em;
     padding-right: 1.5em;
     border-collapse: separate;
@@ -15,14 +16,15 @@
     width: 9rem;
   }
 
-  .launch-args {
-    word-break: break-word;
-    max-width: 100px;
-  }
-  .hash {
-    max-width: 100px;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  table td {
+    &.hash {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    &:not(.hash) {
+      word-break: break-word;
+      padding-right: 1.1%;
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 .events-list-generic-footer {
   table {
     width: 100%;
+    table-layout: fixed;
     padding-left: 1.5em;
     padding-right: 1.5em;
     border-collapse: separate;
@@ -13,6 +14,11 @@
 
   table tr:first-child th:nth-child(2) {
     width: 9rem;
+  }
+
+  table td {
+    word-break: break-word;
+    padding-right: 1.1%;
   }
 }
 

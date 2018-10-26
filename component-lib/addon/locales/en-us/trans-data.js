@@ -1133,6 +1133,7 @@ export default {
         Unknown: 'Unknown'
       },
       source: {
+        'Risk Scoring Server': 'Risk Scoring Server',
         'ESA Correlation': 'ESA Correlation',
         ECAT: 'Endpoint',
         'Event Stream Analysis': 'Event Stream Analysis',
