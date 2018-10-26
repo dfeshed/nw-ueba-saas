@@ -134,7 +134,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
       done();
     });
-    await click('.modal-footer-buttons .is-primary button');
+    await click('.modal-footer-buttons .is-danger button');
   });
 
   test('Delete shows an error flash message if the operation fails', async function(assert) {
@@ -155,7 +155,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
       done();
     });
-    await click('.modal-footer-buttons .is-primary button');
+    await click('.modal-footer-buttons .is-danger button');
   });
 
   test('Publish confirmation and flash message', async function(assert) {

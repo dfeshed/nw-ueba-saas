@@ -68,6 +68,32 @@
       END-SNIPPET --}}
       {{code-snippet name="button32.hbs"}}
     {{/spec-member}}
+    {{#spec-member title="Danger on Confirmation Button"}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          title='Confirm Delete'
+          confirmationMessage='Click Delete to delete really important stuff.'
+          confirmButtonLabel='Delete'
+          confirmButtonStyle='danger'
+          cancelButtonLabel='Cancel'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button33
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          title='Confirm Delete'
+          confirmationMessage='Click OK to delete selected row.'
+          confirmButtonLabel='Delete'
+          confirmButtonStyle='danger'
+          cancelButtonLabel='Cancel'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button33.hbs"}}
+    {{/spec-member}}
+
   {{/spec-category}}
 </fill>
 </hbox>

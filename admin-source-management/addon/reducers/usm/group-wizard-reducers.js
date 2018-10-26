@@ -99,33 +99,45 @@ export const initialState = {
   steps: [
     {
       id: 'identifyGroupStep',
-      showErrors: false,
       prevStepId: '',
       nextStepId: 'defineGroupStep',
       title: 'adminUsm.groupWizard.identifyGroup',
       stepComponent: 'usm-groups/group-wizard/identify-group-step',
       titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
-      toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
+      toolbarComponent: 'usm-groups/group-wizard/group-toolbar',
+      prevButtonDisabled: true,
+      nextButtonDisabled: false,
+      saveButtonDisabled: true,
+      publishButtonDisabled: true,
+      showErrors: false
     },
     {
       id: 'defineGroupStep',
-      showErrors: false,
       prevStepId: 'identifyGroupStep',
       nextStepId: 'applyPolicyStep',
       title: 'adminUsm.groupWizard.defineGroup',
       stepComponent: 'usm-groups/group-wizard/define-group-step',
       titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
-      toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
+      toolbarComponent: 'usm-groups/group-wizard/group-toolbar',
+      prevButtonDisabled: false,
+      nextButtonDisabled: false,
+      saveButtonDisabled: false,
+      publishButtonDisabled: false,
+      showErrors: false
     },
     {
       id: 'applyPolicyStep',
-      showErrors: false,
       prevStepId: 'defineGroupStep',
       nextStepId: '',
       title: 'adminUsm.groupWizard.applyPolicy.stepTitle',
       stepComponent: 'usm-groups/group-wizard/apply-policy-step',
       titlebarComponent: 'usm-groups/group-wizard/group-titlebar',
-      toolbarComponent: 'usm-groups/group-wizard/group-toolbar'
+      toolbarComponent: 'usm-groups/group-wizard/group-toolbar',
+      prevButtonDisabled: false,
+      nextButtonDisabled: true,
+      saveButtonDisabled: false,
+      publishButtonDisabled: false,
+      showErrors: false
     }
   ],
   rankingSteps: [

@@ -83,4 +83,21 @@ module('Integration | Component | RSA Button with Confirmation', function(hooks)
     assert.equal(find(selectors.cancelButton).textContent.trim(), 'Nah');
     assert.equal(find(selectors.confirmButton).textContent.trim(), 'Sounds good');
   });
+
+  test('it shows a custom style for confirm button if the style attribute is provided', async function(assert) {
+    await render(hbs`
+    {{#rsa-button-with-confirmation
+      cancelButtonLabel='Nah'
+      confirmButtonLabel='Danger is good'
+      confirmationMessage='Click Danger is good to confirm.'
+      confirmButtonStyle='danger'}}
+      Push Me{{/rsa-button-with-confirmation}}
+    <div id="modalDestination"></div>`);
+    assert.equal(findAll(selectors.confirmationContent).length, 0);
+    await click('button');
+    assert.equal(find(selectors.cancelButton).textContent.trim(), 'Nah');
+    assert.equal(find('#modalDestination footer .modal-footer-buttons .is-danger button').textContent.trim(), 'Danger is good');
+  });
+
+
 });

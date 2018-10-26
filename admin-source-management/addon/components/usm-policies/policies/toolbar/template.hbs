@@ -22,6 +22,7 @@
       title=(t 'adminUsm.policies.modals.deletePolicies.title')
       confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
       confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
+      confirmButtonStyle='danger'
       isDisabled=(not hasSelectedDeleteItems)
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handleDeletePolicies')}}

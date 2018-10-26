@@ -28,6 +28,7 @@
       title=(t 'adminUsm.groups.modals.deleteGroups.title')
       confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=selectedDeleteItems.length)
       confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
+      confirmButtonStyle='danger'
       isDisabled=(not hasSelectedDeleteItems)
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handleDeleteGroups')}}

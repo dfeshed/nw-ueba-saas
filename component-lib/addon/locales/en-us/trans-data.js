@@ -3662,14 +3662,14 @@ export default {
       modals: {
         deleteGroups: {
           title: 'Delete Group(s)',
-          confirm: 'Are you sure you want to delete the {{numItems}} selected Group(s)?    Note: This will result in the immediate publish of the deleted Group(s).',
+          confirm: 'You are about to permanently delete {{numItems}} selected group(s).  Deletion will take immediate effect. If any policies are linked to these groups these policies will no longer be applied.',
           ok: 'Delete Group(s)',
           success: 'Successfully deleted selected Group(s)',
           failure: 'There was an unexpected problem deleting the Group(s)'
         },
         publishGroups: {
           title: 'Publish Group(s)',
-          confirm: 'Are you sure you want to publish the {{numItems}} selected Unpublished Group(s)?',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Group(s)?',
           ok: 'Publish Group(s)',
           success: 'Successfully published selected Group(s)',
           failure: 'There was an unexpected problem publishing the Group(s)'
@@ -3698,14 +3698,14 @@ export default {
       modals: {
         deletePolicies: {
           title: 'Delete Policy(ies)',
-          confirm: 'Are you sure you want to delete the {{numItems}} selected Policy(ies)?    Note: This will result in the immediate publish of the deleted Policy(ies).',
+          confirm: 'You are about to permanently delete {{numItems}} selected Policy(ies).  Deletion will take immediate effect. If any groups are linked to these policies these groups will be affected.',
           ok: 'Delete Policy(ies)',
           success: 'Successfully deleted selected Policy(ies)',
           failure: 'There was an unexpected problem deleting selected Policy(ies)'
         },
         publishPolicies: {
           title: 'Publish Policy(ies)',
-          confirm: 'Are you sure you want to publish the {{numItems}} selected Unpublished Policy(ies)?',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policy(ies)?',
           ok: 'Publish Policy(ies)',
           success: 'Successfully published selected Policy(ies)',
           failure: 'There was an unexpected problem publishing the Policy(ies)'
@@ -3847,7 +3847,7 @@ export default {
       // common toolbar
       previous: 'Previous',
       next: 'Next',
-      publishGroup: 'Publish Group',
+      publishGroup: 'Publish Now',
       publishRanking: 'Publish Ranking',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
@@ -3857,7 +3857,7 @@ export default {
         nextFailure: 'Please fix all the validation errors before continuing to next step',
         isWizardValidFailure: 'Please fix all the validation errors before Saving or Publishing',
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
-        saveSuccess: 'The group has been saved successfully.',
+        saveSuccess: 'The group has been saved successfully in an unpublished state.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
         savePublishSuccess: 'The group has been saved and published successfully.'
       }
@@ -3910,7 +3910,7 @@ export default {
       cancel: 'Cancel',
       actionMessages: {
         saveFailure: 'A problem occurred while trying to save the policy: {{errorType}}',
-        saveSuccess: 'The policy has been saved successfully.',
+        saveSuccess: 'The policy has been saved successfully in an unpublished state.',
         savePublishFailure: 'A problem occurred while trying to save and publish the policy: {{errorType}}',
         savePublishSuccess: 'The policy has been saved and published successfully.'
       },

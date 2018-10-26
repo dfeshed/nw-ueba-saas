@@ -32,6 +32,8 @@ export default Component.extend({
 
   confirmButtonLabel: null,
 
+  confirmButtonStyle: 'primary',
+
   title: null,
 
   /**
