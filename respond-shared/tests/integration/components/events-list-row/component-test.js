@@ -162,7 +162,7 @@ module('Integration | Component | events-list-row', function(hooks) {
       action: 'createProcess',
       hostname: 'INENMENONS4L2C',
       userAccount: 'foobar',
-      operatingSystem: 'macOS',
+      operatingSystem: 'windows',
       fileHash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
     });
 
@@ -177,7 +177,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     endpoint.assertTableSource(assert, {
       fileName: 'dtf.exe',
       launch: 'dtf.exe  -dll:ioc.dll -testcase:353',
-      path: '/foo/bar',
+      path: 'C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\',
       hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6'
     });
 
@@ -188,8 +188,8 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     endpoint.assertTableTarget(assert, {
       fileName: 'cmd.EXE',
-      launch: 'PowerShell.exe --run',
-      path: '/bar/baz',
+      launch: 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
+      path: 'C:\\WINDOWS\\System32\\',
       hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
     });
 

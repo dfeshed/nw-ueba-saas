@@ -85,7 +85,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     const destRowElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 2,
-      label: 'Destination',
+      label: 'Target',
       value: ''
     });
 
@@ -303,7 +303,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     const destRowElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 2,
-      label: 'Destination',
+      label: 'Target',
       value: ''
     });
 
@@ -469,7 +469,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     generic.assertDetailRow(assert, {
       column: 1,
       row: 7,
-      label: 'Domain Dst',
+      label: 'Target Domain',
       value: 'nist.gov'
     });
 

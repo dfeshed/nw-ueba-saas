@@ -1033,12 +1033,12 @@ const storyLineEvents = {
               category: 'Process Event',
               data: [
                 {
-                  filename: '',
-                  hash: '',
+                  filename: 'test_filename',
+                  hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
                   size: 41
                 }
               ],
-              description: '',
+              description: 'test_event_description',
               destination: {
                 device: {
                   asset_type: '',
@@ -1059,6 +1059,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'cmd.EXE',
+                hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+                launch_argument: 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
+                path: 'C:\\WINDOWS\\System32\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1066,30 +1070,27 @@ const storyLineEvents = {
                   username: ''
                 }
               },
-              detected_by: '-nwendpoint',
+              detected_by: 'Windows Hosts-nwendpoint,10.6.66.141',
               detector: {
-                device_class: '',
-                ip_address: '',
+                device_class: 'Windows Hosts',
+                ip_address: '10.6.66.141',
                 product_name: 'nwendpoint'
               },
               device_type: 'nwendpoint',
               domain: 'INENMENONS4L2C',
-              domain_dst: '',
-              domain_src: '',
+              domain_dst: 'nist.gov',
+              domain_src: 'corp.rsa',
               enrichment: '',
               event_source: '10.63.0.117:56005',
               event_source_id: '857775',
-              file: '',
+              file: 'test_filename',
               file_SHA256: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
-              from: '',
-              host_dst: '',
-              host_src: '',
+              from: 'test_ad_computer_src:21',
+              host_dst: 'test_host_dst',
+              host_src: 'test_host_src',
               hostname: 'INENMENONS4L2C',
-              ip_dst: '',
-              ip_src: '',
-              launch_argument_dst: 'PowerShell.exe --run',
-              launch_argument_src: 'dtf.exe  -dll:ioc.dll -testcase:353',
-              operating_system: 'macOS',
+              operating_system: 'windows',
+              port_dst: '',
               related_links: [
                 {
                   type: 'investigate_original_event',
@@ -1121,6 +1122,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'dtf.exe',
+                hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
+                launch_argument: 'dtf.exe  -dll:ioc.dll -testcase:353',
+                path: 'C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1128,12 +1133,6 @@ const storyLineEvents = {
                   username: 'CORP\\menons4'
                 }
               },
-              source_filename: 'dtf.exe',
-              source_path: '/foo/bar',
-              source_hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-              target_filename: 'cmd.EXE',
-              target_path: '/bar/baz',
-              target_hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
               timestamp: 1528429212000,
               to: '',
               type: 'Log',
@@ -1181,6 +1180,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'cmd.EXE',
+                hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+                launch_argument: 'PowerShell.exe --run',
+                path: 'C:\\WINDOWS\\System\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1207,11 +1210,8 @@ const storyLineEvents = {
               host_dst: '',
               host_src: '',
               hostname: 'INENMENONS4L2C',
-              ip_dst: '',
-              ip_src: '',
-              launch_argument_dst: 'cmd.EXE /C COPY /Y C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\dtf.exe C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd64\\MSHTA.EXE',
-              launch_argument_src: 'dtf.exe  -dll:ioc.dll -testcase:353',
-              operating_system: '',
+              operating_system: 'windows',
+              port_dst: '',
               related_links: [
                 {
                   type: 'investigate_original_event',
@@ -1243,6 +1243,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'dtf.exe',
+                hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
+                launch_argument: 'dtf.exe  -dll:ioc.dll -testcase:353',
+                path: 'C:\\Users\\menons4\\Documents\\NWE\\Sunila\\amd32\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1250,12 +1254,6 @@ const storyLineEvents = {
                   username: 'CORP\\menons4'
                 }
               },
-              source_filename: 'dtf.exe',
-              source_hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-              source_path: '',
-              target_filename: 'cmd.EXE',
-              target_hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
-              target_path: '',
               timestamp: 1528429212000,
               to: '',
               type: 'Log',
@@ -1267,33 +1265,6 @@ const storyLineEvents = {
               indicatorId: '5b8554be0a32bd353ad3a167',
               eventIndex: 1,
               id: '5b8554be0a32bd353ad3a167:1'
-            },
-            {
-              agent_id: 'C593263F-E2AB-9168-EFA4-C683E066A035',
-              analysis_session: '',
-              category: 'Process Event',
-              data: [
-                {
-                  filename: '',
-                  hash: '',
-                  size: 41
-                }
-              ],
-              destination_parameter: 'MSHTA.EXE',
-              detector: {
-                device_class: '',
-                ip_address: '',
-                product_name: 'nwendpoint'
-              },
-              source_user_account: 'CORP\\menons4',
-              'targ…ain': 'INENMENONS4L2C',
-              to: '',
-              user: 'CORP\\menons4',
-              user_account: '',
-              username: '',
-              indicatorId: '5b8554be0a32bd353ad3a167',
-              eventIndex: 2,
-              id: '5b8554be0a32bd353ad3a167:2'
             },
             {
               action: 'createProcess',
@@ -1330,6 +1301,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'cmd.exe',
+                hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+                launch_argument: 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
+                path: 'C:\\WINDOWS\\System42\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1356,11 +1331,8 @@ const storyLineEvents = {
               host_dst: '',
               host_src: '',
               hostname: 'INENMENONS4L2C',
-              ip_dst: '',
-              ip_src: '',
-              launch_argument_dst: 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
-              launch_argument_src: 'dtf.exe  -dll:ioc.dll -testcase:353',
-              operating_system: '',
+              operating_system: 'linux',
+              port_dst: '',
               related_links: [
                 {
                   type: 'investigate_original_event',
@@ -1392,6 +1364,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'dtf.exe',
+                hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
+                launch_argument: 'dtf.exe  -dll:ioc.dll -testcase:353',
+                path: 'C:\\WINDOWS\\System23\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1399,12 +1375,6 @@ const storyLineEvents = {
                   username: 'CORP\\menons4'
                 }
               },
-              source_filename: 'dtf.exe',
-              source_hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-              source_path: '',
-              target_filename: 'cmd.exe',
-              target_hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
-              target_path: '',
               timestamp: 1528429212000,
               to: '',
               type: 'Log',
@@ -1414,8 +1384,8 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
-              eventIndex: 3,
-              id: '5b8554be0a32bd353ad3a167:3'
+              eventIndex: 2,
+              id: '5b8554be0a32bd353ad3a167:2'
             },
             {
               action: 'openProcess',
@@ -1452,6 +1422,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'cmd.exe',
+                hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
+                launch_argument: 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
+                path: 'C:\\WINDOWS\\System99\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1478,11 +1452,8 @@ const storyLineEvents = {
               host_dst: '',
               host_src: '',
               hostname: 'INENMENONS4L2C',
-              ip_dst: '',
-              ip_src: '',
-              launch_argument_dst: 'cmd.exe  /C sc stop dtfsvc && sc delete dtfsvc',
-              launch_argument_src: 'dtf.exe  -dll:ioc.dll -testcase:353',
-              operating_system: '',
+              operating_system: 'windows',
+              port_dst: '',
               related_links: [
                 {
                   type: 'investigate_original_event',
@@ -1514,6 +1485,10 @@ const storyLineEvents = {
                   netbios_name: '',
                   port: ''
                 },
+                filename: 'dtf.exe',
+                hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
+                launch_argument: 'dtf.exe  -dll:ioc.dll -testcase:353',
+                path: 'C:\\WINDOWS\\System21\\',
                 user: {
                   ad_domain: '',
                   ad_username: '',
@@ -1521,12 +1496,6 @@ const storyLineEvents = {
                   username: 'CORP\\menons4'
                 }
               },
-              source_filename: 'dtf.exe',
-              source_hash: '6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6',
-              source_path: '',
-              target_filename: 'cmd.exe',
-              target_hash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9',
-              target_path: '',
               timestamp: 1528429212000,
               to: '',
               type: 'Log',
@@ -1536,8 +1505,8 @@ const storyLineEvents = {
               user_src: 'CORP\\menons4',
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
-              eventIndex: 4,
-              id: '5b8554be0a32bd353ad3a167:4'
+              eventIndex: 3,
+              id: '5b8554be0a32bd353ad3a167:3'
             }
           ]
         },

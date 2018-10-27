@@ -1290,7 +1290,7 @@ export default {
         type: 'Type',
         description: 'Description',
         source: 'Source',
-        destination: 'Destination',
+        destination: 'Target',
         domain: 'Domain/Host',
         detector: 'Detector',
         device: 'Device',
@@ -1398,8 +1398,10 @@ export default {
         device_type: 'Device Type',
         category: 'Category',
         source_user_account: 'Source User Account',
-        launch_argument_src: 'Source Launch Argument',
-        launch_argument_dst: 'Target Launch Argument'
+        domain_src: 'Source Domain',
+        domain_dst: 'Target Domain',
+        host_src: 'Source Host',
+        host_dst: 'Target Host'
       },
       periodValue: {
         hours: 'hour(s)',
