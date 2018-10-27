@@ -10,6 +10,9 @@ import reducers from 'admin-source-management/reducers/usm/group-wizard-reducers
 const groupWizInitialState = new ReduxDataHelper().groupWiz().build().usm.groupWizard;
 
 const initialState = Immutable.from({
+  criteriaCache: [
+    ['osType', 'IN', ['abc']]
+  ],
   group: {
     name: 'test',
     groupCriteria: {
@@ -30,6 +33,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on ADD_OR_OPERATOR, set to OR', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['osType', 'IN', ['abc']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -91,6 +97,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on ADD_OR_OPERATOR, set to AND', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['osType', 'IN', ['abc']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -133,6 +142,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on ADD_CRITERIA, update attribute input to ipv4 in added criteria', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['osType', 'IN', ['abc']], ['osType', 'IN', []]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -158,6 +170,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on REMOVE_CRITERIA, remove first criteria', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['osType', 'IN', ['abc']], ['ipv4', 'BETWEEN', []]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -183,6 +198,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on REMOVE_CRITERIA, remove second criteria', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['osType', 'IN', ['abc']], ['ipv4', 'BETWEEN', []]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -288,6 +306,9 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to first input', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', []]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -297,23 +318,20 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         }
       }
     });
-    const expectedResult = {
-      ...initialState2.group,
-      groupCriteria: {
-        ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', ['123']]]
-      }
-    };
+    const expectedResult = [['ipv4', 'BETWEEN', ['123']]];
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
       payload: { criteriaPath: ',0', value: '123', fieldIndex: 10 }
     };
     const result = reducers(initialState2, action);
-    assert.deepEqual(result.group, expectedResult);
+    assert.deepEqual(result.criteriaCache, expectedResult);
   });
 
   test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to second input', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', ['123']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -323,23 +341,20 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         }
       }
     });
-    const expectedResult = {
-      ...initialState2.group,
-      groupCriteria: {
-        ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', ['123', 'def']]]
-      }
-    };
+    const expectedResult = [['ipv4', 'BETWEEN', ['123', 'def']]];
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
       payload: { criteriaPath: ',0', value: 'def', fieldIndex: 11 }
     };
     const result = reducers(initialState2, action);
-    assert.deepEqual(result.group, expectedResult);
+    assert.deepEqual(result.criteriaCache, expectedResult);
   });
 
   test('on UPDATE_GROUP_CRITERIA, ipv4 BETWEEN add to second input with empty first input', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', []]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -349,23 +364,20 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         }
       }
     });
-    const expectedResult = {
-      ...initialState2.group,
-      groupCriteria: {
-        ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', [undefined, 'def']]]
-      }
-    };
+    const expectedResult = [['ipv4', 'BETWEEN', [undefined, 'def']]];
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
       payload: { criteriaPath: ',0', value: 'def', fieldIndex: 11 }
     };
     const result = reducers(initialState2, action);
-    assert.deepEqual(result.group, expectedResult);
+    assert.deepEqual(result.criteriaCache, expectedResult);
   });
 
   test('on UPDATE_GROUP_CRITERIA, ipv4 edit first input', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', ['abc', 'def']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -375,23 +387,20 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         }
       }
     });
-    const expectedResult = {
-      ...initialState2.group,
-      groupCriteria: {
-        ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', ['123', 'def']]]
-      }
-    };
+    const expectedResult = [['ipv4', 'BETWEEN', ['123', 'def']]];
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
       payload: { criteriaPath: ',0', value: '123', fieldIndex: 10 }
     };
     const result = reducers(initialState2, action);
-    assert.deepEqual(result.group, expectedResult);
+    assert.deepEqual(result.criteriaCache, expectedResult);
   });
 
   test('on UPDATE_GROUP_CRITERIA, ipv4 edit second input', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', ['abc', 'def']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -401,24 +410,21 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         }
       }
     });
-    const expectedResult = {
-      ...initialState2.group,
-      groupCriteria: {
-        ...initialState2.group.groupCriteria,
-        criteria: [['ipv4', 'BETWEEN', ['abc', '123']]]
-      }
-    };
+    const expectedResult = [['ipv4', 'BETWEEN', ['abc', '123']]];
     const action = {
       type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
       payload: { criteriaPath: ',0', value: '123', fieldIndex: 11 }
     };
     const result = reducers(initialState2, action);
-    assert.deepEqual(result.group, expectedResult);
+    assert.deepEqual(result.criteriaCache, expectedResult);
   });
 
 
   test('on UPDATE_GROUP_CRITERIA, find if clear ipv4 input on operator change', function(assert) {
     const initialState2 = Immutable.from({
+      criteriaCache: [
+        ['ipv4', 'BETWEEN', ['abc', 'def']]
+      ],
       group: {
         name: 'test',
         groupCriteria: {
@@ -505,14 +511,18 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
   test('on FETCH_GROUP success, group & itemsStatus are properly set', function(assert) {
     const fetchGroupPayload = {
-      data: [
-        {
-          'id': 'group_001',
-          'name': 'Zebra 001',
-          'description': 'Zebra 001 of group group_001',
-          'dirty': false
+      data: {
+        'id': 'group_001',
+        'name': 'Zebra 001',
+        'description': 'Zebra 001 of group group_001',
+        'dirty': false,
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [
+            ['osType', 'IN', []]
+          ]
         }
-      ]
+      }
     };
 
     const expectedEndState = new ReduxDataHelper()

@@ -2,12 +2,13 @@
   {{rsa-form-textarea class='operator-input'
     value=localValue
     isInline=true
-    isError=validator.showError
+    isError=(or validator.showError lockError)
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
+    focusIn=(action 'handleFocusIn')
     focusOut=(action 'handleInputChange' value='target.value')
     spellcheck=false
   }}
-  {{#if validator.showError}}
+  {{#if (or validator.showError lockError)}}
     <span class="input-error">
       {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
     </span>

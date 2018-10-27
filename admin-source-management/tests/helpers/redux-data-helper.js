@@ -296,7 +296,12 @@ export default class DataHelper {
     }
     return this;
   }
+
   groupWizGroup(group) {
+    if (group.groupCriteria && group.groupCriteria.criteria) {
+      const criteria = group.groupCriteria.criteria.slice();
+      _set(this.state, 'usm.groupWizard.criteriaCache', criteria);
+    }
     _set(this.state, 'usm.groupWizard.group', group);
     return this;
   }

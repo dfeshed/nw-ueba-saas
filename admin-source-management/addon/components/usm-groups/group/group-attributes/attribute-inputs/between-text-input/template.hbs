@@ -2,8 +2,9 @@
   {{rsa-form-input class='operator-input firstValueInput'
     maxLength=1024
     value=firstValue
-    isError=firstValueValidator.showError
+    isError=(or firstValueValidator.showError firstlockError)
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
+    focusIn=(action 'firstValueFocusIn')
     focusOut=(action 'firstValueChange' value='target.value')
     spellcheck=false
   }}
@@ -11,14 +12,10 @@
   {{rsa-form-input class='operator-input secondValueInput'
     maxLength=1024
     value=secondValue
-    isError=secondValueValidator.showError
+    isError=(or secondValueValidator.showError secondlockError)
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
+    focusIn=(action 'secondValueFocusIn')
     focusOut=(action 'secondValueChange' value='target.value')
     spellcheck=false    
   }}
-  {{#if validator.showError}}
-    <span class="input-error">
-      {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
-    </span>
-  {{/if}}
 </div>

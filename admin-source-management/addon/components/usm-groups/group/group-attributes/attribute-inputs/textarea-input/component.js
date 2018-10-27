@@ -16,6 +16,8 @@ const dispatchToActions = {
 const TextAreaInput = Component.extend({
   tagName: 'span',
   classNames: ['textarea-input'],
+  visited: false,
+  lockError: false,
 
   @computed('value')
   localValue(value) {
@@ -24,13 +26,22 @@ const TextAreaInput = Component.extend({
     }
   },
 
-  @computed('value', 'validation', 'stepShowErrors')
-  validator(value, validation, stepShowErrors) {
-    return groupExpressionValidator(value, validation, true, stepShowErrors);
+  @computed('localValue', 'validation', 'visited', 'stepShowErrors')
+  validator(localValue, validation, visited, stepShowErrors) {
+    return groupExpressionValidator(localValue, validation, true, (visited || stepShowErrors));
   },
 
   actions: {
+    handleFocusIn() {
+      const validator = this.get('validator');
+      if (validator.showError) {
+        this.set('lockError', true);
+      }
+      this.set('visited', false);
+    },
     handleInputChange(value) {
+      this.set('visited', true);
+      this.set('lockError', false);
       this.send('updateGroupCriteria', this.get('criteriaPath'), [value.trim()], 2);
     }
   }

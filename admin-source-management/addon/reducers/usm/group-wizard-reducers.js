@@ -64,6 +64,9 @@ export const getValidatorForExpression = (expression) => {
 
 export const initialState = {
   // the group object to be created/updated/saved
+  criteriaCache: [
+    ['osType', 'IN', []]
+  ],
   group: {
     id: null,
     name: '',
@@ -192,7 +195,8 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           group: action.payload.data,
-          groupStatus: 'complete'
+          groupStatus: 'complete',
+          criteriaCache: action.payload.data.groupCriteria.criteria.slice()
         });
       }
     })
@@ -246,14 +250,26 @@ export default reduxActions.handleActions({
     return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
   },
 
+  [ACTION_TYPES.UPDATE_CRITERIA_FROM_CACHE]: (state) => {
+    const editedGroup = {
+      ...state.group,
+      groupCriteria: {
+        ...state.group.groupCriteria,
+        criteria: state.criteriaCache
+      }
+    };
+    return state.set('group', editedGroup);
+  },
+
   [ACTION_TYPES.UPDATE_GROUP_CRITERIA]: (state, action) => {
     const { criteriaPath, value, fieldIndex } = action.payload;
     const criteriaPathTrimed = Number(criteriaPath.substring(1));
     let editedCriteria = [];
-    if (fieldIndex < 3) { // attribute, operator or single input change
-      editedCriteria = state.group.groupCriteria.criteria[criteriaPathTrimed].map((field, index) => index === fieldIndex ? value : field);
+    if (fieldIndex < 3 || fieldIndex === 9) { // attribute, operator, single input change or OS multiple selector
+      const editFieldIndex = fieldIndex === 9 ? 2 : fieldIndex;
+      editedCriteria = state.criteriaCache[criteriaPathTrimed].map((field, index) => index === editFieldIndex ? value : field);
     } else { // two input change for between operator
-      const criteriaToEdit = state.group.groupCriteria.criteria[criteriaPathTrimed].slice();
+      const criteriaToEdit = state.criteriaCache[criteriaPathTrimed].slice();
       let editedInput = [];
       if (fieldIndex === 10) {
         // first input change for between operator
@@ -265,6 +281,7 @@ export default reduxActions.handleActions({
       editedCriteria = Object.assign([], criteriaToEdit, { 2: editedInput });
     }
     let newEditedCriteria = [];
+    let onlyCriteriaCache = false;
     if (fieldIndex === 0) {
       // attribute change, set operator to first valid operator and empty input fields
       const attrList = _GROUP_ATTRIBUTES_MAP.map.filter((list) => list[0] === value);
@@ -274,8 +291,12 @@ export default reduxActions.handleActions({
       newEditedCriteria = [editedCriteria[0], value, []];
     } else { // field input value change
       newEditedCriteria = editedCriteria.slice();
+      if (fieldIndex !== 9) {
+        // Text field input value change
+        onlyCriteriaCache = true;
+      }
     }
-    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const oldCriterias = state.criteriaCache.slice();
     const newCriterias = oldCriterias.map((criteria, index) => index === criteriaPathTrimed ? newEditedCriteria : criteria);
 
     // TODO support for nested group of criterias
@@ -286,11 +307,20 @@ export default reduxActions.handleActions({
         criteria: newCriterias
       }
     };
-    return state.set('group', editedGroup);
+    /* Don't opdate DOM for text input fields focus out actions
+    Update onlyCriteriaCache to avoid focus out actions side effects and improve performance */
+    if (onlyCriteriaCache) {
+      return state.set('criteriaCache', newCriterias);
+    } else {
+      return state.merge({
+        group: editedGroup,
+        criteriaCache: newCriterias
+      });
+    }
   },
 
   [ACTION_TYPES.ADD_CRITERIA]: (state) => {
-    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const oldCriterias = state.criteriaCache.slice();
     const newCriterias = oldCriterias.concat([['osType', 'IN', []]]);
     const editedGroup = {
       ...state.group,
@@ -299,13 +329,16 @@ export default reduxActions.handleActions({
         criteria: newCriterias
       }
     };
-    return state.set('group', editedGroup);
+    return state.merge({
+      group: editedGroup,
+      criteriaCache: newCriterias
+    });
   },
 
   [ACTION_TYPES.REMOVE_CRITERIA]: (state, action) => {
     const { criteriaPath } = action.payload;
     const criteriaPathTrimed = Number(criteriaPath.substring(1));
-    const oldCriterias = state.group.groupCriteria.criteria.slice();
+    const oldCriterias = state.criteriaCache.slice();
     const newCriterias = oldCriterias.filter((criteria, index) => index !== criteriaPathTrimed ? criteria : '');
     const editedGroup = {
       ...state.group,
@@ -314,7 +347,10 @@ export default reduxActions.handleActions({
         criteria: newCriterias
       }
     };
-    return state.set('group', editedGroup);
+    return state.merge({
+      group: editedGroup,
+      criteriaCache: newCriterias
+    });
   },
 
   [ACTION_TYPES.ADD_OR_OPERATOR]: (state, action) => {

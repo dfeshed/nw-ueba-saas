@@ -16,6 +16,10 @@ const dispatchToActions = {
 const BetweenTextInput = Component.extend({
   tagName: 'span',
   classNames: ['between-text-input'],
+  firstVisited: false,
+  firstlockError: false,
+  secondVisited: false,
+  secondlockError: false,
 
   @computed('value')
   firstValue(value) {
@@ -27,22 +31,42 @@ const BetweenTextInput = Component.extend({
     return value[1];
   },
 
-  @computed('value', 'validation', 'stepShowErrors')
-  firstValueValidator(value, validation, stepShowErrors) {
-    return groupExpressionValidator(value[0], validation, true, stepShowErrors);
+  @computed('firstValue', 'validation', 'firstVisited', 'stepShowErrors')
+  firstValueValidator(firstValue, validation, firstVisited, stepShowErrors) {
+    return groupExpressionValidator(firstValue, validation, true, (firstVisited || stepShowErrors));
   },
 
-  @computed('value', 'validation', 'stepShowErrors')
-  secondValueValidator(value, validation, stepShowErrors) {
-    return groupExpressionValidator(value[1], validation, true, stepShowErrors);
+  @computed('secondValue', 'validation', 'secondVisited', 'stepShowErrors')
+  secondValueValidator(secondValue, validation, secondVisited, stepShowErrors) {
+    return groupExpressionValidator(secondValue, validation, true, (secondVisited || stepShowErrors));
   },
 
   actions: {
+    firstValueFocusIn() {
+      const validator = this.get('firstValueValidator');
+      if (validator.showError) {
+        this.set('firstlockError', true);
+      }
+      this.set('firstVisited', false);
+    },
+
     firstValueChange(value) {
+      this.set('firstVisited', true);
+      this.set('firstlockError', false);
       this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 10);
     },
 
+    secondValueFocusIn() {
+      const validator = this.get('secondValueValidator');
+      if (validator.showError) {
+        this.set('secondlockError', true);
+      }
+      this.set('secondVisited', false);
+    },
+
     secondValueChange(value) {
+      this.set('secondVisited', true);
+      this.set('secondlockError', false);
       this.send('updateGroupCriteria', this.get('criteriaPath'), value.trim(), 11);
     }
   }

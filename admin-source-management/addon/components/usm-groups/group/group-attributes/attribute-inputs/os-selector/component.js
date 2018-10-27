@@ -33,7 +33,7 @@ const OsSelector = Component.extend({
 
   actions: {
     onChangeOSSelector(value) {
-      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 2);
+      this.send('updateGroupCriteria', this.get('criteriaPath'), value, 9);
     }
   }
 });

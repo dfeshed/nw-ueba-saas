@@ -17,6 +17,7 @@ export const visited = (state) => _groupWizardState(state).visited;
 export const steps = (state) => _groupWizardState(state).steps;
 export const rankingSteps = (state) => _groupWizardState(state).rankingSteps;
 export const groupCriteria = (state) => _groupWizardState(state).group.groupCriteria.criteria;
+export const groupCriteriaCache = (state) => _groupWizardState(state).criteriaCache;
 export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
 export const andOrOperator = (state) => _groupWizardState(state).group.groupCriteria.conjunction;
 
@@ -155,7 +156,7 @@ export const descriptionValidator = createSelector(
 );
 
 export const groupCriteriaValidator = createSelector(
-  groupCriteria,
+  groupCriteriaCache,
   (groupCriteria) => {
     let error = false;
     if (isEmpty(groupCriteria)) {

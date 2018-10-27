@@ -171,6 +171,12 @@ const savePublishGroup = (group, callbacks = callbacksDefault) => {
   };
 };
 
+const updateCriteriaFromCache = () => {
+  return {
+    type: ACTION_TYPES.UPDATE_CRITERIA_FROM_CACHE
+  };
+};
+
 export {
   initializeGroup,
   fetchGroupList,
@@ -185,5 +191,6 @@ export {
   removeCriteria,
   handleAndOrOperator,
   fetchGroupRanking,
-  handleSourceType
+  handleSourceType,
+  updateCriteriaFromCache
 };

@@ -18,7 +18,8 @@ import {
 import {
   editGroup,
   saveGroup,
-  savePublishGroup
+  savePublishGroup,
+  updateCriteriaFromCache
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -34,7 +35,8 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   editGroup,
   saveGroup,
-  savePublishGroup
+  savePublishGroup,
+  updateCriteriaFromCache
 };
 
 const GroupWizardToolbar = Component.extend(Notifications, {
@@ -105,10 +107,12 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   actions: {
 
     transitionToPrevStep() {
+      this.send('updateCriteriaFromCache');
       this.get('transitionToStep')(this.get('step').prevStepId);
     },
 
     transitionToNextStep() {
+      this.send('updateCriteriaFromCache');
       if (this.isStepValid) {
         this.get('transitionToStep')(this.get('step').nextStepId);
       } else {
@@ -146,6 +150,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
             }
           }
         };
+        this.send('updateCriteriaFromCache');
         this.send(dispatchAction, this.get('group'), saveCallbacks);
       } else {
         this.setShowErrors(true);
