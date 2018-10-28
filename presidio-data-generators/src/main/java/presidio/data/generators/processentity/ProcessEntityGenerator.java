@@ -2,12 +2,13 @@ package presidio.data.generators.processentity;
 
 import presidio.data.domain.FileEntity;
 import presidio.data.domain.ProcessEntity;
-import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.*;
 import presidio.data.generators.event.process.CertificateIssuerDefaultGenerator;
 import presidio.data.generators.event.process.ICertificateIssuerGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,10 +18,12 @@ import java.util.List;
 public class ProcessEntityGenerator implements IProcessEntityGenerator {
 
     IFileEntityGenerator processFileGenerator;
+    IStringListGenerator processCategoriesGenerator;
     ICertificateIssuerGenerator processCertificateIssuerGenerator;
 
     public ProcessEntityGenerator() throws GeneratorException {
         processFileGenerator = new ProcessFileEntityGenerator();
+        processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"SOME_USUAL_PROCESS"});
         processCertificateIssuerGenerator = new CertificateIssuerDefaultGenerator();
 
     }
@@ -28,9 +31,10 @@ public class ProcessEntityGenerator implements IProcessEntityGenerator {
     public ProcessEntity getNext(){
 
         FileEntity processFile = getProcessFileGenerator().getNext();
+        List<String> processCategories = getProcessCategoriesGenerator().getNext();
         String processCertificateIssuer = (String) getProcessCertificateIssuerGenerator().getNext();
 
-        return new ProcessEntity(processFile, processCertificateIssuer);
+        return new ProcessEntity(processFile, processCategories, processCertificateIssuer);
     }
 
     public IFileEntityGenerator getProcessFileGenerator() {
@@ -41,11 +45,20 @@ public class ProcessEntityGenerator implements IProcessEntityGenerator {
         this.processFileGenerator = processFileGenerator;
     }
 
+    public IStringListGenerator getProcessCategoriesGenerator() {
+        return processCategoriesGenerator;
+    }
+
+    public void setProcessCategoriesGenerator(IStringListGenerator processCategoriesGenerator) {
+        this.processCategoriesGenerator = processCategoriesGenerator;
+    }
+
+    public void setProcessCertificateIssuerGenerator(ICertificateIssuerGenerator processCertificateIssuerGenerator) {
+        this.processCertificateIssuerGenerator = processCertificateIssuerGenerator;
+    }
+
     public ICertificateIssuerGenerator getProcessCertificateIssuerGenerator() {
         return processCertificateIssuerGenerator;
     }
 
-    public void setProcessCertificateIssuerGenerator(CertificateIssuerDefaultGenerator processCertificateIssuerGenerator) {
-        this.processCertificateIssuerGenerator = processCertificateIssuerGenerator;
-    }
 }
