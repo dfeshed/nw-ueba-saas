@@ -765,6 +765,41 @@ indicators:
     type: hourly_aggregations
   classification: abnormal_print_activity
 
+
+#*********************************************************
+#*                   PROCESS INDICATORS                  *
+#*********************************************************
+- id: numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_reconnaissance_tools_executed
+  schema: PROCESS
+  adeEventType: process
+  anomalyDescriptior:
+    anomalyField: dstProcessCategories
+    anomalyValue: RECONNAISSANCE_TOOL
+    anomalyFilters:
+      fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  historicalData:
+    type: hourly_aggregations
+  classification: reconnaissance_activities
+
+- id: numberOfReconnaissanceToolExecutedUserIdProcessHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_reconnaissance_tool_activities_executed
+  schema: PROCESS
+  adeEventType: process
+  anomalyDescriptior:
+    anomalyField: dstProcessCategories
+    anomalyValue: RECONNAISSANCE_TOOL
+    anomalyFilters:
+      fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  historicalData:
+    type: hourly_aggregations
+  classification: reconnaissance_activities
+
+
 classificationPriority:
 
 - classificationName: mass_changes_to_critical_enterprise_groups
@@ -836,3 +871,5 @@ classificationPriority:
 - classificationName: suspicious_user_activity
   priority: 23
 
+- classificationName: reconnaissance_activities
+  priority: 24
