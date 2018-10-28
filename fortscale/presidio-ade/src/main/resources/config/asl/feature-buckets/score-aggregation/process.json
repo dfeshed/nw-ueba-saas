@@ -25,7 +25,7 @@
       ]
     },
     {
-      "name": "dstProcessFileNameToHighestScoreMapUserIdProcessHourly",
+      "name": "dstProcessFileNameMachineIdToHighestScoreMapUserIdProcessHourly",
       "contextFieldNames": [
         "userId"
       ],
@@ -35,7 +35,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "dstProcessFileNameToHighestScoreMap",
+          "name": "dstProcessFileNameMachineIdToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
               "context.dstProcessFileName",

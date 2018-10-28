@@ -765,6 +765,22 @@ indicators:
     type: hourly_aggregations
   classification: abnormal_print_activity
 
+- id: sumOfHighestDstProcessFileNameScoresUserIdProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_reconnaissance_tool_executed
+  adeEventType: scored_enriched.process.dstProcessFileName.userId.process.score
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFileName
+    anomalyFilters:
+      fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
+    featureName: dstProcessFileNameHistogram
+  classification: reconnaissance_activities
+
 classificationPriority:
 
 - classificationName: mass_changes_to_critical_enterprise_groups
@@ -835,4 +851,7 @@ classificationPriority:
 
 - classificationName: suspicious_user_activity
   priority: 23
+
+- classificationName: reconnaissance_activities
+  priority: 24
 

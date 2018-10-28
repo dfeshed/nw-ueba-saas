@@ -18,12 +18,12 @@
     {
       "name": "sumOfHighestDstProcessFileNameScoresUserIdProcessHourly",
       "type": "P",
-      "bucketConfName": "dstProcessFileNameToHighestScoreMapUserIdProcessHourly",
+      "bucketConfName": "dstProcessFileNameMachineIdToHighestScoreMapUserIdProcessHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "dstProcessFileNameToHighestScoreMap"
+          "dstProcessFileNameMachineIdToHighestScoreMap"
         ]
       },
       "aggregatedFeatureEventFunction": {
