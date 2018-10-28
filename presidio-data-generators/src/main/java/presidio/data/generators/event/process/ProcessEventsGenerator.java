@@ -18,6 +18,7 @@ import presidio.data.generators.event.file.IFileDescriptionGenerator;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
+import presidio.data.generators.machine.EndPointMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.processop.IProcessOperationGenerator;
@@ -49,9 +50,9 @@ public class ProcessEventsGenerator extends AbstractEventGenerator {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
-        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Process"});
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Netwitness Endpoint"});
         processOperationGenerator = new ProcessOperationGenerator();
-        machineEntityGenerator = new QuestADMachineGenerator();
+        machineEntityGenerator = new EndPointMachineGenerator();
         processDescriptionGenerator = new ProcessDescriptionGenerator();
     }
 

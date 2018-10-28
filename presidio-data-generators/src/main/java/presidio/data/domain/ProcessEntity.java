@@ -11,26 +11,12 @@ public class ProcessEntity {
     List<String> processCategories;
     String processCertificateIssuer;
 
-    private static final Map<String, List<String>> PROCESS_CATEGORIES_MAP = createCategoriesMap();
-    private static Map<String, List<String>> createCategoriesMap()
-    {
-        Map<String,List<String>> categoriesMap = new HashMap<String,List<String>>();
-        categoriesMap.put("word.exe", Arrays.asList("OFFICE", "WORD_PROCESSOR"));
-        categoriesMap.put("excel.exe", Arrays.asList("OFFICE", "SPREADSHEET"));
-        return categoriesMap;
-    }
-
-    public ProcessEntity(FileEntity processFile, String processCertificateIssuer) {
+    public ProcessEntity(FileEntity processFile, List<String> processCategories, String processCertificateIssuer) {
         this.processFileName = processFile.getFileName();
         this.processDirectory = processFile.getFilePath();
         this.processDirectoryGroups = assignDirectoryGroups(this.processDirectory);
-        this.processCategories = assignProcessCategories(this.processFileName);
+        this.processCategories = processCategories;
         this.processCertificateIssuer = processCertificateIssuer;
-    }
-
-    private List<String> assignProcessCategories(String processFileName) {
-
-        return PROCESS_CATEGORIES_MAP.get(processFileName);
     }
 
     private List<String> assignDirectoryGroups(String directory) {
@@ -90,6 +76,7 @@ public class ProcessEntity {
                 "processDirectory='" + processDirectory + '\'' +
                 ", processFileName='" + processFileName + '\'' +
                 ", processDirectoryGroup='" + processDirectoryGroups + '\'' +
+                ", processCategories='" + processCategories + '\'' +
                 ", processCertificateIssuer='" + processCertificateIssuer + '\'' +
                 '}';
     }
