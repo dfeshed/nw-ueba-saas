@@ -61,5 +61,7 @@ $filter-panel-width: 250px;
       display: none;
     }
   }
-
+  .host-disable-text {
+    color: text-color(primary, light);
+  }
 }

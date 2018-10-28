@@ -44,3 +44,18 @@ test('it should render agent status component', function(assert) {
   this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
   assert.equal(this.$('.rsa-agent-scan-status').length, 1, 'Expected to render agent scan status component');
 });
+
+test('it should render disable text css when host is migrated', function(assert) {
+  this.set('column', { field: 'agentStatus.scanStatus' });
+  this.set('item', { agentStatus: { scanStatus: 'Idle' }, id: 1, machine: { agentVersion: '11.1.0.0' }, groupPolicy: { managed: false } });
+  this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+  assert.equal(this.$('.host-disable-text').length, 1, 'Expected to render host-disable-text');
+});
+
+test('it should render disable text css when host is managed', function(assert) {
+  this.set('column', { field: 'agentStatus.scanStatus' });
+  this.set('item', { agentStatus: { scanStatus: 'Idle' }, id: 1, machine: { agentVersion: '11.1.0.0' }, groupPolicy: { managed: true } });
+  this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
+  assert.equal(this.$('.host-disable-text').length, 0);
+});
+

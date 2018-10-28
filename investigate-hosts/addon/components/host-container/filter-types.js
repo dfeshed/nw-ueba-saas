@@ -32,7 +32,16 @@ const FILTER_TYPES = [
       }
     }
   },
-
+  {
+    'name': 'groupPolicy.managed',
+    'label': 'investigateHosts.hosts.column.hostReportingStatus',
+    multiSelect: false,
+    'listOptions': [
+      { name: true, label: 'investigateHosts.hosts.filters.hostReportingStatus.currentServer' },
+      { name: false, label: 'investigateHosts.hosts.filters.hostReportingStatus.migrated' }
+    ],
+    type: 'dropdown'
+  },
   {
     'name': 'machine.machineOsType',
     'label': 'investigateHosts.hosts.column.machine.machineOsType',

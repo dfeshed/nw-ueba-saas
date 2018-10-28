@@ -19,21 +19,23 @@
     </div>
   </hbox>
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}
-  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}" class="{{unless item.groupPolicy.managed "host-disable-text"}}">
     {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
   </div>
 {{else if (eq column.field 'agentStatus.scanStatus')}}
-  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}}>
+  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}} class="{{unless item.groupPolicy.managed "host-disable-text"}}">
     {{host-scan-status  agent=item onButtonClick=onButtonClick}}
   </div>
 {{else if (eq column.field 'machine.scanStartTime')}}
-  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}}>
+  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}} class="{{unless item.groupPolicy.managed "host-disable-text"}}">
     {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
   </div>
 {{else if (eq column.field 'machineIdentity.hardware.totalPhysicalMemory')}}
-  {{rsa-content-memsize size=(get item column.field)}}
+  <div class="{{unless isManaged "host-disable-text"}}">
+    {{rsa-content-memsize size=(get item column.field)}}
+  </div>
 {{else}}
-  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}" class="{{unless item.groupPolicy.managed "host-disable-text"}}">
     {{get-field item column timezone dateFormat timeFormat i18n.locale}}
   </div>
 {{/if}}

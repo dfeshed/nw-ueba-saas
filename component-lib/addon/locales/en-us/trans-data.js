@@ -2587,7 +2587,9 @@ export default {
       hooks: 'Image Hooks',
       threads: 'Suspicious Threads',
       kernelHooks: 'Kernel Hooks',
-      registryDiscrepancies: 'Registry Discrepancies'
+      registryDiscrepancies: 'Registry Discrepancies',
+      hostDetails: 'Host Details',
+      policies: 'Policies'
     },
     context: {
       score: 'Score',
@@ -2774,6 +2776,10 @@ export default {
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         },
+        hostReportingStatus: {
+          currentServer: 'Current Server',
+          migrated: 'Migrated'
+        },
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',
@@ -2837,6 +2843,7 @@ export default {
         panelTitle: 'Hosts Preferences',
         triggerTip: 'Open/Hide Hosts Preferences',
         id: 'Agent ID',
+        hostReportingStatus: 'Host Reporting Status',
         analysisData: {
           iocs: 'IOC Alerts',
           machineRiskScore: 'Risk Score'
@@ -2848,7 +2855,9 @@ export default {
         groupPolicy: {
           groups: {
             name: 'Agent Groups'
-          }
+          },
+          policyStatus: 'Policy Status',
+          serverName: 'Server'
         },
         machine: {
           machineOsType: 'Operating System',
@@ -3880,6 +3889,8 @@ export default {
       }
     },
     policyWizard: {
+      // it is used in investigate hosts to display policy stettings
+      policyStatus: 'Policy Status',
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
       sourceType: 'Source Type',
