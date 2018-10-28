@@ -22,6 +22,58 @@
           }
         }
       ]
+    },
+    {
+      "name": "dstProcessFileNameHistogramUserIdProcessDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstProcessFileNameHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessFileName"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramDstProcessFileNameProcessDaily",
+      "contextFieldNames": [
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
     }
   ]
 }
