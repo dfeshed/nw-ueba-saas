@@ -1,3 +1,70 @@
 {
-  "ModelConfs": [  ]
+  "ModelConfs": [
+    {
+      "name": "numberOfDistinctReconnaissanceTool.userId.process.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolUserIdProcessHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolUserIdProcessHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctReconnaissanceTool.userId.prior.process.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctReconnaissanceTool.userId.process.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfReconnaissanceTool.userId.process.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolUserIdProcessHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolUserIdProcessHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfReconnaissanceTool.userId.prior.process.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfReconnaissanceTool.userId.process.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    }
+
+
+  ]
 }
