@@ -673,7 +673,7 @@ export default {
           confirm: 'Are you sure you want to delete Parser \'{{parserName}}\'?',
           ok: 'Delete Parser',
           success: 'Successfully deleted parser \'{{parserName}}\' from all Log Decoders',
-          failure: 'Failed to delete log parser \'{{parserName}}\' from all Log Decoders, Please see logs for details',
+          failure: 'Failed to delete log parser \'{{parserName}}\' from all Log Decoders. Some may not be currently accessible. Please see the logs for details.',
           outOfBox: 'This parser is out of the Box and cannot be deleted'
         },
         deployLogParser: {
@@ -3688,7 +3688,7 @@ export default {
         description: 'Group Description',
         numSources: 'No. Sources',
         lastUpdated: 'Last Updated',
-        noResultsMessage: 'No matching Groups were found'
+        noResultsMessage: 'No Groups found.'
       },
       filter: {
         sourceType: 'Source Type',
@@ -3723,7 +3723,7 @@ export default {
         groups: 'Applied to Groups',
         description: 'Policy Description',
         numSources: 'No. Sources',
-        noResultsMessage: 'No matching Policies were found'
+        noResultsMessage: 'No Policies found.'
       },
       filter: {
         sourceType: 'Source Type',
