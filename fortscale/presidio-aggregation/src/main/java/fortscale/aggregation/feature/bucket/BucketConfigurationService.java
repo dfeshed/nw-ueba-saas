@@ -6,8 +6,9 @@ import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -84,22 +85,20 @@ public class BucketConfigurationService extends AslConfigurationService {
 	}
 
 	/**
-	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames
+	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames excluded by
+	 * contextFieldNamesToExclude
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(
-			AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
-
-		if (adeRecordReader == null) return null;
-		String adeEventType = adeRecordReader.getAdeEventType();
+			String adeEventType, String strategyName, String contextFieldName, List<String> contextFieldNamesToExclude) {
 		if (StringUtils.isEmpty(adeEventType)) return null;
 
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldNames, adeEventType);
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType, contextFieldNamesToExclude);
 
 		return featureBucketConfs;
 	}
 
-	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, List<String> contextFieldNames, String adeEventType) {
-		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldNames,adeEventType);
+	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType, List<String> contextFieldNamesToExclude) {
+		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldName,adeEventType);
 		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.get(featureBucketConfCacheKey);
 		if(cachedFeatureBucketConfs  == null)
 		{
@@ -109,7 +108,8 @@ public class BucketConfigurationService extends AslConfigurationService {
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
 							featureBucketConf.getStrategyName().equals(strategyName) &&
-									featureBucketConf.getContextFieldNames().equals(contextFieldNames))
+									Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) &&
+									featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
 			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
 		}
@@ -157,12 +157,12 @@ public class BucketConfigurationService extends AslConfigurationService {
 	class FeatureBucketConfCacheKey
 	{
 		private String strategyName;
-		private String contextFieldNames;
+		private String contextFieldName;
 		private String adeEventType;
 
-		public FeatureBucketConfCacheKey(String strategyName, List<String> contextFieldNames, String adeEventType) {
+		public FeatureBucketConfCacheKey(String strategyName, String contextFieldName, String adeEventType) {
 			this.strategyName = strategyName;
-			this.contextFieldNames = StringUtils.join(contextFieldNames);
+			this.contextFieldName = contextFieldName;
 			this.adeEventType = adeEventType;
 		}
 
@@ -173,17 +173,12 @@ public class BucketConfigurationService extends AslConfigurationService {
 
 			FeatureBucketConfCacheKey that = (FeatureBucketConfCacheKey) o;
 
-			if (!strategyName.equals(that.strategyName)) return false;
-			if (!contextFieldNames.equals(that.contextFieldNames)) return false;
-			return adeEventType.equals(that.adeEventType);
+			return new EqualsBuilder().append(that.strategyName, strategyName).append(that.contextFieldName, contextFieldName).append(that.adeEventType, adeEventType).isEquals();
 		}
 
 		@Override
 		public int hashCode() {
-			int result = strategyName.hashCode();
-			result = 31 * result + contextFieldNames.hashCode();
-			result = 31 * result + adeEventType.hashCode();
-			return result;
+			return new HashCodeBuilder().append(strategyName).append(contextFieldName).append(adeEventType).hashCode();
 		}
 	}
 }

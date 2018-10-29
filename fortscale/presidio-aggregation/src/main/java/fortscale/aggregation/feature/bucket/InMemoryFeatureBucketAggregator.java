@@ -6,6 +6,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecord;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,18 +25,33 @@ public class InMemoryFeatureBucketAggregator {
         this.featureBucketAggregatorMetricsContainer = featureBucketAggregatorMetricsContainer;
     }
 
-
-    public List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, List<String> contextFieldNames, FeatureBucketStrategyData strategyData){
+    private List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData){
         FeatureBucketsAggregatorInMemory featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
 
-        FeatureBucketAggregator featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,bucketConfigurationService,recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
+        FeatureBucketAggregator featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
         while(pageIterator.hasNext()){
             List<? extends AdeRecord> adeRecordList = pageIterator.next();
-            featureBucketAggregator.aggregate(adeRecordList, contextFieldNames, strategyData);
+            featureBucketAggregator.aggregate(adeRecordList, featureBucketConfs, strategyData);
         }
 
         return featureBucketsInMemory.getAllFeatureBuckets();
     }
 
+    public List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, String adeEventType, String contextFieldName,
+                                         List<String> contextFieldNamesToExclude, FeatureBucketStrategyData strategyData){
+        List<FeatureBucketConf> featureBucketConfs =
+                bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName, contextFieldNamesToExclude);
 
+        return aggregate(pageIterator, featureBucketConfs, strategyData);
+    }
+
+    public List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, String featureBucketConfName, FeatureBucketStrategyData strategyData){
+        FeatureBucketConf featureBucketConf =                 bucketConfigurationService.getBucketConf(featureBucketConfName);
+
+        if(featureBucketConf != null) {
+            return aggregate(pageIterator, Collections.singletonList(featureBucketConf), strategyData);
+        } else{
+            return Collections.emptyList();
+        }
+    }
 }

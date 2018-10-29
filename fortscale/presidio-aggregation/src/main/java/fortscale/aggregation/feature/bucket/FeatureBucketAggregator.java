@@ -19,15 +19,13 @@ import java.util.Map;
 public class FeatureBucketAggregator {
     private static final Logger logger = Logger.getLogger(FeatureBucketAggregator.class);
 
-    private BucketConfigurationService bucketConfigurationService;
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
     private FeatureBucketAggregatorMetricsContainer metricsContainer;
 
-    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
+    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
         this.featureBucketsAggregatorStore = featureBucketsAggregatorStore;
-        this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
         this.metricsContainer = featureBucketAggregatorMetricsContainer;
@@ -36,27 +34,26 @@ public class FeatureBucketAggregator {
     /**
      * Update feature buckets with adeRecords
      *
-     * @param adeRecords        list of adeRecords
-     * @param contextFieldNames names of context field(e.g: normalized_user_name)
-     * @param strategyData      strategy data of ade records
+     * @param adeRecords            list of adeRecords
+     * @param featureBucketConfs    The feature bucket configurations that need to be build / updated by the ade records
+     * @param strategyData          strategy data of ade records
      */
-    public void aggregate(List<? extends AdeRecord> adeRecords, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
+    public void aggregate(List<? extends AdeRecord> adeRecords, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
 
         for (AdeRecord adeRecord : adeRecords) {
-            aggregate(adeRecord,contextFieldNames,strategyData);
+            aggregate(adeRecord,featureBucketConfs,strategyData);
         }
     }
 
     /**
      * Update feature buckets with adeRecords
      *
-     * @param adeRecord        ADE Record
-     * @param contextFieldNames names of context field(e.g: normalized_user_name)
-     * @param strategyData      strategy data of ade records
+     * @param adeRecord             ADE Record
+     * @param featureBucketConfs    The feature bucket configurations that need to be build / updated by the ade record
+     * @param strategyData          strategy data of ade record
      */
-    public void aggregate(AdeRecord adeRecord, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
+    public void aggregate(AdeRecord adeRecord, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
         AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-        List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeRecordReader, strategyData.getStrategyName(), contextFieldNames);
 
         for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
             try {

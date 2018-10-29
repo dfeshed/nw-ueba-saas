@@ -2,10 +2,7 @@ package presidio.ade.processes.shell.accumulate;
 
 import fortscale.accumulator.aggregation.Accumulator;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketAggregator;
-import fortscale.aggregation.feature.bucket.FeatureBucketsAggregatorInMemory;
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -42,11 +39,11 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
 
     private void initFeatureBucketAggregator() {
         this.featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
-        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory, bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
+        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
-    public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, List<String> contextTypes, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
-
+    public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName,
+                                       List<String> contextFieldNamesToExclude, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
         while (pageIterator.hasNext()) {
             List<? extends AdeRecord> adeRecords = pageIterator.next();
             Map<Instant, List<AdeRecord>> startDateToRecords = getStartDateToRecordsOrderedMap(adeRecords, featureBucketStrategy);
@@ -54,8 +51,11 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
             Iterator<Map.Entry<Instant, List<AdeRecord>>> entries = startDateToRecords.entrySet().iterator();
             while (entries.hasNext()) {
                 Map.Entry<Instant, List<AdeRecord>> entry = entries.next();
-
-                featureBucketAggregator.aggregate(entry.getValue(), contextTypes, createFeatureBucketStrategyData(entry.getKey(), featureBucketStrategy));
+                FeatureBucketStrategyData strategyData = createFeatureBucketStrategyData(entry.getKey(), featureBucketStrategy);
+                List<FeatureBucketConf> featureBucketConfs =
+                        bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
+                                contextFieldName, contextFieldNamesToExclude);
+                featureBucketAggregator.aggregate(entry.getValue(), featureBucketConfs, strategyData);
 
                 // Should be closed if it is not last entry or if it is last page in iterator
                 if (entries.hasNext() || !pageIterator.hasNext()) {

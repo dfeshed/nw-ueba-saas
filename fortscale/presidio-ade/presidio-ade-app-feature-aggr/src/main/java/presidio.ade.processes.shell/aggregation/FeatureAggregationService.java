@@ -56,7 +56,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreMetadataProperties storeMetadataProperties) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
 
         //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
         //Reset cache required in order to get newer models each partition and not use older models.
@@ -64,13 +64,13 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         featureAggregationScoringService.resetModelCache();
 
         //For now we don't have multiple contexts so we pass just list of size 1.
-        List<String> contextTypes = Collections.singletonList(contextType);
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
-            List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
+            List<FeatureBucket> featureBuckets =
+                    featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, contextFieldNamesToExclude, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
             List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, storeMetadataProperties);
