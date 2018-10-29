@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -76,4 +76,25 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
   });
+
+  test('it shows the warning message when comment length is too long', async function(assert) {
+    let comment = '';
+    for (let index = 0; index < 901; index++) {
+      comment += `status - ${index}`;
+    }
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [{
+      fileName: 'test',
+      signature: {
+        signer: 'Microsoft Signed'
+      },
+      size: 100
+    }]);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    await fillIn('.rsa-form-textarea  textarea', comment);
+    await blur('.rsa-form-textarea  textarea');
+    assert.equal(findAll('.limit-reached').length, 1);
+  });
+
 });

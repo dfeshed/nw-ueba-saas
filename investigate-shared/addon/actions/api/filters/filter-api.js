@@ -21,7 +21,10 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
   return request.promiseRequest({
     method: 'saveFilter',
     modelName: 'filters',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 
@@ -30,7 +33,10 @@ const getSavedFilters = () => {
   return request.promiseRequest({
     method: 'getFilter',
     modelName: 'filters',
-    query: {}
+    query: {},
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 const deleteFilter = (id) => {
@@ -38,7 +44,10 @@ const deleteFilter = (id) => {
   return request.promiseRequest({
     method: 'deleteFilter',
     modelName: 'filters',
-    query: { data: { id } }
+    query: { data: { id } },
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 

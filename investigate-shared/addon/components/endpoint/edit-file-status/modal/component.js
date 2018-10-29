@@ -58,6 +58,11 @@ export default Component.extend({
     return isEmpty(comment) || isEmpty(fileStatus);
   },
 
+  @computed('formData.comment')
+  isCharacterLimitReached(comment) {
+    return comment && comment.length >= 900;
+  },
+
   @computed('itemList', 'restrictedFileList')
   showWhiteListWarning(itemList, restrictedFileList) {
     return hasRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);

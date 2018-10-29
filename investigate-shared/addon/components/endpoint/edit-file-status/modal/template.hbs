@@ -47,8 +47,13 @@
       {{rsa-form-textarea
         label=(t 'investigateFiles.editFileStatus.commentTitle')
         value=formData.comment
-        maxlength=1024
+        maxlength=900
       }}
+      {{#if isCharacterLimitReached}}
+        <span class='limit-reached'>
+          {{t 'investigateFiles.editFileStatus.commentLimitError'}}
+        </span>
+      {{/if}}
     </box>
   </div>
   <footer>

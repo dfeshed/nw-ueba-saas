@@ -2289,6 +2289,9 @@ export default {
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.',
         osNotToBlock: 'Files on Linux and Mac hosts cannot be blocked.'
       },
+
+      commentLimitError: 'Comment is limited to 900 characters',
+
       whiteListAlert: {
         message: 'Some file(s) you have selected will be ignored for whitelisting'
       },
