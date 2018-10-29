@@ -44,7 +44,8 @@ export default class DataHelper {
           }
         }
       },
-      endpointServer: this.state.endpointServer
+      endpointServer: this.state.endpointServer,
+      investigate: this.state.investigate
     });
     this.setState(state);
     return state.asMutable();
@@ -311,6 +312,16 @@ export default class DataHelper {
 
   isEndpointServerOffline(status) {
     _set(this.state, 'endpointServer.isSummaryRetrieveError', status);
+    return this;
+  }
+
+  serviceId(id) {
+    _set(this.state, 'investigate.serviceId', id);
+    return this;
+  }
+
+  timeRange(range) {
+    _set(this.state, 'investigate.timeRange', range);
     return this;
   }
 }

@@ -24,6 +24,10 @@ const stateToComputed = (state) => ({
 
 const PivotToPA = Component.extend({
 
+  tagName: 'span',
+
+  classNames: 'pivot-to-process-analysis',
+
   showServiceModal: false,
 
   timezone: service(),
@@ -94,11 +98,10 @@ const PivotToPA = Component.extend({
     toggleServiceSelection(item) {
       const serviceId = this.get('serviceId');
       this.set('item', item);
-      if (serviceId) {
+      if (serviceId && serviceId !== '-1') {
         this.send('navigateToProcessAnalysis', serviceId);
       } else {
         this.set('showServiceModal', true);
-
         this.send('getAllServices');
         next(() => {
           this.get('eventBus').trigger('rsa-application-modal-open-service-modal');

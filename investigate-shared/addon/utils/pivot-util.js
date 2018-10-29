@@ -63,7 +63,7 @@ const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList }, 
     rs: 'max' // Recon size
   };
   const query = serializeQueryParams(queryParams);
-  const path = `${window.location.origin}/investigate/events?${query}}`;
+  const path = `${window.location.origin}/investigate/events?${query}`;
   window.open(path);
 };
 
