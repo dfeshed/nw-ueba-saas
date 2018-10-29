@@ -40,7 +40,7 @@ public class AccumulatorService implements Accumulator {
             if (accumulatedRecord == null) {
                 Instant startInstant = TimeService.floorTime(adeAggregationRecordStartInstant, accumulationStrategy.toDuration());
                 Instant endInstant = getEndInstant(startInstant);
-                accumulatedRecord = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, context, featureName);
+                accumulatedRecord = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, adeAggregationRecord.getContext(), featureName);
             }
             int currentTimePartitionNumberInt = calcFeatureValueMapKey(accumulatedRecord, adeAggregationRecordStartInstant);
             accumulatedRecord.getAggregatedFeatureValues().put(currentTimePartitionNumberInt,adeAggregationRecord.getFeatureValue());

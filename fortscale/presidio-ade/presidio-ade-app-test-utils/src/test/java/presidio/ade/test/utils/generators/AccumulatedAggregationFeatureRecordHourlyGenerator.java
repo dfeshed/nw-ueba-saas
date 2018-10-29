@@ -14,6 +14,7 @@ import presidio.data.generators.event.IEventGenerator;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,20 +24,22 @@ import java.util.Map;
  */
 //public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEventGenerator<AccumulatedAggregationFeatureRecord> {
 public class AccumulatedAggregationFeatureRecordHourlyGenerator{
-        private IStringGenerator contextIdGenerator;
+    private IStringGenerator contextGenerator;
     private MinutesIncrementTimeGenerator startInstantGenerator;
     private IStringGenerator featureNameGenerator;
     private CyclicMapGenerator<Integer, Double> aggregatedFeatureValuesGenerator;
+    private String contextKey;
 
 
-    public AccumulatedAggregationFeatureRecordHourlyGenerator(String featureName, String contextIdPattern,
-                                                              Map<Integer, Double> aggregatedFeatureValuesMap,
+    public AccumulatedAggregationFeatureRecordHourlyGenerator(String featureName, String contextPattern,
+                                                              String contextKey, Map<Integer, Double> aggregatedFeatureValuesMap,
                                                               int startHourOfDay, int endHourOfDay) throws GeneratorException {
         this.featureNameGenerator = new CustomStringGenerator(featureName);
         this.startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, 30, 1);
-        this.contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
+        this.contextGenerator = new StringRegexCyclicValuesGenerator(contextPattern);
 
         this.aggregatedFeatureValuesGenerator = new CyclicMapGenerator<>(Lists.newArrayList(aggregatedFeatureValuesMap));
+        this.contextKey = contextKey;
 
     }
 
@@ -48,10 +51,11 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator{
         while (startInstantGenerator.hasNext()) {
             Instant startInstant = startInstantGenerator.getNext();
             Instant endInstant = startInstant.plus(FixedDurationStrategy.HOURLY.toDuration());
-            String contextId = contextIdGenerator.getNext();
+            Map<String,String> context = new HashMap<>();
+            context.put(contextKey, contextGenerator.getNext());
             String featureName = featureNameGenerator.getNext();
             Map<Integer, Double> aggregatedFeatureValues = aggregatedFeatureValuesGenerator.getNext();
-            AccumulatedAggregationFeatureRecord record = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, contextId, featureName);
+            AccumulatedAggregationFeatureRecord record = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, context, featureName);
             record.setAggregatedFeatureValues(aggregatedFeatureValues);
 
             evList.add(record);

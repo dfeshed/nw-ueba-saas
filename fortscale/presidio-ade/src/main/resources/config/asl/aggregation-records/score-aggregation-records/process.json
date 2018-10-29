@@ -12,7 +12,22 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func"
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstProcessFileNameScoresUserIdProcessHourly",
+      "type": "P",
+      "bucketConfName": "dstProcessFileNameMachineIdToHighestScoreMapUserIdProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstProcessFileNameMachineIdToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
       }
     }
   ]
