@@ -1,5 +1,5 @@
 import os
-
+import logging
 from airflow import configuration as conf
 
 # TODO: Logging format and level should be configured
@@ -16,6 +16,14 @@ PROCESSOR_LOG_FOLDER = conf.get('scheduler', 'child_process_log_directory')
 FILENAME_TEMPLATE = '{{ ti.dag_id }}/{{ ti.task_id }}/{{ ts }}/{{ try_number }}.log'
 PROCESSOR_FILENAME_TEMPLATE = '{{ filename }}.log'
 
+class DeprecationWarningFilter(logging.Filter):
+
+    def filter(self, record):
+
+        allow = 'DeprecationWarning' not in record.msg
+
+        return allow
+
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -31,19 +39,22 @@ LOGGING_CONFIG = {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'airflow.task',
-            'stream': 'ext://sys.stdout'
+            'stream': 'ext://sys.stdout',
+            'filters': ['noDepWarn']
         },
         'file.task': {
             'class': 'airflow.utils.log.file_task_handler.FileTaskHandler',
             'formatter': 'airflow.task',
             'base_log_folder': os.path.expanduser(BASE_LOG_FOLDER),
             'filename_template': FILENAME_TEMPLATE,
+            'filters': ['noDepWarn']
         },
         'file.processor': {
             'class': 'airflow.utils.log.file_processor_handler.FileProcessorHandler',
             'formatter': 'airflow.processor',
             'base_log_folder': os.path.expanduser(PROCESSOR_LOG_FOLDER),
             'filename_template': PROCESSOR_FILENAME_TEMPLATE,
+            'filters': ['noDepWarn']
         }
         # When using s3 or gcs, provide a customized LOGGING_CONFIG
         # in airflow_local_settings within your PYTHONPATH, see UPDATING.md
@@ -62,6 +73,15 @@ LOGGING_CONFIG = {
         #     'gcs_log_folder': GCS_LOG_FOLDER,
         #     'filename_template': FILENAME_TEMPLATE,
         # },
+    },
+    'filters': {
+
+        'noDepWarn': {
+
+            '()': DeprecationWarningFilter,
+
+        }
+
     },
     'loggers': {
         '': {
