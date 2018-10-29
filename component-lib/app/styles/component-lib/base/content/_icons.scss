@@ -967,6 +967,16 @@
     content: $rsa-icon-zoom-out-filled;
   }
 }
+.rsa-icon-badge-2-filled {
+  &:before {
+    content: $rsa-icon-badge-2-filled;
+  }
+}
+.rsa-icon-cursor-choose-filled {
+  &:before {
+    content: $rsa-icon-cursor-choose-filled;
+  }
+}
 .rsa-icon-account-circle-1-lined {
   &:before {
     content: $rsa-icon-account-circle-1-lined;
