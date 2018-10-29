@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import {
   riskScoreContext, riskScoreContextError, activeRiskSeverityTab,
-  alertsError, selectedAlert
+  alertsError, selectedAlert, riskType
 } from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -39,7 +39,8 @@ export default Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
-      risk: this.get('riskState')
+      risk: this.get('riskState'),
+      riskType: this.get('riskType')
     };
 
     this.setProperties({
@@ -47,7 +48,8 @@ export default Component.extend({
       riskScoreContext: riskScoreContext(state),
       riskScoreContextError: riskScoreContextError(state),
       alertsError: alertsError(state),
-      selectedAlert: selectedAlert(state)
+      selectedAlert: selectedAlert(state),
+      riskType: riskType(state)
     });
   },
 
@@ -58,13 +60,13 @@ export default Component.extend({
     // Count All alerts by adding alerts of critical, high and medium severities.
     alertCount.all = alertCount.critical + alertCount.high + alertCount.medium;
 
-    const checksum = riskScoreContext ? riskScoreContext.hash : null;
+    const id = riskScoreContext ? (riskScoreContext.hash || riskScoreContext.id) : null;
 
-    this.changeLandingSeverityTab(activeRiskSeverityTab, checksum, alertCount);
+    this.changeLandingSeverityTab(activeRiskSeverityTab, id, alertCount);
 
     return ALERT_TABS.map((tab) => ({
       ...tab,
-      checksum,
+      id,
       selected: tab.name === activeRiskSeverityTab,
       count: alertCount[tab.name]
     }));
@@ -79,6 +81,8 @@ export default Component.extend({
         alertName: key,
         alertCount: alertContext[key].alertCount,
         eventCount: alertContext[key].eventContexts.length,
+        filesCount: 0,
+        usersCount: 0,
         context: alertContext[key].eventContexts
       }));
     }
@@ -89,7 +93,7 @@ export default Component.extend({
    * Change Landing Severity tab if severity for currentActiveTab is 0.
    * @public
    */
-  changeLandingSeverityTab(activeRiskSeverityTab, checksum, alertCount) {
+  changeLandingSeverityTab(activeRiskSeverityTab, id, alertCount) {
 
     let nextLandingTab = activeRiskSeverityTab;
 
@@ -108,7 +112,7 @@ export default Component.extend({
     if (nextLandingTab !== activeRiskSeverityTab) {
       next(() => {
         if (this.get('defaultAction')) {
-          this.get('defaultAction')(checksum, nextLandingTab);
+          this.get('defaultAction')(id, nextLandingTab, '0');
         }
       });
     }

@@ -8,6 +8,9 @@ export const eventsLoadingStatus = (state) => state.risk.eventsLoadingStatus;
 export const alertsError = (state) => state.risk.alertsError;
 export const selectedAlert = (state) => state.risk.selectedAlert;
 export const expandedEventId = (state) => state.risk.expandedEventId;
+const _fileState = (state) => state.files;
+const _riskType = (state) => state.riskType;
+
 
 export const events = createSelector(
   _eventsData,
@@ -15,3 +18,16 @@ export const events = createSelector(
     return events;
   }
 );
+
+export const riskType = createSelector(
+  _fileState, _riskType,
+  (fileState, riskType) => {
+    if (riskType) {
+      return riskType;
+    } else {
+      return fileState ? 'FILE' : 'HOST';
+    }
+  }
+);
+
+

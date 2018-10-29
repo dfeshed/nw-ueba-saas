@@ -40,7 +40,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       }
     };
     this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
-    await render(hbs`{{endpoint/risk-properties riskState=riskState}}`);
+    await render(hbs`{{endpoint/risk-properties riskState=riskState riskType='FILE'}}`);
 
     assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
     assert.equal(findAll('.risk-properties .rsa-nav-tab').length, 4, '4 tabs are present');
@@ -51,7 +51,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
 
     assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
                           'Display alert name and alert count for alert context');
-    assert.equal(find('.alert-context__event').textContent.trim(), '2 events', 'Display 10 events for alert context');
+    assert.equal(find('.alert-context__event').textContent.trim(), '2 event(s)', 'Display 2 events for alert context');
   });
 
   test('change landing severity tab if currentActiveTab has 0 alerts', async function(assert) {
@@ -87,5 +87,75 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       defaultAction=(action activate)}}`);
 
     assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'HIGH', 'high tab is selected');
+  });
+
+  test('check files count', async function(assert) {
+    const riskScoreContext = {
+      'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
+      'distinctAlertCount': {
+        'critical': 1,
+        'high': 2,
+        'medium': 3
+      },
+      'categorizedAlerts': {
+        'Critical': {
+          'test alert': {
+            'alertCount': 10,
+            'eventContexts': [{
+              'id': 'decoder-id1',
+              'sourceId': '1'
+            },
+            {
+              'id': 'decoder-id2',
+              'sourceId': '2'
+            }]
+          }
+        }
+      }
+    };
+    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
+    await render(hbs`{{endpoint/risk-properties riskState=riskState}}`);
+    assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
+  });
+
+
+  test('Display alert count for host', async function(assert) {
+    const riskScoreContext = {
+      'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
+      'distinctAlertCount': {
+        'critical': 1,
+        'high': 2,
+        'medium': 3
+      },
+      'categorizedAlerts': {
+        'Critical': {
+          'test alert': {
+            'alertCount': 10,
+            'eventContexts': [{
+              'id': 'decoder-id1',
+              'sourceId': '1'
+            },
+            {
+              'id': 'decoder-id2',
+              'sourceId': '2'
+            }]
+          }
+        }
+      }
+    };
+    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
+    this.set('riskType', 'HOST');
+    await render(hbs`{{endpoint/risk-properties riskState=riskState riskType=riskType}}`);
+
+    assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
+    assert.equal(findAll('.risk-properties .rsa-nav-tab').length, 4, '4 tabs are present');
+    assert.equal(findAll('.risk-properties .alert-count')[0].innerText, 1, 'Critical alert count is 1');
+    assert.equal(findAll('.risk-properties .alert-count')[1].innerText, 2, 'High alert count is 2');
+    assert.equal(findAll('.risk-properties .alert-count')[2].innerText, 3, 'Medium alert count is 3');
+    assert.equal(findAll('.risk-properties .alert-count')[3].innerText, 6, 'All alert count is 6');
+
+    assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
+      'Display alert name and alert count for alert context');
+    assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
   });
 });

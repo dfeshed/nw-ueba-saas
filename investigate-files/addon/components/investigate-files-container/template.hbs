@@ -57,7 +57,9 @@
     {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
       {{endpoint/risk-properties
         defaultAction=(action 'getUpdatedRiskScoreContext')
-        riskState=risk}}
+        riskState=risk
+        riskType='FILE'
+      }}
     {{else if (eq activeDataSourceTab 'HOSTS')}}
       {{file-found-on-hosts}}
     {{else}}

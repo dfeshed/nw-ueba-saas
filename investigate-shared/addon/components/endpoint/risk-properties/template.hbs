@@ -19,7 +19,13 @@
       setAlertAction=setSelectedAlert
       selectedAlert=selectedAlert as |context|}}
       <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
-      <div class="alert-context__event">{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</div>
+      <div class="alert-context__event">
+        <span>{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</span>
+        {{#if (eq riskType 'HOST')}}
+          <span class="alert-context__files">{{t 'investigateShared.endpoint.riskProperties.alerts.files' count=context.filesCount}}</span>
+          <span>{{t 'investigateShared.endpoint.riskProperties.alerts.users' count=context.usersCount}}</span>
+        {{/if}}
+      </div>
     {{/endpoint/risk-properties/alert-context}}
   </box>
 {{else}}

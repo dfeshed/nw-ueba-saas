@@ -64,6 +64,10 @@
       border-bottom-width: 3px;
     }
   }
+
+  .host-detail-box {
+    height: calc(100vh - 140px);
+  }
 }
 .user-info-content {
   padding-left: rsa-whitespace();

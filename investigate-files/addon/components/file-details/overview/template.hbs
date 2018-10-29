@@ -5,7 +5,9 @@
         {{endpoint/risk-properties
           defaultAction=(action 'getUpdatedRiskScoreContext')
           setSelectedAlert=(action 'setSelectedAlert')
-          riskState=risk}}
+          riskState=risk
+          riskType='FILE'
+        }}
       </box>
       <box class="events">
         {{endpoint/risk-properties/events-list-container

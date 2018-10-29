@@ -87,6 +87,14 @@ const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 
 const _activeAnomaliesTab = (state) => state.endpoint.visuals.activeAnomaliesTab || 'IMAGEHOOKS';
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _isWindowsFlag = (state) => isMachineWindows(state);
+const _riskState = (state) => state.endpoint.risk || {};
+
+export const riskState = createSelector(
+  [_riskState],
+  (riskState) => {
+    return riskState;
+  }
+);
 
 export const hasMachineId = createSelector(
   _agentId,

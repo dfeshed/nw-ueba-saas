@@ -4,7 +4,16 @@
       {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
         {{rsa-icon name='layout-2'}}
       {{/rsa-form-button}}
-      {{host-detail/overview/summary}}
+      <hbox class="host-detail-box scroll-box">
+        <box class="alerts">
+          {{endpoint/risk-properties
+            defaultAction=(action 'getUpdatedRiskScoreContext')
+            setSelectedAlert=(action 'setSelectedAlert')
+            riskState=risk
+            riskType='HOST'
+          }}
+        </box>
+      </hbox>
     {{/layout.center}}
     {{#layout.right as |right|}}
       {{right.header}}

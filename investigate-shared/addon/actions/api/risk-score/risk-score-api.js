@@ -17,7 +17,24 @@ const sendDataToResetRiskScore = (query) => {
 };
 
 /**
- * Executes a websocket fetch call for file context and returns a Promise.
+ * Executes a websocket fetch call for host context and returns a Promise.
+ *
+ * @method getRiskScoreContext
+ * @param query
+ * @public
+ * @returns {Promise}
+ */
+const getHostRiskScoreContext = (query) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getHostContext',
+    modelName: 'risk-score-server',
+    query
+  });
+};
+
+/**
+ * Executes a websocket fetch call for host context and returns a Promise.
  *
  * @method getRiskScoreContext
  * @param query
@@ -57,5 +74,6 @@ const getAlertEvents = (alertId) => {
 export default {
   sendDataToResetRiskScore,
   getRiskScoreContext,
+  getHostRiskScoreContext,
   getAlertEvents
 };

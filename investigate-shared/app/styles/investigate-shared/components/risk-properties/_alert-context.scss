@@ -19,5 +19,8 @@
     @include rsa-font(regular, small);
     color: text-color(primary, lighter);
     padding: .5rem 0 .5rem .5rem;
+    span {
+      padding-right: 2rem;
+    }
   }
 }

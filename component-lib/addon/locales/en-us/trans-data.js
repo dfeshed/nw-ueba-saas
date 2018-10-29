@@ -3377,12 +3377,14 @@ export default {
       riskProperties: {
         alerts: {
           heading: 'Alerts Severity',
-          events: '{{count}} events',
+          events: '{{count}} event(s)',
           critical: 'CRITICAL',
           high: 'HIGH',
           medium: 'MEDIUM',
           low: 'LOW',
-          all: 'ALL'
+          all: 'ALL',
+          files: '{{count}} file(s)',
+          users: '{{count}} user(s)'
         }
       },
       riskPanel: {

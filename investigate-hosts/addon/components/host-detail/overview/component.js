@@ -1,20 +1,25 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
+import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
+import { setSelectedAlert, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
   setAlertTab
 } from 'investigate-hosts/actions/data-creators/details';
 
 const dispatchToActions = {
-  setAlertTab
+  setAlertTab,
+  getUpdatedRiskScoreContext,
+  setSelectedAlert
 };
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
   propertyData: getPropertyData(state),
   hostDetails: state.endpoint.overview.hostDetails || [],
-  activeAlertTab: state.endpoint.overview.activeAlertTab
+  activeAlertTab: state.endpoint.overview.activeAlertTab,
+  risk: riskState(state)
 });
 
 const HostOverview = Component.extend({

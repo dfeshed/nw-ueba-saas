@@ -15,6 +15,7 @@ import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 import fileContext from './details/file-context/reducer';
 import investigate from 'investigate-shared/reducers/investigate/reducer';
 import fileStatus from 'investigate-shared/reducers/file-status/reducer';
+import risk from 'investigate-shared/reducers/risk/reducer';
 
 const reducerPredicate = (type) => {
   return (action) => {
@@ -41,7 +42,8 @@ export default combineReducers({
     kernelHooks: createFilteredReducer(fileContext, reducerPredicate('KERNELHOOK')),
     drivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
-    filter: createFilteredReducer(filter, reducerPredicate('MACHINE'))
+    filter: createFilteredReducer(filter, reducerPredicate('MACHINE')),
+    risk: createFilteredReducer(risk, reducerPredicate('HOST'))
   }),
   fileStatus: createFilteredReducer(fileStatus, reducerPredicate),
   investigate: createFilteredReducer(investigate, reducerPredicate('MACHINE')),

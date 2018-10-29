@@ -65,4 +65,10 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1,
         'right panel is visible on external open action');
   });
+
+  test('Host detail Alerts box is available', async function(assert) {
+    setState();
+    await render(hbs`{{host-detail/overview domIsReady=true}}`);
+    assert.equal(findAll('.host-detail-box.scroll-box').length, 1, 'Host detail box is present');
+  });
 });
