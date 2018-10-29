@@ -22,26 +22,30 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "string-conditional-scorer",
+              "type": "conditional",
               "name": "processFilePath.setServiceRegistryKey.registry.score",
-              "conditional-field": "registryKeyGroup",
-              "conditional-value": "SERVICES_IMAGE_PATH",
-              "scorer": {
-                "type": "string-conditional-scorer",
-                "name": "processFilePath.setServiceRegistryKey.registry.scorer",
-                "conditional-field": "operationType",
-                "conditional-value": "SET_VALUE",
-                "scorer": {
-                  "type": "category-rarity-model-scorer",
-                  "name": "processFilePath.setServiceRegistryKey.registry.scorer",
-                  "model": {
-                    "name": "processFilePath.setServiceRegistryKey.registry"
-                  },
-                  "max-rare-count": 8,
-                  "max-num-of-rare-features": 15,
-                  "number-of-partitions-to-influence-enough": 10,
-                  "use-certainty-to-calculate-score": true
+              "predicates": [
+                {
+                  "type": "regex",
+                  "fieldName": "registryKeyGroup",
+                  "pattern": "SERVICES_IMAGE_PATH"
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "SET_VALUE"
                 }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "processFilePath.setServiceRegistryKey.registry.score",
+                "model": {
+                  "name": "processFilePath.setServiceRegistryKey.registry"
+                },
+                "max-rare-count": 8,
+                "max-num-of-rare-features": 15,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true
               }
             }
           ]
