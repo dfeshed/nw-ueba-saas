@@ -25,8 +25,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      fieldName: operationTypeCategories
-      fieldValue: FILE_PERMISSION_CHANGE
+      - fieldName: operationTypeCategories
+        fieldValue: FILE_PERMISSION_CHANGE
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -55,8 +55,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      fieldName: result
-      fieldValue: SUCCESS
+      - fieldName: result
+        fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -70,8 +70,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      fieldName: result
-      fieldValue: SUCCESS
+      - fieldName: result
+        fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -85,8 +85,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      fieldName: result
-      fieldValue: FAILURE
+      - fieldName: result
+        fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -100,8 +100,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      fieldName: result
-      fieldValue: FAILURE
+      - fieldName: result
+        fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -153,8 +153,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_RENAMED
     anomalyFilters:
-      fieldName: result
-      fieldValue: SUCCESS
+      - fieldName: result
+        fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_file_rename
@@ -180,8 +180,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      fieldName: isSrcDriveShared
-      fieldValue: true
+      - fieldName: isSrcDriveShared
+        fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -195,8 +195,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      fieldName: isDstDriveShared
-      fieldValue: true
+      - fieldName: isDstDriveShared
+        fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -250,8 +250,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      fieldName: operationTypeCategories
-      fieldValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
+      - fieldName: operationTypeCategories
+        fieldValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -266,8 +266,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      fieldName: operationTypeCategories
-      fieldValue: OBJECT_MANAGEMENT
+      - fieldName: operationTypeCategories
+        fieldValue: OBJECT_MANAGEMENT
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily
@@ -307,8 +307,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: OBJECT_MANAGEMENT
     anomalyFilters:
-       fieldName: result
-       fieldValue: SUCCESS
+       - fieldName: result
+         fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -323,8 +323,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: USER_MANAGEMENT,SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
-      fieldName: result
-      fieldValue: SUCCESS
+      - fieldName: result
+        fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -652,8 +652,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: srcFolderPath
     anomalyFilters:
-      fieldName: isSrcDriveShared
-      fieldValue: true
+      - fieldName: isSrcDriveShared
+        fieldValue: true
   historicalData:
     type: count_aggregations
     featureBucketConfName: absoluteSharedFolderPathHistogramUserIdPrintDaily
@@ -778,8 +778,8 @@ indicators:
     anomalyField: dstProcessCategories
     anomalyValue: RECONNAISSANCE_TOOL
     anomalyFilters:
-      fieldName: operationType
-      fieldValue: CREATE_PROCESS
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
   historicalData:
     type: hourly_aggregations
   classification: discovery_reconnaissance
@@ -793,8 +793,8 @@ indicators:
     anomalyField: dstProcessCategories
     anomalyValue: RECONNAISSANCE_TOOL
     anomalyFilters:
-      fieldName: operationType
-      fieldValue: CREATE_PROCESS
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
   historicalData:
     type: hourly_aggregations
   classification: discovery_reconnaissance
@@ -807,8 +807,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: dstProcessFileName
     anomalyFilters:
-      fieldName: operationType
-      fieldValue: CREATE_PROCESS
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily

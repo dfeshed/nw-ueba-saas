@@ -5,6 +5,7 @@ import fortscale.utils.ConversionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.util.Pair;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
 
 import java.util.ArrayList;
@@ -36,12 +37,15 @@ public class SupportingInformationUtils {
         }
         features.addAll(buildFeaturePairs(anomalyField, anomalyValue, config.getSchema()));
 
-        String anomalyFilterField = config.getAnomalyDescriptior().getAnomalyFilters()!=null?
-                config.getAnomalyDescriptior().getAnomalyFilters().getFieldName(): null;
-        String anomalyFilterValue = config.getAnomalyDescriptior().getAnomalyFilters()!=null?
-                config.getAnomalyDescriptior().getAnomalyFilters().getFieldValue(): null;
+        List<AnomalyFiltersConfig> anomalyFiltersConfigs = config.getAnomalyDescriptior().getAnomalyFilters();
 
-        features.addAll(buildFeaturePairs(anomalyFilterField, anomalyFilterValue, config.getSchema()));
+        if(anomalyFiltersConfigs!=null) {
+            anomalyFiltersConfigs.forEach(anomalyFiltersConfig -> {
+                String anomalyFilterField = anomalyFiltersConfig.getFieldName();
+                String anomalyFilterValue = anomalyFiltersConfig.getFieldValue();
+                features.addAll(buildFeaturePairs(anomalyFilterField, anomalyFilterValue, config.getSchema()));
+            });
+        }
 
         return features;
     }
