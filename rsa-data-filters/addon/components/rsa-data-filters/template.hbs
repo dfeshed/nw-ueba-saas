@@ -7,11 +7,14 @@
 </box>
 <hbox class='filters-footer'>
   {{#rsa-form-button class='reset-filter-button' defaultAction=(action 'resetFilters')}}
-    Reset
+    {{t 'dataFilters.reset'}}
   {{/rsa-form-button}}
   {{#if showSaveFilterButton}}
-    {{#rsa-form-button class='save-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters')}}
-      Save
+    {{#rsa-form-button class='save-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' false)}}
+      {{t 'dataFilters.save'}}
     {{/rsa-form-button}}
   {{/if}}
+  {{#rsa-form-button class='save-as-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' true)}}
+    {{t 'dataFilters.saveAs'}}
+  {{/rsa-form-button}}
 </hbox>

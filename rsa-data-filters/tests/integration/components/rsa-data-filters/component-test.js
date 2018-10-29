@@ -144,4 +144,19 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.equal(findAll('.reset-filter-button').length, 1, 'Expected render reset button');
     click('.reset-filter-button button');
   });
+
+  test('it should show Save As filter button and clicking on save will call the callback', async function(assert) {
+    assert.expect(3);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('onSave', (filters, saveAs) => {
+      assert.equal(filters.length, 2);
+      assert.equal(saveAs, true);
+    });
+
+    this.set('showSaveFilterButton', true);
+    await render(hbs`{{rsa-data-filters showSaveFilterButton=showSaveFilterButton onSave=(action onSave) config=config}}`);
+    assert.equal(findAll('.save-as-filter-button').length, 1, 'Expected render save as button');
+    click('.save-as-filter-button button');
+  });
+
 });

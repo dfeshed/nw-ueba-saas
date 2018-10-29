@@ -97,19 +97,6 @@ const FILTER_TYPES = [
       }
     }
   },
-  {
-    'name': 'machineIdentity.locale.isoCountryCode',
-    'label': 'investigateHosts.hosts.column.machineIdentity.locale.isoCountryCode',
-    'type': 'text',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return !(/^[A-Za-z_]*$/.test(value));
-        },
-        message: 'investigateHosts.hosts.filters.invalidCountryCode'
-      }
-    }
-  },
   // TODO : ADD agentmode
   // TODO ADD risk score
   // TODO LAST SEEN time

@@ -103,10 +103,10 @@ export default Component.extend({
       this.set('disableSaveFilterButton', newFilters.length === 0);
     },
 
-    saveFilters() {
+    saveFilters(saveAs) {
       const onSave = this.get('onSave');
       if (onSave) {
-        onSave(this.get('updatedFilters'));
+        onSave(this.get('updatedFilters'), saveAs);
       }
     },
 

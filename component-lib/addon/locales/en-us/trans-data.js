@@ -2071,7 +2071,7 @@ export default {
     certificate: {
       editCertificateStatus: {
         actionNote: 'Applies to all files signed by this certificate.',
-        commentLimitError: 'Comment is limited to 900 characters',
+        commentLimitError: 'Comment is limited to 900 characters'
       },
       contextMenu: {
         actions: {
@@ -2145,9 +2145,9 @@ export default {
           errorMessage: 'The search cannot be saved. ',
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
-          success: 'Search query saved successfully.',
+          success: 'Filter saved successfully.',
           filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
-          invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
+          invalidInput: 'Name can contain alphanumeric, underscore, or hyphen.'
         },
         error: 'Name already exists. Provide a unique name for the filter.',
         delete: {
@@ -3183,12 +3183,12 @@ export default {
           errorMessage: 'The search cannot be saved. ',
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
-          success: 'Search query saved successfully.',
+          success: 'Filter saved successfully.',
           filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
-          invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
+          invalidInput: 'Name can contain alphanumeric, underscore, or hyphen.'
         },
         update: {
-          success: 'Search query updated successfully.'
+          success: 'Filter updated successfully.'
         },
         error: 'A problem occurred while trying to create/update filter.'
       },
@@ -3277,9 +3277,9 @@ export default {
             errorMessage: 'The search cannot be saved. ',
             emptyMessage: 'Name field is empty.',
             nameExistsMessage: 'A saved search with the same name.',
-            success: 'Search query saved successfully.',
+            success: 'Filter saved successfully.',
             filterFieldEmptyMessage: 'Filter fields are empty',
-            invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
+            invalidInput: 'Name can contain alphanumeric, underscore, or hyphen.'
           }
         },
         button: {
@@ -3432,7 +3432,11 @@ export default {
         sha256: 'SHA256',
         resetRiskScore: 'Reset Risk Score'
       },
-      savedFilters: 'Saved Filters'
+      savedFilters: 'Saved Filters',
+      filter: {
+        select: 'Select',
+        noSavedFilters: 'No saved filters'
+      }
     }
   },
   investigateProcessAnalysis: {
@@ -4239,22 +4243,25 @@ export default {
     }
   },
   dataFilters: {
+    save: 'Save',
+    saveAs: 'Save As',
+    reset: 'Reset',
     timeframeOptions: {
-      LAST_FIVE_MINUTES: 'Last 5 Minutes ago',
-      LAST_TEN_MINUTES: 'Last 10 Minutes ago',
-      LAST_FIFTEEN_MINUTES: 'Last 15 Minutes ago',
-      LAST_THIRTY_MINUTES: 'Last 30 Minutes ago',
-      LAST_ONE_HOUR: 'Last 1 Hours ago',
-      LAST_THREE_HOURS: 'Last 3 Hours ago',
-      LAST_SIX_HOURS: 'Last 6 Hours ago',
-      LAST_TWELVE_HOURS: 'Last 12 Hours ago',
-      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours ago',
-      LAST_TWO_DAYS: 'Last 2 Days ago',
-      LAST_SEVEN_DAYS: 'Last 7 Days ago',
-      LAST_TWO_WEEKS: 'Last 2 Weeks ago',
-      LAST_ONE_MONTH: 'Last 1 Month ago',
-      LAST_THREE_MONTH: 'Last 3 Month ago',
-      LAST_SIX_MONTH: 'Last 6 Month ago'
+      LAST_FIVE_MINUTES: '5 Minutes ago',
+      LAST_TEN_MINUTES: '10 Minutes ago',
+      LAST_FIFTEEN_MINUTES: '15 Minutes ago',
+      LAST_THIRTY_MINUTES: '30 Minutes ago',
+      LAST_ONE_HOUR: '1 Hours ago',
+      LAST_THREE_HOURS: '3 Hours ago',
+      LAST_SIX_HOURS: '6 Hours ago',
+      LAST_TWELVE_HOURS: '12 Hours ago',
+      LAST_TWENTY_FOUR_HOURS: 'Hours ago',
+      LAST_TWO_DAYS: '2 Days ago',
+      LAST_SEVEN_DAYS: '7 Days ago',
+      LAST_TWO_WEEKS: '2 Weeks ago',
+      LAST_ONE_MONTH: '1 Month ago',
+      LAST_THREE_MONTH: '3 Month ago',
+      LAST_SIX_MONTH: '6 Month ago'
     },
     startDate: 'Start Date',
     endDate: 'End Date',

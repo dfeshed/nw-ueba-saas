@@ -5,8 +5,9 @@
   selected=selected
   options=customFilters
   renderInPlace=true
+  noMatchesMessage=(t 'investigateShared.endpoint.filter.noSavedFilters')
   onclose=(action 'onClose')
-  placeholder='Make a selection'
+  placeholder=(t 'investigateShared.endpoint.filter.select')
   onchange=(action 'applyCustomFilter') as |option| }}
   {{option.name}}
   <a onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>

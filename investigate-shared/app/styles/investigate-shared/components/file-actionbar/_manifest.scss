@@ -20,7 +20,7 @@
 
 .file-action-selector-panel {
   .rsa-dropdown-action-list {
-    padding: rsa-whitespace(less) 0;
+    padding: rsa-whitespace() 0;
     .disabled, li.disabled:hover {
       color: text-color(primary);
       .rsa-content-tethered-panel-trigger {
@@ -32,7 +32,8 @@
     div {
       width: 140px;
       .rsa-icon {
-        float: right;
+        position: absolute;
+        right: 5px;
       }
     }
   }
