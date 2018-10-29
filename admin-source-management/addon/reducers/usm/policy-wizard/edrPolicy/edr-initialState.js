@@ -67,7 +67,7 @@ export default {
     { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
     { index: 20, id: 'agentSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.agentSettings', isHeader: true, isEnabled: true },
-    { index: 21, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'NO_MONITORING' }] }
+    { index: 21, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'FULL_MONITORING' }] }
   ]
 
 };
