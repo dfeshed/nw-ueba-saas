@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getUsersSeverity, getSortField, getFilterSeverity, getTotalUsers, getUserFilter } from 'investigate-users/reducers/users/selectors';
-import { updateFilter, exportUsers } from 'investigate-users/actions/user-tab-actions';
+import { getUsersSeverity, getSortField, getFilterSeverity, getTotalUsers, getUserFilter, allWatched } from 'investigate-users/reducers/users/selectors';
+import { updateFilter, exportUsers, followUsers, unfollowUsers } from 'investigate-users/actions/user-tab-actions';
 import { sortOptions } from 'investigate-users/utils/column-config';
 
 const stateToComputed = (state) => ({
@@ -9,12 +9,15 @@ const stateToComputed = (state) => ({
   sortBy: getSortField(state),
   filterSeverity: getFilterSeverity(state),
   totalUsers: getTotalUsers(state),
-  filter: getUserFilter(state)
+  filter: getUserFilter(state),
+  allWatched: allWatched(state)
 });
 
 const dispatchToActions = {
   updateFilter,
-  exportUsers
+  exportUsers,
+  followUsers,
+  unfollowUsers
 };
 
 const UsersTabBodyHeaderComponent = Component.extend({
@@ -27,6 +30,13 @@ const UsersTabBodyHeaderComponent = Component.extend({
     applyFilter(severity) {
       const filter = this.get('filter').merge({ severity });
       this.send('updateFilter', filter);
+    },
+    followUsersAction() {
+      if (this.get('allWatched')) {
+        this.send('unfollowUsers');
+      } else {
+        this.send('followUsers');
+      }
     }
   }
 });

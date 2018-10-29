@@ -21,6 +21,8 @@ export const getTotalUsers = (state) => state.users.totalUsers;
 
 export const getTopRiskyUsers = (state) => state.users.topUsers;
 
+export const allWatched = (state) => state.users.allWatched;
+
 export const getUsers = (state) => state.users.users;
 
 

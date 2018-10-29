@@ -27,9 +27,12 @@
         {{/rsa-form-button}}
       </div>
       <div>
-        {{#rsa-form-button }} 
-          {{rsa-icon size='medium' style='filled' name='binoculars'}} 
-          {{t 'investigateUsers.users.addAllToWatchedList'}}
+        {{#rsa-form-button click=(action 'followUsersAction')}}
+          {{#if (eq allWatched true)}}
+            {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
+          {{else}}
+            {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
+          {{/if}}
         {{/rsa-form-button}}
       </div>
     </div>

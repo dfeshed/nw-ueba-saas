@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { deleteFavorite, exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
+import { followUsers, unfollowUsers, deleteFavorite, exportUsers, saveAsFavorite, getSeverityDetailsForUserTabs, getExistAlertTypess, getExistAnomalyTypes, getFavorites, resetUsers, updateFilter, getUsers } from 'investigate-users/actions/user-tab-actions';
 
 export const initialFilterState = Immutable.from({
   addAlertsAndDevices: true,
@@ -215,4 +215,37 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
     };
     deleteFavorite('TestId')(dispatch);
   });
+
+  test('it can followUsers', (assert) => {
+    assert.expect(1);
+    const getState = () => {
+      return { users: { filter: initialFilterState } };
+    };
+    const dispatchInt = ({ type }) => {
+      if (type) {
+        assert.equal(type, 'INVESTIGATE_USER::RESET_USERS');
+      }
+    };
+    const dispatch = (fn) => {
+      fn(dispatchInt, getState);
+    };
+    followUsers()(dispatch, getState);
+  });
+
+  test('it can unfollowUsers', (assert) => {
+    assert.expect(1);
+    const getState = () => {
+      return { users: { filter: initialFilterState } };
+    };
+    const dispatchInt = ({ type }) => {
+      if (type) {
+        assert.equal(type, 'INVESTIGATE_USER::RESET_USERS');
+      }
+    };
+    const dispatch = (fn) => {
+      fn(dispatchInt, getState);
+    };
+    unfollowUsers()(dispatch, getState);
+  });
+
 });

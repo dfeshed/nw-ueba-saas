@@ -1,12 +1,29 @@
 import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
 import { getUserFilter } from 'investigate-users/reducers/users/selectors';
+import { getWatchedUserCount } from './user-details';
 import _ from 'lodash';
 
 const _filterPropertiesToPickFromCurrentFilterForPosting = ['alertTypes', 'indicatorTypes', 'isWatched', 'minScore', 'severity', 'sortDirection', 'sortField'];
 
 const _removeUnwantedPropertyFromObject = (obj = {}) => {
   return _.pick(obj, _filterPropertiesToPickFromCurrentFilterForPosting);
+};
+
+const _followUnfollowUsers = (endpointLocation) => {
+  return (dispatch, getState) => {
+    let filter = getUserFilter(getState());
+    const filterForPost = _removeUnwantedPropertyFromObject(filter);
+    fetchData(endpointLocation, filterForPost, true).then(() => {
+      dispatch(resetUsers());
+      if (filter) {
+        filter = filter.setIn(['fromPage'], 1);
+      }
+      dispatch(getUsers(filter));
+      dispatch(getSeverityDetailsForUserTabs(filter));
+      dispatch(getWatchedUserCount());
+    });
+  };
 };
 
 const getSeverityDetailsForUserTabs = (filter) => {
@@ -55,10 +72,10 @@ const getFavorites = () => {
 const getUsers = (filter) => {
   return (dispatch, getState) => {
     filter = filter || getUserFilter(getState());
-    fetchData('userList', filter).then(({ data, total }) => {
+    fetchData('userList', filter).then(({ data, total, info }) => {
       dispatch({
         type: ACTION_TYPES.GET_USERS,
-        payload: { data, total }
+        payload: { data, total, info }
       });
     });
   };
@@ -109,6 +126,18 @@ const exportUsers = () => {
   };
 };
 
+const followUsers = () => {
+  return (dispatch) => {
+    dispatch(_followUnfollowUsers('followUsers'));
+  };
+};
+
+const unfollowUsers = () => {
+  return (dispatch) => {
+    dispatch(_followUnfollowUsers('unfollowUsers'));
+  };
+};
+
 const resetUsers = () => ({ type: ACTION_TYPES.RESET_USERS });
 
 export {
@@ -121,5 +150,7 @@ export {
   getUsers,
   saveAsFavorite,
   exportUsers,
-  deleteFavorite
+  deleteFavorite,
+  followUsers,
+  unfollowUsers
 };

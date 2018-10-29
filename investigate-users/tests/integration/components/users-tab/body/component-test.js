@@ -9,6 +9,10 @@ module('Integration | Component | users-tab/body', function(hooks) {
     resolver: engineResolverFor('investigate-users')
   });
 
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
+
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/body}}`);
     assert.equal(findAll('.users-tab_body_header_bar').length, 1);

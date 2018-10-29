@@ -143,6 +143,11 @@ export default class DataHelper {
     return this;
   }
 
+  allWatched(isAllWatched) {
+    _set(this.state, 'users.allWatched', isAllWatched);
+    return this;
+  }
+
   topAlerts(alerts) {
     _set(this.state, 'alerts.topAlerts', alerts);
     return this;

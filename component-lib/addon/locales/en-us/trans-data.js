@@ -4216,6 +4216,7 @@ export default {
     users: {
       title: 'Users',
       addAllToWatchedList: 'Add All To WatchedList',
+      removeAllFromWatchedList: 'Remove All From WatchedList',
       highRisk: 'High Risk Users',
       all: 'All Users',
       risky: 'Risky Users',

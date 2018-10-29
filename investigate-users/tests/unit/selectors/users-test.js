@@ -24,6 +24,7 @@ const state = Immutable.from({
     existAlertTypes: existAlertTypes.data,
     users: userList,
     favorites: favoriteFilter.data,
+    allWatched: true,
     totalUsers: 100,
     filter: {
       addAlertsAndDevices: true,
@@ -32,6 +33,7 @@ const state = Immutable.from({
       departments: null,
       indicatorTypes: ['abnormal_file_action_operation_type'],
       isWatched: false,
+      allWatched: true,
       locations: null,
       minScore: 0,
       severity: ['high'],
@@ -115,6 +117,10 @@ test('test Favorites', (assert) => {
 
 test('test Users', (assert) => {
   assert.equal(Users.getUsers(state).data.length, 2);
+});
+
+test('test AllWatched Users', (assert) => {
+  assert.equal(Users.allWatched(state), true);
 });
 
 test('test users Severity', (assert) => {

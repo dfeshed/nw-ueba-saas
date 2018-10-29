@@ -43,6 +43,8 @@ const initialState = Immutable.from({
   existAnomalyTypes: null,
   existAlertTypes: null,
   favorites: null,
+  allWatched: false,
+  users: [],
   totalUsers: null,
   filter: initialFilterState
 });
@@ -57,18 +59,19 @@ const tabs = handleActions({
   [ACTION_TYPES.GET_EXIST_ANOMALY_TYPES]: (state, { payload }) => state.set('existAnomalyTypes', payload),
   [ACTION_TYPES.GET_EXIST_ALERT_TYPES]: (state, { payload }) => state.set('existAlertTypes', payload),
   [ACTION_TYPES.GET_FAVORITES]: (state, { payload }) => state.set('favorites', payload),
-  [ACTION_TYPES.GET_USERS]: (state, { payload: { data, total } }) => {
+  [ACTION_TYPES.GET_USERS]: (state, { payload: { data, total, info } }) => {
     // Concat user list data to current users list.
     let newState = state.set('users', state.getIn(['users']).concat(data));
     // Total user count for display and stop scrolling event.
     newState = newState.set('totalUsers', total);
+    newState = newState.set('allWatched', info ? info.allWatched : false);
     // Increment current page by one to fetch next page on scroll again.
     newState = newState.setIn(['filter', 'fromPage'], newState.getIn(['filter', 'fromPage']) + 1);
     return newState;
   },
   [ACTION_TYPES.UPDATE_FILTER_FOR_USERS]: (state, { payload }) => state.set('filter', payload ? state.getIn(['filter']).merge(payload) : initialFilterState),
   [ACTION_TYPES.RESET_USERS]: (state) => {
-    const newState = state.merge({ topUsers: [], users: [], currentPage: 0, usersSeverity: initialUsersSeverity });
+    const newState = state.merge({ topUsers: [], users: [], currentPage: 0, usersSeverity: initialUsersSeverity, allWatched: false, totalUsers: null });
     return newState.setIn(['filter', 'fromPage'], 1);
   }
 }, initialState);

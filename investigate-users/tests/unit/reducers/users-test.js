@@ -54,7 +54,9 @@ const resetState = Immutable.from({
   existAnomalyTypes: null,
   existAlertTypes: null,
   favorites: null,
+  users: [],
   totalUsers: null,
+  allWatched: false,
   filter: initialFilterState
 });
 
@@ -155,18 +157,22 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
 
     let result = reducer(Immutable.from({ users: [] }), {
       type: ACTION_TYPES.GET_USERS,
-      payload: { data: userList, total: 50 }
+      payload: { data: userList, total: 50, info: { allWatched: true } }
     });
 
     assert.equal(result.users[0].data.length, 2);
 
     assert.equal(result.totalUsers, 50);
 
+    assert.equal(result.allWatched, true);
+
     result = reducer(result, {
       type: ACTION_TYPES.RESET_USERS
     });
 
     assert.equal(result.users.length, 0);
+
+    assert.equal(result.allWatched, false);
   });
 
   test('test update filters for user', (assert) => {
