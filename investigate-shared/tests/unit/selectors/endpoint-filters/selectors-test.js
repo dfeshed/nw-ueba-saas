@@ -58,12 +58,7 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
   test('Returns filters object without any filter value', function(assert) {
     const state = Immutable.from({
       filter: {
-        selectedFilter: {
-          systemFilter: true,
-          criteria: {
-            expressionList: []
-          }
-        }
+        expressionList: []
       },
       filterTypes: [
         {
@@ -80,33 +75,28 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
   test('Returns filters object with filter values based on expression', function(assert) {
     const state = Immutable.from({
       filter: {
-        selectedFilter: {
-          systemFilter: true,
-          criteria: {
-            expressionList: [
-              {
-                propertyValues: [{ value: 'test' }],
-                restrictionType: 'IN',
-                propertyName: 'machineName'
-              },
-              {
-                propertyValues: [{ value: 5, relativeValueType: 'Minutes' }],
-                restrictionType: 'IN',
-                propertyName: 'scanTime'
-              },
-              {
-                propertyValues: [{ value: 'blacklisted' }, { value: 'whitelisted' }],
-                restrictionType: 'IN',
-                propertyName: 'status'
-              },
-              {
-                propertyValues: [{ value: 204800 }],
-                restrictionType: 'IN',
-                propertyName: 'size'
-              }
-            ]
+        expressionList: [
+          {
+            propertyValues: [{ value: 'test' }],
+            restrictionType: 'IN',
+            propertyName: 'machineName'
+          },
+          {
+            propertyValues: [{ value: 5, relativeValueType: 'Minutes' }],
+            restrictionType: 'IN',
+            propertyName: 'scanTime'
+          },
+          {
+            propertyValues: [{ value: 'blacklisted' }, { value: 'whitelisted' }],
+            restrictionType: 'IN',
+            propertyName: 'status'
+          },
+          {
+            propertyValues: [{ value: 204800 }],
+            restrictionType: 'IN',
+            propertyName: 'size'
           }
-        }
+        ]
       },
       filterTypes: [
         {

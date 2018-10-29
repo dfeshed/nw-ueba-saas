@@ -57,6 +57,15 @@ export default Route.extend({
     }
   },
 
+  activate() {
+    const redux = this.get('redux');
+    run.next(() => {
+      redux.dispatch(setSelectedEndpointServer(null));
+      // get host list
+      redux.dispatch(getEndpointServers());
+    });
+  },
+
   model(params) {
     const redux = this.get('redux');
     const { sid, machineId } = params;
@@ -66,11 +75,7 @@ export default Route.extend({
       if (!machineId) {
         redux.dispatch(resetDetailsInputAndContent());
       }
-      if (!sid) {
-        redux.dispatch(setSelectedEndpointServer(null));
-        // get host list
-        redux.dispatch(getEndpointServers());
-      } else {
+      if (sid) {
         // get host details
         request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(setSelectedEndpointServer(sid));
