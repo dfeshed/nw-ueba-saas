@@ -22,6 +22,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily",
+      "contextFieldNames": [
+        "registryKey"
+      ],
+      "adeEventTypes": [
+        "registry"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "processFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "processFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.registryKeyGroup == 'SERVICES_IMAGE_PATH' && @.operationType == 'SET_VALUE')]"
+          }
+        }
+      ]
     }
   ]
 }
