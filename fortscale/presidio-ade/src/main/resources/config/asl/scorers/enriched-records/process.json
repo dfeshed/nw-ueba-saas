@@ -22,13 +22,18 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "dstProcessFileName.userId.process.score",
-              "conditional-field": "dstProcessCategories",
-              "conditional-value": [
-                "RECONNAISSANCE_TOOL"
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "RECONNAISSANCE_TOOL"
+                  ]
+                }
               ],
-              "scorer": {
+              "scorerConf": {
                 "type": "conditional",
                 "name": "dstProcessFileName.userId.process.score",
                 "predicates": [
