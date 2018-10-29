@@ -1,8 +1,11 @@
 import { warn } from '@ember/debug';
 import Service, { inject as service } from '@ember/service';
+import moment from 'moment';
 
 const DEFAULT_COMPLIANCE = { compliant: true, compliances: [ { status: 'OKAY' } ] };
 const BANNER_DISMISSED_KEY = 'rsa-license-banner-dismissed';
+const LAST_COMPLIANCE_DATE_KEY = 'compliance-last-fetched-date';
+const MAX_OFFLINE_ALLOWED = moment.duration(4, 'days').asMilliseconds();
 
 /**
  * @class License service
@@ -28,9 +31,16 @@ export default Service.extend({
         method: 'get',
         query: {}
       });
+      localStorage.setItem(LAST_COMPLIANCE_DATE_KEY, (new Date()));
       return data;
     } catch (error) {
       warn(`Could not get license compliance: ${error}`, { id: 'license.compliance.error' });
+
+      const lastComplianceCheckDate = localStorage.getItem(LAST_COMPLIANCE_DATE_KEY);
+      if (moment().diff(moment(parseInt(lastComplianceCheckDate, 10))) > MAX_OFFLINE_ALLOWED) {
+        return { compliant: false, compliances: [ { status: 'LICENSE_SERVER_DOWN' } ] };
+      }
+
       return DEFAULT_COMPLIANCE;
     }
   },

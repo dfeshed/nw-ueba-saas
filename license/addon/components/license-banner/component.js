@@ -29,9 +29,8 @@ export default Component.extend(ContextualHelp, {
       return;
     }
     this.set('compliant', compliant);
-    const { messageKey, level } = complianceConfig[compliance.status];
-    this.set('messageKey', messageKey);
-    this.set('level', level);
+    const { messageKey, level, url, urlTextKey } = complianceConfig[compliance.status];
+    this.setProperties({ messageKey, level, url, urlTextKey });
     if (level === 'error') {
       this.get('license').resetBannerDismissed();
     } else {
