@@ -38,14 +38,14 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> excludeContextFieldNames, StoreMetadataProperties storeMetadataProperties) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBucketsToInsert =
-                    featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, excludeContextFieldNames, featureBucketStrategyData);
+                    featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, contextFieldNamesToExclude, featureBucketStrategyData);
             storeFeatureBuckets(featureBucketsToInsert, storeMetadataProperties);
         }
     }

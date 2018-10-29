@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,18 +85,19 @@ public class BucketConfigurationService extends AslConfigurationService {
 	}
 
 	/**
-	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames
+	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames excluded by
+	 * contextFieldNamesToExclude
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(
-			String adeEventType, String strategyName, String contextFieldName, List<String> excludeContextFieldNames) {
+			String adeEventType, String strategyName, String contextFieldName, List<String> contextFieldNamesToExclude) {
 		if (StringUtils.isEmpty(adeEventType)) return null;
 
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType, excludeContextFieldNames);
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType, contextFieldNamesToExclude);
 
 		return featureBucketConfs;
 	}
 
-	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType, List<String> excludeContextFieldNames) {
+	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType, List<String> contextFieldNamesToExclude) {
 		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldName,adeEventType);
 		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.get(featureBucketConfCacheKey);
 		if(cachedFeatureBucketConfs  == null)
@@ -108,7 +108,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
 							featureBucketConf.getStrategyName().equals(strategyName) &&
-									Collections.disjoint(excludeContextFieldNames, featureBucketConf.getContextFieldNames()) &&
+									Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) &&
 									featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
 			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);

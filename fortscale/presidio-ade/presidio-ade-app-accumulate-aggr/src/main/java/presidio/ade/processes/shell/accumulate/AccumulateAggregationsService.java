@@ -48,7 +48,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> excludeContextFieldNames, StoreMetadataProperties storeMetadataProperties) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
         //PaginationService sort pages by START_INSTANT_FIELD
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType, AdeRecord.START_INSTANT_FIELD);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
@@ -57,7 +57,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
             Accumulator accumulatorService = new AccumulatorService(accumulationsCache, strategy, featureBucketDuration);
 
             accumulateAggregationsBucketService.aggregateAndAccumulate(pageIterator, adeEventType, contextType,
-                    excludeContextFieldNames, featureBucketDuration, accumulatorService);
+                    contextFieldNamesToExclude, featureBucketDuration, accumulatorService);
 
             //get all accumulated records and clean the store
             List<AccumulatedAggregationFeatureRecord> accumulatedRecords = accumulationsCache.getAllAccumulatedRecords();

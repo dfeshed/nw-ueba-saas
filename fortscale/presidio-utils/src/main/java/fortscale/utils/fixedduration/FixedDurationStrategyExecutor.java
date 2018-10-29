@@ -30,19 +30,21 @@ public abstract class FixedDurationStrategyExecutor {
         logger.debug("got execution time range={}",timeRange);
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
 
-        List<String> excludeContextFieldNames = new ArrayList<>();
+        List<String> contextFieldNamesToExclude = new ArrayList<>();
         for(String contextType: getDistinctContextTypes(adeEventType)) {
             for (TimeRange timePartition : partitionedTimeRanges) {
                 logger.debug("executing on time partition={}", timePartition);
                 try {
-                    executeSingleTimeRange(timePartition, adeEventType, contextType, excludeContextFieldNames, storeMetadataProperties);
+                    executeSingleTimeRange(timePartition, adeEventType, contextType, contextFieldNamesToExclude, storeMetadataProperties);
                 }
                 catch (Exception e)
                 {
-                    logger.error("an error occurred while executing on time partition={},adeEventType={},contextType={}",timePartition,adeEventType,contextType,e);
+                    logger.error("an error occurred while executing on time partition={},adeEventType={},contextType={}," +
+                                    "contextFieldNamesToExclude={}",
+                            timePartition,adeEventType,contextType,contextFieldNamesToExclude,e);
                     throw e;
                 }
-                excludeContextFieldNames.add(contextType);
+                contextFieldNamesToExclude.add(contextType);
             }
         }
     }
@@ -50,7 +52,7 @@ public abstract class FixedDurationStrategyExecutor {
     /**
      * runs calculation for single hour/day/other fixed duration per adeEventType for all relvant contexts
      */
-    protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> excludeContextFieldNames, StoreMetadataProperties storeMetadataProperties);
+    protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties);
 
     protected abstract List<String> getDistinctContextTypes(String adeEventType);
 }

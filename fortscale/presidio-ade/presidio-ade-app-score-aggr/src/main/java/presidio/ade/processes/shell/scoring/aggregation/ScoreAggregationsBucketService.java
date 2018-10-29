@@ -13,11 +13,12 @@ public interface ScoreAggregationsBucketService {
     /**
      * update bucket with ade records
      * @param adeRecordList
-     * @param contextFieldNames
+     * @param contextFieldName
+     * @param contextFieldNamesToExclude
      * @param strategyData
      */
     void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName,
-                       List<String> excludeContextFieldNames, FeatureBucketStrategyData strategyData);
+                       List<String> contextFieldNamesToExclude, FeatureBucketStrategyData strategyData);
 
     /**
      * once buckets are closed they should not be updated for that specific session

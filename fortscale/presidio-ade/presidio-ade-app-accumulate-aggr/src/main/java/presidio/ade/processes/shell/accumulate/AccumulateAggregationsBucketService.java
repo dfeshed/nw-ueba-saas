@@ -17,12 +17,11 @@ public interface AccumulateAggregationsBucketService {
      *
      * For each page in pageIterator, create ordered map of startDate to records.
      * Aggregate each map entry.
-     * If it is not last entry or if it is last page in iterator: close aggregation buckets, create aggregation records and accumulate records.
-     * @param pageIterator
-     * @param contextTypes
-     * @param featureBucketDuration
-     * @param accumulatorService
+     * If it is not last entry or if it is last page in iterator: close aggregation buckets, create aggregation records
+     * and accumulate records.
      */
-    void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName, List<String> excludeContextFieldNames, FixedDurationStrategy featureBucketDuration, Accumulator accumulatorService);
+    void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName,
+                                List<String> contextFieldNamesToExclude, FixedDurationStrategy featureBucketDuration,
+                                Accumulator accumulatorService);
 
 }

@@ -43,7 +43,7 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
     }
 
     public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, String adeEventType, String contextFieldName,
-                                       List<String> excludeContextFieldNames, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
+                                       List<String> contextFieldNamesToExclude, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {
         while (pageIterator.hasNext()) {
             List<? extends AdeRecord> adeRecords = pageIterator.next();
             Map<Instant, List<AdeRecord>> startDateToRecords = getStartDateToRecordsOrderedMap(adeRecords, featureBucketStrategy);
@@ -54,7 +54,7 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
                 FeatureBucketStrategyData strategyData = createFeatureBucketStrategyData(entry.getKey(), featureBucketStrategy);
                 List<FeatureBucketConf> featureBucketConfs =
                         bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
-                                contextFieldName, excludeContextFieldNames);
+                                contextFieldName, contextFieldNamesToExclude);
                 featureBucketAggregator.aggregate(entry.getValue(), featureBucketConfs, strategyData);
 
                 // Should be closed if it is not last entry or if it is last page in iterator

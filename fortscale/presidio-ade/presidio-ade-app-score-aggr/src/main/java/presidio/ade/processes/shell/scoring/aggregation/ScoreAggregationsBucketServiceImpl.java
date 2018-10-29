@@ -34,7 +34,7 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
 
     @Override
     public void updateBuckets(List<AdeScoredEnrichedRecord> adeRecordList, String contextFieldName,
-                              List<String> excludeContextFieldNames, FeatureBucketStrategyData strategyData) {
+                              List<String> contextFieldNamesToExclude, FeatureBucketStrategyData strategyData) {
         if(adeRecordList.isEmpty()){
             return;
         }
@@ -45,7 +45,7 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
             if(featureBucketConfs == null){
                 featureBucketConfs =
                         bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(),
-                                contextFieldName, excludeContextFieldNames);
+                                contextFieldName, contextFieldNamesToExclude);
                 adeEventTypeToFeatureBucketConfList.put(adeEventType, featureBucketConfs);
             }
             featureBucketAggregator.aggregate(record, featureBucketConfs, strategyData);

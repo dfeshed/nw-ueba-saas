@@ -67,7 +67,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
 
     @Override
-    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType, List<String> excludeContextFieldNames, StoreMetadataProperties storeMetadataProperties) {
+    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
 
         //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
         //Reset cache required in order to get newer models each partition and not use older models.
@@ -84,7 +84,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
                 List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange, storeMetadataProperties);
                 scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextType,
-                        excludeContextFieldNames, featureBucketStrategyData);
+                        contextFieldNamesToExclude, featureBucketStrategyData);
             }
 
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();

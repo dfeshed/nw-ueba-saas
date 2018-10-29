@@ -38,9 +38,9 @@ public class InMemoryFeatureBucketAggregator {
     }
 
     public List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, String adeEventType, String contextFieldName,
-                                         List<String> excludeContextFieldNames, FeatureBucketStrategyData strategyData){
+                                         List<String> contextFieldNamesToExclude, FeatureBucketStrategyData strategyData){
         List<FeatureBucketConf> featureBucketConfs =
-                bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName, excludeContextFieldNames);
+                bucketConfigurationService.getRelatedBucketConfs(adeEventType, strategyData.getStrategyName(), contextFieldName, contextFieldNamesToExclude);
 
         return aggregate(pageIterator, featureBucketConfs, strategyData);
     }
