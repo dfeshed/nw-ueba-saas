@@ -209,6 +209,15 @@
       "name": "date-time-millis-to-nano-representation",
       "sourceKey": "event_time",
       "destinationKey": "dateTime"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-process-category",
+      "sourceKey": "process_category",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessCategories"
+      ]
     }
   ]
 }
