@@ -13,7 +13,7 @@
           {{alert.severity}}
         </div>
         <div class='link'>
-          {{alert.name}} | {{alert.timeframe}}
+          {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} | {{alert.timeframe}}
         </div>
       </li>
     {{/each}}

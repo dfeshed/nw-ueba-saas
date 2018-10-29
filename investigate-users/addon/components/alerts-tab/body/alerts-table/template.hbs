@@ -43,7 +43,7 @@
               {{alert.severity}}
             </div>
             <div class='alertName'>
-              {{alert.name}} | <span class='lighter'> {{alert.timeframe}} </span>
+              {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} | <span class='lighter'> {{alert.timeframe}} </span>
             </div>
             <div class='entityName'>
               {{alert.entityName}}

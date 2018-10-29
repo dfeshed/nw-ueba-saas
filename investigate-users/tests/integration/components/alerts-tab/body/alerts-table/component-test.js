@@ -52,7 +52,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   test('it should render alert tab body should show alerts', async function(assert) {
     new ReduxDataHelper(setState).alertsListdata(alertsList.data).build();
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('Highnon_standard_hours|Hourlyad') === 0);
+    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('HighNon-StandardHours|Hourlyad') === 0);
   });
 
   test('it should render alert tab body should show indicators inside alerts', async function(assert) {
@@ -60,7 +60,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     const done = assert.async();
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
     click('.alerts-tab_body_body-table_body_row_date');
-    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('Highnon_standard_hours|Hourlyad') === 0);
+    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('HighNon-StandardHours|Hourlyad') === 0);
     await click('.alerts-tab_body_body-table_body_row_alerts_alert');
     later(() => {
       assert.ok(findAll('.severity')[2].title.indexOf(93) > -1);

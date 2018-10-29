@@ -636,7 +636,7 @@ export default {
       hasMissingCapturesError: 'The regular expression has fewer capture groups than the configured meta captures.',
       confirmDiscardChanges: 'Confirm Discard Changes',
       switchParserUnsavedChanges: 'Your parser has unsaved changes. Are you sure you want to discard these changes and switch ' +
-      'to another parser?',
+        'to another parser?',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.',
         contentOffLine: 'There was a problem loading the Content Log Parser Rules. The Content Server may be offline or inaccessible.'
@@ -970,7 +970,7 @@ export default {
       actions: {
         actionMessages: {
           deleteWarning: 'Deleting a Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
-          'to delete the task from any other applicable systems.'
+            'to delete the task from any other applicable systems.'
         }
       },
       filters: {
@@ -1034,8 +1034,8 @@ export default {
         addJournalEntry: 'Add Journal Entry',
         actionMessages: {
           deleteWarning: 'Warning: You are about to delete one or more incidents which may have tasks and which may have been escalated. ' +
-          'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
-          'to delete the incident and its tasks from any other applicable systems.',
+            'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+            'to delete the incident and its tasks from any other applicable systems.',
           addJournalEntrySuccess: 'You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}',
           incidentCreated: 'You successfully created the incident {{incidentId}} from the selected alerts.',
@@ -3222,7 +3222,7 @@ export default {
         modal: {
           title: 'Delete {{count}} host(s)',
           message: 'Delete the host if the host scan data is no longer required or the agent is uninstalled. ' +
-          'All scan data associated with the host will be deleted. Do you want to continue? '
+            'All scan data associated with the host will be deleted. Do you want to continue? '
         },
         success: 'Host(s) are deleted successfully',
         error: 'Host(s) deletion failed'
@@ -3692,8 +3692,7 @@ export default {
         groupType: 'Group Type',
         appliedPolices: 'Applied Policies'
       },
-      detail: {
-      },
+      detail: {},
       modals: {
         deleteGroups: {
           title: 'Delete Group(s)',
@@ -3728,8 +3727,7 @@ export default {
         appliedGroups: 'Applied To Groups',
         policyParameters: 'Policy Parameters'
       },
-      detail: {
-      },
+      detail: {},
       modals: {
         deletePolicies: {
           title: 'Delete Policy(ies)',
@@ -4240,11 +4238,467 @@ export default {
       startFrom: 'Alerts starts from ',
       status: 'Status',
       indicators: 'Indicators',
+      alertNames: {
+        mass_changes_to_critical_enterprise_groups: {
+          name: 'Mass Changes to Critical Enterprise Groups',
+          desc: 'An abnormal number of changes have been made to critical enterprise groups. These groups often manage and control high-value IT assets. If these assets were compromised, attackers could escalate privileges and exploit them to establish persistent control over the domain. Investigate which elements have been changed, and decide if the changes were legitimate or possibly the result of risky or malicious behavior. This activity is usually associated with the <b>Multiple Member Additions to Enterprise Critical Groups</b> indicator.',
+          related: 'Related Threats: Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed.'
+        },
+        mass_changes_to_groups: {
+          name: 'Mass Changes to Groups',
+          desc: 'An abnormal number of changes have been made to groups. Investigate which elements have been changed, and decide if the changes were legitimate or possibly the result of risky or malicious behavior. This activity is usually associated with the <b>Multiple Group Membership Changes</b> indicator.',
+          related: 'Related Threats: Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed.'
+        },
+        elevated_privileges_granted: {
+          name: 'Elevated Privileges Granted (Rule)',
+          desc: 'Attackers often use regular user accounts, granting them elevated privileges, to exploit the network. Investigate the user that received the elevated privileges, and decide if these changes were legitimate or possibly the result of risky or malicious behavior.',
+          related: 'Related Threats: Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed.'
+        },
+        brute_force_authentication: {
+          name: 'Brute Force Authentication',
+          desc: 'In traditional password cracking attempts, the attacker will try to obtain a password through guesswork or by employing other low-tech methods to gain initial access. The attacker risks getting caught or being locked out by explicitly attempting to authenticate; but with some prior knowledge of the victim\'s password history, may be able to successfully authenticate. Look for additional abnormal indications that the account owner is not the one attempting to access this account. This activity is usually associated with the Multiple Failed Authentications indicator.',
+          related: 'Related Threats: Brute Force - Attackers may attempt to brute force logons without knowledge of passwords or hashes during an operation either with zero knowledge or by attempting a list of known or possible passwords. A related technique uses one password, or a small list of passwords, that matches the complexity policy of the domain and may be a commonly used password. Logons are attempted with that password and many different accounts on a network to avoid account lockouts that would normally occur when brute forcing a single account with many passwords.'
+        },
+        multiple_logons_by_user: {
+          name: 'Multiple Logons by User',
+          desc: 'All authentication activity, malicious or not, appears as normal logons. Therefore, administrators should monitor unexpected "authorized" activity. The key is that attackers use these stolen credentials for unauthorized access, which may provide an opportunity for detection. When an account is being used for unusual activities, e.g. authenticating an unusual amount of times, then the account may have been compromised. This activity can be associated with the Multiple Successful Authentications indicator.',
+          related: 'Related Threats: Valid Account Abuse -  Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.'
+        },
+        user_login_to_abnormal_remote_host: {
+          name: 'User Logon to Abnormal Remote Host',
+          desc: 'Attackers will often need to reacquire credentials and perform other sensitive activities, like using remote access. Tracing the access chain backwards may lead to the discovery of other hosts involved in possibly risky activity. If an attacker\'s presence is limited to a single compromised host or to many compromised hosts, that activity can be associated with the Abnormal Remote Host and Abnormal Host indicators.',
+          related: 'Related Threats: Remote Desktop Protocol - Attackers may connect to a remote system over RDP/RDS to expand access if the service is enabled and allows access to accounts with known credentials. Attackers will likely use Credential Access techniques to acquire credentials to use with RDP.'
+        },
+        user_login_to_abnormal_host: {
+          name: 'User Logon to Abnormal Host',
+          desc: 'Attackers will often need to reacquire credentials and perform other sensitive functions, like using remote access. Tracing the access chain backwards may lead to the discovery of other hosts involved in possibly risky activity. If an attacker\'s presence is limited to a single compromised host or to many compromised hosts, that activity can be associated with the Abnormal Remote Host and Abnormal Host indicators.',
+          related: 'Related Threats: Valid Account Abuse - Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.'
+        },
+        abnormal_site_access: {
+          name: 'Abnormal Site Access',
+          desc: 'Domain controllers store credential password hashes for all accounts on the domain, so they are high-value targets for attackers. Domain controllers that aren\'t stringently updated and secured are susceptible to attack and compromise, which could leave the domain and forest vulnerable. User privileges on multiple domains could indicate that a parent domain has been compromised. Determine if user access to/from multiple domains is legitimate or is an indication of a potential compromise. This activity is usually associated with the Abnormal Site and Logon Attempts from Multiple Sites indicators.',
+          related: 'Related Threats: Valid Account Abuse -  Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.'
+        },
+        data_exfiltration: {
+          name: 'Data Exfiltration',
+          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.<b>',
+          related: 'Related Threats: Scheduled Transfers - Data exfiltration may be performed only at certain times of day or at certain intervals. This could be done to blend traffic patterns with normal activity or availability.'
+        },
+        mass_file_rename: {
+          name: 'Mass File Rename',
+          desc: 'Mass file renaming, triggered by a specific system or local service account could indicate the system may have been infected by Ransomware. Investigating the source user and related file types and folder names can quickly resolve if in fact ransomware has spread across the file system. This activity can be associated with the Multiple File Rename Events indicator.',
+          related: 'Related Threats: Ransomware is a type of malware that encrypts desktop and system files, making them inaccessible. Some ransomware, e.g. "Locky", encrypt and rename files as part of their initial execution. Use this indication of mass-file-renaming to determine if your file system has been infected with Ransomware.'
+        },
+        snooping_user: {
+          name: 'Snooping User',
+          desc: 'Snooping is unauthorized access to another person\'s or company\'s data. Snooping can be as simple as the casual observance of an e-mail on another\'s computer, or watching what someone else is typing. More sophisticated snooping uses software programs to remotely monitor activity on a computer or network device. This activity can be associated with the Multiple File Access Events, Multiple Failed File Access Events, Multiple File Open Events, and Multiple Folder Open Events indicators.',
+          related: 'Related Threats: File System Discovery - Attackers may enumerate files and directories or may search in specific locations of a host or network share for certain information within a file system.'
+        },
+        user_logins_to_multiple_ad_sites: {
+          name: 'User Logons to Multiple Domains',
+          desc: 'Domain controllers store credential password hashes for all accounts on the domain, so they are high-value targets for attackers. Domain controllers that aren\'t stringently updated and secured are susceptible to attack and compromise, which could leave the domain and forest vulnerable. User privileges on multiple domains could indicate that a parent domain has been compromised. Determine if user access to/from multiple domains is legitimate or is an indication of a potential compromise. This activity is usually associated with the Logged into Multiple Domains indicator.',
+          related: 'Related Threats: Valid Account Abuse -  Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.'
+        },
+        user_logged_into_multiple_hosts: {
+          name: 'User Logons to Multiple Hosts',
+          desc: 'Attackers typically need to reacquire credentials periodically. This is because their keychain of stolen credentials will naturally degrade over time, due to password changes and resets. Therefore, attackers frequently maintain a foothold in the compromised organization by installing backdoors and maintaining credentials from many hosts in the environment. This activity can be associated with the Logged onto Multiple Hosts indicator. Valid Account Abuse -  Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.',
+          related: 'Related Threats: Valid Account Abuse -  Attackers may steal the credentials of a specific user or service account using Credential Access techniques. Compromised credentials may be used to bypass access controls within the network and may even be used for persistent access to remote systems. These credentials may also grant an attacker increased privilege to specific systems or access to restricted areas of the network.'
+        },
+        admin_password_change: {
+          name: 'Admin Password Change (Rule)',
+          desc: 'Shared long-term secrets, e.g. privileged account passwords, are frequently used to access anything from print servers to domain controllers. To contain attackers, that seek to leverage these accounts, pay close attention to password changes by admins, and ensure they have been made by trusted parties and have no additional abnormal behavior associated with them. This activity can be associated with the <b>Admin Password Change</b> indicator.',
+          related: 'Related Threats: Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed.'
+        },
+        mass_permission_changes: {
+          name: 'Mass Permission Changes',
+          desc: 'Some credential theft techniques, e.g. Pass-the-Hash, use an iterative, two-stage process. First, an attacker obtains elevated read/write permission to privileged areas of volatile memory and file systems, which are typically accessible only to system-level processes on at least one computer. Second, the attacker attempts to increase access to other hosts on the network. Investigate if abnormal permission changes have taken place on the file systems to ensure that they were not compromised by an attacker. This activity can be associated with the Multiple File Access Permission Changes, Multiple Failed File Access Permission Changes, and Abnormal File Access Permission Change indicators.',
+          related: 'Related Threats: File System Permissions Weakness -  Attackers may replace a legitimate service executable with their own executable to gain persistence and/or privilege escalation to the account context the service is set to execute under (local/domain account, SYSTEM, LocalService, or NetworkService).'
+        },
+        abnormal_ad_changes: {
+          name: 'Abnormal AD Changes',
+          desc: 'If an attacker gains highly privileged access to an Active Directory domain or domain controller, that access can be leveraged to access, control, or even destroy the entire forest. If a single domain controller is compromised and an attacker modifies the AD database, those modifications replicate to every other domain controller in the domain, and depending on the partition in which the modifications are made, the forest as well. Investigate abnormal changes conducted by admins and non-admins in AD to determine if they represent a possible true compromise to the domain. This activity can be associated with the Abnormal Active Directory Change, Multiple Account Management Changes, Multiple User Account Management Changes, and Multiple Failed Account Management Changes indicators.',
+          related: 'Related Threats: Malicious Account Creation - Attackers with a sufficient access may create a domain account that can be used for persistence that does not require persistent remote access tools to be deployed on the system; Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed; Account Discovery - Attackers may attempt to get a listing of local system or domain accounts.; Permission Groups Discovery - Attackers may attempt to find local system or domain-level groups and permissions settings.'
+        },
+        sensitive_user_status_changes: {
+          name: 'Sensitive User Status Changes (Rule)',
+          desc: 'A domain or enterprise administrator account has the default ability to exercise control over all resources in a domain, regardless of whether it operates with malicious or benign intent. This control includes the ability to create and change accounts; read, write, or delete data; install or alter applications; and erase operating systems. Some of these activities trigger organically as part of the account\'s natural life cycle. Investigate these security sensitive user account changes, and determine if it has been compromised.',
+          related: 'Related Threats: Account Manipulation - Account manipulation may aid attackers in maintaining access to credentials and certain permission levels within an environment. Manipulation could consist of modifying permissions, adding or changing permission groups, modifying account settings, or modifying how authentication is performed.'
+        },
+        abnormal_file_access: {
+          name: 'Abnormal File Access',
+          desc: 'Monitor for abnormal file access to prevent improper access to confidential files and theft of sensitive data. By selectively monitoring file views, modifications and deletions, you can detect possibly unauthorized changes to sensitive files, whether caused by an attack or a change management error. This activity can be associated with the <b>Abnormal File Access Indicator</b>.',
+          related: 'Related Threats: Remote File Access - Files may be moved or copied from one system to another to stage attacker tools or other files over the course of an operation. Attackers may also move files laterally between internal victim systems to support Lateral Movement with remote execution using authenticated connections with Windows Admin Shares or Remote Desktop Protocol.'
+        },
+        non_standard_hours: {
+          name: 'Non-Standard Hours',
+          desc: 'All authentication activity, malicious or not, appears as normal logons. Therefore, administrators should monitor unexpected authorized activity. The key is that attackers use these stolen credentials for unauthorized access, which may provide an opportunity for detection. When an account is being used for unusual activities, e.g. authenticating an unusual number of times, then the account may have been compromised. Use the indication of an abnormal activity time to determine if the account has been taken over by an external actor. This activity can be associated with the Abnormal File Access Time, Abnormal Active Directory Change Time, and Abnormal Logon Time indicators.',
+          related: 'Related Threats: Logon Scripts - Windows allows logon scripts to be run whenever a specific user or group of users log into a system. If Attackers can access these scripts, they may insert additional code into the logon script to execute their tools when a user logs in. This code can allow them to maintain persistence on a single system, if it is a local script, or to move laterally within a network, if the script is stored on a central server and pushed to many systems. Depending on the access configuration of the logon scripts, either local credentials or an administrator account may be necessary.'
+        }
+      },
       indicator: {
         name: 'Alert',
         anomalyValue: 'Anomaly Value',
         numOfEvents: 'Event Count',
-        startDate: 'Start Date'
+        startDate: 'Start Date',
+        indicatorNames: {
+          // Presidio File Anoamlies
+          abnormal_file_action_operation_type: {
+            name: 'Abnormal File Access Event',
+            timeline: '{{username}} has accessed a file abnormally.',
+            chartTitle: 'File Access Events Baselines'
+          },
+          abnormal_file_permision_change_operation_type: {
+            name: 'Abnormal File Access Permission Change',
+            timeline: 'Multiple Share Permissions have changed by {{username}}',
+            chartTitle: 'File Access Permission Changes Baseline'
+          },
+          abnormal_event_day_time: {
+            name: 'Abnormal File Access Time',
+            timeline: '{{username}} has accessed a file at an abnormal time',
+            chartTitle: 'File Access Time Baseline'
+          },
+          high_number_of_distinct_folders_opened_attempts: {
+            name: 'Multiple Folder Open Events',
+            timeline: '{{username}} has opened multiple folders',
+            chartTitle: 'Folder Open Events (Last 30 Days)',
+            desc: '{{username}} has opened multiple folders',
+            axisYtitle: 'Sum of Folder Open Events (Hourly)'
+          },
+          high_number_of_successful_file_permission_change: {
+            name: 'Multiple File Access Permission Changes',
+            timeline: 'Multiple file share permissions have changed by {{username}}',
+            chartTitle: 'Permission Changes (Last 30 Days)',
+            desc: 'Multiple file share permissions have changed by {{username}}',
+            axisYtitle: 'Sum of Permission Changes (Hourly)'
+          },
+          high_number_of_successful_file_action_operations: {
+            name: 'Multiple File Access Events',
+            timeline: '{{username}} has successfully accessed files',
+            chartTitle: 'File Access Events (Last 30 Days)',
+            axisYtitle: 'Sum of File Access Events (Hourly)'
+          },
+          high_number_of_failed_file_permission_change_attempts: {
+            name: 'Multiple Failed File Access Permission Changes',
+            timeline: '{{username}} has failed multiple attempts to change file access permissions',
+            chartTitle: 'Failed Permission Changes (Last 30 Days)',
+            desc: '{{username}} has failed multiple attempts to change file access permissions',
+            axisYtitle: 'Sum of Failed Permission Changes (Hourly)'
+          },
+          high_number_of_failed_file_action_attempts: {
+            name: 'Multiple Failed File Access Events',
+            timeline: '{{username}} has failed multiple attempts to access a file',
+            chartTitle: 'Failed File Access Events (Last 30 Days)',
+            desc: '{{username}} has failed multiple attempts to access a file',
+            axisYtitle: 'Sum of Failed File Access Events (Hourly)'
+          },
+          high_number_of_distinct_files_opened_attempts: {
+            name: 'Multiple File Open Events',
+            timeline: '{{username}} has opened multiple files',
+            chartTitle: 'File Open Events (Last 30 Days)',
+            desc: '{{username}} has opened multiple files',
+            axisYtitle: 'Sum of File Open Events (Hourly)'
+          },
+          high_number_of_deletions: {
+            name: 'Multiple File Delete Events',
+            timeline: '{{username}} has deleted multiple files',
+            chartTitle: 'File Delete Events (Last 30 Days)',
+            desc: '{{username}} has deleted multiple files',
+            axisYtitle: 'Sum of File Delete Events (Hourly)'
+          },
+          high_number_of_successful_file_rename_operations: {
+            name: 'Multiple File Rename Events',
+            timeline: '{{username}} has renamed multiple files',
+            chartTitle: 'File Rename Events (Last 30 Days)',
+            desc: '{{username}} has renamed multiple files',
+            axisYtitle: 'Sum of File Rename Events (Hourly)'
+          },
+          high_number_of_file_move_operations: {
+            name: 'Excessive Amount of Files Moved',
+            timeline: '{{username}} has moved files',
+            chartTitle: 'File Move Events (Last 30 Days)',
+            desc: '{{username}} has moved files',
+            axisYtitle: 'Sum of File Move Events (Hourly)'
+          },
+          high_number_of_file_move_operations_to_shared_drive: {
+            name: 'Excessive Amount of Files Moved to Shared Drive',
+            timeline: '{{username}} has moved files to a shared drive',
+            chartTitle: 'File Move Events (Last 30 Days)',
+            desc: '{{username}} has moved files to a shared drive',
+            axisYtitle: 'Sum of File Move Events (Hourly)'
+          },
+          // Presidio Active Directory Anomalies
+          abnormal_site: {
+            name: 'Abnormal Site',
+            timeline: '{{username}} has attempted to access an abnormal site',
+            chartTitle: 'Active Directory Sites (Last 30 days)'
+          },
+          abnormal_group_membership_sensitive_operation: {
+            name: 'Abnormal Group Changes',
+            timeline: '{{username}} made an abnormal change to group memberships',
+            chartTitle: 'Group Changes Baselines'
+          },
+          abnormal_active_directory_day_time_operation: {
+            name: 'Abnormal Active Directory Change Time',
+            timeline: '{{username}} executed Active Directory activity at an abnormal time',
+            chartTitle: 'Active Directory Change Time Baseline'
+          },
+          admin_changed_his_own_password: {
+            name: 'Admin changed his own password',
+            timeline: 'Admin {{username}}\'s has changed a password',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_account_enabled: {
+            name: 'User account enabled',
+            timeline: '{{username}}\'s has enabled an account',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_account_disabled: {
+            name: 'User account disabled',
+            timeline: '{{username}}\'s  has disabled an account',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_account_unlocked: {
+            name: 'User account unlocked',
+            timeline: '{{username}}\'s has unlocked an account',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_account_type_changed: {
+            name: 'User Account type changed',
+            timeline: '{{username}}\'s has changed an account\'s type',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_account_locked: {
+            name: 'User Account locked',
+            timeline: '{{username}}\'s account has been locked out',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_password_never_expires_option_changed: {
+            name: 'User Password Never Expires option changed',
+            timeline: '{{username}}\'s has changed a password policy',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_password_changed: {
+            name: 'User password changed',
+            timeline: '{{username}}\'s has changed a password',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          high_number_of_distinct_sites: {
+            name: 'Logon Attempts from Multiple Sites',
+            timeline: '{{username}} has attempted to access from multiple sites',
+            chartTitle: 'Active Directory Sites (Last 30 Days)',
+            axisYtitle: 'Sum of AD Sites (Hourly)'
+          },
+          high_number_of_senesitive_group_membership_events: {
+            name: 'Multiple Member Additions to Enterprise Critical Groups',
+            timeline: '{{username}} has successfully executed multiple changes to sensitive groups',
+            chartTitle: 'Sensitive Group Changes (Last 30 Days)',
+            axisYtitle: 'Sum of Sensitive Group Changes (Hourly)'
+          },
+          high_number_of_group_membership_events: {
+            name: 'Multiple Group Membership Changes',
+            timeline: '{{username}} has successfully executed multiple changes to groups',
+            chartTitle: 'Group Changes (Last 30 Days)',
+            axisYtitle: 'Sum of Group Changes (Hourly)'
+          },
+          high_number_of_successful_object_change_operations: {
+            name: 'Multiple Active Directory Object Changes',
+            timeline: '{{username}} has successfully executed multiple Active Directory changes',
+            chartTitle: 'Active Directory Changes (Last 30 Days)',
+            axisYtitle: 'Sum of AD Changes (Hourly)'
+          },
+          high_number_of_successful_user_change_security_sensitive_operations: {
+            name: 'Multiple User Account Changes',
+            timeline: '{{username}} has successfully executed multiple sensitive Active Directory changes',
+            chartTitle: 'Sensitive Active Directory Changes (Last\' 30 Days)',
+            axisYtitle: 'Sum of Sensitive AD Changes (Hourly)'
+          },
+          high_number_of_failed_active_directory_events: {
+            name: 'Multiple Failed Account Changes',
+            timeline: '{{username}}  has failed to execute multiple Active Directory changes',
+            chartTitle: 'Failed Active Directory Changes (Last 30 Days)',
+            axisYtitle: 'Sum of Failed AD Changes (Hourly)'
+          },
+          // Presidio Authentication(logon) Anomalies
+          abnormal_logon_day_time: {
+            name: 'Abnormal Logon Time',
+            timeline: '{{username}} has logged on in an abnormal time',
+            chartTitle: 'Logon Time Baseline'
+          },
+          abnormal_destination_machine: {
+            name: 'Abnormal Remote Host',
+            timeline: '{{username}} has attempted to access remotely an abnormal host',
+            chartTitle: 'Remote Hosts Baseline'
+          },
+          abnormal_source_machine: {
+            name: 'Abnormal Host',
+            timeline: '{{username}} has attempted to access an abnormal host',
+            chartTitle: 'Hosts Baseline'
+          },
+          high_number_of_failed_authentications: {
+            name: 'Multiple Failed Authentications',
+            timeline: '{{username}} has failed multiple authentication attempts',
+            chartTitle: 'Failed Logons (Last 30 Days)',
+            axisYtitle: 'Sum of Failed Logons (Hourly)'
+          },
+          high_number_of_successful_authentications: {
+            name: 'Multiple Successful Authentications',
+            timeline: '{{username}} has logged on multiple times',
+            chartTitle: 'Logons (Last 30 Days)',
+            axisYtitle: 'Sum of Logons (Hourly)'
+          },
+          high_number_of_distinct_destination_domains: {
+            name: 'Logged into Multiple Domains',
+            timeline: '{{username}} has attempted to log on to multiple Domains',
+            chartTitle: 'Domains (Last 30 Days)',
+            axisYtitle: 'Sum of Domains (Hourly)'
+          },
+          high_number_of_distinct_src_computer_clusters: {
+            name: 'Logon Attempts to Multiple Source Hosts',
+            timeline: '{{username}} has attempted to log on from multiple hosts',
+            chartTitle: 'Hosts (Last 30 Days)',
+            axisYtitle: 'Sum of Hosts (Hourly)'
+          },
+          high_number_of_distinct_src_computers: {
+            name: 'Logged onto Multiple Hosts',
+            timeline: '{{username}} has attempted to log on from multiple hosts',
+            chartTitle: 'Hosts (Last 30 Days)',
+            axisYtitle: 'Sum of Hosts (Hourly)'
+          },
+          high_number_of_distinct_dst_computer_clusters: {
+            name: 'Logged Into Multiple Hosts - Cluster',
+            timeline: '{{username}} has attempted to log on to multiple hosts',
+            chartTitle: 'Remote Hosts (Last 30 Days)',
+            axisYtitle: 'Sum of Hosts (Hourly)'
+          },
+          high_number_of_distinct_dst_computers: {
+            name: 'Logged Into Multiple Hosts',
+            timeline: '{{username}} has attempted to log on to multiple hosts',
+            chartTitle: 'Remote Hosts (Last 30 Days)',
+            axisYtitle: 'Sum of Hosts (Hourly)'
+          },
+          // Registry anomalies
+          abnormal_process_modified_a_service_key_registry: {
+            name: 'Abnormal Process Modified a Service Key registry',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          // Process anomalies
+          abnormal_process_injects_into_lsass: {
+            name: 'Abnormal process injected into LSASS',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          abnormal_reconnaissance_tool_executed: {
+            name: 'Abnormal reconnaissance tool executed',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          abnormal_process_executeed_a_scripting_tool: {
+            name: 'Abnormal process executed a Scripting Tool',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          abnormal_application_triggered_by_scripting_tool: {
+            name: 'Abnormal Application Triggered by Scripting Tool',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          abnormal_process_opened_by_scripting_tool: {
+            name: 'Abnormal Process Opened by Scripting Tool',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          high_number_of_distinct_reconnaissance_tools_executed: {
+            name: 'Multiple Distinct Reconnaissance Tools Executed',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          high_number_of_reconnaissance_tool_activities_executed: {
+            name: 'Multiple Reconnaissance Tool Activities Executed',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          high_number_of_reconnaissance_tools_executed_process: {
+            name: 'Process Executed Multiple Times by a Reconnaissance Tool',
+            timeline: '',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          // logon anomalies
+          multiple_failed_authentications: {
+            name: 'Multiple Failed Authentications',
+            timeline: '{{value}} failed authentications attempts',
+            chartTitle: 'Number of Failed Authentications (Last 30 Days)',
+            axisYtitle: 'Failed Authentications'
+          },
+          logged_onto_multiple_domains: {
+            name: 'Logged onto Multiple Domains',
+            desc: 'A user has attempted to log on to multiple domains.',
+            timeline: 'accessed  {{value}} domains',
+            chartTitle: 'Number of Domains (Last 30 Days)',
+            axisYtitle: 'Domains'
+          },
+          account_management_change_anomaly: {
+            name: 'Account Management Change Anomaly',
+            desc: 'An abnormal change to an Active Directory attribute activity has been made.',
+            timeline: '{{value}}',
+            chartTitle: '',
+            axisYtitle: ''
+          },
+          multiple_account_management_changes: {
+            name: 'Multiple Account Management Changes',
+            desc: 'A user has sucussfuly executed multiple Active Directory changes',
+            timeline: 'Changed {{value}}> AD objects',
+            chartTitle: 'Number Of Account Management Events (Last 30 Days)',
+            axisYtitle: 'Account Management Events'
+          },
+          multiple_privileged_group_membership_changes: {
+            name: 'Multiple privileged Group Membership Changes',
+            desc: 'A user has sucussfuly executed multiple changes to groups',
+            timeline: 'Changed {{value}} Group Memberships',
+            chartTitle: 'Number Of Group Update Events (Last 30 Days)',
+            axisYtitle: 'Number Of Group membership update Events'
+          },
+          quest_ca_ad_event_time: {
+            name: 'Abnormal Active Directory Change Time',
+            desc: 'A user executed Active Directory activity at an abnormal time',
+            timeline: 'Changed AD objects at {{value}}'
+          },
+          quest_ca_auth_event_time: {
+            name: 'Abnormal Logon Time',
+            desc: 'A user executed Active Directory activity at an abnormal time',
+            timeline: 'Changed AD objects at {{value}}'
+          },
+          multiple_failed_file_access_events: {
+            name: 'Multiple Failed File Access Events',
+            desc: 'A user has failed multiple attempts to access a file',
+            timeline: 'Failed to access {{value}} files',
+            chartTitle: 'Number Of Files Access Events (Last 30 Days)',
+            axisYtitle: 'File Access Events'
+          },
+          multiple_file_delete_events: {
+            name: 'Multiple File Delete Events',
+            desc: 'A user has accessed a high number of files',
+            timeline: '{{username}} has deleted multiple files',
+            chartTitle: 'Number Of File Delete or Move Events (Last 30 Days)',
+            axisYtitle: 'Delete / Move Events'
+          },
+          multiple_folder_open_events: {
+            name: 'Multiple Folder Open Events',
+            desc: 'A user has opened multiple folders',
+            timeline: 'Opened {{value}} folders',
+            chartTitle: 'Number Of Folder Open Events (Last 30 Days)',
+            axisYtitle: 'Folder Open Events'
+          }
+        }
       },
       filters: {
         title: 'Filters',
