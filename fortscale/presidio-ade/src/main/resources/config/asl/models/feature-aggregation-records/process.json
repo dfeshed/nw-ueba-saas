@@ -1,7 +1,7 @@
 {
   "ModelConfs": [
     {
-      "name": "numberOfDistinctReconnaissanceTool.userId.process.hourly",
+      "name": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
         "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly"
@@ -18,12 +18,12 @@
       }
     },
     {
-      "name": "numberOfDistinctReconnaissanceTool.userId.prior.process.hourly",
+      "name": "numberOfDistinctReconnaissanceToolExecuted.userId.prior.process.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctReconnaissanceTool.userId.process.hourly"
+        "modelConfName": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "name": "numberOfReconnaissanceTool.userId.process.hourly",
+      "name": "numberOfReconnaissanceToolExecuted.userId.process.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
         "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolExecutedUserIdProcessHourly"
@@ -50,12 +50,12 @@
       }
     },
     {
-      "name": "numberOfReconnaissanceTool.userId.prior.process.hourly",
+      "name": "numberOfReconnaissanceToolExecuted.userId.prior.process.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfReconnaissanceTool.userId.process.hourly"
+        "modelConfName": "numberOfReconnaissanceToolExecuted.userId.process.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",

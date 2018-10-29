@@ -1,0 +1,84 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctReconnaissanceToolExecuted.userId.process.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctReconnaissanceToolExecuted.userId.prior.process.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfReconnaissanceToolExecutedUserIdProcessHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfReconnaissanceToolExecuted.userId.process.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfReconnaissanceToolExecuted.userId.process.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfReconnaissanceToolExecuted.userId.process.hourly.base_scorer",
+              "model": {
+                "name": "numberOfReconnaissanceToolExecuted.userId.process.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfReconnaissanceToolExecuted.userId.prior.process.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
