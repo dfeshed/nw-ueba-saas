@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { endpointEventId, getAllEvents } from '../../../events-list/data';
+import { endpointRelatedLinkOne, endpointRelatedLinkTwo, endpointEventId, getAllEvents } from '../../../events-list/data';
 import * as endpoint from '../../generic/detail/helpers';
 
 module('Integration | Component | events-list-row/endpoint/detail', function(hooks) {
@@ -24,8 +24,9 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     endpoint.assertDetailColumns(assert, {
-      total: 12,
-      children: 16
+      total: 14,
+      children: 16,
+      relatedLinks: true
     });
 
     const sourceRowElement = endpoint.assertDetailRowParent(assert, {
@@ -273,6 +274,19 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
       row: 16,
       label: 'User Src',
       value: 'CORP\\menons4'
+    });
+
+    endpoint.assertRelatedLinks(assert, {
+      column: 2,
+      row: 1,
+      values: [
+        'Investigate Original Event',
+        'Investigate Destination Domain'
+      ],
+      urls: [
+        endpointRelatedLinkOne,
+        endpointRelatedLinkTwo
+      ]
     });
   });
 

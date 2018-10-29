@@ -1,0 +1,12 @@
+{{#each item as |link|}}
+  {{#if link.url}}
+    <div test-id="keyValueRow" class="key">
+      <dt test-id="keyName" class="key-name"></dt>
+      <dd test-id="keyValue" class="related-link">
+        <a test-id="relatedLink" href="{{link.url}}" target="_blank" rel="noopener noreferrer">
+          {{split-and-capitalize link.type}}
+        </a>
+      </dd>
+    </div>
+  {{/if}}
+{{/each}}

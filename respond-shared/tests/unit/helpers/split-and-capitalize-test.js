@@ -1,4 +1,4 @@
-import { splitAndCapitalize } from 'respond/helpers/split-and-capitalize';
+import { splitAndCapitalize } from 'respond-shared/helpers/split-and-capitalize';
 import { module, test } from 'qunit';
 
 module('Unit | Helper | split-and-capitalize', function() {

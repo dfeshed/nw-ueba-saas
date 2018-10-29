@@ -4,7 +4,7 @@ import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import { settled, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { reEventId, networkEventId, getAllEvents } from '../../../events-list/data';
+import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, networkEventId, getAllEvents } from '../../../events-list/data';
 import * as generic from './helpers';
 
 module('Integration | Component | events-list-row/generic/detail', function(hooks) {
@@ -26,8 +26,9 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     generic.assertDetailColumns(assert, {
-      total: 12,
-      children: 9
+      total: 14,
+      children: 9,
+      relatedLinks: true
     });
 
     const sourceRowElement = generic.assertDetailRowParent(assert, {
@@ -198,6 +199,17 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       label: 'Event Source ID',
       value: '150'
     });
+
+    generic.assertRelatedLinks(assert, {
+      column: 2,
+      row: 1,
+      values: [
+        'Investigate Original Event'
+      ],
+      urls: [
+        networkRelatedLinkOne
+      ]
+    });
   });
 
   test('event labels properly update when locale is changed', async function(assert) {
@@ -244,8 +256,9 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     generic.assertDetailColumns(assert, {
-      total: 12,
-      children: 9
+      total: 14,
+      children: 9,
+      relatedLinks: true
     });
 
     const sourceRowElement = generic.assertDetailRowParent(assert, {
@@ -485,6 +498,17 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       row: 9,
       label: 'Event Source ID',
       value: '47560522'
+    });
+
+    generic.assertRelatedLinks(assert, {
+      column: 2,
+      row: 1,
+      values: [
+        'Investigate Original Event'
+      ],
+      urls: [
+        reRelatedLinkOne
+      ]
     });
   });
 });

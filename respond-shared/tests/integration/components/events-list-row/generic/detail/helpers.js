@@ -8,10 +8,11 @@ const textWithoutChildren = (parentElement) => {
   }, '');
 };
 
-export const assertDetailColumns = (assert, { total, children }) => {
+export const assertDetailColumns = (assert, { total, children, relatedLinks }) => {
   assert.equal(findAll(selectors.column).length, total);
-  assert.equal(findAll(`${selectors.column}:nth-of-type(1)`).length, total);
-  assert.equal(findAll(`${selectors.column}:nth-of-type(2)`).length, 0);
+  const hasRelatedLinks = relatedLinks ? total - 1 : total;
+  assert.equal(findAll(`${selectors.column}:nth-of-type(1)`).length, hasRelatedLinks);
+  assert.equal(findAll(`${selectors.column}:nth-of-type(2)`).length, hasRelatedLinks ? 1 : 0);
   assert.equal(find(`${selectors.column}:nth-of-type(1)`).children.length, children);
 };
 
@@ -29,6 +30,17 @@ export const assertDetailRow = (assert, { column, row, label, value, nestedColum
   assert.equal(element.querySelectorAll(selectors.value).length, 1);
   assert.equal(element.querySelector(selectors.value).textContent.trim(), value);
   assert.equal(element.querySelectorAll(selectors.column).length, nestedColumns || 0);
+};
+
+export const assertRelatedLinks = (assert, { column, row, values, urls }) => {
+  const element = getContextElement(column, row);
+  assert.equal(element.querySelector(selectors.key).textContent.trim(), 'Related Links');
+  values.forEach((value, i) => {
+    const index = i + 1;
+    const selector = `${selectors.column} ${selectors.row}:nth-of-type(${index}) ${selectors.relatedLink}`;
+    assert.equal(element.querySelector(selector).textContent.trim(), value);
+    assert.equal(element.querySelector(selector).getAttribute('href'), urls[i]);
+  });
 };
 
 export const assertDetailRowParent = (assert, { column, row, label, value }) => {

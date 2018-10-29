@@ -18,6 +18,7 @@ export default Component.extend({
   testId: 'keyValueRow',
   classNames: ['key'],
   attributeBindings: ['testId:test-id'],
+  nestedComponentClass: 'properties-for',
   i18n: service(),
 
   @computed('member.name', 'itemPath', 'i18n.locale')
