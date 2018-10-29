@@ -24,8 +24,8 @@ const initialState = Immutable.from({
     total_severity_count: {
       Critical: null,
       High: null,
-      Low: null,
-      Medium: null
+      Medium: null,
+      Low: null
     }
   },
   filter: initialFilterState,

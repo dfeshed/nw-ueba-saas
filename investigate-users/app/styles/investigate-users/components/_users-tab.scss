@@ -195,19 +195,32 @@
           justify-content: center;
           padding: rsa-whitespace(least);
 
+          &_number {
+            padding-top: rsa-whitespace(less) + rsa-whitespace(least);
+          }
+
           &_sort {
             padding: 0 rsa-whitespace();
             color: text-color(primary, light);
             display: flex;
 
             .label-text {
-              padding: rsa-whitespace(less);
+              padding-top: rsa-whitespace();
+              @include rsa-font(header);
             }
 
             .ember-power-select-trigger {
               @include rsa-font(default);
               width: 10rem;
             }
+
+            .ember-power-select-trigger {
+              background: transparent;
+              height: 2*rsa-whitespace();
+              top: rsa-whitespace(least);
+              left: rsa-whitespace(least);
+              border: 1px solid text-color(primary);
+          }
 
             .ember-power-select-dropdown {
               @include rsa-font(default);
@@ -249,7 +262,7 @@
       }
 
       &_name {
-        @include rsa-font(default, small);
+        @include rsa-font(default);
         color: text-color(secondary, light);
       }
 
@@ -293,8 +306,7 @@
           > ul > li {
             display: flex;
             padding: rsa-whitespace(least);
-            align-items: center;
-
+            justify-content: space-between;
             > div {
               margin: 0 0 0 rsa-whitespace(least);
             }
@@ -305,12 +317,12 @@
               height: 15px;
 
               &_name {
-                @include rsa-font(default, smaller);
+                @include rsa-font(default);
               }
             }
 
             .link {
-              @include rsa-font(default, smaller);
+              @include rsa-font(default);
               color: text-color(secondary, light);
               padding-left: rsa-whitespace(less);
             }

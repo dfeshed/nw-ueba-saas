@@ -1,16 +1,23 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { riskyUserCount, adminUserCount, watchedUserCount } from 'investigate-users/reducers/users/selectors';
+import { riskyUserCount, adminUserCount, watchedUserCount, getUserFilter } from 'investigate-users/reducers/users/selectors';
+import { updateFilter } from 'investigate-users/actions/user-tab-actions';
 
 const stateToComputed = (state) => ({
   riskyUserCount: riskyUserCount(state),
   adminUserCount: adminUserCount(state),
-  watchedUserCount: watchedUserCount(state)
+  watchedUserCount: watchedUserCount(state),
+  filter: getUserFilter(state)
 });
+
+const dispatchToActions = {
+  updateFilter
+};
 
 const WatchedUserComponent = Component.extend({
   actions: {
     applyFilter(filterFor) {
+      this.send('updateFilter', 'RESET', true);
       let filter = null;
       if (filterFor === 'risky') {
         filter = { minScore: 0 };
@@ -19,9 +26,9 @@ const WatchedUserComponent = Component.extend({
       } else if (filterFor === 'watched') {
         filter = { isWatched: true };
       }
-      this.get('applyUserFilter')(filter);
+      this.get('applyUserFilter')(this.get('filter').merge(filter));
     }
   }
 });
 
-export default connect(stateToComputed)(WatchedUserComponent);
+export default connect(stateToComputed, dispatchToActions)(WatchedUserComponent);

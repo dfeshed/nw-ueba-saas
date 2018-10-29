@@ -35,7 +35,7 @@ module('Integration | Component | alerts-tab/body', function(hooks) {
 
   test('it should render alert tab body and should have header', async function(assert) {
     await render(hbs`{{alerts-tab/body}}`);
-    assert.equal(find('.severity-bar').textContent.replace(/\s/g, ''), 'CriticalHighLowMedium');
+    assert.equal(find('.severity-bar').textContent.replace(/\s/g, ''), 'CriticalHighMediumLow');
   });
 
   test('it should render alert tab body and should have header with severity bar', async function(assert) {

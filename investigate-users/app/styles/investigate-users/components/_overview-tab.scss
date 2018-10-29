@@ -31,29 +31,21 @@
 
         &_row {
           padding: rsa-whitespace(less) 0;
-          height: 65px;
+          height: 70px;
           text-align: center;
           display: flex;
           flex-direction: row;
           border-bottom: 1px SOLID background-color(primary, dark);
 
           &_score {
-            width: 65px;
-
-            .rsa-content-badge-score {
-              padding: rsa-whitespace(least);
-            }
-
-            .score {
-              @include rsa-font(default);
-            }
+            width: 70px;
           }
 
           &_name {
             align-items: center;
             display: flex;
             color: text-color(secondary, light);
-            @include rsa-font(navigation, small);
+            @include rsa-font(navigation);
             padding: rsa-whitespace(less) rsa-whitespace();
           }
 
@@ -99,7 +91,7 @@
 
           &_pill {
             width: calc(50% - 20px);
-            height: 60px;
+            height: 75px;
             float: left;
             display: flex;
             flex-direction: row;
@@ -113,13 +105,13 @@
               width: 80%;
 
               &_score {
-                height: 20px;
+                height: 25px;
                 border-radius: 6px;
                 width: 6px;
               }
 
               &_text {
-                @include rsa-font(header, small);
+                @include rsa-font(header);
                 color: text-color(primary, light);
                 padding: rsa-whitespace(less);
               }
@@ -129,15 +121,16 @@
               display: flex;
               flex-direction: column;
               padding: 0 rsa-whitespace();
+              width: 100%;
 
               &_name {
                 white-space: nowrap;
                 overflow: hidden;
                 display: inline-flex;
                 padding: .35rem;
-                height: rsa-whitespace();
+                height: 1.2rem;
                 color: text-color(secondary, light);
-                @include rsa-font(default, small);
+                @include rsa-font(default);
 
                 &_text {
                   white-space: nowrap;
@@ -158,7 +151,7 @@
                 overflow: hidden;
                 display: inline-flex;
                 padding: rsa-whitespace(least);
-                @include rsa-font(default, smaller);
+                @include rsa-font(default, small);
 
                 &_name {
                   white-space: nowrap;
@@ -194,7 +187,7 @@
 
               &_text {
                 color: text-color(primary);
-                @include rsa-font(default, smaller);
+                @include rsa-font(default, small);
               }
 
               &_list {
@@ -235,7 +228,7 @@
 
           .rsa-form-button {
             height: 100%;
-            justify-content: space-evenly;
+            justify-content: space-between;
             border: none;
             display: flex !important;
             flex-direction: column;
@@ -253,7 +246,7 @@
           .count {
             @include rsa-font(default);
             color: text-color(secondary, light);
-            padding-top: rsa-whitespace(least);
+            padding-top: rsa-whitespace(less);
           }
 
           .text {

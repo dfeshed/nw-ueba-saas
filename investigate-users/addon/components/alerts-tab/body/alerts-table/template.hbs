@@ -25,7 +25,7 @@
         <span class='alerts-tab_body_body-table_body_row_date_icon'>
           {{rsa-icon size='small' style='filled' name='arrow-up-12'}}
         </span>
-        {{t 'investigateUsers.alerts.startFrom'}} {{alert-date timestamp=timestamp}}
+        {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{alert-date timestamp=timestamp}}
       </div>
       <div class='alerts-tab_body_body-table_body_row_alerts {{if (eq timestamp timeLineClicked) 'expandRow'}}'>
         {{#each alertList as |alert|}}

@@ -64,9 +64,9 @@ const getUsers = (filter) => {
   };
 };
 
-const updateFilter = (filter) => {
+const updateFilter = (filter, needNotToPullUsers) => {
   return (dispatch, getState) => {
-    filter = filter || getUserFilter(getState());
+    filter = (filter === 'RESET') ? null : filter || getUserFilter(getState());
     dispatch(resetUsers());
     if (filter) {
       filter = filter.setIn(['fromPage'], 1);
@@ -75,8 +75,10 @@ const updateFilter = (filter) => {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_USERS,
       payload: filter
     });
-    dispatch(getSeverityDetailsForUserTabs(filter));
-    dispatch(getUsers(filter));
+    if (true !== needNotToPullUsers) {
+      dispatch(getSeverityDetailsForUserTabs(filter));
+      dispatch(getUsers(filter));
+    }
   };
 };
 

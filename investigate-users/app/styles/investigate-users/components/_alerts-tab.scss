@@ -15,8 +15,8 @@
       overflow-x: hidden;
 
       &_title {
-        @include rsa-font(default);
-        color: text-color(primary);
+        @include rsa-font(default, large);
+        color: text-color(primary, lighter);
       }
 
       .label-text {
@@ -92,7 +92,8 @@
     }
 
     &_body {
-      height: calc(100% - 60px);
+      height: calc(100% - 80px);
+      padding-top: rsa-whitespace(less);
 
       &-table {
         flex-direction: column !important;
@@ -101,10 +102,9 @@
         &_header {
           display: flex;
           width: 100%;
-          @include rsa-font(header, small);
+          @include rsa-font(header, medium);
           color: text-color(primary, lighter);
-          background-color: text-color(primary, dark);
-          border: 1px solid text-color(primary);
+          background-color: text-color(primary, darkest);
 
           .severity {
             width: 15%;
@@ -159,8 +159,8 @@
             &_date {
               display: flex;
               padding: rsa-whitespace();
-              color: text-color(secondary, dark);
-              @include rsa-font(default, small);
+              color: text-color(secondary, light);
+              @include rsa-font(default);
               border-bottom: 1px solid text-color(primary, darkest);
               &_icon {
                 padding: 0 rsa-whitespace(least) 0 0;
@@ -176,7 +176,8 @@
               &_alert {
                 display: flex;
                 align-items: center;
-                @include rsa-font(default, small);
+                @include rsa-font(default);
+                color: text-color(primary, lighter);
                 border-top: 1px solid text-color(primary);
 
                 .severity {
@@ -199,7 +200,7 @@
                 }
 
                 .lighter {
-                  color: text-color(primary, light);
+                  color: text-color(primary, lighter);
                 }
 
                 .Critical {
@@ -221,31 +222,31 @@
                 .alertName {
                   width: 25%;
                   padding: rsa-whitespace(less);
-                  color: text-color(secondary);
+                  color: text-color(secondary, light);
                 }
 
                 .entityName {
                   width: 15%;
                   padding: rsa-whitespace(less);
-                  color: text-color(primary, light);
+                  color: text-color(primary, lighter);
                 }
 
                 .startTime {
                   width: 15%;
                   padding: rsa-whitespace(less);
-                  color: text-color(primary, light);
+                  color: text-color(primary, lighter);
                 }
 
                 .indicatorCount {
                   width: 15%;
                   padding: rsa-whitespace(less);
-                  color: text-color(primary, light);
+                  color: text-color(primary, lighter);
                 }
 
                 .status {
                   width: 15%;
                   padding: rsa-whitespace(less);
-                  color: text-color(primary, light);
+                  color: text-color(primary, lighter);
                 }
 
                 &_indicators {
@@ -253,27 +254,18 @@
                   margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) 3*rsa-whitespace();
                   border: 1px solid text-color(primary, dark);
 
-                  .rsa-data-table-header {
-                    background-color: text-color(primary, dark);
-                    @include rsa-font(default, smaller);
-                  }
-
-                  .rsa-data-table-header-cell {
-                    border: 1px solid text-color(primary);
-                    @include rsa-font(default, smaller);
-                  }
-
                   .rsa-data-table-body-cell {
-                    @include rsa-font(default, smaller);
+                    background-color: text-color(primary, darkest);
+                    @include rsa-font(default, small);
                     padding: rsa-whitespace(least) rsa-whitespace(less);
                   }
 
                   .primary {
-                    color: text-color(secondary);
+                    color: text-color(secondary, light);
                   }
 
                   .lighter {
-                    color: text-color(primary, light);
+                    color: text-color(primary, lighter);
                   }
                 }
               }

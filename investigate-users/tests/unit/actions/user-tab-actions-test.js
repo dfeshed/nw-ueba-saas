@@ -108,6 +108,63 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
     updateFilter(initialFilterState)(dispatch);
   });
 
+  test('it can updateFilter', (assert) => {
+    assert.expect(5);
+    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (obj.payload) {
+        assert.equal(obj.payload.sortField, 'score');
+      }
+      if (typeof obj === 'function') {
+        obj(({ type }) => {
+          assert.ok(actions.includes(type));
+        });
+      }
+    };
+    updateFilter(initialFilterState)(dispatch);
+  });
+
+  test('it should reset Filter', (assert) => {
+    assert.expect(2);
+    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (obj.payload) {
+        assert.equal(obj.payload, null);
+      }
+      if (typeof obj === 'function') {
+        obj(() => {
+          assert.notOk(true, 'this should not be called.');
+        });
+      }
+    };
+    updateFilter('RESET', true)(dispatch);
+  });
+
+  test('it can updateFilter without fetching user details', (assert) => {
+    assert.expect(3);
+    const actions = ['INVESTIGATE_USER::UPDATE_FILTER_FOR_USERS', 'INVESTIGATE_USER::RESET_USERS', 'INVESTIGATE_USER::GET_SEVERITY_FOR_USERS', 'INVESTIGATE_USER::GET_USERS'];
+    const dispatch = (obj) => {
+      if (obj.type) {
+        assert.ok(actions.includes(obj.type));
+      }
+      if (obj.payload) {
+        assert.equal(obj.payload.sortField, 'score');
+      }
+      if (typeof obj === 'function') {
+        obj(() => {
+          assert.notOk(true, 'this should not be called.');
+        });
+      }
+    };
+    updateFilter(initialFilterState, true)(dispatch);
+  });
+
   test('it can getUsers', (assert) => {
     assert.expect(2);
     const done = assert.async();
