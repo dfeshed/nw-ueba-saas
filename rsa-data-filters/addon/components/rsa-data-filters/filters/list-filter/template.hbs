@@ -1,7 +1,7 @@
 <h2 class='filter-text'>{{filterOptions.label}}</h2>
 <vbox class='list-filter-content'>
   {{#each filterValue as |option|}}
-    <a href="#" {{action 'toggleSelected' option}} class="rsa-form-checkbox-label {{if option.selected 'checked'}} list-filter-option">
+    <a href="#" {{action 'toggleSelected' option}} {{action 'toggleSelected' option on='keyPress'}} class="rsa-form-checkbox-label {{if option.selected 'checked'}} list-filter-option">
       {{rsa-form-checkbox
         checked=option.selected
         change=(action 'toggleSelected' option)}}

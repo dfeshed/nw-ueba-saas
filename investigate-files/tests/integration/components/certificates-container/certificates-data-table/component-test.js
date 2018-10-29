@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, settled, find, click } from '@ember/test-helpers';
+import { findAll, render, settled, find, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import Immutable from 'seamless-immutable';
@@ -11,6 +11,18 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let initState;
+const callback = () => {};
+const e = {
+  clientX: 5,
+  clientY: 2,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
 
 const items = [
   {
@@ -54,6 +66,11 @@ module('Integration | Component | certificates-container/certificates-data-table
     resolver: engineResolverFor('investigate-files')
   });
   hooks.beforeEach(function() {
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
+
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
@@ -170,5 +187,24 @@ module('Integration | Component | certificates-container/certificates-data-table
       });
     });
   });
+  test('testing the certificate table row context-menu', async function(assert) {
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .build();
+    await render(hbs`{{certificates-container/certificates-data-table}}{{context-menu}}`);
 
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 1);
+      click('.context-menu__item:nth-of-type(1)');
+      return settled().then(() => {
+        assert.equal(findAll('.file-status-radio').length, 3, 'Edit Certificate status model is rendered.');
+      });
+    });
+  });
 });

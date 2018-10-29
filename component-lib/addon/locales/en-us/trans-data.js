@@ -874,7 +874,7 @@ export default {
           certificateStatus: 'Status'
         },
         noResultsMessage: 'No certificates were found.',
-        footer: '{{count}} of {{total}} {{label}}',
+        footer: 'Showing {{count}} of {{total}} | {{selected}} selected',
         filter: {
           invalidFilterInput: 'Invalid filter input',
           invalidFilterInputLength: 'Filter input longer than 256 characters',
@@ -2070,7 +2070,13 @@ export default {
     certificatePageTitle: 'Certificates',
     certificate: {
       editCertificateStatus: {
-        actionNote: 'Applies to all files signed by this certificate'
+        actionNote: 'Applies to all files signed by this certificate.',
+        commentLimitError: 'Comment is limited to 900 characters',
+      },
+      contextMenu: {
+        actions: {
+          editCertificateStatus: 'Edit Certificate Status'
+        }
       }
     },
     button: {

@@ -39,6 +39,6 @@ module('Integration | Component | certificates-container/certificate-pager', fun
       .build();
     await render(hbs`{{certificates-container/certificates-pager}}`);
     assert.equal(findAll('.certificates-pager .certificates-info').length, 1, 'Footer has rendered.');
-    assert.equal(find('.certificates-info').textContent.trim(), '100 of 200', 'Footer shows certificates number aptly.');
+    assert.equal(find('.certificates-info').textContent.trim(), 'Showing 100 of 200 | 0 selected', 'Footer shows certificates number aptly.');
   });
 });

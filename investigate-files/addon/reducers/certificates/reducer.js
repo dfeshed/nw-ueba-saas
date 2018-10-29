@@ -46,7 +46,10 @@ const _handleAppendCertificates = (action) => {
 
 const _toggleSelectedCertificate = (state, payload) => {
   const { thumbprint } = payload;
-
+  const selected = state.selectedCertificateList;
+  if (selected.length > 0 && selected[0].thumbprint == thumbprint) {
+    return state.merge({ 'selectedCertificateList': [], 'certificateStatusData': {} });
+  }
   return state.merge({ 'selectedCertificateList': [{ thumbprint }], 'certificateStatusData': {} });
 
 };

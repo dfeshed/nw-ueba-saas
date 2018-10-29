@@ -32,6 +32,9 @@ export default Component.extend({
 
   actions: {
     toggleSelected(option) {
+      if (event.charCode && event.charCode != 32) {
+        return true;
+      }
       const { selected } = option;
       const { name } = this.get('filterOptions');
       const onChange = this.get('onChange');

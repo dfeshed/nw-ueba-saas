@@ -43,10 +43,13 @@ const CertificateStatus = Component.extend({
   isDisabled(selections) {
     return selections && !selections.length;
   },
-
   @computed('data.comment', 'data.certificateStatus')
-  isSaveButtonDisabled(comment, certificateStatus) {
-    return isEmpty(comment) || isEmpty(certificateStatus);
+  isSaveButtonDisabled(comment, fileStatus) {
+    return isEmpty(comment) || isEmpty(fileStatus);
+  },
+  @computed('data.comment')
+  isCharectarLimitReached(comment) {
+    return comment && comment.length >= 900;
   },
 
   @computed('statusData', 'selections')
@@ -64,24 +67,16 @@ const CertificateStatus = Component.extend({
   },
 
   actions: {
-    showStatusModel() {
-      const selections = this.get('selections');
-      if (selections && selections.length === 1) {
-        this.send('getSavedCertificateStatus', selections.mapBy('thumbprint'));
-      }
-      this.set('showModal', true);
-    },
     closeModal() {
-      this.set('showModal', false);
+      this.closeCertificateModal();
     },
-
     saveStatus() {
       const callbackOptions = {
         onSuccess: () => success('configure.endpoint.certificates.status.success'),
         onFailure: () => failure('configure.endpoint.certificates.status.error')
       };
-      this.set('showModal', false);
       this.send('saveCertificateStatus', this.get('selections').mapBy('thumbprint'), this.get('data'), callbackOptions);
+      this.closeCertificateModal();
     }
   }
 });

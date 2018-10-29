@@ -2,7 +2,8 @@
   columnsConfig=certificatesColumns
   items=certificatesItems
   onRowClick=(action 'toggleSelectedRow')}}
-  {{#certificates-container/certificates-data-table/header  translateTitles=true enableColumnSelector=isCertificateView as |column|}}
+  {{#certificates-container/certificates-data-table/header  
+    translateTitles=true enableColumnSelector=isCertificateView as |column|}}
     {{#if (not-eq column.dataType "radio")}}
       <span class='js-move-handle'>
         {{t column.title}}
@@ -16,6 +17,13 @@
     </centered>
   {{else}}
     {{#rsa-data-table/body
+      rowComponentClass=(
+        component 'certificates-container/certificates-data-table/table-row'
+        selections=selections
+        beforeContextMenuShow=(action 'beforeContextMenuShow')
+        editCertificateStatus=(action 'showStatusWindow')
+        closeCertificateModal=(action 'closeModal')
+      )
       noResultsMessage=(t 'configure.endpoint.certificates.noResultsMessage') as |item index column|}}
       {{#rsa-data-table/body-cell column=column}}
         {{#if (eq column.dataType "radio")}}
@@ -32,3 +40,6 @@
     {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfCertificates')}}
   {{/if}}
 {{/rsa-data-table}}
+{{#if showModal}}
+  {{certificates-container/certificate-status-modal closeCertificateModal=(action 'closeModal')}}
+{{/if}}

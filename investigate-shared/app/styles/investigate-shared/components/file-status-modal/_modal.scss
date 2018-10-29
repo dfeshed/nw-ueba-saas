@@ -30,7 +30,7 @@ $modalWidth: 500px;
     .radio-controls, .comment-box {
       font-weight: 400;
       font-size: 1rem;
-      line-height: 2rem;
+      line-height: 1.5rem;
     }
     .file-status-radio {
       width: fit-content;
@@ -45,6 +45,12 @@ $modalWidth: 500px;
         resize: none;
         margin-top: rsa-whitespace(less);
       }
+    }
+    p.certificate-action-note {
+      line-height: 1.2rem;
+      color: text-color(primary, light);
+      margin-top: -0.4rem;
+      margin-bottom: 0.7rem;
     }
     .black-list-options {
       height: auto;

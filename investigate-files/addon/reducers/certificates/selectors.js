@@ -30,7 +30,7 @@ export const CERTIFICATE_COLUMNS = [
     field: 'certificateStatus',
     title: 'configure.endpoint.certificates.columns.certificateStatus',
     label: 'Status',
-    width: 300,
+    width: 100,
     disableSort: true
   },
   {

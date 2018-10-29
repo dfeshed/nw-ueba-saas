@@ -3,7 +3,9 @@ import { certificatesLoading, columns } from 'investigate-files/reducers/certifi
 import { connect } from 'ember-redux';
 import {
   getPageOfCertificates,
-  toggleCertificateSelection
+  toggleCertificateSelection,
+  saveCertificateStatus,
+  getSavedCertificateStatus
  } from 'investigate-files/actions/certificate-data-creators';
 
 
@@ -18,7 +20,9 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   getPageOfCertificates,
-  toggleCertificateSelection
+  toggleCertificateSelection,
+  saveCertificateStatus,
+  getSavedCertificateStatus
 };
 
 const Certificates = Component.extend({
@@ -28,11 +32,41 @@ const Certificates = Component.extend({
 
   isAllSelected: true,
 
+  showModal: false,
+
+  isAlreadySelected(selections, item) {
+    let selected = false;
+    if (selections && selections.length) {
+      selected = selections.findBy('thumbprint', item.thumbprint);
+    }
+    return selected;
+  },
   actions: {
     toggleSelectedRow(item, index, e, table) {
       table.set('selectedIndex', index);
       this.send('toggleCertificateSelection', item);
+      e.preventDefault();
+    },
+    showStatusWindow() {
+      const selections = this.get('selections');
+      if (selections && selections.length === 1) {
+        this.send('getSavedCertificateStatus', selections.mapBy('thumbprint'));
+      }
+      this.set('showModal', true);
+    },
+    closeModal() {
+      this.set('showModal', false);
+    },
+    beforeContextMenuShow(item) {
+      if (!this.isAlreadySelected(this.get('selections'), item)) {
+        this.send('toggleCertificateSelection', item);
+      }
+      const selections = this.get('selections');
+      if (selections && selections.length === 1) {
+        this.send('getSavedCertificateStatus', selections);
+      }
     }
+
   }
 });
 

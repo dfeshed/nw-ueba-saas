@@ -1,0 +1,52 @@
+{{#rsa-application-modal
+  style='standard file-status-modal'
+  eventId='certificate-status'
+  onClose=(action 'closeModal')
+  autoOpen=true
+  label=(t 'configure.endpoint.certificates.status.edit')}}
+  <div class="modal-content">
+    <box class='radio-controls rsa-form-radio-group' fit>
+      <h4 class='rsa-form-radio-group-label certificate-status-title'>
+        {{t 'configure.endpoint.certificates.status.certificateStatus'}}
+      </h4>
+      <p class='certificate-action-note'>{{t 'investigateFiles.certificate.editCertificateStatus.actionNote'}}</p>
+      {{#each radioButtons as |radio|}}
+        <label class='rsa-form-radio-label file-status-radio {{if
+          (eq radio.value data.certificateStatus) 'checked'}}'>
+          {{radio-button
+            radioClass='status-type'
+            value=radio.value
+            groupValue=data.certificateStatus}}
+          {{t radio.label}}
+        </label>
+
+      {{/each}}
+    </box>
+    <box class="comment-box">
+      {{rsa-form-textarea
+        label=(t 'investigateFiles.editFileStatus.commentTitle')
+        value=data.comment
+        maxLength=900
+      }}
+      {{#if isCharectarLimitReached}}
+        <span class='limit-reached'>
+          {{t 'investigateFiles.certificate.editCertificateStatus.commentLimitError'}}
+        </span>
+      {{/if}}
+    </box>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button class='close-edit-modal' defaultAction=(action 'closeModal')}}
+        {{t 'investigateFiles.editFileStatus.cancelBtn'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button
+        style='primary'
+        isDisabled=isSaveButtonDisabled
+        class='save-certificate-status'
+        defaultAction=(action 'saveStatus')}}
+        {{t 'investigateFiles.editFileStatus.saveBtn'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
