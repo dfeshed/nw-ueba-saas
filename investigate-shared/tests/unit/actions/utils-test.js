@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 
 import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
-import { encodeMetaFilterConditions, _isValidQueryFilter } from 'investigate-shared/actions/api/events/utils';
+import { encodeMetaFilterConditions, _isValidQueryFilter, createFilename } from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | utils');
 
@@ -122,4 +122,34 @@ test('_isValidQueryFilter returns false for a invalid filter', function(assert) 
   const result = _isValidQueryFilter(filters);
 
   assert.notOk(result, 'Discarded Filter');
+});
+
+test('createFilename returns proper fileName when selectAll is true', function(assert) {
+  const eventType = 'NETWORK';
+  const serviceName = 'Conc';
+  const sessionIds = [];
+  const isSelectAll = true;
+
+  const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
+  assert.equal(result, 'Conc_All_NETWORK', 'return correct file name');
+});
+
+test('createFilename returns proper fileName when there are multiple sessionIds', function(assert) {
+  const eventType = 'NETWORK';
+  const serviceName = 'Conc';
+  const sessionIds = [1, 2, 3];
+  const isSelectAll = false;
+
+  const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
+  assert.equal(result, 'Conc_3_NETWORK', 'return correct file name');
+});
+
+test('createFilename returns proper fileName when there is one sessionid', function(assert) {
+  const eventType = 'NETWORK';
+  const serviceName = 'Conc';
+  const sessionIds = [3412];
+  const isSelectAll = false;
+
+  const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
+  assert.equal(result, 'Conc_3412_NETWORK', 'return correct file name');
 });

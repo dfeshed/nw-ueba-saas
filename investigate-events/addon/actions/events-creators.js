@@ -290,8 +290,9 @@ export const extractFiles = (eventType, fileType, sessionIds = [], isSelectAll) 
 
     const queryNode = getActiveQueryNode(getState());
     const { serviceId } = queryNode;
-
-    const filename = createFilename(eventType, fileType, serviceId);
+    const { investigate: { services: { serviceData } } } = getState();
+    const selectedServiceData = serviceData.find((s) => s.id === serviceId);
+    const filename = createFilename(eventType, selectedServiceData.displayName, sessionIds, isSelectAll);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,

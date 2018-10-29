@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { next } from '@ember/runloop';
+import { debounce } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
@@ -19,6 +19,17 @@ export default Component.extend({
 
   sendMessage: () => {},
 
+  /**
+  * @public
+  * Need this wrap this action in debouce as Firefox
+  * has some issues with `next` loop. It fires the
+  * action immediately, which cause the template
+  * to render null as iframeSrc.
+  */
+  debouncedAction() {
+    this.get('sendMessage')();
+  },
+
   @computed('extractLink')
   iframeSrc(extractLink) {
     const lastExtractLink = this.get('lastExtractLink');
@@ -34,10 +45,7 @@ export default Component.extend({
         this.get('flashMessages').success(this.get('i18n').t('recon.extractedFileReady'));
       }
       this.set('lastExtractLink', extractLink);
-      next(() => {
-        // send out action to clear up files state in the next loop
-        this.get('sendMessage')();
-      });
+      debounce(this, this.debouncedAction, 200);
     }
     return source;
   }

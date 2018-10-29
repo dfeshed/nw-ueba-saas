@@ -283,7 +283,7 @@ export const addFilenameFilter = (query, filename) => {
   return query;
 };
 
-export const createFilename = (eventType, fileType, serviceId) => {
+export const createFilename = (eventType, serviceName, sessionIds, isSelectAll) => {
   /*
    If the file name is empty, the service will return a UUID filename.  And
    if we do not have the required paramters to make a file name, it is best
@@ -291,8 +291,14 @@ export const createFilename = (eventType, fileType, serviceId) => {
    */
   let fileName = '';
 
-  if (serviceId && eventType && fileType) {
-    fileName = `${serviceId}_${eventType}_AS_${fileType}`;
+  if (serviceName && eventType) {
+    if (isSelectAll) {
+      fileName = `${serviceName.replace(/\s/g, '')}_All_${eventType}`;
+    } else if (sessionIds.length > 1) {
+      fileName = `${serviceName.replace(/\s/g, '')}_${sessionIds.length}_${eventType}`;
+    } else if (sessionIds.length === 1) {
+      fileName = `${serviceName.replace(/\s/g, '')}_${sessionIds[0]}_${eventType}`;
+    }
   }
 
   return fileName;

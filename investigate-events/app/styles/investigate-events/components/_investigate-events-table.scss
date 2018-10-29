@@ -51,6 +51,12 @@
       display: inline-flex;
       float: left;
       max-height: 43px;
+      iframe {
+        opacity: 0;
+        width: 1px;
+        position: absolute;
+        left: -9999px;
+      }
       &.is-disabled {
         .ember-power-select-trigger{
           @include border(1px, solid, primary, dark);
