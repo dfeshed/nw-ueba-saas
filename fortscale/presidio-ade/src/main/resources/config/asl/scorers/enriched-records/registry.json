@@ -22,10 +22,10 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "string-conditional-scorer",
               "name": "processFilePath.setServiceRegistryKey.registry.score",
               "conditional-field": "registryKeyGroup",
-              "conditional-value": ["SERVICES_IMAGE_PATH"],
+              "conditional-value": "SERVICES_IMAGE_PATH",
               "scorer": {
                 "type": "string-conditional-scorer",
                 "name": "processFilePath.setServiceRegistryKey.registry.scorer",
