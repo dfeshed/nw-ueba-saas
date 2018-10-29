@@ -361,6 +361,11 @@ export default class DataHelper {
     return this;
   }
 
+  focusedPolicy(config) {
+    _set(this.state, 'usm.policies.focusedItem', config);
+    return this;
+  }
+
   selectedPolicies(config) {
     _set(this.state, 'usm.policies.itemsSelected', config);
     return this;

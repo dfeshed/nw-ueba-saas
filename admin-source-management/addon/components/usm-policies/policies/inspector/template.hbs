@@ -1,3 +1,52 @@
-<vbox class="rsa-application-layout-panel-content scroll-box usm-policies-inspector" xs="12" fit>
-  <h2>Developer Note: TODO</h2>
+<vbox class="rsa-application-layout-panel-content scroll-box" xs="12" fit>
+  <div class="heading">{{t 'adminUsm.policies.detail.history'}}</div>
+  <hbox fit class="col-xs-12">
+    <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdOn'}}</hbox>          
+    <hbox class="value col-xs-6 col-md-7">
+      {{#if (eq focusedPolicy.createdOn 0)}}
+        {{t 'adminUsm.policies.detail.systemCreated'}}
+      {{else}}
+        {{moment-format focusedPolicy.createdOn "YYYY-MM-DD hh:mm"}}
+      {{/if}}
+    </hbox>
+  </hbox>
+  {{#if focusedPolicy.createdBy}}
+    <hbox fit class="createdBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdBy'}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">{{focusedPolicy.createdBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedPolicy.lastModifiedOn 0)}}
+    <hbox fit class="lastModifiedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedOn'}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedPolicy.lastModifiedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+  {{#if focusedPolicy.lastModifiedBy}}
+    <hbox fit class="lastModifiedBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedBy'}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">{{focusedPolicy.lastModifiedBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedPolicy.lastPublishedOn 0)}}
+    <hbox fit class="lastPublishedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastPublishedOn'}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedPolicy.lastPublishedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+  {{#if focusedPolicy.associatedGroups}}
+    <hbox class="heading">{{t 'adminUsm.policies.list.groups'}}</hbox>
+    {{#each focusedPolicy.associatedGroups as |group|}}
+      <hbox class="value">{{group.name}}</hbox>
+    {{/each}}
+  {{/if}}
+  {{#if (eq focusedPolicy.policyType 'edrPolicy')}}
+    {{usm-policies/policies/inspector/edr-policy}}
+  {{else if (eq focusedPolicy.policyType 'windowsLogPolicy')}}
+    {{usm-policies/policies/inspector/windows-log-policy}}
+  {{/if}}  
 </vbox>

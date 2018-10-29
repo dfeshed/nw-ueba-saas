@@ -6,8 +6,43 @@ export default [
     description: 'Default EDR Policy __default_edr_policy',
     dirty: false,
     defaultPolicy: true,
-    lastPublishedCopy: null,
-    lastPublishedOn: 1527489158739,
+    lastPublishedCopy: {
+      id: '__default_edr_policy',
+      policyType: 'edrPolicy',
+      name: 'Default EDR Policy',
+      description: 'Default EDR Policy __default_edr_policy',
+      dirty: false,
+      defaultPolicy: true,
+      lastPublishedOn: 0,
+      createdOn: 0,
+      lastModifiedOn: 0,
+      associatedGroups: [],
+      scanType: 'SCHEDULED',
+      scanStartDate: '2018-09-09',
+      scanStartTime: '10:23',
+      recurrenceInterval: 1,
+      recurrenceUnit: 'DAYS',
+      runOnDaysOfWeek: null,
+      cpuMax: 75,
+      cpuMaxVm: 85,
+      captureFloatingCode: false,
+      downloadMbr: false,
+      filterSignedHooks: false,
+      requestScanOnRegistration: false,
+      blockingEnabled: false,
+      primaryAddress: '',
+      primaryNwServiceId: '',
+      primaryHttpsPort: 443,
+      primaryHttpsBeaconInterval: null,
+      primaryHttpsBeaconIntervalUnit: null,
+      primaryUdpPort: 444,
+      primaryUdpBeaconInterval: null,
+      primaryUdpBeaconIntervalUnit: null,
+      agentMode: 'NO_MONITORING'
+    },
+    lastPublishedOn: 1540318459759,
+    createdOn: 0,
+    lastModifiedOn: 0,
     associatedGroups: [],
     scanType: 'SCHEDULED',
     scanStartDate: '2018-09-09',
@@ -40,6 +75,10 @@ export default [
     dirty: true,
     defaultPolicy: false,
     lastPublishedOn: 1527489158739,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedCopy: {
       id: 'policy_001',
       policyType: 'edrPolicy',
@@ -48,6 +87,10 @@ export default [
       dirty: true,
       defaultPolicy: false,
       lastPublishedOn: 1527489158739,
+      createdBy: 'admin',
+      createdOn: 1540318426092,
+      lastModifiedBy: 'admin',
+      lastModifiedOn: 1540318426092,
       associatedGroups: [
         {
           referenceId: '5b7d886500319b5520f4b67d',
@@ -122,6 +165,10 @@ export default [
     dirty: true,
     defaultPolicy: false,
     lastPublishedOn: 0,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedCopy: null,
     associatedGroups: [],
     scanType: 'SCHEDULED',
@@ -155,6 +202,10 @@ export default [
     dirty: true,
     defaultPolicy: false,
     lastPublishedOn: 1527489158739,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedCopy: {
       id: 'policy_003',
       policyType: 'edrPolicy',
@@ -163,6 +214,10 @@ export default [
       dirty: true,
       defaultPolicy: false,
       lastPublishedOn: 1527489158739,
+      createdBy: 'admin',
+      createdOn: 1540318426092,
+      lastModifiedBy: 'admin',
+      lastModifiedOn: 1540318426092,
       associatedGroups: [],
       scanType: 'MANUAL',
       scanStartDate: null,
@@ -219,6 +274,10 @@ export default [
     dirty: false,
     defaultPolicy: false,
     lastPublishedOn: 1527489158739,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedCopy: {
       id: 'policy_014',
       policyType: 'edrPolicy',
@@ -227,6 +286,10 @@ export default [
       dirty: false,
       defaultPolicy: false,
       lastPublishedOn: 1527489158739,
+      createdBy: 'admin',
+      createdOn: 1540318426092,
+      lastModifiedBy: 'admin',
+      lastModifiedOn: 1540318426092,
       associatedGroups: [],
       scanType: 'SCHEDULED',
       scanStartDate: null, // '2018-09-13',
@@ -299,12 +362,6 @@ export default [
       sendTestLog: false
     },
     lastPublishedOn: 1514764800000,
-    associatedGroups: [
-      {
-        referenceId: '5bbe4b489343110375673dae',
-        name: 'sawan'
-      }
-    ],
     enabled: false,
     protocol: 'TLS',
     sendTestLog: false
@@ -316,9 +373,44 @@ export default [
     description: 'Windows Log Policy # WL001',
     dirty: true,
     defaultPolicy: false,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedOn: 0,
     lastPublishedCopy: null,
-    associatedGroups: []
+    enabled: true,
+    protocol: 'TCP',
+    sendTestLog: false,
+    primaryDestination: 'LD_01',
+    secondaryDestination: 'LD_02',
+    channelFilters: [
+      {
+        eventId: '1234',
+        channel: 'System',
+        filterType: 'include'
+      },
+      {
+        eventId: '5678',
+        channel: 'Security',
+        filterType: 'include'
+      },
+      {
+        eventId: '7789',
+        channel: 'Application',
+        filterType: 'exclude'
+      }
+    ],
+    associatedGroups: [
+      {
+        referenceId: '5b7d886500319b5520f4b67d',
+        name: 'Group 01'
+      },
+      {
+        referenceId: '5b7d886500319b5520f4b672',
+        name: 'Group 02'
+      }
+    ]
   },
   {
     id: 'policy_WL002',
@@ -327,7 +419,16 @@ export default [
     description: 'Windows Log Policy # WL002',
     dirty: true,
     defaultPolicy: false,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
     lastPublishedOn: 0,
+    enabled: true,
+    protocol: 'UDP',
+    sendTestLog: false,
+    primaryDestination: 'LD_01',
+    secondaryDestination: 'LD_02',
     lastPublishedCopy: null,
     associatedGroups: []
   }

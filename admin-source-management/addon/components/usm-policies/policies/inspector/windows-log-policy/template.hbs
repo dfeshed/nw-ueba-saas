@@ -1,0 +1,21 @@
+<vbox class="rsa-application-layout-panel-content scroll-box" xs="12" fit>
+  {{#each selectedWindowsLogPolicy as |section|}}
+    {{#if section.channels}}
+      <div class="heading">{{t section.header}}</div>      
+      {{#each section.channels as |channel|}}
+        <hbox fit class="col-xs-12">
+          <hbox class="title col-xs-6 col-md-5">{{channel.name}}</hbox>
+          <hbox class="value col-xs-6 col-md-7">{{channel.value}}</hbox>
+        </hbox>
+      {{/each}}
+    {{else}}      
+      <div class="heading">{{t section.header}}</div>
+      {{#each section.props as |prop|}}
+        <hbox fit class="col-xs-12">
+          <hbox class="title col-xs-6 col-md-5">{{t prop.name}}</hbox>          
+          <hbox class="value col-xs-6 col-md-7">{{prop.value}}</hbox>
+        </hbox>
+      {{/each}}
+    {{/if}}
+  {{/each}}
+</vbox>
