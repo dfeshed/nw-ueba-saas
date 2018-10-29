@@ -16,7 +16,9 @@ import {
   isMachineLinux,
   downloadLink,
   hostWithStatus,
-  isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
+  isMachineWindows,
+  getPoliciesPropertyData,
+  _getscheduledScanConfig } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -278,4 +280,145 @@ test('hostWithStatus', function(assert) {
   }));
 
   assert.equal(result.agentStatus.status, 'scanning');
+});
+
+test('getscheduledScanConfig', function(assert) {
+  const result = _getscheduledScanConfig(Immutable.from({
+    endpoint: {
+      overview: {
+        policyDetails: {
+          policy: {
+            'edrPolicy': {
+              'scheduledScanConfig': {
+                'enabled': true,
+                'scanOptions': {
+                  'captureFloatingCode': true,
+                  'filterSignedHooks': false,
+                  'downloadMbr': false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, {
+    'enabled': 'Scheduled',
+    'scanOptions': {
+      'captureFloatingCode': 'Enabled',
+      'filterSignedHooks': 'Disabled',
+      'downloadMbr': 'Disabled'
+    }
+  });
+});
+
+test('getscheduledScanConfig when scheduledScanConfig is undefined', function(assert) {
+  const result = _getscheduledScanConfig(Immutable.from({
+    endpoint: {
+      overview: {
+        policyDetails: {
+          policy: {
+            'edrPolicy': {}
+          }
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, {});
+});
+
+test('getscheduledScanConfig when scanConfig is undefined', function(assert) {
+  const result = _getscheduledScanConfig(Immutable.from({
+    endpoint: {
+      overview: {
+        policyDetails: {
+          policy: {
+            'edrPolicy': {
+              'scheduledScanConfig': {
+                'enabled': false
+              }
+            }
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, {
+    'enabled': 'Manual'
+  });
+});
+
+test('getPoliciesPropertyData', function(assert) {
+  const result = getPoliciesPropertyData(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          groupPolicy: {
+            policyStatus: 'Updated'
+          }
+        },
+        policyDetails: {
+          policy: {
+            'edrPolicy': {
+              'agentMode': 'FULL_MONITORING',
+              'transportConfig': {
+                'primary': {
+                  'httpsBeaconIntervalInSeconds': 900,
+                  'udpBeaconIntervalInSeconds': 30,
+                  'address': '10.40.12.8',
+                  'httpsPort': 7050,
+                  'udpPort': 7052
+                }
+              },
+              'scheduledScanConfig': {
+                'enabled': true,
+                'scanOptions': {
+                  'captureFloatingCode': true,
+                  'filterSignedHooks': false,
+                  'downloadMbr': false
+                }
+              },
+              'blockingConfig': {
+                'enabled': false
+              },
+              'serverConfig': {
+                'requestScanOnRegistration': false
+              }
+            }
+          }
+        }
+      }
+    }
+  }));
+
+  assert.equal(result.policyStatus, 'Updated');
+  assert.deepEqual(result.edrPolicy, {
+    'agentMode': 'FULL_MONITORING',
+    'transportConfig': {
+      'primary': {
+        'httpsBeaconIntervalInSeconds': 900,
+        'udpBeaconIntervalInSeconds': 30,
+        'address': '10.40.12.8',
+        'httpsPort': 7050,
+        'udpPort': 7052
+      }
+    },
+    'scheduledScanConfig': {
+      'enabled': 'Scheduled',
+      'scanOptions': {
+        'captureFloatingCode': 'Enabled',
+        'filterSignedHooks': 'Disabled',
+        'downloadMbr': 'Disabled'
+      }
+    },
+    'blockingConfig': {
+      'enabled': 'Disabled'
+    },
+    'serverConfig': {
+      'requestScanOnRegistration': 'Disabled'
+    }
+  });
 });

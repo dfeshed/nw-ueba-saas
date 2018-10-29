@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -15,15 +15,17 @@ module('Integration | Component | host-detail/overview', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    setState = () => {
-      const host = {
-        machine: {
-          machineAgentId: 'A8F19AA5-A48D-D17E-2930-DF5F1A75A711',
-          machineName: 'INENDHUPAAL1C',
-          machineOsType: 'windows'
+    setState = (visuals) => {
+      const overview = {
+        hostDetails: {
+          machine: {
+            machineAgentId: 'A8F19AA5-A48D-D17E-2930-DF5F1A75A711',
+            machineName: 'INENDHUPAAL1C',
+            machineOsType: 'windows'
+          }
         }
       };
-      const state = Immutable.from({ endpoint: { overview: { hostDetails: host } } });
+      const state = Immutable.from({ endpoint: { overview, visuals } });
       patchReducer(this, state);
       this.owner.inject('component', 'i18n', 'service:i18n');
     };
@@ -41,14 +43,6 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     // assert.equal(findAll('.host-detail-box .risk-properties').length, 1, 'alert tab is rendered');
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 1,
         'By default loader is rendered in properties box');
-  });
-
-  test('renders host properties', async function(assert) {
-    setState();
-
-    await render(hbs`{{host-detail/overview domIsReady=true}}`);
-    assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
-    assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
   });
 
   test('host properties is open/close on click', async function(assert) {
@@ -70,5 +64,23 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     setState();
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
     assert.equal(findAll('.host-detail-box.scroll-box').length, 1, 'Host detail box is present');
+  });
+
+  test('renders host details properties when tab is host_details', async function(assert) {
+    setState({ activePropertyPanelTab: 'HOST_DETAILS' });
+    await render(hbs`{{host-detail/overview domIsReady=true}}`);
+    assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Host Details', 'host details tab selected');
+    assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
+    assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
+  });
+
+  test('renders policies properties when tab is policies', async function(assert) {
+    setState({ activePropertyPanelTab: 'POLICIES' });
+
+    await render(hbs`{{host-detail/overview domIsReady=true }}`);
+
+    assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Policies', 'policies tab selected');
+    assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
+    assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
   });
 });

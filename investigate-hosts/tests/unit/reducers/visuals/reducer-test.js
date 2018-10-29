@@ -14,7 +14,9 @@ test('should return the initial state', function(assert) {
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
-    activeSystemInformationTab: 'HOST_ENTRIES'
+    activeSystemInformationTab: 'HOST_ENTRIES',
+    activePropertyPanelTab: 'HOST_DETAILS'
+
   });
 });
 
@@ -26,7 +28,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: true,
-    activeSystemInformationTab: 'HOST_ENTRIES'
+    activeSystemInformationTab: 'HOST_ENTRIES',
+    activePropertyPanelTab: 'POLICIES'
   });
 
   const expectedEndState = {
@@ -36,7 +39,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
-    activeSystemInformationTab: 'HOST_ENTRIES'
+    activeSystemInformationTab: 'HOST_ENTRIES',
+    activePropertyPanelTab: 'HOST_DETAILS'
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -110,6 +114,20 @@ test('The SET_SYSTEM_INFORMATION_TAB action sets the system information tab', fu
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB, payload: { tabName: 'SECURITY_PRODUCTS' } });
+
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('The SET_PROPERTY_PANEL_TAB action sets the property panel tab', function(assert) {
+  const previous = Immutable.from({
+    activePropertyPanelTab: 'HOST_DETAILS'
+  });
+
+  const expectedEndState = {
+    activePropertyPanelTab: 'POLICIES'
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.SET_PROPERTY_PANEL_TAB, payload: { tabName: 'POLICIES' } });
 
   assert.deepEqual(result, expectedEndState);
 });

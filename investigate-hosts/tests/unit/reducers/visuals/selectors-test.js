@@ -6,7 +6,8 @@ import {
   getAutorunTabs,
   getHostDetailTabs,
   hasMachineId,
-  selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
+  selectedTabComponent,
+  getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
 
@@ -84,4 +85,16 @@ test('selectedTabComponent', function(assert) {
   });
   const result = selectedTabComponent(state);
   assert.equal(result, 'host-detail/drivers', 'returns the selected tab component class');
+});
+
+test('getPropertyPanelTabs', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      visuals: {
+        activePropertyPanelTab: 'POLICIES'
+      }
+    }
+  });
+  const result = getPropertyPanelTabs(state).findBy('name', 'POLICIES');
+  assert.equal(result.selected, true, 'POLICIES tab is selected');
 });

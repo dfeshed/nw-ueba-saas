@@ -80,6 +80,16 @@ const HOST_DETAILS_TABS = [
   }
 ];
 
+const PROPERTY_PANEL_TABS = [
+  {
+    label: 'investigateHosts.tabs.hostDetails',
+    name: 'HOST_DETAILS'
+  },
+  {
+    label: 'investigateHosts.tabs.policies',
+    name: 'POLICIES'
+  }
+];
 
 const { createSelector } = reselect;
 const _activeHostDetailTab = (state) => state.endpoint.visuals.activeHostDetailTab || 'OVERVIEW';
@@ -88,6 +98,7 @@ const _activeAnomaliesTab = (state) => state.endpoint.visuals.activeAnomaliesTab
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _isWindowsFlag = (state) => isMachineWindows(state);
 const _riskState = (state) => state.endpoint.risk || {};
+const _activePropertyPanelTab = (state) => state.endpoint.visuals.activePropertyPanelTab || 'HOST_DETAILS';
 
 export const riskState = createSelector(
   [_riskState],
@@ -157,5 +168,12 @@ export const selectedTabComponent = createSelector(
       return selectedTab.componentClass;
     }
     return 'host-detail/overview'; // Default selected tab
+  }
+);
+
+export const getPropertyPanelTabs = createSelector(
+  [_activePropertyPanelTab],
+  (activePropertyPanelTab) => {
+    return PROPERTY_PANEL_TABS.map((tab) => ({ ...tab, selected: tab.name === activePropertyPanelTab }));
   }
 );

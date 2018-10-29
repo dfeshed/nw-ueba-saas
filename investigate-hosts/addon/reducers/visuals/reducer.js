@@ -6,6 +6,7 @@ const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
   activeAnomaliesTab: 'IMAGEHOOKS',
   activeHostDetailTab: 'OVERVIEW',
+  activePropertyPanelTab: 'HOST_DETAILS',
   isTreeView: true,
   showDeleteHostsModal: false,
   hostDetailsLoading: false,
@@ -31,7 +32,13 @@ const visuals = handleActions({
 
   [ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeSystemInformationTab', tabName);
-  }
+  },
+
+  [ACTION_TYPES.SET_PROPERTY_PANEL_TAB]: (state, { payload: { tabName } }) => {
+    return state.set('activePropertyPanelTab', tabName);
+  },
+
+  [ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB]: (state, { payload: { tabName } }) => state.set('activePropertyPanelTab', tabName)
 
 }, visualsInitialState);
 

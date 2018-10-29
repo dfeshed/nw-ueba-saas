@@ -229,3 +229,73 @@ export const getPropertyData = createSelector(
     }
   }
 );
+
+// exporting for tests
+export const _getscheduledScanConfig = createSelector(
+  [_policyDetails],
+  (policyDetails) => {
+    const { policy } = policyDetails;
+    const edrPolicy = policy ? policyDetails.policy.edrPolicy : {};
+    const { scheduledScanConfig } = edrPolicy;
+    let newScheduledScanConfig = {};
+    if (edrPolicy.scheduledScanConfig) {
+      const { recurrentSchedule, scanOptions } = scheduledScanConfig;
+      newScheduledScanConfig = {
+        ...scheduledScanConfig,
+        enabled: scheduledScanConfig.enabled ? 'Scheduled' : 'Manual'
+      };
+      if (edrPolicy.scheduledScanConfig.recurrentSchedule) {
+        const { recurrence, runOnDaysOfWeek } = recurrentSchedule;
+        const { unit, interval } = recurrence;
+        let scanInterval = '';
+        if (unit === 'DAYS') {
+          scanInterval = (interval === 1 ? 'Every Day' : `Every ${interval} Days`);
+        } else {
+          const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const weekDay = week[runOnDaysOfWeek[0]];
+          scanInterval = `Every ${interval} week(s) on ${weekDay}`;
+        }
+        newScheduledScanConfig = {
+          ...newScheduledScanConfig,
+          scanInterval
+        };
+      }
+      if (scanOptions) {
+        newScheduledScanConfig = {
+          ...newScheduledScanConfig,
+          scanOptions: {
+            ...scanOptions,
+            captureFloatingCode: scanOptions.captureFloatingCode ? 'Enabled' : 'Disabled',
+            filterSignedHooks: scanOptions.filterSignedHooks ? 'Enabled' : 'Disabled',
+            downloadMbr: scanOptions.downloadMbr ? 'Enabled' : 'Disabled'
+          }
+        };
+      }
+    }
+    return newScheduledScanConfig;
+  }
+);
+
+export const getPoliciesPropertyData = createSelector(
+  [_policyDetails, _hostDetails, _getscheduledScanConfig],
+  (policyDetails, hostDetails, scheduledScanConfig) => {
+    const policyStatus = hostDetails.groupPolicy ? hostDetails.groupPolicy.policyStatus : null;
+    const { policy } = policyDetails;
+    const edrPolicy = policy ? policyDetails.policy.edrPolicy : {};
+    const { blockingConfig, serverConfig } = edrPolicy;
+    return {
+      ...policy,
+      policyStatus,
+      edrPolicy: {
+        ...edrPolicy,
+        blockingConfig: {
+          enabled: blockingConfig && blockingConfig.enabled ? 'Enabled' : 'Disabled'
+        },
+        serverConfig: {
+          requestScanOnRegistration: serverConfig && serverConfig.requestScanOnRegistration ? 'Enabled' : 'Disabled'
+        },
+        scheduledScanConfig
+      }
+    };
+  }
+);

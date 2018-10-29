@@ -1,25 +1,32 @@
 import Component from '@ember/component';
+import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { getPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
-import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
+import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { setSelectedAlert, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
-
+import { getPropertyData, getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
+import hostDetailsConfig from './property-panel/overview-property-config';
+import policiesConfig from './property-panel/policies-property-config';
 import {
-  setAlertTab
+  setAlertTab,
+  setPropertyPanelTabView
 } from 'investigate-hosts/actions/data-creators/details';
 
 const dispatchToActions = {
   setAlertTab,
   getUpdatedRiskScoreContext,
-  setSelectedAlert
+  setSelectedAlert,
+  setPropertyPanelTabView
 };
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
-  propertyData: getPropertyData(state),
+  hostDetailsPropertyData: getPropertyData(state),
   hostDetails: state.endpoint.overview.hostDetails || [],
   activeAlertTab: state.endpoint.overview.activeAlertTab,
-  risk: riskState(state)
+  risk: riskState(state),
+  activePropertyPanelTab: state.endpoint.visuals.activePropertyPanelTab,
+  propertyPanelTabs: getPropertyPanelTabs(state),
+  policiesPropertyData: getPoliciesPropertyData(state)
 });
 
 const HostOverview = Component.extend({
@@ -29,6 +36,26 @@ const HostOverview = Component.extend({
   classNames: ['host-overview'],
 
   domIsReady: false,
+
+  hostDetailsConfig,
+
+  policiesConfig,
+
+  @computed('activePropertyPanelTab')
+  propertyPanelData(tab) {
+    if (tab === 'POLICIES') {
+      return {
+        propertyData: this.get('policiesPropertyData'),
+        localeNameSpace: 'adminUsm.policyWizard',
+        config: this.get('policiesConfig')
+      };
+    }
+    return {
+      propertyData: this.get('hostDetailsPropertyData'),
+      localeNameSpace: 'investigateHosts.hosts.properties',
+      config: this.get('hostDetailsConfig')
+    };
+  },
 
   didRender() {
     // Delay rendering the property panel
