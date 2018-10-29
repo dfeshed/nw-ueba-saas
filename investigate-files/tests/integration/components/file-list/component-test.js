@@ -483,4 +483,29 @@ module('Integration | Component | file list', function(hooks) {
     assert.equal(this.get('showResetScoreModal'), false);
     assert.equal(this.get('selectedFiles'), null);
   });
+
+  test('on selecting the checkbox row is getting highlighted ', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list}}`);
+    await click(findAll('.rsa-form-checkbox')[1]);
+    const state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.files.fileList.selectedFileList.length, 1, 'On file selected');
+    assert.equal(findAll('.is-row-checked').length, 1, 'One row highlighted');
+    await click(findAll('.rsa-form-checkbox')[1]);
+    assert.equal(findAll('.is-row-checked').length, 0, 'Row highlight removed');
+  });
+
+
 });

@@ -112,6 +112,7 @@ const filesConfigGen = function(environment) {
       }
     },
     endpoint: {
+      socketUrl,
       restrictedList: {
         subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
         requestDestination: '/ws/endpoint/file/status/restricted'

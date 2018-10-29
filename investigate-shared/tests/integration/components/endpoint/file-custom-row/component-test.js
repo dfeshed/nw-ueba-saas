@@ -13,13 +13,23 @@ module('Integration | Component | endpoint/file-custom-row', function(hooks) {
   });
 
   test('it renders data table row', async function(assert) {
-    await render(hbs`{{endpoint/file-custom-row}}`);
+    this.set('selections', []);
+    this.set('item', { id: '123' });
+    await render(hbs`{{endpoint/file-custom-row item=item selections=selections}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'Table row is rendered.');
   });
 
   test('context menu is rendered', async function(assert) {
-    await render(hbs`{{endpoint/file-custom-row}}`);
+    this.set('selections', []);
+    this.set('item', { id: '123' });
+    await render(hbs`{{endpoint/file-custom-row item=item selections=selections}}`);
     assert.equal(findAll('.content-context-menu').length, 1, 'Context menu is rendered.');
   });
 
+  test('row is getting high lighted', async function(assert) {
+    this.set('selections', [{ id: '123456' }, { id: '345' }]);
+    this.set('item', { id: '123456' });
+    await render(hbs`{{endpoint/file-custom-row item=item selections=selections}}`);
+    assert.equal(findAll('.is-row-checked').length, 1, 'row is high lighted');
+  });
 });

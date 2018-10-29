@@ -9,6 +9,8 @@ import { externalLookup } from 'investigate-shared/utils/file-external-lookup';
 export default DataTableBodyRow.extend(contextMenuMixin, {
   layout,
 
+  classNameBindings: ['isRowChecked'],
+
   eventBus: service(),
 
   accessControl: service(),
@@ -21,6 +23,11 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
   showFileStatusModal: false,
 
+  @computed('item', 'selections')
+  isRowChecked(item, selections = []) {
+    const isSelected = selections.findBy('id', item.id);
+    return !!isSelected;
+  },
 
   @computed('item')
   contextItems() {
