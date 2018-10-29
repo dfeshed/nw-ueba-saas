@@ -23,6 +23,9 @@ const filesConfigGen = function(environment) {
     'contexthub-server-ping': {
       socketUrl: contextSocketUrl
     },
+    'risk-scoring-server-ping': {
+      socketUrl: riskScoreSocketUrl
+    },
     'respond-server': {
       socketUrl: respondSocketUrl,
       'alert-events': {

@@ -84,6 +84,10 @@ const config = [
   }
 ];
 
+const serviceList = [
+  { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'local-risk-scoring-server', 'name': 'risk-scoring-server' }
+];
+
 module('Integration | Component | file list', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -280,6 +284,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .serviceList(serviceList)
       .build();
     await render(hbs`
       <style>

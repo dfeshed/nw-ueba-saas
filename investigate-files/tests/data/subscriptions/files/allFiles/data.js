@@ -18,7 +18,6 @@ export default {
       },
       'entropy': 4.140607913864214,
       'firstFileName': 'xt_conntrack.ko',
-      'score': '70',
       'reputationStatus': 'Known Good',
       'format': 'ELF',
       'sectionNames': [

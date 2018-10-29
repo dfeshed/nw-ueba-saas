@@ -3385,6 +3385,17 @@ export default {
           all: 'ALL',
           files: '{{count}} file(s)',
           users: '{{count}} user(s)'
+        },
+        error: {
+          'mongo.connection.failed': 'Database is not reachable. Retry after sometime.',
+          emptyContext: 'No Alerts are available which contribute for the risk score calculation of this file.',
+          noEvents: 'No Events are available for this file.'
+        },
+        errorPage: {
+          serviceDown: 'Risk Scoring Server is offline',
+          serviceDownDescription: 'The Risk Scoring Server is not running or is inaccessible. Check with your administrator to resolve this issue.',
+          notConfigured: 'Risk Scoring Server is not configured',
+          notConfiguredDescription: 'Risk Scoring Server may not be configured properly , please check deployment guide for risk scoring server provisioning steps and ensure all the steps are followed.'
         }
       },
       riskPanel: {

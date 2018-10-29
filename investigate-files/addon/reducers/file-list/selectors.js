@@ -72,6 +72,17 @@ export const serviceList = createSelector(
   }
 );
 
+export const isRiskScoringServerNotConfigured = createSelector(
+  _serviceList,
+  (serviceList) => {
+    if (serviceList) {
+      const isConfigured = serviceList.some((service) => 'risk-scoring-server' === service.name);
+      return !isConfigured;
+    }
+    return false;
+  }
+);
+
 export const getContext = createSelector(
   [_context, _activeDataSourceTab],
   (context, riskPanelActiveTab) => {

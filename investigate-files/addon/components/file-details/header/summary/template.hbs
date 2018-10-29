@@ -1,4 +1,10 @@
-{{rsa-risk-score score=summary.score size='large'}}
+{{#if isRiskScoringServerNotConfigured}}
+  {{rsa-risk-score score='?' size='large'}}
+{{else if summary.score}}
+  {{rsa-risk-score score=summary.score size='large'}}
+{{else}}
+  {{rsa-risk-score score='0' size='large'}}
+{{/if}}
 {{rsa-content-definition label=(t 'investigateFiles.fields.machineCount') value=summary.machineCount}}
 {{rsa-content-definition label=(t 'investigateFiles.fields.signature.features') value=summary.signature}}
 {{#rsa-content-definition label=(t 'investigateFiles.fields.size')}}

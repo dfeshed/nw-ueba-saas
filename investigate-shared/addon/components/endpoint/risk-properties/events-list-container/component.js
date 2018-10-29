@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { eventsLoadingStatus, expandedEventId, events } from 'investigate-shared/selectors/risk/selectors';
+import { eventsLoadingStatus, expandedEventId, events, riskScoringServerError, isRiskScoreContextEmpty } from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 
 export default Component.extend({
@@ -15,7 +15,9 @@ export default Component.extend({
     this.setProperties({
       events: events(state),
       eventsLoadingStatus: eventsLoadingStatus(state),
-      expandedEventId: expandedEventId(state)
+      expandedEventId: expandedEventId(state),
+      riskScoringServerError: riskScoringServerError(state),
+      isRiskScoreContextEmpty: isRiskScoreContextEmpty(state)
     });
   }
 });

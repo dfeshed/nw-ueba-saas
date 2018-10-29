@@ -7,7 +7,8 @@ import {
   serviceList,
   isAllSelected,
   files,
-  checksums
+  checksums,
+  isRiskScoringServerNotConfigured
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -26,7 +27,7 @@ import {
   setSelectedFile
 } from 'investigate-files/actions/data-creators';
 
-import { resetRiskScore, getRiskScoreContext, resetRiskContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskScore, getRiskScoreContext, resetRiskContext, getRiskScoringServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
@@ -49,7 +50,8 @@ const stateToComputed = (state) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  isCertificateView: state.certificate.list.isCertificateView
+  isCertificateView: state.certificate.list.isCertificateView,
+  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state)
 });
 
 const dispatchToActions = {
@@ -66,7 +68,8 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   setSelectedFile,
   resetRiskScore,
-  resetRiskContext
+  resetRiskContext,
+  getRiskScoringServerStatus
 };
 
 /**
@@ -180,6 +183,7 @@ const FileList = Component.extend({
         const openRiskPanel = this.get('openRiskPanel');
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
+          this.send('getRiskScoringServerStatus');
           this.send('resetRiskContext');
           this.send('setSelectedFile', item);
           this.send('fetchHostNameList', item.checksumSha256);

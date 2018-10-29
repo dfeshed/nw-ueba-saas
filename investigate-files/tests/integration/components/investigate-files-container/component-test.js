@@ -11,6 +11,10 @@ import files from '../../state/files';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 let initState;
 
+const serviceList = [
+  { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'local-risk-scoring-server', 'name': 'risk-scoring-server' }
+];
+
 module('Integration | Component | Investigate-files-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -43,6 +47,8 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     new ReduxDataHelper(initState)
       .isEndpointServerOffline(true)
       .isCertificateView(false)
+      .setSelectedFileList([])
+      .serviceList(serviceList)
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.files-body').length, 0, 'file list is not rendered');
@@ -55,6 +61,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .schema(schema)
       .fileCount(3)
       .setSelectedFileList([])
+      .serviceList(serviceList)
       .isEndpointServerOffline(false)
       .build();
     await render(hbs`{{investigate-files-container}}`);

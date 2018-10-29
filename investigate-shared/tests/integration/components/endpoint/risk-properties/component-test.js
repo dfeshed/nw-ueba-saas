@@ -158,4 +158,68 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'Display alert name and alert count for alert context');
     assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
   });
+
+  test('relevant error message is displayed when risk scoring server mongo is down', async function(assert) {
+    this.set('isRiskScoringServerNotConfigured', false);
+    this.set('state', {
+      riskScoreContextError: {
+        error: 'mongo.connection.failed'
+      },
+      isRiskScoringServerOffline: false
+    });
+
+    await render(hbs`{{endpoint/risk-properties
+      riskState=state
+      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+
+    assert.equal(find('.rsa-panel-message').textContent.trim(), 'Database is not reachable. Retry after sometime.');
+  });
+
+  test('relevant error message is displayed when risk scoring server is down', async function(assert) {
+    this.set('isRiskScoringServerNotConfigured', false);
+    this.set('state', {
+      isRiskScoringServerOffline: true
+    });
+
+    await render(hbs`{{endpoint/risk-properties
+      riskState=state
+      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+
+    assert.equal(findAll('.error-page').length, 1, 'Risk Scoring Server is offline');
+    assert.equal(find('.error-page .title').textContent.trim(), 'Risk Scoring Server is offline');
+  });
+
+  test('relevant error message is displayed when risk scoring server is configured', async function(assert) {
+    this.set('isRiskScoringServerNotConfigured', true);
+
+    this.set('state', { activeRiskSeverityTab: 'critical' });
+
+    await render(hbs`{{endpoint/risk-properties
+      riskState=state
+      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+
+    assert.equal(findAll('.error-page').length, 1, 'Risk Scoring Server is not configured');
+    assert.equal(find('.error-page .title').textContent.trim(), 'Risk Scoring Server is not configured');
+  });
+
+  test('relevant error message is displayed when empty risk score context is returned', async function(assert) {
+
+    this.set('state', {
+      activeRiskSeverityTab: 'critical',
+      riskScoreContextError: null,
+      riskScoreContext: {
+        distinctAlertCount: {
+          critical: 0,
+          high: 0,
+          medium: 0
+        }
+      }
+    });
+
+    await render(hbs`{{endpoint/risk-properties
+      riskState=state
+      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+
+    assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for No alerts available exists.');
+  });
 });

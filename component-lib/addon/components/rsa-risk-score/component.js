@@ -39,8 +39,10 @@ export default Component.extend({
       return 'is-medium';
     } else if (riskScore <= 99) {
       return 'is-high';
-    } else {
+    } else if (riskScore > 99) {
       return 'is-danger';
+    } else {
+      return 'is-low';
     }
   }),
 
@@ -68,4 +70,3 @@ export default Component.extend({
     return (riskScore > 99) ? '48%' : '50%';
   })
 });
-

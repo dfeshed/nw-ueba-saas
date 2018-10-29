@@ -1,7 +1,14 @@
 import Component from '@ember/component';
 import {
-  riskScoreContext, riskScoreContextError, activeRiskSeverityTab,
-  alertsError, selectedAlert, riskType
+  riskScoreContext,
+  riskScoreContextError,
+  activeRiskSeverityTab,
+  alertsError,
+  selectedAlert,
+  riskType,
+  riskScoringServerError,
+  isRiskScoreContextEmpty,
+  isRiskScoringServerOffline
 } from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -49,7 +56,10 @@ export default Component.extend({
       riskScoreContextError: riskScoreContextError(state),
       alertsError: alertsError(state),
       selectedAlert: selectedAlert(state),
-      riskType: riskType(state)
+      riskType: riskType(state),
+      riskScoringServerError: riskScoringServerError(state),
+      isRiskScoreContextEmpty: isRiskScoreContextEmpty(state),
+      isRiskScoringServerOffline: isRiskScoringServerOffline(state)
     });
   },
 

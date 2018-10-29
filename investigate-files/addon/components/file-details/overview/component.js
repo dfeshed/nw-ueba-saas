@@ -8,9 +8,11 @@ import {
 } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import { riskState } from 'investigate-files/reducers/visuals/selectors';
+import { isRiskScoringServerNotConfigured } from 'investigate-files/reducers/file-list/selectors';
 
 const stateToComputed = (state) => ({
-  risk: riskState(state)
+  risk: riskState(state),
+  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state)
 });
 
 const dispatchToActions = {

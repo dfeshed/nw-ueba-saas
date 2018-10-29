@@ -178,4 +178,8 @@ export default class DataHelper {
     _set(this.state, 'certificate.list.certificateVisibleColumns', columns);
     return this;
   }
+  serviceList(list) {
+    _set(this.state, 'files.fileList.listOfServices', list);
+    return this;
+  }
 }

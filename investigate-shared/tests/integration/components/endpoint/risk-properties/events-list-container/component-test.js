@@ -5,6 +5,14 @@ import hbs from 'htmlbars-inline-precompile';
 import { respondData } from './respond-data';
 import { selectors } from '../../../../../integration/components/events-list/selectors';
 
+const riskScoreContext = {
+  distinctAlertCount: {
+    critical: 1,
+    high: 0,
+    medium: 0
+  }
+};
+
 module('Integration | Component | endpoint/risk-properties/events-list-container', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -12,7 +20,9 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
     this.set('state', {
       eventsData: respondData,
       expandedEventId: null,
-      eventsLoadingStatus: 'completed'
+      eventsLoadingStatus: 'completed',
+      riskScoreContextError: null,
+      riskScoreContext
     });
     await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
     assert.equal(findAll(selectors.list).length, 1);
@@ -27,13 +37,17 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
     this.set('state', {
       eventsData: respondData,
       expandedEventId: null,
-      eventsLoadingStatus: 'completed'
+      eventsLoadingStatus: 'completed',
+      riskScoreContextError: null,
+      riskScoreContext
     });
     this.set('expand', () => {
       this.set('state', {
         eventsData: respondData,
         expandedEventId: 0,
-        eventsLoadingStatus: 'completed'
+        eventsLoadingStatus: 'completed',
+        riskScoreContextError: null,
+        riskScoreContext
       });
     });
     await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state expandEvent=(action expand)}}`);
@@ -48,11 +62,23 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
     this.set('state', {
       eventsData: respondData,
       expandedEventId: null,
-      eventsLoadingStatus: 'loading'
+      eventsLoadingStatus: 'loading',
+      riskScoreContextError: null,
+      riskScoreContext
     });
     await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
 
     assert.equal(findAll(selectors.row).length, 2);
     assert.equal(findAll(selectors.loader).length, 1);
+  });
+
+  test('show error message when risk score context is empty for a file.', async function(assert) {
+    this.set('state', {
+      expandedEventId: null,
+      riskScoreContextError: null
+    });
+    await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
+
+    assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for No events available exists.');
   });
 });

@@ -1,5 +1,9 @@
-{{events-list
-  items=events
-  expandedId=expandedEventId
-  loadingStatus=eventsLoadingStatus
-  expandStorylineEvent=expandEvent}}
+{{#if (or isRiskScoreContextEmpty riskScoringServerError)}}
+  {{rsa-panel-message message=(t 'investigateShared.endpoint.riskProperties.error.noEvents')}}
+{{else}}
+  {{events-list
+    items=events
+    expandedId=expandedEventId
+    loadingStatus=eventsLoadingStatus
+    expandStorylineEvent=expandEvent}}
+{{/if}}

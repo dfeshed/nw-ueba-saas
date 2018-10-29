@@ -9,7 +9,7 @@ import {
 } from 'investigate-shared/actions/data-creators/filter-creators';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
+import { hasFiles, selectedFileStatusHistory, isRiskScoringServerNotConfigured } from 'investigate-files/reducers/file-list/selectors';
 import { getDataSourceTab, riskState } from 'investigate-files/reducers/visuals/selectors';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import {
@@ -41,7 +41,8 @@ const stateToComputed = (state) => ({
   selectedFilterId: selectedFilterId(state.files),
   savedFilter: savedFilter(state.files),
   selectedFile: state.files.fileList.selectedFile,
-  isCertificateView: state.certificate.list.isCertificateView
+  isCertificateView: state.certificate.list.isCertificateView,
+  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state)
 });
 
 const dispatchToActions = {

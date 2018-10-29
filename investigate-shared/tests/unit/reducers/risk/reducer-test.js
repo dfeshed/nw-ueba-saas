@@ -19,6 +19,7 @@ module('Unit | Reducers | risk', function(hooks) {
         eventsLoadingStatus: null,
         expandedEventId: null,
         isRiskScoreReset: true,
+        isRiskScoringServerOffline: false,
         riskScoreContext: null,
         riskScoreContextError: null,
         selectedAlert: null

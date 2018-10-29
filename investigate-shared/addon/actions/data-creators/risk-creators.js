@@ -1,10 +1,10 @@
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import api from 'investigate-shared/actions/api/risk-score/risk-score-api';
 import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/alert-event';
+import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { riskType } from 'investigate-shared/selectors/risk/selectors';
-
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -156,6 +156,19 @@ const expandEvent = (id) => {
   };
 };
 
+const getRiskScoringServerStatus = () => {
+  return (dispatch, getState) => {
+    const request = lookup('service:request');
+    return request.ping('risk-scoring-server-ping')
+        .then(() => {
+          dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
+        })
+        .catch(() => {
+          dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
+        });
+  };
+};
+
 export {
   resetRiskScore,
   resetRiskContext,
@@ -163,5 +176,6 @@ export {
   getUpdatedRiskScoreContext,
   getAlertEvents,
   setSelectedAlert,
-  expandEvent
+  expandEvent,
+  getRiskScoringServerStatus
 };
