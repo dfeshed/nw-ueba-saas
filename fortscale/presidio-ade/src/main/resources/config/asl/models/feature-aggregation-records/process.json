@@ -4,13 +4,13 @@
       "name": "numberOfDistinctReconnaissanceTool.userId.process.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolUserIdProcessHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolUserIdProcessHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -36,13 +36,13 @@
       "name": "numberOfReconnaissanceTool.userId.process.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolUserIdProcessHourly"
+        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolExecutedUserIdProcessHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolUserIdProcessHourly"
+        "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolExecutedUserIdProcessHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",

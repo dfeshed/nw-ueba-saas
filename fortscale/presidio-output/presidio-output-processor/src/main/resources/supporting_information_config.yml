@@ -782,7 +782,7 @@ indicators:
       fieldValue: CREATE_PROCESS
   historicalData:
     type: hourly_aggregations
-  classification: reconnaissance_activities
+  classification: discovery_reconnaissance
 
 - id: numberOfReconnaissanceToolExecutedUserIdProcessHourly
   type: FEATURE_AGGREGATION
@@ -797,79 +797,104 @@ indicators:
       fieldValue: CREATE_PROCESS
   historicalData:
     type: hourly_aggregations
-  classification: reconnaissance_activities
+  classification: discovery_reconnaissance
+
+- id: sumOfHighestDstProcessFileNameScoresUserIdProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_reconnaissance_tool_executed
+  adeEventType: scored_enriched.process.dstProcessFileName.userId.process.score
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFileName
+    anomalyFilters:
+      fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
+    featureName: dstProcessFileNameHistogram
+  classification: discovery_reconnaissance
 
 
 classificationPriority:
 
-- classificationName: mass_changes_to_critical_enterprise_groups
+- classificationName: credential_dumping
   priority: 1
 
-- classificationName: mass_changes_to_groups
+- classificationName: discovery_reconnaissance
   priority: 2
 
-- classificationName: elevated_privileges_granted
+- classificationName: powershell_scripting
   priority: 3
 
-- classificationName: brute_force_authentication
+- classificationName: registry_run_keys
   priority: 4
 
-- classificationName: user_logins_to_multiple_domains
+- classificationName: mass_changes_to_critical_enterprise_groups
   priority: 5
 
-- classificationName: user_login_to_abnormal_remote_host
+- classificationName: mass_changes_to_groups
   priority: 6
 
-- classificationName: user_login_to_abnormal_host
+- classificationName: elevated_privileges_granted
   priority: 7
 
-- classificationName: data_exfiltration
+- classificationName: brute_force_authentication
   priority: 8
 
-- classificationName: mass_file_rename
+- classificationName: user_logins_to_multiple_domains
   priority: 9
 
-- classificationName: snooping_user
+- classificationName: user_login_to_abnormal_remote_host
   priority: 10
 
-- classificationName: multiple_logons_by_user
+- classificationName: user_login_to_abnormal_host
   priority: 11
 
-- classificationName: user_logged_into_multiple_hosts
+- classificationName: data_exfiltration
   priority: 12
 
-- classificationName: admin_password_change
+- classificationName: mass_file_rename
   priority: 13
 
-- classificationName: mass_permission_changes
+- classificationName: snooping_user
   priority: 14
 
-- classificationName: abnormal_site_access
+- classificationName: multiple_logons_by_user
   priority: 15
 
-- classificationName: abnormal_ad_changes
+- classificationName: user_logged_into_multiple_hosts
   priority: 16
 
-- classificationName: abnormal_print_activity
+- classificationName: admin_password_change
   priority: 17
 
-- classificationName: sensitive_user_status_changes
+- classificationName: mass_permission_changes
   priority: 18
 
-- classificationName: print_from_abnormal_host
+- classificationName: abnormal_site_access
   priority: 19
 
-- classificationName: abnormal_file_access
+- classificationName: abnormal_ad_changes
   priority: 20
 
-- classificationName: print_to_abnormal_printer
+- classificationName: abnormal_print_activity
   priority: 21
 
-- classificationName: non_standard_hours
+- classificationName: sensitive_user_status_changes
   priority: 22
 
-- classificationName: suspicious_user_activity
+- classificationName: print_from_abnormal_host
   priority: 23
 
-- classificationName: reconnaissance_activities
+- classificationName: abnormal_file_access
   priority: 24
+
+- classificationName: print_to_abnormal_printer
+  priority: 25
+
+- classificationName: non_standard_hours
+  priority: 26
+
+- classificationName: suspicious_user_activity
+  priority: 27
