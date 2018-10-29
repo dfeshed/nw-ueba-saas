@@ -1,11 +1,7 @@
 package presidio.output.processor.config;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -25,7 +21,7 @@ public class AnomalyDescriptiorConfig {
     private String anomalyValue;
 
     @JsonProperty("anomalyFilters")
-    private AnomalyFiltersConfig anomalyFilters;
+    private List<AnomalyFiltersConfig> anomalyFilters;
 
     @JsonProperty("anomalyField")
     public String getAnomalyField() {
@@ -48,12 +44,12 @@ public class AnomalyDescriptiorConfig {
     }
 
     @JsonProperty("anomalyFilters")
-    public AnomalyFiltersConfig getAnomalyFilters() {
+    public List<AnomalyFiltersConfig> getAnomalyFilters() {
         return anomalyFilters;
     }
 
     @JsonProperty("anomalyFilters")
-    public void setAnomalyFilters(AnomalyFiltersConfig anomalyFilters) {
+    public void setAnomalyFilters(List<AnomalyFiltersConfig> anomalyFilters) {
         this.anomalyFilters = anomalyFilters;
     }
 }
