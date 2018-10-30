@@ -31,7 +31,7 @@ export default Service.extend({
         method: 'get',
         query: {}
       });
-      localStorage.setItem(LAST_COMPLIANCE_DATE_KEY, (new Date()));
+      localStorage.setItem(LAST_COMPLIANCE_DATE_KEY, new Date().getTime());
       return data;
     } catch (error) {
       warn(`Could not get license compliance: ${error}`, { id: 'license.compliance.error' });
