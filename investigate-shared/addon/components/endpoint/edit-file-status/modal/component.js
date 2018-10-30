@@ -4,7 +4,7 @@ import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import { lookup } from 'ember-dependency-lookup';
-import { hasRestrictedEntry } from 'investigate-shared/utils/file-status-util';
+import { hasRestrictedEntry, isAllAreRestrictedEntry } from 'investigate-shared/utils/file-status-util';
 const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
 
 export default Component.extend({
@@ -68,9 +68,9 @@ export default Component.extend({
     return hasRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
   },
 
-  @computed('itemList', 'showWhiteListWarning')
-  disableRadio(itemList, showWhiteListWarning) {
-    return itemList && itemList.length === 1 && showWhiteListWarning;
+  @computed('itemList', 'restrictedFileList')
+  disableRadio(itemList, restrictedFileList) {
+    return itemList && itemList.length === 1 || isAllAreRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
   },
 
   actions: {

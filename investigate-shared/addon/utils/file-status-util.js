@@ -1,6 +1,10 @@
 
-const hasRestrictedEntry = (fileList, restrictedFileList) => {
+const hasRestrictedEntry = (fileList = [], restrictedFileList = []) => {
   return fileList.some((fileName) => restrictedFileList.indexOf(fileName) >= 0);
+};
+
+const isAllAreRestrictedEntry = (fileList = [], restrictedFileList = []) => {
+  return fileList.every((fileName) => restrictedFileList.indexOf(fileName) >= 0);
 };
 
 const checksumsWithoutRestricted = (fileList, restrictedFileList) => {
@@ -10,5 +14,6 @@ const checksumsWithoutRestricted = (fileList, restrictedFileList) => {
 
 export {
   checksumsWithoutRestricted,
-  hasRestrictedEntry
+  hasRestrictedEntry,
+  isAllAreRestrictedEntry
 };

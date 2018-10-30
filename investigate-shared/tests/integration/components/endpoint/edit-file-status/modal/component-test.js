@@ -97,4 +97,28 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     assert.equal(findAll('.limit-reached').length, 1);
   });
 
+
+  test('it disable the white list radio for multiple selection if all restricted', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [
+      {
+        fileName: 'test',
+        signature: {
+          signer: 'Microsoft Signed'
+        },
+        size: 100
+      },
+      {
+        fileName: 'test2',
+        signature: {
+          signer: 'Microsoft Signed'
+        },
+        size: 100
+      }
+    ]);
+    this.set('restrictedFileList', ['test', 'test2']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
+  });
+
 });

@@ -177,5 +177,53 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 0, 'Save Filter modal not rendered');
   });
 
+  test('it shows the error message if saver filter name is not correct', async function(assert) {
+    assert.expect(4);
+    this.set('showSaveFilterButton', true);
+    this.set('applyFilter', function(filters) {
+      const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
+      assert.equal(filter.propertyValues[0].relativeValueType, 'Minutes', 'Added relativeValueType for date filter');
+      assert.equal(filters.length, 2);
+    });
+    this.set('filterState', { filter: {}, expressionList: [] });
+    this.set('filterTypes', FILTER_TYPE);
+    await render(hbs`{{endpoint/filters-wrapper 
+    filterState=filterState 
+    applyFilters=(action applyFilter) 
+    filterTypes=filterTypes
+    showSaveFilterButton=showSaveFilterButton}}`);
+    await fillIn('.file-name-input  input', 'malware.exe');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    await click(document.querySelector('.save-filter-button button'));
+    assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
+    await fillIn('.custom-filter-name  input', 'test@');
+    await triggerKeyEvent('.custom-filter-name input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('#modalDestination .rsa-form-label.is-error').length, 1);
+  });
+
+  test('save button is disabled if filter name is empty', async function(assert) {
+    assert.expect(4);
+    this.set('showSaveFilterButton', true);
+    this.set('applyFilter', function(filters) {
+      const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
+      assert.equal(filter.propertyValues[0].relativeValueType, 'Minutes', 'Added relativeValueType for date filter');
+      assert.equal(filters.length, 2);
+    });
+    this.set('filterState', { filter: {}, expressionList: [] });
+    this.set('filterTypes', FILTER_TYPE);
+    await render(hbs`{{endpoint/filters-wrapper 
+    filterState=filterState 
+    applyFilters=(action applyFilter) 
+    filterTypes=filterTypes
+    showSaveFilterButton=showSaveFilterButton}}`);
+    await fillIn('.file-name-input  input', 'malware.exe');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    await click(document.querySelector('.save-filter-button button'));
+    assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
+    await fillIn('.custom-filter-name  input', ' ');
+    await triggerKeyEvent('.custom-filter-name input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
+  });
+
 
 });

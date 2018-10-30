@@ -13,7 +13,7 @@
   resetFilters=(action 'resetAllFilters' filterType)}}
 
 {{#if showSaveFilter}}
-  {{#rsa-application-modal autoOpen=true onClose=(action 'closeSaveFilterModal') label=(t displayProperties.label)}}
+  {{#rsa-application-modal autoOpen=true onClose=(action 'closeSaveFilterModal') label=(t label)}}
     <div class='modal-content rsa-save-search rsa-p-md save-search'>
       <label class="rsa-form-label">
         {{t 'investigateFiles.filter.customFilters.save.description'}}
@@ -21,17 +21,13 @@
       <div class='rsa-margin name'>
         {{rsa-form-input
           class='custom-filter-name'
-          isError=displayProperties.isError
+          isError=isError
+          onKeyUp=(action 'validate')
           maxLength=255
           value=saveFilterName }}
       </div>
-      {{#if isNameEmpty}}
-        <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
-          {{t 'investigateFiles.filter.customFilters.save.emptyMessage'}}
-        </label>
-      {{/if}}
-      {{#if isNameInvalid}}
-        <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
+      {{#if isError}}
+        <label class="rsa-form-label is-error rsa-m-t-xs rsa-m-b-xs">
           {{t 'investigateFiles.filter.customFilters.save.invalidInput'}}
         </label>
       {{/if}}
@@ -39,7 +35,7 @@
         {{#rsa-form-button
           style='primary'
           class= "rsa-m-r-md save-filter"
-          isDisabled=displayProperties.isError
+          isDisabled=disableSaveButton
           click=(action 'saveFilter')}}
           {{t 'investigateFiles.button.save'}}
         {{/rsa-form-button}}

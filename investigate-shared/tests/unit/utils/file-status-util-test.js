@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 
 import {
   checksumsWithoutRestricted,
-  hasRestrictedEntry
+  hasRestrictedEntry,
+  isAllAreRestrictedEntry
 } from 'investigate-shared/utils/file-status-util';
 
 module('Unit | Utils | file status util', function() {
@@ -27,6 +28,21 @@ module('Unit | Utils | file status util', function() {
     const fileList = [ 'test', 'xyz'];
     const restrictedList = ['xyz123'];
     const result = hasRestrictedEntry(fileList, restrictedList);
+    assert.equal(result, false);
+  });
+
+
+  test('isAllAreRestrictedEntry returns true if all are in the list', function(assert) {
+    const fileList = [ 'test', 'xyz'];
+    const restrictedList = ['xyz', 'test'];
+    const result = isAllAreRestrictedEntry(fileList, restrictedList);
+    assert.equal(result, true);
+  });
+
+  test('isAllAreRestrictedEntry returns false', function(assert) {
+    const fileList = [ 'test', 'xyz'];
+    const restrictedList = ['xyz', 'test2'];
+    const result = isAllAreRestrictedEntry(fileList, restrictedList);
     assert.equal(result, false);
   });
 });

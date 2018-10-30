@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import { filters, isSystemFilter, selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
-import computed from 'ember-computed-decorators';
 import layout from './template';
 import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
@@ -97,6 +96,8 @@ export default Component.extend({
 
   resetFilters: null,
 
+  disableSaveButton: true,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
@@ -111,29 +112,25 @@ export default Component.extend({
     });
   },
 
-  @computed('saveFilterName')
-  isNameInvalid(name) {
-    if (name) {
-      return /^\s*$/.test(name) || !idRegex.test(name);
-    }
-  },
-
-  @computed('saveFilterName')
-  isNameEmpty(name) {
-    if (name !== null) {
-      return isEmpty(name);
-    }
-  },
-
-  @computed('isNameInvalid', 'isNameEmpty')
-  displayProperties(isNameInvalid, isNameEmpty) {
-    const label = isNameInvalid || isNameEmpty ? 'investigateFiles.filter.customFilters.save.errorHeader' :
-      'investigateFiles.filter.customFilters.save.header';
-    const isError = isNameInvalid || isNameEmpty;
-    return { label, isError };
-  },
-
   actions: {
+
+    validate(value) {
+      const val = value.trim();
+      if (isEmpty(val)) {
+        this.set('disableSaveButton', true);
+        this.set('isError', false);
+      } else {
+        if (!idRegex.test(val)) {
+          this.set('disableSaveButton', true);
+          this.set('isError', true);
+          this.set('label', 'investigateFiles.filter.customFilters.save.errorHeader');
+        } else {
+          this.set('disableSaveButton', false);
+          this.set('isError', false);
+          this.set('label', 'investigateFiles.filter.customFilters.save.header');
+        }
+      }
+    },
 
     filterChanged(filters, reset) {
       if (reset) {
@@ -149,6 +146,9 @@ export default Component.extend({
     closeSaveFilterModal() {
       this.set('saveFilterName', '');
       this.set('showSaveFilter', false);
+      this.set('disableSaveButton', true);
+      this.set('isError', false);
+      this.set('label', 'investigateFiles.filter.customFilters.save.header');
     },
 
 
@@ -197,6 +197,7 @@ export default Component.extend({
         this.createCustomSearch(filter, expressionList, this.get('filterType'), callBackOptions);
       }
       this.set('saveFilterName', '');
+      this.set('disableSaveButton', true);
     },
 
     applyFilters() {
