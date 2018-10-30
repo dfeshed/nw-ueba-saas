@@ -41,6 +41,11 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.ok(!find('.dismiss-btn .rsa-form-button'), 'Error banner does not have dismiss button');
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.expired'), 'Correct banner message should be shown');
+
+    // Test if link is pointing appropriate page
+    const links = find('.banner-msg').getElementsByTagName('a');
+    assert.equal(links.length, 1, 'License banner should contain a link');
+    assert.notEqual(links[0].href.search('/admin/system#licensing'), -1, 'Link must point to the correct page');
   });
 
   test('License banner renders in warning mode for NEARING_EXPIRY compliance', async function(assert) {
@@ -50,6 +55,12 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.near-expiry'), 'Correct banner message should be shown');
     assert.equal(findAll('.dismiss-btn .rsa-form-button').length, 1, 'Warning banner must have dismiss button');
+
+    // Test if link is pointing appropriate page
+    const links = find('.banner-msg').getElementsByTagName('a');
+    assert.equal(links.length, 1, 'License banner should contain a link');
+    assert.notEqual(links[0].href.search('/admin/system#licensing'), -1, 'Link must point to the correct page');
+
     stub.restore();
   });
 
@@ -60,6 +71,12 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.near-usage-limit'), 'Correct banner message should be shown');
     assert.equal(findAll('.dismiss-btn .rsa-form-button').length, 1, 'Warning banner must have dismiss button');
+
+    // Test if link is pointing appropriate page
+    const links = find('.banner-msg').getElementsByTagName('a');
+    assert.equal(links.length, 1, 'License banner should contain a link');
+    assert.notEqual(links[0].href.search('/admin/system#licensing'), -1, 'Link must point to the correct page');
+
     stub.restore();
   });
 
@@ -107,6 +124,12 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.ok(!find('.dismiss-btn .rsa-form-button'), 'Error banner does not have dismiss button');
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.serverDown'), 'Correct banner message should be shown');
+
+    // Test if link is pointing appropriate page
+    const links = find('.banner-msg').getElementsByTagName('a');
+    assert.equal(links.length, 1, 'License banner should contain a link');
+    assert.notEqual(links[0].href.search('/admin/services'), -1, 'Link must point to the correct page');
+
     done();
   });
 });
