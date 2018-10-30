@@ -66,7 +66,7 @@ export default Component.extend({
 
   @computed('itemList', 'restrictedFileList')
   disableRadio(itemList, restrictedFileList) {
-    return itemList && itemList.length === 1 || isAllAreRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
+    return itemList && isAllAreRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
   },
 
   actions: {
