@@ -49,7 +49,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     await render(hbs`{{alerts-tab/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
     assert.equal(findAll('.ember-power-select-option').length, 3);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'abnormal_file_action_operation_type');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'Abnormal File Access Event');
     return settled();
   });
 
@@ -62,7 +62,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     await render(hbs`{{alerts-tab/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 4);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'high');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'High');
     return settled();
   });
 
@@ -75,7 +75,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     await render(hbs`{{alerts-tab/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
     assert.equal(findAll('.ember-power-select-option').length, 2);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'none');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'None');
     return settled();
   });
 

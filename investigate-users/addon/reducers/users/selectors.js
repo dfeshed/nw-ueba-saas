@@ -25,6 +25,7 @@ export const allWatched = (state) => state.users.allWatched;
 
 export const getUsers = (state) => state.users.users;
 
+export const severityFilter = ['low', 'medium', 'high', 'critical'];
 
 export const getUserFilter = (state) => state.users.filter;
 
@@ -53,10 +54,10 @@ export const isRisky = createSelector(
     return filter.minScore === 0;
   });
 
-export const getFilterSeverity = createSelector(
+export const getSelectedSeverity = createSelector(
   [getUserFilter],
   (filter) => {
-    return filter.severity;
+    return filter.severity ? filter.severity.asMutable() : null;
   });
 
 export const isAdmin = createSelector(
@@ -75,14 +76,14 @@ export const getExistAlertTypes = createSelector(
   [_existAlertTypes],
   (existAlertTypes) => {
     return _.map(existAlertTypes, (value) => {
-      return { id: value.alertTypes.getIn('0'), name: `${value.alertTypes.getIn('0')} (${value.count} Users)` };
+      return { id: value.alertTypes.getIn('0'), name: value.alertTypes.getIn('0'), count: `(${value.count} Users)` };
     });
   });
 
 export const getExistAnomalyTypes = createSelector(
   [_existAnomalyTypes],
   (existAnomalyTypes) => {
-    return _.toArray((_.mapValues(existAnomalyTypes, (value, key) => ({ id: key, name: `${key} (${value} Users)` }))));
+    return _.toArray((_.mapValues(existAnomalyTypes, (value, key) => ({ id: key, name: key, count: `(${value} Users)` }))));
   });
 
 export const getSelectedAlertTypes = createSelector(

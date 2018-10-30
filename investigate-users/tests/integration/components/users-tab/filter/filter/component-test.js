@@ -12,6 +12,7 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
 import dataIndex from '../../../../../data/presidio';
 import { Promise } from 'rsvp';
+import waitForReduxStateChange from '../../../../../helpers/redux-async-helpers';
 
 let setState;
 
@@ -40,22 +41,36 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/filter}}`);
-    assert.equal(find('.users-tab_filter_filter').textContent.replace(/\s/g, ''), 'FiltersAllTypesIndicators');
+    assert.equal(find('.users-tab_filter_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityAlertsIndicators');
   });
 
   test('it renders with selected filter', async function(assert) {
     new ReduxDataHelper(setState).existAnomalyTypesForUsers(existAnomalyTypes).usersExistAlertTypes(existAlertTypes.data).build();
     await render(hbs`{{users-tab/filter/filter}}`);
-    await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 9);
-    await selectChoose('.users-tab_filter_filter_select:nth-child(1)', 'snooping_user');
+    await selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'Snooping User');
     return settled().then(() => {
-      clickTrigger('.users-tab_filter_filter_select:nth-child(2)');
+      clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
       return settled().then(() => {
         assert.equal(findAll('.ember-power-select-option').length, 26);
-        selectChoose('.users-tab_filter_filter_select:nth-child(2)', 'abnormal_event_day_time');
+        selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'Abnormal File Access Time');
         return settled();
       });
+    });
+  });
+
+  test('it should filter severity', async function(assert) {
+    assert.expect(2);
+    const redux = this.owner.lookup('service:redux');
+    await render(hbs`{{users-tab/filter/filter}}`);
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
+    assert.equal(findAll('.ember-power-select-option').length, 4);
+    selectChoose('.users-tab_filter_filter_select:nth-child(1)', 'High');
+    const select = waitForReduxStateChange(redux, ('users.filter.severity'));
+    return select.then(() => {
+      const state = redux.getState();
+      assert.equal(state.users.filter.severity[0], 'high');
     });
   });
 });

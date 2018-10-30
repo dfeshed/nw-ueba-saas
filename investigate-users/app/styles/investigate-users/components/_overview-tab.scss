@@ -56,6 +56,10 @@
           }
         }
 
+        &_row:hover {
+          background-color: background-color(primary, darkest);
+        }
+
       }
 
       &_alerts {
@@ -195,6 +199,10 @@
               }
             }
           }
+
+          &_pill:hover {
+            background-color: background-color(primary, darkest);
+          }
         }
       }
     }
@@ -229,9 +237,13 @@
           .rsa-form-button {
             height: 100%;
             justify-content: space-between;
+            min-width: 100px;
+            min-height: 125px;
+            text-align: -webkit-center;
             border: none;
             display: flex !important;
             flex-direction: column;
+            padding: rsa-whitespace(more);
 
             > div {
               align-self: center;
@@ -241,6 +253,10 @@
                 margin-left: rsa-whitespace(less) !important;
               }
             }
+          }
+
+          .rsa-form-button:hover {
+            background-color: background-color(primary, darkest);
           }
 
           .count {

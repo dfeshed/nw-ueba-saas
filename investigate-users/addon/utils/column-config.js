@@ -63,7 +63,7 @@ export const columnConfigForUsers = [{
   disableSort: true
 }, {
   field: 'alerts',
-  width: '15vw',
+  width: 'auto',
   disableSort: true
 }];
 

@@ -73,7 +73,7 @@ test('test risky Filter Applied', (assert) => {
 });
 
 test('test Filter Severity', (assert) => {
-  assert.equal(Users.getFilterSeverity(state)[0], 'high');
+  assert.equal(Users.getSelectedSeverity(state)[0], 'high');
 });
 
 test('test admin Filter Applied', (assert) => {
@@ -97,14 +97,16 @@ test('test Exist Anomaly Types', (assert) => {
 test('test Selected Alert Types', (assert) => {
   assert.deepEqual(Users.getSelectedAlertTypes(state), [{
     id: 'snooping_user',
-    name: 'snooping_user (14 Users)'
+    count: '(14 Users)',
+    name: 'snooping_user'
   }]);
 });
 
 test('test Selected Anomaly Types', (assert) => {
   assert.deepEqual(Users.getSelectedAnomalyTypes(state), [{
     id: 'abnormal_file_action_operation_type',
-    name: 'abnormal_file_action_operation_type (3 Users)'
+    count: '(3 Users)',
+    name: 'abnormal_file_action_operation_type'
   }]);
 });
 

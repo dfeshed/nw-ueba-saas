@@ -14,7 +14,7 @@
     {{t 'investigateUsers.alerts.indicatorCount'}}
   </div>
   <div class='status'>
-    {{t 'investigateUsers.alerts.status'}}
+    {{t 'investigateUsers.alerts.feedback'}}
   </div>
 </div>
 
@@ -22,12 +22,9 @@
   {{#each-in groupedAlerts as |timestamp alertList|}}
     <div class='alerts-tab_body_body-table_body_row'>
       <div class='alerts-tab_body_body-table_body_row_date'>
-        <span class='alerts-tab_body_body-table_body_row_date_icon'>
-          {{rsa-icon size='small' style='filled' name='arrow-up-12'}}
-        </span>
         {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{alert-date timestamp=timestamp}}
       </div>
-      <div class='alerts-tab_body_body-table_body_row_alerts {{if (eq timestamp timeLineClicked) 'expandRow'}}'>
+      <div class='alerts-tab_body_body-table_body_row_alerts'>
         {{#each alertList as |alert|}}
           <div class='alerts-tab_body_body-table_body_row_alerts_alert' {{action 'expandAlert' alert.id}}>
             <div class='severity' title='{{t 'investigateUsers.alerts.score'}}: {{alert.score}}'>
@@ -43,7 +40,7 @@
               {{alert.severity}}
             </div>
             <div class='alertName'>
-              {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} | <span class='lighter'> {{alert.timeframe}} </span>
+              {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} <span class='lighter'> | {{alert.timeframe}} </span>
             </div>
             <div class='entityName'>
               {{alert.entityName}}
@@ -55,28 +52,28 @@
               {{alert.evidenceSize}}
             </div>
             <div class='status'>
-              {{alert.status}}
+              {{if (eq alert.status 'Open')  (t 'investigateUsers.feedback.none') (t 'investigateUsers.feedback.rejected')}}
             </div>
           </div>
-          <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators  {{if (eq alertClicked  alert.id) 'expandRow'}}'>
-            {{#rsa-data-table lazy=true items=alert.evidences columnsConfig=columnsData}} 
-              {{#rsa-data-table/header as |column|}}
-                <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
-                  {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
-                </span>
-              {{/rsa-data-table/header}}
-              {{#rsa-data-table/body as |item index column|}} 
-                {{#rsa-data-table/body-cell item=item index=index column=column}}
-                  {{#if (eq column.field 'startDate')}}
-                    {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
-                  {{else}}
-                    <span class={{if (eq column.field 'name') 'primary' 'lighter'}}>
+          <div class='indicator-table {{if (eq alertClicked  alert.id) 'visible'}}'>
+            <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators'>
+              {{#rsa-data-table lazy=true items=alert.evidences columnsConfig=columnsData}} 
+                {{#rsa-data-table/header as |column|}}
+                  <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
+                    {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
+                  </span>
+                {{/rsa-data-table/header}}
+                {{#rsa-data-table/body as |item index column|}} 
+                  {{#rsa-data-table/body-cell item=item index=index column=column}}
+                    {{#if (eq column.field 'startDate')}}
+                      {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+                    {{else}}
                       {{get item column.field}}
-                    </span>
-                  {{/if}}
-                {{/rsa-data-table/body-cell}}
-              {{/rsa-data-table/body}}
-            {{/rsa-data-table}}
+                    {{/if}}
+                  {{/rsa-data-table/body-cell}}
+                {{/rsa-data-table/body}}
+              {{/rsa-data-table}}
+            </div>
           </div>
         {{/each}}
       </div>

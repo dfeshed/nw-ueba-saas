@@ -4,14 +4,25 @@
 <div class='users-tab_filter_filter_list'>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">
-      {{t 'investigateUsers.users.filters.allTypes'}}
+      {{t 'investigateUsers.alerts.filters.severity'}}
+    </div>
+    {{#power-select-multiple
+      options=severityFilter
+      selected=selectedSeverity
+      onchange=(action 'updateSeverityFilter') as |option|}}
+      {{t (concat 'investigateUsers.severity.' option)}}
+    {{/power-select-multiple}}
+  </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.alerts.title'}}
     </div>
 
     {{#power-select-multiple
       options=existAlertTypes
       selected=selectedAlertTypes
       onchange=(action 'updateFilterForAlertTypes') as |option|}}
-      {{option.name}}
+      {{t (concat 'investigateUsers.alerts.alertNames.' option.name '.name')}} {{option.count}}
     {{/power-select-multiple}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
@@ -23,7 +34,7 @@
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
       onchange=(action 'updateFilterForAnomalyTypes') as |option|}}
-      {{option.name}}
+      {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}
     {{/power-select-multiple}}
   </label>
 </div>

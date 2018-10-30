@@ -4228,6 +4228,10 @@ export default {
     filterName: 'Filter Name :',
     save: 'Save',
     cancel: 'Cancel',
+    feedback: {
+      none: 'None',
+      rejected: 'Rejected'
+    },
     severity: {
       Critical: 'Critical',
       High: 'High',
@@ -4267,10 +4271,11 @@ export default {
       all: 'All Alerts',
       alertName: 'Alert Name',
       entityName: 'Entity Name',
+      score: 'Score',
       startTime: 'Start Time',
       indicatorCount: 'Indicator Count',
       startFrom: 'Alerts starts from ',
-      status: 'Status',
+      feedback: 'Feedback',
       indicators: 'Indicators',
       alertNames: {
         mass_changes_to_critical_enterprise_groups: {
@@ -4370,7 +4375,7 @@ export default {
         }
       },
       indicator: {
-        name: 'Alert',
+        name: 'Indicator Name',
         anomalyValue: 'Anomaly Value',
         numOfEvents: 'Event Count',
         startDate: 'Start Date',

@@ -84,10 +84,11 @@
         display: inline-flex;
         justify-content: space-around;
         padding-bottom: rsa-whitespace(least);
+
         &_select {
           width: calc(100% - 30px);
         }
-        
+
         &_close {
           width: 30px;
         }
@@ -273,6 +274,10 @@
 
       &_admin {
         color: text-color(primary);
+      }
+
+      .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
+        background-color: background-color(primary, darkest);
       }
 
       .rsa-data-table-body-cell {

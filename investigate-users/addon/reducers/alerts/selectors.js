@@ -51,7 +51,7 @@ export const getAlertsGroupedHourly = createSelector(
 export const getExistAnomalyTypes = createSelector(
   [_existAnomalyTypes],
   (existAnomalyTypes) => {
-    const anomalyTypesWithKey = _.mapValues(existAnomalyTypes, (value, key) => ({ id: key, name: `${key} (${value} Users)` }));
+    const anomalyTypesWithKey = _.mapValues(existAnomalyTypes, (value, key) => ({ id: key, name: key, count: `(${value} Users)` }));
     return _.toArray(anomalyTypesWithKey);
   });
 

@@ -50,7 +50,7 @@ module('Integration | Component | alerts-tab/body', function(hooks) {
     }).build();
     await render(hbs`{{alerts-tab/body}}`);
     assert.equal(find('.severity-bar').textContent.replace(/\s/g, ''), '10Critical12High4Low2Medium');
-    assert.equal(find('.alerts-tab_body_body-table_header').textContent.replace(/\s/g, ''), 'AlertNameEntityNameStartTimeIndicatorCountStatus');
+    assert.equal(find('.alerts-tab_body_body-table_header').textContent.replace(/\s/g, ''), 'AlertNameEntityNameStartTimeIndicatorCountFeedback');
     window.URL.createObjectURL = () => {
       assert.ok(true, 'This function supposed to be called for altert export');
     };

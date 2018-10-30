@@ -10,7 +10,7 @@
       options=severityFilter
       selected=selectedSeverity
       onchange=(action 'updateSeverityFilter') as |option|}}
-      {{option}}
+      {{t (concat 'investigateUsers.severity.' option)}}
     {{/power-select-multiple}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
@@ -22,7 +22,7 @@
       selected=selectedFeedBack
       searchEnabled=false
       onchange=(action 'updateFeedBackFilter') as |option|}}
-      {{option}}
+      {{t (concat 'investigateUsers.feedback.' option)}}
     {{/power-select}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
@@ -33,7 +33,7 @@
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
       onchange=(action 'updateAnomalyFilter') as |option|}}
-      {{option.name}}
+      {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}
     {{/power-select-multiple}}
   </label>
   <div>

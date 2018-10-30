@@ -39,7 +39,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
 
   test('it should render alert tab table body with loading', async function(assert) {
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.equal(find('.alerts-tab_body_body-table_header').textContent.replace(/\s/g, ''), 'AlertNameEntityNameStartTimeIndicatorCountStatus');
+    assert.equal(find('.alerts-tab_body_body-table_header').textContent.replace(/\s/g, ''), 'AlertNameEntityNameStartTimeIndicatorCountFeedback');
     assert.equal(find('.rsa-loader__text').textContent.replace(/\s/g, ''), 'Loading');
   });
 
@@ -64,7 +64,7 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     await click('.alerts-tab_body_body-table_body_row_alerts_alert');
     later(() => {
       assert.ok(findAll('.severity')[2].title.indexOf(93) > -1);
-      assert.equal(findAll('.rsa-data-table-body-row').length, 16);
+      assert.equal(findAll('.rsa-data-table-body-row').length, 20);
       done();
     }, 500);
   });

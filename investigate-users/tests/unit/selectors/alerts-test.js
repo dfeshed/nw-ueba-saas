@@ -90,6 +90,7 @@ test('test Exist Anomaly Types', function(assert) {
 test('test getSelectedAnomalyTypes', function(assert) {
   assert.deepEqual(Alerts.getSelectedAnomalyTypes(state)[0], {
     id: 'high_number_of_successful_file_permission_change',
-    name: 'high_number_of_successful_file_permission_change (11 Users)'
+    count: '(11 Users)',
+    name: 'high_number_of_successful_file_permission_change'
   });
 });

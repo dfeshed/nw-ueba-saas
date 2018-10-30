@@ -69,6 +69,7 @@
 
       &_export {
         padding: rsa-whitespace(less);
+
         .rsa-form-button {
           @include rsa-font(default, small);
         }
@@ -102,7 +103,7 @@
         &_header {
           display: flex;
           width: 100%;
-          @include rsa-font(header, medium);
+          @include rsa-font(header, small);
           color: text-color(primary, lighter);
           background-color: text-color(primary, darkest);
 
@@ -114,31 +115,31 @@
 
           .alertName {
             width: 25%;
-            padding: rsa-whitespace(less);
+            padding: rsa-whitespace() rsa-whitespace(less);
             border-right: 1px solid text-color(primary);
           }
 
           .entityName {
             width: 15%;
-            padding: rsa-whitespace(less);
+            padding: rsa-whitespace() rsa-whitespace(less);
             border-right: 1px solid text-color(primary);
           }
 
           .startTime {
             width: 15%;
-            padding: rsa-whitespace(less);
+            padding: rsa-whitespace() rsa-whitespace(less);
             border-right: 1px solid text-color(primary);
           }
 
           .indicatorCount {
             width: 15%;
-            padding: rsa-whitespace(less);
+            padding: rsa-whitespace() rsa-whitespace(less);
             border-right: 1px solid text-color(primary);
           }
 
           .status {
             width: 15%;
-            padding: rsa-whitespace(less);
+            padding: rsa-whitespace() rsa-whitespace(less);
 
           }
         }
@@ -159,21 +160,18 @@
             &_date {
               display: flex;
               padding: rsa-whitespace();
-              color: text-color(secondary, light);
-              @include rsa-font(default);
+              color: text-color(primary, lighter);
+              @include rsa-font(header);
               border-bottom: 1px solid text-color(primary, darkest);
+
               &_icon {
                 padding: 0 rsa-whitespace(least) 0 0;
               }
             }
 
-            .expandRow {
-              display: block;
-            }
-
             &_alerts {
-
               &_alert {
+
                 display: flex;
                 align-items: center;
                 @include rsa-font(default);
@@ -250,24 +248,39 @@
                 }
 
                 &_indicators {
-                  display: none;
+
                   margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) 3*rsa-whitespace();
                   border: 1px solid text-color(primary, dark);
+                  color: text-color(primary, lighter);
+
+                  .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
+                    background-color: background-color(primary, darkest);
+                  }
+
+                  .rsa-data-table-header-row {
+                    background-color: background-color(primary, darkest);
+                  }
 
                   .rsa-data-table-body-cell {
-                    background-color: text-color(primary, darkest);
                     @include rsa-font(default, small);
                     padding: rsa-whitespace(least) rsa-whitespace(less);
                   }
-
-                  .primary {
-                    color: text-color(secondary, light);
-                  }
-
-                  .lighter {
-                    color: text-color(primary, lighter);
-                  }
                 }
+              }
+
+              &_alert:hover {
+                background-color: background-color(primary, darkest);
+              }
+
+              .indicator-table {
+                max-height: 0;
+                transition: max-height 1s ease-out;
+                overflow: hidden;
+              }
+
+              .indicator-table.visible {
+                max-height: 100vh;
+                transition: max-height 1s ease-in;
               }
             }
 
