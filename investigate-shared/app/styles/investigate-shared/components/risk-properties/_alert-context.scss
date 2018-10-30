@@ -1,4 +1,6 @@
 .alert-context {
+  overflow-y: auto;
+  max-height: calc(100vh - 320px);
   margin-top: rsa-whitespace(less);
   .is-selected {
     background-color: text-color(secondary, dark);

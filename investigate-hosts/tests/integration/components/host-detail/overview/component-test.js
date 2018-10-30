@@ -63,7 +63,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
   test('Host detail Alerts box is available', async function(assert) {
     setState();
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
-    assert.equal(findAll('.host-detail-box.scroll-box').length, 1, 'Host detail box is present');
+    assert.equal(findAll('.host-detail-box').length, 1, 'Host detail box is present');
   });
 
   test('renders host details properties when tab is host_details', async function(assert) {

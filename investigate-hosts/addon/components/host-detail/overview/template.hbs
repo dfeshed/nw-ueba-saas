@@ -4,7 +4,7 @@
       {{#rsa-form-button class='open-properties' isIconOnly=true click=(action layout.open 'right') }}
         {{rsa-icon name='layout-2'}}
       {{/rsa-form-button}}
-      <hbox class="host-detail-box scroll-box">
+      <hbox class="host-detail-box">
         <box class="alerts">
           {{endpoint/risk-properties
             defaultAction=(action 'getUpdatedRiskScoreContext')
@@ -12,6 +12,11 @@
             riskState=risk
             riskType='HOST'
           }}
+        </box>
+        <box class="events">
+          {{endpoint/risk-properties/events-list-container
+            riskState=risk
+            expandEvent=(action "expandEvent")}}
         </box>
       </hbox>
     {{/layout.center}}

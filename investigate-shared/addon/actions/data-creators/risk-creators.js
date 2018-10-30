@@ -112,7 +112,7 @@ const setSelectedAlert = (context) => {
     next(() => {
       dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED, meta: { belongsTo: type } });
       context.context.forEach((event) => {
-        if (!eventsLoadingStatus(getState().files) || !selectedAlert(getState()[STATE_MAP[type]])) {
+        if (!eventsLoadingStatus(getState()[STATE_MAP[type]]) || !selectedAlert(getState()[STATE_MAP[type]])) {
           // if already loading events for another alert, CLEAR!
           dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
           return;

@@ -5,6 +5,8 @@ export default Component.extend({
 
   layout,
 
+  tagName: 'box',
+
   classNames: ['alert-context'],
 
   didRender() {

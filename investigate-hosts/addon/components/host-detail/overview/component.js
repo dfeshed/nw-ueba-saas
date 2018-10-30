@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
-import { setSelectedAlert, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getPropertyData, getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
 import hostDetailsConfig from './property-panel/overview-property-config';
 import policiesConfig from './property-panel/policies-property-config';
@@ -15,7 +15,8 @@ const dispatchToActions = {
   setAlertTab,
   getUpdatedRiskScoreContext,
   setSelectedAlert,
-  setPropertyPanelTabView
+  setPropertyPanelTabView,
+  expandEvent
 };
 
 const stateToComputed = (state) => ({
