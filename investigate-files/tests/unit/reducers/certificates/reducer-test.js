@@ -176,4 +176,11 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     const result = reducer(previous, { type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: { selected: true, field: 'someColumn' } });
     assert.equal(result.certificateVisibleColumns.length, 1, 'Visual column added');
   });
+  test('CLOSE_CERTIFICATE_VIEW', function(assert) {
+    const previous = Immutable.from({
+      isCertificateView: true
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
+    assert.equal(result.isCertificateView, false, 'isCertificateView should false');
+  });
 });

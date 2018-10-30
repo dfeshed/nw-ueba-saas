@@ -33,6 +33,7 @@ export const setEndpointServer = (server) => {
       request.registerPersistentStreamOptions({ socketUrlPostfix: server.id, requiredSocketUrl: 'endpoint/socket' });
       dispatch({ type: ACTION_TYPES.RESET_FILES });
       dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
+      dispatch({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
       return request.ping('endpoint-server-ping')
       .then(function() {
         dispatch(isEndpointServerOffline(false));

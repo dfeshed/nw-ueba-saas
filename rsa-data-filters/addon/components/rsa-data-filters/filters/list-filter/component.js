@@ -31,8 +31,8 @@ export default Component.extend({
 
 
   actions: {
-    toggleSelected(option) {
-      if (event.charCode && event.charCode != 32) {
+    toggleSelected(option, event) {
+      if (event.charCode !== undefined && event.charCode !== 32) {
         return true;
       }
       const { selected } = option;
@@ -47,6 +47,7 @@ export default Component.extend({
       if (onChange) {
         onChange({ name, operator: 'IN', value });
       }
+      event.preventDefault();
     }
   }
 });

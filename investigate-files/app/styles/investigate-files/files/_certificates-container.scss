@@ -36,7 +36,23 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       i {
         font-size: 9.8px;
       }
-    } 
+    }
+    .close-certificate {
+      text-align: right;
+      .close-certificate-view-button button i {
+        font-size: 14px;
+        color: text-color(primary);
+        cursor: pointer;
+        margin: 0 rsa-whitespace(least);
+        padding: 0 rsa-whitespace(least);
+        &:hover {
+          color: text-color(primary, lightest);
+          }
+        }
+    }
+    .close-zone {
+      margin-right: 0.5rem;
+    }
   }
   .certificates-footer {
     max-height: 2rem;

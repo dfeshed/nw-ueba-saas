@@ -1,16 +1,29 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../helpers/patch-reducer';
+import { patchReducer } from '../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Immutable from 'seamless-immutable';
+
+let initState;
 
 module('Integration | Component | certificates-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
   });
   hooks.beforeEach(function() {
+    initState = (state) => {
+      patchReducer(this, Immutable.from(state));
+    };
+    this.dateFormat = this.owner.lookup('service:dateFormat');
+    this.timeFormat = this.owner.lookup('service:timeFormat');
+    this.timezone = this.owner.lookup('service:timezone');
+    this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
+    this.set('timeFormat.selected', 'HR24', 'HR24');
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
@@ -41,5 +54,17 @@ module('Integration | Component | certificates-container', function(hooks) {
   test('certificates filter panel rendered', async function(assert) {
     await render(hbs`{{certificates-container}}`);
     assert.equal(findAll('.filter-wrapper').length, 1, 'certificates filter panel has rendered.');
+  });
+  test('certificates close icon should rendered', async function(assert) {
+    new ReduxDataHelper(initState)
+      .isCertificateView(true)
+      .build();
+    await render(hbs`{{certificates-container}}`);
+    assert.equal(findAll('.close-certificate-view-button').length, 1, 'certificates close icon should rendered.');
+    await click('.close-certificate-view-button button');
+    return settled().then(() => {
+      const state = this.owner.lookup('service:redux').getState();
+      assert.equal(state.certificate.list.isCertificateView, false, 'Certificate view is closed');
+    });
   });
 });

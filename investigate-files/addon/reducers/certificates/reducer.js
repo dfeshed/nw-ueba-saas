@@ -56,6 +56,7 @@ const _toggleSelectedCertificate = (state, payload) => {
 
 const certificatesReducer = handleActions({
   [ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW]: (state) => state.set('isCertificateView', !state.isCertificateView),
+  [ACTION_TYPES.CLOSE_CERTIFICATE_VIEW]: (state) => state.set('isCertificateView', false),
 
   [ACTION_TYPES.GET_CERTIFICATES]: (state, action) => {
     return handle(state, action, {

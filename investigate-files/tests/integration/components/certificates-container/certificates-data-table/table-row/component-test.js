@@ -63,11 +63,27 @@ module('Integration | Component | certificates-container/certificates-data-table
 
   test('data table row rendering', async function(assert) {
     this.set('item', items[0]);
+    this.set('selections', []);
     this.set('beforeContextMenuShow', function() {
       assert.ok(true);
     });
-    await render(hbs`{{certificates-container/certificates-data-table/table-row item=item beforeContextMenuShow=beforeContextMenuShow}}`);
+    await render(hbs`{{certificates-container/certificates-data-table/table-row 
+      selections=selections 
+      item=item 
+      beforeContextMenuShow=beforeContextMenuShow}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 1, 'data table body row has rendered.');
     assert.equal(findAll('.content-context-menu').length, 1, 'Context menu added to row');
+  });
+  test('data table row selecting', async function(assert) {
+    this.set('item', items[0]);
+    this.set('selections', items);
+    this.set('beforeContextMenuShow', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{certificates-container/certificates-data-table/table-row 
+      selections=selections 
+      item=item 
+      beforeContextMenuShow=beforeContextMenuShow}}`);
+    assert.equal(findAll('.is-row-checked').length, 1, 'data table body row has selected.');
   });
 });

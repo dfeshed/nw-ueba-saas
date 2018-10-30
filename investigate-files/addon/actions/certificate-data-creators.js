@@ -72,6 +72,8 @@ const toggleCertificateSelection = (selectedCertificate) => ({ type: ACTION_TYPE
 
 const updateCertificateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: column });
 
+const closeCertificateVIew = () => ({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
+
 export {
   toggleCertificateView,
   getCertificates,
@@ -80,5 +82,6 @@ export {
   getSavedCertificateStatus,
   saveCertificateStatus,
   toggleCertificateSelection,
-  updateCertificateColumnVisibility
+  updateCertificateColumnVisibility,
+  closeCertificateVIew
 };

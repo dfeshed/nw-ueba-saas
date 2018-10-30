@@ -18,8 +18,9 @@
   {{#layout.center}}
     <hbox class="certificates-action-bar flexi-fit">
       <h2 class="title-header">
-        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.open 'left')}}
-          {{rsa-icon name='filter-2'}}
+        {{#rsa-form-button class='close-zone' click=(action layout.open 'left')}}
+          {{rsa-icon name='filter-2' }}
+          {{t 'investigateFiles.button.filters'}}
         {{/rsa-form-button}}
       </h2>
       {{#rsa-form-button class='back-to-file padding-right' click=(action 'toggleCertificateView')}}
@@ -31,6 +32,11 @@
         {{t 'investigateFiles.certificatePageTitle'}}
       </label>
       {{certificates-container/certificate-status}}
+      <box class='close-certificate'>
+        {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
+          {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
+        {{/rsa-form-button}}
+      </box>
     </hbox>
     {{#if isEndpointServerOnline}}
       <box class="certificates-body">

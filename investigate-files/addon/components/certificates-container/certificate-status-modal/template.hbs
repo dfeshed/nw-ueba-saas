@@ -11,8 +11,8 @@
       </h4>
       <p class='certificate-action-note'>{{t 'investigateFiles.certificate.editCertificateStatus.actionNote'}}</p>
       {{#each radioButtons as |radio|}}
-        <label class='rsa-form-radio-label file-status-radio {{if
-          (eq radio.value data.certificateStatus) 'checked'}}'>
+        <label class='rsa-form-radio-label file-status-radio 
+        {{if (eq radio.value data.certificateStatus) 'checked'}}'>
           {{radio-button
             radioClass='status-type'
             value=radio.value
@@ -26,7 +26,7 @@
       {{rsa-form-textarea
         label=(t 'investigateFiles.editFileStatus.commentTitle')
         value=data.comment
-        maxLength=900
+        maxlength=900
       }}
       {{#if isCharectarLimitReached}}
         <span class='limit-reached'>

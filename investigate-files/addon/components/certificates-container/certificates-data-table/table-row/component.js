@@ -5,6 +5,8 @@ import computed from 'ember-computed-decorators';
 
 export default DataTableBodyRow.extend(contextMenuMixin, {
 
+  classNameBindings: ['isRowChecked'],
+
   eventBus: service(),
 
   accessControl: service(),
@@ -16,6 +18,15 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
   selections: null,
 
   showFileStatusModal: false,
+
+  @computed('item', 'selections')
+  isRowChecked(item, selections = []) {
+    if (item) {
+      const isSelected = selections.findBy('thumbprint', item.thumbprint);
+      return !!isSelected;
+    }
+    return false;
+  },
 
   @computed('item')
   contextItems() {
