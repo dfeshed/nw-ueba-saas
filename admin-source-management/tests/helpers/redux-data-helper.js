@@ -5,7 +5,8 @@ import { initialState as groupWizInitialState } from 'admin-source-management/re
 import {
   groups,
   policies,
-  endpointServers
+  endpointServers,
+  logServers
 } from '../data/data';
 
 const _set = (obj, key, val) => {
@@ -219,6 +220,24 @@ export default class DataHelper {
 
   policyWizEndpointServersEmpty() {
     _set(this.state, 'usm.policyWizard.listOfEndpointServers', []);
+    return this;
+  }
+
+  // ====================================================================
+  // Windows Log Server settings
+  // ====================================================================
+  policyWizWinLogPrimaryDestination(primaryDestination) {
+    _set(this.state, 'usm.policyWizard.policy.primaryDestination', primaryDestination);
+    return this;
+  }
+
+  policyWizWinLogLogServers() {
+    _set(this.state, 'usm.policyWizard.listOfLogServers', logServers);
+    return this;
+  }
+
+  policyWizWinLogLogServersEmpty() {
+    _set(this.state, 'usm.policyWizard.listOfLogServers', []);
     return this;
   }
 

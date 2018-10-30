@@ -382,7 +382,7 @@ export default [
     enabled: true,
     protocol: 'TCP',
     sendTestLog: false,
-    primaryDestination: 'LD_01',
+    primaryDestination: '10.10.10.10',
     secondaryDestination: 'LD_02',
     channelFilters: [
       {
@@ -427,7 +427,7 @@ export default [
     enabled: true,
     protocol: 'UDP',
     sendTestLog: false,
-    primaryDestination: 'LD_01',
+    primaryDestination: '10.10.10.12',
     secondaryDestination: 'LD_02',
     lastPublishedCopy: null,
     associatedGroups: []

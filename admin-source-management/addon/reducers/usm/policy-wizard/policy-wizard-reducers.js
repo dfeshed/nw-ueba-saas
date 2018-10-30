@@ -5,6 +5,7 @@ import { isBlank } from '@ember/utils';
 import _ from 'lodash';
 import edrPolicyInitialState from './edrPolicy/edr-initialState';
 import edrPolicyReducers from './edrPolicy/edr-reducerFns';
+import windowsLogPolicyReducers from './windowsLogPolicy/windowsLog-reducerFns';
 import windowsLogPolicyInitialState from './windowsLogPolicy/windowsLog-initialState';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
@@ -76,12 +77,12 @@ const INITIAL_STATES = {
     // edrPolicy specific state to be fetched
     // ===================================================
     // list of endpoint servers from the orchestration service to populate the hostname drop down
-    listOfEndpointServers: []
+    listOfEndpointServers: [],
 
     // ===================================================
     // windowsLogPolicy specific state to be fetched
     // ===================================================
-    // someWindowsLogPolicyThing: []
+    listOfLogServers: []
   }
 };
 
@@ -361,8 +362,11 @@ export default reduxActions.handleActions({
     }, { deep: true }); // deep merge so we don't reset everything
   },
 
-  //
+  // edrPolicy actions
   [ACTION_TYPES.FETCH_ENDPOINT_SERVERS]: edrPolicyReducers.fetchEndpointServers,
+
+  // windowsLogPolicy actions
+  [ACTION_TYPES.FETCH_LOG_SERVERS]: windowsLogPolicyReducers.fetchLogServers,
 
   // define-policy-step -
   [ACTION_TYPES.TOGGLE_SCAN_TYPE]: edrPolicyReducers.toggleScanType,

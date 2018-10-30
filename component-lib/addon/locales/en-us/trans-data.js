@@ -4045,6 +4045,8 @@ export default {
         radioOptionDisabled: 'Disabled',
         enabled: 'Windows Log Collection', // 'Status',
         sendTestLog: 'Send Test Log',
+        primaryDestination: 'Primary Log Decoder / Log collector*',
+        primaryDestinationInvalidMsg: 'The log server host name should not be empty',
         channelFiltersSettingsHeader: 'Channel Filter Settings'
       }
     },

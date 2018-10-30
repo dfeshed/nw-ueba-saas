@@ -8,7 +8,8 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-reducers';
 import {
-  endpointServers
+  endpointServers,
+  logServers
 } from '../../../data/data';
 
 const initialStateEdr = new ReduxDataHelper().policyWiz().build().usm.policyWizard;
@@ -25,7 +26,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
     assert.equal(initialStateWinLog.policy.policyType, 'windowsLogPolicy', 'correct policyType is loaded in initialState when type is windowsLogPolicy');
-    assert.equal(initialStateWinLog.availableSettings.length, 3, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
+    assert.equal(initialStateWinLog.availableSettings.length, 4, 'correct availableSettings are loaded in initialState when type is windowsLogPolicy');
   });
 
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
@@ -544,6 +545,34 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     });
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
     assert.deepEqual(endState, expectedEndState, 'endpoint servers list is populated');
+  });
+
+  test('on FETCH_LOG_SERVERS start, log servers list is reset', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogLogServersEmpty()
+      .build().usm.policyWizard;
+
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_LOG_SERVERS });
+    const endState = reducers(Immutable.from(_.cloneDeep(initialStateWinLog)), action);
+    assert.deepEqual(endState, expectedEndState, 'list of log servers is empty');
+  });
+
+  test('on FETCH_LOG_SERVERS success, log servers list is properly set', function(assert) {
+    const listOfLogServers = {
+      data: logServers
+    };
+
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogLogServers()
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_LOG_SERVERS,
+      payload: listOfLogServers
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(initialStateWinLog)), action);
+    assert.deepEqual(endState, expectedEndState, 'log servers list is populated');
   });
 
 });

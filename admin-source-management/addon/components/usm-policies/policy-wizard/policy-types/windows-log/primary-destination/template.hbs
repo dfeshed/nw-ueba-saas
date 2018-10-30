@@ -1,0 +1,27 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'primaryDestination'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+
+<div class="primary-destination__list">
+  {{#power-select
+    placeholder=(t 'packager.placeholder')
+    options=logServersList
+    searchField="name"
+    triggerClass=(if primaryDestinationValidator.showError 'selector-error')
+    dropdownClass=errorClass
+    searchPlaceholder=(t 'packager.searchPlaceholder')
+    selected=selectedLogServer
+    onchange=(action 'updatePolicyProperty' 'primaryDestination') as |list|
+  }}
+    {{list.name}}
+  {{/power-select}}
+</div>
+
+<div class="input-error">
+  {{#if primaryDestinationValidator.showError}}
+    {{t primaryDestinationValidator.errorMessage}}
+  {{/if}}
+</div>

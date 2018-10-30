@@ -47,10 +47,16 @@ const _initializeFetchPolicy = (policyId, dispatch, getState) => {
  */
 const _initializePolicyType = (policyType, dispatch) => {
   // init type specific actions
-  if (policyType === 'edrPolicy') {
-    dispatch(fetchEndpointServers());
-  } /* else if (policyType === 'windowsLogPolicy') {
-  } */
+  switch (policyType) {
+    // edrPolicy picked from the dropdown
+    case 'edrPolicy':
+      dispatch(fetchEndpointServers());
+      break;
+    // windowsLogPolicy picked from the dropdown
+    case 'windowsLogPolicy':
+      dispatch(fetchLogServers());
+      break;
+  }
 };
 
 /**
@@ -229,9 +235,11 @@ const updatePolicyProperty = (field, value) => {
       ];
       break;
     // windowsLogPolicy specific props
-    // case 'someWinLogProp':
-    //   // do something
-    //   break;
+    case 'primaryDestination':
+      payload = [
+        { field: 'policy.primaryDestination', value: value.host }
+      ];
+      break;
     default:
       payload = [{ field: `policy.${field}`, value }];
   }
@@ -264,12 +272,12 @@ const fetchEndpointServers = () => {
 // ===================================================
 // windowsLogPolicy specific action creators
 // ===================================================
-// const someWindosLogPolicyThing = () => {
-//   return {
-//     type: ACTION_TYPES.SOME_WINDOWS_LOG_THING,
-//     promise: policyAPI.fetchSomeWindowsLogThing()
-//   };
-// };
+const fetchLogServers = () => {
+  return {
+    type: ACTION_TYPES.FETCH_LOG_SERVERS,
+    promise: policyAPI.fetchLogServers()
+  };
+};
 
 export {
   initializePolicy,
@@ -283,7 +291,7 @@ export {
   updatePolicyProperty,
   fetchPolicyList,
   // edrPolicy specific action creators
-  fetchEndpointServers
+  fetchEndpointServers,
   // windowsLogPolicy specific action creators
-  // someWindosLogPolicyThing
+  fetchLogServers
 };

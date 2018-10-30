@@ -75,6 +75,10 @@ const adminUsmConfigGen = function(environment) {
       fetchEndpointServers: {
         subscriptionDestination: '/user/queue/usm/endpoint/servers',
         requestDestination: '/ws/usm/endpoint/servers'
+      },
+      fetchLogServers: {
+        subscriptionDestination: '/user/queue/usm/log/servers',
+        requestDestination: '/ws/usm/log/servers'
       }
     }
   };

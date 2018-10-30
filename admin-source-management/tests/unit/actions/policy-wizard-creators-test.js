@@ -89,6 +89,10 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
           assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_TYPE, 'action has the correct type of UPDATE_POLICY_TYPE');
           assert.equal(action.payload, 'windowsLogPolicy', 'action has the correct payload of windowsLogPolicy');
           break;
+        case ACTION_TYPES.FETCH_LOG_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_LOG_SERVERS, 'action has the correct type of FETCH_LOG_SERVERS');
+          assert.ok(action.promise, 'action has a fetchLogpointServers promise');
+          break;
         // case ACTION_TYPES.SOME_WIN_LOG_THING:
         //   assert.equal(action.type, ACTION_TYPES.SOME_WIN_LOG_THING, 'action has the correct type of SOME_WIN_LOG_THING');
         //   assert.ok(action.promise, 'action has a someWinLogThing promise');
@@ -133,6 +137,18 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
       ]
     };
     const action = policyWizardCreators.updatePolicyProperty('primaryAddress', val);
+    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+  });
+
+  test('updatePolicyProperty action creator returns proper type and payload when field is primaryDestination', function(assert) {
+    const val = { id: 'id1', host: '10.10.10.10' };
+    const expectedAction = {
+      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
+      payload: [
+        { field: 'policy.primaryDestination', value: '10.10.10.10' }
+      ]
+    };
+    const action = policyWizardCreators.updatePolicyProperty('primaryDestination', val);
     assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 

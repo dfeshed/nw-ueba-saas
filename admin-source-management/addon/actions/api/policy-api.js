@@ -120,6 +120,20 @@ function fetchEndpointServers() {
   });
 }
 
+/**
+ * Get a list of log servers that the
+ * agent will push the policy to.
+ * @public
+ */
+function fetchLogServers() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'fetchLogServers',
+    query: {}
+  });
+}
+
 export default {
   deletePolicies,
   fetchPolicies,
@@ -128,5 +142,6 @@ export default {
   publishPolicies,
   savePolicy,
   savePublishPolicy,
-  fetchEndpointServers
+  fetchEndpointServers,
+  fetchLogServers
 };

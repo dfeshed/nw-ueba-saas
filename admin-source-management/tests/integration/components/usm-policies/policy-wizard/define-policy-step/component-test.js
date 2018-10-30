@@ -56,6 +56,23 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
   });
 
+  test('When policy is Windows Log policy, All the components in the available settings is rendered on the UI', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .available-setting').length, 3, 'All windows log policy available settings rendered on the UI');
+  });
+
+  test('When policy is Windows Log policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
+    const newSelectedSettings = [
+      { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/primary-destination', defaults: [{ field: 'primaryDestination', value: '' }]
+      }
+    ];
+    const initialState = new ReduxDataHelper(/* setState */).policyWiz('windowsLogPolicy').build().usm.policyWizard;
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All selected settings rendered on the UI');
+  });
+
   test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
@@ -154,4 +171,9 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .rsa-icon').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
   });
 
+  test('When policy is Windows Log policy, primary destination is shown in the available settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .primaryDestination').length, 1, 'Primary Destination component is shown in the available settings');
+  });
 });
