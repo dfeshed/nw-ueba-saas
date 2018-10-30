@@ -2246,6 +2246,11 @@ export default {
       rpm: {
         packageName: 'Package'
       },
+      downloadInfo: {
+        fileName: 'Download Filename',
+        status: 'Download Status',
+        path: 'Download Path'
+      },
       path: 'Path',
       entropy: 'Entropy',
       fileName: 'FileName',
