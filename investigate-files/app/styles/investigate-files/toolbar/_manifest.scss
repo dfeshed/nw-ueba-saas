@@ -8,6 +8,9 @@
 .rsa-files-toolbar {
   .files-toolbar {
     height: 70px;
+    .rsa-form-button-wrapper .rsa-form-button i {
+      margin-right: 0px;
+    }
   }
   hbox {
     align-items: center;
@@ -48,7 +51,6 @@
     }
     .view-certificate-button {
       padding-right: rsa-whitespace();
-      padding-left: rsa-whitespace(less);
     }
   }
 

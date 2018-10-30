@@ -41,11 +41,13 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         action() {
           cntx.retrieveRemediationStatus(cntx.get('selections'));
           cntx.editFileStatus(cntx.get('item'));
-        }
+        },
+        order: 1
       },
       {
         label: 'googleLookup',
         prefix: 'investigateShared.endpoint.fileActions.',
+        order: 3,
         subActions: [
           { label: 'fileName',
             prefix: 'investigateShared.endpoint.fileActions.',
@@ -76,6 +78,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       {
         label: 'virusTotalLookup',
         prefix: 'investigateShared.endpoint.fileActions.',
+        order: 4,
         subActions: [
           { label: 'md5',
             prefix: 'investigateShared.endpoint.fileActions.',
@@ -99,6 +102,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       },
       {
         label: 'resetRiskScore',
+        order: 5,
         prefix: 'investigateShared.endpoint.fileActions.',
         className: ' divider cntxBorder',
         action() {
@@ -112,6 +116,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       const fileDownloadButtons = [
         {
           label: 'downloadToServer',
+          order: 6,
           prefix: 'investigateShared.endpoint.fileActions.',
           className: ' divider cntxBorder',
           disabled() {
@@ -123,6 +128,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         },
         {
           label: 'saveLocalCopy',
+          order: 7,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled() {
             return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
@@ -133,6 +139,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         },
         {
           label: 'analyzeFile',
+          order: 8,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled() {
             return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
@@ -148,8 +155,8 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
     if (cntx.get('showPivotToInvestigate') != false) {
       const pivot = {
         label: 'pivotToInvestigate',
+        order: 2,
         prefix: 'investigateShared.endpoint.fileActions.',
-        className: ' divider cntxBorder',
         disabled() {
           return (cntx.get('selections').length > 1);
         },
@@ -160,6 +167,6 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       contextConf.push(pivot);
     }
 
-    return contextConf;
+    return contextConf.sortBy('order');
   }
 });

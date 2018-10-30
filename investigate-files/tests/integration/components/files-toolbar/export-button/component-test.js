@@ -29,7 +29,7 @@ module('Integration | Component | files toolbar/export button', function(hooks) 
   test('it renders export button', async function(assert) {
     await render(hbs`{{files-toolbar/export-button}}`);
 
-    assert.equal(findAll('.export-button .rsa-icon-download-2-filled').length, 1, 'Make sure button is present');
+    assert.equal(findAll('.export-button .rsa-icon-upload-2-filled').length, 1, 'Make sure button is present');
   });
 
   test('Loader present when downloaded status not completed', async function(assert) {
@@ -61,7 +61,7 @@ module('Integration | Component | files toolbar/export button', function(hooks) 
     new ReduxDataHelper(setState).files(fileList.files).downloadStatus('completed').build();
     await render(hbs`{{files-toolbar/export-button}}`);
 
-    assert.equal(findAll('.export-button .rsa-icon-download-2-filled').length, 1, 'Button before click, Export to CSV');
+    assert.equal(findAll('.export-button .rsa-icon-upload-2-filled').length, 1, 'Button before click, Export to CSV');
 
     click('.export-button');
 

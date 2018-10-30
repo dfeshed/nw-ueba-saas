@@ -1,11 +1,11 @@
 {{#if isExportButtonDisabled}}
   {{#rsa-form-button isIconOnly=true isDisabled=true}}
-    {{rsa-icon name='download-2' title=(t 'investigateHosts.hosts.button.exportCSV') style='filled'}}
+    {{rsa-icon name='upload-2' title=(t 'investigateHosts.hosts.button.exportCSV') style='filled'}}
   {{/rsa-form-button}}
 {{else}}
   {{#if (eq hostExportStatus 'completed')}}
     {{#rsa-form-button isIconOnly=true click=(action 'exportAsFile')}}
-      {{rsa-icon name='download-2' title=(t 'investigateHosts.hosts.button.exportCSV') style='filled'}}
+      {{rsa-icon name='upload-2' title=(t 'investigateHosts.hosts.button.exportCSV') style='filled'}}
     {{/rsa-form-button}}
   {{else}}
     {{#rsa-form-button isIconOnly=true isDisabled=true}}

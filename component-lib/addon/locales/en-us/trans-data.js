@@ -4750,7 +4750,7 @@ export default {
   },
   dataFilters: {
     save: 'Save',
-    saveAs: 'Save As',
+    saveAs: 'Save as...',
     reset: 'Reset',
     timeframeOptions: {
       LAST_FIVE_MINUTES: '5 Minutes ago',
