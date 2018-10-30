@@ -28,6 +28,7 @@ const FILTER_TYPES = [
     label: 'investigateFiles.fields.fileStatus',
     type: 'list',
     listOptions: [
+      { name: 'Neutral', label: 'configure.endpoint.certificates.status.statusOptions.neutral' },
       { name: 'Blacklist', label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist' },
       { name: 'Graylist', label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist' },
       { name: 'Whitelist', label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist' }

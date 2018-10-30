@@ -94,10 +94,8 @@ const ContentFilter = Component.extend({
 
   @computed('isNameInvalid', 'isNameEmpty')
   decorator(isNameInvalid, isNameEmpty) {
-    const label = isNameInvalid || isNameEmpty ? 'investigateFiles.filter.customFilters.save.errorHeader' :
-      'investigateFiles.filter.customFilters.save.header';
     const isError = isNameInvalid || isNameEmpty;
-    return { label, isError };
+    return { isError };
   },
 
   actions: {

@@ -32,6 +32,12 @@ const FILTER_TYPES = [
           return value.length > 256;
         },
         message: 'configure.endpoint.certificates.filter.invalidFilterInputLength'
+      },
+      format: {
+        validator: (value) => {
+          return /[!@#$%^&*()+\-=\[\]{};':"\\|,<>\/?~`]+/.test(value);
+        },
+        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
       }
     }
   },
