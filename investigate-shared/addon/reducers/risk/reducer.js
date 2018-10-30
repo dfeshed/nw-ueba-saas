@@ -63,23 +63,27 @@ const riskScoreReducer = handleActions({
     });
   },
   [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
-    return state.set('riskScoreContext', null);
+    return state.merge({ riskScoreContext: null, activeRiskSeverityTab: 'critical', selectedAlert: null, eventsData: [] });
   },
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
     return state.set('selectedAlert', payload.alertName);
   },
   [ACTION_TYPES.GET_EVENTS]: (state, { payload }) => {
-    return state.merge({ eventsData: payload, eventsLoadingStatus: 'loading' });
+    return state.set('eventsData', payload);
   },
   [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('eventsLoadingStatus', 'loading'),
-      success: _handleAppendEvents(action, true),
-      finish: (s) => s.set('eventsLoadingStatus', 'completed')
+      success: _handleAppendEvents(action, true)
     });
   },
+  [ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED]: (state) => {
+    return state.set('eventsLoadingStatus', 'loading');
+  },
+  [ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED]: (state) => {
+    return state.set('eventsLoadingStatus', 'completed');
+  },
   [ACTION_TYPES.CLEAR_EVENTS]: (state) => {
-    return state.set('eventsData', []);
+    return state.merge({ eventsData: [], eventsLoadingStatus: null });
   },
   [ACTION_TYPES.GET_EVENTS_COMPLETED]: (state) => {
     return state.set('eventsLoadingStatus', 'completed');
@@ -89,15 +93,9 @@ const riskScoreReducer = handleActions({
   },
   [ACTION_TYPES.EXPANDED_EVENT]: (state, { id }) => {
     if (state.expandedEventId === id) {
-      return {
-        ...state,
-        expandedEventId: null
-      };
+      return state.set('expandedEventId', null);
     }
-    return {
-      ...state,
-      expandedEventId: id
-    };
+    return state.set('expandedEventId', id);
   },
   [ACTION_TYPES.RISK_SCORING_SERVER_STATUS]: (state, { payload }) => {
     return state.set('isRiskScoringServerOffline', payload);

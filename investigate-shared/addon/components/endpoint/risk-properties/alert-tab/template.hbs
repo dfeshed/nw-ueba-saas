@@ -1,6 +1,6 @@
 {{#each tabs as |tab|}}
   <hbox class={{unless tab.count 'severity-tab-disable'}}>
-    {{#rsa-nav-tab align='center' isActive=tab.selected click=(action 'activate' tab.checksum tab.name tab.count)}}
+    {{#rsa-nav-tab align='center' isActive=tab.selected click=(action 'activate' tab.id tab.name tab.count)}}
       {{#if hasBlock}}
         {{yield tab}}
       {{/if}}

@@ -5,6 +5,7 @@ import {
   activeRiskSeverityTab,
   alertsError,
   selectedAlert,
+  currentSeverityContext,
   riskType,
   riskScoringServerError,
   isRiskScoreContextEmpty,
@@ -13,7 +14,6 @@ import {
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
-import _ from 'lodash';
 
 const ALERT_TABS = [
   {
@@ -56,6 +56,7 @@ export default Component.extend({
       riskScoreContextError: riskScoreContextError(state),
       alertsError: alertsError(state),
       selectedAlert: selectedAlert(state),
+      contexts: currentSeverityContext(state),
       riskType: riskType(state),
       riskScoringServerError: riskScoringServerError(state),
       isRiskScoreContextEmpty: isRiskScoreContextEmpty(state),
@@ -80,23 +81,6 @@ export default Component.extend({
       selected: tab.name === activeRiskSeverityTab,
       count: alertCount[tab.name]
     }));
-  },
-
-  @computed('activeRiskSeverityTab', 'riskScoreContext')
-  contexts(activeRiskSeverityTab, riskScoreContext) {
-    const severity = _.upperFirst(activeRiskSeverityTab);
-    const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
-    if (alertContext) {
-      return Object.keys(alertContext).map((key) => ({
-        alertName: key,
-        alertCount: alertContext[key].alertCount,
-        eventCount: alertContext[key].eventContexts.length,
-        filesCount: 0,
-        usersCount: 0,
-        context: alertContext[key].eventContexts
-      }));
-    }
-    return null;
   },
 
   /**

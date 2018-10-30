@@ -32,7 +32,6 @@ module('Unit | Reducers | risk', function(hooks) {
       eventsLoadingStatus: null
     });
     const result = reducer(previous, { type: ACTION_TYPES.GET_EVENTS, payload: [{}, {}, {}] });
-    assert.equal(result.eventsLoadingStatus, 'loading');
     assert.equal(result.eventsData.length, 3);
   });
 
@@ -52,24 +51,37 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.eventsLoadingStatus, 'error');
   });
 
+  test('The GET_RESPOND_EVENTS_INITIALIZED action will set the loading status to loading', function(assert) {
+    const previous = Immutable.from({
+      eventsLoadingStatus: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED });
+    assert.equal(result.eventsLoadingStatus, 'loading');
+  });
+
+  test('The GET_RESPOND_EVENTS_COMPLETED action will set the loading status to completed', function(assert) {
+    const previous = Immutable.from({
+      eventsLoadingStatus: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED });
+    assert.equal(result.eventsLoadingStatus, 'completed');
+  });
+
   test('The CLEAR_EVENTS action will set reset events', function(assert) {
     const previous = Immutable.from({
-      eventsData: [{}, {}, {}]
+      eventsData: [{}, {}, {}],
+      eventsLoadingStatus: 'loading'
     });
     assert.equal(previous.eventsData.length, 3, 'Initial length is 3');
     const result = reducer(previous, { type: ACTION_TYPES.CLEAR_EVENTS });
     assert.equal(result.eventsData.length, 0, 'Events are cleared');
+    assert.equal(result.eventsLoadingStatus, null, 'loading status is reset');
   });
 
   test('The GET_RESPOND_EVENTS action will set append new events', function(assert) {
     const previous = Immutable.from({
-      eventsData: [{ 'agent_id': '123-abc', 'device_type': 'nwendpoint' }],
-      eventsLoadingStatus: null
+      eventsData: [{ 'agent_id': '123-abc', 'device_type': 'nwendpoint' }]
     });
-    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_RESPOND_EVENTS });
-    const endState = reducer(previous, startAction);
-
-    assert.equal(endState.eventsLoadingStatus, 'loading');
     assert.equal(previous.eventsData.length, 1, 'Initial length is 1');
 
     const successAction = makePackAction(LIFECYCLE.SUCCESS, {
@@ -79,7 +91,6 @@ module('Unit | Reducers | risk', function(hooks) {
     });
     const newEndState = reducer(previous, successAction);
 
-    assert.equal(newEndState.eventsLoadingStatus, 'completed');
     assert.equal(newEndState.eventsData[1].id, '123-456:0', 'unique id is properly set for each event');
     assert.equal(newEndState.eventsData.length, 2);
   });
@@ -121,10 +132,16 @@ module('Unit | Reducers | risk', function(hooks) {
           medium: 20
         },
         categorizedAlerts: {}
-      }]
+      }],
+      activeRiskSeverityTab: 'high',
+      selectedAlert: 'Random Alert',
+      eventsData: [{}, {}]
     });
     const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
     assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
+    assert.equal(result.activeRiskSeverityTab, 'critical', 'active tab is reset to critical');
+    assert.equal(result.selectedAlert, null, 'selectedAlert is reset');
+    assert.equal(result.eventsData.length, 0, 'Events data is reset');
   });
 
   test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {

@@ -13,14 +13,16 @@ export default Component.extend({
     if (!this.get('selectedAlert') && contexts) {
       // Select first alert as default. This action sets the alert active and fetches corresponding events
       if (this.get('setAlertAction')) {
-        this.get('setAlertAction')(contexts[0]);
+        this.setAlertAction(contexts[0]);
       }
     }
   },
 
   actions: {
     handleClick(context) {
-      this.setAlertAction(context);
+      if (this.get('selectedAlert')) {
+        this.setAlertAction(context);
+      }
     }
   }
 });

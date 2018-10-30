@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 
-const _eventsData = (state) => state.risk.eventsData || [];
 const _fileState = (state) => state.files;
 const _riskType = (state) => state.riskType;
 
@@ -9,15 +9,28 @@ export const riskScoreContext = (state) => state.risk.riskScoreContext;
 export const riskScoreContextError = (state) => state.risk.riskScoreContextError;
 export const eventsLoadingStatus = (state) => state.risk.eventsLoadingStatus;
 export const alertsError = (state) => state.risk.alertsError;
-export const selectedAlert = (state) => state.risk.selectedAlert;
+export const selectedAlert = (state) => state.risk.selectedAlert || '';
 export const expandedEventId = (state) => state.risk.expandedEventId;
 export const isRiskScoringServerOffline = (state) => state.risk.isRiskScoringServerOffline;
+export const events = (state) => state.risk.eventsData;
 
-export const events = createSelector(
-  _eventsData,
-  (events) => {
-    return events;
-  }
+export const currentSeverityContext = createSelector(
+    [riskScoreContext, activeRiskSeverityTab],
+    (riskScoreContext, activeRiskSeverityTab) => {
+      const severity = _.upperFirst(activeRiskSeverityTab);
+      const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
+      if (alertContext) {
+        return Object.keys(alertContext).map((key) => ({
+          alertName: key,
+          alertCount: alertContext[key].alertCount,
+          eventCount: alertContext[key].eventContexts.length,
+          filesCount: 0,
+          usersCount: 0,
+          context: alertContext[key].eventContexts
+        }));
+      }
+      return null;
+    }
 );
 
 export const riskType = createSelector(

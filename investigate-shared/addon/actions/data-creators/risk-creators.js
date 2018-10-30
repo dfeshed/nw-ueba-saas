@@ -4,9 +4,13 @@ import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/ale
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
-import { riskType } from 'investigate-shared/selectors/risk/selectors';
+import { riskType, eventsLoadingStatus, selectedAlert } from 'investigate-shared/selectors/risk/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
+const STATE_MAP = {
+  FILE: 'files',
+  HOST: 'endpoint'
+};
 
 const _prepareResetQuery = (fileList) => {
   return {
@@ -38,7 +42,7 @@ const _prepareContextQuery = (checksum, severity = 'Critical') => {
   return {
     filter: [
       { field: 'hash', value: checksum },
-      { field: 'category', value: categoryValue }
+      { field: 'alertCategory', value: categoryValue }
     ]
   };
 };
@@ -87,10 +91,10 @@ const getRiskScoreContext = (id, severity, timeStamp) => {
   };
 };
 
-const getUpdatedRiskScoreContext = (checksum, tabName, timeStamp) => {
+const getUpdatedRiskScoreContext = (id, tabName, timeStamp) => {
   return (dispatch) => {
     dispatch(activeRiskSeverityTab(tabName));
-    dispatch(getRiskScoreContext(checksum, tabName, timeStamp));
+    dispatch(getRiskScoreContext(id, tabName, timeStamp));
   };
 };
 
@@ -100,21 +104,30 @@ const activeRiskSeverityTab = (tabName) => {
   };
 };
 
-
 const setSelectedAlert = (context) => {
   return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context, meta: { belongsTo: riskType(getState()) } });
-    dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: riskType(getState()) } });
+    const type = riskType(getState());
+    dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context, meta: { belongsTo: type } });
+    dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
     next(() => {
+      dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED, meta: { belongsTo: type } });
       context.context.forEach((event) => {
-        if (event.source === 'Respond') {
-          // High and Critical alerts are fetched from Respond server
-          dispatch(getRepondAlertEvents(event.id));
+        if (!eventsLoadingStatus(getState().files) || !selectedAlert(getState()[STATE_MAP[type]])) {
+          // if already loading events for another alert, CLEAR!
+          dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
+          return;
         } else {
-          // Medium alerts will be fetch from Decoder
-          dispatch(getAlertEvents(context));
+          if (event.source === 'Respond') {
+            // High and Critical alerts are fetched from Respond server
+            dispatch(getRepondAlertEvents(event.id));
+          } else {
+            // Medium alerts will be fetch from Decoder
+            dispatch(getAlertEvents(context));
+          }
         }
+
       });
+      dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED, meta: { belongsTo: type } });
     });
   };
 };

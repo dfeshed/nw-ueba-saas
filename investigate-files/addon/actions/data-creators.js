@@ -19,7 +19,7 @@ import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/fil
 import _ from 'lodash';
 import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getRiskScoreContext, getRiskScoringServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
@@ -243,6 +243,18 @@ const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_
 
 const setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: item });
 
+const onFileSelection = (item) => {
+  return (dispatch) => {
+    dispatch(getRiskScoringServerStatus());
+    dispatch(setSelectedFile(item));
+    dispatch(resetRiskContext());
+    next(() => {
+      dispatch(getRiskScoreContext(item.checksumSha256, 'critical'));
+    });
+    dispatch(fetchHostNameList, item.checksumSha256);
+  };
+};
+
 const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onComplete }) => {
   const query = { ...queryNode };
 
@@ -363,11 +375,10 @@ export {
   saveFileStatus,
   fetchMachineCount,
   getSavedFileStatus,
-  fetchHostNameList,
   fetchAgentId,
   getFirstPageOfFiles,
   retrieveRemediationStatus,
-  setSelectedFile,
+  onFileSelection,
   userLeftFilesPage,
   setDataSourceTab,
   initializeFileDetails

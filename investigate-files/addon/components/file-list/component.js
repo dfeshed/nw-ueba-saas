@@ -22,12 +22,11 @@ import {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  fetchHostNameList,
   retrieveRemediationStatus,
-  setSelectedFile
+  onFileSelection
 } from 'investigate-files/actions/data-creators';
 
-import { resetRiskScore, getRiskScoreContext, resetRiskContext, getRiskScoringServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
@@ -63,13 +62,9 @@ const dispatchToActions = {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  fetchHostNameList,
-  getRiskScoreContext,
   retrieveRemediationStatus,
-  setSelectedFile,
   resetRiskScore,
-  resetRiskContext,
-  getRiskScoringServerStatus
+  onFileSelection
 };
 
 /**
@@ -183,11 +178,7 @@ const FileList = Component.extend({
         const openRiskPanel = this.get('openRiskPanel');
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
-          this.send('getRiskScoringServerStatus');
-          this.send('resetRiskContext');
-          this.send('setSelectedFile', item);
-          this.send('fetchHostNameList', item.checksumSha256);
-          this.send('getRiskScoreContext', item.checksumSha256, 'critical');
+          this.send('onFileSelection', item);
           next(() => {
             this.openRiskPanel();
           });

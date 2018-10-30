@@ -10,9 +10,9 @@ export default Component.extend({
   selectedTab: '',
 
   actions: {
-    activate(checksum, tabName, alertCount) {
+    activate(id, tabName, alertCount) {
       if (alertCount !== 0 && this.get('defaultAction')) {
-        this.get('defaultAction')(checksum, tabName);
+        this.get('defaultAction')(id, tabName);
       }
     }
   }
