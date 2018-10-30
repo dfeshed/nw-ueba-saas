@@ -9,6 +9,17 @@ test('should add unique id to all the object', function(assert) {
   assert.ok(data[0].id.includes('auto'));
 });
 
+test('should add unique id to all the object and add additional keys if function is passed', function(assert) {
+  const _addAdditionalKeys = function(item) {
+    const { name } = item;
+    item.fileName = `${name} : test`;
+  };
+  const data = [{ name: 'xyz' }, { name: 'abc' }];
+  addId(data, '1', 'auto', _addAdditionalKeys);
+  assert.ok(data[0].id.includes('auto'));
+  assert.ok(data[0].fileName.includes('xyz'));
+});
+
 test('should modify the signature property and add', function(assert) {
   const parent = {
     name: 'xyz',

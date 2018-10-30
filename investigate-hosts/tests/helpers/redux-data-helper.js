@@ -137,6 +137,10 @@ export default class DataHelper {
     _set(this.state, 'hostFiles.driverStatusData', data);
     return this;
   }
+  fileContextSelections(fileContextSelections) {
+    _set(this.state, 'drivers.fileContextSelections', fileContextSelections);
+    return this;
+  }
 
   // Host Details
   selectedTabComponent(tabName) {

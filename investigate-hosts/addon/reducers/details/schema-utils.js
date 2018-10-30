@@ -19,11 +19,14 @@ const _getSignature = ({ fileProperties }) => {
  * @returns {*}
  * @public
  */
-const addId = (data, fileId, key) => {
+const addId = (data, fileId, key, addAdditionalKeys) => {
   if (data && data.length) {
     data.forEach((item) => {
       item.id = _.uniqueId(key);
       item.fileId = fileId;
+      if (typeof(addAdditionalKeys) === 'function') {
+        addAdditionalKeys(item);
+      }
     });
   }
 };
