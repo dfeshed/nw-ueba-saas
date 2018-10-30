@@ -6,10 +6,20 @@
     padding-left: rsa-whitespace();
     // margin-top: rsa-whitespace(more);
     .policy-assignment {
-      width: 100%;
+      max-width: calc(100vw - 350px);
+      min-width: calc(100vw - 350px);
     }
     .available-selected {
       width: 50%;
+      td {
+        padding-top: rsa-whitespace();
+        padding-right: rsa-whitespace();
+        padding-left: rsa-whitespace();
+        overflow-wrap: break-word;
+  
+        min-width: 100px;
+        max-width: 300px;
+      }
     }
     .remove-policy, .assign-policy {
       cursor: pointer;
@@ -29,11 +39,7 @@
       padding-right: rsa-whitespace();
       padding-left: rsa-whitespace();
     }
-    td {
-      padding-top: rsa-whitespace();
-      padding-right: rsa-whitespace();
-      padding-left: rsa-whitespace();
-    }
+  
     .source-type-wrapper {
       overflow-y: auto;
       margin-bottom: rsa-whitespace();

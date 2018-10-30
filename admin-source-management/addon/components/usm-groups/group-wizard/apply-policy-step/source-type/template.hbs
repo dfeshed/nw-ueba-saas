@@ -29,13 +29,12 @@
             <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
             {{#each availablePoliciesForSourceType as |item|}}
               <tr>
-                <td>
+                <td class="policy-name">
                   {{item.name}}
                 </td>
-                <td>
-                  
+                <td class="applied-to-group">
                 </td>
-                <td>
+                <td class="description">
                   {{item.description}}
                 </td>
                 <td>
@@ -55,13 +54,12 @@
             <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
             {{#if selectedPolicy}}
               <tr>
-                <td>
+                <td class="policy-name">
                   {{selectedPolicy.name}}
                 </td>
-                <td>
-                  
+                <td class="applied-to-group">
                 </td>
-                <td>
+                <td class="description">
                   {{selectedPolicy.description}}
                 </td>
                 <td>
