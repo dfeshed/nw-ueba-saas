@@ -45,7 +45,7 @@ export default Component.extend({
   },
 
   actions: {
-    beforeContextMenuShow(item) {
+    beforeContextMenuShow({ contextSelection: item }) {
       if (!this.isAlreadySelected(this.get('detailDisplayInputs.selectedFiles'), item)) {
         this.detailDisplayInputs.toggleOneItemSelectionAction(item);
       }

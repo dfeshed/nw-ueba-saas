@@ -57,7 +57,8 @@ const Certificates = Component.extend({
     closeModal() {
       this.set('showModal', false);
     },
-    beforeContextMenuShow(item) {
+    beforeContextMenuShow({ contextSelection: item }) {
+
       if (!this.isAlreadySelected(this.get('selections'), item)) {
         this.send('toggleCertificateSelection', item);
       }

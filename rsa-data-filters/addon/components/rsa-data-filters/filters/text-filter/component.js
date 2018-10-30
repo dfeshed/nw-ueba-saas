@@ -65,6 +65,11 @@ export default Component.extend({
   _validate() {
     let property;
     const value = this.get('filterValue.value');
+
+    if (isEmpty(value.trim())) {
+      return { isValid: true };
+    }
+
     const operator = this.get('filterValue.operator.type');
     const validations = this.get('options.validations');
     for (property in validations) {

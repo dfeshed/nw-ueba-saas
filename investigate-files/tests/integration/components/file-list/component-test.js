@@ -1,6 +1,6 @@
 import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, settled, click } from '@ember/test-helpers';
+import { find, findAll, render, settled, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
@@ -11,6 +11,18 @@ import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let initState;
+const callback = () => {};
+const e = {
+  clientX: 5,
+  clientY: 2,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
 
 const filePreference = {
   visibleColumns: [
@@ -105,6 +117,13 @@ module('Integration | Component | file list', function(hooks) {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.timezone.set('selected', { zoneId: 'UTC' });
+
+    // Right click setup
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
+
   });
 
   hooks.afterEach(function() {
@@ -512,5 +531,73 @@ module('Integration | Component | file list', function(hooks) {
     assert.equal(findAll('.is-row-checked').length, 0, 'Row highlight removed');
   });
 
+  test('on selecting the checkbox row is getting highlighted ', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
 
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list}}`);
+    await click(findAll('.rsa-form-checkbox')[1]);
+    const state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.files.fileList.selectedFileList.length, 1, 'On file selected');
+    assert.equal(findAll('.is-row-checked').length, 1, 'One row highlighted');
+    await click(findAll('.rsa-form-checkbox')[1]);
+    assert.equal(findAll('.is-row-checked').length, 0, 'Row highlight removed');
+  });
+
+  test('on right clicking the file name context menu not rendered', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list}}{{context-menu}}`);
+    triggerEvent('.content-context-menu a', 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 0, 'Context menu not rendered');
+    });
+  });
+
+
+  test('it renders the context menu', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    this.set('closeRiskPanel', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list closeRiskPanel=closeRiskPanel}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 5, 'Context menu not rendered');
+    });
+  });
 });

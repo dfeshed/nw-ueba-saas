@@ -30,8 +30,7 @@ const FILTER_TYPES = [
     listOptions: [
       { name: 'Blacklist', label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist' },
       { name: 'Graylist', label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist' },
-      { name: 'Whitelist', label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist' },
-      { name: 'KnownGood', label: 'investigateFiles.editFileStatus.fileStatusOptions.knowngood' }
+      { name: 'Whitelist', label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist' }
     ]
   },
   {

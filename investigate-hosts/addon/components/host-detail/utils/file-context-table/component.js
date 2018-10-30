@@ -110,7 +110,7 @@ const FileContextTable = Component.extend({
       }
     },
 
-    beforeContextMenuShow(item) {
+    beforeContextMenuShow({ contextSelection: item }) {
       this.set('itemList', [item]);
       const tabName = this.get('tabName');
       if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {

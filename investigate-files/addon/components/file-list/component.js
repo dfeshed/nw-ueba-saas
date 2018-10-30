@@ -128,6 +128,8 @@ const FileList = Component.extend({
 
   selectedFiles: null,
 
+  contextItems: null,
+
   @computed('isCertificateView')
   showColumnChooser(isCertificateView) {
     return !isCertificateView;
@@ -251,17 +253,31 @@ const FileList = Component.extend({
       this.set('showResetScoreModal', false);
     },
 
-    beforeContextMenuShow(item) {
-      this.closeRiskPanel();
-      this.set('itemList', [item]);
-      if (!this.isAlreadySelected(this.get('selections'), item)) {
-        this.send('deSelectAllFiles');
-        this.send('toggleFileSelection', item);
+    beforeContextMenuShow(menu, event) {
+      const { contextSelection: item, contextItems } = menu;
+
+      if (!this.get('contextItems')) {
+        // Need to store this locally set it back again to menu object
+        this.set('contextItems', contextItems);
       }
-      const selections = this.get('selections');
-      if (selections && selections.length === 1) {
-        this.send('getSavedFileStatus', selections);
+      // For anchor tag hid the context menu and show browser default right click menu
+      if (event.target.tagName.toLowerCase() === 'a') {
+        menu.set('contextItems', []);
+      } else {
+        menu.set('contextItems', this.get('contextItems'));
+        this.closeRiskPanel();
+
+        this.set('itemList', [item]);
+        if (!this.isAlreadySelected(this.get('selections'), item)) {
+          this.send('deSelectAllFiles');
+          this.send('toggleFileSelection', item);
+        }
+        const selections = this.get('selections');
+        if (selections && selections.length === 1) {
+          this.send('getSavedFileStatus', selections);
+        }
       }
+
     }
   }
 });

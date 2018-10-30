@@ -27,10 +27,6 @@ export default Component.extend({
       value: 'Graylist'
     },
     {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.knowngood',
-      value: 'KnownGood'
-    },
-    {
       label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
       value: 'Whitelist'
     },

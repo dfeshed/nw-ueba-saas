@@ -38,7 +38,7 @@ export default Component.extend(contextMenuMixin, {
     // In table to select the row before showing the context menu
     const beforeContextMenuShow = this.get('beforeContextMenuShow');
     if (typeof beforeContextMenuShow === 'function') {
-      beforeContextMenuShow(this.get('contextSelection'));
+      beforeContextMenuShow(this, e);
     }
 
 

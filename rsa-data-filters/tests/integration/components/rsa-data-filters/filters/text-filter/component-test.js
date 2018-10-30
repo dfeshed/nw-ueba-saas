@@ -91,4 +91,25 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     assert.equal(document.querySelectorAll('.input-error').length, 0);
   });
 
+  test('no validation if value is empty', async function(assert) {
+    assert.expect(2);
+    this.set('onQueryChange', () => {});
+    this.set('options', {
+      name: 'fileName',
+      filterOnBlur: false,
+      'validations': {
+        format: {
+          validator: (value) => {
+            return !/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(value);
+          },
+          message: 'Error'
+        }
+      }
+    });
+    await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
+    await fillIn('.file-name-input  input', '  ');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('.is-error').length, 0);
+    assert.equal(document.querySelectorAll('.input-error').length, 0);
+  });
 });
