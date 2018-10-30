@@ -140,6 +140,25 @@ const fetchRemediation = (thumbprints) => {
   });
 };
 
+/**
+ * get file properties for requested hash
+ * @param checksum
+ * @returns {*}
+ * @public
+ */
+const getSelectedFileProperties = (checksum) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getFiles',
+    modelName: 'files',
+    query: {
+      filter: [
+        { field: 'hashes', value: [checksum] }
+      ]
+    }
+  });
+};
+
 export default {
   fetchFiles,
   fileExport,
@@ -148,5 +167,6 @@ export default {
   deleteFilter,
   getAllServices,
   getContext,
-  fetchRemediation
+  fetchRemediation,
+  getSelectedFileProperties
 };

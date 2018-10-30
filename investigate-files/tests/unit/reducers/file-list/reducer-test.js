@@ -84,13 +84,9 @@ test('should return the initial state', function(assert) {
 
 test('INITIALIZE_FILE_DETAIL sets the selected file', function(assert) {
   const previous = Immutable.from({
-    fileData: {
-      'checksum-123': { firstFileName: 'dtf.exe', id: 'checksum-123' },
-      'checksum-456': { firstFileName: 'powershell.exe', id: 'checksum-456' }
-    },
     selectedDetailFile: null
   });
-  const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: 'checksum-123' });
+  const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: { data: [{ firstFileName: 'dtf.exe', id: 'checksum-123' }] } });
   assert.equal(result.selectedDetailFile.id, 'checksum-123', 'File matching with id is returned');
 });
 

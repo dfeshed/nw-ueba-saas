@@ -56,8 +56,8 @@ const _fetchFiles = () => {
 
 const initializeFileDetails = (checksum) => {
   return (dispatch) => {
+    dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
-    dispatch({ type: ACTION_TYPES.INITIALIZE_FILE_DETAIL, payload: checksum });
     dispatch(getRiskScoreContext(checksum));
   };
 };
@@ -358,6 +358,13 @@ const retrieveRemediationStatus = (selections) => {
 };
 
 const userLeftFilesPage = () => ({ type: ACTION_TYPES.USER_LEFT_FILES_PAGE });
+
+const _getSelectedFileProperties = (checksum) => {
+  return {
+    type: ACTION_TYPES.INITIALIZE_FILE_DETAIL,
+    promise: File.getSelectedFileProperties(checksum)
+  };
+};
 
 
 export {

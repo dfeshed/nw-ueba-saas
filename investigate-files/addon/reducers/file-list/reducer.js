@@ -66,8 +66,10 @@ const _toggleSelectedFile = (state, payload) => {
 
 };
 const fileListReducer = handleActions({
-  [ACTION_TYPES.INITIALIZE_FILE_DETAIL]: (state, { payload }) => {
-    return state.set('selectedDetailFile', Object.values(state.fileData).find((file) => file.id === payload));
+  [ACTION_TYPES.INITIALIZE_FILE_DETAIL]: (state, action) => {
+    const data = action.payload ? action.payload.data : null;
+    const selectedFileProperties = data ? data[0] : {};
+    return state.set('selectedDetailFile', selectedFileProperties);
   },
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {

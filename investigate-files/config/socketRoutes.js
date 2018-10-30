@@ -76,6 +76,10 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/file/search',
         requestDestination: '/ws/endpoint/file/search'
       },
+      getFiles: {
+        subscriptionDestination: '/user/queue/endpoint/file/get',
+        requestDestination: '/ws/endpoint/file/get'
+      },
       exportFile: {
         subscriptionDestination: '/user/queue/endpoint/file/property/export',
         requestDestination: '/ws/endpoint/file/property/export'

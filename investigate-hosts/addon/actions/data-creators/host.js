@@ -15,7 +15,7 @@ import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import { getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { getRiskScoreContext, resetRiskContext } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import { debug } from '@ember/debug';
 
@@ -218,6 +218,7 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
       dispatch(initializeAgentDetails({ agentId: machineId }, true));
       dispatch(changeDetailTab(tabName));
       dispatch(resetHostDownloadLink());
+      dispatch(resetRiskContext());
       dispatch(getRiskScoreContext(machineId, 'critical', '0'));
     } else {
       // Resetting the details data and input data
@@ -312,4 +313,3 @@ export {
   stopScan,
   fetchHostContext
 };
-
