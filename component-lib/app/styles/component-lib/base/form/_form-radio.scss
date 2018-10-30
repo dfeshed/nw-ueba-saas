@@ -1,3 +1,8 @@
+/**
+ * original CSS for the non-block form of the {{radio-button}}
+ * - NOT accessible
+ * - to be deprecated
+ */
 .rsa-form-radio-label {
   position: relative;
   display: inline-flex;
@@ -68,6 +73,7 @@
   }
 }
 
+/* works for original and new {{radio-button}} markup */
 .rsa-form-radio-group {
   .rsa-form-radio-group-label {
     margin-bottom: rsa-whitespace(less);
@@ -76,7 +82,93 @@
     text-transform: uppercase;
   }
 
-  .rsa-form-radio-label {
+  .rsa-form-radio-label,
+  .rsa-form-radio-wrapper {
     margin-right: rsa-whitespace();
   }
+}
+
+/**
+ * new CSS for the block form of the {{#radio-button}}
+ * - IS accessible
+ */
+.rsa-form-radio-wrapper { /* outer <label> */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  color: $formRadioLabelColor;
+
+  input[type=radio] {
+    align-self: flex-start;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* inner <span> is really the label text */
+  span {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* custom unchecked radio */
+  input[type=radio]+span::before {
+    position: relative;
+    display: inline-block;
+    width: 1rem; /*.97rem;*/
+    height: 1rem; /*.97rem;*/
+    margin: rsa-whitespace(least);
+    font-family: 'nw-icon-library-all-1';
+    content: $rsa-icon-radio-button-unselected-1-filled;
+    border-radius: 50%
+  }
+
+  /* custom checked radio */
+  input[type=radio]:checked+span::before {
+    content: $rsa-icon-radio-button-selected-1-filled;
+    color: text-color(secondary);
+  }
+
+  /* custom focused radio */
+  input[type=radio]:focus+span::before {
+    outline: 0;
+    box-shadow: 0 0 2px 1px text-color(secondary), 0 0 4px 1px text-color(secondary) inset;
+  }
+
+  /* hovered text & custom hovered radio */
+  &:hover:not(.disabled),
+  input[type=radio]:not(:disabled):hover+span::before {
+    cursor: pointer;
+    color: text-color(secondary);
+  }
+
+  /* disabled text & custom disabled radio */
+  &.disabled,
+  input[type=radio]:disabled+span::before {
+    color: text-color(primary);
+  }
+
+  /* error text & custom error radio */
+  &.error {
+    color: text-color(accentOne);
+    
+    input[type=radio]+span::before {
+      color: text-color(accentOne);
+    }
+
+    input[type=radio]:checked+span::before {
+      color: text-color(accentOne);
+    }
+
+    input[type=radio]:focus+span::before {
+      box-shadow: 0 0 2px 1px text-color(accentOne), 0 0 4px 1px text-color(accentOne) inset;
+    }
+
+    input[type=radio]:hover+span::before {
+      color: text-color(secondary);
+    }
+  }
+
 }

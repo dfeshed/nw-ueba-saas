@@ -2,14 +2,17 @@
   <h4 class='rsa-form-radio-group-label'>{{t radioButtonOption.label}} <span {{action 'removeFromSelectedSettings' selectedSettingId}}>{{rsa-icon name="remove-circle-1" style="lined"}}</span></h4>
   <vbox class="radio-buttons">
     {{#each radioButtonOption.items as |item|}}
-      <label class="rsa-form-radio-label {{if (eq item.name radioButtonValue) 'checked'}}">
-        {{radio-button
-          radioClass='radio-option'
-          value=item.name
-          changed=(action 'updatePolicyProperty' selectedSettingId item.name)
-          groupValue=(readonly radioButtonValue)}}
-        {{t item.label}}
-      </label>
+      {{!--if (eq item.name radioButtonValue) 'checked'--}}
+      {{#radio-button
+        classNames='rsa-form-radio-wrapper'
+        radioClass='radio-option'
+        value=item.name
+        groupValue=(readonly radioButtonValue)
+        name=(concat 'radio-' selectedSettingId)
+        changed=(action 'updatePolicyProperty' selectedSettingId item.name)
+      }}
+        <span>{{t item.label}}</span>
+      {{/radio-button}}
     {{/each}}
   </vbox>
 </vbox>

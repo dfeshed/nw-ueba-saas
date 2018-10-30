@@ -39,13 +39,15 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     assert.equal(findAll('.radio-option').length, 2, 'expected to have two radio buttons in dom');
   });
 
+  // works locally but is flaky on Jenkins
   skip('It triggers the update policy action creator when the radio button is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode'}}`);
-    const radioBtn = document.querySelector('.agentMode .rsa-form-radio-label:nth-of-type(2) input');
+    const radioBtn = document.querySelector('.agentMode .rsa-form-radio-wrapper:nth-of-type(2) input');
     await click(radioBtn);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
+  // works locally but is flaky on Jenkins
   skip('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode'}}`);
     const minusIcon = document.querySelector('.agentMode span .rsa-icon');
