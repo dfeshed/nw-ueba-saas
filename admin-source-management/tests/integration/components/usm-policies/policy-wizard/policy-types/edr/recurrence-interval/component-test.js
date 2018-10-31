@@ -71,7 +71,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     assert.expect(2);
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no click is registered');
-    await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
     return settled().then(() => {
       assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called Daily/Weekly toggle is changed');
     });
@@ -79,14 +79,14 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
 
   test('should display weeks recurrence field options on clicking the Weekly radio button', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
-    await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
     assert.equal(this.$('input[type=radio]:eq(1):checked').length, 1, 'Expected to select Weekly radio button');
     assert.equal(findAll('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
   });
 
   test('should select the week on clicking the available week options', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
-    await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
     assert.equal(this.$('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
     await click('.week-button');
     assert.equal(this.$('.week-button:eq(0).is-primary').length, 1);
@@ -98,7 +98,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     assert.equal(updatePolicyPropertySpy.callCount, 0, 'Update policy property action creator has not been called when no week is selected');
     // change toggle to weeks. This would bring up a div of buttons for each day of the week (S, M, T, W etc)
-    await click('.recurrence-interval .rsa-form-radio-label:nth-of-type(2) input');
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
     await click('.recurrence-run-interval__week-options');
     return settled().then(() => {
       assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called when clicking the week schedule');

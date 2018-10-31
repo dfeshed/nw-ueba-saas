@@ -7,14 +7,16 @@
   </h4>
   <vbox class="radio-buttons">
     {{#each radioButtonConfig.items as |item|}}
-      <label class="rsa-form-radio-label {{if (eq item.name intervalType) 'checked'}}">
-        {{radio-button
-          radioClass='recurrence-type'
-          value=item.name
-          changed=(action 'updatePolicyProperty' 'recurrenceUnit' item.name)
-          groupValue=(readonly intervalType)}}
-        {{t item.label}}
-      </label>
+      {{#radio-button
+        classNames='rsa-form-radio-wrapper'
+        radioClass='recurrence-type'
+        value=item.name
+        groupValue=(readonly intervalType)
+        name='radio-recurrence-type'
+        changed=(action 'updatePolicyProperty' 'recurrenceUnit' item.name)
+      }}
+        <span>{{t item.label}}</span>
+      {{/radio-button}}
     {{/each}}
   </vbox>
 </vbox>
