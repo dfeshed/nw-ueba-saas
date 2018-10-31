@@ -2,6 +2,7 @@ package presidio.manager.airlfow.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.ArrayUtils;
 import presidio.config.server.client.ConfigurationServerClientService;
@@ -19,6 +20,8 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class ConfigurationAirflowService implements ConfigurationProcessingService {
@@ -39,10 +42,7 @@ public class ConfigurationAirflowService implements ConfigurationProcessingServi
     private final String START_TIME_UNVALID_MESSAGE = "dataPipeline startTime format is invalid. Allowed format is: yyyy-MM-ddTHH:mm:ssZ";
     private final String SCHEMA_UNVALID_MESSAGE = "dataPipeline schema %s field is not supported. Allowed values:%s";
     private final String START_TIME_FUTRE_DATE_MESSAGE = "dataPipeline startTime date is in the future.";
-    private final String FILE = "FILE";
-    private final String ACTIVE_DIRECTORY = "ACTIVE_DIRECTORY";
-    private final String AUTHENTICATION = "AUTHENTICATION";
-    private final List<String> schemas = new ArrayList<String>(Arrays.asList(FILE, ACTIVE_DIRECTORY, AUTHENTICATION));
+    private final List<String> schemas;
     private final ConfigurationServerClientService configServerClient;
     private final String moduleName;
     private final List<String> activeProfiles;
@@ -55,6 +55,7 @@ public class ConfigurationAirflowService implements ConfigurationProcessingServi
         this.activeProfiles = activeProfiles;
         this.configurationFolderPath = configurationFolderPath;
         this.mapper = new ObjectMapper();
+        this.schemas = Stream.of(Schema.values()).map(Enum::name).collect(Collectors.toList());
 
     }
 
