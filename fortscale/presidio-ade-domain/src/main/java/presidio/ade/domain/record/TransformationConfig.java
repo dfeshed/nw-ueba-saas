@@ -28,7 +28,17 @@ public class TransformationConfig {
     }
 
     @Bean
-    public JoinerTransformation processFilePathTransformation(){
+    public JoinerTransformation processFilePathTransformation() {
         return new JoinerTransformation("processFilePath", Arrays.asList("processDirectory", "processFileName"), "\\");
+    }
+
+    @Bean
+    public JoinerTransformation srcProcessFilePathTransformation() {
+        return new JoinerTransformation("srcProcessFilePath", Arrays.asList("srcProcessDirectory", "srcProcessFileName"), "\\");
+    }
+
+    @Bean
+    public JoinerTransformation dstProcessFilePathTransformation() {
+        return new JoinerTransformation("dstProcessFilePath", Arrays.asList("dstProcessDirectory", "dstProcessFileName"), "\\");
     }
 }
