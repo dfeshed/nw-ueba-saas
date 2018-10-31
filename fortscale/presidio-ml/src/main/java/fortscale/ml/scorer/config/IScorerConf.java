@@ -26,10 +26,8 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = ScoreAndCertaintyMultiplierScorerConf.class, name = ScoreAndCertaintyMultiplierScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = GaussianModelScorerConf.class, name = GaussianModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = PersonalThresholdModelScorerConf.class, name = PersonalThresholdModelScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = ListConditionalScorerConf.class, name = ListConditionalScorerConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = ConditionalScorerConf.class, name = ConditionalScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = SmartWeightsModelScorerConf.class, name = SmartWeightsModelScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = BooleanConditionalScorerConf.class, name = BooleanConditionalScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = StringConditionalScorerConf.class, name = StringConditionalScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = SMARTMaxValuesModelScorerConf.class, name = SMARTMaxValuesModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ScoreExponentialStepsMapperConf.class, name = ScoreExponentialStepsMapperConf.SCORER_TYPE)
 })

@@ -769,6 +769,19 @@ indicators:
 #*********************************************************
 #*                   PROCESS INDICATORS                  *
 #*********************************************************
+- id: highestStartInstantScoreUserIdProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_event_day_time
+  adeEventType: scored_enriched.process.dstProcessFileName.userId.process.score
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdProcessDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
 - id: numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_reconnaissance_tools_executed
@@ -809,11 +822,29 @@ indicators:
     anomalyFilters:
       - fieldName: operationType
         fieldValue: CREATE_PROCESS
+      - fieldName: dstProcessCategories
+        fieldValue: RECONNAISSANCE_TOOL
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
     featureName: dstProcessFileNameHistogram
   classification: discovery_reconnaissance
+
+#*********************************************************
+#*                   REGISTRY INDICATORS                  *
+#*********************************************************
+- id: highestStartInstantScoreUserIdRegistryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_event_day_time
+  adeEventType: scored_enriched.registry.startInstant.userId.registry.score
+  schema: REGISTRY
+  anomalyDescriptior:
+    anomalyField: eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdRegistryDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
 
 
 classificationPriority:

@@ -22,11 +22,18 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "operationType.userIdFilePermissionChange.file.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": ["FILE_PERMISSION_CHANGE"],
-              "scorer": {
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "FILE_PERMISSION_CHANGE"
+                  ]
+                }
+              ],
+              "scorerConf": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdFilePermissionChange.file.score",
                 "scorers": [
@@ -56,11 +63,18 @@
               }
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "operationType.userIdFileAction.file.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": ["FILE_ACTION"],
-              "scorer": {
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "FILE_ACTION"
+                  ]
+                }
+              ],
+              "scorerConf": {
                 "type": "field-value-score-reducer",
                 "name": "operationType.userIdFileAction.file.score",
                 "base-scorer": {

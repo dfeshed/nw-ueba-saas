@@ -154,11 +154,16 @@
               ]
             },
             {
-              "type": "boolean-conditional-scorer",
+              "type": "conditional",
               "name": "absoluteSharedFolderPath.userId.print.score",
-              "conditional-field": "driveShared",
-              "conditional-value": true,
-              "scorer": {
+              "predicates": [
+                {
+                  "type": "boolean",
+                  "fieldName": "driveShared",
+                  "expectedValue": true
+                }
+              ],
+              "scorerConf": {
                 "type": "category-rarity-model-scorer",
                 "name": "absoluteSharedFolderPath.userId.print.score",
                 "model": {

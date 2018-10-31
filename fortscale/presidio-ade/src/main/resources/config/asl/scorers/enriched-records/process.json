@@ -22,18 +22,28 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "dstProcessFileName.userId.process.score",
-              "conditional-field": "dstProcessCategories",
-              "conditional-value": [
-                "RECONNAISSANCE_TOOL"
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "RECONNAISSANCE_TOOL"
+                  ]
+                }
               ],
-              "scorer": {
-                "type": "string-conditional-scorer",
+              "scorerConf": {
+                "type": "conditional",
                 "name": "dstProcessFileName.userId.process.score",
-                "conditional-field": "operationType",
-                "conditional-value": "CREATE_PROCESS",
-                "scorer": {
+                "predicates": [
+                  {
+                    "type": "regex",
+                    "fieldName": "operationType",
+                    "pattern": "CREATE_PROCESS"
+                  }
+                ],
+                "scorerConf": {
                   "type": "reduction-scorer",
                   "name": "dstProcessFileName.userId.process.score",
                   "main-scorer": {

@@ -13,7 +13,13 @@ public enum SchemasEnum {
   
   ACTIVE_DIRECTORY("ACTIVE_DIRECTORY"),
   
-  AUTHENTICATION("AUTHENTICATION");
+  AUTHENTICATION("AUTHENTICATION"),
+
+  PROCESS("PROCESS"),
+
+  REGISTRY("REGISTRY"),
+
+  IOC("IOC");
 
   private String value;
 
