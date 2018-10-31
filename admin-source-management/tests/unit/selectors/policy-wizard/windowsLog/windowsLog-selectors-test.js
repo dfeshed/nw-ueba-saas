@@ -6,10 +6,11 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import {
   radioButtonValue,
   radioButtonOption,
-  logServersList,
-  selectedLogServer,
-  primaryDestination,
-  primaryDestinationValidator
+  primaryLogServersList,
+  selectedPrimaryLogServer,
+  secondaryLogServersList,
+  selectedSecondaryLogServer,
+  windowsLogDestinationValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
 import {
   ENABLED_CONFIG,
@@ -49,20 +50,34 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(result2, SEND_TEST_LOG_CONFIG, 'should return SEND_TEST_LOG_CONFIG options for sendTestLog id');
   });
 
-  test('logServersList selector', function(assert) {
+  test('primaryLogServersList selector', function(assert) {
     const hostExpected = '10.10.10.10';
     const idExpected = 'id1';
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogLogServers()
       .build();
-    const logServersSelected = logServersList(Immutable.from(fullState));
-    assert.equal(logServersSelected.length, 2, 'number of log servers is as expected');
+    const logServersSelected = primaryLogServersList(Immutable.from(fullState));
+    assert.equal(logServersSelected.length, 2, 'number of primary log servers is as expected');
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
   });
 
-  test('selectedLogServer selector', function(assert) {
+  test('secondaryLogServersList selector', function(assert) {
+    const hostExpected = '10.10.10.12';
+    const idExpected = 'id2';
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogPrimaryDestination('10.10.10.10')
+      .policyWizWinLogLogServers()
+      .build();
+    const logServersSelected = secondaryLogServersList(Immutable.from(fullState));
+    assert.equal(logServersSelected.length, 1, 'number of secondary log servers is as expected');
+    assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
+    assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
+  });
+
+  test('selectedPrimaryLogServer selector', function(assert) {
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizPolicy()
@@ -74,8 +89,8 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       'host': '10.10.10.10',
       'name': 'NWAPPLIANCE55555 - Log Server'
     };
-    const logServerSelected = selectedLogServer(Immutable.from(fullState));
-    assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedLogServer selector is as expected');
+    const logServerSelected = selectedPrimaryLogServer(Immutable.from(fullState));
+    assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedPrimaryLogServer selector is as expected');
 
     // null selected endpoint
     const fullStateNullAddress = new ReduxDataHelper()
@@ -85,35 +100,54 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .policyWizWinLogLogServers()
       .build();
     const logServerNullExpected = null;
-    const logServerNullSelected = selectedLogServer(Immutable.from(fullStateNullAddress));
-    assert.deepEqual(logServerNullSelected, logServerNullExpected, 'The returned value from the selectedLogServer selector is null as expected');
+    const logServerNullSelected = selectedPrimaryLogServer(Immutable.from(fullStateNullAddress));
+    assert.deepEqual(logServerNullSelected, logServerNullExpected, 'The returned value from the selectedPrimaryLogServer selector is null as expected');
   });
 
-  test('primaryDestination', function(assert) {
-    const primaryDestinationExpected = '10.10.10.10';
+  test('selectedSecondaryLogServer selector', function(assert) {
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
-      .policyWizWinLogPrimaryDestination(primaryDestinationExpected)
+      .policyWizPolicy()
+      .policyWizWinLogPrimaryDestination('10.10.10.10')
+      .policyWizWinLogSecondaryDestination('10.10.10.12')
+      .policyWizWinLogLogServers()
       .build();
-    const resultPrimaryDestination = primaryDestination(fullState, 'primaryDestination');
-    assert.deepEqual(resultPrimaryDestination, primaryDestinationExpected, `should return primary destination ${primaryDestinationExpected}`);
+    const logServerExpected = {
+      'id': 'id2',
+      'host': '10.10.10.12',
+      'name': 'NWAPPLIANCE66666- Log Server'
+    };
+    const logServerSelected = selectedSecondaryLogServer(Immutable.from(fullState));
+    assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedSecondaryLogServer selector is as expected');
+
+    // null selected endpoint
+    const fullStateNullAddress = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizPolicy()
+      .policyWizWinLogSecondaryDestination(null)
+      .policyWizWinLogLogServers()
+      .build();
+    const logServerNullExpected = null;
+    const logServerNullSelected = selectedSecondaryLogServer(Immutable.from(fullStateNullAddress));
+    assert.deepEqual(logServerNullSelected, logServerNullExpected, 'The returned value from the selectedPrimaryLogServer selector is null as expected');
   });
 
-  test('primaryDestinationValidator selector', function(assert) {
+  test('windowsLogDestinationValidator selector with selectedId primaryDestination', function(assert) {
     const settingId = 'primaryDestination';
     const visited = [`policy.${settingId}`];
     let destinationValue = '';
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogPrimaryDestination(destinationValue)
+      .policyWizWinLogLogServers()
       .policyWizVisited(visited)
       .build();
     let validExpected = {
       isError: true,
       showError: true,
-      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestinationInvalidMsg'
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogDestinationInvalidMsg'
     };
-    let validActual = primaryDestinationValidator(fullState, settingId);
+    let validActual = windowsLogDestinationValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${destinationValue}'`);
 
     // valid value
@@ -121,11 +155,42 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogPrimaryDestination(destinationValue)
+      .policyWizWinLogLogServers()
       .policyWizVisited(visited)
       .build();
     validExpected = { isError: false, showError: false, errorMessage: '' };
-    validActual = primaryDestinationValidator(fullState, settingId);
+    validActual = windowsLogDestinationValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${destinationValue}`);
   });
 
+  test('windowsLogDestinationValidator selector with selectedId secondaryDestination', function(assert) {
+    const settingId = 'secondaryDestination';
+    const visited = [`policy.${settingId}`];
+    let destinationValue = '';
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogSecondaryDestination(destinationValue)
+      .policyWizWinLogLogServers()
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogDestinationInvalidMsg'
+    };
+    let validActual = windowsLogDestinationValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${destinationValue}'`);
+
+    // valid value
+    destinationValue = '10.10.10.12';
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogSecondaryDestination(destinationValue)
+      .policyWizWinLogLogServers()
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = windowsLogDestinationValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${destinationValue}`);
+  });
 });

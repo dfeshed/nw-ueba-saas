@@ -240,6 +240,11 @@ const updatePolicyProperty = (field, value) => {
         { field: 'policy.primaryDestination', value: value.host }
       ];
       break;
+    case 'secondaryDestination':
+      payload = [
+        { field: 'policy.secondaryDestination', value: value.host }
+      ];
+      break;
     default:
       payload = [{ field: `policy.${field}`, value }];
   }

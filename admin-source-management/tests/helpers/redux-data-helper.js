@@ -231,6 +231,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizWinLogSecondaryDestination(secondaryDestination) {
+    _set(this.state, 'usm.policyWizard.policy.secondaryDestination', secondaryDestination);
+    return this;
+  }
+
   policyWizWinLogLogServers() {
     _set(this.state, 'usm.policyWizard.listOfLogServers', logServers);
     return this;

@@ -30,7 +30,7 @@ export const radioButtonValue = (state, selectedSettingId) => _policyWizardState
 // ====================================================================
 const _listOfLogServers = (state) => _policyWizardState(state).listOfLogServers || [];
 
-export const logServersList = createSelector(
+export const primaryLogServersList = createSelector(
   // only format/return what is in state - the reducer is responsible for the defaults for each setting
   [_listOfLogServers],
   (listOfLogServers) => {
@@ -48,16 +48,17 @@ export const logServersList = createSelector(
 );
 
 /**
- * we need the selected policy primaryAddress
+ * Returns the selected primary log server
  * @public
+ * @return  {obj} {id: "id1", host: "10.10.10.10"}
  */
-export const selectedLogServer = createSelector(
-  policy, logServersList,
-  (policy, logServersList) => {
+export const selectedPrimaryLogServer = createSelector(
+  policy, primaryLogServersList,
+  (policy, primaryLogServersList) => {
     let selected = null;
 
-    for (let s = 0; s < logServersList.length; s++) {
-      const logServer = logServersList[s];
+    for (let s = 0; s < primaryLogServersList.length; s++) {
+      const logServer = primaryLogServersList[s];
       if (policy.primaryDestination === logServer.host) {
         selected = logServer;
         break;
@@ -68,29 +69,63 @@ export const selectedLogServer = createSelector(
 );
 
 /**
- * returns the primaryDestination value from state based on the selectedSettingId.
+ * Excludes the primary selected server from the list and returns the rest
+ * We don't want to display a server that is chosen as a primary server in the secondary server dropdown.
  * @public
  */
-export const primaryDestination = (state, selectedSettingId) => {
-  return _policyWizardState(state).policy[selectedSettingId];
-};
+export const secondaryLogServersList = createSelector(
+  [primaryLogServersList, selectedPrimaryLogServer],
+  (primaryLogServersList, selectedPrimaryLogServer) => {
+    // If primaryLogServer is already chosen, exclude that from the secondaryLogServersList
+    if (selectedPrimaryLogServer) {
+      return primaryLogServersList.filter((obj) => obj.id !== selectedPrimaryLogServer.id);
+    } else {
+      return primaryLogServersList;
+    }
+  }
+);
 
 /**
- * validates a primary destination value
+ * Returns the selected secondary log server
+ * @public
+* @return  {obj} {id: "id2", host: "10.10.10.12"}
+ */
+export const selectedSecondaryLogServer = createSelector(
+  policy, secondaryLogServersList,
+  (policy, secondaryLogServersList) => {
+    let selected = null;
+    for (let s = 0; s < secondaryLogServersList.length; s++) {
+      const logServer = secondaryLogServersList[s];
+      if (policy.secondaryDestination === logServer.host) {
+        selected = logServer;
+        break;
+      }
+    }
+    return selected;
+  }
+);
+
+/**
+ * validates both the primary and secondary log servers
  * returns error if value is blank
  * @public
  */
-export const primaryDestinationValidator = (state, selectedSettingId) => {
-  const value = primaryDestination(state, selectedSettingId);
+export const windowsLogDestinationValidator = (state, selectedSettingId) => {
   let error = false;
   let enableMessage = false;
   let message = '';
+  let value;
 
-  // primary address cannot be blank
+  if (selectedSettingId === 'primaryDestination') {
+    value = selectedPrimaryLogServer(state) ? selectedPrimaryLogServer(state).host : '';
+  } else { // secondaryDestination
+    value = selectedSecondaryLogServer(state) ? selectedSecondaryLogServer(state).host : '';
+  }
+
   if (isBlank(value)) {
     error = true;
     enableMessage = true;
-    message = `adminUsm.policyWizard.windowsLogPolicy.${selectedSettingId}InvalidMsg`;
+    message = 'adminUsm.policyWizard.windowsLogPolicy.windowsLogDestinationInvalidMsg';
   }
   return {
     isError: error,
@@ -104,5 +139,6 @@ export const primaryDestinationValidator = (state, selectedSettingId) => {
  * @public
  */
 export const windowsLogPolicyValidatorFnMap = {
-  'primaryDestination': primaryDestinationValidator
+  'primaryDestination': windowsLogDestinationValidator,
+  'secondaryDestination': windowsLogDestinationValidator
 };
