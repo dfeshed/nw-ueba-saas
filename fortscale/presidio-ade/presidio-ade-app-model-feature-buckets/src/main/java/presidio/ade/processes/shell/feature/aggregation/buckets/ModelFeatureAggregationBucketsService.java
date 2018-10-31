@@ -1,5 +1,7 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
+import com.google.common.collect.Multiset;
+import com.google.common.collect.TreeMultiset;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -7,11 +9,13 @@ import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
+import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by YaronDL on 7/2/2017.
@@ -73,14 +77,8 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected List<String> getDistinctContextTypes(String adeEventType) {
-        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(adeEventType);
-        Set<String> distinctSingleContextTypeSet = new HashSet<>();
-        for(List<String> distinctMultipleContexts: distinctMultipleContextsTypeSet){
-            distinctSingleContextTypeSet.addAll(distinctMultipleContexts);
-        }
-        return new ArrayList<>(distinctSingleContextTypeSet);
+    protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy) {
+        return bucketConfigurationService.getMinimalContextList(adeEventType, strategy.toStrategyName());
     }
-
 
 }

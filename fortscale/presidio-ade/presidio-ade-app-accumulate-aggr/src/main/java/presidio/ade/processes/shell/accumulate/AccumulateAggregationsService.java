@@ -68,13 +68,8 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
 
 
     @Override
-    protected List<String> getDistinctContextTypes(String adeEventType) {
-        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(adeEventType);
-        Set<String> distinctSingleContextTypeSet = new HashSet<>();
-        for (List<String> distinctMultipleContexts : distinctMultipleContextsTypeSet) {
-            distinctSingleContextTypeSet.addAll(distinctMultipleContexts);
-        }
-        return new ArrayList<>(distinctSingleContextTypeSet);
+    protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy) {
+        return bucketConfigurationService.getMinimalContextList(adeEventType, strategy.toStrategyName());
     }
 
 }

@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.TreeMultiset;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
@@ -108,10 +109,16 @@ public class BucketConfigurationService extends AslConfigurationService {
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
 							featureBucketConf.getStrategyName().equals(strategyName) &&
-									Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) &&
 									featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
 			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
+		}
+
+		if(!contextFieldNamesToExclude.isEmpty()){
+			cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()
+					.filter(featureBucketConf ->
+							Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) )
+					.collect(Collectors.toList());
 		}
 
 		return cachedFeatureBucketConfs;
@@ -139,6 +146,29 @@ public class BucketConfigurationService extends AslConfigurationService {
 		}
 
 		return distinctContextsSet;
+	}
+
+	public List<String> getMinimalContextList(String adeEventType, String strategyName){
+		//Returns a list that contain the minimum number of contexts which needed to build all buckets.
+		List<String> ret = new ArrayList<>();
+
+		List<FeatureBucketConf> featureBucketConfList = getFeatureBucketConfs(adeEventType);
+		if(strategyName != null) {
+			featureBucketConfList.stream()
+					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName)).collect(Collectors.toList());
+		}
+		while(featureBucketConfList.size() > 0){
+			TreeMultiset<String> contextTreeMultiSet = TreeMultiset.create();
+			featureBucketConfList.forEach(featureBucketConf -> contextTreeMultiSet.addAll(featureBucketConf.getContextFieldNames()));
+
+			ret.add(contextTreeMultiSet.lastEntry().getElement());
+
+			featureBucketConfList = featureBucketConfList.stream()
+					.filter(featureBucketConf -> Collections.disjoint(ret, featureBucketConf.getContextFieldNames()))
+					.collect(Collectors.toList());
+		}
+
+		return ret;
 	}
 
 	private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {

@@ -2,7 +2,9 @@ package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -117,11 +119,14 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
-    public List<String> getDistinctContextTypes(String dataSource){
+    @Override
+    public List<String> getDistinctContextTypes(String dataSource, FixedDurationStrategy strategy){
         //todo: fix this implementation.
         //this implementation returns the distinct context over all data sources which might cause us to run on context which not exist for the specific data source.
         // we should not fail in this case just work for nothing.
-        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(x -> x.getBucketConf()).collect(Collectors.toList());
+        List<String> ret = featureBucketConfs.stream().map(x -> x.getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
 //        String confSuffix = dataSource+strategy;
 //        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
         return ret;

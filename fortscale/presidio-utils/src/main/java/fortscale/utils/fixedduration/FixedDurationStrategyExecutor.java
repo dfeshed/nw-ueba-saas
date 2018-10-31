@@ -31,7 +31,7 @@ public abstract class FixedDurationStrategyExecutor {
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
 
         List<String> contextFieldNamesToExclude = new ArrayList<>();
-        for(String contextType: getDistinctContextTypes(adeEventType)) {
+        for(String contextType: getDistinctContextTypes(adeEventType, strategy)) {
             for (TimeRange timePartition : partitionedTimeRanges) {
                 logger.debug("executing on time partition={}", timePartition);
                 try {
@@ -54,5 +54,5 @@ public abstract class FixedDurationStrategyExecutor {
      */
     protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties);
 
-    protected abstract List<String> getDistinctContextTypes(String adeEventType);
+    protected abstract List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy);
 }
