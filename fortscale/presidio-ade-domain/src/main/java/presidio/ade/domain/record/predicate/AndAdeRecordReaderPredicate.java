@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.util.regex.Pattern;
+import java.util.List;
 
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
@@ -17,45 +17,37 @@ import java.util.regex.Pattern;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class RegexAdeRecordReaderPredicate implements AdeRecordReaderPredicate {
-    public static final String ADE_RECORD_READER_PREDICATE_TYPE = "regex";
+public class AndAdeRecordReaderPredicate implements AdeRecordReaderPredicate {
+    public static final String ADE_RECORD_READER_PREDICATE_TYPE = "and";
 
-    private final String fieldName;
-    private final Pattern pattern;
+    private final List<AdeRecordReaderPredicate> predicates;
 
     @JsonCreator
-    public RegexAdeRecordReaderPredicate(
-            @JsonProperty("fieldName") String fieldName,
-            @JsonProperty("pattern") String pattern) {
-
-        Assert.hasText(fieldName, "fieldName cannot be blank, empty or null.");
-        Assert.hasText(pattern, "pattern cannot be blank, empty or null.");
-        this.fieldName = fieldName;
-        this.pattern = Pattern.compile(pattern);
+    public AndAdeRecordReaderPredicate(@JsonProperty("predicates") List<AdeRecordReaderPredicate> predicates) {
+        Assert.notEmpty(predicates, "predicates cannot be empty or null.");
+        predicates.forEach(predicate -> Assert.notNull(predicate, "predicates cannot contain null elements."));
+        this.predicates = predicates;
     }
 
     @Override
     public boolean test(AdeRecordReader adeRecordReader) {
-        String value = adeRecordReader.get(fieldName, String.class);
-        return value != null && pattern.matcher(value).matches();
+        return predicates.stream().allMatch(predicate -> predicate.test(adeRecordReader));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RegexAdeRecordReaderPredicate)) return false;
-        RegexAdeRecordReaderPredicate that = (RegexAdeRecordReaderPredicate)o;
+        if (!(o instanceof AndAdeRecordReaderPredicate)) return false;
+        AndAdeRecordReaderPredicate that = (AndAdeRecordReaderPredicate)o;
         return new EqualsBuilder()
-                .append(fieldName, that.fieldName)
-                .append(pattern, that.pattern)
+                .append(predicates, that.predicates)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(fieldName)
-                .append(pattern)
+                .append(predicates)
                 .toHashCode();
     }
 }
