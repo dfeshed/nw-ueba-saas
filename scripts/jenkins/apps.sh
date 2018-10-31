@@ -40,6 +40,7 @@ function runEmberTestWithMockServer {
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
+  info "COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort"
   COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 

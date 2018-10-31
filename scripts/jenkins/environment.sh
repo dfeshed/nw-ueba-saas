@@ -76,7 +76,8 @@ function installNPMLibraryIfNecessary {
     success "$1 version is: $4"
   else
     info "Installing $1 version $4"
-    $NPM_BINARY --loglevel=silent install -g $1@$4
+    # $NPM_BINARY --loglevel=silent install -g $1@$4
+    $NPM_BINARY install -g $1@$4
     checkError "Could not install $1"
     success "Installed $1 $4"
   fi
