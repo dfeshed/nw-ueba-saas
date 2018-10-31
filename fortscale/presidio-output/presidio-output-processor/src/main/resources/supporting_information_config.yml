@@ -822,6 +822,8 @@ indicators:
     anomalyFilters:
       - fieldName: operationType
         fieldValue: CREATE_PROCESS
+      - fieldName: dstProcessCategories
+        fieldValue: RECONNAISSANCE_TOOL
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
