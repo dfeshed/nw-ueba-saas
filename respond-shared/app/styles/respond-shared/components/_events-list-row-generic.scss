@@ -27,15 +27,24 @@
   padding: rsa-whitespace(less);
 
   hbox {
+    display: block;
     margin-top: -10px;
 
     & > dl {
       &:first-of-type {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        width: 100%;
+        -webkit-columns: 250px 4;
+        -moz-columns: 250px 4;
+        columns: 250px 4;
+
+        -webkit-column-gap: 15px;
+        -moz-column-gap: 15px;
+        column-gap: 15px;
+
+        margin: 0 auto;
+        display: block;
+
+        -moz-column-fill: balance;
+        column-fill: balance;
       }
     }
   }

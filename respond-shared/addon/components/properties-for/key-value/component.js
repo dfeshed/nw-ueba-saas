@@ -16,7 +16,7 @@ function capitalizeResult(value) {
 export default Component.extend({
   layout,
   testId: 'keyValueRow',
-  classNames: ['key'],
+  classNames: ['key-wrapper'],
   attributeBindings: ['testId:test-id'],
   nestedComponentClass: 'properties-for',
   i18n: service(),

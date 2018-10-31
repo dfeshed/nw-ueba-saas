@@ -1,10 +1,12 @@
-<dt test-id="keyName" class="key-name">
-  {{formattedName}}
-</dt>
-{{#if member.isNestedValue}}
-  <dd test-id="keyValue" class="key-value">
-    {{component nestedComponentClass item=item itemPath=itemPath}}
-  </dd>
-{{else}}
-  {{component "properties-for/meta-value" key=member.name value=member.value testId="keyValue" class="key-value"}}
-{{/if}}
+<div class="key">
+  <dt test-id="keyName" class="key-name">
+    {{formattedName}}
+  </dt>
+  {{#if member.isNestedValue}}
+    <dd test-id="keyValue" class="key-value">
+      {{component nestedComponentClass item=item itemPath=itemPath}}
+    </dd>
+  {{else}}
+    {{component "properties-for/meta-value" key=member.name value=member.value testId="keyValue" class="key-value"}}
+  {{/if}}
+</div>
