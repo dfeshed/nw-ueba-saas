@@ -14,6 +14,7 @@ public class ProcessInputToOutputConverter implements InputOutputConverter {
         outputEvent.setEventId(transformedEvent.getEventId());
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
+        outputEvent.setEventDate(transformedEvent.getDateTime());
         outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setOperationType(transformedEvent.getOperationType());

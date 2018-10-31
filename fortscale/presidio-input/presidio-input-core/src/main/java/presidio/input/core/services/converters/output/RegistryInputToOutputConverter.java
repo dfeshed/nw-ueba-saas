@@ -11,8 +11,10 @@ public class RegistryInputToOutputConverter implements InputOutputConverter {
         RegistryTransformedEvent transformedEvent = (RegistryTransformedEvent) document;
         RegistryEnrichedEvent outputEvent = new RegistryEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());
+        outputEvent.setEventDate(transformedEvent.getDateTime());
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
+        outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setMachineId(transformedEvent.getMachineId());
