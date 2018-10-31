@@ -9,16 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 public class LinearScoreReducerConfTest {
-	public static final JSONObject defaultReducedScorerConfJsonObject;
-
-	static {
-		defaultReducedScorerConfJsonObject = new JSONObject();
-		defaultReducedScorerConfJsonObject.put("type", ConstantRegexScorerConf.SCORER_TYPE);
-		defaultReducedScorerConfJsonObject.put("name", "myConstantRegexScorer");
-		defaultReducedScorerConfJsonObject.put("regex", "42");
-		defaultReducedScorerConfJsonObject.put("regex-field-name", "myRegexField");
-		defaultReducedScorerConfJsonObject.put("constant-score", 100);
-	}
+	public static final JSONObject defaultReducedScorerConfJsonObject = ConditionalScorerConfTest.defaultScorerConfJsonObject;
 
 	@Test
 	public void should_deserialize_linear_score_reducer_conf_from_json() throws IOException {

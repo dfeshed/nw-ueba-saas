@@ -22,14 +22,19 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": [
-                "SECURITY_SENSITIVE_OPERATION",
-                "GROUP_MEMBERSHIP_OPERATION"
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "GROUP_MEMBERSHIP_OPERATION",
+                    "SECURITY_SENSITIVE_OPERATION"
+                  ]
+                }
               ],
-              "scorer": {
+              "scorerConf": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
                 "scorers": [
@@ -59,13 +64,18 @@
               }
             },
             {
-              "type": "list-conditional-scorer",
+              "type": "conditional",
               "name": "operationType.userIdObjectManagement.activeDirectory.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": [
-                "OBJECT_MANAGEMENT"
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "OBJECT_MANAGEMENT"
+                  ]
+                }
               ],
-              "scorer": {
+              "scorerConf": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdObjectManagement.activeDirectory.score",
                 "scorers": [
