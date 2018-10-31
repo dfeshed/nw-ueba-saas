@@ -6,11 +6,11 @@
     <packaging>jar</packaging>
     <name>presidio-output-webapp</name>
     <description>Fortscale Output</description>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <parent>
         <artifactId>presidio-output</artifactId>
         <groupId>fortscale</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
 
     <properties>

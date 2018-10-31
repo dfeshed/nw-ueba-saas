@@ -7,10 +7,10 @@
     <parent>
         <artifactId>presidio-input</artifactId>
         <groupId>fortscale</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>presidio-input-core</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
