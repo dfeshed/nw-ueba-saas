@@ -1,3 +1,21 @@
+# [9.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.6.0)
+## Features
+* [ASOC-44820](https://bedfordjira.na.rsa.net/browse/ASOC-44820):&emsp;Provide more coverage around websocket controllers
+* [ASOC-44823](https://bedfordjira.na.rsa.net/browse/ASOC-44823):&emsp;Add test coverage and reduce sonar issues simultaneously
+* [ASOC-53370](https://bedfordjira.na.rsa.net/browse/ASOC-53370):&emsp;Add unit test for category to improve code coverage
+* [ASOC-60567](https://bedfordjira.na.rsa.net/browse/ASOC-60567):&emsp;Handle alerts in Respond
+* [ASOC-62506](https://bedfordjira.na.rsa.net/browse/ASOC-62506):&emsp;Design session w/ UX to alter layout for event details
+* [ASOC-62522](https://bedfordjira.na.rsa.net/browse/ASOC-62522):&emsp;Query mongo for alerts w/ at minimum 1 endpoint event
+* [ASOC-63462](https://bedfordjira.na.rsa.net/browse/ASOC-63462):&emsp;Integration context hover of meta from inline event details
+* [ASOC-63760](https://bedfordjira.na.rsa.net/browse/ASOC-63760):&emsp;Display event related links
+* [ASOC-64657](https://bedfordjira.na.rsa.net/browse/ASOC-64657):&emsp;Update text analysis message when not rendering anything
+* [ASOC-64767](https://bedfordjira.na.rsa.net/browse/ASOC-64767):&emsp;Respond will send alerts to scoring-server
+* [ASOC-66079](https://bedfordjira.na.rsa.net/browse/ASOC-66079):&emsp;Spike - Respond - UEBA - Storyline & Nodal
+* [ASOC-66184](https://bedfordjira.na.rsa.net/browse/ASOC-66184):&emsp;Data Privacy - Automation
+* [ASOC-66282](https://bedfordjira.na.rsa.net/browse/ASOC-66282):&emsp;Automation for Download Events
+* [ASOC-66504](https://bedfordjira.na.rsa.net/browse/ASOC-66504):&emsp;Normalization restructure of source/target fields	User Story
+
+
 # [9.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.5.0)
 ## Features
 * [ASOC-59805](https://bedfordjira.na.rsa.net/browse/ASOC-59805):&emsp;Meta Download Preference
