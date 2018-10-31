@@ -17,6 +17,7 @@ const TABS = [
   },
   {
     name: 'investigate.investigate-events',
+    url: '/investigate/events',
     label: 'Event Analysis'
   },
   {
