@@ -63,7 +63,16 @@ const riskScoreReducer = handleActions({
     });
   },
   [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
-    return state.merge({ riskScoreContext: null, activeRiskSeverityTab: 'critical', selectedAlert: null, eventsData: [] });
+    return state.merge({
+      riskScoreContext: null,
+      riskScoreContextError: null,
+      activeRiskSeverityTab: 'critical',
+      eventsLoadingStatus: null,
+      selectedAlert: null,
+      eventsData: [],
+      expandedEventId: null,
+      alertsError: null
+    });
   },
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
     return state.set('selectedAlert', payload.alertName);

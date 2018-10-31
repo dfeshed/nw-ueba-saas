@@ -241,17 +241,17 @@ const getSavedFileStatus = (selections) => ({
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
 
-const setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: item });
+const _setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: item });
 
 const onFileSelection = (item) => {
   return (dispatch) => {
     dispatch(getRiskScoringServerStatus());
-    dispatch(setSelectedFile(item));
+    dispatch(_setSelectedFile(item));
     dispatch(resetRiskContext());
     next(() => {
       dispatch(getRiskScoreContext(item.checksumSha256, 'critical'));
     });
-    dispatch(fetchHostNameList, item.checksumSha256);
+    dispatch(_fetchHostNameList, item.checksumSha256);
   };
 };
 
@@ -308,7 +308,7 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
   fetchMetaValue(query, metaName, size, null, 1000, 10, handlers, 1);
 };
 
-const fetchHostNameList = (checksum) => {
+const _fetchHostNameList = (checksum) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
 

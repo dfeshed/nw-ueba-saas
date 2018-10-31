@@ -5,10 +5,11 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 import {
   riskScoringServerError,
-  isRiskScoreContextEmpty
+  isRiskScoreContextEmpty,
+  currentSeverityContext
 } from 'investigate-shared/selectors/risk/selectors';
 
-module('Unit | Selectors | endpoint filters', function(hooks) {
+module('Unit | Selectors | risk', function(hooks) {
 
   setupTest(hooks);
 
@@ -66,5 +67,43 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
     assert.equal(data, true);
   });
 
+  test('currentSeverityContext', function(assert) {
+    const state = Immutable.from({
+      risk: {
+        riskScoreContext: {
+          hash: 'f49c0dde83a6c8e2a5a9436ce2484cb8be2fc36a50528abb2d3ee5ddee2744c8',
+          distinctAlertCount: {
+            critical: 1,
+            high: 1,
+            medium: 0,
+            low: 0
+          },
+          categorizedAlerts: {
+            Critical: {
+              'Enables Login Bypass': {
+                alertCount: 1,
+                eventContexts: [
+                  {
+                    id: '5bd84e048e090168ea067125',
+                    sourceId: '6667a7b8-ad3a-4ce6-b2c2-f96e2f44c7d0',
+                    source: 'Respond'
+                  }
+                ]
+              }
+            }
+          }
+        },
+        activeRiskSeverityTab: 'critical'
+      }
+    });
+
+    const [data] = currentSeverityContext(state);
+    assert.equal(data.alertCount, 1, 'Alert count is correct');
+    assert.equal(data.alertName, 'Enables Login Bypass', 'Alert name is correct');
+    assert.equal(data.context.length, 1, 'All alerts are present');
+    assert.equal(data.eventCount, 1, 'Event count is correct');
+    assert.equal(data.filesCount, 0, 'Files count is not yet there');
+    assert.equal(data.usersCount, 0, 'Events count is not yet there');
+  });
 
 });

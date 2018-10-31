@@ -133,15 +133,23 @@ module('Unit | Reducers | risk', function(hooks) {
         },
         categorizedAlerts: {}
       }],
+      riskScoreContextError: 'Context fetch Error',
       activeRiskSeverityTab: 'high',
+      eventsLoadingStatus: 'completed',
       selectedAlert: 'Random Alert',
-      eventsData: [{}, {}]
+      eventsData: [{}, {}],
+      expandedEventId: '1',
+      alertsError: 'Alerts error'
     });
     const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
     assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
+    assert.equal(result.riskScoreContextError, null, 'riskScoreContextError is reset');
     assert.equal(result.activeRiskSeverityTab, 'critical', 'active tab is reset to critical');
+    assert.equal(result.eventsLoadingStatus, null, 'eventsLoadingStatus is reset');
     assert.equal(result.selectedAlert, null, 'selectedAlert is reset');
     assert.equal(result.eventsData.length, 0, 'Events data is reset');
+    assert.equal(result.expandedEventId, null, 'expandedEventId is reset');
+    assert.equal(result.alertsError, null, 'alertsError is reset');
   });
 
   test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {
