@@ -7,9 +7,9 @@
     <parent>
         <groupId>presidio.flume.core</groupId>
         <artifactId>presidio-flume</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
 
 
     <artifactId>fortscale-flume</artifactId>
