@@ -6,7 +6,8 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import {
   riskScoringServerError,
   isRiskScoreContextEmpty,
-  currentSeverityContext
+  currentSeverityContext,
+  riskType
 } from 'investigate-shared/selectors/risk/selectors';
 
 module('Unit | Selectors | risk', function(hooks) {
@@ -104,6 +105,25 @@ module('Unit | Selectors | risk', function(hooks) {
     assert.equal(data.eventCount, 1, 'Event count is correct');
     assert.equal(data.filesCount, 0, 'Files count is not yet there');
     assert.equal(data.usersCount, 0, 'Events count is not yet there');
+  });
+  test('Returns FILE riskType', function(assert) {
+    const riskState = Immutable.from({
+      riskType: 'FILE'
+    });
+    const fileState = Immutable.from({
+      files: {}
+    });
+    const data = riskType(fileState, riskState);
+    assert.equal(data, 'FILE', 'Risk Type will be FILE');
+  });
+
+  test('Returns HOST riskType', function(assert) {
+    const riskState = Immutable.from({
+      riskType: 'HOST'
+    });
+    const fileState = Immutable.from({});
+    const data = riskType(fileState, riskState);
+    assert.equal(data, 'HOST', 'Risk Type will be HOST');
   });
 
 });

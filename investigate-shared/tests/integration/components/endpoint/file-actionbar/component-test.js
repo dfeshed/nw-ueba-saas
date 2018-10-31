@@ -1,9 +1,8 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import sinon from 'sinon';
 import EmberObject from '@ember/object';
 
 module('Integration | Component | endpoint/file-actionbar', function(hooks) {
@@ -50,7 +49,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
   });
 
-  skip('More action external lookup for google', async function(assert) {
+  test('More action external lookup for google', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -59,7 +58,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    const actionSpy = sinon.spy(window, 'open');
     await render(hbs`{{endpoint/file-actionbar
       itemList=itemList
       showIcons=false
@@ -71,11 +69,8 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await triggerEvent('.panel2', 'mouseover');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 9, 'All the list options should render.');
-    await click(findAll('.rsa-dropdown-action-list li')[6]);
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'Sub menu options should hide.');
-    assert.equal(actionSpy.callCount, 2);
-    actionSpy.reset();
-    actionSpy.restore();
+    await click(findAll('.rsa-dropdown-action-list li')[5]);
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'on click of Reset, the file action button is closed ');
   });
 
   test('More action, is disabled when no rows are selected', async function(assert) {

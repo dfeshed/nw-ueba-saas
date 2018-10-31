@@ -7,7 +7,8 @@ import {
   getHostDetailTabs,
   hasMachineId,
   selectedTabComponent,
-  getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
+  getPropertyPanelTabs,
+  riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
 
@@ -85,6 +86,33 @@ test('selectedTabComponent', function(assert) {
   });
   const result = selectedTabComponent(state);
   assert.equal(result, 'host-detail/drivers', 'returns the selected tab component class');
+});
+
+test('riskState', function(assert) {
+  const riskStateResult = {
+    riskScoreContext: {
+      id: 'C593263F-E2AB-9168-EFA4-C683E066A035',
+      distinctAlertCount: {},
+      categorizedAlerts: {
+        All: {}
+      }
+    }
+  };
+  const state = Immutable.from({
+    endpoint: {
+      risk: {
+        riskScoreContext: {
+          id: 'C593263F-E2AB-9168-EFA4-C683E066A035',
+          distinctAlertCount: {},
+          categorizedAlerts: {
+            All: {}
+          }
+        }
+      }
+    }
+  });
+  const result = riskState(state);
+  assert.deepEqual(result, riskStateResult, 'Both are equal');
 });
 
 test('getPropertyPanelTabs', function(assert) {
