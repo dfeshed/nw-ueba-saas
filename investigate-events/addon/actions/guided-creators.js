@@ -180,7 +180,7 @@ export const openGuidedPillForEdit = ({ pillData }) => ({
   }
 });
 
-export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusToNewPill }) => {
+export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusToNewPill, fromFreeFormMode }) => {
   return (dispatch, getState) => {
     const pillData = transformTextToPillData(
       freeFormText.trim(),
@@ -192,7 +192,8 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
       payload: {
         pillData,
         position,
-        shouldAddFocusToNewPill
+        shouldAddFocusToNewPill,
+        fromFreeFormMode
       }
     });
     if (!pillData.complexFilterText) {

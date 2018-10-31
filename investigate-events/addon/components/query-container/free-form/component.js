@@ -48,7 +48,12 @@ const freeForm = Component.extend({
       // Don't do anything if the text is the same as it was
       // when the component was initially rendered
       if (this.get('initialFreeFormText') !== freeFormText) {
-        this.send('addFreeFormFilter', { freeFormText });
+        this.send('addFreeFormFilter', {
+          freeFormText,
+          position: 0,
+          shouldAddFocusToNewPill: false,
+          fromFreeFormMode: true
+        });
       }
     }
   },

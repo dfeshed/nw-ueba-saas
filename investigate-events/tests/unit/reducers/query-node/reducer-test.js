@@ -223,6 +223,22 @@ test('ADD_PILL adds pill to end of list', function(assert) {
   assert.equal(result.pillsData[2].foo, 1234, 'pillsData item is in the right position');
 });
 
+test('ADD_PILL replces existing pills if from Free Form Mode', function(assert) {
+  const action = {
+    type: ACTION_TYPES.ADD_PILL,
+    payload: {
+      pillData: { foo: 1234 },
+      position: 0,
+      shouldAddFocusToNewPill: false,
+      fromFreeFormMode: true
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
+});
+
 test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   const action = {
     type: ACTION_TYPES.DELETE_GUIDED_PILLS,

@@ -420,14 +420,19 @@ export default handleActions({
   },
 
   [ACTION_TYPES.ADD_PILL]: (state, { payload }) => {
-    const { pillData, position, shouldAddFocusToNewPill } = payload;
+    const { pillData, position, shouldAddFocusToNewPill, fromFreeFormMode } = payload;
     const newPillData = {
       ..._initialPillState,
       ...pillData,
       isFocused: shouldAddFocusToNewPill,
       id: _.uniqueId(ID_PREFIX)
     };
-    if (state.pillsData.length === 0) {
+    // Create a new array of data in two cases.
+    // 1. If there were no pills previously
+    // 2. If this pill data is coming from Free Form Mode(FFM). In this case we
+    // want to treat it like a rewrite of data. Once FFM is merged into Guided,
+    // we can remove this condition and the `fromFreeFormMode` param.
+    if (state.pillsData.length === 0 || fromFreeFormMode) {
       return state.set('pillsData', Immutable.from([ newPillData ]));
     }
 
