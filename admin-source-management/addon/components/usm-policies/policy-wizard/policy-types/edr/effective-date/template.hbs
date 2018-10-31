@@ -7,8 +7,6 @@
 <hbox class="date-time">
   {{rsa-form-datetime
     enableTime=false
-    minDate='today'
-    yearRange="currentYear, 2050"
     value=(readonly startDate)        
     isError=startDateValidator.showError
     errorMessage=(t startDateValidator.errorMessage)
