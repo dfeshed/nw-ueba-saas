@@ -44,14 +44,14 @@ module('Integration | Component | usm-groups/group-wizard/group-titlebar', funct
     const expectedNameTitle = '';
     assert.equal(findAll('.group-name-label').length, 1, 'The group name label appears in the DOM');
     const [nameEl] = findAll('.group-name-label');
-    assert.equal(nameEl.innerText, expectedName, `The group name is ${expectedName}`);
+    assert.equal(nameEl.innerText.trim(), expectedName, `The group name is ${expectedName}`);
     assert.equal(nameEl.title, expectedNameTitle, 'The group name title is empty');
 
     const expectedDescription = '';
     const expectedDescriptionTitle = '';
     assert.equal(findAll('.group-description-label').length, 1, 'The group description label appears in the DOM');
     const [descriptionEl] = findAll('.group-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription, 'The group description is empty');
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription, 'The group description is empty');
     assert.equal(descriptionEl.title, expectedDescriptionTitle, 'The group description title is empty');
   });
 
@@ -70,12 +70,12 @@ module('Integration | Component | usm-groups/group-wizard/group-titlebar', funct
 
     assert.equal(findAll('.group-name-label').length, 1, 'The group name label appears in the DOM');
     const [nameEl] = findAll('.group-name-label');
-    assert.equal(nameEl.innerText, expectedName, `The group name is ${expectedName}`);
+    assert.equal(nameEl.innerText.trim(), expectedName, `The group name is ${expectedName}`);
     assert.equal(nameEl.title, expectedNameTitle, `The group name title is ${expectedNameTitle}`);
 
     assert.equal(findAll('.group-description-label').length, 1, 'The group description label appears in the DOM');
     const [descriptionEl] = findAll('.group-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription, `The group description is ${expectedDescription}`);
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription, `The group description is ${expectedDescription}`);
     assert.equal(descriptionEl.title, expectedDescriptionTitle, `The group description title is ${expectedDescriptionTitle}`);
   });
 
@@ -95,12 +95,12 @@ module('Integration | Component | usm-groups/group-wizard/group-titlebar', funct
 
     assert.equal(findAll('.group-name-label').length, 1, 'The group name label appears in the DOM');
     const [nameEl] = findAll('.group-name-label');
-    assert.equal(nameEl.innerText, expectedName256, `The group name is ${expectedName256}`);
+    assert.equal(nameEl.innerText.trim(), expectedName256, `The group name is ${expectedName256}`);
     assert.equal(nameEl.title, expectedName256Title, `The group name title is ${expectedName256Title}`);
 
     assert.equal(findAll('.group-description-label').length, 1, 'The group description label appears in the DOM');
     const [descriptionEl] = findAll('.group-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription256, `The group description is ${expectedDescription256}`);
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription256, `The group description is ${expectedDescription256}`);
     assert.equal(descriptionEl.title, expectedDescription256Title, `The group description title is ${expectedDescription256Title}`);
   });
 

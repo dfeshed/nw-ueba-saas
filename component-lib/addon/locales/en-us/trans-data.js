@@ -3870,9 +3870,9 @@ export default {
       identifyGroup: 'Identify Group',
       sourceType: 'Source Type',
       sourceTypePlaceholder: 'Choose a Source Type',
-      edrSourceType: 'Endpoint Scan',
-      fileLogSourceType: 'Endpoint File Collection Logs',
-      windowsLogSourceType: 'Endpoint Windows Collection Logs',
+      edrSourceType: 'Agent Endpoint',
+      fileLogSourceType: 'Agent Log Files',
+      windowsLogSourceType: 'Agent Windows Logs',
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
       nameRequired: 'Group name is required',
@@ -3947,9 +3947,9 @@ export default {
       identifyPolicy: 'Identify Policy',
       sourceType: 'Source Type',
       sourceTypePlaceholder: 'Choose a Source Type',
-      edrSourceType: 'Endpoint Scan',
-      fileLogSourceType: 'Endpoint File Collection Logs',
-      windowsLogSourceType: 'Endpoint Windows Collection Logs',
+      edrSourceType: 'Agent Endpoint',
+      fileLogSourceType: 'Agent Log Files',
+      windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
       namePlaceholder: 'Enter a unique policy name',
       nameRequired: 'Policy name is required',
@@ -4058,8 +4058,9 @@ export default {
       }
     },
     policyTypes: {
-      edrPolicy: 'EndpointEDR',
-      windowsLogPolicy: 'EndpointWindows'
+      edrPolicy: 'Agent Endpoint',
+      fileLogPolicy: 'Agent Log Files',
+      windowsLogPolicy: 'Agent Windows Logs'
     },
     publishStatus: {
       unpublished: 'Unpublished',

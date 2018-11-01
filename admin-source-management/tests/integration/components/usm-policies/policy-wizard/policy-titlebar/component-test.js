@@ -44,14 +44,14 @@ module('Integration | Component | usm-policies/policy-wizard/policy-titlebar', f
     const expectedNameTitle = '';
     assert.equal(findAll('.policy-name-label').length, 1, 'The policy name label appears in the DOM');
     const [nameEl] = findAll('.policy-name-label');
-    assert.equal(nameEl.innerText, expectedName, `The policy name is ${expectedName}`);
+    assert.equal(nameEl.innerText.trim(), expectedName, `The policy name is ${expectedName}`);
     assert.equal(nameEl.title, expectedNameTitle, 'The policy name title is empty');
 
     const expectedDescription = '';
     const expectedDescriptionTitle = '';
     assert.equal(findAll('.policy-description-label').length, 1, 'The policy description label appears in the DOM');
     const [descriptionEl] = findAll('.policy-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription, 'The policy description is empty');
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription, 'The policy description is empty');
     assert.equal(descriptionEl.title, expectedDescriptionTitle, 'The policy description title is empty');
   });
 
@@ -70,12 +70,12 @@ module('Integration | Component | usm-policies/policy-wizard/policy-titlebar', f
 
     assert.equal(findAll('.policy-name-label').length, 1, 'The policy name label appears in the DOM');
     const [nameEl] = findAll('.policy-name-label');
-    assert.equal(nameEl.innerText, expectedName, `The policy name is ${expectedName}`);
+    assert.equal(nameEl.innerText.trim(), expectedName, `The policy name is ${expectedName}`);
     assert.equal(nameEl.title, expectedNameTitle, `The policy name title is ${expectedNameTitle}`);
 
     assert.equal(findAll('.policy-description-label').length, 1, 'The policy description label appears in the DOM');
     const [descriptionEl] = findAll('.policy-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription, `The policy description is ${expectedDescription}`);
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription, `The policy description is ${expectedDescription}`);
     assert.equal(descriptionEl.title, expectedDescriptionTitle, `The policy description title is ${expectedDescriptionTitle}`);
   });
 
@@ -95,12 +95,12 @@ module('Integration | Component | usm-policies/policy-wizard/policy-titlebar', f
 
     assert.equal(findAll('.policy-name-label').length, 1, 'The policy name label appears in the DOM');
     const [nameEl] = findAll('.policy-name-label');
-    assert.equal(nameEl.innerText, expectedName256, `The policy name is ${expectedName256}`);
+    assert.equal(nameEl.innerText.trim(), expectedName256, `The policy name is ${expectedName256}`);
     assert.equal(nameEl.title, expectedName256Title, `The policy name title is ${expectedName256Title}`);
 
     assert.equal(findAll('.policy-description-label').length, 1, 'The policy description label appears in the DOM');
     const [descriptionEl] = findAll('.policy-description-label');
-    assert.equal(descriptionEl.innerText, expectedDescription256, `The policy description is ${expectedDescription256}`);
+    assert.equal(descriptionEl.innerText.trim(), expectedDescription256, `The policy description is ${expectedDescription256}`);
     assert.equal(descriptionEl.title, expectedDescription256Title, `The policy description title is ${expectedDescription256Title}`);
   });
 

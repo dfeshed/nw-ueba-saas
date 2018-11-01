@@ -52,7 +52,7 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
       .build();
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
     const [sourceTypeEl] = findAll('.control.source-type .ember-power-select-selected-item');
-    assert.equal(sourceTypeEl.innerText, sourceTypeText, `Source Type selection is ${sourceTypeText}`);
+    assert.equal(sourceTypeEl.innerText.trim(), sourceTypeText, `Source Type selection is ${sourceTypeText}`);
     const [nameEl] = findAll('.control .policy-name input');
     assert.equal(nameEl.value, testName, `Policy Name is ${testName}`);
     const [descEl] = findAll('.control-with-error .policy-description textarea');

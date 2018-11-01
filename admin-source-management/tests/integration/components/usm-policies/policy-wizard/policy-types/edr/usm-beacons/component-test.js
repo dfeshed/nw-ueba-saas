@@ -64,7 +64,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     const [intervalEl] = findAll('.primaryHttpsBeaconInterval .beacon-interval-value input');
     assert.equal(intervalEl.value, httpsInterval, `primaryHttpsBeaconInterval is ${httpsInterval}`);
     const [unitEl] = findAll('.primaryHttpsBeaconInterval .beacon-interval-unit .ember-power-select-selected-item');
-    assert.equal(unitEl.innerText, intervalUnitText, `primaryHttpsBeaconIntervalUnit selection is ${intervalUnitText}`);
+    assert.equal(unitEl.innerText.trim(), intervalUnitText, `primaryHttpsBeaconIntervalUnit selection is ${intervalUnitText}`);
   });
 
   test('primaryUdpBeaconInterval appears in the DOM with correct values', async function(assert) {
@@ -82,7 +82,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     const [intervalEl] = findAll('.primaryUdpBeaconInterval .beacon-interval-value input');
     assert.equal(intervalEl.value, udpInterval, `primaryUdpBeaconInterval is ${udpInterval}`);
     const [unitEl] = findAll('.primaryUdpBeaconInterval .beacon-interval-unit .ember-power-select-selected-item');
-    assert.equal(unitEl.innerText, intervalUnitText, `primaryUdpBeaconIntervalUnit selection is ${intervalUnitText}`);
+    assert.equal(unitEl.innerText.trim(), intervalUnitText, `primaryUdpBeaconIntervalUnit selection is ${intervalUnitText}`);
   });
 
   test('It triggers the update policy action creator when the primaryHttpsBeaconInterval is changed', async function(assert) {
@@ -143,7 +143,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-beacons selectedSettingId='primaryHttpsBeaconInterval'}}`);
     assert.ok(find('.primaryHttpsBeaconInterval .beacon-interval-value .input-error'), 'Error is showing');
-    assert.equal(find('.primaryHttpsBeaconInterval .beacon-interval-value .input-error').innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+    assert.equal(find('.primaryHttpsBeaconInterval .beacon-interval-value .input-error').innerText.trim(), expectedMessage, `Correct error message is showing: ${expectedMessage}`);
   });
 
   test('It shows the error message when the primaryUdpBeaconInterval is invalid', async function(assert) {
@@ -160,7 +160,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-beacons selectedSettingId='primaryUdpBeaconInterval'}}`);
     assert.ok(find('.primaryUdpBeaconInterval .beacon-interval-value .input-error'), 'Error is showing');
-    assert.equal(find('.primaryUdpBeaconInterval .beacon-interval-value .input-error').innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+    assert.equal(find('.primaryUdpBeaconInterval .beacon-interval-value .input-error').innerText.trim(), expectedMessage, `Correct error message is showing: ${expectedMessage}`);
   });
 
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
