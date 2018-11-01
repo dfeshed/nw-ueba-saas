@@ -44,8 +44,8 @@ public abstract class FixedDurationStrategyExecutor {
                             timePartition,adeEventType,contextType,contextFieldNamesToExclude,e);
                     throw e;
                 }
-                contextFieldNamesToExclude.add(contextType);
             }
+            contextFieldNamesToExclude.add(contextType);
         }
     }
 

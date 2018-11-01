@@ -6,9 +6,9 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>fortscale</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <artifactId>presidio-common</artifactId>
 
     <properties>
