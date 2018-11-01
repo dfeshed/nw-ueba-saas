@@ -1,8 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { throttle, debounce, scheduleOnce } from '@ember/runloop';
+import { debounce, scheduleOnce, throttle } from '@ember/runloop';
 
-import { hasRequiredValuesToQuery, freeFormText } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
 
 const stateToComputed = (state) => ({
@@ -59,9 +59,8 @@ const freeForm = Component.extend({
   },
 
   debouncedKeyUp({ event }) {
-    // Update text in state because if it is different
-    // than the text already in state, need to treat query
-    // as dirty
+    // Update text in state because if it is different than the text already in
+    // state, need to treat query as dirty.
     this.send('updatedFreeFormText', event.target.value);
   },
 

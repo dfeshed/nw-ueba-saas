@@ -131,4 +131,31 @@ module('Integration | Component | query-container', function(hooks) {
 
     await iterateTimeRangeSelection(assert);
   });
+
+  test('it can execute an invalid free-form query', async function(assert) {
+    const done = assert.async();
+    assert.expect(0);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .queryView('freeForm')
+      .build();
+
+    this.set('executeQuery', () => {
+      // This should be called
+      done();
+    });
+
+    await render(hbs`
+      {{query-container
+        executeQuery=(action executeQuery)
+      }}
+    `);
+
+    // Add invlid pill data (medium requires an Int)
+    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = foo');
+    // press ENTER to submit query
+    await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keydown', ENTER_KEY);
+  });
 });

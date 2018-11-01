@@ -16,7 +16,7 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
  * behind displaying them.
  * @private
  */
-const _validateGuidedPill = (pillData, position) => {
+const _clientSideValidation = (pillData, position) => {
   return (dispatch, getState) => {
     const { meta, value } = pillData;
     if (value) {
@@ -66,7 +66,7 @@ export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill }) =
         shouldAddFocusToNewPill
       }
     });
-    dispatch(_validateGuidedPill(pillData, position));
+    dispatch(_clientSideValidation(pillData, position));
   };
 };
 
@@ -78,7 +78,7 @@ export const editGuidedPill = ({ pillData, position }) => {
         pillData
       }
     });
-    dispatch(_validateGuidedPill(pillData, position));
+    dispatch(_clientSideValidation(pillData, position));
   };
 };
 
@@ -183,10 +183,8 @@ export const openGuidedPillForEdit = ({ pillData }) => ({
 export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusToNewPill, fromFreeFormMode }) => {
   return (dispatch, getState) => {
     const pillData = transformTextToPillData(
-      freeFormText.trim(),
-      metaKeySuggestionsForQueryBuilder(getState())
+      freeFormText, metaKeySuggestionsForQueryBuilder(getState())
     );
-
     dispatch({
       type: ACTION_TYPES.ADD_PILL,
       payload: {
@@ -197,7 +195,7 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
       }
     });
     if (!pillData.complexFilterText) {
-      dispatch(_validateGuidedPill(pillData, position));
+      dispatch(_clientSideValidation(pillData, position));
     }
   };
 };
@@ -206,8 +204,7 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
 export const updatedFreeFormText = (freeFormText) => {
   return (dispatch, getState) => {
     const pillData = transformTextToPillData(
-      freeFormText.trim(),
-      metaKeySuggestionsForQueryBuilder(getState())
+      freeFormText, metaKeySuggestionsForQueryBuilder(getState())
     );
     dispatch({
       type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,

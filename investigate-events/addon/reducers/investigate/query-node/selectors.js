@@ -131,8 +131,8 @@ export const getActiveQueryNode = createSelector(
 );
 
 export const hasInvalidPill = createSelector(
-  [_pillsData],
-  (pillsData) => pillsData.isAny('isInvalid')
+  [_pillsData, isOnGuided],
+  (pillsData, isOnGuided) => isOnGuided && pillsData.isAny('isInvalid')
 );
 
 // This transforms the meta/operator from state, which are just strings,
