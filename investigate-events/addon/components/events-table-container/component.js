@@ -11,7 +11,17 @@ const stateToComputed = (state) => ({
 
 const EventsTableContainer = Component.extend({
   classNames: ['rsa-investigate-events-table'],
-  classNameBindings: ['showScrollMessage']
+  classNameBindings: ['showScrollMessage'],
+  tableKeyboardDeactivated: false,
+
+  actions: {
+    handleDropdownKeydown() {
+      this.set('tableKeyboardDeactivated', true);
+    },
+    handleDropdownClose() {
+      this.set('tableKeyboardDeactivated', false);
+    }
+  }
 });
 
 export default connect(stateToComputed)(EventsTableContainer);

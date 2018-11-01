@@ -101,11 +101,11 @@ const EventsTableContextMenu = RsaContextMenu.extend({
 
   actions: {
     onRowClick(event, index, browserEvent) {
+      const notKeyboardControl = browserEvent.keyCode != 40 && browserEvent.keyCode != 38;
       const checkboxClicked = browserEvent.target.className.includes('rsa-form-checkbox-label');
       const hasCheckboxChildren = browserEvent.target.getElementsByClassName('rsa-form-checkbox-label');
       const checkboxWrapperClicked = hasCheckboxChildren && hasCheckboxChildren.length;
-
-      if (checkboxClicked || checkboxWrapperClicked) {
+      if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
         this.send('toggleEventSelection', event);
       } else {
         this.get('selectEvent')(event);

@@ -5,14 +5,20 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import { click, find, findAll, render } from '@ember/test-helpers';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { selectChoose, clickTrigger } from 'ember-power-select/test-support/helpers';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
+import KEY_MAP from 'investigate-events/util/keys';
 
 let setState;
 
+const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
+
 const PS_TRIGGER = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-trigger';
 const PS_SELECTED_ITEM = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
+
+const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
+const downloadPowerSelect = '.rsa-investigate-events-table__header__downloadEvents .ember-power-select-trigger';
 
 const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOption, isNotEmptyRow) {
   await selectChoose(PS_TRIGGER, selectedOption);
@@ -32,6 +38,10 @@ const renderDefaultEventTable = async function() {
 
   await render(hbs`{{events-table-container}}`);
 };
+
+const eventResultsData = [
+  { medium: 32, time: +(new Date()), size: 13191, custom: { 'meta-summary': 'bar' }, 'has.alias': 'raw-value' }
+];
 
 module('Integration | Component | Events Table Container', function(hooks) {
   setupRenderingTest(hooks, {
@@ -105,4 +115,49 @@ module('Integration | Component | Events Table Container', function(hooks) {
 
     assert.notOk(find('.rsa-panel-message .message'), 'Message not shown');
   });
+
+  test('keyDown will trigger event selection if dropdown not in view', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .allEventsSelected(true)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .isEventResultsError(false)
+      .eventsPreferencesConfig()
+      .defaultEventAnalysisPreferences()
+      .eventResults(eventResultsData)
+      .build();
+
+    let eventSelected = false;
+    this.set('handleSelectEvent', () => {
+      eventSelected = true;
+    });
+
+    await render(hbs` {{events-table-container selectEvent=handleSelectEvent}}`);
+    await triggerKeyEvent('.rsa-data-table', 'keyup', ARROW_DOWN_KEY);
+    assert.ok(eventSelected, 'Keystroke triggers event selection when dropdown in view');
+  });
+
+  test('keyDown will not open recon if dropdown not in view', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .allEventsSelected(true)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .isEventResultsError(false)
+      .eventsPreferencesConfig()
+      .defaultEventAnalysisPreferences()
+      .eventResults(eventResultsData)
+      .build();
+
+    let eventSelected = false;
+    this.set('handleSelectEvent', () => {
+      eventSelected = true;
+    });
+
+    await render(hbs` {{events-table-container selectEvent=handleSelectEvent}}`);
+    await clickTrigger(downloadSelector);
+    await triggerKeyEvent(downloadPowerSelect, 'keydown', ARROW_DOWN_KEY);
+    await triggerKeyEvent('.rsa-data-table', 'keyup', ARROW_DOWN_KEY);
+    assert.notOk(eventSelected, 'Keystroke does not trigger event selection when dropdown in view');
+  });
+
 });

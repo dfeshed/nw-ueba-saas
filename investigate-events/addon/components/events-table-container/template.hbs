@@ -2,13 +2,17 @@
   {{events-table-container/header-container
     toggleReconSize=toggleReconSize
     toggleSlaveFullScreen=toggleSlaveFullScreen
+    dropdownKeydownAction=(action 'handleDropdownKeydown')
+    dropdownCloseAction=(action 'handleDropdownClose')
   }}
   <section class="rsa-investigate-events-table__body">
     {{progress-bar
       percent=percent
       enabled=(is-equal status 'streaming')
     }}
-    {{events-table-container/events-table selectEvent=selectEvent}}
+    {{events-table-container/events-table
+      keyboardActivated=(not tableKeyboardDeactivated)
+      selectEvent=selectEvent}}
   </section>
 
   <footer class="scroll-message">

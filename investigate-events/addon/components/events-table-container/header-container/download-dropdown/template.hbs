@@ -7,6 +7,8 @@
       triggerClass='is-small'
       dropdownClass="download-dropdown"
       disabled=isDisabled
+      onkeydown=dropdownKeydownAction
+      onclose=dropdownCloseAction
       onchange=(action 'downloadFiles') as |option|}}
       <span title="{{option.name}}">{{option.name}}</span>
       <span class='right'>{{option.count}}</span>
