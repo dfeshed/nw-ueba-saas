@@ -4053,6 +4053,7 @@ export default {
         primaryDestination: 'Primary Log Decoder / Log collector*',
         secondaryDestination: 'Secondary Log Decoder / Log collector',
         windowsLogDestinationInvalidMsg: 'The log server host name should not be empty',
+        protocol: 'Protocol',
         channelFiltersSettingsHeader: 'Channel Filter Settings'
       }
     },

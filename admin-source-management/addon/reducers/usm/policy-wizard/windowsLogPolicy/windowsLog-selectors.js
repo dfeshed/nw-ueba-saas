@@ -134,6 +134,13 @@ export const windowsLogDestinationValidator = (state, selectedSettingId) => {
   };
 };
 
+export const protocolsList = ['UDP', 'TCP', 'TLS'];
+
+export const selectedProtocol = createSelector(
+  policy,
+  (policy) => policy.protocol
+);
+
 /**
  * Map to hold all Windows Log Policy validator functions for settings
  * @public

@@ -10,7 +10,8 @@ import {
   selectedPrimaryLogServer,
   secondaryLogServersList,
   selectedSecondaryLogServer,
-  windowsLogDestinationValidator
+  windowsLogDestinationValidator,
+  selectedProtocol
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
 import {
   ENABLED_CONFIG,
@@ -192,5 +193,15 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     validExpected = { isError: false, showError: false, errorMessage: '' };
     validActual = windowsLogDestinationValidator(fullState, settingId);
     assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${destinationValue}`);
+  });
+
+  test('selectedProtocol', function(assert) {
+    const expectedValue = 'TLS';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizWinLogProtocol(expectedValue)
+      .build();
+    const result = selectedProtocol(Immutable.from(fullState));
+    assert.deepEqual(result, expectedValue, `should return protocol of ${expectedValue}`);
   });
 });

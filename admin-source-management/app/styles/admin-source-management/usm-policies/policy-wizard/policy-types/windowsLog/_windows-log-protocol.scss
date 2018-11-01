@@ -1,0 +1,21 @@
+.windows-log-protocol {
+
+  padding: rsa-whitespace(more) rsa-whitespace() 0 0;
+
+  .title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: text-color(primary, light);
+    @include rsa-font(default,small);
+    .remove-setting {
+      float: right;
+      margin-right: rsa-whitespace(more);
+      margin-left: rsa-whitespace(more);
+    }
+  }
+}
+
+.windows-log-protocol__list {
+  padding-right: 1rem;
+  max-width: 80%;
+}

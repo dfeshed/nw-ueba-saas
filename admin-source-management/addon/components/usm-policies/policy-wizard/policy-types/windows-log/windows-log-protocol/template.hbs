@@ -1,0 +1,17 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.windowsLogPolicy.protocol'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'protocol'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+
+<div class="windows-log-protocol__list">
+  {{#power-select
+    options=protocolsList
+    selected=selectedProtocol
+    searchField=option
+    onchange=(action 'updatePolicyProperty' 'protocol') as |option|
+  }}
+    {{option}}
+  {{/power-select}}
+</div>

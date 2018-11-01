@@ -246,6 +246,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizWinLogProtocol(protocol) {
+    _set(this.state, 'usm.policyWizard.policy.protocol', protocol);
+    return this;
+  }
+
   policyWizWinLogEnabled(enabled) {
     _set(this.state, 'usm.policyWizard.policy.enabled', enabled);
     return this;
