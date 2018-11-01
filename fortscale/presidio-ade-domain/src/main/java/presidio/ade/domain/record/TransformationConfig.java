@@ -31,4 +31,9 @@ public class TransformationConfig {
     public JoinerTransformation processFilePathTransformation(){
         return new JoinerTransformation("processFilePath", Arrays.asList("processDirectory", "processFileName"), "\\");
     }
+
+    @Bean
+    public JoinerTransformation srcProcessFilePathTransformation(){
+        return new JoinerTransformation("srcProcessFilePath", Arrays.asList("srcProcessDirectory", "srcProcessFileName"), "\\");
+    }
 }

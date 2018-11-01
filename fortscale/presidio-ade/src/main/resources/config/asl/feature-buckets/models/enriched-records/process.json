@@ -74,6 +74,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily",
+      "contextFieldNames": [
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcProcessFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcProcessFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('IMPORTANT_WINDOWS_PROCESS' in @['dstProcessCategories'] && @.operationType == 'CREATE_REMOTE_THREAD')]"
+          }
+        }
+      ]
     }
   ]
 }
