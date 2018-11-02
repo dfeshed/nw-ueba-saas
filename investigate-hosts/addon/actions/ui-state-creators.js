@@ -1,9 +1,23 @@
 import * as ACTION_TYPES from './types';
 
 const toggleCustomFilter = (filter) => ({ type: ACTION_TYPES.TOGGLE_CUSTOM_FILTER, payload: filter });
-const toggleMachineSelected = (id, version) => ({ type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED, payload: { id, version } });
+const toggleMachineSelected = (host) => ({
+  type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED,
+  payload: {
+    id: host.id,
+    version: host.machine.agentVersion,
+    managed: host.groupPolicy.managed
+  }
+});
 const toggleIconVisibility = (flag, id) => ({ type: ACTION_TYPES.TOGGLE_ICON_VISIBILITY, payload: { flag, id } });
-const setSelectedHost = (id, version) => ({ type: ACTION_TYPES.SET_SELECTED_HOST, payload: { id, version } });
+const setSelectedHost = (host) => ({
+  type: ACTION_TYPES.SET_SELECTED_HOST,
+  payload: {
+    id: host.id,
+    version: host.machine.agentVersion,
+    managed: host.groupPolicy.managed
+  }
+});
 
 const _resetHostDetails = () => ({ type: ACTION_TYPES.RESET_HOST_DETAILS });
 

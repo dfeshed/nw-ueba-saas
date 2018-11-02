@@ -23,8 +23,8 @@
     {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
   </div>
 {{else if (eq column.field 'agentStatus.scanStatus')}}
-  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}} class="{{unless item.groupPolicy.managed "host-disable-text"}}">
-    {{host-scan-status  agent=item onButtonClick=onButtonClick}}
+  <div class="{{unless item.groupPolicy.managed "host-disable-text"}}">
+    {{host-scan-status  agent=item}}
   </div>
 {{else if (eq column.field 'machine.scanStartTime')}}
   <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}} class="{{unless item.groupPolicy.managed "host-disable-text"}}">

@@ -13,6 +13,9 @@ const HOST_LIST = [
     showIcon: false,
     machine: {
       agentVersion: '1.1.0.0'
+    },
+    groupPolicy: {
+      managed: true
     }
   },
   {
@@ -20,6 +23,9 @@ const HOST_LIST = [
     showIcon: false,
     machine: {
       agentVersion: '1.1.0.0'
+    },
+    groupPolicy: {
+      managed: false
     }
   },
   {
@@ -27,6 +33,9 @@ const HOST_LIST = [
     showIcon: false,
     machine: {
       agentVersion: '1.1.0.0'
+    },
+    groupPolicy: {
+      managed: true
     }
   }
 ];
@@ -80,21 +89,24 @@ test('The TOGGLE_MACHINE_SELECTED action will toggles the machine selections', f
   const previous = Immutable.from({
     selectedHostList: [{
       id: 1,
-      version: '4.4.0.0'
+      version: '4.4.0.0',
+      managed: true
     },
     {
       id: 2,
-      version: '4.5.0.0'
+      version: '4.5.0.0',
+      managed: false
     },
     {
       id: 3,
-      version: '4.4.0.0'
+      version: '4.4.0.0',
+      managed: false
     }]
   });
-  const addResult = reducer(previous, { type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED, payload: { id: 5, version: '1.1.0.0' } });
+  const addResult = reducer(previous, { type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED, payload: { id: 5, version: '1.1.0.0', managed: true } });
   assert.equal(addResult.selectedHostList.length, 4, 'expected to add the selected id in the list');
 
-  const removeResult = reducer(previous, { type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED, payload: { id: 1, version: '4.5.0.0' } });
+  const removeResult = reducer(previous, { type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED, payload: { id: 1, version: '4.4.0.0', managed: true } });
   assert.equal(removeResult.selectedHostList.length, 2, 'expected to remove the id from the list');
 });
 
@@ -126,11 +138,12 @@ test('The SET_SELECTED_HOST action will sets the selected host to state', functi
   const previous = Immutable.from({
     selectedHostList: [{
       id: 1,
-      version: '4.4.0.0'
+      version: '4.4.0.0',
+      managed: false
     }]
   });
-  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_HOST, payload: { id: 5, version: '4.5.0.0' } });
-  assert.equal(result.selectedHostList[0].id, 5);
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_HOST, payload: { id: 5, version: '4.5.0.0', managed: true } });
+  assert.deepEqual(result.selectedHostList[0], { id: 5, version: '4.5.0.0', managed: true });
 });
 
 test('The FETCH_DOWNLOAD_JOB_ID action will sets the download id to state', function(assert) {

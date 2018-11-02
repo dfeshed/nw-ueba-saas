@@ -273,13 +273,13 @@ test('warningMessages', function(assert) {
             }
           }
         ],
-        selectedHostList: [ { id: 1, version: '4.4' }]
+        selectedHostList: [ { id: 1, version: '4.4', managed: false }]
       },
       overview: {}
     }
   });
   const result = warningMessages(state);
-  assert.equal(result.length, 2, 'should contain two error message');
+  assert.equal(result.length, 3, 'should contain three error message');
 
   const state2 = Immutable.from({
     endpoint: {
@@ -292,7 +292,7 @@ test('warningMessages', function(assert) {
             }
           }
         ],
-        selectedHostList: [ { id: 1, version: '4.4' }]
+        selectedHostList: [ { id: 1, version: '4.4', managed: true }]
       },
       overview: {}
     }
@@ -310,12 +310,12 @@ test('warningMessages', function(assert) {
             }
           }
         ],
-        selectedHostList: [ { id: 1, version: '11.1' }]
+        selectedHostList: [ { id: 1, version: '11.1', managed: false }]
       },
       overview: {}
     }
   });
-  assert.equal(warningMessages(state3).length, 1, 'should contain one error message');
+  assert.equal(warningMessages(state3).length, 2, 'should contain two error messages');
 
   const state4 = Immutable.from({
     endpoint: {
@@ -328,12 +328,12 @@ test('warningMessages', function(assert) {
             }
           }
         ],
-        selectedHostList: [ { id: 1, version: '11.1' }]
+        selectedHostList: [ { id: 1, version: '11.1', managed: true }]
       },
       overview: {}
     }
   });
-  assert.equal(warningMessages(state4).length, 0, 'should contain one error message');
+  assert.equal(warningMessages(state4).length, 0, 'should contain zero error message');
 });
 
 test('isScanStartButtonDisabled', function(assert) {
@@ -367,7 +367,7 @@ test('isScanStartButtonDisabled', function(assert) {
             }
           }
         ],
-        selectedHostList: [{ id: 1 }]
+        selectedHostList: [{ id: 1, managed: true }]
       },
       overview: {}
     }
@@ -391,6 +391,35 @@ test('isScanStartButtonDisabled', function(assert) {
     }
   });
   assert.equal(isScanStartButtonDisabled(state3), true, 'should be true when more host selected');
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: [{ id: 1, managed: false }]
+      },
+      overview: {}
+    }
+  });
+  assert.equal(isScanStartButtonDisabled(state4), true, 'should be true when selected host is migrated');
+
+  const state5 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [],
+        selectedHostList: []
+      },
+      overview: {}
+    }
+  });
+  assert.equal(isScanStartButtonDisabled(state5), true, 'should be true when host list is empty');
 });
 
 test('extractAgentIds', function(assert) {
@@ -409,15 +438,16 @@ test('extractAgentIds', function(assert) {
 test('isExportButtonDisabled', function(assert) {
   const state = Immutable.from({
     endpoint: {
-      machines: {
-      }
-    }
+      machines: {}
+    },
+    endpointServer: {},
+    endpointQuery: {}
   });
   const result = isExportButtonDisabled(state);
   assert.equal(result, true, 'export button is disabled');
 });
 
-test('isExportButtonDisabled', function(assert) {
+test('isExportButtonDisabled when server is endpoint broker server', function(assert) {
   const state = Immutable.from({
     endpoint: {
       machines: {
@@ -430,8 +460,47 @@ test('isExportButtonDisabled', function(assert) {
           }
         ]
       }
+    },
+    endpointServer: {
+      serviceData: [{
+        id: '123',
+        name: 'endpoint-broker-server'
+      }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result = isExportButtonDisabled(state);
+  assert.equal(result, true, 'export button is disabled');
+});
+
+test('isExportButtonDisabled when endpoint server is empty object', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ]
+      }
+    },
+    endpointServer: {
+      serviceData: [{
+        id: '123',
+        name: 'endpoint-server'
+      }]
+    },
+    endpointQuery: {
+      serverId: '123'
     }
   });
   const result = isExportButtonDisabled(state);
   assert.equal(result, false, 'export button is enabled');
 });
+
+

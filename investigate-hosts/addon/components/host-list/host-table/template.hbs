@@ -22,8 +22,7 @@
           serverId=serverId
           serviceId=serviceId
           timeRange=timeRange
-          onButtonClick=(action 'setSelectedHost' item.id item.machine.agentVersion)
-          checkBoxAction=(action 'toggleMachineSelected' item.id item.machine.agentVersion)
+          checkBoxAction=(action 'toggleMachineSelected' item)
           onMouseEnter=(action 'toggleIconVisibility' true item.id)
           onMouseLeave=(action 'toggleIconVisibility' false)}}
       {{/rsa-data-table/body}}

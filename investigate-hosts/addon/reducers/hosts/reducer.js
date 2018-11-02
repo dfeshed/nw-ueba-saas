@@ -53,13 +53,13 @@ const _handleAppendMachines = (action) => {
  */
 const _toggleMachineSelection = (state, payload) => {
   const { selectedHostList } = state;
-  const { id, version } = payload;
+  const { id } = payload;
   let selected = [];
   // Previously selected host
   if (selectedHostList.some((host) => host.id === id)) {
     selected = selectedHostList.filter((host) => host.id !== id);
   } else {
-    selected = [...selectedHostList, { id, version }];
+    selected = [...selectedHostList, payload];
   }
   return state.set('selectedHostList', selected);
 };
@@ -133,7 +133,7 @@ const hosts = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload: { id, version } }) => state.set('selectedHostList', [{ id, version }]),
+  [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload }) => state.set('selectedHostList', [payload]),
 
   [ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopAgentStream', payload),
 
@@ -147,7 +147,11 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.TOGGLE_ICON_VISIBILITY]: (state, { payload }) => _toggleIconVisibility(state, payload),
 
-  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({ id: host.id, version: host.machine.agentVersion }))),
+  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({
+    id: host.id,
+    version: host.machine.agentVersion,
+    managed: host.groupPolicy.managed
+  }))),
 
   [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', []),
 

@@ -16,6 +16,17 @@ const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _expressionList = (state) => state.endpoint.filter.expressionList || [];
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
+const _servers = (state) => state.endpointServer.serviceData || [];
+
+const _allAreMigratedHosts = createSelector(
+  _selectedHostList,
+  (selectedHostList) => selectedHostList.every((host) => host && !host.managed)
+);
+
+const _hasMigratedHosts = createSelector(
+  _selectedHostList,
+  (selectedHostList) => selectedHostList.some((host) => host && !host.managed)
+);
 
 export const serviceList = createSelector(
   _serviceList,
@@ -171,8 +182,8 @@ export const isSortDescending = createSelector(
 );
 
 export const warningMessages = createSelector(
-  [hasEcatAgents, areSomeScanning],
-  (hasEcatAgents, areSomeScanning) => {
+  [hasEcatAgents, areSomeScanning, _hasMigratedHosts],
+  (hasEcatAgents, areSomeScanning, hasMigratedHosts) => {
     const messages = [];
     if (areSomeScanning) {
       messages.push('investigateHosts.hosts.initiateScan.modal.infoMessage');
@@ -180,14 +191,17 @@ export const warningMessages = createSelector(
     if (hasEcatAgents) {
       messages.push('investigateHosts.hosts.initiateScan.modal.ecatAgentMessage');
     }
+    if (hasMigratedHosts) {
+      messages.push('investigateHosts.hosts.initiateScan.modal.migratedHostMessage');
+    }
     return messages;
   }
 );
 
 export const isScanStartButtonDisabled = createSelector(
-  [tooManyHostsSelected, hostListForScanning, allAreEcatAgents],
-  (tooManyHostsSelected, hostListForScanning, allAreEcatAgents) => {
-    return !hostListForScanning.length || tooManyHostsSelected || allAreEcatAgents;
+  [tooManyHostsSelected, hostListForScanning, allAreEcatAgents, _allAreMigratedHosts],
+  (tooManyHostsSelected, hostListForScanning, allAreEcatAgents, allAreMigratedHosts) => {
+    return !hostListForScanning.length || tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts;
   }
 );
 
@@ -204,6 +218,9 @@ export const scanCount = createSelector(
 );
 
 export const isExportButtonDisabled = createSelector(
-  _hostList,
-  (hostList) => !hostList.length
+  [_hostList, _servers, _serverId],
+  (hostList, servers, serverId) => {
+    const isEndpointBroker = servers.some((s) => s.id === serverId && s.name === 'endpoint-broker-server');
+    return !hostList.length || isEndpointBroker;
+  }
 );

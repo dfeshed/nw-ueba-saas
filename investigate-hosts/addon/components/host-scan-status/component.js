@@ -21,16 +21,5 @@ export default Component.extend({
       return 'N/A';
     }
     return statusMapping[scanStatus] || 'N/A';
-  },
-  actions: {
-    startScan(id) {
-      this.sendAction('onButtonClick', id);
-      this.get('eventBus').trigger('rsa-application-modal-open-initiate-scan');
-    },
-
-    stopScan(id) {
-      this.sendAction('onButtonClick', id);
-      this.get('eventBus').trigger('rsa-application-modal-open-cancel-scan');
-    }
   }
 });
