@@ -59,7 +59,6 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
     await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[2]);
     assert.equal(findAll('.whitelist-alert').length, 1, 'Warning displayed');
   });
 

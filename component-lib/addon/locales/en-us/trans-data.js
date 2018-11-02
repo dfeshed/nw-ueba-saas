@@ -3370,7 +3370,7 @@ export default {
       title: 'Select Service',
       buttonText: 'Navigate',
       buttonText2: 'Event Analysis',
-      iconTitle: 'Pivot to Navigate or Event Analysis'
+      iconTitle: 'Pivot to Event Analysis'
     },
     flash: {
       fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.'

@@ -16,7 +16,8 @@ import {
   resetDownloadId,
   setDataSourceTab,
   toggleRiskPanel,
-  getFirstPageOfFiles
+  getFirstPageOfFiles,
+  setSelectedIndex
 } from 'investigate-files/actions/data-creators';
 
 import {
@@ -42,7 +43,8 @@ const stateToComputed = (state) => ({
   savedFilter: savedFilter(state.files),
   selectedFile: state.files.fileList.selectedFile,
   isCertificateView: state.certificate.list.isCertificateView,
-  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state)
+  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
+  selectedIndex: state.files.fileList.selectedIndex
 });
 
 const dispatchToActions = {
@@ -55,7 +57,8 @@ const dispatchToActions = {
   getUpdatedRiskScoreContext,
   applySavedFilters,
   deleteFilter,
-  resetFilters
+  resetFilters,
+  setSelectedIndex
 };
 
 /**
@@ -76,8 +79,8 @@ const Files = Component.extend({
   },
 
   actions: {
-    closeRiskPanel() {
-      this.send('toggleRiskPanel', false);
+    onPanelClose() {
+      this.send('setSelectedIndex', null);
     }
   }
 });

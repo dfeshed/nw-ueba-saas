@@ -251,7 +251,7 @@ const onFileSelection = (item) => {
     next(() => {
       dispatch(getRiskScoreContext(item.checksumSha256, 'critical'));
     });
-    dispatch(_fetchHostNameList, item.checksumSha256);
+    dispatch(_fetchHostNameList(item.checksumSha256));
   };
 };
 
@@ -366,6 +366,7 @@ const _getSelectedFileProperties = (checksum) => {
   };
 };
 
+const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_INDEX, payload: index });
 
 export {
   getPageOfFiles,
@@ -388,5 +389,6 @@ export {
   onFileSelection,
   userLeftFilesPage,
   setDataSourceTab,
-  initializeFileDetails
+  initializeFileDetails,
+  setSelectedIndex
 };

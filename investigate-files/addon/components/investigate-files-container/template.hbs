@@ -1,7 +1,7 @@
 <div class='certificate-view {{if isCertificateView 'is-show-certificate'}}'>
   {{certificates-container}}
 </div>
-{{#rsa-page-layout showRightZone=false as |layout|}}
+{{#rsa-page-layout showRightZone=false onClose=(action 'onPanelClose') as |layout|}}
   {{#layout.left as |leftPanel|}}
     {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
     {{endpoint/filters-wrapper

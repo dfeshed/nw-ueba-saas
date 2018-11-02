@@ -32,7 +32,8 @@ const fileListState = Immutable.from({
   riskScoreContextError: null,
   isRemediationAllowed: true,
   selectedFile: {},
-  selectedDetailFile: null
+  selectedDetailFile: null,
+  selectedIndex: null
 });
 
 const _handleAppendFiles = (action) => {
@@ -197,7 +198,10 @@ const fileListReducer = handleActions({
         return s.set('isRemediationAllowed', action.payload.data);
       }
     });
-  }
+  },
+
+  [ACTION_TYPES.SET_SELECTED_INDEX]: (state, { payload }) => state.set('selectedIndex', payload)
+
 }, fileListState);
 
 export default fileListReducer;

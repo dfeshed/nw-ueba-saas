@@ -78,7 +78,8 @@ test('should return the initial state', function(assert) {
     riskScoreContextError: null,
     isRemediationAllowed: true,
     selectedFile: {},
-    selectedDetailFile: null
+    selectedDetailFile: null,
+    selectedIndex: null
   });
 });
 
@@ -447,4 +448,12 @@ test('FETCH_REMEDIATION_STATUS', function(assert) {
   });
   const newEndState = reducer(previous, successAction);
   assert.equal(newEndState.isRemediationAllowed, false);
+});
+
+test('SET_SELECTED_INDEX', function(assert) {
+  const previous = Immutable.from({
+    selectedIndex: null
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_INDEX, payload: 2 });
+  assert.equal(result.selectedIndex, 2);
 });

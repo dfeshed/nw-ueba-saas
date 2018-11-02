@@ -74,7 +74,7 @@
 
 .filters-footer {
   @include border-top(1px, solid, primary, dark, opaque);
-  bottom: 0;
+  bottom: 1px;
   width: 100%;
   padding: rsa-whitespace(less);
   display: inline-flex;

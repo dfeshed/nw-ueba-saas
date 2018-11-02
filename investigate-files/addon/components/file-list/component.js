@@ -23,7 +23,8 @@ import {
   saveFileStatus,
   getSavedFileStatus,
   retrieveRemediationStatus,
-  onFileSelection
+  onFileSelection,
+  setSelectedIndex
 } from 'investigate-files/actions/data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
@@ -50,7 +51,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isCertificateView: state.certificate.list.isCertificateView,
-  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state)
+  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
+  selectedIndex: state.files.fileList.selectedIndex
 });
 
 const dispatchToActions = {
@@ -64,7 +66,8 @@ const dispatchToActions = {
   getSavedFileStatus,
   retrieveRemediationStatus,
   resetRiskScore,
-  onFileSelection
+  onFileSelection,
+  setSelectedIndex
 };
 
 /**
@@ -178,7 +181,7 @@ const FileList = Component.extend({
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         const isSameRowClicked = table.get('selectedIndex') === index;
         const openRiskPanel = this.get('openRiskPanel');
-        table.set('selectedIndex', index);
+        this.send('setSelectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
           this.send('onFileSelection', item);
           next(() => {
@@ -186,7 +189,7 @@ const FileList = Component.extend({
           });
         } else {
           this.closeRiskPanel();
-          table.set('selectedIndex', null);
+          this.send('setSelectedIndex', null);
         }
       }
     },
@@ -255,7 +258,7 @@ const FileList = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
-
+      this.send('setSelectedIndex', null);
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);

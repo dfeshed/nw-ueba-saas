@@ -17,7 +17,7 @@
           {{t radio.label}}
         </label>
         {{#if (eq radio.value 'Whitelist')}}
-          {{#if (and (eq formData.fileStatus 'Whitelist') showWhiteListWarning)}}
+          {{#if showWhiteListWarning}}
             <span class='whitelist-alert'>
               {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
               {{t 'investigateFiles.editFileStatus.whiteListAlert.message'}}

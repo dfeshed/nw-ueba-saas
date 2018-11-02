@@ -8,6 +8,7 @@ export default Component.extend({
   classNameBindings: ['showLeftZone:show-left-zone', 'showRightZone:show-right-zone'],
   showLeftZone: true,
   showRightZone: true,
+  onClose: null,
 
   actions: {
     open(side) {
@@ -22,6 +23,9 @@ export default Component.extend({
         this.set('showLeftZone', false);
       } else if (side === 'right') {
         this.set('showRightZone', false);
+      }
+      if (this.get('onClose')) {
+        this.onClose(side);
       }
     }
   }
