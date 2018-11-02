@@ -21,5 +21,15 @@ export default Route.extend({
   model() {
     const redux = this.get('redux');
     redux.dispatch(initializeLogParserRules());
+  },
+
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.contentModule'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.contentOverview'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
+    this.set('contextualHelp.topic', null);
   }
 });

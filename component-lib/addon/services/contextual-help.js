@@ -36,6 +36,9 @@ export default Service.extend({
   incRulesDetailVw: 'incRulesDetailVw',
   respNotifSetVw: 'respNotifSetVw',
 
+  contentModule: 'configure',
+  contentOverview: 'logDeviceParserRulePage',
+
   module: null,
   topic: null,
 
