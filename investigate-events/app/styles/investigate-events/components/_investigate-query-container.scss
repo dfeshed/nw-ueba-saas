@@ -78,6 +78,22 @@
     .rsa-form-button {
       border-left-width: 0px;
     }
+    .time-selector.rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+        &:hover, &.is-active {
+          .rsa-form-button {
+            &:focus {
+              border-color: border-color(neutral);
+            }
+          }
+        }
+      }
+    }
   }
 
   .query-button-wrapper {
