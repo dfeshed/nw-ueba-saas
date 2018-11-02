@@ -1,7 +1,7 @@
 .rsa-header {
   .title {
     @include rsa-font(header, large);
-    padding-top: rsa-whitespace();
+    padding: rsa-whitespace();
     letter-spacing: 1px;
   }
   .close-zone {

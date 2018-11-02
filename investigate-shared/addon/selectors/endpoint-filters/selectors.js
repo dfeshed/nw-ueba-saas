@@ -4,7 +4,6 @@ import { lookup } from 'ember-dependency-lookup';
 // Contains all the expression saved + newly added expression from the UI
 export const savedFilter = (state) => state.filter.selectedFilter;
 const _filterTypes = (state) => state.filterTypes;
-const _expressionList = (state) => state.filter.expressionList;
 
 /**
  * Converts entered value and unit to bytes
@@ -67,7 +66,7 @@ export const selectedFilterId = createSelector(
  * @public
  */
 export const filters = createSelector(
-  [_expressionList, _filterTypes],
+  [expressionList, _filterTypes],
   (expressionList, filterTypes) => {
     const i18n = lookup('service:i18n');
     return filterTypes.map((item) => {

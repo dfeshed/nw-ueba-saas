@@ -1,4 +1,5 @@
 import * as ACTION_TYPES from '../types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
@@ -210,7 +211,14 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
 const initializeAgentDetails = (input, loadSnapshot) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = input;
-    const { endpoint: { detailsInput: dataState } } = getState();
+    const { endpoint: { detailsInput: dataState, filter } } = getState();
+
+    //  To fix the filter reload issue we need to set the applied filter as a saved filter
+    if (!filter.selectedFilter) {
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
+    }
+
     // If selected host/agentId is same as previously loaded then don't load the data as it already in the state
     if (dataState.agentId !== agentId || (scanTime && scanTime !== dataState.scanTime)) {
       dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: input });
