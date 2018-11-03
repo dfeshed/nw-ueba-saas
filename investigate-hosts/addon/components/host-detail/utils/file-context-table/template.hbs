@@ -63,7 +63,7 @@
   {{/rsa-data-table}}
 </box>
 <box class="files-footer" fit>
-  {{host-table-footer index=listOfFiles.length total=totalItems label=(t (concat 'investigateHosts.hosts.footerLabel.' storeName))}}
+  {{host-table-footer index=listOfFiles.length total=totalItems selectedItems=fileContextSelections.length label=(t (concat 'investigateHosts.hosts.footerLabel.' storeName))}}
 </box>
 {{#if showServiceModal}}
   {{endpoint/pivot-to-investigate/modal

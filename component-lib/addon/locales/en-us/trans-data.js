@@ -3262,7 +3262,7 @@ export default {
       }
     },
     files: {
-      footer: '{{count}} of {{total}} {{label}} | {{selectedItems}} selected',
+      footer: 'Showing {{count}} of {{total}} {{label}} | {{selectedItems}} selected',
       filter: {
         filters: 'Saved Filters',
         newFilter: 'New Filter',

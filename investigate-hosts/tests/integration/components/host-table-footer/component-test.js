@@ -24,17 +24,17 @@ module('Integration | Component | host table footer', function(hooks) {
     this.set('selectedHosts', selectedHosts);
     this.set('label', 'hosts');
     await render(
-      hbs`{{host-table-footer total=hostItemsLength index=hostCount label=label selectedHosts=selectedHosts}}`
+      hbs`{{host-table-footer total=hostItemsLength index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const expected = `${hostCount} of ${hostItems.length} hosts | ${selectedHosts} selected`;
+    const expected = `Showing ${hostCount} of ${hostItems.length} hosts | ${selectedHosts} selected`;
     assert.equal(find('div.file-info').textContent.trim(), expected, 'When count of hosts displayed is less than total hosts length');
 
     const hostItems2 = ['Harp', 'WIN10x64', 'WIN8x64', 'server.local'];
     this.set('hostItems2Length', hostItems2.length);
     await render(
-      hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label selectedHosts=selectedHosts}}`
+      hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const expected2 = `${hostCount} of ${hostItems2.length} hosts | ${selectedHosts} selected`;
+    const expected2 = `Showing ${hostCount} of ${hostItems2.length} hosts | ${selectedHosts} selected`;
     assert.equal(find('div.file-info').textContent.trim(), expected2, 'When count of hosts displayed is equal to total hosts length');
   });
 });
