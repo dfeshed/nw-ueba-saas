@@ -23,14 +23,12 @@ public class ConditionalScorer extends AbstractScorer {
 
     @Override
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
-        for (AdeRecordReaderPredicate predicate : predicates) {
-            if (!predicate.test(adeRecordReader)) {
-                return null;
-            }
+        if (predicates.stream().allMatch(predicate -> predicate.test(adeRecordReader))) {
+            FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
+            if (featureScore == null) return null;
+            return new FeatureScore(getName(), featureScore.getScore(), Collections.singletonList(featureScore));
         }
 
-        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
-        if (featureScore == null) return null;
-        return new FeatureScore(getName(), featureScore.getScore(), Collections.singletonList(featureScore));
+        return null;
     }
 }

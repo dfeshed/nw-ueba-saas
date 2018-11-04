@@ -52,6 +52,34 @@
       ]
     },
     {
+      "name": "srcProcessFilePathMachineIdToHighestScoreMapUserIdLsassProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.process.srcProcessFilePath.lsass.process.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcProcessFilePathMachineIdToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcProcessDirectory",
+              "context.srcProcessFileName",
+              "context.machineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "srcProcessFilePathToHighestScoreMapUserIdWindowsProcessHourly ",
       "contextFieldNames": [
         "userId"

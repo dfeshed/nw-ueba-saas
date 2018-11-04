@@ -31,50 +31,78 @@
                   "expectedValues": [
                     "RECONNAISSANCE_TOOL"
                   ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
                 }
               ],
               "scorerConf": {
-                "type": "conditional",
+                "type": "reduction-scorer",
                 "name": "dstProcessFileName.userId.process.score",
-                "predicates": [
-                  {
-                    "type": "regex",
-                    "fieldName": "operationType",
-                    "pattern": "CREATE_PROCESS"
-                  }
-                ],
-                "scorerConf": {
-                  "type": "reduction-scorer",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
                   "name": "dstProcessFileName.userId.process.score",
-                  "main-scorer": {
+                  "model": {
+                    "name": "dstProcessFileName.userId.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-features": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.dstProcessFileName.process.score",
+                  "base-scorer": {
                     "type": "category-rarity-model-scorer",
-                    "name": "dstProcessFileName.userId.process.score",
+                    "name": "userId.dstProcessFileName.process.score",
                     "model": {
-                      "name": "dstProcessFileName.userId.process"
+                      "name": "userId.dstProcessFileName.process"
                     },
                     "max-rare-count": 8,
                     "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
                     "use-certainty-to-calculate-score": true,
                     "max-num-of-rare-features": 15
-                  },
-                  "reduction-scorer": {
-                    "type": "score-and-certainty-multiplier-scorer",
-                    "name": "userId.dstProcessFileName.process.reduction.score",
-                    "base-scorer": {
-                      "type": "category-rarity-model-scorer",
-                      "name": "userId.dstProcessFileName.process.score",
-                      "model": {
-                        "name": "userId.dstProcessFileName.process"
-                      },
-                      "max-rare-count": 8,
-                      "number-of-partitions-to-influence-enough": 10,
-                      "min-number-of-partitions-to-influence": 10,
-                      "use-certainty-to-calculate-score": true,
-                      "max-num-of-rare-features": 15
-                    }
-                  },
-                  "reduction-weight": 0.5
+                  }
+                },
+                "reduction-weight": 0.5
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.lsass.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessDirectoryGroups",
+                  "expectedValues": [
+                    "SYSTEM_32"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "dstProcessFileName",
+                  "pattern": "lsass\\.exe"
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_REMOTE_THREAD"
                 }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcProcessFilePath.lsass.process.score",
+                "model": {
+                  "name": "srcProcessFilePath.lsass.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-features": 15
               }
             },
             {

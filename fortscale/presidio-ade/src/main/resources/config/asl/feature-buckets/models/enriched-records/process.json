@@ -76,6 +76,32 @@
       ]
     },
     {
+      "name": "srcProcessFilePathHistogramLsassProcessDaily",
+      "contextFieldNames": [
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcProcessFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcProcessFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('SYSTEM_32' in @['dstProcessDirectoryGroups'] && @.dstProcessFileName == 'lsass.exe' && @.operationType == 'CREATE_REMOTE_THREAD')]"
+          }
+        }
+      ]
+    },
+    {
       "name": "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily",
       "contextFieldNames": [
         "dstProcessFileName"

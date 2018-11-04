@@ -830,6 +830,26 @@ indicators:
     featureName: dstProcessFileNameHistogram
   classification: discovery_reconnaissance
 
+- id: sumOfHighestSrcProcessFilePathScoresUserIdLsassProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_injects_into_lsass
+  adeEventType: scored_enriched.process.srcProcessFilePath.lsass.process.score
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: srcProcessFilePath
+    anomalyFilters:
+      - fieldName: dstProcessDirectoryGroups
+        fieldValue: SYSTEM_32
+      - fieldName: dstProcessFileName
+        fieldValue: lsass.exe
+      - fieldName: operationType
+        fieldValue: CREATE_REMOTE_THREAD
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcProcessFilePathHistogramLsassProcessDaily
+    featureName: srcProcessFilePathHistogram
+  classification: credential_dumping
+
 - id: sumOfHighestSrcProcessFilePathScoresUserIdWindowsProcessHourly
   type: SCORE_AGGREGATION
   name: abnormal_process_injects_into_windows_process
@@ -847,7 +867,6 @@ indicators:
     featureBucketConfName: srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily
     featureName: srcProcessFilePathHistogram
   classification: powershell_scripting
-
 #*********************************************************
 #*                   REGISTRY INDICATORS                  *
 #*********************************************************

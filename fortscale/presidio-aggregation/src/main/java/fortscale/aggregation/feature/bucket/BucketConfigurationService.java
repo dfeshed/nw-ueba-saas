@@ -108,10 +108,15 @@ public class BucketConfigurationService extends AslConfigurationService {
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
 							featureBucketConf.getStrategyName().equals(strategyName) &&
-									Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) &&
 									featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
 			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
+		}
+
+		if(!contextFieldNamesToExclude.isEmpty()){
+			cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()
+					.filter(featureBucketConf -> Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()))
+					.collect(Collectors.toList());
 		}
 
 		return cachedFeatureBucketConfs;
