@@ -132,22 +132,6 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return bucketConfs.get(bucketConfName);
 	}
 
-	public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-		if (featureBucketConfs == null) {
-			logger.warn("no feature bucket conf for the given ade event type {}", adeEventType);
-			// TODO: Add monitoring metric
-			return Collections.emptySet();
-		}
-
-		Set<List<String>> distinctContextsSet = new HashSet<>();
-		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
-			distinctContextsSet.add(featureBucketConf.getContextFieldNames());
-		}
-
-		return distinctContextsSet;
-	}
-
 	public List<String> getMinimalContextList(String adeEventType, String strategyName){
 		//Returns a list that contain the minimum number of contexts which needed to build all buckets.
 		List<String> ret = new ArrayList<>();
