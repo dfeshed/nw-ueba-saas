@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
-    private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = "scored_enriched.%s";
+    private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = AdeScoredEnrichedRecord.EVENT_TYPE_PREFIX + ".%s";
 
     private final AggregatedDataStore aggregatedDataStore;
     private final ScoreAggregationsBucketService scoreAggregationsBucketService;
@@ -122,7 +122,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     @Override
-    protected List<List<String>> getConfsContextsFieldNames(String dataSource, FixedDurationStrategy strategy) {
+    protected List<List<String>> getListsOfContextFieldNames(String dataSource, FixedDurationStrategy strategy) {
         String adeEventTypePrefix = String.format(SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT, dataSource);
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(x -> x.getBucketConf()).collect(Collectors.toList());

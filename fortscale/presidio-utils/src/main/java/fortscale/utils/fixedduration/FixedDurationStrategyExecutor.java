@@ -56,12 +56,12 @@ public abstract class FixedDurationStrategyExecutor {
      */
     protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties);
 
-    protected abstract List<List<String>> getConfsContextsFieldNames(String adeEventType, FixedDurationStrategy strategy);
+    protected abstract List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy);
 
     protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy){
         //Returns a list that contain the minimum number of contexts which needed to build all buckets.
 
-        List<List<String>> confsContextsFieldNames = getConfsContextsFieldNames(adeEventType, strategy);
+        List<List<String>> confsContextsFieldNames = getListsOfContextFieldNames(adeEventType, strategy);
         List<String> ret = new ArrayList<>();
         while(confsContextsFieldNames.size() > 0){
             TreeMultiset<String> contextTreeMultiSet = TreeMultiset.create();
