@@ -772,7 +772,7 @@ indicators:
 - id: highestStartInstantScoreUserIdProcessHourly
   type: SCORE_AGGREGATION
   name: abnormal_event_day_time
-  adeEventType: scored_enriched.process.dstProcessFileName.userId.process.score
+  adeEventType: scored_enriched.process.startInstant.userId.process.score
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: eventDate
@@ -829,6 +829,24 @@ indicators:
     featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
     featureName: dstProcessFileNameHistogram
   classification: discovery_reconnaissance
+
+- id: sumOfHighestSrcProcessFilePathScoresUserIdWindowsProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_injects_into_windows_process
+  adeEventType: scored_enriched.process.srcProcessFilePath.windowsDstProcessFileName.process.score
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: srcProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_REMOTE_THREAD
+      - fieldName: dstProcessCategories
+        fieldValue: IMPORTANT_WINDOWS_PROCESS
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily
+    featureName: srcProcessFilePathHistogram
+  classification: powershell_scripting
 
 #*********************************************************
 #*                   REGISTRY INDICATORS                  *

@@ -31,9 +31,9 @@
       }
     },
     {
-      "name": "sumOfHighestSrcProcessFilePathScoresInjectsIntoWindowsProcessUserIdProcessHourly",
+      "name": "sumOfHighestSrcProcessFilePathScoresUserIdWindowsProcessHourly ",
       "type": "P",
-      "bucketConfName": "srcProcessFilePathToHighestScoreMapInjectsIntoWindowsProcessUserIdProcessHourly",
+      "bucketConfName": "srcProcessFilePathToHighestScoreMapUserIdWindowsProcessHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
