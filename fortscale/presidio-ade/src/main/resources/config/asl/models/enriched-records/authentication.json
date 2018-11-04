@@ -1,145 +1,149 @@
 {
   "ModelConfs": [
     {
-      "name" : "startInstant.userId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "startInstantHistogramUserIdAuthenticationDaily"
+      "name": "startInstant.userId.authentication",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "context_histogram_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "startInstantHistogramUserIdAuthenticationDaily",
-        "featureName" : "startInstantHistogram",
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdAuthenticationDaily",
+        "featureName": "startInstantHistogram",
         "partitionsResolutionInSeconds": 86400
       },
-      "builder" : {
-        "type" : "time_model_builder",
-        "timeResolution" : 86400,
-        "bucketSize" : 600,
-        "maxRareTimestampCount" : 10
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
-      "name" : "srcMachineNameRegexCluster.userId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
+      "name": "srcMachineNameRegexCluster.userId.authentication",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "srcMachineNameRegexClusterHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+        "featureName": "srcMachineNameRegexClusterHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400,
-        "filter": ["N/A"]
+        "filter": [
+          "N/A"
+        ]
       }
     },
     {
-      "name" : "userId.srcMachineId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily"
+      "name": "userId.srcMachineId.authentication",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramSrcMachineIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramSrcMachineIdAuthenticationDaily",
+        "featureName": "userIdHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
       "name": "dstMachineNameRegexCluster.userId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
+      "selector": {
+        "type": "feature_bucket_context_selector",
         "featureBucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
         "featureBucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "dstMachineNameRegexClusterHistogram"
+        "featureName": "dstMachineNameRegexClusterHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400,
-        "filter": ["N/A"]
+        "filter": [
+          "N/A"
+        ]
       }
     },
     {
       "name": "userId.dstMachineId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
+      "selector": {
+        "type": "feature_bucket_context_selector",
         "featureBucketConfName": "userIdHistogramDstMachineIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
         "featureBucketConfName": "userIdHistogramDstMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram"
+        "featureName": "userIdHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
-      "name" : "site.userId.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "siteHistogramUserIdAuthenticationDaily"
+      "name": "site.userId.authentication",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "siteHistogramUserIdAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "siteHistogramUserIdAuthenticationDaily",
-        "featureName" : "siteHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "siteHistogramUserIdAuthenticationDaily",
+        "featureName": "siteHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
-      "name" : "userId.site.authentication",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "userIdHistogramSiteAuthenticationDaily"
+      "name": "userId.site.authentication",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramSiteAuthenticationDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "userIdHistogramSiteAuthenticationDaily",
-        "featureName" : "userIdHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramSiteAuthenticationDaily",
+        "featureName": "userIdHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     }

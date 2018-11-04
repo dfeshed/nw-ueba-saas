@@ -1,43 +1,43 @@
 {
   "ModelConfs": [
     {
-      "name" : "startInstant.userId.registry",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "startInstantHistogramUserIdRegistryDaily"
+      "name": "startInstant.userId.registry",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdRegistryDaily"
       },
-      "retriever" : {
-        "type" : "context_histogram_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "startInstantHistogramUserIdRegistryDaily",
-        "featureName" : "startInstantHistogram",
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdRegistryDaily",
+        "featureName": "startInstantHistogram",
         "partitionsResolutionInSeconds": 86400
       },
-      "builder" : {
-        "type" : "time_model_builder",
-        "timeResolution" : 86400,
-        "bucketSize" : 600,
-        "maxRareTimestampCount" : 10
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
-      "name" : "processFilePath.setServiceRegistryKey.registry",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "processFilePathHistogramSetServiceRegistryKeyRegistryDaily"
+      "name": "processFilePath.setServiceRegistryKey.registry",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "processFilePathHistogramSetServiceRegistryKeyRegistryDaily",
-        "featureName" : "processFilePathHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily",
+        "featureName": "processFilePathHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     }

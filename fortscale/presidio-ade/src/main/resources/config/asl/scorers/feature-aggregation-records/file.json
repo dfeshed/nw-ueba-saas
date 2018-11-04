@@ -46,7 +46,6 @@
         {
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulFileActions.userId.file.hourly.scorer",
-
           "base-scorer": {
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFileActions.userId.file.hourly.mapper",

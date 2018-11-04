@@ -1,83 +1,83 @@
 {
   "ModelConfs": [
     {
-      "name" : "startInstant.userId.activeDirectory",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "startInstantHistogramUserIdActiveDirectoryDaily"
+      "name": "startInstant.userId.activeDirectory",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdActiveDirectoryDaily"
       },
-      "retriever" : {
-        "type" : "context_histogram_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "startInstantHistogramUserIdActiveDirectoryDaily",
-        "featureName" : "startInstantHistogram",
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdActiveDirectoryDaily",
+        "featureName": "startInstantHistogram",
         "partitionsResolutionInSeconds": 86400
       },
-      "builder" : {
-        "type" : "time_model_builder",
-        "timeResolution" : 86400,
-        "bucketSize" : 600,
-        "maxRareTimestampCount" : 10
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
-      "name" : "operationType.userIdSecuritySensitive.activeDirectory",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
+      "name": "operationType.userIdSecuritySensitive.activeDirectory",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
-        "featureName" : "operationTypeHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
+        "featureName": "operationTypeHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
-        "partitionsResolutionInSeconds": 86400
-      }
-    },
-    {
-      "name" : "operationType.userIdObjectManagement.activeDirectory",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily"
-      },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
-        "featureName" : "operationTypeHistogram"
-      },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
-      "name" : "operationType.userId.activeDirectory",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdActiveDirectoryDaily"
+      "name": "operationType.userIdObjectManagement.activeDirectory",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdActiveDirectoryDaily",
-        "featureName" : "operationTypeHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
+        "featureName": "operationTypeHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "operationType.userId.activeDirectory",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdActiveDirectoryDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdActiveDirectoryDaily",
+        "featureName": "operationTypeHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     }
