@@ -12,7 +12,12 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func",
+        "keys": [
+          {
+            "dstProcessCategories": "RECONNAISSANCE_TOOL"
+          }
+        ]
       }
     },
     {
@@ -27,7 +32,12 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "dstProcessCategories": "RECONNAISSANCE_TOOL"
+          }
+        ]
       }
     }
   ]

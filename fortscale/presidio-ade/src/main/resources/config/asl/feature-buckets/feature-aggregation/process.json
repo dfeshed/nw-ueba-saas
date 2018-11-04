@@ -14,14 +14,15 @@
           "name": "distinctReconnaissanceToolHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "dstProcessFileName"
+              "dstProcessFileName",
+              "dstProcessCategories"
             ]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]
@@ -38,12 +39,16 @@
       "aggrFeatureConfs": [
         {
           "name": "reconnaissanceToolCounter",
-          "featureNamesMap": {},
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessCategories"
+            ]
+          },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]
