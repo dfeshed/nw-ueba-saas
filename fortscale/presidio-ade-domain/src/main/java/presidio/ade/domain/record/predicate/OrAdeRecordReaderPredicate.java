@@ -31,13 +31,7 @@ public class OrAdeRecordReaderPredicate implements AdeRecordReaderPredicate {
 
     @Override
     public boolean test(AdeRecordReader adeRecordReader) {
-        for (AdeRecordReaderPredicate predicate : predicates) {
-            if (predicate.test(adeRecordReader)) {
-                return true;
-            }
-        }
-
-        return false;
+        return predicates.stream().anyMatch(predicate -> predicate.test(adeRecordReader));
     }
 
     @Override

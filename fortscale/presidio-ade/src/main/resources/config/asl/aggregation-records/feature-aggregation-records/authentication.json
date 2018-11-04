@@ -13,7 +13,11 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_func",
-        "keys": [{"result":"SUCCESS"}]
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
       }
     },
     {
@@ -29,7 +33,11 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_func",
-        "keys": [{"result":"FAILURE"}]
+        "keys": [
+          {
+            "result": "FAILURE"
+          }
+        ]
       }
     },
     {

@@ -5,6 +5,7 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.recordreader.ReflectionRecordReader;
+import fortscale.utils.recordreader.transformation.Transformation;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,11 +15,9 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
-import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
-import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
@@ -35,8 +34,6 @@ import java.util.*;
  * Supporting information (indicators, events and historical data) for SCORE_AGGREGATION events (AKA 'P')
  */
 public class SupportingInformationForScoreAggr implements SupportingInformationGenerator {
-
-    public static final String START_INSTANT = "startInstant";
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -48,11 +45,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     @Value("${output.activity.time.historical.period.days: #{90}}")
     private int historicalActivityTimePeriodInDays;
 
-    private AdeManagerSdk adeManagerSdk;
-
     private SupportingInformationConfig config;
-
-    private EventPersistencyService eventPersistencyService;
 
     private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
 
@@ -60,15 +53,21 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private SupportingInformationUtils supportingInfoUtils;
 
+    private Map<String, Transformation<?>> transformations;
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils) {
+    public SupportingInformationForScoreAggr(
+            SupportingInformationConfig supportingInformationConfig,
+            HistoricalDataPopulatorFactory historicalDataPopulatorFactory,
+            ScoredEventService scoredEventService,
+            SupportingInformationUtils supportingInfoUtils,
+            Map<String, Transformation<?>> transformations) {
+
         this.config = supportingInformationConfig;
-        this.adeManagerSdk = adeManagerSdk;
-        this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
+        this.transformations = transformations;
     }
 
 
@@ -87,9 +86,15 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             indicator.setName(indicatorConfig.getName());
             indicator.setStartDate(Date.from(scoredEnrichedEvent.getEnrichedEvent().getEventDate()));
             indicator.setEndDate(Date.from(scoredEnrichedEvent.getEnrichedEvent().getEventDate()));
-            String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
-                    StringUtils.EMPTY:
-                    new ReflectionRecordReader(scoredEnrichedEvent.getEnrichedEvent()).get(indicatorConfig.getAnomalyDescriptior().getAnomalyField()).toString();
+            String featureValue;
+
+            if (AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())) {
+                featureValue = StringUtils.EMPTY;
+            } else {
+                ReflectionRecordReader reader = new ReflectionRecordReader(scoredEnrichedEvent.getEnrichedEvent(), transformations);
+                featureValue = reader.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField()).toString();
+            }
+
             indicator.setAnomalyValue(featureValue);
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));

@@ -1,83 +1,83 @@
 {
   "ModelConfs": [
     {
-      "name" : "startInstant.userId.file",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily"
+      "name": "startInstant.userId.file",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdFileDaily"
       },
-      "retriever" : {
-        "type" : "context_histogram_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily",
-        "featureName" : "startInstantHistogram",
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdFileDaily",
+        "featureName": "startInstantHistogram",
         "partitionsResolutionInSeconds": 86400
       },
-      "builder" : {
-        "type" : "time_model_builder",
-        "timeResolution" : 86400,
-        "bucketSize" : 600,
-        "maxRareTimestampCount" : 10
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
-      "name" : "operationType.userId.file",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdFileDaily"
+      "name": "operationType.userId.file",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdFileDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdFileDaily",
-        "featureName" : "operationTypeHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdFileDaily",
+        "featureName": "operationTypeHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
-        "partitionsResolutionInSeconds": 86400
-      }
-    },
-    {
-      "name" : "operationType.userIdFilePermissionChange.file",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily"
-      },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
-        "featureName" : "operationTypeHistogram"
-      },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
-      "name" : "operationType.userIdFileAction.file",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily"
+      "name": "operationType.userIdFilePermissionChange.file",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdFilePermissionChangeFileDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily",
-        "featureName" : "operationTypeHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
+        "featureName": "operationTypeHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "operationType.userIdFileAction.file",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "operationTypeHistogramUserIdFileActionFileDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "operationTypeHistogramUserIdFileActionFileDaily",
+        "featureName": "operationTypeHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     }
