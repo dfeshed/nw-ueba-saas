@@ -1,63 +1,63 @@
 {
   "ModelConfs": [
     {
-      "name" : "startInstant.userId.process",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "startInstantHistogramUserIdProcessDaily"
+      "name": "startInstant.userId.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdProcessDaily"
       },
-      "retriever" : {
-        "type" : "context_histogram_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "startInstantHistogramUserIdProcessDaily",
-        "featureName" : "startInstantHistogram",
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdProcessDaily",
+        "featureName": "startInstantHistogram",
         "partitionsResolutionInSeconds": 86400
       },
-      "builder" : {
-        "type" : "time_model_builder",
-        "timeResolution" : 86400,
-        "bucketSize" : 600,
-        "maxRareTimestampCount" : 10
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
-      "name" : "dstProcessFileName.userId.process",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "dstProcessFileNameHistogramUserIdProcessDaily"
+      "name": "dstProcessFileName.userId.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstProcessFileNameHistogramUserIdProcessDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "dstProcessFileNameHistogramUserIdProcessDaily",
-        "featureName" : "dstProcessFileNameHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstProcessFileNameHistogramUserIdProcessDaily",
+        "featureName": "dstProcessFileNameHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
-      "name" : "userId.dstProcessFileName.process",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "userIdHistogramDstProcessFileNameProcessDaily"
+      "name": "userId.dstProcessFileName.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramDstProcessFileNameProcessDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "userIdHistogramDstProcessFileNameProcessDaily",
-        "featureName" : "userIdHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramDstProcessFileNameProcessDaily",
+        "featureName": "userIdHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
