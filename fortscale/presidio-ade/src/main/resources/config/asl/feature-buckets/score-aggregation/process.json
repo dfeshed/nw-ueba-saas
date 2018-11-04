@@ -80,7 +80,7 @@
       ]
     },
     {
-      "name": "srcProcessFilePathToHighestScoreMapUserIdWindowsProcessHourly ",
+      "name": "srcProcessFilePathToHighestScoreMapUserIdWindowsProcessHourly",
       "contextFieldNames": [
         "userId"
       ],
