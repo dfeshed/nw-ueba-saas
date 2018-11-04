@@ -1,11 +1,13 @@
 package fortscale.utils.fixedduration;
 
+import com.google.common.collect.TreeMultiset;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * abstract class that handles data processing for {@link TimeRange}
@@ -54,5 +56,25 @@ public abstract class FixedDurationStrategyExecutor {
      */
     protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties);
 
-    protected abstract List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy);
+    protected abstract List<List<String>> getConfsContextsFieldNames(String adeEventType, FixedDurationStrategy strategy);
+
+    protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy){
+        //Returns a list that contain the minimum number of contexts which needed to build all buckets.
+
+        List<List<String>> confsContextsFieldNames = getConfsContextsFieldNames(adeEventType, strategy);
+        List<String> ret = new ArrayList<>();
+        while(confsContextsFieldNames.size() > 0){
+            TreeMultiset<String> contextTreeMultiSet = TreeMultiset.create();
+            confsContextsFieldNames.forEach(contextsFieldNames -> contextTreeMultiSet.addAll(contextsFieldNames));
+
+            String  context = contextTreeMultiSet.lastEntry().getElement();
+            ret.add(context);
+
+            confsContextsFieldNames = confsContextsFieldNames.stream()
+                    .filter(contextsFieldNames -> !contextsFieldNames.contains(context))
+                    .collect(Collectors.toList());
+        }
+
+        return ret;
+    }
 }

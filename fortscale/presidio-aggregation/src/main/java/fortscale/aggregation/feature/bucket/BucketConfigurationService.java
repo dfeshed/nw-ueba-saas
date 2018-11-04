@@ -128,31 +128,19 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return adeEventTypeToListOfBucketConfs.get(adeEventType);
 	}
 
-	public FeatureBucketConf getBucketConf(String bucketConfName) {
-		return bucketConfs.get(bucketConfName);
-	}
-
-	public List<String> getMinimalContextList(String adeEventType, String strategyName){
-		//Returns a list that contain the minimum number of contexts which needed to build all buckets.
-		List<String> ret = new ArrayList<>();
-
+	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType, String strategyName) {
 		List<FeatureBucketConf> featureBucketConfList = getFeatureBucketConfs(adeEventType);
 		if(strategyName != null) {
 			featureBucketConfList.stream()
-					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName)).collect(Collectors.toList());
-		}
-		while(featureBucketConfList.size() > 0){
-			TreeMultiset<String> contextTreeMultiSet = TreeMultiset.create();
-			featureBucketConfList.forEach(featureBucketConf -> contextTreeMultiSet.addAll(featureBucketConf.getContextFieldNames()));
-
-			ret.add(contextTreeMultiSet.lastEntry().getElement());
-
-			featureBucketConfList = featureBucketConfList.stream()
-					.filter(featureBucketConf -> Collections.disjoint(ret, featureBucketConf.getContextFieldNames()))
+					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName))
 					.collect(Collectors.toList());
 		}
 
-		return ret;
+		return featureBucketConfList;
+	}
+
+	public FeatureBucketConf getBucketConf(String bucketConfName) {
+		return bucketConfs.get(bucketConfName);
 	}
 
 	private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {

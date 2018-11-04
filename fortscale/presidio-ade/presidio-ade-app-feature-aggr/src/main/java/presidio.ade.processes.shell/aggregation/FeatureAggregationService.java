@@ -3,6 +3,7 @@ package presidio.ade.processes.shell.aggregation;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
@@ -20,7 +21,8 @@ import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
-import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class FeatureAggregationService extends FixedDurationStrategyExecutor {
@@ -86,8 +88,9 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     }
 
     @Override
-    protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy) {
-        return bucketConfigurationService.getMinimalContextList(adeEventType,strategy.toStrategyName());
+    protected List<List<String>> getConfsContextsFieldNames(String adeEventType, FixedDurationStrategy strategy) {
+        List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
+        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 
 }

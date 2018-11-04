@@ -1,7 +1,5 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
-import com.google.common.collect.Multiset;
-import com.google.common.collect.TreeMultiset;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -9,12 +7,14 @@ import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
-import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -77,8 +77,9 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected List<String> getDistinctContextTypes(String adeEventType, FixedDurationStrategy strategy) {
-        return bucketConfigurationService.getMinimalContextList(adeEventType, strategy.toStrategyName());
+    protected List<List<String>> getConfsContextsFieldNames(String adeEventType, FixedDurationStrategy strategy) {
+        List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
+        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 
 }

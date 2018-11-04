@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
+    private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = "scored_enriched.%s";
+
     private final AggregatedDataStore aggregatedDataStore;
     private final ScoreAggregationsBucketService scoreAggregationsBucketService;
     private final AggregationRecordsCreator aggregationRecordsCreator;
@@ -120,15 +122,11 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     @Override
-    public List<String> getDistinctContextTypes(String dataSource, FixedDurationStrategy strategy){
-        //todo: fix this implementation.
-        //this implementation returns the distinct context over all data sources which might cause us to run on context which not exist for the specific data source.
-        // we should not fail in this case just work for nothing.
+    protected List<List<String>> getConfsContextsFieldNames(String dataSource, FixedDurationStrategy strategy) {
+        String adeEventTypePrefix = String.format(SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT, dataSource);
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(x -> x.getBucketConf()).collect(Collectors.toList());
-        List<String> ret = featureBucketConfs.stream().map(x -> x.getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
-//        String confSuffix = dataSource+strategy;
-//        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
-        return ret;
+        featureBucketConfs = featureBucketConfs.stream().filter(bucketConf -> bucketConf.getAdeEventTypes().get(0).startsWith(adeEventTypePrefix)).collect(Collectors.toList());
+        return featureBucketConfs.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 }
