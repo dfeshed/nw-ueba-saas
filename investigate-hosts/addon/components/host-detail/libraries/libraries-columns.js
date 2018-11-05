@@ -49,8 +49,7 @@ const defaultColumns = [
   },
   {
     field: 'checksumSha256',
-    title: 'HASH',
-    width: '20%'
+    title: 'HASH'
   }
 ];
 let columnsConfig = {
@@ -58,21 +57,24 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '20%'
     }
   ],
   windows: [
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '20%'
     }
   ],
   linux: [
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '20%'
     }
   ]
 };

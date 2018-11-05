@@ -38,13 +38,11 @@ const defaultColumns = [
     title: 'downloaded',
     label: 'investigateHosts.files.fields.downloaded',
     disableSort: true,
-    format: 'DOWNLOADSTATUS',
-    width: 100
+    format: 'DOWNLOADSTATUS'
   },
   {
     field: 'path',
-    title: 'Path',
-    width: '20%'
+    title: 'Path'
   }
 ];
 
@@ -53,14 +51,16 @@ const machineOsBasedConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '20%'
     }
   ],
   windows: [
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '20%'
     }
   ],
   linux: []

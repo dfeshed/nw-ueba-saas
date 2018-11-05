@@ -6,14 +6,14 @@ let columnsConfig = {
       field: 'derivedOwner.username',
       title: 'User Name',
       label: 'investigateHosts.files.fields.owner.userName',
-      width: '15%',
       disableSort: true
     },
     {
       field: 'derivedOwner.groupname',
       title: 'Group Name',
       label: 'investigateHosts.files.fields.owner.groupName',
-      disableSort: true
+      disableSort: true,
+      width: '20%'
     }
   ],
   windows: [
@@ -22,14 +22,14 @@ let columnsConfig = {
       'title': 'Signature',
       'label': 'investigateHosts.files.fields.signature.features',
       'format': 'SIGNATURE',
-      'disableSort': true,
-      'width': '15%'
+      'disableSort': true
     },
     {
       'field': 'timeCreated',
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
-      'format': 'DATE'
+      'format': 'DATE',
+      width: '20%'
     }
   ],
   mac: [
@@ -38,14 +38,14 @@ let columnsConfig = {
       'title': 'Signature',
       'label': 'investigateHosts.files.fields.signature.features',
       'format': 'SIGNATURE',
-      'disableSort': true,
-      'width': '15%'
+      'disableSort': true
     },
     {
       'field': 'timeCreated',
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
-      'format': 'DATE'
+      'format': 'DATE',
+      width: '20%'
     }
   ]
 };

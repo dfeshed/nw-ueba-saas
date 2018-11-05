@@ -60,22 +60,26 @@
     text-transform: uppercase;
     height: 4rem;
     padding-top: 3px;
-  &.rsa-content-definition {
-    .label {
-      @include rsa-font(header, small);
-      vertical-align: bottom;
-      box-sizing: border-box;
-      color: $host-detail-label-color;
-      margin-bottom: rsa-whitespace(less);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: left;
-    }
-    .value {
-      color: text-color(primary, lightest);
-      font-weight: bold;
+    &.rsa-content-definition {
+      .label {
+        @include rsa-font(header, small);
+        vertical-align: bottom;
+        box-sizing: border-box;
+        color: $host-detail-label-color;
+        margin-bottom: rsa-whitespace(less);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+      }
+      .value {
+        color: text-color(primary, lightest);
+        font-weight: bold;
+      }
     }
   }
 }
-
+.machine-zone, .host-container-detail {
+  .rsa-data-table-header-cell:last-child {
+    border-right: 1px solid border-color(primary, dark);
+  }
 }
