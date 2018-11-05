@@ -47,13 +47,13 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
         MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram) value;
         if (features != null) {
             List<String> featureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
-            MultiKeyFeature multiKeyFeature = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames);
+            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames);
 
-            if (multiKeyFeature != null) {
+            multiKeyFeatures.forEach(multiKeyFeature -> {
                 Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);
                 Double newValCount = oldCount != null ? 1.0 + oldCount : 1.0;
                 multiKeyHistogram.set(multiKeyFeature, newValCount);
-            }
+            });
         }
 
         return multiKeyHistogram;

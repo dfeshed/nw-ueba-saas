@@ -27,7 +27,7 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
-        "sum": [
+        "groupBy": [
           "reconnaissanceToolCounter"
         ]
       },

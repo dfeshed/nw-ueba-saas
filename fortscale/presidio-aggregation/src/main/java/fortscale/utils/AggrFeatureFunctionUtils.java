@@ -1,42 +1,77 @@
 package fortscale.utils;
 
 import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureStringValue;
-import fortscale.common.feature.FeatureValue;
-import fortscale.common.feature.MultiKeyFeature;
-import fortscale.utils.data.Pair;
+import fortscale.common.feature.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class AggrFeatureFunctionUtils {
 
     /**
      * Extract groupBy feature names and values of features map and build MultiKeyFeature.
-     * @param features map of feature name to feature value
+     *
+     * @param features            map of feature name to feature value
      * @param groupByFeatureNames groupBy feature names
      * @return MultiKeyFeature
      */
-    public static MultiKeyFeature extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
-        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-        if (groupByFeatureNames == null) return multiKeyFeature;
+    public static List<MultiKeyFeature> extractGroupByFeatureValues(Map<String, Feature> features, List<String> groupByFeatureNames) {
+        List<MultiKeyFeature> multiKeyFeatures = new ArrayList<>();
+        if (groupByFeatureNames == null) {
+            multiKeyFeatures.add(new MultiKeyFeature());
+            return multiKeyFeatures;
+        }
+
+        createMultiKeyFeatureList(features, groupByFeatureNames, multiKeyFeatures);
 
         for (String groupByFeatureName : groupByFeatureNames) {
             Feature groupByFeature = features.get(groupByFeatureName);
-            if (groupByFeature == null) return null;
+            if (groupByFeature != null) {
+                FeatureValue groupByFeatureValue = groupByFeature.getValue();
+                if (!(groupByFeatureValue instanceof FeatureListValue)) {
+                    if (groupByFeatureValue == null || (groupByFeatureValue instanceof FeatureStringValue && StringUtils.isBlank(((FeatureStringValue) groupByFeatureValue).getValue()))) {
+                        groupByFeatureValue = new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE);
+                    }
 
-            FeatureValue groupByFeatureValue = groupByFeature.getValue();
-            if (groupByFeatureValue == null || (groupByFeatureValue instanceof FeatureStringValue && StringUtils.isBlank(((FeatureStringValue) groupByFeatureValue).getValue()))) {
-                groupByFeatureValue = new FeatureStringValue(AggGenericNAFeatureValues.NOT_AVAILABLE);
+                    if (multiKeyFeatures.isEmpty()) {
+                        multiKeyFeatures.add(new MultiKeyFeature());
+                    }
+                    for (MultiKeyFeature multiKeyFeature : multiKeyFeatures) {
+                        multiKeyFeature.add(groupByFeatureName, groupByFeatureValue.toString());
+                    }
+                }
             }
-            multiKeyFeature.add(groupByFeatureName, groupByFeatureValue.toString());
         }
-        return multiKeyFeature;
+
+        return multiKeyFeatures;
+    }
+
+
+    /**
+     * Go over groupByFeatureNames
+     * if groupByFeatureName is a List, then create new MultiKeyFeature for each item
+     *
+     * @param features            features
+     * @param groupByFeatureNames groupByFeatureNames
+     * @return MultiKeyFeature list
+     */
+    private static List<MultiKeyFeature> createMultiKeyFeatureList(Map<String, Feature> features, List<String> groupByFeatureNames, List<MultiKeyFeature> multiKeyFeatures) {
+        groupByFeatureNames.forEach(groupByFeatureName -> {
+            Feature groupByFeature = features.get(groupByFeatureName);
+            if (groupByFeature != null) {
+                FeatureValue groupByFeatureValue = groupByFeature.getValue();
+                if (groupByFeatureValue instanceof FeatureListValue) {
+                    (((FeatureListValue) groupByFeatureValue).getValue()).forEach(value -> {
+                        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
+                        multiKeyFeature.add(groupByFeatureName, value);
+                        multiKeyFeatures.add(multiKeyFeature);
+                    });
+                }
+            }
+        });
+
+        return multiKeyFeatures;
     }
 
     /**
