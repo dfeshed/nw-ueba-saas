@@ -45,6 +45,7 @@
           class='password-input-js'
           isError=isPasswordError
           errorMessage=(t passwordInvalidMessage)
+          onKeyUp=(action 'validate')
           label=(t 'packager.certificatePassword')
           value=configData.packageConfig.certificatePassword}}
       </div>

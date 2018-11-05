@@ -208,6 +208,16 @@ const formComponent = Component.extend({
 
   actions: {
 
+    validate(value) {
+      const val = value.trim();
+      if (isEmpty(val)) {
+        this.set('isPasswordError', true);
+        this.set('passwordInvalidMessage', 'packager.errorMessages.passwordEmptyMessage');
+      } else {
+        this.set('isPasswordError', false);
+      }
+    },
+
     generateAgent() {
       this.resetErrorProperties();
       const autoUninstall = this.get('autoUninstall');

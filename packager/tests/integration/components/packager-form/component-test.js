@@ -6,7 +6,7 @@ import { revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Packager from 'packager/actions/fetch';
 import sinon from 'sinon';
-import { find, findAll, render, click } from '@ember/test-helpers';
+import { find, findAll, render, click, triggerKeyEvent } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
@@ -239,6 +239,13 @@ module('Integration | Component | packager-form', function(hooks) {
     $INPUT.change();
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.password-input-js').classList.contains('is-error'), 'Expected to have error class on password field');
+  });
+
+  test('Password field is not erroneous, on key up', async function(assert) {
+    new ReduxDataHelper(setState).setData('defaultPackagerConfig', newConfig).build();
+    await render(hbs`{{packager-form}}`);
+    await triggerKeyEvent('.password-input-js  input', 'keyup', 13);
+    assert.equal(find('.password-input-js').classList.contains('is-error'), false, 'Error class is not present, on password field.');
   });
 
   test('Protocol and TestLog resets to default when reset button is clicked', async function(assert) {
