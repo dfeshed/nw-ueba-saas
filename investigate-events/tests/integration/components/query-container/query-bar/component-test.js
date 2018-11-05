@@ -294,4 +294,68 @@ module('Integration | Component | Query Bar', function(hooks) {
 
   });
 
+  test('Creating a pill in Guided, toggling to FF and deleting that filter should delete the pill from state', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .queryStats()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .build();
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    // Create pill
+    await createBasicPill();
+
+    // Click over to free form
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    assert.equal(find(SELECTORS.freeFormQueryBarInput).value, 'a = \'x\'', 'expected filter');
+
+    // reset the filter to no value
+    await fillIn(SELECTORS.freeFormQueryBarInput, '');
+
+    await click(SELECTORS.queryFormatGuidedToggle);
+
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be just one template and no pills');
+
+  });
+
+  test('Creating a filter in FF, resetting the filter to no value and focusing out should remove any pills from state', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .queryStats()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .build();
+    this.set('executeQuery', () => {});
+    const state = this.owner.lookup('service:redux').getState();
+    const { investigate: { queryNode: { pillsData } } } = state;
+
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+    // Click over to free form
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    await click(PILL_SELECTORS.freeFormInput);
+    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = 32');
+
+    await blur(PILL_SELECTORS.freeFormInput);
+    assert.equal(find(SELECTORS.freeFormQueryBarInput).value, 'medium = 32', 'expected filter');
+
+    // reset the filter to no value
+    await fillIn(SELECTORS.freeFormQueryBarInput, '');
+    await blur(PILL_SELECTORS.freeFormInput);
+
+    // no pills in state
+    assert.equal(pillsData.length, 0, 'no pills in state');
+
+  });
 });

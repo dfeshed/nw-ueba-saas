@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { debounce, scheduleOnce, throttle } from '@ember/runloop';
 
 import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
+import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
 
 const stateToComputed = (state) => ({
   freeFormText: freeFormText(state),
@@ -12,6 +12,7 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   addFreeFormFilter,
+  deleteAllGuidedPills,
   updatedFreeFormText
 };
 
@@ -41,7 +42,7 @@ const freeForm = Component.extend({
   },
 
   onFocusOut({ event }) {
-    const freeFormText = event.target.value;
+    const freeFormText = event.target.value.trim();
     // Don't do anything if there is nothing in the box
     if (freeFormText.length > 0) {
 
@@ -55,6 +56,9 @@ const freeForm = Component.extend({
           fromFreeFormMode: true
         });
       }
+    } else if (freeFormText.length === 0 && this.get('freeFormText').length !== 0) {
+      // nuke pills data. Pills have been deleted through FF
+      this.send('deleteAllGuidedPills');
     }
   },
 

@@ -439,4 +439,37 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch, getState);
   });
 
+  test('deleteAllGuidedPills dispatches action to deleteGuidedPill', function(assert) {
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .build();
+    };
+    const done = assert.async();
+    const { investigate: { queryNode: { pillsData } } } = getState();
+
+    const deleteAllPillsDispatch = (action) => {
+      if (typeof action === 'function') {
+        const thunk = action;
+        thunk(secondDispatch, getState);
+      }
+    };
+
+    const secondDispatch = (action) => {
+      if (typeof action === 'function') {
+        // dispatch to deselectAllGuidedPills is sent out
+        // But because there would be no selected pills in the
+        // first place, the action will never be triggered.
+        done();
+      } else {
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      }
+    };
+
+    const thunk = guidedCreators.deleteAllGuidedPills();
+    thunk(deleteAllPillsDispatch, getState);
+  });
+
 });

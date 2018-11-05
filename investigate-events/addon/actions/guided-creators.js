@@ -94,6 +94,13 @@ export const deleteGuidedPill = ({ pillData }) => {
   };
 };
 
+export const deleteAllGuidedPills = () => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    dispatch(deleteGuidedPill({ pillData: pillsData }));
+  };
+};
+
 // can come from right-click action
 // can come from delete pressed on focused pill
 export const deleteSelectedGuidedPills = (pillData) => {
