@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { fileCount, fileCountForDisplay } from 'investigate-files/reducers/file-list/selectors';
+import { fileCount } from 'investigate-files/reducers/file-list/selectors';
 
 const stateToComputed = (state) => ({
-  fileTotal: fileCountForDisplay(state), // Total number of files in search result
+  fileTotal: state.files.fileList.totalItems, // Total number of files in search result
   fileIndex: fileCount(state),
   selectedFileCount: state.files.fileList.selectedFileList.length
 });

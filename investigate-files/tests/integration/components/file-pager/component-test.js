@@ -25,42 +25,16 @@ module('Integration | Component | file pager', function(hooks) {
     revertPatch();
   });
 
-  test('Footer without filter applied file list is > 1000', async function(assert) {
+  test('Footer with filter applied and file list is 1200', async function(assert) {
     new ReduxDataHelper(setState)
-      .totalItems(2000)
-      .fileCount(11)
-      .isValidExpression(false)
-      .setSelectedFileList([])
-      .build();
-    await render(hbs`{{file-pager}}`);
-    return settled().then(() => {
-      assert.equal(find('.file-info').textContent.trim(), 'Showing 11 of 2000+  | 0 selected', 'total number of files displayed');
-    });
-  });
-
-  test('Footer with filter applied and file list is 1000', async function(assert) {
-    new ReduxDataHelper(setState)
-      .totalItems(1000)
-      .fileCount(12)
-      .isValidExpression(true)
-      .setSelectedFileList([])
-      .build();
-    await render(hbs`{{file-pager}}`);
-    return settled().then(() => {
-      assert.equal(find('.file-info').textContent.trim(), 'Showing 12 of 1000+  | 0 selected', 'total number of files with + displayed');
-    });
-  });
-
-  test('Footer with filter applied and file list is < 1000', async function(assert) {
-    new ReduxDataHelper(setState)
-      .totalItems(500)
+      .totalItems(1200)
       .fileCount(11)
       .isValidExpression(true)
       .setSelectedFileList([])
       .build();
     await render(hbs`{{file-pager}}`);
     return settled().then(() => {
-      assert.equal(find('.file-info').textContent.trim(), 'Showing 11 of 500  | 0 selected', 'total number of files displayed');
+      assert.equal(find('.file-info').textContent.trim(), 'Showing 11 of 1200  | 0 selected', 'total number of files displayed');
     });
   });
 });

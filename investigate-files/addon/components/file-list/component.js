@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import {
-  fileCountForDisplay,
   serviceList,
   isAllSelected,
   files,
@@ -38,7 +37,7 @@ const stateToComputed = (state) => ({
   loadMoreStatus: state.files.fileList.loadMoreStatus,
   areFilesLoading: state.files.fileList.areFilesLoading,
   files: files(state), // All visible files
-  totalItems: fileCountForDisplay(state),
+  totalItems: state.files.fileList.totalItems,
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: state.files.fileList.isSortDescending,
   isAllSelected: isAllSelected(state),

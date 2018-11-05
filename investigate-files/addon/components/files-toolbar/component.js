@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { fileCountForDisplay, serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
+import { serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
@@ -18,7 +18,7 @@ import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/s
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
-  totalItems: fileCountForDisplay(state),
+  totalItems: state.files.fileList.totalItems,
   downloadId: state.files.fileList.downloadId,
   checksums: checksums(state),
   selectedFileCount: state.files.fileList.selectedFileList.length,

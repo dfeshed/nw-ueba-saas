@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import {
   noHostsSelected,
-  hostCountForDisplay,
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
@@ -12,7 +11,7 @@ import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpo
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
 const stateToComputed = (state) => ({
-  totalItems: hostCountForDisplay(state),
+  totalItems: state.endpoint.machines.totalItems,
   noHostsSelected: noHostsSelected(state),
   allAreEcatAgents: allAreEcatAgents(state),
   selectedHostList: state.endpoint.machines.selectedHostList,

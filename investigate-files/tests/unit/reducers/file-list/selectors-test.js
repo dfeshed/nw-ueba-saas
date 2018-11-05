@@ -5,7 +5,6 @@ import {
   fileCount,
   hasFiles,
   fileExportLink,
-  fileCountForDisplay,
   serviceList,
   getContext,
   isAllSelected,
@@ -63,37 +62,6 @@ test('fileCount', function(assert) {
 test('hasFiles', function(assert) {
   const result = hasFiles(STATE);
   assert.equal(result, true, 'hasFiles is true');
-});
-
-test('fileCountForDisplay', function(assert) {
-  const result = fileCountForDisplay(STATE);
-  assert.equal(result, 3, 'expected 3 files');
-  const fileData = {};
-  for (let i = 0; i < 5000; i++) {
-    fileData[i] = {};
-  }
-  const newDisplay = fileCountForDisplay(Immutable.from({
-    files: {
-      filter: {
-        expressionList: [
-          {
-            propertyName: 'firstFileName',
-            propertyValues: [
-              {
-                value: 'windows'
-              }
-            ],
-            restrictionType: 'IN'
-          }
-        ]
-      },
-      fileList: {
-        totalItems: '1000',
-        fileData
-      }
-    }
-  }));
-  assert.equal(newDisplay, '1000+', 'expected 1000+ files');
 });
 
 test('serviceList', function(assert) {

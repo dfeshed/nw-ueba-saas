@@ -10,7 +10,6 @@ import {
   serviceList,
   allAreEcatAgents,
   hasEcatAgents,
-  hostCountForDisplay,
   warningMessages,
   isScanStartButtonDisabled,
   extractAgentIds,
@@ -227,38 +226,6 @@ test('hasEcatAgents, when no host is selected', function(assert) {
     }
   }));
   assert.equal(result, false);
-});
-
-test('hostCountForDisplay', function(assert) {
-  const result = hostCountForDisplay(STATE);
-  assert.equal(result, 2, 'expected 2 machines');
-  const newDisplay = hostCountForDisplay(Immutable.from({
-    endpoint: {
-      filter: {
-        expressionList: [
-          {
-            propertyName: 'machine.machineOsType',
-            propertyValues: [
-              {
-                value: 'windows'
-              }
-            ],
-            restrictionType: 'IN'
-          },
-          {
-            restrictionType: 'IN',
-            propertyName: 'machine.agentVersion',
-            propertyValues: null
-          }
-        ]
-      },
-      machines: {
-        totalItems: '1000',
-        hostList: [...Array(2000)]
-      }
-    }
-  }));
-  assert.equal(newDisplay, '1000+', 'expected 1000+ files');
 });
 
 test('warningMessages', function(assert) {
