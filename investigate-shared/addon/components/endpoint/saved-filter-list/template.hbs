@@ -9,7 +9,7 @@
   onclose=(action 'onClose')
   placeholder=(t 'investigateShared.endpoint.filter.select')
   onchange=(action 'applyCustomFilter') as |option| }}
-  {{option.name}}
+  <span class="saved-filter-name" title="{{option.name}}">{{option.name}}</span>
   <a onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
     {{#rsa-button-with-confirmation
       style='danger'
