@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.TreeMultiset;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
@@ -115,7 +116,8 @@ public class BucketConfigurationService extends AslConfigurationService {
 
 		if(!contextFieldNamesToExclude.isEmpty()){
 			cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()
-					.filter(featureBucketConf -> Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()))
+					.filter(featureBucketConf ->
+							Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) )
 					.collect(Collectors.toList());
 		}
 
@@ -126,24 +128,19 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return adeEventTypeToListOfBucketConfs.get(adeEventType);
 	}
 
-	public FeatureBucketConf getBucketConf(String bucketConfName) {
-		return bucketConfs.get(bucketConfName);
+	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType, String strategyName) {
+		List<FeatureBucketConf> featureBucketConfList = getFeatureBucketConfs(adeEventType);
+		if(strategyName != null) {
+			featureBucketConfList.stream()
+					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName))
+					.collect(Collectors.toList());
+		}
+
+		return featureBucketConfList;
 	}
 
-	public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-		if (featureBucketConfs == null) {
-			logger.warn("no feature bucket conf for the given ade event type {}", adeEventType);
-			// TODO: Add monitoring metric
-			return Collections.emptySet();
-		}
-
-		Set<List<String>> distinctContextsSet = new HashSet<>();
-		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
-			distinctContextsSet.add(featureBucketConf.getContextFieldNames());
-		}
-
-		return distinctContextsSet;
+	public FeatureBucketConf getBucketConf(String bucketConfName) {
+		return bucketConfs.get(bucketConfName);
 	}
 
 	private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {

@@ -4,6 +4,7 @@ import fortscale.accumulator.aggregation.AccumulationsCache;
 import fortscale.accumulator.aggregation.Accumulator;
 import fortscale.accumulator.aggregation.AccumulatorService;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
@@ -16,7 +17,8 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
-import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class AccumulateAggregationsService extends FixedDurationStrategyExecutor {
@@ -68,13 +70,9 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
 
 
     @Override
-    protected List<String> getDistinctContextTypes(String adeEventType) {
-        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(adeEventType);
-        Set<String> distinctSingleContextTypeSet = new HashSet<>();
-        for (List<String> distinctMultipleContexts : distinctMultipleContextsTypeSet) {
-            distinctSingleContextTypeSet.addAll(distinctMultipleContexts);
-        }
-        return new ArrayList<>(distinctSingleContextTypeSet);
+    protected List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy) {
+        List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
+        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 
 }

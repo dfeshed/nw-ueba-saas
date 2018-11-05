@@ -58,9 +58,9 @@ public class FeatureBucketUtils {
 				return null;
 			}
 			builder.append(contextFieldName).append(BUCKET_ID_BUILDER_SEPARATOR).append(contextValue);
-
-			builder.append(BUCKET_ID_BUILDER_SEPARATOR).append(featureBucketConf.getName());
 		}
+
+		builder.append(BUCKET_ID_BUILDER_SEPARATOR).append(featureBucketConf.getName());
 
 		return builder.toString();
 	}

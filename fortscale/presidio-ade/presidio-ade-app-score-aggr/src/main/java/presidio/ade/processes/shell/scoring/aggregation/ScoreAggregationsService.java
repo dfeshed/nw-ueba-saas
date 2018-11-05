@@ -2,7 +2,9 @@ package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
  * Created by barak_schuster on 6/11/17.
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
+
+    private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = AdeScoredEnrichedRecord.EVENT_TYPE_PREFIX + ".%s";
 
     private final AggregatedDataStore aggregatedDataStore;
     private final ScoreAggregationsBucketService scoreAggregationsBucketService;
@@ -117,13 +121,12 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
-    public List<String> getDistinctContextTypes(String dataSource){
-        //todo: fix this implementation.
-        //this implementation returns the distinct context over all data sources which might cause us to run on context which not exist for the specific data source.
-        // we should not fail in this case just work for nothing.
-        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
-//        String confSuffix = dataSource+strategy;
-//        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
-        return ret;
+    @Override
+    protected List<List<String>> getListsOfContextFieldNames(String dataSource, FixedDurationStrategy strategy) {
+        String adeEventTypePrefix = String.format(SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT, dataSource);
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(x -> x.getBucketConf()).collect(Collectors.toList());
+        featureBucketConfs = featureBucketConfs.stream().filter(bucketConf -> bucketConf.getAdeEventTypes().get(0).startsWith(adeEventTypePrefix)).collect(Collectors.toList());
+        return featureBucketConfs.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 }
