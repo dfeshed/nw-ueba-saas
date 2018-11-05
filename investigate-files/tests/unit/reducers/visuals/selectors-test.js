@@ -40,7 +40,7 @@ test('selectedTabComponent for different tab', function(assert) {
 test('getDataSourceTab', function(assert) {
   const state = Immutable.from({
     files: {
-      fileList: {
+      visuals: {
         activeDataSourceTab: 'RISK_PROPERTIES'
       }
     }
