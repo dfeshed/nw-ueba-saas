@@ -2539,6 +2539,7 @@ export default {
         hookedSymbol: 'Hooked Symbol',
         signature: 'Signature',
         title: 'Image Hooks',
+        downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Image Hooks information was found'
         }
@@ -2552,6 +2553,7 @@ export default {
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
         process: 'Process',
+        downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Suspicious Threads information was found'
         }
@@ -2565,6 +2567,7 @@ export default {
         signature: 'Signature',
         title: 'Kernel Hooks',
         objectFunction: 'Object Function',
+        downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Kernel Hooks information was found'
         }
