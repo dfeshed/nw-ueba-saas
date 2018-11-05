@@ -70,6 +70,16 @@ public class BucketConfigurationServiceTest {
         Assert.assertEquals("normalized_username_dlpfile_hourly", fbc.getName());
     }
 
+    @Test
+    public void testAdeEventTypeWithNoBucketConfs(){
+        List<FeatureBucketConf> bc = bch.getFeatureBucketConfs("event-type-with-no-bucket-confs");
+        Assert.assertNotNull("should return empty list in case that no feature bucket configuration exist for the given ade event type", bc);
+        Assert.assertSame(bc, Collections.emptyList());
+        bc = bch.getFeatureBucketConfs("event-type-with-no-bucket-confs", "fixed_duration_hourly");
+        Assert.assertNotNull("should return empty list in case that no feature bucket configuration exist for the given ade event type", bc);
+        Assert.assertSame(bc, Collections.emptyList());
+    }
+
 
     @Configuration
     @Import({

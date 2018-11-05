@@ -104,7 +104,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		if(cachedFeatureBucketConfs  == null)
 		{
 			List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-			Assert.notNull(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
+			Assert.notEmpty(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
 
 			cachedFeatureBucketConfs = featureBucketConfs.stream()
 					.filter(featureBucketConf ->
@@ -125,7 +125,8 @@ public class BucketConfigurationService extends AslConfigurationService {
 	}
 
 	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
-		return adeEventTypeToListOfBucketConfs.get(adeEventType);
+		List<FeatureBucketConf> ret = adeEventTypeToListOfBucketConfs.get(adeEventType);
+		return ret == null ? Collections.emptyList() : ret;
 	}
 
 	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType, String strategyName) {
