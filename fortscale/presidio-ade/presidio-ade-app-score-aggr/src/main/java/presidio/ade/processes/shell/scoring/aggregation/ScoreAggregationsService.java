@@ -2,6 +2,7 @@ package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -36,7 +37,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = AdeScoredEnrichedRecord.EVENT_TYPE_PREFIX + ".%s";
 
     private final AggregatedDataStore aggregatedDataStore;
-    private final ScoreAggregationsBucketService scoreAggregationsBucketService;
+    private final FeatureBucketService<AdeScoredEnrichedRecord> featureBucketService;
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
@@ -52,7 +53,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
-                                    ScoreAggregationsBucketService scoreAggregationsBucketService,
+                                    FeatureBucketService<AdeScoredEnrichedRecord> featureBucketService,
                                     AggregationRecordsCreator aggregationRecordsCreator,
                                     AggregatedDataStore aggregatedDataStore,
                                     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
@@ -60,7 +61,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
-        this.scoreAggregationsBucketService = scoreAggregationsBucketService;
+        this.featureBucketService = featureBucketService;
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
@@ -87,11 +88,11 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
                 List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange, storeMetadataProperties);
-                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextType,
+                featureBucketService.updateFeatureBuckets(adeScoredRecords, contextType,
                         contextFieldNamesToExclude, featureBucketStrategyData);
             }
 
-            List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
+            List<FeatureBucket> closedBuckets = featureBucketService.closeFeatureBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION, storeMetadataProperties);
         }

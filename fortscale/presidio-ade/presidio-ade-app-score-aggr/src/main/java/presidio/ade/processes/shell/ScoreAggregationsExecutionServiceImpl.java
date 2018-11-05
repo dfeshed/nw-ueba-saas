@@ -9,9 +9,10 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import fortscale.aggregation.feature.bucket.FeatureBucketService;
 import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsService;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
@@ -27,7 +28,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
     private final MetricContainerFlusher metricContainerFlusher;
     private EnrichedEventsScoringService enrichedEventsScoringService;
     private EnrichedDataStore enrichedDataStore;
-    private ScoreAggregationsBucketService scoreAggregationsBucketService;
+    private FeatureBucketService<AdeScoredEnrichedRecord> featureBucketService;
     private AggregationRecordsCreator aggregationRecordsCreator;
     private AggregatedDataStore aggregatedDataStore;
     private StoreManager storeManager;
@@ -35,7 +36,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
     public ScoreAggregationsExecutionServiceImpl(
             EnrichedEventsScoringService enrichedEventsScoringService,
             EnrichedDataStore enrichedDataStore,
-            ScoreAggregationsBucketService scoreAggregationsBucketService,
+            FeatureBucketService<AdeScoredEnrichedRecord> featureBucketService,
             AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, StoreManager storeManager, int pageSize, int maxGroupSize,
             MetricContainerFlusher metricContainerFlusher) {
@@ -43,7 +44,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.enrichedDataStore = enrichedDataStore;
-        this.scoreAggregationsBucketService = scoreAggregationsBucketService;
+        this.featureBucketService = featureBucketService;
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
@@ -58,7 +59,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
         FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
         ScoreAggregationsService service = new ScoreAggregationsService(
                 strategy, enrichedDataStore, enrichedEventsScoringService,
-                scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize, metricContainerFlusher);
+                featureBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize, metricContainerFlusher);
 
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, strategy);
         service.execute(new TimeRange(startInstant, endInstant), schema.getName(), storeMetadataProperties);
