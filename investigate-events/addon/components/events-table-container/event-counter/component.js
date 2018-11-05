@@ -1,8 +1,11 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+
 const stateToComputed = (state) => ({
-  count: state.investigate.eventCount.data
+  count: state.investigate.eventCount.data,
+  isAtThreshold: resultCountAtThreshold(state)
 });
 
 const EventCounter = Component.extend({

@@ -487,7 +487,7 @@ export default {
     },
     events: {
       title: 'Events',
-      isAtThreshold: 'Event count hit configured maximum query threshold.',
+      isAtThreshold: 'The event count reached the query threshold.',
       columnGroups: {
         custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events View',
