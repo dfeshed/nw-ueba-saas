@@ -28,7 +28,7 @@ public class TransformationConfig {
     }
 
     @Bean
-    public JoinerTransformation processFilePathTransformation() {
+    public JoinerTransformation processFilePathTransformation(){
         return new JoinerTransformation("processFilePath", Arrays.asList("processDirectory", "processFileName"), "\\");
     }
 
