@@ -122,7 +122,7 @@
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('IMPORTANT_WINDOWS_PROCESS' in @['dstProcessCategories'] && @.operationType == 'CREATE_REMOTE_THREAD')]"
+            "jsonPath": "[?('IMPORTANT_WINDOWS_PROCESS' in @['dstProcessCategories'] && @.operationType == 'CREATE_REMOTE_THREAD' && !('SYSTEM_32' in @['dstProcessDirectoryGroups'] && @.dstProcessFileName == 'lsass.exe'))]"
           }
         }
       ]

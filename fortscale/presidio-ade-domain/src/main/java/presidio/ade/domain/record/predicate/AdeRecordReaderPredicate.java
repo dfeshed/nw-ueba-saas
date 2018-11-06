@@ -12,6 +12,7 @@ import java.util.function.Predicate;
         @JsonSubTypes.Type(value = BooleanAdeRecordReaderPredicate.class, name = BooleanAdeRecordReaderPredicate.ADE_RECORD_READER_PREDICATE_TYPE),
         @JsonSubTypes.Type(value = ContainedInListAdeRecordReaderPredicate.class, name = ContainedInListAdeRecordReaderPredicate.ADE_RECORD_READER_PREDICATE_TYPE),
         @JsonSubTypes.Type(value = RegexAdeRecordReaderPredicate.class, name = RegexAdeRecordReaderPredicate.ADE_RECORD_READER_PREDICATE_TYPE),
+        @JsonSubTypes.Type(value = NegateAdeRecordReaderPredicate.class, name = NegateAdeRecordReaderPredicate.ADE_RECORD_READER_PREDICATE_TYPE),
         @JsonSubTypes.Type(value = OrAdeRecordReaderPredicate.class, name = OrAdeRecordReaderPredicate.ADE_RECORD_READER_PREDICATE_TYPE)
 })
 public interface AdeRecordReaderPredicate extends Predicate<AdeRecordReader> {
