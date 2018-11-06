@@ -3,7 +3,6 @@ package presidio.data.domain;
 import java.util.*;
 
 public class ProcessEntity {
-    private final static String[] DIRECTORY_GROUPS = {"system32","temp", "downloads"};
 
     String processFileName;
     String processDirectory;
@@ -11,23 +10,12 @@ public class ProcessEntity {
     List<String> processCategories;
     String processCertificateIssuer;
 
-    public ProcessEntity(FileEntity processFile, List<String> processCategories, String processCertificateIssuer) {
+    public ProcessEntity(FileEntity processFile, List<String> processDirectoryGroups, List<String> processCategories, String processCertificateIssuer) {
         this.processFileName = processFile.getFileName();
         this.processDirectory = processFile.getFilePath();
-        this.processDirectoryGroups = assignDirectoryGroups(this.processDirectory);
+        this.processDirectoryGroups = processDirectoryGroups;
         this.processCategories = processCategories;
         this.processCertificateIssuer = processCertificateIssuer;
-    }
-
-    private List<String> assignDirectoryGroups(String directory) {
-        List<String> directoryGroups = new ArrayList<>();
-        // Simple directory group assignment by substring contained in directory path
-        for ( String group : DIRECTORY_GROUPS) {
-            if (directory != null && directory.toLowerCase().contains(group)) {
-                directoryGroups.add(group);
-            }
-        }
-        return directoryGroups;
     }
 
     public String getProcessDirectory() {
