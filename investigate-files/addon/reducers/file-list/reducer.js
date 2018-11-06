@@ -102,13 +102,6 @@ const fileListReducer = handleActions({
     isSortDescending
   }),
 
-  [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
-    fileData: {},
-    pageNumber: -1,
-    totalItems: 0,
-    areFilesLoading: 'wait'
-  }),
-
   [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.set('listOfServices', action.payload.data)
@@ -200,7 +193,9 @@ const fileListReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_SELECTED_INDEX]: (state, { payload }) => state.set('selectedIndex', payload)
+  [ACTION_TYPES.SET_SELECTED_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
+
+  [ACTION_TYPES.RESET_FILES]: (state) => state.merge(fileListState)
 
 }, fileListState);
 
