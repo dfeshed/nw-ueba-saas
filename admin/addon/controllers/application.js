@@ -4,7 +4,6 @@ import computed from 'ember-computed-decorators';
 
 export default Controller.extend({
   accessControl: service(),
-  features: service(),
   routing: service('-routing'),
 
   /**
@@ -24,8 +23,7 @@ export default Controller.extend({
   @computed
   hasAdminViewUnifiedSourcesAccess() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
-    const isUsmEnabled = this.get('features').isEnabled('rsa.usm');
-    return hasUsmAccess && isUsmEnabled;
+    return hasUsmAccess;
   },
 
   actions: {

@@ -33,9 +33,11 @@ export default Route.extend({
     });
 
     // also set as part of protected route in sa
-    this.get('features').setFeatureFlags({
-      'rsa.usm': true
-    });
+    // *** commenting out while removing top level 'rsa.usm' feature flag,
+    //     but not deleting as we'll turn this back on for other flags shortly
+    // this.get('features').setFeatureFlags({
+    //   'rsa.usm': true
+    // });
 
     // When running microservices, need to login and get cookie
     // so requests do not fail.

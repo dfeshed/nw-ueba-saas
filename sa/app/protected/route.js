@@ -60,25 +60,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         this.get('features').setFeatureFlags(response.data);
-        // TODO delete this whole try/catch block once USM is GA
-        // this is a temporary ('til 11.3) special case to also let the ExtJS side of the app get to the feature flag
-        // without adding any Java controller/rabbitmq code on the SA Classic server side
-        try {
-          if (this.get('features').isEnabled('rsa.usm')) {
-            sessionStorage.setItem('features.rsaUsm', true);
-          } else {
-            sessionStorage.removeItem('features.rsaUsm');
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('Error storing source-management (USM) feature flags to sessionStorage', e);
-          sessionStorage.removeItem('features.rsaUsm');
-        }
-        resolve();
+        resolve(response);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error('Error loading source-management (USM) feature flags', error);
-        reject();
+        reject(error);
       });
     });
   },
@@ -214,7 +200,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
     this.set('accessControl.authorities', roles);
 
     // Set feature flags
-    this.getSourceManagementFeatures();
+    // *** commenting out while removing top level 'rsa.usm' feature flag,
+    //     but not deleting as we'll turn this back on for other flags shortly
+    // this.getSourceManagementFeatures();
 
     return RSVP.all([
       preferencesPromise,

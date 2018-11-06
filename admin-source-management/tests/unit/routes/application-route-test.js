@@ -3,6 +3,7 @@ import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { computed } from '@ember/object';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { settled } from '@ember/test-helpers';
 import ApplicationRoute from 'admin-source-management/routes/application';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
@@ -28,13 +29,13 @@ module('Unit | Route | application', function(hooks) {
         return hasPermission;
       })
     }).create();
-    const features = this.owner.lookup('service:features');
+    const i18n = this.owner.lookup('service:i18n');
     const PatchedRoute = ApplicationRoute.extend({
+      i18n: computed(function() {
+        return i18n;
+      }),
       accessControl: computed(function() {
         return accessControl;
-      }),
-      features: computed(function() {
-        return features;
       }),
       transitionToExternal(routeName) {
         transitionToExternal = routeName;
@@ -43,26 +44,30 @@ module('Unit | Route | application', function(hooks) {
     return PatchedRoute.create();
   };
 
-  test('rsa.usm feature flag is false by default, so it should transitionToExternal protected route', async function(assert) {
+  test('it resolves the proper title token for the route', async function(assert) {
+    assert.expect(1);
+    const i18n = this.owner.lookup('service:i18n');
+    const expectedTitle = `${i18n.t('adminUsm.title')} - ${i18n.t('appTitle')}`;
     const route = setupRoute.call(this);
+    assert.equal(route.title(), expectedTitle, `title is ${expectedTitle}`);
+  });
 
-    // 'rsa.usm' feature flag should be false by default
-    const isRsaUsmEnabled = this.owner.lookup('service:features').isEnabled('rsa.usm');
-    assert.equal(isRsaUsmEnabled, false, 'rsa.usm feature flag is false by default');
-
+  test('it should transitionToExternal "protected" route if the user does not have access', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    hasPermission = false;
     await route.beforeModel();
-
+    await settled();
     assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called with protected');
   });
 
-  test('setting rsa.usm feature flag to true should prevent transitionToExternal protected route', async function(assert) {
+  test('it should NOT transitionToExternal "protected" route if the user has access', async function(assert) {
+    assert.expect(1);
     const route = setupRoute.call(this);
-
-    // need to set feature flag to true since it is false by default, and is set externally by a parent app...
-    this.owner.lookup('service:features').setFeatureFlags({ 'rsa.usm': true });
-
+    hasPermission = true;
     await route.beforeModel();
-
+    await settled();
     assert.equal(transitionToExternal, null, 'transitionToExternal was NOT called');
   });
+
 });
