@@ -68,15 +68,13 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
             List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
             Feature maximizeFeatureValue = features.get(maximizeFeatureName);
 
+            if (maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
                 multiKeyFeatures.forEach(multiKeyFeature -> {
-                    if (maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
-                        double potentialMax = ((FeatureNumericValue)maximizeFeatureValue.getValue()).getValue().doubleValue();
-                        Double max = multiKeyHistogram.getCount(multiKeyFeature);
-                        multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
-                    }
+                    double potentialMax = ((FeatureNumericValue) maximizeFeatureValue.getValue()).getValue().doubleValue();
+                    Double max = multiKeyHistogram.getCount(multiKeyFeature);
+                    multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
                 });
-
-
+            }
         }
 
         return value;
