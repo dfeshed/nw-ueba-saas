@@ -241,9 +241,7 @@ export default Service.extend({
 
   @computed('roles.[]')
   hasAdminViewUnifiedSourcesAccess(roles) {
-    // TODO switch to viewUnifiedSources once it exists & USM is GA
-    // return this._hasPermission(roles, 'viewUnifiedSources');
-    return this._hasPermission(roles, 'viewEventSources');
+    return this._hasPermission(roles, 'viewUnifiedSources');
   },
 
   @computed('roles.[]')
