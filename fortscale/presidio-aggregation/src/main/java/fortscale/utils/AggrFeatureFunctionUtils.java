@@ -79,32 +79,6 @@ public class AggrFeatureFunctionUtils {
     }
 
     /**
-     * Go over groupByFeatureNames
-     * if groupByFeatureName is a List, then create new MultiKeyFeature for each item
-     *
-     * @param features            features
-     * @param groupByFeatureNames groupByFeatureNames
-     * @return MultiKeyFeature list
-     */
-    private static List<MultiKeyFeature> createMultiKeyFeatureList(Map<String, Feature> features, List<String> groupByFeatureNames, List<MultiKeyFeature> multiKeyFeatures) {
-        groupByFeatureNames.forEach(groupByFeatureName -> {
-            Feature groupByFeature = features.get(groupByFeatureName);
-            if (groupByFeature != null) {
-                FeatureValue groupByFeatureValue = groupByFeature.getValue();
-                if (groupByFeatureValue instanceof FeatureListValue) {
-                    (((FeatureListValue) groupByFeatureValue).getValue()).forEach(value -> {
-                        MultiKeyFeature multiKeyFeature = new MultiKeyFeature();
-                        multiKeyFeature.add(groupByFeatureName, value);
-                        multiKeyFeatures.add(multiKeyFeature);
-                    });
-                }
-            }
-        });
-
-        return multiKeyFeatures;
-    }
-
-    /**
      * Build MultiKeyFeature of features map
      *
      * @param features map of feature name to feature value
