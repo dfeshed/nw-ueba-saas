@@ -195,7 +195,7 @@ export default Component.extend({
             type: MESSAGE_TYPES.OPERATOR_SELECTED,
             data: selection
           }, 100));
-        } else if (selected === null && _highlightedAfterOption === 'Free Form Filter') {
+        } else if (selected === null && _highlightedAfterOption === 'Free-Form Filter') {
           // If the user presses ENTER while all the operators are filtered out,
           // the assumption is that they want to create a free-form filter.
           // Since we have access to the power-select API, we'll perform an

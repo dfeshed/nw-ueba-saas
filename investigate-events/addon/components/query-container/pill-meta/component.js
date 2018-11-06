@@ -213,7 +213,7 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         const _highlightedAfterOption = this.get('_highlightedAfterOption');
-        if (_highlightedAfterOption === 'Free Form Filter') {
+        if (_highlightedAfterOption === 'Free-Form Filter') {
           // If the user presses ENTER while the "after option" is set, the
           // assumption is that they want to create a free-form filter. We check
           // this first because it's possible to have a `selection` and a

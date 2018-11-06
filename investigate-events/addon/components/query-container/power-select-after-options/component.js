@@ -4,7 +4,7 @@ import * as MESSAGE_TYPES from '../message-types';
 const { log } = console; // eslint-disable-line no-unused-vars
 
 const MENU_OPTIONS = [
-  { label: 'Free Form Filter', disabled: false, highlighted: false }
+  { label: 'Free-Form Filter', disabled: false, highlighted: false }
 ];
 
 export default Component.extend({

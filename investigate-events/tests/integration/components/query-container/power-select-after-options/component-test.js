@@ -8,7 +8,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import PILL_SELECTORS from '../pill-selectors';
 
 // These labels and options should match what's defined in the component
-const OPTION_A_LABEL = 'Free Form Filter';
+const OPTION_A_LABEL = 'Free-Form Filter';
 const OPTION_B_LABEL = 'Text Filter';
 const MENU_OPTIONS = [
   { label: OPTION_A_LABEL, disabled: false, highlighted: false },
