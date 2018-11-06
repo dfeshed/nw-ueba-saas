@@ -39,6 +39,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private int pageSize;
     private int maxGroupSize;
     private MetricContainerFlusher metricContainerFlusher;
+    private LevelThreeAggregationsService levelThreeAggregationsService;
 
     public FeatureAggregationService(
             FixedDurationStrategy fixedDurationStrategy,
@@ -50,7 +51,8 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
             AggregatedDataStore scoredFeatureAggregatedStore,
             int pageSize,
             int maxGroupSize,
-            MetricContainerFlusher metricContainerFlusher) {
+            MetricContainerFlusher metricContainerFlusher,
+            LevelThreeAggregationsService levelThreeAggregationsService) {
 
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
@@ -62,6 +64,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.metricContainerFlusher = metricContainerFlusher;
+        this.levelThreeAggregationsService = levelThreeAggregationsService;
     }
 
     @Override
@@ -87,6 +90,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
             List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords, timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, storeMetadataProperties);
+            levelThreeAggregationsService.consume(scoredFeatureAggregationRecords, contextType, contextFieldNamesToExclude, featureBucketStrategyData, storeMetadataProperties);
         }
 
         // Flush stored metrics to elasticsearch.

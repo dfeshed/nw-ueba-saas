@@ -18,10 +18,8 @@ import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
-import presidio.ade.processes.shell.config.AggregationRecordsCreatorConfig;
-import presidio.ade.processes.shell.config.EventModelsCacheServiceConfig;
-import presidio.ade.processes.shell.config.FeatureAggregationScoringServiceConfig;
-import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
+import presidio.ade.processes.shell.aggregation.LevelThreeAggregationsService;
+import presidio.ade.processes.shell.config.*;
 import presidio.monitoring.flush.MetricContainerFlusher;
 import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
@@ -32,6 +30,7 @@ import presidio.monitoring.flush.MetricContainerFlusherConfig;
         InMemoryFeatureAggregatorConfig.class,
         AggregationRecordsCreatorConfig.class,
         FeatureAggregationScoringServiceConfig.class,
+        LevelThreeAggregationsConfig.class,
         // Common application configurations
         EnrichedDataStoreConfig.class,
         MetricContainerFlusherConfig.class,
@@ -53,7 +52,7 @@ public class FeatureAggregationsConfiguration {
     @Autowired
     private AggregationRecordsCreator aggregationsCreator;
     @Autowired
-    private AggregatedDataStore scoredFeatureAggregatedStore;
+    private AggregatedDataStore aggregatedDataStore;
     @Autowired
     private StoreManager storeManager;
     @Value("${feature.aggregation.pageIterator.pageSize}")
@@ -62,6 +61,8 @@ public class FeatureAggregationsConfiguration {
     private int maxGroupSize;
     @Autowired
     private MetricContainerFlusher metricContainerFlusher;
+    @Autowired
+    private LevelThreeAggregationsService levelThreeAggregationsService;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {
@@ -71,10 +72,11 @@ public class FeatureAggregationsConfiguration {
                 inMemoryFeatureBucketAggregator,
                 featureAggregationScoringService,
                 aggregationsCreator,
-                scoredFeatureAggregatedStore,
+                aggregatedDataStore,
                 storeManager,
                 pageSize,
                 maxGroupSize,
-                metricContainerFlusher);
+                metricContainerFlusher,
+                levelThreeAggregationsService);
     }
 }

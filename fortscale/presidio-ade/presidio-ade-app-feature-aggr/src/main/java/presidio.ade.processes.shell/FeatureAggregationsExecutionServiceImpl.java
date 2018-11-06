@@ -13,6 +13,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.aggregation.FeatureAggregationService;
+import presidio.ade.processes.shell.aggregation.LevelThreeAggregationsService;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.time.Instant;
@@ -31,6 +32,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private int pageSize;
     private int maxGroupSize;
     private MetricContainerFlusher metricContainerFlusher;
+    private LevelThreeAggregationsService levelThreeAggregationsService;
 
     public FeatureAggregationsExecutionServiceImpl(
             BucketConfigurationService bucketConfigurationService,
@@ -42,7 +44,8 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
             StoreManager storeManager,
             int pageSize,
             int maxGroupSize,
-            MetricContainerFlusher metricContainerFlusher) {
+            MetricContainerFlusher metricContainerFlusher,
+            LevelThreeAggregationsService levelThreeAggregationsService) {
 
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -54,6 +57,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.metricContainerFlusher = metricContainerFlusher;
+        this.levelThreeAggregationsService = levelThreeAggregationsService;
     }
 
     // TODO: Data source should be event_type
@@ -70,7 +74,8 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
                 scoredFeatureAggregatedStore,
                 pageSize,
                 maxGroupSize,
-                metricContainerFlusher);
+                metricContainerFlusher,
+                levelThreeAggregationsService);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
         featureAggregationBucketsService.execute(timeRange, schema.getName(), storeMetadataProperties);
