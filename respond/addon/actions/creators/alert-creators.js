@@ -64,7 +64,10 @@ const getItems = () => {
         onInit: (stopStreamFn) => {
           dispatch({ type: ACTION_TYPES.FETCH_ALERTS_STREAM_INITIALIZED, payload: stopStreamFn });
         },
-        onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_ALERTS_COMPLETED }),
+        onCompleted: () => {
+          dispatch({ type: ACTION_TYPES.FETCH_ALERTS_COMPLETED });
+          dispatch(dictionaryCreators.getAllAlertNames());
+        },
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_ALERTS_RETRIEVE_BATCH, payload }),
         onError: () => {
           dispatch({ type: ACTION_TYPES.FETCH_ALERTS_ERROR });
