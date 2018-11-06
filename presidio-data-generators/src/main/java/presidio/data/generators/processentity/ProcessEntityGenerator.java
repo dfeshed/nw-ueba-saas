@@ -18,11 +18,13 @@ import java.util.List;
 public class ProcessEntityGenerator implements IProcessEntityGenerator {
 
     IFileEntityGenerator processFileGenerator;
+    IStringListGenerator processDirectoryGroupsGenerator;
     IStringListGenerator processCategoriesGenerator;
     ICertificateIssuerGenerator processCertificateIssuerGenerator;
 
     public ProcessEntityGenerator() throws GeneratorException {
         processFileGenerator = new ProcessFileEntityGenerator();
+        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"SOME_USUAL_DIR_GROUP"});
         processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"SOME_USUAL_PROCESS"});
         processCertificateIssuerGenerator = new CertificateIssuerDefaultGenerator();
 
@@ -31,10 +33,11 @@ public class ProcessEntityGenerator implements IProcessEntityGenerator {
     public ProcessEntity getNext(){
 
         FileEntity processFile = getProcessFileGenerator().getNext();
+        List<String> processDirectoryGroups = getProcessDirectoryGroupsGenerator().getNext();
         List<String> processCategories = getProcessCategoriesGenerator().getNext();
-        String processCertificateIssuer = (String) getProcessCertificateIssuerGenerator().getNext();
+        String processCertificateIssuer = getProcessCertificateIssuerGenerator().getNext();
 
-        return new ProcessEntity(processFile, processCategories, processCertificateIssuer);
+        return new ProcessEntity(processFile, processDirectoryGroups, processCategories, processCertificateIssuer);
     }
 
     public IFileEntityGenerator getProcessFileGenerator() {
@@ -43,6 +46,14 @@ public class ProcessEntityGenerator implements IProcessEntityGenerator {
 
     public void setProcessFileGenerator(IFileEntityGenerator processFileGenerator) {
         this.processFileGenerator = processFileGenerator;
+    }
+
+    public IStringListGenerator getProcessDirectoryGroupsGenerator() {
+        return processDirectoryGroupsGenerator;
+    }
+
+    public void setProcessDirectoryGroupsGenerator(IStringListGenerator processDirectoryGroupsGenerator) {
+        this.processDirectoryGroupsGenerator = processDirectoryGroupsGenerator;
     }
 
     public IStringListGenerator getProcessCategoriesGenerator() {
