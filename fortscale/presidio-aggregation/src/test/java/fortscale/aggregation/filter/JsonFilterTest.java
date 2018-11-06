@@ -71,8 +71,18 @@ public class JsonFilterTest {
 	}
 	
 	@Test
-	public void testPassedComplexFilter(){
+	public void testPassedComplexFilter1(){
 		String jsonPath = "$.featureExtractorList[*].featureAdjustor.featureAdjustorList[?(@.additionToDenominator > 3 && !(@.type != 'number_divider_feature_adjustor'))]";
+		String EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST = "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org1\",\"featureAdjustor\":{\"type\":\"chain_feature_adjustor\",\"featureAdjustorList\":[{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"_\",\"replacement\":\".\"},{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"prefix\",\"replacement\":\"\"},{\"type\":\"number_divider_feature_adjustor\",\"additionToDenominator\":4.5,\"denominatorFieldName\":\"duration\"},{\"type\":\"inv_val_feature_adjustor\",\"denominator\":0.1}]}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org2\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":20}}]}";
+		JSONObject objectValue = getJsonObject(EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST);
+
+		JsonFilter filter = new JsonFilter(jsonPath);
+		Assert.assertTrue(filter.passedFilter(objectValue));
+	}
+
+	@Test
+	public void testPassedComplexFilter2(){
+		String jsonPath = "$.featureExtractorList[*].featureAdjustor.featureAdjustorList[?(!(@.additionToDenominator < 3 || !(@.type == 'number_divider_feature_adjustor')))]";
 		String EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST = "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org1\",\"featureAdjustor\":{\"type\":\"chain_feature_adjustor\",\"featureAdjustorList\":[{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"_\",\"replacement\":\".\"},{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"prefix\",\"replacement\":\"\"},{\"type\":\"number_divider_feature_adjustor\",\"additionToDenominator\":4.5,\"denominatorFieldName\":\"duration\"},{\"type\":\"inv_val_feature_adjustor\",\"denominator\":0.1}]}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org2\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":20}}]}";
 		JSONObject objectValue = getJsonObject(EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST);
 
