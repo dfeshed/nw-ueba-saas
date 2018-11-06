@@ -2795,10 +2795,6 @@ export default {
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         },
-        hostReportingStatus: {
-          currentServer: 'Current Server',
-          migrated: 'Migrated'
-        },
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',
@@ -2862,7 +2858,6 @@ export default {
         panelTitle: 'Hosts Preferences',
         triggerTip: 'Open/Hide Hosts Preferences',
         id: 'Agent ID',
-        hostReportingStatus: 'Host Reporting Status',
         analysisData: {
           iocs: 'IOC Alerts',
           machineRiskScore: 'Risk Score'
