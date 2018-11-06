@@ -27,9 +27,29 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step').length, 1, 'The component appears in the DOM');
   });
+
   test('Show group list', async function(assert) {
     new ReduxDataHelper(setState).groupRankingWithData().build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step tr').length, 15, 'All 15 groups are showing');
+  });
+
+  test('Show a selected group in the group ranking list', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingWithData()
+      .selectGroupRanking('Zebra 001')
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step tr.is-selected').length, 1, 'A group in the group renking list is selected');
+  });
+
+  test('Show the wait spinner for group ranking list loading', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRanking('wait')
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step .loading').length, 1, 'The spinner is showing');
   });
 });

@@ -5,21 +5,27 @@ import Notifications from 'component-lib/mixins/notifications';
 import { inject } from '@ember/service';
 
 import {
-  groupRankingStatus
+  groupRankingStatus,
+  hasGroupRankingChanged,
+  selectedGroupRanking
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
-  saveGroup,
-  savePublishGroup
+  resetRanking,
+  saveGroupRanking,
+  setTopRanking
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
-  groupRankingStatus: groupRankingStatus(state)
+  groupRankingStatus: groupRankingStatus(state),
+  hasGroupRankingChanged: hasGroupRankingChanged(state),
+  selectedGroupRanking: selectedGroupRanking(state)
 });
 
 const dispatchToActions = {
-  saveGroup,
-  savePublishGroup
+  resetRanking,
+  saveGroupRanking,
+  setTopRanking
 };
 
 const GroupWizardToolbar = Component.extend(Notifications, {
@@ -36,7 +42,10 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   isStepValid(groupRankingStatus) {
     return groupRankingStatus == 'complete';
   },
-
+  @computed('selectedGroupRanking')
+  hasSelectedGroup(selectedGroupRanking) {
+    return selectedGroupRanking !== null;
+  },
   actions: {
     transitionToPrevStep() {
       this.get('transitionToStep')(this.get('step').prevStepId);
@@ -46,15 +55,20 @@ const GroupWizardToolbar = Component.extend(Notifications, {
       this.get('transitionToStep')(this.get('step').nextStepId);
     },
 
-    save() {
-
-    },
-
     cancel() {
       this.get('transitionToClose')();
+    },
+    handleSaveRanking() {
+      this.send('saveGroupRanking', {
+        onSuccess: () => {
+          this.send('success', 'adminUsm.groupRankingWizard.rankingSavedSuccessful');
+        },
+        onFailure: () => {
+          this.send('failure', 'adminUsm.groupRankingWizard.rankingSavedFailed');
+        }
+      });
     }
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(GroupWizardToolbar);

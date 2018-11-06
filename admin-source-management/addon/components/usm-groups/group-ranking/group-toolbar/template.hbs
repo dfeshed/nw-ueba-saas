@@ -19,24 +19,36 @@
     {{t 'adminUsm.groupWizard.next'}}
   {{/rsa-form-button}}
 {{else}}
+
+  {{#rsa-form-button
+    class='reset-ranking-button'
+    style='primary'
+    defaultAction=(action 'resetRanking')
+    isDisabled=(not hasGroupRankingChanged)
+  }}
+    {{t 'adminUsm.groupWizard.resetRanking'}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    class='top-ranking-button'
+    style='primary'
+    defaultAction=(action 'setTopRanking')
+    isDisabled=(not hasSelectedGroup)
+  }}
+    {{t 'adminUsm.groupWizard.setTopRanking'}}
+  {{/rsa-form-button}}
+  
   {{#rsa-form-button
     class='publish-button'
     style='primary'
-    defaultAction=(action 'save' true)
+    defaultAction=(action 'handleSaveRanking')
+    isDisabled=(not hasGroupRankingChanged)
   }}
     {{t 'adminUsm.groupWizard.publishRanking'}}
   {{/rsa-form-button}}
+
 {{/if}}
 
-{{!-- save is always visible, and enabled if the current step is valid --}}
-{{#rsa-form-button
-  class='save-button'
-  defaultAction=(action 'save' false)
-}}
-  {{t 'adminUsm.groupWizard.saveAndClose'}}
-{{/rsa-form-button}}
-
-{{!-- cancel is always visible & enabled --}}
 {{#rsa-form-button
   class='cancel-button'
   defaultAction='cancel'

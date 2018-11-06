@@ -3912,6 +3912,8 @@ export default {
       next: 'Next',
       publishGroup: 'Publish Now',
       publishRanking: 'Publish Ranking',
+      resetRanking: 'Reset Ranking',
+      setTopRanking: 'Set Top Ranking',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
       addCondition: 'Add Condition',
@@ -3928,7 +3930,7 @@ export default {
     groupRankingWizard: {
       column: {
         rank: 'Rank',
-        groupNamw: 'Group Name',
+        groupName: 'Group Name',
         policyApplied: 'Policy Applied',
         nSources: 'No. Sources'
       },
@@ -3937,7 +3939,9 @@ export default {
       chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data'
-      }
+      },
+      rankingSavedSuccessful: 'Group ranking has been published successfully.',
+      rankingSavedFailed: 'A problem occurred while trying to publish group ranking.'
     },
     policyWizard: {
       // it is used in investigate hosts to display policy stettings

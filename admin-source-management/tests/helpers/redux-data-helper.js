@@ -278,6 +278,11 @@ export default class DataHelper {
     return this;
   }
 
+  selectGroupRanking(data) {
+    _set(this.state, 'usm.groupWizard.selectedGroupRanking', data);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   fetchGroupStatus(status) {
     _set(this.state, 'usm.group.itemsStatus', status);

@@ -55,6 +55,15 @@ function fetchGroupRanking(sourceType) {
   });
 }
 
+function saveGroupRanking(groupRankingQuery) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'saveGroupRanking',
+    query: { data: groupRankingQuery }
+  });
+}
+
 /**
  * Deletes one or more groups from list of group IDs.
  * The server API is the same for both...
@@ -127,5 +136,6 @@ export default {
   publishGroups,
   saveGroup,
   savePublishGroup,
-  fetchGroupRanking
+  fetchGroupRanking,
+  saveGroupRanking
 };

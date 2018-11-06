@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import _ from 'lodash';
 import { isBlank, isEmpty } from '@ember/utils';
 import { exceedsLength, isNameInList, groupExpressionValidator } from './util/selector-helpers';
 import { getValidatorForExpression } from 'admin-source-management/reducers/usm/group-wizard-reducers';
@@ -8,6 +9,7 @@ const { createSelector } = reselect;
 const _groupWizardState = (state) => state.usm.groupWizard;
 export const selectedSourceType = (state) => _groupWizardState(state).selectedSourceType;
 export const groupRanking = (state) => _groupWizardState(state).groupRanking;
+const _groupRankingOrig = (state) => _groupWizardState(state).groupRankingOrig;
 export const groupRankingStatus = (state) => _groupWizardState(state).groupRankingStatus;
 export const group = (state) => _groupWizardState(state).group;
 export const assignedPolicies = (state) => _groupWizardState(state).group.assignedPolicies;
@@ -20,6 +22,22 @@ export const groupCriteria = (state) => _groupWizardState(state).group.groupCrit
 export const groupCriteriaCache = (state) => _groupWizardState(state).criteriaCache;
 export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
 export const andOrOperator = (state) => _groupWizardState(state).group.groupCriteria.conjunction;
+export const selectedGroupRanking = (state) => _groupWizardState(state).selectedGroupRanking;
+
+export const hasGroupRankingChanged = createSelector(
+  _groupRankingOrig, groupRanking,
+  (_groupRankingOrig, groupRanking) => {
+    return !_.isEqual(_groupRankingOrig, groupRanking);
+  }
+);
+
+export const groupRankingQuery = createSelector(
+  selectedSourceType, groupRanking,
+  (selectedSourceType, groupRanking) => {
+    const groupRankingIDs = groupRanking.map((rank) => rank.id);
+    return { policyType: selectedSourceType, groupIds: groupRankingIDs };
+  }
+);
 
 export const isGroupLoading = createSelector(
   _groupWizardState,
@@ -27,6 +45,11 @@ export const isGroupLoading = createSelector(
     return groupWizardState.groupStatus === 'wait' ||
       groupWizardState.initGroupFetchPoliciesStatus === 'wait';
   }
+);
+
+export const isLoadingGroupRanking = createSelector(
+  _groupWizardState,
+  (groupWizardState) => groupWizardState.groupRankingStatus === 'wait'
 );
 
 export const availablePolicySourceTypes = createSelector(

@@ -11,12 +11,45 @@
     }
   }
   .edit-ranking-step {
+    .loading {
+      width: 100%;
+      text-align: center;
+      margin-top: 20%;
+    }
+    overflow: auto;
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
     table {
       width: 900px;
       margin: rsa-whitespace();
+      tr {
+        cursor: pointer;
+        &:hover {
+          background-color: background-color(primary, darker);
+        }
+        &.is-selected {
+          background-color: background-color(secondary, dark);
+        }
+      }    
       th, td {
         padding: rsa-whitespace();
         border-bottom: 1px solid border-color(primary);
+        .handle {
+          display: inline-block;
+          cursor: move;
+          height: 21px;
+          width: 15px;
+          &::before {
+            display: block;
+            content: '';
+            height: 100%;
+            width: 100%;
+            background-image: radial-gradient(background-color(secondary) 40%, transparent 40%);
+            background-size: 4px 4px;
+            background-position: 100% 0;
+            background-repeat: repeat;
+          }
+        }
       }
       th {
         border-top: 1px solid border-color(primary);

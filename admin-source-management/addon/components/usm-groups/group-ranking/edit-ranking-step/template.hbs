@@ -1,38 +1,56 @@
-<table>
-  <tr>
-    <th>
-    </th>
-    <th>
-      {{t 'adminUsm.groupRankingWizard.column.rank'}}
-    </th>
-    <th>
-      {{t 'adminUsm.groupRankingWizard.column.groupNamw'}}
-    </th>
-    <th>
-      {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
-    </th>
-    <th>
-      {{t 'adminUsm.groupRankingWizard.column.nSources'}}
-    </th>
-  </tr>
-  {{#each groupRanking as |item index|}}
-    <tr>
-      <td>
-      </td>
-      <td>
-        {{add index 1}}
-      </td>
-      <td>
-        {{item.name}}
-      </td>
-      <td>
-        {{#each-in item.assignedPolicies as |policy details|}}
-          {{ details.name }}
-        {{/each-in}}
-      </td>
-      <td>
-        'TODO'
-      </td>
-    </tr>
-  {{/each}}
-</table>
+{{#if isLoadingGroupRanking}}
+  <div class='loading'>
+    {{rsa-loader size='large'}}
+  </div>
+{{else}}
+  {{#sortable-group onChange="reorderRanking" as |group|}}
+    <table>
+      <thead>
+        <tr>
+          <th>
+          </th>
+          <th>
+            {{t 'adminUsm.groupRankingWizard.column.rank'}}
+          </th>
+          <th>
+            {{t 'adminUsm.groupRankingWizard.column.groupName'}}
+          </th>
+          <th>
+            {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
+          </th>
+          <th>
+            {{t 'adminUsm.groupRankingWizard.column.nSources'}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each groupRanking as |item index|}}
+          {{#usm-groups/group-ranking/edit-ranking-step/row
+            item=item
+            group=group
+            selectedItemId=selectedGroupRanking
+            onRowClick=(action 'selectGroupRanking' item.name)}}
+            <td class="reorder-item-cell">
+              <centered>
+                <span class="handle"></span>
+              </centered>
+            </td>
+            <td class="group-rank-cell">
+              {{add index 1}}
+            </td>
+            <td class="group-name-cell">
+              {{item.name}}
+            </td>
+            <td class="policy-cell">
+              {{#each-in item.assignedPolicies as |policy details|}}
+                {{ details.name }}
+              {{/each-in}}
+            </td>
+            <td class="n-sources-cell">
+            </td>
+          {{/usm-groups/group-ranking/edit-ranking-step/row}}
+        {{/each}}
+      </tbody>
+    </table>
+  {{/sortable-group}}
+{{/if}}

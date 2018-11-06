@@ -1,6 +1,9 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
+import {
+  groupRankingQuery
+} from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -131,6 +134,56 @@ const fetchGroupRanking = (sourceType) => {
   };
 };
 
+const reorderRanking = (groupRanking) => {
+  const payload = {
+    groupRanking
+  };
+  return {
+    type: ACTION_TYPES.REORDER_GROUP_RANKING,
+    payload
+  };
+};
+
+const resetRanking = () => {
+  return {
+    type: ACTION_TYPES.RESET_GROUP_RANKING
+  };
+};
+
+const selectGroupRanking = (groupRankingName) => {
+  const payload = {
+    groupRankingName
+  };
+  return {
+    type: ACTION_TYPES.SELECT_GROUP_RANKING,
+    payload
+  };
+};
+
+const setTopRanking = () => {
+  return {
+    type: ACTION_TYPES.SET_TOP_RANKING
+  };
+};
+
+const saveGroupRanking = (callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const query = groupRankingQuery(getState());
+    dispatch({
+      type: ACTION_TYPES.SAVE_GROUP_RANKING,
+      promise: groupsAPI.saveGroupRanking(query),
+      meta: {
+        onSuccess: () => {
+          callbacks.onSuccess();
+        },
+        onFailure: () => {
+          callbacks.onFailure();
+        }
+      }
+    });
+  };
+};
+
 const handleSourceType = (sourceType) => {
   const payload = {
     sourceType
@@ -192,5 +245,10 @@ export {
   handleAndOrOperator,
   fetchGroupRanking,
   handleSourceType,
-  updateCriteriaFromCache
+  updateCriteriaFromCache,
+  reorderRanking,
+  resetRanking,
+  saveGroupRanking,
+  selectGroupRanking,
+  setTopRanking
 };

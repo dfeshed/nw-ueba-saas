@@ -167,8 +167,10 @@ export const initialState = {
   visited: [],
   groupAttributesMap: _GROUP_ATTRIBUTES_MAP,
   groupRanking: [],
+  groupRankingOrig: [],
   selectedSourceType: null,
-  groupRankingStatus: null
+  groupRankingStatus: null,
+  selectedGroupRanking: null
 };
 
 export default reduxActions.handleActions({
@@ -370,6 +372,7 @@ export default reduxActions.handleActions({
       start: (state) => {
         return state.merge({
           groupRanking: [],
+          groupRankingOrig: [],
           groupRankingStatus: 'wait'
         });
       },
@@ -379,6 +382,50 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           groupRanking: action.payload.data,
+          groupRankingOrig: action.payload.data,
+          groupRankingStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.REORDER_GROUP_RANKING]: (state, action) => {
+    const { groupRanking } = action.payload;
+    return state.set('groupRanking', groupRanking);
+  },
+
+  [ACTION_TYPES.SELECT_GROUP_RANKING]: (state, action) => {
+    const { groupRankingName } = action.payload;
+    return state.set('selectedGroupRanking', groupRankingName);
+  },
+
+  [ACTION_TYPES.SET_TOP_RANKING]: (state) => {
+    const selectedGroup = state.groupRanking.filter((group) => state.selectedGroupRanking === group.name);
+    return state.merge({
+      groupRanking: selectedGroup.concat(state.groupRanking.filter((group) => state.selectedGroupRanking !== group.name)),
+      selectedGroupRanking: null
+    });
+  },
+
+  [ACTION_TYPES.RESET_GROUP_RANKING]: (state) => {
+    return state.merge({
+      groupRanking: state.groupRankingOrig.slice(),
+      selectedGroupRanking: null
+    });
+  },
+
+  [ACTION_TYPES.SAVE_GROUP_RANKING]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('groupRankingStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('groupRankingStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          groupRanking: action.payload.data,
+          groupRankingOrig: action.payload.data,
           groupRankingStatus: 'complete'
         });
       }

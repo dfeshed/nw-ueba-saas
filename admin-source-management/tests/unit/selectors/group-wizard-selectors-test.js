@@ -21,7 +21,8 @@ import {
   availablePolicySourceTypes,
   assignedPolicyList,
   groupCriteriaValidator,
-  policyAssignmentValidator
+  policyAssignmentValidator,
+  isLoadingGroupRanking
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -661,6 +662,16 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     const isApplyPolicyStepValidExpected = true;
     const isApplyPolicyStepValidSelected = isApplyPolicyStepValid(Immutable.from(fullState));
     assert.deepEqual(isApplyPolicyStepValidSelected, isApplyPolicyStepValidExpected, 'The returned value from the isApplyPolicyStepValid selector is as expected');
+  });
+
+  test('isLoadingGroupRanking selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupRanking('wait')
+      .build();
+    const isLoadingGroupRankingExpected = true;
+    const isLoadingGroupRankingSelected = isLoadingGroupRanking(Immutable.from(fullState));
+    assert.deepEqual(isLoadingGroupRankingSelected, isLoadingGroupRankingExpected, 'isLoadingGroupRanking is true when groupRankingStatus is wait');
   });
 
 });

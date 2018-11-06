@@ -10,6 +10,9 @@ import reducers from 'admin-source-management/reducers/usm/group-wizard-reducers
 const groupWizInitialState = new ReduxDataHelper().groupWiz().build().usm.groupWizard;
 
 const initialState = Immutable.from({
+  selectedGroupRanking: 'dfg',
+  groupRankingOrig: [{ name: 'ijk' }, { name: 'lmn' }],
+  groupRanking: [{ name: 'abc' }, { name: 'dfg' }],
   criteriaCache: [
     ['osType', 'IN', ['abc']]
   ],
@@ -83,16 +86,105 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
       ]
     };
     const expectedEndState = new ReduxDataHelper()
-    .groupWiz()
-    .groupRanking('complete')
-    .groupRankingWithData(fetchGroupPayload)
-    .build().usm.groupWizard;
+      .groupWiz()
+      .groupRanking('complete')
+      .groupRankingWithData(fetchGroupPayload)
+      .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.FETCH_GROUP_RANKING,
       payload: { data: fetchGroupPayload }
     });
     const result = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
-    assert.deepEqual(result, expectedEndState);
+    assert.deepEqual(result.groupRanking, expectedEndState.groupRanking);
+  });
+
+  test('on REORDER_GROUP_RANKING, reorder', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [1, 2, 3]
+    };
+    const action = {
+      type: ACTION_TYPES.REORDER_GROUP_RANKING,
+      payload: { groupRanking: [1, 2, 3] }
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on SELECT_GROUP_RANKING, name', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      selectedGroupRanking: 'abc'
+    };
+    const action = {
+      type: ACTION_TYPES.SELECT_GROUP_RANKING,
+      payload: { groupRankingName: 'abc' }
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on SET_TOP_RANKING, group', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [{ name: 'dfg' }, { name: 'abc' } ],
+      selectedGroupRanking: null
+    };
+    const action = {
+      type: ACTION_TYPES.SET_TOP_RANKING
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on RESET_GROUP_RANKING, from orig', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [{ name: 'ijk' }, { name: 'lmn' }],
+      selectedGroupRanking: null
+    };
+    const action = {
+      type: ACTION_TYPES.RESET_GROUP_RANKING
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on SAVE_GROUP_RANKING, save wait', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupRanking('wait')
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.SAVE_GROUP_RANKING });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'group renking is not-set and groupRankingStatus is wait');
+  });
+
+  test('on SAVE_GROUP_RANKING, save error', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupRanking('error')
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.SAVE_GROUP_RANKING });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'group renking is not-set and groupRankingStatus is error');
+  });
+
+  test('on SAVE_GROUP_RANKING, save complete', function(assert) {
+    const fetchGroupPayload = {
+      data: { policyType: 'selectedSourceType', groupIds: ['abc'] }
+    };
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupRanking('complete')
+      .groupRankingWithData(fetchGroupPayload)
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_GROUP_RANKING,
+      payload: { data: fetchGroupPayload }
+    });
+    const result = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(result.groupRanking, expectedEndState.groupRanking);
   });
 
   test('on ADD_OR_OPERATOR, set to AND', function(assert) {
