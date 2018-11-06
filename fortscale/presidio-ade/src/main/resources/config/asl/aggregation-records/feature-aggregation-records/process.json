@@ -23,12 +23,12 @@
     {
       "name": "numberOfReconnaissanceToolExecutedUserIdProcessHourly",
       "type": "F",
-      "bucketConfName": "reconnaissanceToolCounterUserIdProcessHourly",
+      "bucketConfName": "reconnaissanceToolDstProcessCategoriesHistogramUserIdProcessHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "reconnaissanceToolCounter"
+          "dstProcessCategoriesHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

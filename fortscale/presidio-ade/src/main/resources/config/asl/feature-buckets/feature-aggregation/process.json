@@ -28,7 +28,7 @@
       ]
     },
     {
-      "name": "reconnaissanceToolCounterUserIdProcessHourly",
+      "name": "reconnaissanceToolDstProcessCategoriesHistogramUserIdProcessHourly",
       "contextFieldNames": [
         "userId"
       ],
@@ -38,7 +38,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "reconnaissanceToolCounter",
+          "name": "dstProcessCategoriesHistogram",
           "featureNamesMap": {
             "groupBy": [
               "dstProcessCategories"
