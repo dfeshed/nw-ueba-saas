@@ -51,7 +51,8 @@ const stateToComputed = (state) => ({
   timeRange: timeRange(state),
   isCertificateView: state.certificate.list.isCertificateView,
   isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
-  selectedIndex: state.files.fileList.selectedIndex
+  selectedIndex: state.files.fileList.selectedIndex,
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {

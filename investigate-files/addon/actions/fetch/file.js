@@ -147,14 +147,13 @@ const fetchRemediation = (thumbprints) => {
  * @public
  */
 const getSelectedFileProperties = (checksum) => {
+  const hashes = [checksum];
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFiles',
     modelName: 'files',
     query: {
-      filter: [
-        { field: 'hashes', value: [checksum] }
-      ]
+      data: { hashes }
     }
   });
 };

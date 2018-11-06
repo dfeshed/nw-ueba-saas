@@ -27,9 +27,6 @@ module('Integration | Component | file-details/header/summary', function(hooks) 
             fileStatus: 'Neutral',
             machineOsType: 'windows',
             machineCount: 10,
-            signature: {
-              features: ['valid', 'microsoft', 'signed']
-            },
             firstFileName: 'dtf.exe'
           }
         }
@@ -43,5 +40,8 @@ module('Integration | Component | file-details/header/summary', function(hooks) 
     assert.equal(findAll(selectors.summary).length, 1, 'summary is present');
     assert.equal(findAll(selectors.scoreField).length, 1, 'score is present');
     assert.equal(findAll(selectors.summaryFields).length, 5, '5 summary fields present');
+
+    // if signature field is not available, should show as 'unsigned'.
+    assert.equal(findAll('.rsa-content-definition .value')[1].textContent.trim(), 'unsigned');
   });
 });

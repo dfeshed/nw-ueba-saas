@@ -56,6 +56,7 @@ const _fetchFiles = () => {
 
 const initializeFileDetails = (checksum) => {
   return (dispatch) => {
+    dispatch(getRiskScoringServerStatus());
     dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(checksum));

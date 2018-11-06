@@ -25,6 +25,7 @@ export default [
       '.gnu_debuglink',
       '.shstrtab'
     ],
-    'size': 1427941
+    'size': 1427941,
+    'fileStatus': 'KnownGood'
   }
 ];
