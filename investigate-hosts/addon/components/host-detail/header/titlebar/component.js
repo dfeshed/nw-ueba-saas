@@ -6,12 +6,14 @@ import { getHostDetailTabs } from 'investigate-hosts/reducers/visuals/selectors'
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
+import { serviceId } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state) => ({
   hostDetailTabs: getHostDetailTabs(state),
   hostName: hostName(state),
   serviceList: serviceList(state),
-  isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible
+  isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible,
+  serviceId: serviceId(state)
 });
 
 const dispatchToActions = {

@@ -37,6 +37,8 @@ const PivotToInvestigate = Component.extend({
     unit: 'days'
   },
 
+  serviceId: null,
+
 
   @computed
   contextItems() {

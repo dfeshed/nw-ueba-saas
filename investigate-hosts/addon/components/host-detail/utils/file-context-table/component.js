@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
+import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 
 import {
   listOfFiles,
@@ -66,6 +67,8 @@ const FileContextTable = Component.extend({
 
   accessControl: service(),
 
+  timezone: service(),
+
   classNames: ['file-context-table', 'host-detail__datatable'],
 
   customSort: null,
@@ -124,8 +127,18 @@ const FileContextTable = Component.extend({
     },
 
     showServiceList(item) {
+      const serviceId = this.get('serviceId');
       this.set('itemList', [item]);
-      this.set('showServiceModal', true);
+      if (serviceId && serviceId !== '-1') {
+        const {
+          timeRange
+        } = this.getProperties('timeRange');
+
+        const { zoneId } = this.get('timezone.selected');
+        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', metaValue: null, itemList: [item] }, serviceId, timeRange, zoneId);
+      } else {
+        this.set('showServiceModal', true);
+      }
     },
 
     onCloseServiceModal() {
