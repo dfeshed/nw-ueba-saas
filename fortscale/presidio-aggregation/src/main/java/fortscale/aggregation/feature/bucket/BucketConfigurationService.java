@@ -90,29 +90,20 @@ public class BucketConfigurationService extends AslConfigurationService {
 	 * contextFieldNamesToExclude
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(
-			String adeEventType, String strategyName, String contextFieldName, List<String> contextFieldNamesToExclude) {
+			String adeEventType,
+			String strategyName,
+			String contextFieldName,
+			List<String> contextFieldNamesToExclude) {
+
 		if (StringUtils.isEmpty(adeEventType)) return null;
 
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldName, adeEventType, contextFieldNamesToExclude);
-
-		return featureBucketConfs;
-	}
-
-	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, String contextFieldName, String adeEventType, List<String> contextFieldNamesToExclude) {
 		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldName,adeEventType);
-		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.get(featureBucketConfCacheKey);
-		if(cachedFeatureBucketConfs  == null)
-		{
+		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.computeIfAbsent(featureBucketConfCacheKey, key -> {
 			List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-			Assert.notEmpty(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
-
-			cachedFeatureBucketConfs = featureBucketConfs.stream()
-					.filter(featureBucketConf ->
-							featureBucketConf.getStrategyName().equals(strategyName) &&
-									featureBucketConf.getContextFieldNames().contains(contextFieldName))
+			return featureBucketConfs == null ? Collections.emptyList() : featureBucketConfs.stream()
+					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().contains(contextFieldName))
 					.collect(Collectors.toList());
-			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
-		}
+		});
 
 		if(!contextFieldNamesToExclude.isEmpty()){
 			cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()

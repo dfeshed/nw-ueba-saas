@@ -39,9 +39,10 @@ public class FeatureBucketAggregator {
      * @param strategyData          strategy data of ade records
      */
     public void aggregate(List<? extends AdeRecord> adeRecords, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
-
-        for (AdeRecord adeRecord : adeRecords) {
-            aggregate(adeRecord,featureBucketConfs,strategyData);
+        if (!featureBucketConfs.isEmpty()) {
+            for (AdeRecord adeRecord : adeRecords) {
+                aggregate(adeRecord, featureBucketConfs, strategyData);
+            }
         }
     }
 

@@ -31,7 +31,8 @@
         "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
         "numberOfFailedPrintsUserIdPrintHourly",
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
-        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
+        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
+        "numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly"
       ],
       "defaultWeight": 0.5
     }

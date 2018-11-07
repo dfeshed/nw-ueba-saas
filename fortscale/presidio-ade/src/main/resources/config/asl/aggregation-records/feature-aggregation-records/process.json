@@ -29,6 +29,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly",
+      "type": "F",
+      "bucketConfName": "reconnaissanceToolCounterUserIdDstProcessFileNameProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "reconnaissanceToolCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
     }
   ]
 }
