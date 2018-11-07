@@ -8,6 +8,8 @@ import { get } from '@ember/object';
 
 import { isArray } from '@ember/array';
 
+const explodeDuration = 200;
+
 // Helper to retrive an appropriate "index" for a given value.  If given
 // an object that has a number `index` attr, use that if defined. Otherwise,
 // if it's an array, use the array's length.  Otherwise just return the given
@@ -55,5 +57,15 @@ export default function() {
       return _getIndex(toValue) < _getIndex(fromValue);
     }),
     this.use('toRight')
+  );
+  this.transition(
+    this.childOf('[test-id=eventsListRow]'),
+    this.use('explode', {
+      pickOld: '[test-id=genericEventFooter]',
+      use: ['toUp', { explodeDuration }]
+    }, {
+      pickOld: '[test-id=endpointEventFooter]',
+      use: ['toUp', { explodeDuration }]
+    })
   );
 }

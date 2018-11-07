@@ -57,6 +57,7 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "ember-lodash-shim": "2.0.5",
     "lodash-es": "4.17.10",
+    "liquid-fire": "0.29.5",
     "loader.js": "^4.2.3"
   },
   "engines": {

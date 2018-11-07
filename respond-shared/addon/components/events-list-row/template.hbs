@@ -6,12 +6,12 @@
   </div>
   {{component componentClasses.header item=item}}
 {{/events-list-row/trigger}}
-{{#unless expanded}}
+{{#liquid-unless expanded}}
   {{component componentClasses.footer item=item}}
-{{/unless}}
+{{/liquid-unless}}
 <div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" hidden={{collapsed}}>
   <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
-  {{#if expanded}}
+  {{#liquid-if expanded}}
     {{component componentClasses.detail item=item}}
-  {{/if}}
+  {{/liquid-if}}
 </div>

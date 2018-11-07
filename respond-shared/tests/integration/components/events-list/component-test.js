@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { waitUntil, click, find, findAll, render } from '@ember/test-helpers';
+import { waitUntil, settled, click, find, findAll, render } from '@ember/test-helpers';
 import { selectors } from './selectors';
 import { getAllEvents, getAllAlerts, getSelection, getEventSelection, getAlertSelection, filterEventsBySelection } from './data';
 
@@ -66,6 +66,8 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.endpointDetail).length, 0);
 
     await click(`${selectors.row}:nth-of-type(1) ${selectors.genericHeader}`);
+    await waitUntil(() => findAll(selectors.genericFooter).length === 10);
+    await settled();
 
     assert.equal(findAll(selectors.genericDetail).length, 1);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
@@ -76,6 +78,8 @@ module('Integration | Component | events-list', function(hooks) {
     assert.equal(findAll(selectors.endpointFooter).length, 4);
 
     await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointHeader}`);
+    await waitUntil(() => findAll(selectors.endpointFooter).length === 3);
+    await settled();
 
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 1);
