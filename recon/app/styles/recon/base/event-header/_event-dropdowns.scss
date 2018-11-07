@@ -18,6 +18,15 @@
     .expanded .rsa-form-button i {
       color: text-color(primary, lightest);
     }
+    .rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+      }
+    }
   }
 
   .pivot-to-endpoint,

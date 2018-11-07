@@ -55,6 +55,23 @@
     height: 40px;
     margin-right: rsa-whitespace(less);
     flex: 0 0 auto;
+    .rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+        &:hover, &.is-active {
+          .rsa-form-button {
+            &:focus {
+              border-color: border-color(neutral);
+            }
+          }
+        }
+      }
+    }
+
   }
 
   .time-range-invalid {
@@ -77,22 +94,6 @@
     }
     .rsa-form-button {
       border-left-width: 0px;
-    }
-    .time-selector.rsa-form-button-wrapper {
-      &.is-standard:not(.is-disabled):not(.is-icon-only) {
-        .rsa-form-button {
-          &:focus {
-            border-color: border-color(neutral);
-          }
-        }
-        &:hover, &.is-active {
-          .rsa-form-button {
-            &:focus {
-              border-color: border-color(neutral);
-            }
-          }
-        }
-      }
     }
   }
 

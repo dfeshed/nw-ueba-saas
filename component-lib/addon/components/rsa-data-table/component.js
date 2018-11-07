@@ -405,57 +405,69 @@ export default Component.extend(DomWatcher, EKMixin, {
 
   /**
    * @description Respond to the user pressing down on the keyboard
+   * if a dropdown is not in view, proceed with the following
    * if nothing is selected, select first record
    * if first record is selected, select last record
    * @public
    */
   selectNext: on(keyUp('ArrowDown'), function(e) {
-    const fn = this.get('onRowClick');
+    const { activeElement } = e.currentTarget;
+    const dropDownInView = activeElement.classList.contains('rsa-form-button') || activeElement.classList.contains('ember-power-select-trigger');
 
-    if ($.isFunction(fn)) {
-      let selectedItemIndex, selectedItem, scrollTop;
+    if (!dropDownInView) {
+      const fn = this.get('onRowClick');
 
-      if (this.get('selectedIndex') === (this.get('items.length') - 1)) {
-        selectedItemIndex = 0;
-        selectedItem = this.get('items').objectAt(0);
-        scrollTop = 0;
-      } else {
-        selectedItemIndex = this.get('selectedIndex') + 1;
-        selectedItem = this.get('items').objectAt(selectedItemIndex);
-        scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+      if ($.isFunction(fn)) {
+        let selectedItemIndex, selectedItem, scrollTop;
+
+        if (this.get('selectedIndex') === (this.get('items.length') - 1)) {
+          selectedItemIndex = 0;
+          selectedItem = this.get('items').objectAt(0);
+          scrollTop = 0;
+        } else {
+          selectedItemIndex = this.get('selectedIndex') + 1;
+          selectedItem = this.get('items').objectAt(selectedItemIndex);
+          scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+        }
+
+        $('.rsa-data-table-body').animate({ scrollTop }, 0);
+        fn(selectedItem, selectedItemIndex, e, this);
       }
-
-      $('.rsa-data-table-body').animate({ scrollTop }, 0);
-      fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
 
   /**
    * @description Respond to the user pressing up on the keyboard
+   * if a dropdown is not in view, proceed with the following
    * if nothing is selected, select last record
    * if last record is selected, select first record
    * @public
    */
   selectPrevious: on(keyUp('ArrowUp'), function(e) {
-    const fn = this.get('onRowClick');
+    const { activeElement } = e.currentTarget;
+    const dropDownInView = activeElement.classList.contains('rsa-form-button') || activeElement.classList.contains('ember-power-select-trigger');
 
-    if ($.isFunction(fn)) {
-      let selectedItemIndex, selectedItem, scrollTop;
+    if (!dropDownInView) {
+      const fn = this.get('onRowClick');
 
-      if (this.get('selectedIndex') < 1) {
-        selectedItemIndex = this.get('items.length') - 1;
-        selectedItem = this.get('items').objectAt(selectedItemIndex);
-        // when vertical scroll is present, it will scroll to bottom,
-        // which was not happening before.
-        scrollTop = $('.rsa-data-table-body')[0].scrollHeight;
-      } else {
-        selectedItemIndex = this.get('selectedIndex') - 1;
-        selectedItem = this.get('items').objectAt(selectedItemIndex);
-        scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+      if ($.isFunction(fn)) {
+        let selectedItemIndex, selectedItem, scrollTop;
+
+        if (this.get('selectedIndex') < 1) {
+          selectedItemIndex = this.get('items.length') - 1;
+          selectedItem = this.get('items').objectAt(selectedItemIndex);
+          // when vertical scroll is present, it will scroll to bottom,
+          // which was not happening before.
+          scrollTop = $('.rsa-data-table-body')[0].scrollHeight;
+        } else {
+          selectedItemIndex = this.get('selectedIndex') - 1;
+          selectedItem = this.get('items').objectAt(selectedItemIndex);
+          scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+        }
+
+        $('.rsa-data-table-body').animate({ scrollTop }, 0);
+        fn(selectedItem, selectedItemIndex, e, this);
       }
-
-      $('.rsa-data-table-body').animate({ scrollTop }, 0);
-      fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
 

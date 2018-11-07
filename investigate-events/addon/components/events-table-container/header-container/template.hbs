@@ -16,16 +16,12 @@
           searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
           searchField='name'
           onopen=(action 'attachTooltip')
-          onkeydown=dropdownKeydownAction
-          onclose=dropdownCloseAction
           onchange=(action 'setColumnGroup') as |option|}}
           <span title="{{option.name}}">{{option.name}}</span>
         {{/power-select}}
       </label>
     </div>
-    {{events-table-container/header-container/download-dropdown
-      dropdownKeydownAction=dropdownKeydownAction
-      dropdownCloseAction=dropdownCloseAction}}
+    {{events-table-container/header-container/download-dropdown}}
   </div>
   <div class="events-table-control">
     {{rsa-icon

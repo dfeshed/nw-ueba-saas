@@ -137,7 +137,7 @@ module('Integration | Component | Events Table Container', function(hooks) {
     assert.ok(eventSelected, 'Keystroke triggers event selection when dropdown in view');
   });
 
-  test('keyDown will not open recon if dropdown not in view', async function(assert) {
+  test('keyDown will not trigger event selection if dropdown in view', async function(assert) {
 
     new ReduxDataHelper(setState)
       .allEventsSelected(true)
@@ -155,8 +155,7 @@ module('Integration | Component | Events Table Container', function(hooks) {
 
     await render(hbs` {{events-table-container selectEvent=handleSelectEvent}}`);
     await clickTrigger(downloadSelector);
-    await triggerKeyEvent(downloadPowerSelect, 'keydown', ARROW_DOWN_KEY);
-    await triggerKeyEvent('.rsa-data-table', 'keyup', ARROW_DOWN_KEY);
+    await triggerKeyEvent(downloadPowerSelect, 'keyup', ARROW_DOWN_KEY);
     assert.notOk(eventSelected, 'Keystroke does not trigger event selection when dropdown in view');
   });
 
