@@ -2,8 +2,14 @@
   <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
     {{rsa-form-checkbox checked=item.checked change=checkBoxAction}}
   </label>
-{{else if (eq column.field 'analysisData.machineRiskScore')}}
-  {{host-list/host-table/risk-score-badge score=item.analysisData.machineRiskScore}}
+{{else if (eq column.field 'score')}}
+  <centered>
+    {{#if (get item column.field)}}
+      {{rsa-risk-score score=(get item column.field) size='small'}}
+    {{else}}
+      {{rsa-risk-score score='0' size='small'}}
+    {{/if}}
+  </centered>
 {{else if (eq column.field 'machine.machineName')}}
   <hbox class="machine-name-holder">
     <div class="host-name">

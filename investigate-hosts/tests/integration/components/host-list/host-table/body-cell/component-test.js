@@ -24,11 +24,21 @@ test('it renders the checkbox column', function(assert) {
   assert.equal(this.$('.rsa-form-checkbox:checked').length, 0, 'Expecting to un-select the checkbox');
 });
 
-test('it should render the risk score component', function(assert) {
-  this.set('column', { field: 'analysisData.machineRiskScore' });
-  this.set('item', { analysisData: { machineRiskScore: 1024 }, id: 1 });
+test('it should render non-zero risk score for host', function(assert) {
+  this.set('column', { field: 'score' });
+  this.set('item', { score: 80, id: 1 });
+
   this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
-  assert.equal(this.$('.risk-score-badge').length, 1, 'Expected to render risk score component');
+  assert.equal(this.$('.rsa-risk-score').length, 1, 'Expected to render risk score component');
+  assert.equal(this.$('.rsa-risk-score')[0].textContent.trim(), 80, 'Expected to render risk score of 80 for host');
+});
+
+test('it should render zero risk score for host', function(assert) {
+  this.set('column', { field: 'score' });
+
+  this.render(hbs`{{host-list/host-table/body-cell column=column}}`);
+  assert.equal(this.$('.rsa-risk-score').length, 1, 'Expected to render risk score component');
+  assert.equal(this.$('.rsa-risk-score')[0].textContent.trim(), 0, 'Expected to render risk score of 0 for host');
 });
 
 test('it should render the anchor tag for machine name', function(assert) {
@@ -58,4 +68,3 @@ test('it should render disable text css when host is managed', function(assert) 
   this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
   assert.equal(this.$('.host-disable-text').length, 0);
 });
-

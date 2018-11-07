@@ -29,8 +29,14 @@ const DEFAULT_COLUMN = Immutable.from([
     field: 'machine.machineName',
     searchable: true,
     title: 'investigateHosts.hosts.column.machine.machineName'
+  },
+  {
+    dataType: 'string',
+    visible: true,
+    field: 'score',
+    searchable: false,
+    title: 'investigateHosts.hosts.column.score'
   }
-
 ]);
 
 const { createSelector } = reselect;
@@ -99,4 +105,3 @@ export const prepareSchema = createSelector(
     });
   }
 );
-

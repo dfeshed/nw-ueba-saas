@@ -478,14 +478,6 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'analysisData.machineRiskScore',
-      'description': 'Risk Score',
-      'dataType': 'INT',
-      'searchable': true,
-      'defaultProjection': true,
-      'wrapperType': 'NUMBER'
-    },
-    {
       'name': 'analysisData.iocs',
       'description': 'IOC Alerts',
       'dataType': 'STRING',

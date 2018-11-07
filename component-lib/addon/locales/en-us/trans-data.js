@@ -2858,9 +2858,9 @@ export default {
         panelTitle: 'Hosts Preferences',
         triggerTip: 'Open/Hide Hosts Preferences',
         id: 'Agent ID',
+        score: 'Risk Score',
         analysisData: {
-          iocs: 'IOC Alerts',
-          machineRiskScore: 'Risk Score'
+          iocs: 'IOC Alerts'
         },
         agentStatus: {
           scanStatus: 'Agent Scan Status',

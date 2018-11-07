@@ -46,8 +46,8 @@ const HostTable = Component.extend({
 
   @computed('columns')
   updatedColumns(columns) {
-    const fixedColumns = columns.slice(0, 2); // checkbox and machine name should be displayed first and second
-    const nonFixedColumns = columns.slice(2); // Remaining column sort by title
+    const fixedColumns = columns.slice(0, 3); // checkbox, machine name and risk score should be displayed first
+    const nonFixedColumns = columns.slice(3); // Remaining column sort by title
     const sortedColumn = this._sortList(nonFixedColumns);
     return [...fixedColumns, ...sortedColumn];
   },
