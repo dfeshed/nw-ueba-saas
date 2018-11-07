@@ -9,111 +9,108 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Loads BucketConfs from JSON file.
- * Provides API to get list of related BucketConfs for a given
- * event based on the context fields within the BucketConfs.
+ * Loads {@link FeatureBucketConf}s from JSON files.
+ * Provides an API to get a list of related {@link FeatureBucketConf}s for a given event,
+ * based on the context fields within the {@link FeatureBucketConf}s.
  */
 public class BucketConfigurationService extends AslConfigurationService {
-	private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
-	private static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
-	private ObjectMapper objectMapper;
+    private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
+    private static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
 
-	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
-	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
-	private Map<FeatureBucketConfCacheKey,List<FeatureBucketConf>> featureBucketConfsCache = new HashMap<>();
+    private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
+    private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
+    private Map<FeatureBucketConfCacheKey, List<FeatureBucketConf>> featureBucketConfsCache = new HashMap<>();
 
-	private String bucketConfJsonFilePath;
-	private String bucketConfJsonOverridingFilesPath;
-	private String bucketConfJsonAdditionalFilesPath;
+    private String bucketConfJsonFilePath;
+    private String bucketConfJsonOverridingFilesPath;
+    private String bucketConfJsonAdditionalFilesPath;
+    private ObjectMapper objectMapper;
 
-	public BucketConfigurationService(
-			String bucketConfJsonFilePath,
-			String bucketConfJsonOverridingFilesPath,
-			String bucketConfJsonAdditionalFilesPath) {
+    public BucketConfigurationService(
+            String bucketConfJsonFilePath,
+            String bucketConfJsonOverridingFilesPath,
+            String bucketConfJsonAdditionalFilesPath) {
 
-		this.bucketConfJsonFilePath = bucketConfJsonFilePath;
-		this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
-		this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
-		this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
-	}
+        this.bucketConfJsonFilePath = bucketConfJsonFilePath;
+        this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
+        this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
+        this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
+    }
 
-	@Override
-	protected String getBaseConfJsonFilesPath() {
-		return bucketConfJsonFilePath;
-	}
+    @Override
+    protected String getBaseConfJsonFilesPath() {
+        return bucketConfJsonFilePath;
+    }
 
-	@Override
-	protected String getBaseOverridingConfJsonFolderPath() {
-		return bucketConfJsonOverridingFilesPath;
-	}
+    @Override
+    protected String getBaseOverridingConfJsonFolderPath() {
+        return bucketConfJsonOverridingFilesPath;
+    }
 
-	@Override
-	protected String getAdditionalConfJsonFolderPath() {
-		return bucketConfJsonAdditionalFilesPath;
-	}
+    @Override
+    protected String getAdditionalConfJsonFolderPath() {
+        return bucketConfJsonAdditionalFilesPath;
+    }
 
-	@Override
-	protected String getConfNodeName() {
-		return JSON_CONF_BUCKET_CONFS_NODE_NAME;
-	}
+    @Override
+    protected String getConfNodeName() {
+        return JSON_CONF_BUCKET_CONFS_NODE_NAME;
+    }
 
-	@Override
-	protected void loadConfJson(JSONObject jsonObj) {
-		String bucketConfJson = jsonObj.toJSONString();
-		FeatureBucketConf bucketConf;
+    @Override
+    protected void loadConfJson(JSONObject jsonObj) {
+        String bucketConfJson = jsonObj.toJSONString();
+        FeatureBucketConf bucketConf;
 
-		try {
-			bucketConf = objectMapper.readValue(bucketConfJson, FeatureBucketConf.class);
-		} catch (Exception e) {
-			String errorMsg = String.format("Failed to deserialize json %s", bucketConfJson);
-			logger.error(errorMsg, e);
-			throw new IllegalArgumentException(errorMsg, e);
-		}
+        try {
+            bucketConf = objectMapper.readValue(bucketConfJson, FeatureBucketConf.class);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to deserialize JSON %s.", bucketConfJson);
+            logger.error(errorMsg, e);
+            throw new IllegalArgumentException(errorMsg, e);
+        }
 
-		try {
-			addNewBucketConf(bucketConf);
-		} catch (Exception e) {
-			String errorMsg = String.format("Failed to add new bucket conf. json: %s", bucketConfJson);
-			logger.error(errorMsg, e);
-			throw new IllegalArgumentException(errorMsg, e);
-		}
-	}
+        try {
+            addNewBucketConf(bucketConf);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to add new configuration. JSON: %s.", bucketConfJson);
+            logger.error(errorMsg, e);
+            throw new IllegalArgumentException(errorMsg, e);
+        }
+    }
 
-	/**
-	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames excluded by
-	 * contextFieldNamesToExclude
-	 */
-	public List<FeatureBucketConf> getRelatedBucketConfs(
-			String adeEventType,
-			String strategyName,
-			String contextFieldName,
-			List<String> contextFieldNamesToExclude) {
+    /**
+     * @return A list of {@link FeatureBucketConf}s by adeEventType, strategyName,
+     * contextFieldName and context field names excluded by contextFieldNamesToExclude.
+     */
+    public List<FeatureBucketConf> getRelatedBucketConfs(
+            String adeEventType,
+            String strategyName,
+            String contextFieldName,
+            List<String> contextFieldNamesToExclude) {
 
-		if (StringUtils.isEmpty(adeEventType)) return null;
+        if (StringUtils.isEmpty(adeEventType)) return null;
+        FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName, contextFieldName, adeEventType);
+        List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.computeIfAbsent(featureBucketConfCacheKey, key -> {
+            List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
+            return featureBucketConfs == null ? Collections.emptyList() : featureBucketConfs.stream()
+                    .filter(conf -> conf.getStrategyName().equals(strategyName) && conf.getContextFieldNames().contains(contextFieldName))
+                    .collect(Collectors.toList());
+        });
 
-		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldName,adeEventType);
-		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.computeIfAbsent(featureBucketConfCacheKey, key -> {
-			List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-			return featureBucketConfs == null ? Collections.emptyList() : featureBucketConfs.stream()
-					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().contains(contextFieldName))
-					.collect(Collectors.toList());
-		});
+        if (!contextFieldNamesToExclude.isEmpty()) {
+            cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()
+                    .filter(conf -> Collections.disjoint(contextFieldNamesToExclude, conf.getContextFieldNames()))
+                    .collect(Collectors.toList());
+        }
 
-		if(!contextFieldNamesToExclude.isEmpty()){
-			cachedFeatureBucketConfs = cachedFeatureBucketConfs.stream()
-					.filter(featureBucketConf ->
-							Collections.disjoint(contextFieldNamesToExclude, featureBucketConf.getContextFieldNames()) )
-					.collect(Collectors.toList());
-		}
-
-		return cachedFeatureBucketConfs;
-	}
+        return cachedFeatureBucketConfs;
+    }
 
 	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
 		List<FeatureBucketConf> ret = adeEventTypeToListOfBucketConfs.get(adeEventType);
@@ -131,48 +128,69 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return featureBucketConfList;
 	}
 
-	public FeatureBucketConf getBucketConf(String bucketConfName) {
-		return bucketConfs.get(bucketConfName);
-	}
+    public FeatureBucketConf getBucketConf(String bucketConfName) {
+        return bucketConfs.get(bucketConfName);
+    }
 
-	private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
-		FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
-		if (existingBucketConf != null) throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
-		bucketConfs.put(bucketConf.getName(), bucketConf);
-		List<String> adeEventTypeList = bucketConf.getAdeEventTypes();
+    public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
+        List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
 
-		for (String adeEventType : adeEventTypeList) {
-			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs
-					.computeIfAbsent(adeEventType, key -> new ArrayList<>());
-			listOfBucketConfs.add(bucketConf);
-		}
-	}
+        if (featureBucketConfs == null) {
+            logger.warn("No feature bucket configuration for ADE event type {}.", adeEventType);
+            // TODO: Add monitoring metric.
+            return Collections.emptySet();
+        }
 
-	class FeatureBucketConfCacheKey
-	{
-		private String strategyName;
-		private String contextFieldName;
-		private String adeEventType;
+        Set<List<String>> distinctContextsSet = new HashSet<>();
 
-		public FeatureBucketConfCacheKey(String strategyName, String contextFieldName, String adeEventType) {
-			this.strategyName = strategyName;
-			this.contextFieldName = contextFieldName;
-			this.adeEventType = adeEventType;
-		}
+        for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
+            distinctContextsSet.add(featureBucketConf.getContextFieldNames());
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof FeatureBucketConfCacheKey)) return false;
+        return distinctContextsSet;
+    }
 
-			FeatureBucketConfCacheKey that = (FeatureBucketConfCacheKey) o;
+    private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
+        FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
+        if (existingBucketConf != null) throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
+        bucketConfs.put(bucketConf.getName(), bucketConf);
+        List<String> adeEventTypeList = bucketConf.getAdeEventTypes();
 
-			return new EqualsBuilder().append(that.strategyName, strategyName).append(that.contextFieldName, contextFieldName).append(that.adeEventType, adeEventType).isEquals();
-		}
+        for (String adeEventType : adeEventTypeList) {
+            adeEventTypeToListOfBucketConfs.computeIfAbsent(adeEventType, key -> new ArrayList<>()).add(bucketConf);
+        }
+    }
 
-		@Override
-		public int hashCode() {
-			return new HashCodeBuilder().append(strategyName).append(contextFieldName).append(adeEventType).hashCode();
-		}
-	}
+    private static final class FeatureBucketConfCacheKey {
+        private String strategyName;
+        private String contextFieldName;
+        private String adeEventType;
+
+        public FeatureBucketConfCacheKey(String strategyName, String contextFieldName, String adeEventType) {
+            this.strategyName = strategyName;
+            this.contextFieldName = contextFieldName;
+            this.adeEventType = adeEventType;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof FeatureBucketConfCacheKey)) return false;
+            FeatureBucketConfCacheKey that = (FeatureBucketConfCacheKey)o;
+            return new EqualsBuilder()
+                    .append(that.strategyName, strategyName)
+                    .append(that.contextFieldName, contextFieldName)
+                    .append(that.adeEventType, adeEventType)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(strategyName)
+                    .append(contextFieldName)
+                    .append(adeEventType)
+                    .hashCode();
+        }
+    }
 }
