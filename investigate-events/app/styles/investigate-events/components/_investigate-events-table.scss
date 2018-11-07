@@ -54,8 +54,7 @@
       iframe {
         opacity: 0;
         width: 1px;
-        position: absolute;
-        left: -9999px;
+        height: 1px;
       }
       &.is-disabled {
         .ember-power-select-trigger{
