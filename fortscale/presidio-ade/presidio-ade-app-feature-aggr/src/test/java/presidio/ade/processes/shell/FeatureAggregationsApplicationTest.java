@@ -1,5 +1,7 @@
 package presidio.ade.processes.shell;
 
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
@@ -24,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,8 +74,19 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     private ModelConfService modelConfService;
+
     @Autowired
+    @Qualifier("bucketConfigurationService")
+    private BucketConfigurationService bucketConfigurationService;
+    @Autowired
+    @Qualifier("levelThreeBucketConfigurationService")
+    private BucketConfigurationService levelThreeBucketConfigurationService;
+    @Autowired
+    @Qualifier("aggregatedFeatureEventsConfService")
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    @Autowired
+    @Qualifier("levelThreeAggregatedFeatureEventsConfService")
+    private AggregatedFeatureEventsConfService levelThreeAggregatedFeatureEventsConfService;
 
     @Override
     protected String getContextTestExecutionCommand() {
@@ -362,6 +376,27 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
             Assert.assertTrue(scoredFeatureAggregationRecord.getStartInstant().getEpochSecond() >= start.plus(Duration.ofDays(1)).getEpochSecond());
             Assert.assertTrue(scoredFeatureAggregationRecord.getStartInstant().getEpochSecond() < end.minus(Duration.ofDays(1)).getEpochSecond());
         }
+    }
+
+    @Test
+    public void validateContextFieldNamesOfLevelThreeFeatureBucketConfs() {
+        levelThreeAggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().forEach(levelThreeAggregatedFeatureEventConf -> {
+            String levelThreeFeatureBucketConfName = levelThreeAggregatedFeatureEventConf.getBucketConfName();
+            FeatureBucketConf levelThreeFeatureBucketConf = levelThreeBucketConfigurationService.getBucketConf(levelThreeFeatureBucketConfName);
+            Assert.assertNotNull(levelThreeFeatureBucketConf);
+            List<String> levelThreeContextFieldNames = levelThreeFeatureBucketConf.getContextFieldNames();
+            List<String> adeEventTypes = levelThreeFeatureBucketConf.getAdeEventTypes();
+            Assert.assertEquals(1, adeEventTypes.size());
+            String adeEventType = adeEventTypes.get(0);
+            adeEventType = adeEventType.substring("aggr_event.".length());
+            AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(adeEventType);
+            Assert.assertNotNull(aggregatedFeatureEventConf);
+            String featureBucketConfName = aggregatedFeatureEventConf.getBucketConfName();
+            FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+            Assert.assertNotNull(featureBucketConf);
+            List<String> contextFieldNames = featureBucketConf.getContextFieldNames();
+            Assert.assertTrue(contextFieldNames.containsAll(levelThreeContextFieldNames));
+        });
     }
 
     /**
