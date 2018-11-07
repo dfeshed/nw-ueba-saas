@@ -24,6 +24,11 @@ export default function getEventCount() {
           type: ACTION_TYPES.FAILED_GET_EVENT_COUNT,
           payload: response.code
         });
+        dispatch({
+          type: ACTION_TYPES.QUERY_STATS,
+          payload: response.meta,
+          code: response.code
+        });
       },
       onResponse(response) {
         // protect against null data while query is being processed and when devices are returned
