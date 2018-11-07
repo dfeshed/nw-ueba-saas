@@ -4767,7 +4767,7 @@ export default {
       LAST_THREE_HOURS: '3 Hours ago',
       LAST_SIX_HOURS: '6 Hours ago',
       LAST_TWELVE_HOURS: '12 Hours ago',
-      LAST_TWENTY_FOUR_HOURS: 'Hours ago',
+      LAST_TWENTY_FOUR_HOURS: '24 Hours ago',
       LAST_TWO_DAYS: '2 Days ago',
       LAST_SEVEN_DAYS: '7 Days ago',
       LAST_TWO_WEEKS: '2 Weeks ago',

@@ -136,6 +136,9 @@ export default Component.extend({
 
     toggleCustomDate() {
       this.toggleProperty('hasCustomDate');
+      if (!this.get('hasCustomDate')) {
+        this._handleChange([], null); // clearing the custom date
+      }
     },
 
     customStartDateChanged([date]) {

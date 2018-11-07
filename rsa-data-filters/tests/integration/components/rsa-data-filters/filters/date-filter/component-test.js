@@ -158,6 +158,27 @@ module('Integration | Component | rsa-data-filters/filters/date-filter', functio
     await click('.ember-power-select-clear-btn');
   });
 
+  test('it reset the applied value on switch back to predefined time options', async function(assert) {
+    assert.expect(5);
+    this.set('filterOptions', {
+      name: 'scanTime',
+      timeframes,
+      filterValue: {
+        value: [ 1427958061000, 1427958061000 ]
+      }
+    });
+    this.set('onQueryChange', (filterValue) => {
+      assert.equal(filterValue.operator, 'BETWEEN');
+      assert.equal(filterValue.value, 0);
+    });
+
+    await render(hbs`{{rsa-data-filters/filters/date-filter filterOptions=filterOptions onChange=(action onQueryChange)}}`);
+    assert.equal(document.querySelectorAll('.range-start-time').length, 1);
+    assert.equal(document.querySelectorAll('.range-end-time').length, 1);
+    assert.equal(find('input.flatpickr-input:first-of-type').value, '04/02/2015 12:01:01 AM', 'The expected date appears in the start input');
+    await click('.toggle-custom-range .x-toggle-btn');
+  });
+
 });
 
 
