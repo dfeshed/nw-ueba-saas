@@ -24,11 +24,6 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
@@ -105,6 +100,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     @Override
     protected List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy) {
         List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
-        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
+        return featureBucketConfList.stream().map(FeatureBucketConf::getContextFieldNames).collect(Collectors.toList());
     }
 }

@@ -2,8 +2,8 @@ package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
@@ -33,12 +33,10 @@ import java.util.stream.Collectors;
  * @author Barak Schuster
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
-    private final EnrichedDataStore enrichedDataStore;
-    private final EnrichedEventsScoringService enrichedEventsScoringService;
-
     private static final String SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT = AdeScoredEnrichedRecord.EVENT_TYPE_PREFIX + ".%s";
 
-    private final AggregatedDataStore aggregatedDataStore;
+    private final EnrichedDataStore enrichedDataStore;
+    private final EnrichedEventsScoringService enrichedEventsScoringService;
     private final FeatureBucketService<AdeScoredEnrichedRecord> featureBucketService;
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final AggregatedDataStore aggregatedDataStore;
@@ -132,8 +130,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     protected List<List<String>> getListsOfContextFieldNames(String dataSource, FixedDurationStrategy strategy) {
         String adeEventTypePrefix = String.format(SCORED_ENRICHED_ADE_EVENT_TYPE_PREFIX_FORMAT, dataSource);
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
-        List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(x -> x.getBucketConf()).collect(Collectors.toList());
+        List<FeatureBucketConf> featureBucketConfs = aggregatedFeatureEventConfs.stream().map(AggregatedFeatureEventConf::getBucketConf).collect(Collectors.toList());
         featureBucketConfs = featureBucketConfs.stream().filter(bucketConf -> bucketConf.getAdeEventTypes().get(0).startsWith(adeEventTypePrefix)).collect(Collectors.toList());
-        return featureBucketConfs.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
+        return featureBucketConfs.stream().map(FeatureBucketConf::getContextFieldNames).collect(Collectors.toList());
     }
 }

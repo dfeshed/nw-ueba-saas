@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.TreeMultiset;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
@@ -112,42 +111,25 @@ public class BucketConfigurationService extends AslConfigurationService {
         return cachedFeatureBucketConfs;
     }
 
-	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
-		List<FeatureBucketConf> ret = adeEventTypeToListOfBucketConfs.get(adeEventType);
-		return ret == null ? Collections.emptyList() : ret;
-	}
+    public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
+        List<FeatureBucketConf> ret = adeEventTypeToListOfBucketConfs.get(adeEventType);
+        return ret == null ? Collections.emptyList() : ret;
+    }
 
-	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType, String strategyName) {
-		List<FeatureBucketConf> featureBucketConfList = getFeatureBucketConfs(adeEventType);
-		if(strategyName != null) {
-			featureBucketConfList.stream()
-					.filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName))
-					.collect(Collectors.toList());
-		}
+    public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType, String strategyName) {
+        List<FeatureBucketConf> featureBucketConfList = getFeatureBucketConfs(adeEventType);
 
-		return featureBucketConfList;
-	}
+        if (strategyName != null) {
+            featureBucketConfList = featureBucketConfList.stream()
+                    .filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName))
+                    .collect(Collectors.toList());
+        }
+
+        return featureBucketConfList;
+    }
 
     public FeatureBucketConf getBucketConf(String bucketConfName) {
         return bucketConfs.get(bucketConfName);
-    }
-
-    public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
-        List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-
-        if (featureBucketConfs == null) {
-            logger.warn("No feature bucket configuration for ADE event type {}.", adeEventType);
-            // TODO: Add monitoring metric.
-            return Collections.emptySet();
-        }
-
-        Set<List<String>> distinctContextsSet = new HashSet<>();
-
-        for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
-            distinctContextsSet.add(featureBucketConf.getContextFieldNames());
-        }
-
-        return distinctContextsSet;
     }
 
     private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
