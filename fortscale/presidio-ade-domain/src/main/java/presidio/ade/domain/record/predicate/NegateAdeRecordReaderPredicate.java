@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.predicate;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -7,6 +8,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
+@JsonAutoDetect(
+        creatorVisibility = JsonAutoDetect.Visibility.ANY,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE
+)
 public class NegateAdeRecordReaderPredicate implements AdeRecordReaderPredicate {
     public static final String ADE_RECORD_READER_PREDICATE_TYPE = "not";
 
