@@ -13,6 +13,19 @@ const defaultColumns = [
     title: 'NAME'
   },
   {
+    field: 'fileProperties.score',
+    title: 'Risk Score'
+  },
+  {
+    field: 'fileProperties.reputationStatus',
+    title: 'Reputation Status'
+  },
+  {
+    field: 'fileProperties.fileStatus',
+    title: 'File Status',
+    width: '15%'
+  },
+  {
     field: 'checksumSha256',
     title: 'HASH'
   },
@@ -23,11 +36,6 @@ const defaultColumns = [
     disableSort: true,
     format: 'DOWNLOADSTATUS',
     width: 100
-  },
-  {
-    field: 'fileProperties.fileStatus',
-    title: 'File Status',
-    width: '15%'
   }
 ];
 let columnsConfig = {

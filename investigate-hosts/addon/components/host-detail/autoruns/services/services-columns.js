@@ -9,9 +9,21 @@ const defaultColumns = [
     'headerComponentClass': 'rsa-form-checkbox'
   },
   {
+    field: 'fileName',
+    title: 'NAME'
+  },
+  {
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE'
+  },
+  {
+    field: 'fileProperties.score',
+    title: 'Risk Score'
+  },
+  {
+    field: 'fileProperties.reputationStatus',
+    title: 'Reputation Status'
   },
   {
     field: 'fileProperties.fileStatus',
