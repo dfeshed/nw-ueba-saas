@@ -1,5 +1,5 @@
 <div {{action "saveChanges" on="onDeactivate"}}>
-  {{rsa-form-input class='operator-input firstValueInput'
+  {{rsa-form-input class=(concat 'operator-input firstValueInput ' validation)
     maxLength=1024
     value=firstValue
     isError=(or firstValueValidator.showError firstlockError)
@@ -8,8 +8,11 @@
     focusOut=(action 'firstValueChange' value='target.value')
     spellcheck=false
   }}
-  <span>and</span>
-  {{rsa-form-input class='operator-input secondValueInput'
+  <span>{{t 'adminUsm.groupCriteria.and'}}</span>
+  {{#if (eq validation 'validIPv6')}}
+    <br>
+  {{/if}}
+  {{rsa-form-input class=(concat 'operator-input secondValueInput ' validation)
     maxLength=1024
     value=secondValue
     isError=(or secondValueValidator.showError secondlockError)

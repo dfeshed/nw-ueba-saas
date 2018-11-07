@@ -52,8 +52,7 @@
           padding-bottom: rsa-whitespace(more);
         }
         .input-value {
-          padding-bottom: rsa-whitespace(more);
-          
+          padding-bottom: rsa-whitespace(more);      
           .textarea-input {
             .input-error {
               @include rsa-font(paragraph, small);
@@ -79,6 +78,12 @@
         width: 400px;
         span {
           margin-right: rsa-whitespace(less); 
+        }
+        label.operator-input.validIPv6 {
+          width: 350px;
+        }
+        .secondValueInput.validIPv6 {
+          margin-top: rsa-whitespace(less); 
         }
       }
       .textarea-input textarea {

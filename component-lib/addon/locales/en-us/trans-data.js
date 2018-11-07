@@ -4071,6 +4071,7 @@ export default {
       published: 'Published'
     },
     groupCriteria: {
+      and: 'and',
       attribute: {
         osType: 'OS Type',
         osDescription: 'OS description',

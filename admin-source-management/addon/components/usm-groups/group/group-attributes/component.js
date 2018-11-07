@@ -35,6 +35,11 @@ const GroupAttributes = Component.extend({
     return criterias.length > 9;
   },
   actions: {
+    handleAddCriteria() {
+      this.send('addCriteria');
+      // scroll to view new added criteria
+      document.getElementsByClassName('criteria-wrapper')[0].scrollTop = document.getElementsByClassName('criteria-wrapper')[0].scrollHeight;
+    },
     handleAttributeChange(criteriaPath, attr) {
       this.send('updateGroupCriteria', criteriaPath, attr, 0);
     },
