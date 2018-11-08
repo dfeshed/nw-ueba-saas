@@ -64,7 +64,8 @@ export default Component.extend({
     },
 
     onClose(data, e) {
-      if (e.target.classList.contains('rsa-form-button')) {
+      const i18n = this.get('i18n');
+      if (e.target.textContent.trim() === i18n.t('forms.yes').string) {
         return false;
       }
     }

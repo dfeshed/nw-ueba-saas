@@ -87,7 +87,7 @@ const certificatesReducer = handleActions({
       success: (s) => {
         const [payLoadData] = action.payload.data;
         if (payLoadData && payLoadData.resultList.length) {
-          return s.set('statusData', payLoadData.resultList[0].data);
+          return s.set('certificateStatusData', payLoadData.resultList[0].data);
         }
         return s;
       }

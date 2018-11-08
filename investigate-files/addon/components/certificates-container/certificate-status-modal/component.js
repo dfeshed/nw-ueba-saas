@@ -8,7 +8,7 @@ import { success, failure } from 'investigate-files/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,
-  statusData: state.certificate.list.statusData
+  statusData: state.certificate.list.certificateStatusData
 });
 
 const dispatchToActions = {

@@ -136,7 +136,7 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
             resultList: [
               {
                 data: {
-                  certificateStatus: 'Blacklisted',
+                  certificateStatusData: 'Blacklisted',
                   thumbprints: ['afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033']
                 }
               }
@@ -146,7 +146,7 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
       }
     });
     const newEndState = reducer(previous, newAction);
-    assert.equal(newEndState.statusData.certificateStatus, 'Blacklisted');
+    assert.equal(newEndState.certificateStatusData.certificateStatusData, 'Blacklisted');
   });
 
   test('reset certificate data', function(assert) {
