@@ -17,6 +17,16 @@ import * as ACTION_TYPES from './types';
 const noop = () => {};
 
 /**
+ * Iterates on the list of services returned from MT to
+ * check if the serviceId stored in queryNode is still
+ * available/present
+ * @private
+ */
+export const _isServiceIdPresent = (serviceId, serviceList) => {
+  return !!serviceList.find((s) => s.id === serviceId);
+};
+
+/**
  * Wraps the fetching of dictionaries in a promise
  *
  * @see getDictionaries
@@ -331,6 +341,11 @@ export const queryIsRunning = (flag) => ({
 /**
  * Retrieves the list of services (aka endpoints). This list shouldn't really
  * change much.
+ *
+ * We pick the first service in the list in two cases:
+ * a) There is no service is state.
+ * b) The service stored in state is no longer present in the list of
+ * services retrieved.
  * @param {function} [resolve=NOOP] - A Promise resolve
  * @param {function} [reject=NOOP]  - A Promise reject
  * @return {function} A Redux thunk
@@ -348,7 +363,7 @@ export const getServices = (resolve = noop, reject = noop) => {
             const { data } = response;
             if (data && Array.isArray(data)) {
               const { serviceId } = getState().investigate.queryNode;
-              if (!serviceId) {
+              if ((!serviceId) || (serviceId && !_isServiceIdPresent(serviceId, data))) {
                 // grab first service in array if one isn't already selected
                 const [ service ] = data;
                 dispatch({
