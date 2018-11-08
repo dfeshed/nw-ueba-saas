@@ -60,6 +60,13 @@
       }
     }
 
+    .selector-error {
+      @include rsa-input-placeholder($formInputErrorPlaceholderColor);
+      color: $formInputErrorTypeColor;
+      background-color: $formInputErrorBackgroundColor;
+      border-color: $formInputErrorBorderColor;
+    }
+
   }
   
 }

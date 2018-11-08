@@ -4111,7 +4111,8 @@ export default {
         validIPv4: 'Invalid IPv4 address',
         validIPv4List: 'One or more of the the IPv4 addresses are invalid',
         validIPv6: 'Invalid IPv6 address',
-        validIPv6List: 'One or more of the the IPv6 addresses are invalid'
+        validIPv6List: 'One or more of the the IPv6 addresses are invalid',
+        validPolicyAssigned: 'Policy selection is required for a source type selection, or you can clear the source type by selecting the \'X\''
       }
     },
     errorCodeResponse: {

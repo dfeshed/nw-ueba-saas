@@ -12,10 +12,16 @@
         selected=selectedSourceType
         searchField='name'
         allowClear=true
+        triggerClass=(if validator.showError 'selector-error')
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
         {{t (concat 'adminUsm.policyTypes.' option)}}
       {{/power-select}}
+      {{#if validator.showError}}
+        <span class="input-error">
+          {{t (concat 'adminUsm.groupCriteria.inputValidations.' 'validPolicyAssigned' )}}
+        </span>
+      {{/if}}
     </label>
   </hbox>
   <hbox class="control">

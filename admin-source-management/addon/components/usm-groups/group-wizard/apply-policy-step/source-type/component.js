@@ -8,7 +8,8 @@ import {
   policyList,
   assignedPolicies,
   assignedPolicyList,
-  availablePolicySourceTypes
+  availablePolicySourceTypes,
+  applyPolicyStepShowErrors
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
   editGroup
@@ -19,7 +20,8 @@ const stateToComputed = (state) => ({
   assignedPolicies: assignedPolicies(state),
   assignedPolicyList: assignedPolicyList(state),
   policyList: policyList(state),
-  availablePolicySourceTypes: availablePolicySourceTypes(state)
+  availablePolicySourceTypes: availablePolicySourceTypes(state),
+  stepShowErrors: applyPolicyStepShowErrors(state)
 });
 
 const dispatchToActions = {
@@ -63,8 +65,19 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
     return list;
   },
 
-  actions: {
+  @computed('selectedSourceType', 'selectedPolicy', 'stepShowErrors')
+  validator(selectedSourceType, selectedPolicy, stepShowErrors) {
+    let inputValid = true;
+    if (selectedSourceType && !selectedPolicy) {
+      inputValid = false;
+    }
+    return {
+      isError: !inputValid,
+      showError: stepShowErrors ? !inputValid : false
+    };
+  },
 
+  actions: {
     handleSourceTypeChange(value) {
       if (value) {
         const previousType = this.get('selectedSourceType');

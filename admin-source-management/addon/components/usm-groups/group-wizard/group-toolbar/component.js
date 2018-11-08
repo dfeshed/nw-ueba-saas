@@ -11,7 +11,7 @@ import {
   isDefineGroupStepValid,
   defineGroupStepShowErrors,
   isApplyPolicyStepValid,
-  isReviewGroupStepValid,
+  applyPolicyStepShowErrors,
   isWizardValid
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
@@ -28,7 +28,7 @@ const stateToComputed = (state) => ({
   isDefineGroupStepValid: isDefineGroupStepValid(state),
   defineGroupStepShowErrors: defineGroupStepShowErrors(state),
   isApplyPolicyStepValid: isApplyPolicyStepValid(state),
-  isReviewGroupStepValid: isReviewGroupStepValid(state),
+  applyPolicyStepShowErrors: applyPolicyStepShowErrors(state),
   isWizardValid: isWizardValid(state)
 });
 
@@ -52,8 +52,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   @computed('step',
    'isIdentifyGroupStepValid', 'identifyGroupStepShowErrors',
    'isDefineGroupStepValid', 'defineGroupStepShowErrors',
-   'isApplyPolicyStepValid', 'applyPolicyStepShowErrors',
-   'isReviewGroupStepValid')
+   'isApplyPolicyStepValid', 'applyPolicyStepShowErrors')
   isStepValid(step,
     isIdentifyGroupStepValid, identifyGroupStepShowErrors,
     isDefineGroupStepValid, defineGroupStepShowErrors,
