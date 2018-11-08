@@ -20,9 +20,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class AccumulateAggregationsService extends FixedDurationStrategyExecutor {
-
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore;
@@ -32,12 +30,17 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     private AccumulateAggregationsBucketService accumulateAggregationsBucketService;
     private AccumulationsCache accumulationsCache;
 
-    public AccumulateAggregationsService(FixedDurationStrategy fixedDurationStrategy,
-                                         BucketConfigurationService bucketConfigurationService,
-                                         EnrichedDataStore enrichedDataStore,
-                                         AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore, int pageSize, int maxGroupSize, FixedDurationStrategy featureBucketDuration,
-                                         AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                         AccumulationsCache accumulationsCache) {
+    public AccumulateAggregationsService(
+            FixedDurationStrategy fixedDurationStrategy,
+            BucketConfigurationService bucketConfigurationService,
+            EnrichedDataStore enrichedDataStore,
+            AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore,
+            int pageSize,
+            int maxGroupSize,
+            FixedDurationStrategy featureBucketDuration,
+            AccumulateAggregationsBucketService accumulateAggregationsBucketService,
+            AccumulationsCache accumulationsCache) {
+
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -50,29 +53,30 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
-        //PaginationService sort pages by START_INSTANT_FIELD
+    protected void executeSingleTimeRange(
+            TimeRange timeRange,
+            String adeEventType,
+            String contextType,
+            List<String> contextFieldNamesToExclude,
+            StoreMetadataProperties storeMetadataProperties) {
+
+        // The pagination service sorts pages by START_INSTANT_FIELD.
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType, AdeRecord.START_INSTANT_FIELD);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             Accumulator accumulatorService = new AccumulatorService(accumulationsCache, strategy, featureBucketDuration);
-
-            accumulateAggregationsBucketService.aggregateAndAccumulate(pageIterator, adeEventType, contextType,
-                    contextFieldNamesToExclude, featureBucketDuration, accumulatorService);
-
-            //get all accumulated records and clean the store
+            accumulateAggregationsBucketService.aggregateAndAccumulate(pageIterator, adeEventType, contextType, contextFieldNamesToExclude, featureBucketDuration, accumulatorService);
+            // Get all accumulated records and clean the store.
             List<AccumulatedAggregationFeatureRecord> accumulatedRecords = accumulationsCache.getAllAccumulatedRecords();
             accumulationsCache.clean();
             aggregationEventsAccumulationDataStore.store(accumulatedRecords, storeMetadataProperties);
         }
     }
 
-
     @Override
     protected List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy) {
         List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, featureBucketDuration.toStrategyName());
-        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
+        return featureBucketConfList.stream().map(FeatureBucketConf::getContextFieldNames).collect(Collectors.toList());
     }
-
 }
