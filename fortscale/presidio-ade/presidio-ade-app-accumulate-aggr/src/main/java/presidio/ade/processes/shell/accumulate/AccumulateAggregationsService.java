@@ -71,7 +71,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
 
     @Override
     protected List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy) {
-        List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
+        List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, featureBucketDuration.toStrategyName());
         return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
     }
 
