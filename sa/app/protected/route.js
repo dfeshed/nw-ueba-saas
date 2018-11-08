@@ -189,6 +189,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
       $('body').removeClass('iframed-into-classic');
     }
 
+    // Set feature flags
+    this.getSourceManagementFeatures();
+
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
@@ -198,11 +201,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     // no real permissions exist, only user roles.
     const roles = this.getRoles();
     this.set('accessControl.authorities', roles);
-
-    // Set feature flags
-    // *** commenting out while removing top level 'rsa.usm' feature flag,
-    //     but not deleting as we'll turn this back on for other flags shortly
-    // this.getSourceManagementFeatures();
 
     return RSVP.all([
       preferencesPromise,

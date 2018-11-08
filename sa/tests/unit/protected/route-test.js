@@ -1,5 +1,5 @@
-import { module /* , test */ } from 'qunit';
-// import Service from '@ember/service';
+import { module, test } from 'qunit';
+import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { Promise } from 'rsvp';
 import { next } from '@ember/runloop';
@@ -11,7 +11,7 @@ import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 //   code: 0,
 //   data: {
 //     'rsa.usm': true,
-//     'rsa.usm.featureOne,
+//     'rsa.usm.allowWindowsLogPolicyCreation,
 //     'rsa.usm.featureTwo
 //   }
 // }
@@ -37,31 +37,25 @@ module('Unit | Route | protected', function(hooks) {
     return sessionStorageClear();
   });
 
-  // *** commenting out while removing top level 'rsa.usm' feature flag,
-  //     but not deleting as we'll turn this back on for other flags shortly
-  // test('should fetch Source Management (USM) feature flags and store in features service', async function(assert) {
-  //   const features = this.owner.lookup('service:features');
+  test('should fetch Source Management (USM) feature flags and store in features service', async function(assert) {
+    assert.expect(2);
+    const features = this.owner.lookup('service:features');
 
-  //   this.owner.register('service:-routing', Service.extend({
-  //     currentRouteName: 'protected'
-  //   }));
-  //   const route = this.owner.lookup('route:protected');
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'protected'
+    }));
+    const route = this.owner.lookup('route:protected');
 
-  //   // disabled by default
-  //   let isRsaUsmEnabled = features.isEnabled('rsa.usm');
-  //   assert.equal(isRsaUsmEnabled, false, 'feature rsa.usm is disabled by default');
-  //   // not in sessionStorage by default
-  //   let isRsaUsmInSessionStorage = sessionStorage.getItem('features.rsaUsm');
-  //   assert.equal(isRsaUsmInSessionStorage, null, 'features.rsaUsm is not in sessionStorage by default');
+    // disabled by default
+    let isRsaUsmAllowWindowsLogPolicyCreationEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
+    assert.equal(isRsaUsmAllowWindowsLogPolicyCreationEnabled, false, 'feature rsa.usm.allowWindowsLogPolicyCreation is disabled by default');
 
-  //   const promise = route.getSourceManagementFeatures();
-  //   await promise;
+    const promise = route.getSourceManagementFeatures();
+    await promise;
 
-  //   // enabled by the service call
-  //   isRsaUsmEnabled = features.isEnabled('rsa.usm');
-  //   assert.equal(isRsaUsmEnabled, true, 'feature rsa.usm is enabled by the service call');
-  //   // set in sessionStorage by the service call
-  //   isRsaUsmInSessionStorage = JSON.parse(sessionStorage.getItem('features.rsaUsm'));
-  //   assert.equal(isRsaUsmInSessionStorage, true, 'features.rsaUsm is set in sessionStorage by the service call');
-  // });
+    // enabled by the service call
+    isRsaUsmAllowWindowsLogPolicyCreationEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
+    assert.equal(isRsaUsmAllowWindowsLogPolicyCreationEnabled, true, 'feature rsa.usm.allowWindowsLogPolicyCreation is enabled by the service call');
+  });
+
 });

@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { lookup } from 'ember-dependency-lookup';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import moment from 'moment';
@@ -50,10 +51,27 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
   });
 
   test('sourceTypes selector', function(assert) {
-    const type0Expected = 'edrPolicy';
-    const fullState = new ReduxDataHelper().policyWiz().build();
-    const sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
-    const sourceTypesSelected = sourceTypes(Immutable.from(fullState));
+    const features = lookup('service:features');
+
+    // windowsLogPolicy enabled so all types should be returned
+    features.setFeatureFlags({ 'rsa.usm.allowWindowsLogPolicyCreation': true });
+    let type0Expected = 'edrPolicy';
+    const type1Expected = 'windowsLogPolicy';
+    let fullState = new ReduxDataHelper().policyWiz().build();
+    let sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
+    let sourceTypesSelected = sourceTypes(Immutable.from(fullState));
+    assert.deepEqual(sourceTypesSelected.length, 2, 'All sourceTypes returned as expected');
+    assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
+    assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
+    assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
+
+    // windowsLogPolicy disabled so it should not be returned
+    features.setFeatureFlags({ 'rsa.usm.allowWindowsLogPolicyCreation': false });
+    type0Expected = 'edrPolicy';
+    fullState = new ReduxDataHelper().policyWiz().build();
+    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes.filter((sourceType) => sourceType.policyType !== 'windowsLogPolicy'));
+    sourceTypesSelected = sourceTypes(Immutable.from(fullState));
+    assert.deepEqual(sourceTypesSelected.length, 1, 'windowsLogPolicy sourceType filtered so only one type returned as expected');
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
   });

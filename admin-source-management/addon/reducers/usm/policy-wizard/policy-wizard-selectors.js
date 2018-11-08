@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
+import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
@@ -21,7 +22,15 @@ export const isPolicyLoading = createSelector(
  * source types (policy types) for the source type dropdown
  * @public
  */
-export const sourceTypes = (state) => _policyWizardState(state).sourceTypes;
+export const sourceTypes = (state) => {
+  const features = lookup('service:features');
+  const isWindowsLogPolicyEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
+  let enabledSourceTypes = _policyWizardState(state).sourceTypes;
+  if (!isWindowsLogPolicyEnabled) {
+    enabledSourceTypes = enabledSourceTypes.filter((sourceType) => sourceType.policyType !== 'windowsLogPolicy');
+  }
+  return enabledSourceTypes;
+};
 
 /**
  * we need the selected policy sourceType object, but policy.type only has the type string value,
