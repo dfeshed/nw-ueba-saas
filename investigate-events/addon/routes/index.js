@@ -82,6 +82,9 @@ export default Route.extend({
     if (this.get('nextQueryParams')) {
       this.set('nextQueryParams', null);
     } else {
+      // Set nextQueryParams to the incoming params object so that we don't
+      // run the query a second time after getting the pill hash
+      this.set('nextQueryParams', params);
       this.runInvestigateQuery(params, false);
     }
   },
@@ -102,7 +105,7 @@ export default Route.extend({
   // query hash, then transitions to new URL.
   // Ensures meta filter params are not in the URL
   transitionToPillHash(newHashes) {
-    const nextQueryParams = this.get('nextQueryParams') || {};
+    const params = this.get('nextQueryParams') || {};
 
     // Let hash be undefined if not passed in
     let pdhash;
@@ -112,7 +115,7 @@ export default Route.extend({
 
     this.transitionTo({
       queryParams: {
-        ...nextQueryParams,
+        ...params,
         pdhash,
         mf: undefined
       }
