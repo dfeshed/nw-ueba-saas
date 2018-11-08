@@ -1,6 +1,8 @@
 {{#if (and (not isRiskScoringServerNotConfigured) (not isRiskScoringServerOffline))}}
   {{#if riskScoringServerError}}
-    {{rsa-panel-message message=(t riskScoringServerError)}}
+    <box class='alert-error-message'>
+      {{rsa-panel-message message=(t riskScoringServerError)}}
+    </box>
   {{else}}
     {{#if riskScoreContext}}
       <box>
@@ -18,7 +20,9 @@
         {{/endpoint/risk-properties/alert-tab}}
       </box>
       {{#if isRiskScoreContextEmpty}}
-        {{rsa-panel-message message=(t 'investigateShared.endpoint.riskProperties.error.emptyContext')}}
+        <box class='alert-error-message'>
+          {{rsa-panel-message message=(t 'investigateShared.endpoint.riskProperties.error.emptyContext')}}
+        </box>
       {{else}}
         {{#endpoint/risk-properties/alert-context
           contexts=contexts
