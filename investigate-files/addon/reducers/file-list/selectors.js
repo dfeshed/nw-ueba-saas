@@ -12,6 +12,7 @@ const _selectedFileList = (state) => state.files.fileList.selectedFileList || []
 const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileStatusHistory || [];
 const _hostList = (state) => state.files.fileList.hostNameList;
 const _serverId = (state) => state.endpointQuery.serverId;
+const _areFilesLoading = (state) => state.files.fileList.areFilesLoading;
 const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'RISK_PROPERTIES';
 
 export const files = createSelector(
@@ -21,6 +22,12 @@ export const files = createSelector(
   }
 );
 
+export const areFilesLoading = createSelector(
+  _areFilesLoading,
+  (areFilesLoading) => {
+    return areFilesLoading === 'wait';
+  }
+);
 
 export const fileCount = createSelector(
   _files,

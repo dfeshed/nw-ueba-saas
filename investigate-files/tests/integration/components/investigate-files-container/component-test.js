@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, settled, click } from '@ember/test-helpers';
+import { render, find, findAll, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -88,6 +88,15 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       done();
     });
 
+  });
+
+  test('it shows the loading indicator when schema is loading', async function(assert) {
+    new ReduxDataHelper(initState)
+      .isSchemaLoading(true)
+      .isEndpointServerOffline(false)
+      .build();
+    await render(hbs`{{investigate-files-container}}`);
+    assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'Rsa loader displayed');
   });
 
 });

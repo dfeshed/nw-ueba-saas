@@ -133,8 +133,9 @@ module('Integration | Component | file list', function(hooks) {
   test('table still loading', async function(assert) {
     new ReduxDataHelper(initState)
     .files(dataItems)
+    .isSchemaLoading(true)
     .schema(config)
-    .areFilesLoading('sorting').build();
+    .areFilesLoading('wait').build();
     await render(hbs`{{file-list}}`);
     return settled().then(() => {
       assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'Rsa loader displayed');
@@ -346,6 +347,7 @@ module('Integration | Component | file list', function(hooks) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
+      .isSchemaLoading(false)
       .loadMoreStatus('stopped')
       .build();
     await render(hbs`

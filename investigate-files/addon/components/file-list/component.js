@@ -7,7 +7,8 @@ import {
   isAllSelected,
   files,
   checksums,
-  isRiskScoringServerNotConfigured
+  isRiskScoringServerNotConfigured,
+  areFilesLoading
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -32,10 +33,10 @@ import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pi
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
+  areFilesLoading: areFilesLoading(state),
   serviceList: serviceList(state),
   columnConfig: columns(state),
   loadMoreStatus: state.files.fileList.loadMoreStatus,
-  areFilesLoading: state.files.fileList.areFilesLoading,
   files: files(state), // All visible files
   totalItems: state.files.fileList.totalItems,
   sortField: state.files.fileList.sortField, // Currently applied sort on file list

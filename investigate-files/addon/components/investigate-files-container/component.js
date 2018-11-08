@@ -30,7 +30,6 @@ import { FILTER_TYPES } from './filter-type';
 
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
-  areFilesLoading: state.files.fileList.areFilesLoading,
   hasFiles: hasFiles(state),
   dataSourceTabs: getDataSourceTab(state),
   context: selectedFileStatusHistory(state),
@@ -44,7 +43,8 @@ const stateToComputed = (state) => ({
   selectedFile: state.files.fileList.selectedFile,
   isCertificateView: state.certificate.list.isCertificateView,
   isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
-  selectedIndex: state.files.fileList.selectedIndex
+  selectedIndex: state.files.fileList.selectedIndex,
+  schemaLoading: state.files.schema.schemaLoading
 });
 
 const dispatchToActions = {

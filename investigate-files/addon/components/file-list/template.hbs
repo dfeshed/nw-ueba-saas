@@ -22,7 +22,7 @@
       {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}
     {{/unless}}
   {{/file-list/header}}
-  {{#if (eq areFilesLoading 'sorting')}}
+  {{#if areFilesLoading}}
     <centered>
       {{rsa-loader size='larger'}}
     </centered>

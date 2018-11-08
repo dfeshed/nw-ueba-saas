@@ -11,7 +11,8 @@ import {
   selectedFileStatusHistory,
   hostList,
   files,
-  isRiskScoringServerNotConfigured
+  isRiskScoringServerNotConfigured,
+  areFilesLoading
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -212,4 +213,26 @@ test('check if risk scoring server is configured or not', function(assert) {
   });
   result = isRiskScoringServerNotConfigured(state);
   assert.equal(result, true);
+});
+
+test('areFilesLoading returns true', function(assert) {
+  const result = areFilesLoading({
+    files: {
+      fileList: {
+        areFilesLoading: 'wait'
+      }
+    }
+  });
+  assert.equal(result, true);
+});
+
+test('areFilesLoading returns false', function(assert) {
+  const result = areFilesLoading({
+    files: {
+      fileList: {
+        areFilesLoading: 'completed'
+      }
+    }
+  });
+  assert.equal(result, false);
 });

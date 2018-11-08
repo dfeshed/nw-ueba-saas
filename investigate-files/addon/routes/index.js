@@ -4,6 +4,7 @@ import { getEndpointServers } from 'investigate-files/actions/endpoint-server-cr
 import { userLeftFilesPage } from 'investigate-files/actions/data-creators';
 import { run } from '@ember/runloop';
 import { lookup } from 'ember-dependency-lookup';
+import * as ACTION_TYPES from '../actions/types';
 
 export default Route.extend({
 
@@ -19,10 +20,12 @@ export default Route.extend({
   },
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {
+    const redux = this.get('redux');
     const request = lookup('service:request');
     request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
     this.set('contextualHelp.topic', null);
-    this.get('redux').dispatch(userLeftFilesPage());
+    redux.dispatch({ type: ACTION_TYPES.RESET_FILES });
+    redux.dispatch(userLeftFilesPage());
   },
   activate() {
     this.set('contextualHelp.topic', this.get('contextualHelp.invFiles'));

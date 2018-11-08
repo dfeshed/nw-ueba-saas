@@ -23,14 +23,12 @@
     </section>
     {{#if isEndpointServerOnline}}
       <box class="files-body">
-        {{#if (eq areFilesLoading 'wait')}}
+        {{#if schemaLoading}}
           <centered>
             {{rsa-loader size='larger'}}
           </centered>
         {{else}}
-          {{#if isSchemaLoaded}}
-            {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
-          {{/if}}
+          {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
         {{/if}}
       </box>
       <box class="files-footer">

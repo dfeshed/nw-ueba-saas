@@ -8,7 +8,7 @@ import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const fileListState = Immutable.from({
   areFilesLoading: 'wait',
-  loadMoreStatus: 'stopped',
+  loadMoreStatus: 'completed',
   pageNumber: -1,
   totalItems: 0,
   hasNext: false,
@@ -46,6 +46,7 @@ const _handleAppendFiles = (action) => {
       fileData: { ...fileData, ...file },
       totalItems: data.totalItems,
       pageNumber: data.pageNumber,
+      areFilesLoading: 'completed',
       loadMoreStatus: data.hasNext ? 'stopped' : 'completed',
       hasNext: data.hasNext
     });
@@ -67,11 +68,21 @@ const _toggleSelectedFile = (state, payload) => {
 
 };
 const fileListReducer = handleActions({
+
   [ACTION_TYPES.INITIALIZE_FILE_DETAIL]: (state, action) => {
     const data = action.payload ? action.payload.data : null;
     const selectedFileProperties = data ? data[0] : {};
     return state.set('selectedDetailFile', selectedFileProperties);
   },
+
+  [ACTION_TYPES.FETCH_ALL_FILES]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.merge({ fileData: {}, areFilesLoading: 'wait', totalItems: 0, selectedFileList: [] }),
+      failure: (s) => s.set('hostFetchStatus', 'error'),
+      success: _handleAppendFiles(action)
+    });
+  },
+
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('loadMoreStatus', 'streaming'),
@@ -98,7 +109,6 @@ const fileListReducer = handleActions({
   },
   [ACTION_TYPES.SET_SORT_BY]: (state, { payload: { sortField, isSortDescending } }) => state.merge({
     sortField,
-    areFilesLoading: 'completed',
     isSortDescending
   }),
 

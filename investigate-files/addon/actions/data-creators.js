@@ -37,12 +37,12 @@ const _handleError = (response, type) => {
  * @private
  * @returns {function(*, *)}
  */
-const _fetchFiles = () => {
+const _fetchFiles = (type) => {
   return (dispatch, getState) => {
     const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
     const { expressionList } = getState().files.filter;
     dispatch({
-      type: ACTION_TYPES.FETCH_NEXT_FILES,
+      type,
       promise: File.fetchFiles(pageNumber, { sortField, isSortDescending }, systemFilter || expressionList),
       meta: {
         onSuccess: (response) => {
@@ -70,7 +70,7 @@ const initializeFileDetails = (checksum) => {
 const getPageOfFiles = () => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
-    dispatch(_fetchFiles());
+    dispatch(_fetchFiles(ACTION_TYPES.FETCH_NEXT_FILES));
   };
 };
 
@@ -81,8 +81,8 @@ const getPageOfFiles = () => {
  */
 const getFirstPageOfFiles = () => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.RESET_FILES });
-    dispatch(getPageOfFiles());
+    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
+    dispatch(_fetchFiles(ACTION_TYPES.FETCH_ALL_FILES));
   };
 };
 

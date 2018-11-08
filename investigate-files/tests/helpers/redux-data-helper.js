@@ -90,6 +90,11 @@ export default class DataHelper {
     return this;
   }
 
+  isSchemaLoading(value) {
+    _set(this.state, 'files.schema.schemaLoading', value);
+    return this;
+  }
+
   files(files) {
     _set(this.state, 'files.fileList.fileData', files);
     return this;
