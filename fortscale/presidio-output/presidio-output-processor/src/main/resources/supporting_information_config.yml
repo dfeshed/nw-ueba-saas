@@ -883,6 +883,25 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
+- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_modified_a_service_key_registry
+  schema: REGISTRY
+  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKey.registry.score
+  modelContextField: registryKey
+  anomalyDescriptior:
+    anomalyField: processFilePath
+    anomalyFilters:
+    - fieldName: operationType
+      fieldValue: SET_VALUE
+    - fieldName: registryKeyGroup
+      fieldValue: SERVICES_IMAGE_PATH
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily
+    featureName: processFilePathHistogram
+  classification: registry_run_keys
+
 
 classificationPriority:
 
