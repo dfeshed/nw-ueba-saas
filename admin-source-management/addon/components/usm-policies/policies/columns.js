@@ -42,12 +42,5 @@ export default [
     width: '20%',
     dataType: 'text',
     visible: true
-  },
-  {
-    field: 'numSources',
-    title: 'adminUsm.groups.list.numSources',
-    width: '10%',
-    dataType: 'text',
-    visible: true
   }
 ];

@@ -385,6 +385,11 @@ export default class DataHelper {
     return this;
   }
 
+  focusedGroup(config) {
+    _set(this.state, 'usm.groups.focusedItem', config);
+    return this;
+  }
+
   fetchPolicies() {
     _set(this.state, 'usm.policies.items', policies);
     return this;

@@ -3,13 +3,14 @@ export default [
     'id': 'group_001',
     'name': 'Zebra 001',
     'description': 'Zebra 001 of group group_001',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': false,
     'lastPublishedCopy': null,
-    'lastPublishedOn': 1523655354337,
-    'lastModifiedBy': 'local',
+    'lastPublishedOn': 0,
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': -1,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
@@ -33,13 +34,14 @@ export default [
     id: 'group_002',
     'name': 'Awesome! 012',
     'description': 'Awesome! 012 of group group_012',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 1523655368173,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -2,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -59,14 +61,15 @@ export default [
     'id': 'group_003',
     'name': 'Xylaphone 003',
     'description': 'Xylaphone 003 of group group_003',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -78,13 +81,14 @@ export default [
     'id': 'group_004',
     'name': 'Wonder Woman 004',
     'description': 'Wonder Woman 004 of group group_004',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': false,
     'lastPublishedCopy': null,
     'lastPublishedOn': 1523655354337,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 250,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -146,18 +150,34 @@ export default [
     'id': 'group_005',
     'name': 'Volleyball 005',
     'description': 'Volleyball 005 of group group_005',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': false,
     'lastPublishedCopy': null,
     'lastPublishedOn': 1523655354337,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
+    'sourceCount': -2,
     'groupCriteria': {
-      'conjunction': 'AND',
+      'conjunction': 'OR',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '10.40.14.0',
+            '10.40.14.255'
+          ]
+        ],
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '10.40.68.0',
+            '10.40.68.255'
+          ]
+        ]
       ]
     }
   },
@@ -165,18 +185,25 @@ export default [
     'id': 'group_006',
     'name': 'Ummm... 006',
     'description': 'Umm... 006 of group group_006',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 1523655354337,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
+    'sourceCount': 0,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'hostname',
+          'EQUAL',
+          [
+            'IN*'
+          ]
+        ]
       ]
     }
   },
@@ -184,18 +211,25 @@ export default [
     'id': 'group_007',
     'name': 'Football 007',
     'description': 'Football 007 of group group_007',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
+    'sourceCount': 5,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'ipv4',
+          'IN',
+          [
+            '10.40.14.101,10.40.14.108,10.40.14.123,10.40.14.171'
+          ]
+        ]
       ]
     }
   },
@@ -203,18 +237,26 @@ export default [
     'id': 'group_008',
     'name': 'Excellent! 008',
     'description': 'Excellent! 008 of group group_008',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
+    'sourceCount': 60,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '10.101.0.0',
+            '10.5.101.255'
+          ]
+        ]
       ]
     }
   },
@@ -222,14 +264,15 @@ export default [
     'id': 'group_009',
     'name': 'Dog Food 009',
     'description': 'Dog Food 009 of group group_009',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
+    'sourceCount': 1025,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -241,14 +284,15 @@ export default [
     'id': 'group_010',
     'name': 'Cat Woman 010',
     'description': 'Cat Woman 010 of group group_010',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
+    'sourceCount': -2,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -260,13 +304,14 @@ export default [
     'id': 'group_011',
     'name': 'Basketball 011',
     'description': 'Basketball 011 of group group_011',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': 200,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_002',
@@ -288,14 +333,14 @@ export default [
     'id': 'group_012',
     'name': 'Yabba Dabba Doo! 002',
     'description': 'Yabba Dabba Doo! 002 of group group_002',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
-    'osTypes': [],
+    'sourceCount': -1,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
@@ -313,18 +358,34 @@ export default [
     'id': 'group_013',
     'name': 'Tom n Jerry 013',
     'description': 'Tom n Jerry 013 of group group_013',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': false,
     'lastPublishedCopy': null,
     'lastPublishedOn': 1523655354337,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
+    'sourceCount': 10,
     'groupCriteria': {
-      'conjunction': 'AND',
+      'conjunction': 'OR',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '10.40.68.0',
+            '10.40.68.255'
+          ]
+        ],
+        [
+          'ipv4',
+          'BETWEEN',
+          [
+            '10.40.200.0',
+            '10.40.200.255'
+          ]
+        ]
       ]
     }
   },
@@ -332,20 +393,26 @@ export default [
     'id': 'group_014',
     'name': 'Garfield 014',
     'description': 'Garfield 014 of group group_014',
-    'createdBy': 'local',
+    'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
     'lastPublishedCopy': null,
     'lastPublishedOn': 0,
-    'lastModifiedBy': 'local',
+    'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
+    'sourceCount': 120,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        [
+          'hostname',
+          'EQUAL',
+          [
+            'jaylpt, monilpt, johnlpt, viveklpt'
+          ]
+        ]
       ]
     }
   }
-
 ];

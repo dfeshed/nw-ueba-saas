@@ -10,6 +10,7 @@ export default [
     'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': -1,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
@@ -40,6 +41,7 @@ export default [
     'lastPublishedOn': 1523655368173,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -2,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -66,6 +68,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': -3,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -85,6 +88,7 @@ export default [
     'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 100,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -153,6 +157,7 @@ export default [
     'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 250,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -172,6 +177,7 @@ export default [
     'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 1025,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -191,6 +197,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -1,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -210,6 +217,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -2,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -229,6 +237,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -3,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -248,6 +257,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': 200,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -267,6 +277,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': 500,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_002',
@@ -295,6 +306,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 2500,
     'osTypes': [],
     'assignedPolicies': {
       'edrPolicy': {
@@ -320,6 +332,7 @@ export default [
     'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'sourceCount': 875,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',
@@ -339,6 +352,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'sourceCount': -3,
     'assignedPolicies': {},
     'groupCriteria': {
       'conjunction': 'AND',

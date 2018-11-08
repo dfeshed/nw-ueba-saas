@@ -1,1 +1,21 @@
-{{yield}}
+<td class="reorder-item-cell">
+  <centered>
+    <span class="handle"></span>
+  </centered>
+</td>
+<td class="group-rank-cell">
+  {{add index 1}}
+</td>
+<td class="group-name-cell">
+  {{item.name}}
+</td>
+<td class="policy-cell">
+  {{#each-in item.assignedPolicies as |policy details|}}
+    {{ details.name }}
+  {{/each-in}}
+</td>
+<td class="n-sources-cell">
+  {{#rsa-text-with-tooltip showTooltip=true value=srcCount}}
+    <div class="table-cell-text">{{srcCount}}</div>
+  {{/rsa-text-with-tooltip}}
+</td>

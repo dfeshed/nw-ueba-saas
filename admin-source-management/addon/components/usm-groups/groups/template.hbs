@@ -45,8 +45,10 @@
           {{#each-in item.assignedPolicies as |policy|}}
             {{t (concat 'adminUsm.policyTypes.' policy)}}
           {{/each-in}}
-        {{else if (eq column.field "numSources")}}
-          <span>----</span>
+        {{else if (eq column.field "sourceCount")}}
+          {{#usm-groups/groups/source-count
+            item=item}}            
+          {{/usm-groups/groups/source-count}}
         {{else}}
           {{get item column.field}}
         {{/if}}

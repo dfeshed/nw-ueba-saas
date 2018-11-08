@@ -13,7 +13,7 @@
           content: '';
           display: block;
           height: 1px;
-          width: 85%;
+          width: 100%;
           margin: rsa-whitespace() 0 rsa-whitespace() 0;
           background: background-color(primary);
         }
@@ -31,13 +31,19 @@
 
     .value {
       @include rsa-font(body, small);
-      text-overflow: ellipsis;
+      word-break: break-word;
       overflow: hidden;
-      white-space: nowrap;
+      white-space: wrap;
       display: block;
       line-height: 1.25rem;
       padding-top: .4rem;
       color: text-color(primary, lightest);
+    }
+
+    .conjunction {
+      @include rsa-font(body, small);
+      color: text-color(primary, lightest);
+      font-weight: 400;
     }
   }
 }

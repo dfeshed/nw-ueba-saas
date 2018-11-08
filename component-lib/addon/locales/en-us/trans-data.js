@@ -3690,19 +3690,27 @@ export default {
         select: 'Select',
         name: 'Group Name',
         published: 'Publication Status',
-        polices: 'Policies Applied',
+        polices: 'Policy(ies) Applied',
         sourceTypes: 'Source Types Applied',
         description: 'Group Description',
-        numSources: 'No. Sources',
+        numSources: 'Source Count',
         lastUpdated: 'Last Updated',
-        noResultsMessage: 'No Groups found.'
+        noResultsMessage: 'No Groups found.',
+        sourceCountUnpublishedGroupTooltip: 'Count represents group as previously published.',
+        sourceCountPublishedNoEndpointTooltip: 'No Endpoint server found in the environment.',
+        sourceCountPublishedNewGroupTooltip: 'No count available yet.'
       },
       filter: {
         sourceType: 'Source Type',
         groupType: 'Group Type',
         appliedPolices: 'Applied Policies'
       },
-      detail: {},
+      detail: {
+        definition: 'Definition',
+        sourceCount: 'Source Count',
+        andOrConditionsPart1: 'Sources included if',
+        andOrConditionsPart2: 'of the following criteria are met:'
+      },
       modals: {
         deleteGroups: {
           title: 'Delete Group(s)',
@@ -3727,14 +3735,13 @@ export default {
         name: 'Policy Name',
         published: 'Publication Status',
         sourceType: 'Source Type',
-        groups: 'Applied to Groups',
+        groups: 'Applied to Group(s)',
         description: 'Policy Description',
-        numSources: 'No. Sources',
         noResultsMessage: 'No Policies found.'
       },
       filter: {
         sourceType: 'Source Type',
-        appliedGroups: 'Applied To Groups',
+        appliedGroups: 'Applied To Group(s)',
         policyParameters: 'Policy Parameters'
       },
       detail: {
@@ -3933,7 +3940,7 @@ export default {
         rank: 'Rank',
         groupName: 'Group Name',
         policyApplied: 'Policy Applied',
-        nSources: 'No. Sources'
+        nSources: 'Source Count'
       },
       chooseSource: 'Choose Source Type',
       editRanking: 'Edit Ranking',

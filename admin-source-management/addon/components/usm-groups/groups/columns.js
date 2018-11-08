@@ -44,7 +44,7 @@ export default [
     visible: true
   },
   {
-    field: 'numSources',
+    field: 'sourceCount',
     title: 'adminUsm.groups.list.numSources',
     width: '10%',
     dataType: 'text',
