@@ -2088,7 +2088,8 @@ export default {
       viewCertificates: 'View Certificates',
       backToFiles: 'Files',
       closeCertificateView: 'Close certificate view',
-      filters: 'Filters'
+      filters: 'Filters',
+      close: 'Close File Details'
     },
     message: {
       noResultsMessage: 'No matching files were found',

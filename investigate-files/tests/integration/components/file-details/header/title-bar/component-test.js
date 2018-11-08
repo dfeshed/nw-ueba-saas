@@ -8,7 +8,9 @@ import Immutable from 'seamless-immutable';
 
 const selectors = {
   filename: '.title-bar__file-name',
-  fileTabs: '.title-bar .rsa-nav-tab'
+  fileTabs: '.title-bar .rsa-nav-tab',
+  closeButton: '.title-bar__close',
+  closeLink: '.title-bar__close a'
 };
 
 module('Integration | Component | file-details/header/title-bar', function(hooks) {
@@ -29,8 +31,9 @@ module('Integration | Component | file-details/header/title-bar', function(hooks
     patchReducer(this, Immutable.from(state));
 
     await render(hbs`{{file-details/header/title-bar}}`);
-
     assert.equal(find(selectors.filename).textContent, 'dtf.exe', 'Filename is rendered');
     assert.equal(findAll(selectors.fileTabs).length, 2, 'Two tabs are rendered');
+    assert.equal(findAll(selectors.closeButton).length, 1, 'Close button is present');
+    assert.equal(findAll(selectors.closeLink)[0].pathname, '/investigate/files', 'links to investigate files');
   });
 });

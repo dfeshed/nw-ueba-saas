@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, find } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
@@ -42,5 +42,13 @@ module('Integration | Component | investigate-header', function(hooks) {
 
     const link = find('.rsa-nav-tab.is-active a');
     assert.equal(link.pathname, '/investigate/events', 'Events Analysis tab should always route to the default url');
+  });
+
+  skip('Clicking on Files would route to the default url', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('authorities', []);
+    await render(hbs`{{investigate-header}}`);
+    const [ , , , link] = findAll('.rsa-nav-tab a');
+    assert.equal(link.pathname, '/investigate/files', 'File tab should always route to the /investigate/files');
   });
 });

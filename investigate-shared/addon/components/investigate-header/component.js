@@ -26,6 +26,7 @@ const TABS = [
   },
   {
     name: 'investigate.investigate-files',
+    url: '/investigate/files',
     label: 'Files'
   },
   {
