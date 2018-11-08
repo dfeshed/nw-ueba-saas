@@ -4,6 +4,7 @@ package presidio.output.processor.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,6 +13,7 @@ import fortscale.common.general.Schema;
         "type",
         "name",
         "adeEventType",
+        "modelContextField",
         "schema",
         "anomalyDescriptior",
         "historicalData",
@@ -19,6 +21,8 @@ import fortscale.common.general.Schema;
         "transformer"
 })
 public class IndicatorConfig {
+
+    public static final String DEFAULT_MODEL_CONTEXT = CommonStrings.CONTEXT_USERID;
 
     @JsonProperty("id")
     private String id;
@@ -31,6 +35,9 @@ public class IndicatorConfig {
 
     @JsonProperty("ade_event_type")
     private String adeEventType;
+
+    @JsonProperty("modelContextField")
+    private String modelContextField = DEFAULT_MODEL_CONTEXT;
 
     @JsonProperty("schema")
     private Schema schema;
@@ -134,5 +141,15 @@ public class IndicatorConfig {
     @JsonProperty("transformer")
     public void setTransformer(String transformer) {
         this.transformer = transformer;
+    }
+
+    @JsonProperty("modelContextField")
+    public String getModelContextField() {
+        return modelContextField;
+    }
+
+    @JsonProperty("modelContextField")
+    public void setModelContextField(String modelContextField) {
+        this.modelContextField = modelContextField;
     }
 }

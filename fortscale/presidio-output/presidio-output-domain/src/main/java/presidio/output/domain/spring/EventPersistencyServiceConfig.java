@@ -1,13 +1,16 @@
 package presidio.output.domain.spring;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
+import fortscale.utils.recordreader.transformation.Transformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.ade.domain.record.TransformationConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -17,12 +20,16 @@ import presidio.output.domain.services.event.ScoredEventServiceImpl;
 import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 /**
  * Created by efratn on 02/08/2017.
  */
 @Configuration
 @Import({MongoDbBulkOpUtilConfig.class,
-        AdeManagerSdkConfig.class})
+        AdeManagerSdkConfig.class,
+        TransformationConfig.class})
 public class EventPersistencyServiceConfig {
 
     @Autowired
@@ -31,6 +38,10 @@ public class EventPersistencyServiceConfig {
     @Autowired
     private AdeManagerSdk adeManagerSdk;
 
+    @Autowired
+    private Collection<Transformation<?>> transformations;
+
+
     @Bean
     public EventPersistencyService eventPersistencyService() {
         return new EventPersistencyServiceImpl(eventRepository(), outputToCollectionNameTranslator(), outputToClassNameTranslator());
@@ -38,7 +49,7 @@ public class EventPersistencyServiceConfig {
 
     @Bean
     public ScoredEventService scoredEventService() {
-        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk);
+        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk, enrichedEventRecordReaderFactory());
     }
 
     @Bean
@@ -54,6 +65,11 @@ public class EventPersistencyServiceConfig {
     @Bean
     public OutputToClassNameTranslator outputToClassNameTranslator() {
         return new OutputToClassNameTranslator();
+    }
+
+
+    @Bean EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory() {
+        return new EnrichedEventRecordReaderFactory(transformations.stream().collect(Collectors.toMap(Transformation::getFeatureName, t -> t)));
     }
 
 }

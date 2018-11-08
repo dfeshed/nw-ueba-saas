@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
-import fortscale.utils.recordreader.ReflectionRecordReader;
-import fortscale.utils.recordreader.transformation.Transformation;
+import fortscale.utils.recordreader.RecordReader;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +14,7 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
+import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
@@ -53,21 +53,16 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private SupportingInformationUtils supportingInfoUtils;
 
-    private Map<String, Transformation<?>> transformations;
+    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
 
-    public SupportingInformationForScoreAggr(
-            SupportingInformationConfig supportingInformationConfig,
-            HistoricalDataPopulatorFactory historicalDataPopulatorFactory,
-            ScoredEventService scoredEventService,
-            SupportingInformationUtils supportingInfoUtils,
-            Map<String, Transformation<?>> transformations) {
 
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory) {
         this.config = supportingInformationConfig;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
-        this.transformations = transformations;
+        this.enrichedEventRecordReaderFactory = enrichedEventRecordReaderFactory;
     }
 
 
@@ -82,23 +77,22 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         double eventsScore = distinctScoredEnrichedEvent.stream().mapToDouble(scoredEnrichedEvent -> scoredEnrichedEvent.getScore()).sum();
         for (ScoredEnrichedEvent scoredEnrichedEvent : distinctScoredEnrichedEvent) {
 
+            RecordReader recordReader = enrichedEventRecordReaderFactory.getRecordReader(scoredEnrichedEvent.getEnrichedEvent());
+
             Indicator indicator = new Indicator(alert.getId());
             indicator.setName(indicatorConfig.getName());
             indicator.setStartDate(Date.from(scoredEnrichedEvent.getEnrichedEvent().getEventDate()));
             indicator.setEndDate(Date.from(scoredEnrichedEvent.getEnrichedEvent().getEventDate()));
-            String featureValue;
-
-            if (AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())) {
-                featureValue = StringUtils.EMPTY;
-            } else {
-                ReflectionRecordReader reader = new ReflectionRecordReader(scoredEnrichedEvent.getEnrichedEvent(), transformations);
-                featureValue = reader.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField()).toString();
-            }
+            String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
+                    StringUtils.EMPTY:
+                    recordReader.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField()).toString();
 
             indicator.setAnomalyValue(featureValue);
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
             indicator.setScoreContribution(scoredEnrichedEvent.getScore()/eventsScore*smartAggregationRecord.getContribution());
+            indicator.setModelContextField(indicatorConfig.getModelContextField());
+            indicator.setModelContextValue(recordReader.get(indicatorConfig.getModelContextField()).toString());
             indicators.add(indicator);
         }
         return indicators;
@@ -158,8 +152,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS) :
                 adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-        String contextField = CommonStrings.CONTEXT_USERID;
-        String contextValue = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
+        String contextField = indicator.getModelContextField();//CommonStrings.CONTEXT_USERID;
+        String contextValue = indicator.getModelContextValue(); //adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         Schema schema = indicatorConfig.getSchema();
         String featureName = indicatorConfig.getHistoricalData().getFeatureName();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
@@ -194,12 +188,16 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         // get distinct values of all the scored events
         List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig);
 
+        Set<String> distinctFieldNames = new HashSet(Arrays.asList(indicatorConfig.getModelContextField()));  // indevidual indicator for each model context
+        distinctFieldNames.add(indicatorConfig.getAnomalyDescriptior().getAnomalyField());                // seperate indicator for each anomaly value
+        distinctFieldNames.remove(contextFieldAndValue.getFirst());                                       // all the events are from the context field so no need to distinct by the context field
+
         Collection<ScoredEnrichedEvent> featureValues =
                 scoredEventService.findDistinctScoredEnrichedEvent(indicatorConfig.getSchema(),
                         indicatorConfig.getAdeEventType(),
                         contextFieldAndValue,
-                        timeRange,
-                        indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features, eventsLimit, eventsPageSize);
+                        timeRange, distinctFieldNames,
+                        0.0, features, eventsLimit, eventsPageSize);
 
         if (CollectionUtils.isNotEmpty(featureValues)) {
             if (EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
