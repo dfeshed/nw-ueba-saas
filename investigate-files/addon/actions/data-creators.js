@@ -81,6 +81,7 @@ const getPageOfFiles = () => {
  */
 const getFirstPageOfFiles = () => {
   return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.RESET_FILES });
     dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
     dispatch(_fetchFiles(ACTION_TYPES.FETCH_ALL_FILES));
   };
