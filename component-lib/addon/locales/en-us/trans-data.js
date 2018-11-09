@@ -2587,7 +2587,7 @@ export default {
       }
     },
     tabs: {
-      overview: 'Overview',
+      overview: 'Details',
       process: 'Processes',
       autoruns: 'Autoruns',
       files: 'Files',

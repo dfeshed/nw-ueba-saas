@@ -62,6 +62,13 @@
 
   .host-detail-box {
     height: calc(100vh - 140px);
+    .alert-context {
+      max-height: calc(100vh - 419px);
+    }
+  }
+
+  .events-list__scroller {
+    height: calc(100vh - 346px);
   }
 }
 .user-info-content {

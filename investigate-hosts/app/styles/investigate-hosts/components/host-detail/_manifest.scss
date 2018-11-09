@@ -48,11 +48,8 @@
   }
 }
 .host-overview {
-  padding-left: rsa-whitespace();
-  .host-item {
-    background-color: transparent;
-    padding: 0;
-    overflow: auto;
+  &.host-item {
+    padding-left: rsa-whitespace();
   }
   .host-action {
     padding-top: 3px !important;
