@@ -10,7 +10,8 @@ import {
   eventTypeFromMetaArray,
   processAnalysisQueryString,
   isProcessAnalysisDisabled,
-  agentId
+  agentId,
+  endpointServiceId
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta');
@@ -272,4 +273,12 @@ test('agentId test', function(assert) {
   };
   const result = agentId(Immutable.from(data));
   assert.equal(result, 'abc', 'Agent id is returned');
+});
+
+test('endpointServiceId test', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['nwe.callback_id', 'nwe://610b34a1-eeee-47a3-abec-74d2861bf99e']] } }
+  };
+  const result = endpointServiceId(Immutable.from(data));
+  assert.equal(result, '610b34a1-eeee-47a3-abec-74d2861bf99e', 'Endpoint service ID is returned after parsing');
 });

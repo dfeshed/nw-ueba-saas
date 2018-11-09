@@ -2,10 +2,11 @@ import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
 
-import { agentId } from 'recon/reducers/meta/selectors';
+import { agentId, endpointServiceId } from 'recon/reducers/meta/selectors';
 
 const stateToComputed = (state) => ({
-  agentId: agentId(state)
+  agentId: agentId(state),
+  sid: endpointServiceId(state)
 });
 
 const PivotToHostDetail = Component.extend({
@@ -13,8 +14,8 @@ const PivotToHostDetail = Component.extend({
   classNames: ['pivot-to-host-details'],
   actions: {
     goToHostDetails() {
-      const agentId = this.get('agentId');
-      window.open(`${window.location.origin}/investigate/hosts?machineId=${agentId}&tabName=OVERVIEW`);
+      const { agentId, sid } = this.getProperties('agentId', 'sid');
+      window.open(`${window.location.origin}/investigate/hosts?machineId=${agentId}&sid=${sid}&tabName=OVERVIEW`);
     }
   }
 });

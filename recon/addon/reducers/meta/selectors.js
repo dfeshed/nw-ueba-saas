@@ -135,6 +135,14 @@ export const agentId = createSelector(
     }
 );
 
+export const endpointServiceId = createSelector(
+  _eventMeta,
+  (eventMeta) => {
+    const sid = getMetaValue('nwe.callback_id', eventMeta) || '';
+    return sid.substring(6);
+  }
+);
+
 export const isProcessAnalysisDisabled = createSelector(
   _eventMeta,
   (eventMeta) => {
