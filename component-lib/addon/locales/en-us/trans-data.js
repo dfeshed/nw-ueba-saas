@@ -3714,7 +3714,7 @@ export default {
       modals: {
         deleteGroups: {
           title: 'Delete Group(s)',
-          confirm: 'You are about to permanently delete {{numItems}} selected group(s).  Deletion will take immediate effect. If any policies are linked to these groups these policies will no longer be applied.',
+          confirm: 'You are about to permanently delete {{numItems}} group(s). Deletion will take immediate effect. If any policies are linked to these groups the sources in these groups will no longer apply these policies.',
           ok: 'Delete Group(s)',
           success: 'Successfully deleted selected Group(s)',
           failure: 'There was an unexpected problem deleting the Group(s)'
@@ -3769,7 +3769,7 @@ export default {
       modals: {
         deletePolicies: {
           title: 'Delete Policy(ies)',
-          confirm: 'You are about to permanently delete {{numItems}} selected Policy(ies).  Deletion will take immediate effect. If any groups are linked to these policies these groups will be affected.',
+          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so.',
           ok: 'Delete Policy(ies)',
           success: 'Successfully deleted selected Policy(ies)',
           failure: 'There was an unexpected problem deleting selected Policy(ies)'
