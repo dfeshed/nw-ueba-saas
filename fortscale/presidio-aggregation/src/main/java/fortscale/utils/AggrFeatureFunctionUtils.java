@@ -43,7 +43,9 @@ public class AggrFeatureFunctionUtils {
             }
         }
 
-        createMultiFeatures(featureNameToValues, new MultiKeyFeature(), multiKeyFeatures, 0);
+        if(!featureNameToValues.isEmpty()) {
+            createMultiFeatures(featureNameToValues, new MultiKeyFeature(), multiKeyFeatures, 0);
+        }
         return multiKeyFeatures;
     }
 
