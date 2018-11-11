@@ -18,27 +18,28 @@ import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.processes.shell.aggregation.LevelThreeAggregationsService;
 import presidio.ade.processes.shell.config.*;
 import presidio.monitoring.flush.MetricContainerFlusher;
 import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
 @Configuration
 @Import({
-        //        application-specific confs
+        // Application specific configurations
         EventModelsCacheServiceConfig.class,
         InMemoryFeatureAggregatorConfig.class,
         AggregationRecordsCreatorConfig.class,
         FeatureAggregationScoringServiceConfig.class,
-        //        common application confs
+        LevelThreeAggregationsConfig.class,
+        // Common application configurations
         EnrichedDataStoreConfig.class,
         MetricContainerFlusherConfig.class,
         AggregatedDataStoreConfig.class,
         StoreManagerConfig.class,
-        NullStatsServiceConfig.class, // TODO: Remove this
+        // TODO: Remove this
+        NullStatsServiceConfig.class
 })
 public class FeatureAggregationsConfiguration {
-
-
     @Autowired
     @Qualifier("bucketConfigurationService")
     private BucketConfigurationService bucketConfigurationService;
@@ -47,22 +48,35 @@ public class FeatureAggregationsConfiguration {
     @Autowired
     private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
     @Autowired
-    private AggregationRecordsCreator aggregationsCreator;
-    @Autowired
     private FeatureAggregationScoringService featureAggregationScoringService;
     @Autowired
-    private AggregatedDataStore scoredFeatureAggregatedStore;
+    private AggregationRecordsCreator aggregationsCreator;
+    @Autowired
+    private AggregatedDataStore aggregatedDataStore;
+    @Autowired
+    private StoreManager storeManager;
     @Value("${feature.aggregation.pageIterator.pageSize}")
     private int pageSize;
     @Value("${feature.aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
     @Autowired
-    private StoreManager storeManager;
-    @Autowired
     private MetricContainerFlusher metricContainerFlusher;
+    @Autowired
+    private LevelThreeAggregationsService levelThreeAggregationsService;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {
-        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, storeManager, pageSize, maxGroupSize, metricContainerFlusher);
+        return new FeatureAggregationsExecutionServiceImpl(
+                bucketConfigurationService,
+                enrichedDataStore,
+                inMemoryFeatureBucketAggregator,
+                featureAggregationScoringService,
+                aggregationsCreator,
+                aggregatedDataStore,
+                storeManager,
+                pageSize,
+                maxGroupSize,
+                metricContainerFlusher,
+                levelThreeAggregationsService);
     }
 }

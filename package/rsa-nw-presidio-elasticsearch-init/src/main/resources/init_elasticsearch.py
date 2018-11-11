@@ -229,7 +229,8 @@ def create_index_from_template(file):
             obj = json.load(json_data)
             name = obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]
             data = json.dumps(obj[obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]])
-            create_pattern_from_template(obj[obj.keys()[0]]["aliases"],
+            if not name.startswith('.'):
+                create_pattern_from_template(obj[obj.keys()[0]]["aliases"],
                                          obj[obj.keys()[0]]["mappings"]["metric"]["properties"])
             requesturl = (URL_TEMPLATES + name).replace(" ", "")
             put_request(requesturl, data)
@@ -249,7 +250,7 @@ def create_index_by_order(path, name):
 
 
 def init_elasticsearch(path):
-    for subfolder in os.listdir(path):
+    for subfolder in sorted(os.listdir(path)):
         newpath = os.path.join(path, subfolder)
         if os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)):
             create_index_from_template(os.path.join(newpath, TEMPLATE_FILE_NAME))

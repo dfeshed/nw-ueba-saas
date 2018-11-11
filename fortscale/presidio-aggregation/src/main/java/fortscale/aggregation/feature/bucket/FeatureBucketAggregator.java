@@ -19,41 +19,54 @@ import java.util.Map;
 public class FeatureBucketAggregator {
     private static final Logger logger = Logger.getLogger(FeatureBucketAggregator.class);
 
-    private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
-    private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
+    private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketAggregatorMetricsContainer metricsContainer;
+    private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
 
-    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
+    public FeatureBucketAggregator(
+            FeatureBucketsAggregatorStore featureBucketsAggregatorStore,
+            RecordReaderFactoryService recordReaderFactoryService,
+            FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
+
         this.featureBucketsAggregatorStore = featureBucketsAggregatorStore;
         this.recordReaderFactoryService = recordReaderFactoryService;
-        this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
         this.metricsContainer = featureBucketAggregatorMetricsContainer;
+        this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
     }
 
     /**
-     * Update feature buckets with adeRecords
+     * Update feature buckets with adeRecords.
      *
-     * @param adeRecords            list of adeRecords
-     * @param featureBucketConfs    The feature bucket configurations that need to be build / updated by the ade records
-     * @param strategyData          strategy data of ade records
+     * @param adeRecords         A list of adeRecords.
+     * @param featureBucketConfs The feature bucket configurations that need to be built / updated by the adeRecords.
+     * @param strategyData       The strategyData of the adeRecords.
      */
-    public void aggregate(List<? extends AdeRecord> adeRecords, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
+    public void aggregate(
+            List<? extends AdeRecord> adeRecords,
+            List<FeatureBucketConf> featureBucketConfs,
+            FeatureBucketStrategyData strategyData) {
 
-        for (AdeRecord adeRecord : adeRecords) {
-            aggregate(adeRecord,featureBucketConfs,strategyData);
+        if (!featureBucketConfs.isEmpty()) {
+            for (AdeRecord adeRecord : adeRecords) {
+                aggregate(adeRecord, featureBucketConfs, strategyData);
+            }
         }
     }
 
     /**
-     * Update feature buckets with adeRecords
+     * Update feature buckets with one adeRecord.
      *
-     * @param adeRecord             ADE Record
-     * @param featureBucketConfs    The feature bucket configurations that need to be build / updated by the ade record
-     * @param strategyData          strategy data of ade record
+     * @param adeRecord          The adeRecord.
+     * @param featureBucketConfs The feature bucket configurations that need to be built / updated by the adeRecord.
+     * @param strategyData       The strategyData of the adeRecord.
      */
-    public void aggregate(AdeRecord adeRecord, List<FeatureBucketConf> featureBucketConfs, FeatureBucketStrategyData strategyData) {
-        AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
+    public void aggregate(
+            AdeRecord adeRecord,
+            List<FeatureBucketConf> featureBucketConfs,
+            FeatureBucketStrategyData strategyData) {
+
+        AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(adeRecord);
 
         for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
             try {
@@ -73,39 +86,34 @@ public class FeatureBucketAggregator {
                     featureBucket = createNewFeatureBucket(adeRecordReader, featureBucketConf, strategyData, bucketId);
                 }
 
-                metricsContainer.incFeatureBucketUpdates(featureBucketConfName,logicalStartTime);
+                metricsContainer.incFeatureBucketUpdates(featureBucketConfName, logicalStartTime);
                 updateFeatureBucket(adeRecordReader, featureBucket, featureBucketConf);
                 this.featureBucketsAggregatorStore.storeFeatureBucket(featureBucket);
-
             } catch (Exception e) {
-                logger.error("Got an exception while updating buckets with new event", e);
+                logger.error("Got an exception while updating feature buckets with a new event.", e);
             }
         }
     }
 
-    /**
-     * Update the feature bucket.
-     *
-     * @param adeRecordReader
-     * @param featureBucket
-     * @param featureBucketConf
-     * @throws Exception
-     */
-    private void updateFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception {
+    private void updateFeatureBucket(
+            AdeRecordReader adeRecordReader,
+            FeatureBucket featureBucket,
+            FeatureBucketConf featureBucketConf) {
+
         Map<String, Feature> featuresMap = adeRecordReader.getAllFeatures(featureBucketConf.getAllFeatureNames());
-        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(adeRecordReader, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
+        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(
+                adeRecordReader,
+                featureBucketConf.getAggrFeatureConfs(),
+                featureBucket.getAggregatedFeatures(),
+                featuresMap);
         featureBucket.setAggregatedFeatures(aggrFeaturesMap);
     }
 
-    /**
-     * Create feature bucket
-     * @param adeRecordReader
-     * @param featureBucketConf
-     * @param strategyData
-     * @param bucketId
-     * @return FeatureBucket
-     */
-    private FeatureBucket createNewFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData, String bucketId) {
+    private FeatureBucket createNewFeatureBucket(
+            AdeRecordReader adeRecordReader,
+            FeatureBucketConf featureBucketConf,
+            FeatureBucketStrategyData strategyData,
+            String bucketId) {
 
         FeatureBucket ret = new FeatureBucket();
         String featureBucketConfName = featureBucketConf.getName();
@@ -119,8 +127,7 @@ public class FeatureBucketAggregator {
         ret.setStartTime(logicalStartTime);
         ret.setEndTime(timeRange.getEnd());
         ret.setCreatedAt(new Date());
-
-        metricsContainer.incFeatureBuckets(featureBucketConfName,logicalStartTime);
+        metricsContainer.incFeatureBuckets(featureBucketConfName, logicalStartTime);
 
         for (String contextFieldName : contextFieldNames) {
             String contextValue = adeRecordReader.getContext(contextFieldName);
@@ -129,7 +136,6 @@ public class FeatureBucketAggregator {
 
         String contextId = FeatureBucketUtils.buildContextId(ret.getContextFieldNameToValueMap());
         ret.setContextId(contextId);
-
         return ret;
     }
 }

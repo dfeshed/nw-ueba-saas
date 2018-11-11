@@ -63,6 +63,14 @@
       "eventsNum": {
         "store": true,
         "type": "integer"
+      },
+      "modelContextField": {
+        "store": true,
+        "type": "string"
+      },
+      "modelContextValue": {
+        "store": true,
+        "type": "string"
       }
     }
   }

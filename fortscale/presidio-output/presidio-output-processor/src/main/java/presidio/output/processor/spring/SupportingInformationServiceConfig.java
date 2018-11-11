@@ -1,15 +1,14 @@
 package presidio.output.processor.spring;
 
-import fortscale.utils.recordreader.transformation.Transformation;
 import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.TransformationConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -23,12 +22,8 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 import presidio.output.processor.services.alert.supportinginformation.transformer.AbnormalSourceMachineTransformer;
 import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformerFactory;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 @Configuration
 @Import({
-        TransformationConfig.class,
         EventPersistencyServiceConfig.class,
         AdeManagerSdkConfig.class,
         HistoricalDataFetcherConfig.class
@@ -50,7 +45,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     private ScoredEventService scoredEventService;
 
     @Autowired
-    private Collection<Transformation<?>> transformations;
+    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
 
     @Bean
     public HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator() {
@@ -101,7 +96,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
                 historicalDataPopulatorFactory(),
                 scoredEventService,
                 supportingInformationUtils(),
-                transformations.stream().collect(Collectors.toMap(Transformation::getFeatureName, t -> t)));
+                enrichedEventRecordReaderFactory);
     }
 
     @Bean
