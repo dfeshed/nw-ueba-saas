@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class Feature implements Serializable {
@@ -59,6 +60,8 @@ public class Feature implements Serializable {
             featureValue = new FeatureNumericValue((Number) object);
         } else if (object != null && object.getClass().isEnum()) {
             featureValue = new FeatureStringValue(((Enum) object).name());
+        } else if (object instanceof List){
+            featureValue = new FeatureListValue((List) object);
         }
 
         return new Feature(name, featureValue);

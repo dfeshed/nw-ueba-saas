@@ -16,6 +16,10 @@ public class MultiKeyFeature {
         this.featureNameToValue = new HashMap<>();
     }
 
+    public MultiKeyFeature(MultiKeyFeature multiKeyFeature) {
+        this.featureNameToValue = new HashMap<>(multiKeyFeature.getFeatureNameToValue());
+    }
+
     public void add(String featureName, String featureValue) {
         this.featureNameToValue.put(featureName, featureValue);
     }

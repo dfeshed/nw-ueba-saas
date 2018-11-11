@@ -14,20 +14,21 @@
           "name": "distinctReconnaissanceToolHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "dstProcessFileName"
+              "dstProcessFileName",
+              "dstProcessCategories"
             ]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]
     },
     {
-      "name": "reconnaissanceToolCounterUserIdProcessHourly",
+      "name": "reconnaissanceToolDstProcessCategoriesHistogramUserIdProcessHourly",
       "contextFieldNames": [
         "userId"
       ],
@@ -37,13 +38,17 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "reconnaissanceToolCounter",
-          "featureNamesMap": {},
+          "name": "dstProcessCategoriesHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessCategories"
+            ]
+          },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
+            "type": "aggr_feature_multi_key_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]

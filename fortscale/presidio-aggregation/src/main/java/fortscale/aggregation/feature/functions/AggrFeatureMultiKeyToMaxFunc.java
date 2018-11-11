@@ -65,13 +65,15 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
-            MultiKeyFeature multiKeyFeature = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
+            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
             Feature maximizeFeatureValue = features.get(maximizeFeatureName);
 
-            if (multiKeyFeature != null && maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
-                double potentialMax = ((FeatureNumericValue)maximizeFeatureValue.getValue()).getValue().doubleValue();
-                Double max = multiKeyHistogram.getCount(multiKeyFeature);
-                multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+            if (maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
+                multiKeyFeatures.forEach(multiKeyFeature -> {
+                    double potentialMax = ((FeatureNumericValue) maximizeFeatureValue.getValue()).getValue().doubleValue();
+                    Double max = multiKeyHistogram.getCount(multiKeyFeature);
+                    multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+                });
             }
         }
 

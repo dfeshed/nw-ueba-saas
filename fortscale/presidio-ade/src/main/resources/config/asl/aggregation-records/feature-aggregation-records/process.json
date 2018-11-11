@@ -12,22 +12,32 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+        "type": "aggr_feature_distinct_multi_key_values_counter_func",
+        "keys": [
+          {
+            "dstProcessCategories": "RECONNAISSANCE_TOOL"
+          }
+        ]
       }
     },
     {
       "name": "numberOfReconnaissanceToolExecutedUserIdProcessHourly",
       "type": "F",
-      "bucketConfName": "reconnaissanceToolCounterUserIdProcessHourly",
+      "bucketConfName": "reconnaissanceToolDstProcessCategoriesHistogramUserIdProcessHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
-        "sum": [
-          "reconnaissanceToolCounter"
+        "groupBy": [
+          "dstProcessCategoriesHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "dstProcessCategories": "RECONNAISSANCE_TOOL"
+          }
+        ]
       }
     },
     {
