@@ -1,8 +1,5 @@
 package fortscale.aggregation.feature.bucket;
 
-
-import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
-import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
@@ -26,15 +23,11 @@ import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import java.time.Instant;
 import java.util.*;
 
-/**
- * Created by amira on 22/06/2015.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 public class BucketConfigurationServiceTest {
-
     @Autowired
-    BucketConfigurationService bch;
+    private BucketConfigurationService bucketConfigurationService;
 
     @Value("${impala.table.fields.data.source}")
     private String dataSourceFieldName;
@@ -58,45 +51,39 @@ public class BucketConfigurationServiceTest {
     public void adeRecordInitialize() {
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
         enrichedDlpFileRecord.setUserId("normalized_username_test1");
-        adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 80.0, new ArrayList<>(), enrichedDlpFileRecord);
+        adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time", "dlpfile", 80.0, new ArrayList<>(), enrichedDlpFileRecord);
     }
 
     @Test
     public void testGetRelatedBucketConfs() {
-        AdeRecordReader reader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader.getAdeEventType(), "fixed_duration_hourly", "context.userId", Collections.emptyList());
+        AdeRecordReader reader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(adeRecord);
+        List<FeatureBucketConf> bc = bucketConfigurationService.getRelatedBucketConfs(reader.getAdeEventType(), "fixed_duration_hourly", "context.userId", Collections.emptyList());
         Assert.assertEquals(1, bc.size());
         FeatureBucketConf fbc = bc.get(0);
         Assert.assertEquals("normalized_username_dlpfile_hourly", fbc.getName());
     }
 
     @Test
-    public void testAdeEventTypeWithNoBucketConfs(){
-        List<FeatureBucketConf> bc = bch.getFeatureBucketConfs("event-type-with-no-bucket-confs");
+    public void testAdeEventTypeWithNoBucketConfs() {
+        List<FeatureBucketConf> bc = bucketConfigurationService.getFeatureBucketConfs("event-type-with-no-bucket-confs");
         Assert.assertNotNull("should return empty list in case that no feature bucket configuration exist for the given ade event type", bc);
-        Assert.assertSame(bc, Collections.emptyList());
-        bc = bch.getFeatureBucketConfs("event-type-with-no-bucket-confs", "fixed_duration_hourly");
+        Assert.assertEquals(bc, Collections.emptyList());
+        bc = bucketConfigurationService.getFeatureBucketConfs("event-type-with-no-bucket-confs", "fixed_duration_hourly");
         Assert.assertNotNull("should return empty list in case that no feature bucket configuration exist for the given ade event type", bc);
-        Assert.assertSame(bc, Collections.emptyList());
+        Assert.assertEquals(bc, Collections.emptyList());
     }
 
-
     @Configuration
-    @Import({
-            BucketConfigurationServiceConfig.class
-    })
+    @Import(BucketConfigurationServiceConfig.class)
     public static class springConfig {
-
         @Bean
-        public static TestPropertiesPlaceholderConfigurer abc() {
+        public static TestPropertiesPlaceholderConfigurer bucketConfigurationServiceTestTestPropertiesPlaceholderConfigurer() {
             Properties properties = new Properties();
             properties.put("impala.table.fields.data.source", "dlpfile");
             properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/buckets/BucketConfigurationServiceTest.json");
             properties.put("fortscale.aggregation.bucket.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
             properties.put("fortscale.aggregation.bucket.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
-
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
-
     }
 }

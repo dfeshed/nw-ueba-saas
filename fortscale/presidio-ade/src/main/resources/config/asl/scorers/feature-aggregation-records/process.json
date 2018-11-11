@@ -79,6 +79,46 @@
           ]
         }
       ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly.gaussian",
+              "model": {
+                "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.prior.process.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
     }
   ]
 }
