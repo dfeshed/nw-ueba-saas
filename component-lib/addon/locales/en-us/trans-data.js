@@ -2152,6 +2152,7 @@ export default {
           filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
           invalidInput: 'Name can contain alphanumeric, underscore, or hyphen.'
         },
+        accessError: 'You do not have permission to save the filter.',
         error: 'Name already exists. Provide a unique name for the filter.',
         delete: {
           successMessage: 'Query deleted successfully.',

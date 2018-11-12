@@ -191,7 +191,13 @@ export default Component.extend({
             success('investigateFiles.filter.customFilters.save.success');
             this.set('showSaveFilter', false);
           },
-          onFailure: () => failure('investigateFiles.filter.customFilters.error')
+          onFailure: (response) => {
+            if (response.meta.message === 'Access is denied') {
+              failure('investigateFiles.filter.customFilters.accessError');
+            } else {
+              failure('investigateFiles.filter.customFilters.error');
+            }
+          }
         };
         const filter = {
           name: saveFilterName || ''
