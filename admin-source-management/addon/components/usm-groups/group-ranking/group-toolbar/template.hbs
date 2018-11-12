@@ -22,7 +22,6 @@
 
   {{#rsa-form-button
     class='reset-ranking-button'
-    style='primary'
     defaultAction=(action 'resetRanking')
     isDisabled=(not hasGroupRankingChanged)
   }}
@@ -31,7 +30,6 @@
 
   {{#rsa-form-button
     class='top-ranking-button'
-    style='primary'
     defaultAction=(action 'setTopRanking')
     isDisabled=(not hasSelectedGroup)
   }}
