@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.feature.*;
@@ -34,6 +35,9 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
     public static final String GROUP_BY_FIELD_NAME = "groupBy";
     public static final String MAXIMIZE_FIELD_NAME = "maximize";
 
+    @JsonProperty("groupByValues")
+    private Map<String, List<String>> groupByValues;
+
     /**
      * Updates the mapping from feature value to max value within aggrFeature.
      * Uses the features as input for the function according to the configuration in the aggregatedFeatureConf.
@@ -65,7 +69,7 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
-            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
+            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames, groupByValues);
             Feature maximizeFeatureValue = features.get(maximizeFeatureName);
 
             if (maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {

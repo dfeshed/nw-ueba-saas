@@ -19,7 +19,12 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_key_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func",
+            "groupByValues": {
+              "dstProcessCategories": [
+                "RECONNAISSANCE_TOOL"
+              ]
+            }
           },
           "filter": {
             "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
@@ -45,7 +50,12 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_key_histogram_func"
+            "type": "aggr_feature_multi_key_histogram_func",
+            "groupByValues": {
+              "dstProcessCategories": [
+                "RECONNAISSANCE_TOOL"
+              ]
+            }
           },
           "filter": {
             "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
