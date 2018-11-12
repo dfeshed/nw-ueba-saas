@@ -2609,7 +2609,7 @@ export default {
       kernelHooks: 'Kernel Hooks',
       registryDiscrepancies: 'Registry Discrepancies',
       hostDetails: 'Host Details',
-      policies: 'Policies'
+      policyDetails: 'Policy Details'
     },
     context: {
       score: 'Score',

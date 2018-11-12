@@ -17,8 +17,7 @@ import {
   downloadLink,
   hostWithStatus,
   isMachineWindows,
-  getPoliciesPropertyData,
-  _getscheduledScanConfig } from 'investigate-hosts/reducers/details/overview/selectors';
+  getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -282,77 +281,8 @@ test('hostWithStatus', function(assert) {
   assert.equal(result.agentStatus.status, 'scanning');
 });
 
-test('getscheduledScanConfig', function(assert) {
-  const result = _getscheduledScanConfig(Immutable.from({
-    endpoint: {
-      overview: {
-        policyDetails: {
-          policy: {
-            'edrPolicy': {
-              'scheduledScanConfig': {
-                'enabled': true,
-                'scanOptions': {
-                  'captureFloatingCode': true,
-                  'filterSignedHooks': false,
-                  'downloadMbr': false
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }));
-
-  assert.deepEqual(result, {
-    'enabled': 'Scheduled',
-    'scanOptions': {
-      'captureFloatingCode': 'Enabled',
-      'filterSignedHooks': 'Disabled',
-      'downloadMbr': 'Disabled'
-    }
-  });
-});
-
-test('getscheduledScanConfig when scheduledScanConfig is undefined', function(assert) {
-  const result = _getscheduledScanConfig(Immutable.from({
-    endpoint: {
-      overview: {
-        policyDetails: {
-          policy: {
-            'edrPolicy': {}
-          }
-        }
-      }
-    }
-  }));
-
-  assert.deepEqual(result, {});
-});
-
-test('getscheduledScanConfig when scanConfig is undefined', function(assert) {
-  const result = _getscheduledScanConfig(Immutable.from({
-    endpoint: {
-      overview: {
-        policyDetails: {
-          policy: {
-            'edrPolicy': {
-              'scheduledScanConfig': {
-                'enabled': false
-              }
-            }
-          }
-        }
-      }
-    }
-  }));
-  assert.deepEqual(result, {
-    'enabled': 'Manual'
-  });
-});
-
 test('getPoliciesPropertyData', function(assert) {
-  const result = getPoliciesPropertyData(Immutable.from({
+  const state1 = {
     endpoint: {
       overview: {
         hostDetails: {
@@ -392,15 +322,17 @@ test('getPoliciesPropertyData', function(assert) {
         }
       }
     }
-  }));
+  };
 
-  assert.equal(result.policyStatus, 'Updated');
-  assert.deepEqual(result.edrPolicy, {
+  const result1 = getPoliciesPropertyData(Immutable.from(state1));
+
+  assert.equal(result1.policyStatus, 'Updated');
+  assert.deepEqual(result1.edrPolicy, {
     'agentMode': 'FULL_MONITORING',
     'transportConfig': {
       'primary': {
-        'httpsBeaconIntervalInSeconds': 900,
-        'udpBeaconIntervalInSeconds': 30,
+        'httpsBeaconIntervalInSeconds': '900 seconds',
+        'udpBeaconIntervalInSeconds': '30 seconds',
         'address': '10.40.12.8',
         'httpsPort': 7050,
         'udpPort': 7052
@@ -420,5 +352,81 @@ test('getPoliciesPropertyData', function(assert) {
     'serverConfig': {
       'requestScanOnRegistration': 'Disabled'
     }
+  });
+
+  const state2 = {
+    endpoint: {
+      overview: {
+        hostDetails: {
+          groupPolicy: {}
+        },
+        policyDetails: {
+          policy: {
+            'edrPolicy': {
+              'scheduledScanConfig': {
+                'enabled': true,
+                'scanOptions': {
+                  'captureFloatingCode': false,
+                  'filterSignedHooks': false,
+                  'downloadMbr': false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const result2 = getPoliciesPropertyData(Immutable.from(state2));
+
+  assert.deepEqual(result2.edrPolicy, {
+    'blockingConfig': {
+      'enabled': 'Disabled'
+    },
+    'scheduledScanConfig': {
+      'enabled': 'Scheduled',
+      'scanOptions': {
+        'captureFloatingCode': 'Disabled',
+        'downloadMbr': 'Disabled',
+        'filterSignedHooks': 'Disabled'
+      }
+    },
+    'serverConfig': {
+      'requestScanOnRegistration': 'Disabled'
+    },
+    'transportConfig': {}
+  });
+
+  const state3 = {
+    endpoint: {
+      overview: {
+        hostDetails: {
+          groupPolicy: {}
+        },
+        policyDetails: {
+          policy: {
+            'edrPolicy': {
+              'scheduledScanConfig': {}
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const result3 = getPoliciesPropertyData(Immutable.from(state3));
+
+  assert.deepEqual(result3.edrPolicy, {
+    'blockingConfig': {
+      'enabled': 'Disabled'
+    },
+    'scheduledScanConfig': {
+      'enabled': 'Manual'
+    },
+    'serverConfig': {
+      'requestScanOnRegistration': 'Disabled'
+    },
+    'transportConfig': {}
   });
 });

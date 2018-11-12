@@ -86,7 +86,7 @@ const PROPERTY_PANEL_TABS = [
     name: 'HOST_DETAILS'
   },
   {
-    label: 'investigateHosts.tabs.policies',
+    label: 'investigateHosts.tabs.policyDetails',
     name: 'POLICIES'
   }
 ];

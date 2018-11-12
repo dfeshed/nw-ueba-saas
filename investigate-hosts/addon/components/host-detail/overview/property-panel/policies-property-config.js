@@ -1,7 +1,11 @@
 export default [
   {
-    sectionName: 'Policy Status',
+    sectionName: 'General',
     fields: [
+      {
+        field: 'edrPolicy.name',
+        labelKey: 'name'
+      },
       {
         field: 'policyStatus',
         labelKey: 'policyStatus'

@@ -79,7 +79,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
 
-    assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Policies', 'policies tab selected');
+    assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Policy Details', 'policyDetails tab selected');
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
   });

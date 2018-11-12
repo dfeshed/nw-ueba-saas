@@ -230,8 +230,7 @@ export const getPropertyData = createSelector(
   }
 );
 
-// exporting for tests
-export const _getscheduledScanConfig = createSelector(
+const _getscheduledScanConfig = createSelector(
   [_policyDetails],
   (policyDetails) => {
     const { policy } = policyDetails;
@@ -281,8 +280,20 @@ export const getPoliciesPropertyData = createSelector(
   (policyDetails, hostDetails, scheduledScanConfig) => {
     const policyStatus = hostDetails.groupPolicy ? hostDetails.groupPolicy.policyStatus : null;
     const { policy } = policyDetails;
-    const edrPolicy = policy ? policyDetails.policy.edrPolicy : {};
-    const { blockingConfig, serverConfig } = edrPolicy;
+    const edrPolicy = policy ? policy.edrPolicy : {};
+    const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
+    let newTransportConfig = {};
+    if (transportConfig) {
+      const { primary } = transportConfig;
+      const { httpsBeaconIntervalInSeconds, udpBeaconIntervalInSeconds } = primary;
+      newTransportConfig = {
+        primary: {
+          ...primary,
+          httpsBeaconIntervalInSeconds: `${httpsBeaconIntervalInSeconds} seconds`,
+          udpBeaconIntervalInSeconds: `${udpBeaconIntervalInSeconds} seconds`
+        }
+      };
+    }
     return {
       ...policy,
       policyStatus,
@@ -294,6 +305,7 @@ export const getPoliciesPropertyData = createSelector(
         serverConfig: {
           requestScanOnRegistration: serverConfig && serverConfig.requestScanOnRegistration ? 'Enabled' : 'Disabled'
         },
+        transportConfig: newTransportConfig,
         scheduledScanConfig
       }
     };

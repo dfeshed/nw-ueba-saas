@@ -45,6 +45,7 @@ $panel-width: 200px;
   }
   &__property {
     min-height: 1.7rem;
+    margin-top: 0.5rem;
     .property-name {
       @include rsa-font(body, small);
       display: block;
@@ -52,6 +53,7 @@ $panel-width: 200px;
       padding-right: rsa-whitespace();
       color: text-color(primary, light);
       padding-top: .2rem;
+      line-height: 1.25rem;
     }
     .property-value {
       @include rsa-font(body, small);
