@@ -1,5 +1,7 @@
 .usm-policy-wizard {
   .define-policy-step {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
     .all-settings {
       color: text-color(primary, lighter);
       .rsa-icon {

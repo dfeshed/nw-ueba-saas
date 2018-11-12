@@ -39,7 +39,12 @@ const INITIAL_STATES = {
         title: 'adminUsm.policyWizard.identifyPolicy',
         stepComponent: 'usm-policies/policy-wizard/identify-policy-step',
         titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
-        toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
+        toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar',
+        prevButtonDisabled: true,
+        nextButtonDisabled: false,
+        saveButtonDisabled: true,
+        publishButtonDisabled: true,
+        showErrors: false
       },
       {
         id: 'definePolicyStep',
@@ -48,7 +53,12 @@ const INITIAL_STATES = {
         title: 'adminUsm.policyWizard.definePolicy',
         stepComponent: 'usm-policies/policy-wizard/define-policy-step',
         titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
-        toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar'
+        toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar',
+        prevButtonDisabled: false,
+        nextButtonDisabled: true,
+        saveButtonDisabled: false,
+        publishButtonDisabled: false,
+        showErrors: false
       }
     ],
 
@@ -226,6 +236,12 @@ export default reduxActions.handleActions({
       }
     })
   ),
+
+  [ACTION_TYPES.UPDATE_POLICY_STEP]: (state, action) => {
+    const { field, value } = action.payload;
+    const fields = field.split('.');
+    return state.setIn(fields, value);
+  },
 
   // define-policy-step - add an available setting (left col) as a selected setting (right col)
   [ACTION_TYPES.ADD_TO_SELECTED_SETTINGS]: (state, { payload }) => {

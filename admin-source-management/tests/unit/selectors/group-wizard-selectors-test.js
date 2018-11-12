@@ -8,6 +8,7 @@ import {
   nameValidator,
   descriptionValidator,
   steps,
+  isGroupCriteriaEmpty,
   isIdentifyGroupStepValid,
   identifyGroupStepShowErrors,
   isDefineGroupStepValid,
@@ -530,6 +531,41 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       .build();
     const policyList = assignedPolicyList(Immutable.from(fullState));
     assert.deepEqual(policyList, expectedPolicyList, 'The returned value from the assignedPolicyList is as expected');
+  });
+
+  test('isGroupCriteriaEmpty selector - no criteria', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {},
+      'assignedPolicies': {}
+    };
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(isGroupCriteriaEmpty(Immutable.from(fullState)), true, 'The returned value from the isGroupCriteriaEmpty is as expected');
+  });
+
+  test('isGroupCriteriaEmpty selector - with criteria', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {
+        'conjunction': 'AND',
+        'criteria': [
+          ['osType', 'IN', []]
+        ]
+      },
+      'assignedPolicies': {}
+    };
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    assert.deepEqual(isGroupCriteriaEmpty(Immutable.from(fullState)), false, 'The returned value from the isGroupCriteriaEmpty is as expected');
   });
 
   test('groupCriteriaValidator selector - no criteria', function(assert) {

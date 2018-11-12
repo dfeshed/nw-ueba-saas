@@ -3927,10 +3927,16 @@ export default {
       addCondition: 'Add Condition',
       maxTenCriteria: 'This group contains the maximum number of conditions',
       actionMessages: {
-        nextFailure: 'Please fix all the validation errors before continuing to next step',
-        isWizardValidFailure: 'Please fix all the validation errors before Saving or Publishing',
+        prevFailure: 'Please fix all the validation errors before navigating back to the previous step.',
+        prevEmptyFailure: 'At least one condition is required before navigating back to the previous step.',
+        nextFailure: 'Please fix all the validation errors before continuing to next step.',
+        nextEmptyFailure: 'At least one condition is required before continuing to next step.',
+        saveValidationFailure: 'Please fix all the validation errors before Saving the Group.',
+        saveEmptyFailure: 'At least one condition is required before Saving the Group.',
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully in an unpublished state.',
+        savePublishValidationFailure: 'Please fix all the validation errors before Publishing the Group.',
+        savePublishEmptyFailure: 'At least one condition is required before Publishing the Group.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
         savePublishSuccess: 'The group has been saved and published successfully.'
       }
@@ -3986,8 +3992,16 @@ export default {
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
       actionMessages: {
+        prevFailure: 'Please fix all the validation errors before navigating back to the previous step.',
+        prevEmptyFailure: 'At least one condition is required before navigating back to the previous step.',
+        nextFailure: 'Please fix all the validation errors before continuing to next step.',
+        nextEmptyFailure: 'At least one condition is required before continuing to next step.',
+        saveValidationFailure: 'Please fix all the validation errors before Saving the Policy.',
+        saveEmptyFailure: 'At least one condition is required before Saving the Policy.',
         saveFailure: 'A problem occurred while trying to save the policy: {{errorType}}',
         saveSuccess: 'The policy has been saved successfully in an unpublished state.',
+        savePublishValidationFailure: 'Please fix all the validation errors before Publishing the Policy.',
+        savePublishEmptyFailure: 'At least one condition is required before Publishing the Policy.',
         savePublishFailure: 'A problem occurred while trying to save and publish the policy: {{errorType}}',
         savePublishSuccess: 'The policy has been saved and published successfully.'
       },
@@ -4119,7 +4133,7 @@ export default {
         validIPv4List: 'One or more of the the IPv4 addresses are invalid',
         validIPv6: 'Invalid IPv6 address',
         validIPv6List: 'One or more of the the IPv6 addresses are invalid',
-        validPolicyAssigned: 'Policy selection is required for a source type selection, or you can clear the source type by selecting the \'X\''
+        validPolicyAssigned: 'Policy selection is required, or clear by selecting the \'X\''
       }
     },
     errorCodeResponse: {

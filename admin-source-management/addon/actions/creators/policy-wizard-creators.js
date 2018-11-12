@@ -90,6 +90,18 @@ const fetchPolicy = (id, callbacks = callbacksDefault, resolve = noop, reject = 
   };
 };
 
+const updatePolicyStep = (field, value) => {
+  const payload = {
+    field,
+    value
+  };
+  return {
+    type: ACTION_TYPES.UPDATE_POLICY_STEP,
+    payload
+  };
+};
+
+
 /**
  * Saves the given policy to the server.
  * @param policy
@@ -288,6 +300,7 @@ export {
   initializePolicy,
   newPolicy,
   fetchPolicy,
+  updatePolicyStep,
   savePolicy,
   savePublishPolicy,
   addToSelectedSettings,

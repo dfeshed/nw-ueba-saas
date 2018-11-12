@@ -1,50 +1,41 @@
-{{!-- previous is visible if prevStepId is defined, and always enabled --}}
-{{#if step.prevStepId}}
-  {{#rsa-form-button
-    class='prev-button'
-    defaultAction='transitionToPrevStep'
-  }}
-    {{t 'adminUsm.policyWizard.previous'}}
-  {{/rsa-form-button}}
-{{/if}}
+{{#rsa-form-button
+  class='prev-button'
+  defaultAction='transitionToPrevStep'
+  isDisabled=step.prevButtonDisabled
+}}
+  {{t 'adminUsm.policyWizard.previous'}}
+{{/rsa-form-button}}
 
-{{!-- next is visible if nextStepId is defined, and enabled if the current step is valid --}}
-{{#if step.nextStepId}}
-  {{#rsa-form-button
-    class='next-button'
-    style='primary'
-    defaultAction='transitionToNextStep'
-    isDisabled=(not isStepValid)
-  }}
-    {{t 'adminUsm.policyWizard.next'}}
-  {{/rsa-form-button}}
-{{/if}}
+{{#rsa-form-button
+  class='next-button'
+  style='primary'
+  defaultAction='transitionToNextStep'
+  isDisabled=step.nextButtonDisabled
+}}
+  {{t 'adminUsm.policyWizard.next'}}
+{{/rsa-form-button}}
 
-{{!-- publish is visible if nextStepId is NOT defined, and enabled if all steps are valid --}}
-{{#unless step.nextStepId}}
-  {{#rsa-form-button
-    class='publish-button'
-    style='primary'
-    defaultAction=(action 'save' true)
-    isDisabled=(not isWizardValid)
-  }}
-    {{t 'adminUsm.policyWizard.publishPolicy'}}
-  {{/rsa-form-button}}
-{{/unless}}
-
-{{!-- save is always visible, and enabled if the current step is valid --}}
 {{#rsa-form-button
   class='save-button'
   defaultAction=(action 'save' false)
-  isDisabled=(not isWizardValid)
+  isDisabled=step.saveButtonDisabled
 }}
   {{t 'adminUsm.policyWizard.saveAndClose'}}
 {{/rsa-form-button}}
 
-{{!-- cancel is always visible & enabled --}}
+{{#rsa-form-button
+  class='publish-button'
+  style='primary'
+  defaultAction=(action 'save' true)
+  isDisabled=step.publishButtonDisabled
+}}
+  {{t 'adminUsm.policyWizard.publishPolicy'}}
+{{/rsa-form-button}}
+
 {{#rsa-form-button
   class='cancel-button'
   defaultAction='cancel'
+  isStepValid=isStepValid
 }}
   {{t 'adminUsm.policyWizard.cancel'}}
 {{/rsa-form-button}}

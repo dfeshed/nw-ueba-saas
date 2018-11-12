@@ -84,6 +84,33 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(descEndState2, descExpectedEndState, `policy desc is ${descExpected} visited state contains no duplicates`);
   });
 
+  test('on UPDATE_POLICY_STEP step status is properly set - test identifyPolicyStep=true', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizStepShowErrors('identifyPolicyStep', true)
+      .build().usm.policyWizard;
+    const action = {
+      type: ACTION_TYPES.UPDATE_POLICY_STEP,
+      payload: { field: 'steps.0.showErrors', value: true }
+    };
+    const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
+    assert.deepEqual(endState, expectedEndState, 'policy step status is set correctly');
+  });
+
+  test('on UPDATE_POLICY_STEP step status is properly set - test identifyPolicyStep=false', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizStepShowErrors('identifyPolicyStep', false)
+      .build().usm.policyWizard;
+    const action = {
+      type: ACTION_TYPES.UPDATE_POLICY_STEP,
+      payload: { field: 'steps.0.showErrors', value: false }
+    };
+    const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
+    assert.deepEqual(endState, expectedEndState, 'policy step status is set correctly');
+  });
+
+
   test('on FETCH_POLICY start, policy is reset and itemsStatus is properly set', function(assert) {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()

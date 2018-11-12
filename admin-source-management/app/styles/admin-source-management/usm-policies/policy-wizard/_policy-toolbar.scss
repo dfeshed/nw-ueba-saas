@@ -3,19 +3,23 @@
   .policy-wizard-toolbar {
     
     .prev-button {
-      margin-right: rsa-whitespace(less);
+      margin-right: rsa-whitespace();
     }
 
-    /* .next-button {} */
+    .next-button {
+      margin-right: rsa-whitespace(most);
+    }
 
-    /* .publish-button {} */
+    .publish-button {
+      margin-left: rsa-whitespace();
+    }
 
     .save-button {
-      margin-left: rsa-whitespace(most);
+      margin-left: rsa-whitespace();
     }
 
     .cancel-button {
-      margin-left: rsa-whitespace(less);
+      margin-left: rsa-whitespace();
     }
     
   }

@@ -2,6 +2,7 @@
   
   .identify-policy-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
 
     .control {
       flex: none;

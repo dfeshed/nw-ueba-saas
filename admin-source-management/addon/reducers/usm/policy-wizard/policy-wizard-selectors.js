@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import { isBlank } from '@ember/utils';
+import { isBlank, isEmpty } from '@ember/utils';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
@@ -58,21 +58,38 @@ export const selectedSourceType = createSelector(
  */
 export const policyList = (state) => _policyWizardState(state).policyList;
 
+// Validation related selectors
+// ----------------------------------------
+
+export const identifyPolicyStepShowErrors = createSelector(
+  steps,
+  (steps) => {
+    return steps[0].showErrors;
+  }
+);
+
+export const definePolicyStepShowErrors = createSelector(
+  steps,
+  (steps) => {
+    return steps[1].showErrors;
+  }
+);
+
 /**
  * returns a name validator object with values set for
  * - isError, errorMessage
  * @public
  */
 export const nameValidator = createSelector(
-  policyList, policy, visited,
-  (policyList, policy, visited) => {
+  policyList, policy, visited, identifyPolicyStepShowErrors,
+  (policyList, policy, visited, stepShowErrors) => {
     let error = false;
     let enableMessage = false;
     let message = '';
     if (isBlank(policy.name)) {
       error = true;
       // only blank value requires visited
-      if (visited.includes('policy.name')) {
+      if (stepShowErrors || visited.includes('policy.name')) {
         enableMessage = true;
         message = 'adminUsm.policyWizard.nameRequired';
       }
@@ -132,6 +149,17 @@ export const isIdentifyPolicyStepValid = createSelector(
 const availableSettings = (state) => _policyWizardState(state).availableSettings || {};
 // settings selected/added/applied to the right col
 const selectedSettings = (state) => _policyWizardState(state).selectedSettings || {};
+
+/**
+ * check to see if at least one is selected, used in flash messages
+ * @public
+ */
+export const isPolicySettingsEmpty = createSelector(
+  selectedSettings,
+  (selectedSettings) => {
+    return isEmpty(selectedSettings);
+  }
+);
 
 /**
  * settings that are available/visible in the left col

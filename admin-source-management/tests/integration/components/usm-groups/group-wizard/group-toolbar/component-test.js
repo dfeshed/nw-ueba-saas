@@ -113,8 +113,6 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is disabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
 
-    // skip prev-button & publish-button since they aren't rendered
-
     // clicking the next-button should call transitionToStep() with the correct stepId
     // update transitionToStep for next-button
     this.set('transitionToStep', (stepId) => {

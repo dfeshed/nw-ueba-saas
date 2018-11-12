@@ -7,6 +7,7 @@ import { inject } from '@ember/service';
 
 import {
   group,
+  isGroupCriteriaEmpty,
   isIdentifyGroupStepValid,
   isDefineGroupStepValid,
   defineGroupStepShowErrors,
@@ -16,7 +17,7 @@ import {
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
-  editGroup,
+  updateGroupStep,
   saveGroup,
   savePublishGroup,
   updateCriteriaFromCache
@@ -24,6 +25,7 @@ import {
 
 const stateToComputed = (state) => ({
   group: group(state),
+  isGroupCriteriaEmpty: isGroupCriteriaEmpty(state),
   isIdentifyGroupStepValid: isIdentifyGroupStepValid(state),
   isDefineGroupStepValid: isDefineGroupStepValid(state),
   defineGroupStepShowErrors: defineGroupStepShowErrors(state),
@@ -33,7 +35,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  editGroup,
+  updateGroupStep,
   saveGroup,
   savePublishGroup,
   updateCriteriaFromCache
@@ -90,13 +92,13 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   setShowErrors(show) {
     switch (this.step.id) {
       case 'identifyGroupStep':
-        this.send('editGroup', 'steps.0.showErrors', show);
+        this.send('updateGroupStep', 'steps.0.showErrors', show);
         break;
       case 'defineGroupStep':
-        this.send('editGroup', 'steps.1.showErrors', show);
+        this.send('updateGroupStep', 'steps.1.showErrors', show);
         break;
       case 'applyPolicyStep':
-        this.send('editGroup', 'steps.2.showErrors', show);
+        this.send('updateGroupStep', 'steps.2.showErrors', show);
         break;
       default:
         break;
@@ -107,7 +109,16 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
     transitionToPrevStep() {
       this.send('updateCriteriaFromCache');
-      this.get('transitionToStep')(this.get('step').prevStepId);
+      if (this.isStepValid) {
+        this.get('transitionToStep')(this.get('step').prevStepId);
+      } else {
+        this.setShowErrors(true);
+        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.prevEmptyFailure');
+        } else {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.prevFailure');
+        }
+      }
     },
 
     transitionToNextStep() {
@@ -116,22 +127,34 @@ const GroupWizardToolbar = Component.extend(Notifications, {
         this.get('transitionToStep')(this.get('step').nextStepId);
       } else {
         this.setShowErrors(true);
-        this.send('failure', 'adminUsm.groupWizard.actionMessages.nextFailure');
+        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.nextEmptyFailure');
+        } else {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.nextFailure');
+        }
       }
     },
 
     save(publish) {
-      if (this.isWizardValid) {
+      let validationMessage = 'adminUsm.groupWizard.actionMessages.saveValidationFailure';
+      if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+        validationMessage = 'adminUsm.groupWizard.actionMessages.saveEmptyFailure';
+      }
+      let successMessage = 'adminUsm.groupWizard.actionMessages.saveSuccess';
+      let failureMessage = 'adminUsm.groupWizard.actionMessages.saveFailure';
+      let dispatchAction = 'saveGroup';
 
-        let successMessage = 'adminUsm.groupWizard.actionMessages.saveSuccess';
-        let failureMessage = 'adminUsm.groupWizard.actionMessages.saveFailure';
-        let dispatchAction = 'saveGroup';
-
-        if (publish) {
-          successMessage = 'adminUsm.groupWizard.actionMessages.savePublishSuccess';
-          failureMessage = 'adminUsm.groupWizard.actionMessages.savePublishFailure';
-          dispatchAction = 'savePublishGroup';
+      if (publish) {
+        validationMessage = 'adminUsm.groupWizard.actionMessages.savePublishValidationFailure';
+        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+          validationMessage = 'adminUsm.groupWizard.actionMessages.savePublishEmptyFailure';
         }
+        successMessage = 'adminUsm.groupWizard.actionMessages.savePublishSuccess';
+        failureMessage = 'adminUsm.groupWizard.actionMessages.savePublishFailure';
+        dispatchAction = 'savePublishGroup';
+      }
+
+      if (this.isWizardValid) {
 
         const saveCallbacks = {
           onSuccess: () => {
@@ -153,7 +176,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
         this.send(dispatchAction, this.get('group'), saveCallbacks);
       } else {
         this.setShowErrors(true);
-        this.send('failure', 'adminUsm.groupWizard.actionMessages.isWizardValidFailure');
+        this.send('failure', validationMessage);
       }
     },
 

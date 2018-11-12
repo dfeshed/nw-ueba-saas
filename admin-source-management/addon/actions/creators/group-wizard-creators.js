@@ -83,6 +83,17 @@ const editGroup = (field, value) => {
   };
 };
 
+const updateGroupStep = (field, value) => {
+  const payload = {
+    field,
+    value
+  };
+  return {
+    type: ACTION_TYPES.UPDATE_GROUP_STEP,
+    payload
+  };
+};
+
 const updateGroupCriteria = (criteriaPath, value, fieldIndex) => {
   const payload = {
     criteriaPath,
@@ -237,6 +248,7 @@ export {
   newGroup,
   fetchGroup,
   editGroup,
+  updateGroupStep,
   saveGroup,
   updateGroupCriteria,
   savePublishGroup,

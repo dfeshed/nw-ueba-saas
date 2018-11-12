@@ -178,6 +178,13 @@ export const descriptionValidator = createSelector(
   }
 );
 
+export const isGroupCriteriaEmpty = createSelector(
+  groupCriteriaCache,
+  (groupCriteriaCache) => {
+    return isEmpty(groupCriteriaCache);
+  }
+);
+
 export const groupCriteriaValidator = createSelector(
   groupCriteriaCache,
   (groupCriteria) => {

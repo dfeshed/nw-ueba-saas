@@ -252,6 +252,12 @@ export default reduxActions.handleActions({
     return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
   },
 
+  [ACTION_TYPES.UPDATE_GROUP_STEP]: (state, action) => {
+    const { field, value } = action.payload;
+    const fields = field.split('.');
+    return state.setIn(fields, value);
+  },
+
   [ACTION_TYPES.UPDATE_CRITERIA_FROM_CACHE]: (state) => {
     const editedGroup = {
       ...state.group,

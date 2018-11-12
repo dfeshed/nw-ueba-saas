@@ -19,7 +19,8 @@ import {
   isIdentifyPolicyStepValid,
   isDefinePolicyStepValid,
   isWizardValid,
-  isPolicyLoading
+  isPolicyLoading,
+  isPolicySettingsEmpty
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hooks) {
@@ -481,6 +482,28 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     isPolicyLoadingExpected = false;
     isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
     assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is false when policyStatus is complete');
+  });
+
+  test('isPolicySettingsEmpty selector - no settings', function(assert) {
+    const selectedSettingsExpected = [];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .build();
+    assert.deepEqual(isPolicySettingsEmpty(Immutable.from(fullState)), true, 'The returned value from the isPolicySettingsEmpty is as expected');
+  });
+
+  test('isPolicySettingsEmpty selector - with settings', function(assert) {
+    const selectedSettingsExpected = [
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
+      { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] }
+    ];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .build();
+    assert.deepEqual(isPolicySettingsEmpty(Immutable.from(fullState)), false, 'The returned value from the isPolicySettingsEmpty is as expected');
   });
 
 });

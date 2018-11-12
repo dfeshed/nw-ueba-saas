@@ -198,6 +198,20 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizStepShowErrors(stepId, showErrors) {
+    switch (stepId) {
+      case 'identifyPolicyStep':
+        _set(this.state, 'usm.policyWizard.steps.0.showErrors', showErrors);
+        break;
+      case 'defineyPolicyStep':
+        _set(this.state, 'usm.policyWizard.steps.1.showErrors', showErrors);
+        break;
+      default:
+        break;
+    }
+    return this;
+  }
+
   policyWizPolicyStatus(status) {
     _set(this.state, 'usm.policyWizard.policyStatus', status);
     return this;
@@ -335,6 +349,8 @@ export default class DataHelper {
     if (group.groupCriteria && group.groupCriteria.criteria) {
       const criteria = group.groupCriteria.criteria.slice();
       _set(this.state, 'usm.groupWizard.criteriaCache', criteria);
+    } else {
+      _set(this.state, 'usm.groupWizard.criteriaCache', null);
     }
     _set(this.state, 'usm.groupWizard.group', group);
     return this;

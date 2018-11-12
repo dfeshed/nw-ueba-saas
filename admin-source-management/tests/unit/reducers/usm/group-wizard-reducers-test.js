@@ -591,6 +591,32 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(descEndState2, descExpectedEndState, `group desc is ${descExpected} visited state contains no duplicates`);
   });
 
+  test('on UPDATE_GROUP_STEP step status is properly set - test identifyGroupStep=true', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepShowErrors('identifyGroupStep', true)
+      .build().usm.groupWizard;
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_STEP,
+      payload: { field: 'steps.0.showErrors', value: true }
+    };
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'group step status is set correctly');
+  });
+
+  test('on UPDATE_GROUP_STEP step status is properly set - test identifyGroupStep=false', function(assert) {
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizStepShowErrors('identifyGroupStep', false)
+      .build().usm.groupWizard;
+    const action = {
+      type: ACTION_TYPES.UPDATE_GROUP_STEP,
+      payload: { field: 'steps.0.showErrors', value: false }
+    };
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, 'group step status is set correctly');
+  });
+
   test('on FETCH_GROUP start, group is reset and itemsStatus is properly set', function(assert) {
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
