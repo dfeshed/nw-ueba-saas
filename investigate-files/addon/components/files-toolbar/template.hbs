@@ -5,7 +5,7 @@
   {{/rsa-form-button}}
 </h2>
 <div class="toolbar-actions">
-  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
   {{#rsa-form-button class="view-certificate-button" click=(action 'toggleCertificateView')}}
     {{t 'investigateFiles.button.viewCertificates'}}
   {{/rsa-form-button}}

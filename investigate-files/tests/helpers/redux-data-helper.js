@@ -191,4 +191,8 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.setSelectedIndex', index);
     return this;
   }
+  services(data) {
+    _set(this.state, 'endpointServer', data);
+    return this;
+  }
 }

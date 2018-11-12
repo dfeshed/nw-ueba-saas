@@ -99,4 +99,30 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'Rsa loader displayed');
   });
 
+  test('it closes the right panel on changing the service', async function(assert) {
+    const { files: { schema: { schema } } } = files;
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(initState)
+      .schema(schema)
+      .fileCount(3)
+      .services(services)
+      .setSelectedFileList([])
+      .isEndpointServerOffline(false)
+      .build();
+    await render(hbs`{{investigate-files-container}}`);
+    await click(findAll('.files-body .rsa-data-table-body-row')[0]);
+    click('.rsa-content-tethered-panel-trigger');
+    return settled().then(() => {
+      assert.equal(findAll('.investigate-file-tab .title').length, 1, 'title is rendered in right panel');
+      assert.equal(findAll('.show-right-zone .right-zone').length, 1, 'right zone is open');
+      click('.service-selector-panel li');
+      return settled().then(() => {
+        assert.equal(findAll('.show-right-zone .right-zone').length, 0, 'right zone is closed');
+      });
+    });
+  });
 });

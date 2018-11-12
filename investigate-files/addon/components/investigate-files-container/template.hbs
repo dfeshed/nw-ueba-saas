@@ -19,7 +19,7 @@
   {{/layout.left}}
   {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">
-      {{files-toolbar openFilterPanel=(action layout.open 'left')}}
+      {{files-toolbar openFilterPanel=(action layout.open 'left') closeRiskPanel=(action layout.close 'right')}}
     </section>
     {{#if isEndpointServerOnline}}
       <box class="files-body">

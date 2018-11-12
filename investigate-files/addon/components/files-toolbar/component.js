@@ -67,6 +67,13 @@ const ToolBar = Component.extend({
         onFailure: () => failure('investigateFiles.riskScore.error')
       };
       this.send('resetRiskScore', itemsList, callBackOptions);
+    },
+
+    handleServiceSelection(service) {
+      this.send('setEndpointServer', service);
+      if (this.closeRiskPanel) {
+        this.closeRiskPanel();
+      }
     }
   }
 });
