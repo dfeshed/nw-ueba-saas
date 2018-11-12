@@ -35,7 +35,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   });
 
   test('The components appears in the DOM', async function(assert) {
-    assert.expect(10);
+    assert.expect(8);
     new ReduxDataHelper(setState)
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
@@ -43,29 +43,25 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.equal(findAll(selectors.createNewButton).length, 1, 'Create New groups button is showing');
     assert.equal(findAll(selectors.rankingButton).length, 1, 'Ranking button is showing');
     assert.equal(findAll(selectors.deleteButton).length, 1, 'Delete groups button is showing');
-    assert.equal(findAll(selectors.applyPoliciesButton).length, 1, 'Apply Policies groups button is showing');
     assert.equal(findAll(selectors.publishButton).length, 1, 'Publish groups button is showing');
-
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Delete button is disabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when no items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .fetchGroups()
       .build();
     await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Delete button is disabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when non-dirty publish items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .fetchGroups()
       .selectedGroups(['group_001'])
@@ -73,12 +69,11 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when dirty publish items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
       .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
@@ -86,7 +81,6 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
   });
 

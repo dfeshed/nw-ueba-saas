@@ -3679,7 +3679,6 @@ export default {
       edit: 'Edit',
       publish: 'Publish',
       applyGroups: 'Apply To Groups',
-      applyPolicies: 'Apply Policy(ies)',
       save: 'Save and Publish',
       saveAndPublish: 'Save and Publish',
       cancel: 'Cancel',

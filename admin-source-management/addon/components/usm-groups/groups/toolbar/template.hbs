@@ -6,12 +6,6 @@
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
-  <div class="action-control groups-apply-policies-button">
-    {{#rsa-form-button
-      isDisabled=(not hasSelectedApplyPoliciesItems)}}
-      {{t 'adminUsm.button.applyPolicies'}}
-    {{/rsa-form-button}}
-  </div>
   <div class="action-control groups-publish-button">
     {{#rsa-button-with-confirmation 
       title=(t 'adminUsm.groups.modals.publishGroups.title')
