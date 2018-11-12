@@ -205,8 +205,33 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SET_SELECTED_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
 
-  [ACTION_TYPES.RESET_FILES]: (state) => state.merge(fileListState)
-
+  [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
+    areFilesLoading: 'wait',
+    loadMoreStatus: 'completed',
+    pageNumber: -1,
+    totalItems: 0,
+    hasNext: false,
+    downloadStatus: 'completed',
+    downloadId: null,
+    listOfServices: null,
+    activeDataSourceTab: 'RISK_PROPERTIES',
+    lookupData: [{}],
+    contextError: null,
+    contextLoadingStatus: 'wait',
+    selectedFileList: [],
+    fileData: {},
+    agentCountMapping: {},
+    fileStatusData: {},
+    hostNameList: [],
+    fetchHostNameListError: false,
+    fetchMetaValueLoading: false,
+    riskScoreContext: null,
+    riskScoreContextError: null,
+    isRemediationAllowed: true,
+    selectedFile: {},
+    selectedDetailFile: null,
+    selectedIndex: null
+  })
 }, fileListState);
 
 export default fileListReducer;

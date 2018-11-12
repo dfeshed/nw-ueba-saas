@@ -98,6 +98,8 @@ export default Component.extend({
 
   disableSaveButton: true,
 
+  label: 'investigateFiles.filter.customFilters.save.header',
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
@@ -156,7 +158,7 @@ export default Component.extend({
       const expressionList = parseFilters(filters);
       this.set('expressionList', expressionList);
       const { name, id } = this.get('savedFilter') || {};
-      if (saveAs || !id) {
+      if (saveAs || !id || id === 1) {
         this.set('showSaveFilter', true);
         this.set('saveFilterName', '');
       } else {
