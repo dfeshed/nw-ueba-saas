@@ -80,7 +80,8 @@
       "../streaming-data",
       "../preferences",
       "../rsa-context-menu",
-      "../investigate-shared"
+      "../investigate-shared",
+      "../context"
     ]
   },
   "private": true

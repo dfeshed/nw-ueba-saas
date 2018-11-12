@@ -76,6 +76,7 @@
       "../rsa-context-menu",
       "../rsa-data-filters",
       "../license",
+      "../context",
       "../respond-shared"
     ]
   }

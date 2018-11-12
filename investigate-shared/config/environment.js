@@ -10,11 +10,6 @@ module.exports = function(environment/* , appConfig */) {
     mockServerUrl,
     mockPort,
     environment,
-    APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
-      readyDelay: 0 // 1500,
-    },
     moment: {
       includeLocales: true,
       includeTimezone: 'all'
@@ -37,7 +32,6 @@ module.exports = function(environment/* , appConfig */) {
     ENV.locationType = 'none';
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
-    ENV.contextMetas = ['IP'];
   }
 
   return ENV;

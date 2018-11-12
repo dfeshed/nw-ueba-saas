@@ -52,7 +52,6 @@ module.exports = function(environment) {
   if (environment === 'production') {
     // Intentionally left blank
   }
-  ENV.contextMetas = ['IP'];
   ENV.socketRoutes = socketRouteGenerator(environment);
   return ENV;
 };

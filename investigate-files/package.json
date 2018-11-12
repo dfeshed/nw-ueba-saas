@@ -83,7 +83,7 @@
       "../preferences",
       "../investigate-shared",
       "../rsa-data-filters",
-      "../respond-shared"
+      "../context"
     ]
   },
   "private": true
