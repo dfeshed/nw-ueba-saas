@@ -100,7 +100,7 @@ const datasources = {
     title: 'context.header.fileReputationServer',
     dataSourceType: 'FileReputationServer',
     displayType: 'dynamic-grid',
-    class: 'account-circle-1',
+    class: 'file-new-1',
     tabRequired: true
   }
 };
