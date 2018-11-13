@@ -19,13 +19,17 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_histogram_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
 
-    @JsonProperty("groupByValues")
     private Map<String, List<String>> groupByValues;
 
+    public AggrFeatureMultiKeyHistogramFunc(@JsonProperty("groupByValues") Map<String, List<String>> groupByValues) {
+        this.groupByValues = groupByValues;
+    }
 
     /**
      * Updates the histogram within aggrFeature.
      * Uses the features as input for the function according to the configuration in the aggregatedFeatureConf.
+     *
+     * Each multiKeyFeature count number of events.
      *
      * @param aggregatedFeatureConf aggregated feature configuration
      * @param features              mapping of feature name to feature

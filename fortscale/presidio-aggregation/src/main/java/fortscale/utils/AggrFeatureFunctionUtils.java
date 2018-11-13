@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 public class AggrFeatureFunctionUtils {
 
-    private static String OTHER_FIELD_NAME = "other";
-    private static Pair<String, List<String>> OTHER_PAIR = new Pair<>(OTHER_FIELD_NAME, Collections.singletonList(OTHER_FIELD_NAME));
+    public static String OTHER_FIELD_NAME = "other";
 
     /**
      * Extract groupBy feature names and values of features map and build MultiKeyFeature.
@@ -47,11 +46,6 @@ public class AggrFeatureFunctionUtils {
                     addGroupByValues(values, allowedGroupByFeatureValues, featureNameToValues, groupByFeatureName);
                 }
             }
-
-            //if one of the allowed values do not exist in features, exit the loop
-            if (featureNameToValues.contains(OTHER_PAIR)) {
-                break;
-            }
         }
 
         if (!featureNameToValues.isEmpty()) {
@@ -61,9 +55,8 @@ public class AggrFeatureFunctionUtils {
     }
 
     /**
-     * if allowedGroupByFeatureValues is null, add all the values to featureNameToValues List
-     * otherwise find intersection, if it is not empty add to the featureNameToValues,
-     * if no intersection was found clear the featureNameToValues and count it as OTHER_PAIR
+     * if allowedGroupByFeatureValues is null, add all the values to featureNameToValues list
+     * otherwise add common values, if no intersection was found or uncommon values were left in groupByFeatureValues count it as OTHER featureValue
      *
      * @param groupByFeatureValues
      * @param allowedGroupByFeatureValues
@@ -74,10 +67,12 @@ public class AggrFeatureFunctionUtils {
         if (allowedGroupByFeatureValues != null) {
             List<String> intersect = groupByFeatureValues.stream().filter(allowedGroupByFeatureValues::contains).collect(Collectors.toList());
             if (!intersect.isEmpty()) {
+                if (intersect.size() < groupByFeatureValues.size()) {
+                    intersect.add(OTHER_FIELD_NAME);
+                }
                 featureNameToValues.add(new Pair<>(groupByFeatureName, intersect));
             } else {
-                featureNameToValues.clear();
-                featureNameToValues.add(OTHER_PAIR);
+                featureNameToValues.add(new Pair<>(groupByFeatureName, Collections.singletonList(OTHER_FIELD_NAME)));
             }
         } else {
             featureNameToValues.add(new Pair<>(groupByFeatureName, groupByFeatureValues));

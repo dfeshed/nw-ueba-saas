@@ -35,12 +35,17 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
     public static final String GROUP_BY_FIELD_NAME = "groupBy";
     public static final String MAXIMIZE_FIELD_NAME = "maximize";
 
-    @JsonProperty("groupByValues")
     private Map<String, List<String>> groupByValues;
+
+    public AggrFeatureMultiKeyToMaxFunc(@JsonProperty("groupByValues") Map<String, List<String>> groupByValues) {
+        this.groupByValues = groupByValues;
+    }
 
     /**
      * Updates the mapping from feature value to max value within aggrFeature.
      * Uses the features as input for the function according to the configuration in the aggregatedFeatureConf.
+     *
+     * Each multiKeyFeature count number of events.
      *
      * @param aggregatedFeatureConf aggregated feature configuration
      * @param features              mapping of feature name to feature value
