@@ -1,7 +1,6 @@
 import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-
 /**
  * Creates a thunk to retrieve the count of events for a given query.
  * @public
@@ -13,7 +12,8 @@ export default function getEventCount() {
     const { language } = state.dictionaries;
     const { threshold } = state.eventCount;
     const handlers = {
-      onInit() {
+      onInit(stopStream) {
+        this.stopStreaming = stopStream;
         dispatch({
           type: ACTION_TYPES.START_GET_EVENT_COUNT
         });
@@ -29,6 +29,11 @@ export default function getEventCount() {
           payload: response.meta,
           code: response.code
         });
+
+        // devices and message (fatal error) represent a completed stream
+        if (response.meta.message || response.meta.devices) {
+          this.stopStreaming();
+        }
       },
       onResponse(response) {
         // protect against null data while query is being processed and when devices are returned
@@ -46,6 +51,11 @@ export default function getEventCount() {
             payload: response.meta,
             code: response.code
           });
+        }
+
+        // devices and message (fatal error) represent a completed stream
+        if (response.meta.message || response.meta.devices) {
+          this.stopStreaming();
         }
       }
     };
