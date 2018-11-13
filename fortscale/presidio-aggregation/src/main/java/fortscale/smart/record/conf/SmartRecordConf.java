@@ -6,12 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.smart.correlation.conf.CorrelationNodeData;
 import fortscale.smart.correlation.conf.FullCorrelation;
 import fortscale.utils.Tree;
-import fortscale.utils.TreeNode;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.*;
 
 /**
@@ -116,10 +114,16 @@ public class SmartRecordConf {
 	private void validateArguments() {
 		Assert.hasText(name, "The smart record conf name cannot be blank.");
 		Assert.notEmpty(contextToFieldsMap, "The map from context to fields cannot be empty.");
+		Set<String> allContextFields = new HashSet<>();
 		contextToFieldsMap.forEach((context, fields) -> {
 			Assert.hasText(context, "A context cannot be blank.");
 			Assert.notEmpty(fields, "A context cannot be mapped to an empty list of fields.");
-			fields.forEach(field -> Assert.hasText(field, "A list of fields cannot contain blanks."));
+			fields.forEach(field -> {
+				Assert.hasText(field, "A list of fields cannot contain blanks.");
+				String message = String.format("Field %s is configured multiple times.", field);
+				Assert.isTrue(!allContextFields.contains(field), message);
+				allContextFields.add(field);
+			});
 		});
 
 		if (includeAllAggregationRecords) {

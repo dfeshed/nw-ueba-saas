@@ -10,6 +10,7 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.record.StoreMetadataProperties;
@@ -775,9 +776,9 @@ public class SmartApplicationTest extends BaseAppTest {
     }
 
     private List<AggregatedFeatureEventConf> getIncludedAggregatedFeatureEventConfs() {
-        List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
-        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream()
-                .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
+        SmartRecordConf smartRecordConf = smartRecordConfService.getSmartRecordConf("userId_hourly");
+        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(smartRecordConf).stream()
+                .filter(conf -> !smartRecordConf.getExcludedAggregationRecords().contains(conf.getName()))
                 .collect(Collectors.toList());
     }
 

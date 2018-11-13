@@ -20,10 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -31,6 +28,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -189,7 +187,7 @@ public class SmartRecordConfServiceTest {
 		@Bean
 		public SmartRecordConfService smartRecordConfService() {
 			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService = mock(AggregatedFeatureEventsConfService.class);
-			mockCompleteClusterConfs(aggregatedFeatureEventsConfService); // Relevant for the first smart record conf
+			mockCompleteClusterConfs(aggregatedFeatureEventsConfService); // Relevant for the first and the third smart record confs
 			mockValidateSmartRecordConf(aggregatedFeatureEventsConfService); // Relevant for the second smart record conf
 			return new SmartRecordConfService(baseConfigurationsPath, null, null, aggregatedFeatureEventsConfService);
 		}
@@ -211,8 +209,14 @@ public class SmartRecordConfServiceTest {
 		when(scoreAggregationRecordConf1.getName()).thenReturn("scoreAggregationRecord1");
 		AggregatedFeatureEventConf scoreAggregationRecordConf2 = mock(AggregatedFeatureEventConf.class);
 		when(scoreAggregationRecordConf2.getName()).thenReturn("scoreAggregationRecord2");
-		when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(eq(FixedDurationStrategy.HOURLY), eq(singletonMap("userId", singletonList("userId")))))
-				.thenReturn(asList(featureAggregationRecordConf1, featureAggregationRecordConf2, scoreAggregationRecordConf1, scoreAggregationRecordConf2));
+
+		when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(any(SmartRecordConf.class)))
+				.thenAnswer(invocationOnMock -> {
+					String name = invocationOnMock.getArgumentAt(0, SmartRecordConf.class).getName();
+					return name.equals("test_smart_record_conf_1") || name.equals("test_smart_record_conf_3") ?
+							asList(featureAggregationRecordConf1, featureAggregationRecordConf2, scoreAggregationRecordConf1, scoreAggregationRecordConf2) :
+							null;
+				});
 	}
 
 	private static void mockValidateSmartRecordConf(AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {

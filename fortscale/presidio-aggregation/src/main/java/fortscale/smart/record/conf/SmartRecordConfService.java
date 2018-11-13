@@ -13,8 +13,9 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static fortscale.utils.fixedduration.FixedDurationStrategy.fromStrategyName;
 
 /**
  * A service that manages all the {@link SmartRecordConf}s.
@@ -120,10 +121,74 @@ public class SmartRecordConfService extends AslConfigurationService {
 				.collect(Collectors.toSet());
 	}
 
-	private void validateSmartRecordConf(SmartRecordConf smartRecordConf) {
-		String smartRecordName = smartRecordConf.getName();
-		String smartRecordStrategyName = smartRecordConf.getFixedDurationStrategy().toStrategyName();
+	/**
+	 * Check if the given {@link AggregatedFeatureEventConf} can be included in the given {@link SmartRecordConf}:
+	 * 1. The {@link AggregatedFeatureEventConf} and the {@link SmartRecordConf} must have the same strategy.
+	 * 2. The {@link AggregatedFeatureEventConf} and the {@link SmartRecordConf} must have the same number of contexts.
+	 * 3. Each list of possible fields for a context in the {@link SmartRecordConf} should have exactly one
+	 *    representative in the {@link AggregatedFeatureEventConf}'s list of context field names. If there's
+	 *    more than one representative, then the {@link AggregatedFeatureEventConf}'s list of context field
+	 *    names is ambiguous, and it's not possible to determine which one should be chosen. In this case an
+	 *    {@link IllegalArgumentException} is thrown.
+	 * @param aggregatedFeatureEventConf The {@link AggregatedFeatureEventConf}.
+	 * @param smartRecordConf            The {@link SmartRecordConf}.
+	 * @return True if the {@link AggregatedFeatureEventConf} can be included in the {@link SmartRecordConf}, false otherwise.
+	 */
+	public static boolean aggregatedFeatureEventConfFitsSmartRecordConf(
+			AggregatedFeatureEventConf aggregatedFeatureEventConf, SmartRecordConf smartRecordConf) {
 
+		FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
+		FixedDurationStrategy featureBucketStrategy = fromStrategyName(featureBucketConf.getStrategyName());
+		FixedDurationStrategy smartRecordStrategy = smartRecordConf.getFixedDurationStrategy();
+		String aggregatedFeatureEventName = aggregatedFeatureEventConf.getName();
+		String smartRecordName = smartRecordConf.getName();
+
+		if (featureBucketStrategy != smartRecordStrategy) {
+			logger.info(
+					"The strategy of aggregated feature event {} ({}) is " +
+					"different than the strategy of smart record {} ({}).",
+					aggregatedFeatureEventName, featureBucketStrategy,
+					smartRecordName, smartRecordStrategy);
+			return false;
+		}
+
+		List<String> featureBucketContextFieldNames = featureBucketConf.getContextFieldNames();
+		Map<String, List<String>> smartRecordContextToFieldsMap = smartRecordConf.getContextToFieldsMap();
+
+		if (featureBucketContextFieldNames.size() != smartRecordContextToFieldsMap.size()) {
+			logger.info(
+					"The number of contexts of aggregated feature event {} ({}) is " +
+					"different than the number of contexts of smart record {} ({}).",
+					aggregatedFeatureEventName, featureBucketContextFieldNames.size(),
+					smartRecordName, smartRecordContextToFieldsMap.size());
+			return false;
+		}
+
+		for (Map.Entry<String, List<String>> smartRecordContextAndFields : smartRecordContextToFieldsMap.entrySet()) {
+			// Create a new list of feature bucket context field names, in order not to change the original one.
+			List<String> copyOfFeatureBucketContextFieldNames = new ArrayList<>(featureBucketContextFieldNames);
+			copyOfFeatureBucketContextFieldNames.retainAll(smartRecordContextAndFields.getValue());
+
+			if (copyOfFeatureBucketContextFieldNames.isEmpty()) {
+				logger.info(
+						"The context field names of aggregated feature event {} contain no " +
+						"representative from the possible fields of context {} in smart record {}.",
+						aggregatedFeatureEventName, smartRecordContextAndFields.getKey(), smartRecordName);
+				return false;
+			} else if (copyOfFeatureBucketContextFieldNames.size() > 1) {
+				String msg = String.format(
+						"The context field names of aggregated feature event %s contain more than " +
+						"one representative from the possible fields of context %s in smart record %s.",
+						aggregatedFeatureEventName, smartRecordContextAndFields.getKey(), smartRecordName);
+				logger.error(msg);
+				throw new IllegalArgumentException(msg);
+			}
+		}
+
+		return true;
+	}
+
+	private void validateSmartRecordConf(SmartRecordConf smartRecordConf) {
 		for (String aggregationRecordName : smartRecordConf.getAggregationRecordNames()) {
 			AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
 					.getAggregatedFeatureEventConf(aggregationRecordName);
@@ -134,20 +199,8 @@ public class SmartRecordConfService extends AslConfigurationService {
 				throw new IllegalArgumentException(msg);
 			}
 
-			FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-			Predicate<List<String>> predicate = fields -> AggregatedFeatureEventsConfService
-					.checkConsistencyWithContextFieldNames(fields, featureBucketConf.getContextFieldNames());
-
-			if (!smartRecordConf.getContextToFieldsMap().values().stream().allMatch(predicate)) {
-				String msg = String.format("At least one list of fields in smart record %s is not consistent with " +
-						"the context field names of aggregation record %s.", smartRecordName, aggregationRecordName);
-				logger.error(msg);
-				throw new IllegalArgumentException(msg);
-			}
-
-			if (!featureBucketConf.getStrategyName().equals(smartRecordStrategyName)) {
-				String msg = String.format("The fixed duration strategy of aggregation record %s " +
-						"does not match that of smart record %s.", aggregationRecordName, smartRecordName);
+			if (!aggregatedFeatureEventConfFitsSmartRecordConf(aggregatedFeatureEventConf, smartRecordConf)) {
+				String msg = String.format("Aggregation record %s cannot be included in smart record %s.", aggregationRecordName, smartRecordConf.getName());
 				logger.error(msg);
 				throw new IllegalArgumentException(msg);
 			}
@@ -155,9 +208,8 @@ public class SmartRecordConfService extends AslConfigurationService {
 	}
 
 	private void completeClusterConfs(SmartRecordConf smartRecordConf) {
-		FixedDurationStrategy fixedDurationStrategy = smartRecordConf.getFixedDurationStrategy();
 		Collection<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService
-				.getAggregatedFeatureEventConfs(fixedDurationStrategy, smartRecordConf.getContextToFieldsMap());
+				.getAggregatedFeatureEventConfs(smartRecordConf);
 		List<String> excludedAggregationRecords = smartRecordConf.getExcludedAggregationRecords();
 		Set<String> aggregationRecordNames = smartRecordConf.getAggregationRecordNames();
 
