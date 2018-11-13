@@ -70,8 +70,8 @@ export default [
   {
     id: 'policy_001',
     policyType: 'edrPolicy',
-    name: 'EMC 001',
-    description: 'EMC 001 of policy policy_001',
+    name: 'EMC 001LongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAMELongNAME',
+    description: 'EMC 001 of policy policy_001llllllllllllllllllllllllllllllloooooooooooooooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggdescription',
     dirty: true,
     defaultPolicy: false,
     lastPublishedOn: 1527489158739,

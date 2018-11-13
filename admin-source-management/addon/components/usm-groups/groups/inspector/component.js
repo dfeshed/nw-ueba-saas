@@ -1,15 +1,17 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  focusedGroup
-} from 'admin-source-management/reducers/usm/groups-selectors';
+  focusedGroup,
+  focusedGroupCriteria
+} from 'admin-source-management/reducers/usm/group-details/group-selectors';
 
 // placeholder for future actions
 const dispatchToActions = () => {
 };
 
 const stateToComputed = (state) => ({
-  focusedGroup: focusedGroup(state)
+  focusedGroup: focusedGroup(state),
+  focusedGroupCriteria: focusedGroupCriteria(state)
 });
 
 const UsmGroupsInspector = Component.extend({

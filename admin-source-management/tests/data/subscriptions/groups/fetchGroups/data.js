@@ -41,7 +41,7 @@ export default [
     'lastPublishedOn': 1523655368173,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
-    'sourceCount': -2,
+    'sourceCount': -3,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -63,13 +63,13 @@ export default [
     'description': 'Xylaphone 003 of group group_003',
     'createdBy': 'admin',
     'createdOn': 1523655354337,
-    'dirty': true,
+    'dirty': false,
     'lastPublishedCopy': null,
-    'lastPublishedOn': 0,
+    'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'sourceCount': -3,
+    'sourceCount': -2,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -183,8 +183,8 @@ export default [
   },
   {
     'id': 'group_006',
-    'name': 'Ummm... 006',
-    'description': 'Umm... 006 of group group_006',
+    'name': 'Ummm... 006llllllllllllllllllllllllllllllllllllllllllllllllllllloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnggggggggggg',
+    'description': 'Umm... 006 of group group_006llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllooooooooooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnggggg',
     'createdBy': 'admin',
     'createdOn': 1523655354337,
     'dirty': true,
@@ -380,7 +380,7 @@ export default [
         ],
         [
           'ipv4',
-          'BETWEEN',
+          'NOT_BETWEEN',
           [
             '10.40.200.0',
             '10.40.200.255'

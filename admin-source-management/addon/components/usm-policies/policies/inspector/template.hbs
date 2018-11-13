@@ -1,4 +1,15 @@
-<vbox class="rsa-application-layout-panel-content scroll-box" xs="12" fit>
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>  
+  {{#if focusedPolicy.associatedGroups}}
+    <hbox class="heading">{{t 'adminUsm.policies.list.groups'}}</hbox>
+    {{#each focusedPolicy.associatedGroups as |group|}}
+      <hbox class="value">{{group.name}}</hbox>
+    {{/each}}
+  {{/if}}
+  {{#if (eq focusedPolicy.policyType 'edrPolicy')}}
+    {{usm-policies/policies/inspector/edr-policy}}
+  {{else if (eq focusedPolicy.policyType 'windowsLogPolicy')}}
+    {{usm-policies/policies/inspector/windows-log-policy}}
+  {{/if}}
   <div class="heading">{{t 'adminUsm.policies.detail.history'}}</div>
   <hbox fit class="col-xs-12">
     <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdOn'}}</hbox>          
@@ -38,15 +49,5 @@
       </hbox>
     </hbox>
   {{/if}}
-  {{#if focusedPolicy.associatedGroups}}
-    <hbox class="heading">{{t 'adminUsm.policies.list.groups'}}</hbox>
-    {{#each focusedPolicy.associatedGroups as |group|}}
-      <hbox class="value">{{group.name}}</hbox>
-    {{/each}}
-  {{/if}}
-  {{#if (eq focusedPolicy.policyType 'edrPolicy')}}
-    {{usm-policies/policies/inspector/edr-policy}}
-  {{else if (eq focusedPolicy.policyType 'windowsLogPolicy')}}
-    {{usm-policies/policies/inspector/windows-log-policy}}
-  {{/if}}  
 </vbox>
+<br>

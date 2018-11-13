@@ -65,18 +65,18 @@ module('Integration | Component | Group Inspector', function(hooks) {
     .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 4, 'expected headings are shown');
-    assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'History', 'first heading is as expected');
-    assert.equal(findAll('.usm-groups-inspector .heading')[1].innerText, 'Policy(ies) Applied', 'second heading is as expected');
-    assert.equal(findAll('.usm-groups-inspector .title').length, 7, 'expected property names are shown');
-    assert.equal(findAll('.usm-groups-inspector .title')[5].innerText,
+    assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'Policy(ies) Applied', 'first heading is as expected');
+    assert.equal(findAll('.usm-groups-inspector .heading')[3].innerText, 'History', 'History is the last section as expected');
+    assert.equal(findAll('.usm-groups-inspector .title').length, 6, 'expected property names are shown');
+    assert.equal(findAll('.usm-groups-inspector .group-criteria')[0].innerText,
       'Sources included if\nall\nof the following criteria are met:',
       'expected AND conjunction property');
     assert.equal(findAll('.usm-groups-inspector .value').length, 7, 'expected value elements are shown');
-    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, '2018-04-13 05:35', 'created on value shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText, 'admin', 'created by value shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .value')[2].innerText, '2018-04-13 05:35', 'last updated on value shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .value')[3].innerText, 'admin', 'last updated by value shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .value')[5].innerText, '10', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[3].innerText, '2018-04-13 05:35', 'created on value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[4].innerText, 'admin', 'created by value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[5].innerText, '2018-04-13 05:35', 'last updated on value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[6].innerText, 'admin', 'last updated by value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText, '10', 'source count shows as expected');
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on value is not shown as expected');
   });
 
@@ -122,12 +122,12 @@ module('Integration | Component | Group Inspector', function(hooks) {
     .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
-    assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'History', 'first heading is as expected');
-    assert.equal(findAll('.usm-groups-inspector .title')[5].innerText,
+    assert.equal(findAll('.usm-groups-inspector .heading')[2].innerText, 'History', 'History is the last section as expected');
+    assert.equal(findAll('.usm-groups-inspector .group-criteria')[0].innerText,
       'Sources included if\nany\nof the following criteria are met:',
       'expected ANY conjunction property');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[5].innerText, expectedSrcCount.string, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
   });
 
   test('It shows the history properties with values', async function(assert) {
@@ -206,15 +206,15 @@ module('Integration | Component | Group Inspector', function(hooks) {
     .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
-    assert.equal(findAll('.usm-groups-inspector .title').length, 9, 'expected titles shown');
+    assert.equal(findAll('.usm-groups-inspector .title').length, 8, 'expected titles shown');
     assert.equal(findAll('.usm-groups-inspector .value').length, 9, 'expected values shown');
-    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, '2018-04-13 05:35', 'created on value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[8].innerText, '2018-04-13 05:35', 'created on value shows as expected');
     assert.equal(findAll('.usm-groups-inspector .createdBy').length, 0, 'created by value not shown as expected');
     assert.equal(findAll('.usm-groups-inspector .lastModifiedOn').length, 0, 'last updated on value not shown as expected');
     assert.equal(findAll('.usm-groups-inspector .lastModifiedBy').length, 0, 'last updated by is missing as expected');
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText, expectedSrcCount.string, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
   });
 
   test('It shows the source count when special case', async function(assert) {
@@ -259,6 +259,6 @@ module('Integration | Component | Group Inspector', function(hooks) {
     .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[5].innerText, expectedSrcCount.string, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
   });
 });

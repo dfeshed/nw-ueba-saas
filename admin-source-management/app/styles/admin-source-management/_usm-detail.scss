@@ -7,16 +7,14 @@
       font-size: 14px;
       line-height: 20px;
       color: text-color(primary, light);
-      &:not(:nth-child(2)) {
-        padding-top: rsa-whitespace();
-        &::before {
-          content: '';
-          display: block;
-          height: 1px;
-          width: 100%;
-          margin: rsa-whitespace() 0 rsa-whitespace() 0;
-          background: background-color(primary);
-        }
+      padding-top: rsa-whitespace();
+      &::before {
+        content: '';
+        display: block;
+        height: 1px;
+        width: 100%;
+        margin: rsa-whitespace() 0 rsa-whitespace() 0;
+        background: background-color(primary);
       }
     }
 
@@ -30,20 +28,26 @@
     }
 
     .value {
-      @include rsa-font(body, small);
-      word-break: break-word;
-      overflow: hidden;
-      white-space: wrap;
+      @include rsa-font(body, medium);
+      @include rsa-word-wrap();
       display: block;
-      line-height: 1.25rem;
       padding-top: .4rem;
       color: text-color(primary, lightest);
+    }
+
+    .group-criteria {
+      @include rsa-font(body, small);
+      display: block;
+      padding-right: rsa-whitespace();
+      color: text-color(primary, light);
+      padding-top: .4rem;
     }
 
     .conjunction {
       @include rsa-font(body, small);
       color: text-color(primary, lightest);
-      font-weight: 400;
+      font-weight: 600;
+      text-transform: uppercase;
     }
   }
 }

@@ -1,6 +1,14 @@
 <vbox class="rsa-application-layout-panel-header usm-inspector-title" xs="12" fit>
-  <h2>{{focusedGroup.name}}</h2>
+  <h2>
+    {{#rsa-text-with-tooltip value=focusedGroup.name}}
+      {{focusedGroup.name}}
+    {{/rsa-text-with-tooltip}}
+  </h2>
 </vbox>
 <div class="inspector-control usm-inspector-description">
-  <p>{{focusedGroup.description}}</p>
+  <p>
+    {{#rsa-text-with-tooltip value=focusedGroup.description}}
+      {{focusedGroup.description}}
+    {{/rsa-text-with-tooltip}}
+  </p>
 </div>

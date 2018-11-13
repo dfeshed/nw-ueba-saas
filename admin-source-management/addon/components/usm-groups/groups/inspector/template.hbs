@@ -1,6 +1,53 @@
-<vbox class="rsa-application-layout-panel-content scroll-box" xs="12" fit>
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>    
+  {{#if (or focusedGroup.assignedPolicies.edrPolicy focusedGroup.assignedPolicies.windowsLogPolicy)}}
+    <div class="heading">{{t 'adminUsm.groups.list.polices'}}</div>
+    {{#if focusedGroup.assignedPolicies.edrPolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.edrSourceType'}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.edrPolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+    {{#if focusedGroup.assignedPolicies.windowsLogPolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.windowsLogSourceType'}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.windowsLogPolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+  {{/if}}
+  <div class="heading">{{t 'adminUsm.groups.detail.sourceCount'}}</div>
+  <hbox fit class="col-xs-12">    
+    <hbox class="value">
+      {{#if (eq focusedGroup.sourceCount -1)}}
+        {{t 'adminUsm.groups.list.sourceCountPublishedNewGroupTooltip'}}        
+      {{else if (eq focusedGroup.sourceCount -2)}}
+        {{t 'adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip'}}
+      {{else if (eq focusedGroup.sourceCount -3)}}
+        {{t 'adminUsm.groups.list.sourceCountUnpublishedGroupTooltip'}}
+      {{else}}
+        {{focusedGroup.sourceCount}}
+      {{/if}}
+    </hbox>
+  </hbox>
+  {{#if focusedGroup.groupCriteria.criteria}}
+    <div class="heading">{{t 'adminUsm.groups.detail.definition'}}</div>
+    <hbox fit class="group-criteria">
+      {{t 'adminUsm.groups.detail.andOrConditionsPart1'}}
+      <span class="conjunction">
+        {{t (concat 'adminUsm.groupCriteria.andOrOperator.' focusedGroup.groupCriteria.conjunction)}}
+      </span>
+      {{t 'adminUsm.groups.detail.andOrConditionsPart2'}}
+    </hbox>
+    {{#each focusedGroupCriteria as |crit|}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">
+          {{t (concat 'adminUsm.groupCriteria.attribute.' crit.[0])}} {{t (concat 'adminUsm.groupCriteria.operator.' crit.[1])}}
+        </hbox>
+        <hbox class="value col-xs-6 col-md-7">{{crit.[2]}}</hbox>
+      </hbox>
+    {{/each}}
+  {{/if}}
   <div class="heading">{{t 'adminUsm.policies.detail.history'}}</div>
-  <hbox fit class="col-xs-12">
+  <hbox fit class="createdOn col-xs-12">
     <hbox class="title col-xs-6 col-md-5">
       {{t 'adminUsm.policies.detail.createdOn'}}
     </hbox>
@@ -38,53 +85,5 @@
       </hbox>
     </hbox>
   {{/if}}
-  {{#if (or focusedGroup.assignedPolicies.edrPolicy focusedGroup.assignedPolicies.windowsLogPolicy)}}
-    <div class="heading">{{t 'adminUsm.groups.list.polices'}}</div>
-    {{#if focusedGroup.assignedPolicies.edrPolicy}}
-      <hbox fit class="col-xs-12">
-        <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.edrSourceType'}}</hbox>
-        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.edrPolicy.name}}</hbox>
-      </hbox>
-    {{/if}}
-    {{#if focusedGroup.assignedPolicies.windowsLogPolicy}}
-      <hbox fit class="col-xs-12">
-        <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.windowsLogSourceType'}}</hbox>
-        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.windowsLogPolicy.name}}</hbox>
-      </hbox>
-    {{/if}}
-  {{/if}}
-  <div class="heading">{{t 'adminUsm.groups.detail.sourceCount'}}</div>
-  <hbox fit class="col-xs-12">    
-    <hbox class="value">
-      {{#if (eq focusedGroup.sourceCount -1)}}
-        {{t 'adminUsm.groups.list.sourceCountPublishedNewGroupTooltip'}}        
-      {{else if (eq focusedGroup.sourceCount -2)}}
-        {{t 'adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip'}}
-      {{else if (eq focusedGroup.sourceCount -3)}}
-        {{t 'adminUsm.groups.list.sourceCountUnpublishedGroupTooltip'}}
-      {{else}}
-        {{focusedGroup.sourceCount}}
-      {{/if}}
-    </hbox>
-  </hbox>
-  {{#if focusedGroup.groupCriteria.criteria}}
-    <div class="heading">{{t 'adminUsm.groups.detail.definition'}}</div>
-    <hbox fit class="col-xs-12 ">
-      <hbox class="title">
-        {{t 'adminUsm.groups.detail.andOrConditionsPart1'}}
-        <span class="conjunction">
-          {{t (concat 'adminUsm.groupCriteria.andOrOperator.' focusedGroup.groupCriteria.conjunction)}}
-        </span>
-        {{t 'adminUsm.groups.detail.andOrConditionsPart2'}}
-      </hbox>
-    </hbox>
-    {{#each focusedGroup.groupCriteria.criteria as |crit|}}
-      <hbox fit class="col-xs-12">
-        <hbox class="title col-xs-6 col-md-5">
-          {{t (concat 'adminUsm.groupCriteria.attribute.' crit.[0])}} {{t (concat 'adminUsm.groupCriteria.operator.' crit.[1])}}
-        </hbox>
-        <hbox class="value col-xs-6 col-md-7">{{crit.[2]}}</hbox>
-      </hbox>
-    {{/each}}
-  {{/if}}
 </vbox>
+<br>
