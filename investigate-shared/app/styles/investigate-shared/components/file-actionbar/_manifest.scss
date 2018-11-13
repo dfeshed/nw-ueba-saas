@@ -110,3 +110,11 @@
   display: inline-block;
   width: 90%;
 }
+
+.license-banner.show + .main-zone, .host-engine {
+  .rsa-data-filters {
+    .content-body {
+      height: calc(100vh - 296px);
+    }
+  }
+}
