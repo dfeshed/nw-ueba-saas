@@ -53,7 +53,8 @@ const stateToComputed = (state) => ({
   isCertificateView: state.certificate.list.isCertificateView,
   isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
   selectedIndex: state.files.fileList.selectedIndex,
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  servers: state.endpointServer.serviceData
 });
 
 const dispatchToActions = {

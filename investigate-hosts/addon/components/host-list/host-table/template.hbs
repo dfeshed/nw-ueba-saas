@@ -26,7 +26,13 @@
           onMouseEnter=(action 'toggleIconVisibility' true item.id)
           onMouseLeave=(action 'toggleIconVisibility' false)}}
       {{/rsa-data-table/body}}
-      {{rsa-data-table/load-more status=loadMoreHostStatus click=(action 'getNextMachines') class="rsa-hosts-load-more"}}
+      {{endpoint/load-more
+      class="rsa-hosts-load-more"
+      status=loadMoreHostStatus
+      serverId=serverId
+      servers=servers
+      count=hostTotal
+      getMoreData=(action 'getNextMachines')}}
     {{/if}}
   {{/rsa-data-table}}
 </box>

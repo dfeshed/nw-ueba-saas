@@ -35,3 +35,21 @@ test('Load More button should render if status is stopped but nextPayloadSize is
   `);
   assert.equal(this.$(buttonSelector)[0].textContent.trim(), 'Load More', 'Load More  button is present');
 });
+
+test('Load More button should render message if showMessage is true', function(assert) {
+  this.set('showMessage', true);
+  this.set('message', 'hello world');
+  this.render(hbs`
+      {{rsa-data-table/load-more showMessage=showMessage message=message}}
+  `);
+  assert.equal(this.$('.rsa-data-table-load-more')[0].textContent.trim(), 'hello world', 'message is rendered');
+});
+
+test('Load More button should render message if showMessage is false', function(assert) {
+  this.set('showMessage', false);
+  this.set('message', 'hello world');
+  this.render(hbs`
+      {{rsa-data-table/load-more showMessage=showMessage message=message}}
+  `);
+  assert.equal(this.$('.rsa-data-table-load-more')[0].textContent.trim(), '', 'message is not rendered');
+});

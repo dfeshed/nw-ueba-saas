@@ -91,10 +91,14 @@
         {{/file-list/body-cell}}
       {{/if}}
     {{/file-list/body}}
-    {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
+    {{endpoint/load-more
+      status=loadMoreStatus
+      serverId=serverId
+      servers=servers
+      count=totalItems
+      getMoreData=(action 'getPageOfFiles')}}
   {{/if}}
 {{/rsa-data-table}}
-
 
 {{#if showServiceModal}}
   {{endpoint/pivot-to-investigate/modal

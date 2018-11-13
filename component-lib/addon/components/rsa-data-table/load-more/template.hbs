@@ -9,5 +9,7 @@
     {{else if nextPayloadSize }}
       {{#rsa-form-button defaultAction=clickAction}}{{t 'investigate.showNextXEvents' count=nextPayloadSize}}{{/rsa-form-button}}
     {{/if}}
+  {{else if showMessage}}
+    {{message}}
   {{/if}}
 {{/if}}

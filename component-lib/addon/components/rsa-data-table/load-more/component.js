@@ -31,6 +31,10 @@ export default Component.extend(HasTableParent, {
    */
   clickAction: undefined,
 
+  showMessage: undefined,
+
+  message: undefined,
+
   actions: {
     safeCallback
   },

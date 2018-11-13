@@ -3378,6 +3378,9 @@ export default {
   },
   investigateShared: {
     endpoint: {
+      message: {
+        brokerViewMessage: 'Reached maximum results supported in a broker view.'
+      },
       renderingGraph: 'Rendering graph...',
       errorTitle: 'Query Error',
       fileDetailsPanel: {

@@ -26,7 +26,8 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   selectedHostsCount: state.endpoint.machines.selectedHostList.length,
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  servers: state.endpointServer.serviceData
 });
 
 const dispatchToActions = {
