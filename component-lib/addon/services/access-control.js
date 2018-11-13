@@ -188,6 +188,10 @@ export default Service.extend({
     return this._hasPermission(roles, 'endpoint-server.machine.manage');
   },
 
+  @computed('roles.[]')
+  endpointCanManageFilter(roles) {
+    return this._hasPermission(roles, 'endpoint-server.filter.manage');
+  },
   // Begin Configure Permissions
 
   @computed('roles.[]')
@@ -214,6 +218,7 @@ export default Service.extend({
   hasLogParsersAccess(roles) {
     return this._hasPermission(roles, 'content-server.logparser');
   },
+
 
   @computed('roles.[]')
   canManageLogParsers(roles) {

@@ -33,6 +33,7 @@ module.exports = function(environment/* , appConfig */) {
     ENV.locationType = 'none';
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
+    ENV.roles = ['endpoint-server.machine.read', 'accessInvestigationModule', 'endpoint-server.filter.manage'];
   }
   return ENV;
 };

@@ -4,6 +4,7 @@ import layout from './template';
 import { isEmpty } from '@ember/utils';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import moment from 'moment';
+import { inject as service } from '@ember/service';
 
 const DATE_COLUMNS = [
   'agentStatus.lastSeenTime',
@@ -100,6 +101,8 @@ export default Component.extend({
 
   label: 'investigateFiles.filter.customFilters.save.header',
 
+  accessControl: service(),
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
@@ -112,6 +115,10 @@ export default Component.extend({
       selectedFilterId: selectedFilterId(state),
       savedFilter: savedFilter(state)
     });
+  },
+
+  _canManageFilters() {
+    return this.get('accessControl.endpointCanManageFilter');
   },
 
   actions: {
@@ -155,9 +162,15 @@ export default Component.extend({
 
 
     showSaveFilter(filters, saveAs) {
+      if (!this._canManageFilters()) {
+        failure('dataFilters.accessError');
+        return false;
+      }
+
       const expressionList = parseFilters(filters);
       this.set('expressionList', expressionList);
       const { name, id } = this.get('savedFilter') || {};
+
       if (saveAs || !id || id === 1) {
         this.set('showSaveFilter', true);
         this.set('saveFilterName', '');
