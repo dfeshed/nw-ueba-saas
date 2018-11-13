@@ -9,6 +9,7 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.set('i18n', i18n);
   });
 
   const timeFormat = {
@@ -36,7 +37,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('dateFormat', dateFormat);
     this.set('timezone', timezone);
     this.set('timestamp', 1464108661196);
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime timestamp=timestamp}}`);
     const contentCount = findAll('.rsa-content-datetime').length;
     assert.equal(contentCount, 1);
@@ -47,7 +47,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('dateFormat', dateFormat);
     this.set('timezone', timezone);
     this.set('timestamp', 1464108661196);
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}`);
     const content = find('.rsa-content-datetime').textContent.trim();
     const title = find('.rsa-content-datetime .datetime').getAttribute('title');
@@ -60,7 +59,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('dateFormat', dateFormat);
     this.set('timezone', timezone);
     this.set('timestamp', 1464108661196);
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayDate=false}}`);
     const content = find('.rsa-content-datetime').textContent.trim();
     assert.equal(content, '12:51pm');
@@ -71,7 +69,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('dateFormat', dateFormat);
     this.set('timezone', timezone);
     this.set('timestamp', 1464108661196);
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayTime=false}}`);
     const content = find('.rsa-content-datetime').textContent.trim();
     assert.equal(content, '05/24/2016');
@@ -82,7 +79,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('dateFormat', dateFormat);
     this.set('timezone', timezone);
     this.set('timestamp', 1464108661196);
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone asTimeAgo=true}}`);
     const content = find('.rsa-content-datetime').textContent.trim();
     const title = find('.rsa-content-datetime .time-ago').getAttribute('title');
@@ -94,7 +90,6 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     this.set('timeFormat', timeFormat);
     this.set('dateFormat', dateFormat);
     this.set('timestamp', new Date().getTime() - new Date(60000));
-    this.set('i18n', i18n);
     await render(hbs `{{rsa-content-datetime withTimeAgo=true timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}`);
     const content = find('.rsa-content-datetime').textContent.trim();
     const title = find('.rsa-content-datetime .time-ago').getAttribute('title');
@@ -102,4 +97,31 @@ module('Integration | Component | rsa-content-datetime', function(hooks) {
     assert.ok(title.indexOf('ago') > -1);
   });
 
+  test('time ago supports a variety of timestamp values', async function(assert) {
+    const selector = '.rsa-content-datetime .time-ago';
+    this.set('timezone', timezone);
+
+    const value = new Date().getTime() - new Date(6000000000);
+    this.set('timestamp', value);
+    await render(hbs `{{rsa-content-datetime withTimeAgo=true timestamp=timestamp i18n=i18n timezone=timezone}}`);
+    assert.equal(findAll(selector).length, 1);
+    assert.equal(find(selector).textContent.trim(), '2 months ago');
+    assert.equal(find(selector).getAttribute('test-id'), 'withTimeAgo');
+
+    await render(hbs `{{rsa-content-datetime withTimeAgo=false asTimeAgo=true timestamp=timestamp i18n=i18n timezone=timezone}}`);
+    assert.equal(findAll(selector).length, 1);
+    assert.equal(find(selector).textContent.trim(), '2 months ago');
+    assert.equal(find(selector).getAttribute('test-id'), 'asTimeAgo');
+
+    this.set('timestamp', new Date(value).toISOString());
+    await render(hbs `{{rsa-content-datetime withTimeAgo=true timestamp=timestamp i18n=i18n timezone=timezone}}`);
+    assert.equal(findAll(selector).length, 1);
+    assert.equal(find(selector).textContent.trim(), '2 months ago');
+    assert.equal(find(selector).getAttribute('test-id'), 'withTimeAgo');
+
+    await render(hbs `{{rsa-content-datetime withTimeAgo=false asTimeAgo=true timestamp=timestamp i18n=i18n timezone=timezone}}`);
+    assert.equal(findAll(selector).length, 1);
+    assert.equal(find(selector).textContent.trim(), '2 months ago');
+    assert.equal(find(selector).getAttribute('test-id'), 'asTimeAgo');
+  });
 });

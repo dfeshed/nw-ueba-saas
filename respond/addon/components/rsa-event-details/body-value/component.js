@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
+import moment from 'moment';
 import computed from 'ember-computed-decorators';
 import $ from 'jquery';
 
@@ -10,6 +11,8 @@ const isTimestampKey = {
   updated_dateNetWitness: true,
   expires_dateNetWitness: true
 };
+
+const validDate = (value) => moment(value, moment.ISO_8601, true).isValid();
 
 /**
  * @class Event Details Body Value component
@@ -32,7 +35,7 @@ export default Component.extend({
 
   // Indicates whether a given key-value pair is a Long integer that should be rendered as a formatted timestamp.
   @computed('key', 'value')
-  isTimestamp: (key, value) => $.isNumeric(value) && !!isTimestampKey[key],
+  isTimestamp: (key, value) => ($.isNumeric(value) || validDate(value)) && !!isTimestampKey[key],
 
   // Converts `value` in a number of hours.
   @computed('value')

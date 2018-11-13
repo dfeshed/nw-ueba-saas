@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import moment from 'moment';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 
@@ -57,6 +58,11 @@ export default Component.extend({
   @computed('adjustedTimeFormat', 'adjustedDateFormat')
   outputFormat: (timeFormat, dateFormat) => {
     return `${dateFormat} ${timeFormat}`;
+  },
+
+  @computed('timestamp', 'i18n.locale', 'timezone.selected.zoneId')
+  timeAgo: (timestamp, locale, timeZone) => {
+    return moment.apply(moment, [timestamp], { locale, timeZone }).fromNow();
   }
 
 });

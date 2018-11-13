@@ -1,15 +1,11 @@
 {{#if asTimeAgo}}
-  {{#let (moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected.zoneId) as |timeAgo|}}
-    <span class="time-ago" title={{timeAgo}}>{{timeAgo}}</span>
-  {{/let}}
+  <span class="time-ago" title={{timeAgo}} test-id="asTimeAgo">{{timeAgo}}</span>
 {{else}}
   {{#let (moment-format timestamp outputFormat locale=i18n.locale timeZone=timezone.selected.zoneId) as |datetime|}}
     <span class="datetime" title={{datetime}}>{{datetime}}</span>
   {{/let}}
 
   {{#if withTimeAgo}}
-    {{#let (moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected.zoneId) as |timeAgo|}}
-      <span class="time-ago" title={{timeAgo}}>{{timeAgo}}</span>
-    {{/let}}
+    <span class="time-ago" title={{timeAgo}} test-id="withTimeAgo">{{timeAgo}}</span>
   {{/if}}
 {{/if}}

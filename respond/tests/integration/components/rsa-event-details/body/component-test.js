@@ -70,6 +70,23 @@ module('Integration | Component | Event Details', function(hooks) {
       assert.equal(find(selector).textContent.trim(), timestampInGerman);
     });
   });
+
+  test('The event details body value supports both epoch and ISO datetimes', async function(assert) {
+    assert.expect(2);
+
+    const value = new Date().getTime() - new Date(6000000);
+    this.set('key', 'timestamp');
+    this.set('value', value);
+
+    const selector = '.rsa-content-datetime .time-ago';
+    await render(hbs`{{rsa-event-details/body-value key=key value=value}}`);
+    assert.equal(find(selector).textContent.trim(), '2 hours ago');
+
+    this.set('value', new Date(value).toISOString());
+
+    await render(hbs`{{rsa-event-details/body-value key=key value=value}}`);
+    assert.equal(find(selector).textContent.trim(), '2 hours ago');
+  });
 });
 
 
