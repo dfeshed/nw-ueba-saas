@@ -10,6 +10,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auto.service.AutoService;
 import com.rsa.asoc.respond.api.alert.AlertHeader;
 import com.rsa.asoc.respond.api.alert.AlertMessage;
 import fortscale.utils.logging.Logger;
@@ -25,6 +26,8 @@ import java.util.Map;
 /**
  * Strategy to push payload to Amazon SQS.
  */
+@AutoService(ForwarderStrategy.class)
+
 public class SqsForwarderStrategy implements ForwarderStrategy {
 
     private static final Logger logger = Logger.getLogger(SqsForwarderStrategy.class);
