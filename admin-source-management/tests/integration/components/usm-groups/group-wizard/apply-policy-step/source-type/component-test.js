@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { findAll, render, click } from '@ember/test-helpers';
@@ -83,7 +83,7 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
   };
 
   test('The component appears in the DOM', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
     new ReduxDataHelper(setState)
       .groupWiz()
       .groupWizGroup(groupPayload1)
@@ -93,6 +93,38 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
     assert.equal(findAll('.source-type').length, 1, 'The component appears in the DOM');
     assert.equal(findAll('.source-type-selector ').length, 1, 'control source-type appears in the DOM');
     assert.equal(findAll('.policy-assignment').length, 1, 'control policy-assignment appears in the DOM');
+    assert.notOk(find('.selector-error'), 'Error is not showing with valid source type/policy selection input');
+  });
+
+  skip('Policy Source Type invalid assignments - validation error', async function(assert) {
+    assert.expect(6);
+    const groupInvalidSelection = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'placeholder',
+          'name': ''
+        }
+      }
+    };
+
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.groupCriteria.inputValidations.validPolicyAssigned');
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupInvalidSelection)
+      .groupWizPolicyList(policyListPayload)
+      .groupWizStepShowErrors('applyPolicyStep', true)
+      .build();
+
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=null selectedPolicy=null}}`);
+    assert.equal(findAll('.source-type').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.source-type-selector ').length, 1, 'control source-type appears in the DOM');
+    assert.equal(findAll('.policy-assignment').length, 1, 'control policy-assignment appears in the DOM');
+    assert.ok(find('.selector-error'), 'Error is showing with invalid source type/policy selection input');
+    assert.equal(findAll('.input-error').length, 1, '.input-error appears in the DOM');
+    assert.equal(find('.input-error').textContent.trim(), expectedMessage, 'Correct error message is showing');
   });
 
   test('Policy Source Type assignment with no current assignments - selection 1', async function(assert) {

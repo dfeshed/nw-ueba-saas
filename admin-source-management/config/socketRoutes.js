@@ -10,8 +10,8 @@ const adminUsmConfigGen = function(environment) {
     groups: {
       socketUrl: usmSocketUrl,
       fetchGroups: {
-        subscriptionDestination: '/user/queue/usm/groups',
-        requestDestination: '/ws/usm/groups'
+        subscriptionDestination: '/user/queue/usm/groups/search',
+        requestDestination: '/ws/usm/groups/search'
       },
       fetchGroupList: {
         subscriptionDestination: '/user/queue/usm/groups/list',

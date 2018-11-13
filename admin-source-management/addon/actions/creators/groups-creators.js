@@ -14,14 +14,31 @@ const initializeGroups = () => {
   };
 };
 
-const fetchGroups = () => {
+/**
+ * Action creator that dispatches a set of actions for fetching groups (with or without filters) and sorted by one field.
+ * @method _fetchFiles
+ * @private
+ * @returns {function(*, *)}
+ */
+const fetchGroups = (callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
-    const { itemsFilters, sortField, isSortDescending } = getState().usm.groups;
-
-    // Fetch all of the group items that meet the current filter criteria
+    const pageNumber = 0;
+    const expressionList = [];
+    const { /* itemsFilters, */ sortField, isSortDescending } = getState().usm.groups;
+    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
+    // const { expressionList } = getState().files.filter;
     dispatch({
       type: ACTION_TYPES.FETCH_GROUPS,
-      promise: groupsAPI.fetchGroups(itemsFilters, { sortField, isSortDescending })
+      promise: groupsAPI.fetchGroups(pageNumber, { sortField, isSortDescending }, expressionList),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.FETCH_GROUPS, response);
+          callbacks.onFailure(response);
+        }
+      }
     });
   };
 };

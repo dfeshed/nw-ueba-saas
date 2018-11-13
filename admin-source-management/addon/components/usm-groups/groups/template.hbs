@@ -27,7 +27,7 @@
           {{#rsa-text-with-tooltip value=(get item column.field)}}
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
-        {{else if (eq column.field "published")}}
+        {{else if (eq column.field "publishStatus")}}
           {{#if (eq item.lastPublishedOn 0)}}
             <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
           {{else}}
@@ -37,11 +37,11 @@
               {{t 'adminUsm.publishStatus.published'}}
             {{/if}}
           {{/if}}
-        {{else if (eq column.field "polices")}}
+        {{else if (eq column.field "assignedPolicies")}}
           {{#each-in item.assignedPolicies as |policy details|}}
             {{ details.name }}
           {{/each-in}}
-        {{else if (eq column.field "sourceTypes")}}
+        {{else if (eq column.field "sourceType")}}
           {{#each-in item.assignedPolicies as |policy|}}
             {{t (concat 'adminUsm.policyTypes.' policy)}}
           {{/each-in}}

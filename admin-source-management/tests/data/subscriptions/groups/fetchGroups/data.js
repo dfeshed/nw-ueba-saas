@@ -340,7 +340,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
-    'sourceCount': -1,
+    'sourceCount': -2,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',

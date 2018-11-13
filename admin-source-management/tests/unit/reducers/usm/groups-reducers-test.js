@@ -20,17 +20,17 @@ const initialState = {
   isSortDescending: true
 };
 
-const getGroupsPayload = {
-  data: [
-    {
-      'id': 'group_001',
-      'name': 'Zebra 001',
-      'description': 'Zebra 001 of group group_001',
-      'dirty': false
-    }
-  ],
-  meta: {
-    total: 1
+const fetchGroupsPayload = {
+  data: {
+    items: [
+      {
+        'id': 'group_001',
+        'name': 'Zebra 001',
+        'description': 'Zebra 001 of group group_001',
+        'dirty': false
+      }
+    ],
+    totalItems: 1
   }
 };
 
@@ -53,13 +53,14 @@ test('on FETCH_GROUPS start, group is reset and itemsStatus is properly set', fu
 test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    items: getGroupsPayload.data,
-    itemsTotal: 1,
-    itemsStatus: 'complete'
+    items: fetchGroupsPayload.data.items,
+    itemsTotal: fetchGroupsPayload.data.totalItems,
+    itemsStatus: 'complete',
+    itemsRequest: undefined
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_GROUPS,
-    payload: getGroupsPayload
+    payload: fetchGroupsPayload
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'groups populated & itemsStatus is complete');
