@@ -73,8 +73,8 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status ul.device-hierarchy').length, 1);
     assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
     assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('10 events'));
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('2 seconds'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('10 event(s)'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('2 second(s)'));
   });
 
   test('renders the summary of the top level device when no seconds and no elapsedTime', async function(assert) {

@@ -569,7 +569,7 @@ export default {
       }
     },
     queryStats: {
-      summary: 'returned {{eventCount}} events in {{elapsedTime}} seconds.',
+      summary: 'returned {{eventCount}} event(s) in {{elapsedTime}} second(s).',
       summaryNoTime: 'returned {{eventCount}} events.',
       offline: 'This service is offline.',
       allOnline: 'All services are online.',
