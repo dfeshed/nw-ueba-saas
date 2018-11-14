@@ -1,3 +1,15 @@
+# [9.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.7.0)
+## Features
+* [ASOC-60671](https://bedfordjira.na.rsa.net/browse/ASOC-60671):&emsp;Storyline event analysis support for endpoint specifically
+* [ASOC-64737](https://bedfordjira.na.rsa.net/browse/ASOC-64737):&emsp;Option to export meta values from Navigate with or without carriage returns
+* [ASOC-64932](https://bedfordjira.na.rsa.net/browse/ASOC-64932):&emsp;Add browser tool tip on Event count when reaches maximum
+* [ASOC-64966](https://bedfordjira.na.rsa.net/browse/ASOC-64966):&emsp;In Manage Profiles order meta and column groups alphabetically
+* [ASOC-65306](https://bedfordjira.na.rsa.net/browse/ASOC-65306):&emsp;Use UUIDs in core messages to populate service ID
+* [ASOC-66805](https://bedfordjira.na.rsa.net/browse/ASOC-66805):&emsp;Use "per day" for number of alerts, incidents metrics
+* [ASOC-67592](https://bedfordjira.na.rsa.net/browse/ASOC-67592):&emsp;Automation for Email Link
+* [ASOC-67700](https://bedfordjira.na.rsa.net/browse/ASOC-67700):&emsp;Automate event recon content validation tests - E2E
+
+
 # [9.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.6.0)
 ## Features
 * [ASOC-44820](https://bedfordjira.na.rsa.net/browse/ASOC-44820):&emsp;Provide more coverage around websocket controllers
