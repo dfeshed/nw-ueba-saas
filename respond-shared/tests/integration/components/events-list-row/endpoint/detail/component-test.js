@@ -24,9 +24,8 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     endpoint.assertDetailColumns(assert, {
-      total: 14,
-      children: 16,
-      relatedLinks: true
+      total: 13,
+      children: 16
     });
 
     const sourceRowElement = endpoint.assertDetailRowParent(assert, {

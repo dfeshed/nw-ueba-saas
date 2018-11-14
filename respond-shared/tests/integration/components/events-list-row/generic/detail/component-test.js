@@ -4,7 +4,7 @@ import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import { settled, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, networkEventId, getAllEvents } from '../../../events-list/data';
+import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, ecatEventId, networkEventId, getAllEvents } from '../../../events-list/data';
 import * as generic from './helpers';
 
 module('Integration | Component | events-list-row/generic/detail', function(hooks) {
@@ -26,9 +26,8 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     generic.assertDetailColumns(assert, {
-      total: 14,
-      children: 9,
-      relatedLinks: true
+      total: 13,
+      children: 9
     });
 
     const sourceRowElement = generic.assertDetailRowParent(assert, {
@@ -256,9 +255,8 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     generic.assertDetailColumns(assert, {
-      total: 14,
-      children: 9,
-      relatedLinks: true
+      total: 13,
+      children: 9
     });
 
     const sourceRowElement = generic.assertDetailRowParent(assert, {
@@ -509,6 +507,156 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       urls: [
         reRelatedLinkOne
       ]
+    });
+  });
+
+  test('renders detail for legacy ecat event', async function(assert) {
+    const events = getAllEvents();
+    const [ item ] = events.filter((e) => e.id === ecatEventId);
+
+    this.set('expandedId', ecatEventId);
+    this.set('item', item);
+
+    await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
+
+    generic.assertDetailColumns(assert, {
+      total: 4,
+      children: 4
+    });
+
+    const detectorRowElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 1,
+      label: 'Detector',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 1,
+      label: 'Host',
+      value: 'it_laptop1.eng.matrix.com',
+      metaKey: 'dns_hostname'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 2,
+      label: 'NWE Agent ID',
+      value: '26C5C21F-4DA8-3A00-437C-AB7444987430',
+      metaKey: 'ecat_agent_id'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 3,
+      label: 'IP Address',
+      value: '100.3.36.242',
+      metaKey: 'ip_address'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 4,
+      label: 'MAC Address',
+      value: 'B8-4B-2F-08-6A-AD-5A-C7',
+      metaKey: 'mac_address'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorRowElement,
+      subRowIndex: 5,
+      label: 'Operating System',
+      value: 'Windows 7',
+      metaKey: 'os'
+    });
+
+    generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 2,
+      label: 'Size',
+      value: '23562'
+    });
+
+    const dataRowElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 3,
+      label: 'Data',
+      value: ''
+    });
+
+    const dataRowChildOneElement = generic.assertDetailRowChild(assert, {
+      parentElement: dataRowElement,
+      subRowIndex: 1,
+      label: '',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 1,
+      label: 'Bit9 Status',
+      value: 'bad',
+      metaKey: 'bit9_status'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 2,
+      label: 'Filename',
+      value: 'AppIdPolicyEngineApi.dll',
+      metaKey: 'filename'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 3,
+      label: 'Hash',
+      value: 'de9f2c7f d25e1b3a fad3e85a 0bd17d9b 100db4b3',
+      metaKey: 'hash'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 4,
+      label: 'Module Signature',
+      value: 'ABC Inc.',
+      metaKey: 'module_signature'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 5,
+      label: 'OPSWAT Result',
+      value: 'OPSWAT result here',
+      metaKey: 'opswat_result'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 6,
+      label: 'Size',
+      value: '23562',
+      metaKey: 'size'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataRowChildOneElement,
+      subRowIndex: 7,
+      label: 'YARA Result',
+      value: 'N YARA rules matched',
+      metaKey: 'yara_result'
+    });
+
+    generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 4,
+      label: 'Score',
+      value: '1-2-3-4'
+    });
+
+    generic.assertNoRelatedLinks(assert, {
+      column: 2
     });
   });
 });

@@ -6,6 +6,7 @@ export const eventSelectionId = '5b7f06c10a32bd5a68baea84:0';
 export const reEventId = '5b841c880a32bd5a68baeaf3:0';
 export const networkEventId = '5b757f480a32bd36c7609e96:0';
 export const endpointEventId = '5b8554be0a32bd353ad3a167:0';
+export const ecatEventId = '5b7f06c10a32bd5a68baea84:0';
 export const uebaEventId = '44732bcc-b9e8-4b2d-badb-e8747c98db46';
 export const endpointRelatedLinkOne = '/investigation/host/10.63.0.117:56005/navigate/event/AUTO/857775';
 export const endpointRelatedLinkTwo = '/investigation/10.63.0.117:56005/navigate/query/alias.host%3D"INENMENONS4L2C"%2Fdate%2F2018-06-08T03%3A30%3A12.000Z%2F2018-06-08T03%3A40%3A12.000Z';
@@ -1930,7 +1931,7 @@ const storyLineEvents = {
               user: '',
               indicatorId: '5b7f06c10a32bd5a68baea84',
               eventIndex: 0,
-              id: '5b7f06c10a32bd5a68baea84:0'
+              id: ecatEventId
             }
           ]
         },

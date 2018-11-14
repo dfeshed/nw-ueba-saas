@@ -8,11 +8,8 @@ const textWithoutChildren = (parentElement) => {
   }, '');
 };
 
-export const assertDetailColumns = (assert, { total, children, relatedLinks }) => {
-  assert.equal(findAll(selectors.column).length, total);
-  const hasRelatedLinks = relatedLinks ? total - 1 : total;
-  assert.equal(findAll(`${selectors.column}:nth-of-type(1)`).length, hasRelatedLinks);
-  assert.equal(findAll(`${selectors.column}:nth-of-type(2)`).length, hasRelatedLinks ? 1 : 0);
+export const assertDetailColumns = (assert, { total, children }) => {
+  assert.equal(findAll(`${selectors.column}:nth-of-type(1)`).length, total);
   assert.equal(find(`${selectors.column}:nth-of-type(1)`).children.length, children);
 };
 
@@ -30,6 +27,11 @@ export const assertDetailRow = (assert, { column, row, label, value, nestedColum
   assert.equal(element.querySelectorAll(selectors.value).length, 1);
   assert.equal(element.querySelector(selectors.value).textContent.trim(), value);
   assert.equal(element.querySelectorAll(selectors.column).length, nestedColumns || 0);
+};
+
+export const assertNoRelatedLinks = (assert, { column }) => {
+  const context = find(`${selectors.column}:nth-of-type(${column})`);
+  assert.equal(context.textContent.trim(), '');
 };
 
 export const assertRelatedLinks = (assert, { column, row, values, urls }) => {
