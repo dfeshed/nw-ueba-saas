@@ -16,7 +16,7 @@ const initializeGroups = () => {
 
 /**
  * Action creator that dispatches a set of actions for fetching groups (with or without filters) and sorted by one field.
- * @method _fetchFiles
+ * @method fetchGroups
  * @private
  * @returns {function(*, *)}
  */

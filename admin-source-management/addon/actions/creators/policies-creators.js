@@ -14,14 +14,31 @@ const initializePolicies = () => {
   };
 };
 
-const fetchPolicies = () => {
+/**
+ * Action creator that dispatches a set of actions for fetching polices (with or without filters) and sorted by one field.
+ * @method fetchPolicies
+ * @private
+ * @returns {function(*, *)}
+ */
+const fetchPolicies = (callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
-    const { itemsFilters, sortField, isSortDescending } = getState().usm.policies;
-
-    // Fetch all of the policies items that meet the current filter criteria
+    const pageNumber = 0;
+    const expressionList = [];
+    const { /* itemsFilters, */ sortField, isSortDescending } = getState().usm.policies;
+    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
+    // const { expressionList } = getState().files.filter;
     dispatch({
       type: ACTION_TYPES.FETCH_POLICIES,
-      promise: policyAPI.fetchPolicies(itemsFilters, { sortField, isSortDescending })
+      promise: policyAPI.fetchPolicies(pageNumber, { sortField, isSortDescending }, expressionList),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.FETCH_POLICIES, response);
+          callbacks.onFailure(response);
+        }
+      }
     });
   };
 };

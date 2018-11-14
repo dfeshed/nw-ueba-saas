@@ -18,30 +18,42 @@ const initialState = {
   focusedItem: null,
   isTransactionUnderway: false,
   sortField: 'name',
-  isSortDescending: true
+  isSortDescending: false
 };
 
-const getPoliciesPayload = {
-  data: [
-    {
-      'id': 'policy_001',
-      'name': 'Zebra 001',
-      'description': 'Zebra 001 of policy policy_001',
-      'dirty': false
-    }
-  ],
-  meta: {
-    total: 1
+const fetchPoliciesPayload = {
+  data: {
+    items: [
+      {
+        'id': 'policy_001',
+        'name': 'Zebra 001',
+        'description': 'Zebra 001 of policy policy_001',
+        'dirty': false
+      }
+    ],
+    totalItems: 1
   }
 };
 
 
 test('should return the initial state', function(assert) {
-  const endState = reducers(undefined, {});
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.POLICIES_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  const endState = reducers(Immutable.from(initialState), sortAction);
   assert.deepEqual(endState, initialState);
 });
 
 test('on FETCH_POLICIES start, policy is reset and itemsStatus is properly set', function(assert) {
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.POLICIES_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  reducers(Immutable.from(initialState), sortAction);
+
   const expectedEndState = {
     ...initialState,
     itemsStatus: 'wait',
@@ -53,15 +65,23 @@ test('on FETCH_POLICIES start, policy is reset and itemsStatus is properly set',
 });
 
 test('on FETCH_POLICIES success, policy & itemsStatus are properly set', function(assert) {
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.POLICIES_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  reducers(Immutable.from(initialState), sortAction);
+
   const expectedEndState = {
     ...initialState,
-    items: getPoliciesPayload.data,
-    itemsTotal: 1,
-    itemsStatus: 'complete'
+    items: fetchPoliciesPayload.data.items,
+    itemsTotal: fetchPoliciesPayload.data.totalItems,
+    itemsStatus: 'complete',
+    itemsRequest: undefined
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_POLICIES,
-    payload: getPoliciesPayload
+    payload: fetchPoliciesPayload
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'policy list populated & itemsStatus is complete');

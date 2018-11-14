@@ -3736,9 +3736,9 @@ export default {
       list: {
         select: 'Select',
         name: 'Policy Name',
-        published: 'Publication Status',
+        publishStatus: 'Publication Status',
         sourceType: 'Source Type',
-        groups: 'Applied to Group(s)',
+        associatedGroups: 'Applied to Group(s)',
         description: 'Policy Description',
         noResultsMessage: 'No Policies found.'
       },

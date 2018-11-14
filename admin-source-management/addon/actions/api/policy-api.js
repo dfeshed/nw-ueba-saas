@@ -1,18 +1,27 @@
 // import buildExplorerQuery from './util/explorer-build-query';
 import { lookup } from 'ember-dependency-lookup';
+import { addSortBy, addFilter } from 'admin-source-management/actions/api/utils/query-util';
 
 /**
- * Fetches all policies.
+ * Retrieves all matching groups from the server.
+ * @returns Promise that will resolve with the server response.
  * @public
  */
-function fetchPolicies(/* filters, sort */) {
+function fetchPolicies(pageNumber, sort, expressionList) {
+  let query = {
+    pageNumber: pageNumber || 0,
+    pageSize: 1000
+  };
   const request = lookup('service:request');
-  // const query = buildExplorerQuery(filters, sort, 'name');
+  const { sortField, isSortDescending: isDescending } = sort;
+  query = addSortBy(query, sortField, isDescending);
+  query = addFilter(query, expressionList);
   return request.promiseRequest({
     modelName: 'policy',
     method: 'fetchPolicies',
-    query: {}
-    // query: query.toJSON()
+    query: {
+      data: query
+    }
   });
 }
 

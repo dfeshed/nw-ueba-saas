@@ -17,7 +17,7 @@ const initialState = {
   focusedItem: null,
   isTransactionUnderway: false,
   sortField: 'name',
-  isSortDescending: true
+  isSortDescending: false
 };
 
 const fetchGroupsPayload = {
@@ -35,11 +35,23 @@ const fetchGroupsPayload = {
 };
 
 test('should return the initial state', function(assert) {
-  const endState = reducers(undefined, {});
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.GROUPS_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  const endState = reducers(Immutable.from(initialState), sortAction);
   assert.deepEqual(endState, initialState);
 });
 
 test('on FETCH_GROUPS start, group is reset and itemsStatus is properly set', function(assert) {
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.GROUPS_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  reducers(Immutable.from(initialState), sortAction);
+
   const expectedEndState = {
     ...initialState,
     itemsStatus: 'wait',
@@ -51,6 +63,13 @@ test('on FETCH_GROUPS start, group is reset and itemsStatus is properly set', fu
 });
 
 test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
+  // make sure the sort is correct prior to test
+  const sortAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.GROUPS_SORT_BY,
+    payload: { sortField: 'name', isSortDescending: false }
+  });
+  reducers(Immutable.from(initialState), sortAction);
+
   const expectedEndState = {
     ...initialState,
     items: fetchGroupsPayload.data.items,

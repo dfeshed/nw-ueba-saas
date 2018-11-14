@@ -61,9 +61,10 @@ export default reduxActions.handleActions({
       },
       success: (state) => {
         return state.merge({
-          items: action.payload.data,
-          itemsTotal: action.payload.meta.total,
-          itemsStatus: 'complete'
+          items: action.payload.data.items,
+          itemsTotal: action.payload.data.totalItems,
+          itemsStatus: 'complete',
+          itemsRequest: action.payload.request
         });
       }
     })

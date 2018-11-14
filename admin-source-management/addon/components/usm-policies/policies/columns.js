@@ -23,15 +23,15 @@ export default [
     visible: true
   },
   {
-    field: 'published',
-    title: 'adminUsm.policies.list.published',
+    field: 'publishStatus',
+    title: 'adminUsm.policies.list.publishStatus',
     width: '15%',
     dataType: 'icon',
     visible: true
   },
   {
-    field: 'groups',
-    title: 'adminUsm.policies.list.groups',
+    field: 'associatedGroups',
+    title: 'adminUsm.policies.list.associatedGroups',
     width: '20%',
     dataType: 'text',
     visible: true

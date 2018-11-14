@@ -1,6 +1,6 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>  
   {{#if focusedPolicy.associatedGroups}}
-    <hbox class="heading">{{t 'adminUsm.policies.list.groups'}}</hbox>
+    <hbox class="heading">{{t 'adminUsm.policies.list.associatedGroups'}}</hbox>
     {{#each focusedPolicy.associatedGroups as |group|}}
       <hbox class="value">{{group.name}}</hbox>
     {{/each}}

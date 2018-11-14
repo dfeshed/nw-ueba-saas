@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { findAll, render } from '@ember/test-helpers';
@@ -107,7 +107,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       'Xylaphone 003 of group group_003', 'row12 description value is as expected');
   });
 
-  skip('Shows correct source count', async function(assert) {
+  test('Shows correct source count', async function(assert) {
     assert.expect(4);
     const translation = this.owner.lookup('service:i18n');
     setState('name', true);
@@ -117,17 +117,17 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     let expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
       expectedSrcCount.string,
-      'first source count as expected');
+      '-1 sourceCountPublishedNewGroupTooltip is as expected');
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
-      expectedSrcCount.string,
-      'second source count as expected');
-    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
       expectedSrcCount.string,
-      'third source count as expected');
+      '-2 sourceCountPublishedNoEndpointTooltip is as expected');
+    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      expectedSrcCount.string,
+      '-3 sourceCountUnpublishedGroupTooltip is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(4) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
       250,
-      'fourth source count as expected');
+      'row with count of 250 is as expected');
   });
 });

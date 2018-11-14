@@ -49,8 +49,8 @@ const adminUsmConfigGen = function(environment) {
     policy: {
       socketUrl: usmSocketUrl,
       fetchPolicies: {
-        subscriptionDestination: '/user/queue/usm/policies',
-        requestDestination: '/ws/usm/policies'
+        subscriptionDestination: '/user/queue/usm/policies/search',
+        requestDestination: '/ws/usm/policies/search'
       },
       fetchPolicyList: {
         subscriptionDestination: '/user/queue/usm/policies/list',

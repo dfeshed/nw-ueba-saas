@@ -60,7 +60,6 @@ export default reduxActions.handleActions({
         return state.set('itemsStatus', 'error');
       },
       success: (state) => {
-        // const [data, meta, request] = action.payload;
         return state.merge({
           items: action.payload.data.items,
           itemsTotal: action.payload.data.totalItems,
