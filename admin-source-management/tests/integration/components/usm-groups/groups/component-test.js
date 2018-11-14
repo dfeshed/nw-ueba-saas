@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { findAll, render } from '@ember/test-helpers';
@@ -107,7 +107,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       'Xylaphone 003 of group group_003', 'row12 description value is as expected');
   });
 
-  test('Shows correct source count', async function(assert) {
+  skip('Shows correct source count', async function(assert) {
     assert.expect(4);
     const translation = this.owner.lookup('service:i18n');
     setState('name', true);
