@@ -104,7 +104,7 @@ export default Route.extend({
   // Pulls stored query params and merges with
   // query hash, then transitions to new URL.
   // Ensures meta filter params are not in the URL
-  transitionToPillHash(newHashes) {
+  transitionToPillHash(newHashes, nukeNextQP = true) {
     const params = this.get('nextQueryParams') || {};
 
     // Let hash be undefined if not passed in
@@ -113,13 +113,17 @@ export default Route.extend({
       pdhash = newHashes.join(',');
     }
 
-    this.transitionTo({
-      queryParams: {
-        ...params,
-        pdhash,
-        mf: undefined
-      }
-    });
+    if (nukeNextQP && newHashes === undefined) {
+      this.set('nextQueryParams', null);
+    } else {
+      this.transitionTo({
+        queryParams: {
+          ...params,
+          pdhash,
+          mf: undefined
+        }
+      });
+    }
   },
 
   actions: {
@@ -181,7 +185,7 @@ export default Route.extend({
         // the query, then there will be no pill hash, can/should
         // transition now with no hash passed in
         if (qp.mf === undefined) {
-          this.transitionToPillHash();
+          this.transitionToPillHash(undefined, false);
         }
       }
     },

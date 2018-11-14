@@ -202,7 +202,11 @@ const _handleSearchParamsInQueryParams = ({ pillData, pillDataHashes }, hashNavi
             }
           }
         });
+      } else {
+        hashNavigateCallback();
       }
+    } else {
+      hashNavigateCallback();
     }
   };
 };
