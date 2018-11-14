@@ -3,12 +3,13 @@ import { connect } from 'ember-redux';
 import { selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
 import computed from 'ember-computed-decorators';
 import { isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overview/selectors';
+import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
 
 const stateToComputed = (state) => ({
   selectedTabComponent: selectedTabComponent(state),
   isSnapshotsAvailable: isSnapshotsAvailable(state),
   hostDetailsLoading: state.endpoint.visuals.hostDetailsLoading,
-  isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError
+  selectedServiceData: selectedServiceWithStatus(state)
 });
 
 const DetailComponent = Component.extend({

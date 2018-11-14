@@ -318,7 +318,14 @@ export default class DataHelper {
     _set(this.state, 'endpointServer.isSummaryRetrieveError', status);
     return this;
   }
-
+  endpointServer(status) {
+    _set(this.state, 'endpointServer', status);
+    return this;
+  }
+  endpointQuery(status) {
+    _set(this.state, 'endpointQuery', status);
+    return this;
+  }
   serviceId(id) {
     _set(this.state, 'investigate.serviceId', id);
     return this;

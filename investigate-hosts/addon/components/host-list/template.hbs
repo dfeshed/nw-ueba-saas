@@ -1,5 +1,5 @@
 {{host-list/host-table/action-bar openFilterPanel=openFilterPanel}}
-{{#if isEndpointServerOnline}}
+{{#if selectedServiceData.isServiceOnline}}
   {{#if schemaLoading}}
     <centered>
       {{rsa-loader size='larger'}}
@@ -9,6 +9,6 @@
   {{/if}}
 {{else}}
   {{error-page
-    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
-    title=(t 'investigateFiles.errorPage.serviceDown')}}
+    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
+    title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
 {{/if}}

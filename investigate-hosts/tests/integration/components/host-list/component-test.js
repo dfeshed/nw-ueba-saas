@@ -12,6 +12,49 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 let initState;
+const endpointServer = {
+  serviceData: [
+    {
+      id: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
+      name: 'endpoint-server',
+      displayName: 'EPS1-server - Endpoint Server',
+      host: '10.40.15.210',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: '364e8e9c-5893-4ad1-b107-3c6b8d87b088',
+      name: 'endpoint-broker-server',
+      displayName: 'EPS2-server - Endpoint Broker Server',
+      host: '10.40.15.199',
+      port: 7054,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: 'e82241fc-0681-4276-a930-dd6e5d00f152',
+      name: 'endpoint-server',
+      displayName: 'EPS2-server - Endpoint Server',
+      host: '10.40.15.199',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    }
+  ],
+  isServicesLoading: false,
+  isServicesRetrieveError: true,
+  isSummaryRetrieveError: false
+};
+const endpointQuery = {
+  serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
+};
 
 module('Integration | Component | host-list', function(hooks) {
   setupRenderingTest(hooks, {
@@ -27,7 +70,8 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('it renders error page when endpointserver is offline', async function(assert) {
     new ReduxDataHelper(initState)
-    .isEndpointServerOffline(true)
+    .endpointServer(endpointServer)
+    .endpointQuery(endpointQuery)
     .build();
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.host-list-items').length, 0, 'host list is not rendered');
@@ -35,11 +79,15 @@ module('Integration | Component | host-list', function(hooks) {
   });
 
   test('it renders error page when endpointserver is online', async function(assert) {
+    const endpointServerClone = { ...endpointServer };
+    endpointServerClone.isServicesRetrieveError = false;
+
     new ReduxDataHelper(initState)
     .columns(endpoint.schema)
     .hostList(hostListState.machines.hostList)
     .hostSortField('machine.machineName')
-    .isEndpointServerOffline(false)
+    .endpointServer(endpointServerClone)
+    .endpointQuery(endpointQuery)
     .selectedHostList([])
     .build();
     await render(hbs`{{host-list}}`);

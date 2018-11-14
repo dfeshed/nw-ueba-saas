@@ -13,14 +13,14 @@ import {
 import { getFirstPageOfCertificates, getPageOfCertificates, toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 import { FILTER_TYPES } from './filter-types';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
+import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
 
 const stateToComputed = (state) => ({
   filter: state.certificate.filter,
   savedFilter: savedFilter(state.certificate),
   selectedFilterId: selectedFilterId(state.certificate),
   certificateFilters: state.certificate.filter.savedFilterList,
-  isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError
-
+  selectedServiceData: selectedServiceWithStatus(state)
 });
 
 const dispatchToActions = {

@@ -38,7 +38,7 @@
         {{/rsa-form-button}}
       </box>
     </hbox>
-    {{#if isEndpointServerOnline}}
+    {{#if selectedServiceData.isServiceOnline}}
       <box class="certificates-body">
         {{certificates-container/certificates-data-table}}
       </box>
@@ -47,8 +47,8 @@
       </box>
     {{else}}
       {{error-page
-        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
-        title=(t 'investigateFiles.errorPage.serviceDown')}}
+        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
+        title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
     {{/if}}
   {{/layout.center}}
 {{/rsa-page-layout}}

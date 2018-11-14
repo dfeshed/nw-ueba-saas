@@ -1,5 +1,5 @@
 {{host-detail/header}}
-{{#if isEndpointServerOnline}}
+{{#if selectedServiceData.isServiceOnline}}
   <box class="host-detail-wrapper">
     {{#if showSnapshotEmptyMessage}}
       {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
@@ -13,6 +13,6 @@
   </box>
 {{else}}
   {{error-page
-    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
-    title=(t 'investigateFiles.errorPage.serviceDown')}}
+    errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
+    title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
 {{/if}}

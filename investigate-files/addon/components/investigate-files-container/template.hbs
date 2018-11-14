@@ -21,7 +21,7 @@
     <section class="rsa-files-toolbar flexi-fit">
       {{files-toolbar openFilterPanel=(action layout.open 'left') closeRiskPanel=(action layout.close 'right')}}
     </section>
-    {{#if isEndpointServerOnline}}
+    {{#if selectedServiceData.isServiceOnline}}
       <box class="files-body">
         {{#if schemaLoading}}
           <centered>
@@ -36,8 +36,8 @@
       </box>
     {{else}}
       {{error-page
-        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
-        title=(t 'investigateFiles.errorPage.serviceDown')}}
+        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
+        title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
     {{/if}}
   {{/layout.center}}
   {{#layout.right as |rightPanel|}}

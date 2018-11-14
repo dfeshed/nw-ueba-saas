@@ -11,9 +11,50 @@ import files from '../../state/files';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 let initState;
 
-const serviceList = [
-  { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'local-risk-scoring-server', 'name': 'risk-scoring-server' }
-];
+const endpointServer = {
+  serviceData: [
+    {
+      id: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
+      name: 'endpoint-server',
+      displayName: 'EPS1-server - Endpoint Server',
+      host: '10.40.15.210',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: '364e8e9c-5893-4ad1-b107-3c6b8d87b088',
+      name: 'endpoint-broker-server',
+      displayName: 'EPS2-server - Endpoint Broker Server',
+      host: '10.40.15.199',
+      port: 7054,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: 'e82241fc-0681-4276-a930-dd6e5d00f152',
+      name: 'endpoint-server',
+      displayName: 'EPS2-server - Endpoint Server',
+      host: '10.40.15.199',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    }
+  ],
+  isServicesLoading: false,
+  isServicesRetrieveError: false,
+  isSummaryRetrieveError: false
+};
+
+const endpointQuery = {
+  serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
+};
 
 module('Integration | Component | Investigate-files-container', function(hooks) {
   setupRenderingTest(hooks, {
@@ -44,11 +85,14 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   });
 
   test('it renders error page when endpointserver is offline', async function(assert) {
+    const endpointServerClone = { ...endpointServer };
+    endpointServerClone.isServicesRetrieveError = true;
+
     new ReduxDataHelper(initState)
-      .isEndpointServerOffline(true)
+      .endpointServer(endpointServerClone)
+      .endpointQuery(endpointQuery)
       .isCertificateView(false)
       .setSelectedFileList([])
-      .serviceList(serviceList)
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.files-body').length, 0, 'file list is not rendered');
@@ -61,8 +105,8 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .schema(schema)
       .fileCount(3)
       .setSelectedFileList([])
-      .serviceList(serviceList)
-      .isEndpointServerOffline(false)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
@@ -76,7 +120,8 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .schema(schema)
       .fileCount(3)
       .setSelectedFileList([])
-      .isEndpointServerOffline(false)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
       .hostNameList([{ value: 'Machine1' }])
       .activeDataSourceTab('HOSTS')
       .build();
@@ -93,7 +138,8 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   test('it shows the loading indicator when schema is loading', async function(assert) {
     new ReduxDataHelper(initState)
       .isSchemaLoading(true)
-      .isEndpointServerOffline(false)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'Rsa loader displayed');

@@ -12,6 +12,7 @@ import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles, selectedFileStatusHistory, isRiskScoringServerNotConfigured } from 'investigate-files/reducers/file-list/selectors';
 import { getDataSourceTab, riskState } from 'investigate-files/reducers/visuals/selectors';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
+import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
 import {
   resetDownloadId,
   setDataSourceTab,
@@ -34,7 +35,7 @@ const stateToComputed = (state) => ({
   dataSourceTabs: getDataSourceTab(state),
   context: selectedFileStatusHistory(state),
   activeDataSourceTab: state.files.visuals.activeDataSourceTab,
-  isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError,
+  selectedServiceData: selectedServiceWithStatus(state),
   filter: state.files.filter,
   risk: riskState(state),
   filesFilters: state.files.filter.savedFilterList,

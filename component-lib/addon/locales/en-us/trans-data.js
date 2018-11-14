@@ -2096,8 +2096,8 @@ export default {
       noResultsFoundMessage: 'No results found'
     },
     errorPage: {
-      serviceDown: 'Endpoint Server is offline',
-      serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+      serviceDown: 'Endpoint {{serviceType}}Server is offline',
+      serviceDownDescription: 'The Endpoint {{serviceType}}Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
     },
     footer: 'Showing {{count}} of {{total}} {{label}} | {{selectedItems}} selected',
     fileStatus: {
@@ -2337,8 +2337,8 @@ export default {
       emptyMessage: 'No matching results'
     },
     errorPage: {
-      serviceDown: 'Endpoint Server is offline',
-      serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+      serviceDown: 'Endpoint {{serviceType}}Server is offline',
+      serviceDownDescription: 'The Endpoint {{serviceType}}Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
     },
     property: {
       file: {
