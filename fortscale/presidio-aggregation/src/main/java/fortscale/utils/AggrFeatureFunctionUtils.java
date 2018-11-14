@@ -66,14 +66,10 @@ public class AggrFeatureFunctionUtils {
     private static void addGroupByValues(List<String> groupByFeatureValues, List<String> allowedGroupByFeatureValues, List<Pair<String, List<String>>> featureNameToValues, String groupByFeatureName) {
         if (allowedGroupByFeatureValues != null) {
             List<String> intersect = groupByFeatureValues.stream().filter(allowedGroupByFeatureValues::contains).collect(Collectors.toList());
-            if (!intersect.isEmpty()) {
-                if (intersect.size() < groupByFeatureValues.size()) {
-                    intersect.add(OTHER_FIELD_NAME);
-                }
-                featureNameToValues.add(new Pair<>(groupByFeatureName, intersect));
-            } else {
-                featureNameToValues.add(new Pair<>(groupByFeatureName, Collections.singletonList(OTHER_FIELD_NAME)));
+            if (intersect.size() < groupByFeatureValues.size() || intersect.isEmpty()) {
+                intersect.add(OTHER_FIELD_NAME);
             }
+            featureNameToValues.add(new Pair<>(groupByFeatureName, intersect));
         } else {
             featureNameToValues.add(new Pair<>(groupByFeatureName, groupByFeatureValues));
         }
