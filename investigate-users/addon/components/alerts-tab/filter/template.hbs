@@ -10,7 +10,7 @@
       options=severityFilter
       selected=selectedSeverity
       onchange=(action 'updateSeverityFilter') as |option|}}
-      {{t (concat 'investigateUsers.severity.' option)}}
+      <span title='{{t (concat 'investigateUsers.severity.' option)}}'>{{t (concat 'investigateUsers.severity.' option)}}</span>
     {{/power-select-multiple}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
@@ -22,7 +22,7 @@
       selected=selectedFeedBack
       searchEnabled=false
       onchange=(action 'updateFeedBackFilter') as |option|}}
-      {{t (concat 'investigateUsers.feedback.' option)}}
+      <span title='{{t (concat 'investigateUsers.feedback.' option)}}'>{{t (concat 'investigateUsers.feedback.' option)}}</span>
     {{/power-select}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
@@ -33,7 +33,7 @@
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
       onchange=(action 'updateAnomalyFilter') as |option|}}
-      {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}
+      <span title='{{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}'>{{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}</span>
     {{/power-select-multiple}}
   </label>
   <div>
