@@ -834,6 +834,7 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_injects_into_lsass
   adeEventType: scored_enriched.process.srcProcessFilePath.lsass.process.score
+  modelContextField: dstProcessFilename
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: srcProcessFilePath
@@ -854,6 +855,7 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_injects_into_windows_process
   adeEventType: scored_enriched.process.srcProcessFilePath.windowsDstProcessFileName.process.score
+  modelContextField: dstProcessFilename
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: srcProcessFilePath

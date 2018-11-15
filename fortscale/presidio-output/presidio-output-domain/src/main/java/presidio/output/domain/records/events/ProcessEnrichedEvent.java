@@ -13,11 +13,13 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
     public static final String MACHINE_OWNER_FIELD_NAME = "machineOwner";
     public static final String SRC_PROCESS_DIRECTORY_FIELD_NAME = "srcProcessDirectory";
     public static final String SRC_PROCESS_FILE_NAME_FIELD_NAME = "srcProcessFileName";
+    public static final String SRC_PROCESS_FILE_PATH_FIELD_NAME = "srcProcessFilePath";
     public static final String SRC_PROCESS_DIRECTORY_GROUPS_FIELD_NAME = "srcProcessDirectoryGroups";
     public static final String SRC_PROCESS_CATEGORIES_FIELD_NAME = "srcProcessCategories";
     public static final String SRC_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME = "srcProcessCertificateIssuer";
     public static final String DST_PROCESS_DIRECTORY_FIELD_NAME = "dstProcessDirectory";
     public static final String DST_PROCESS_FILE_NAME_FIELD_NAME = "dstProcessFileName";
+    public static final String DST_PROCESS_FILE_PATH_FIELD_NAME = "dstProcessFilePath";
     public static final String DST_PROCESS_DIRECTORY_GROUPS_FIELD_NAME = "dstProcessDirectoryGroups";
     public static final String DST_PROCESS_CATEGORIES_FIELD_NAME = "dstProcessCategories";
     public static final String DST_PROCESS_CERTIFICATE_ISSUER_FIELD_NAME = "dstProcessCertificateIssuer";
@@ -39,6 +41,9 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
     @Field(SRC_PROCESS_FILE_NAME_FIELD_NAME)
     private String srcProcessFileName;
 
+    @Field(SRC_PROCESS_FILE_PATH_FIELD_NAME)
+    private String srcProcessFilePath;
+
     @Field(SRC_PROCESS_DIRECTORY_GROUPS_FIELD_NAME)
     private List<String> srcProcessDirectoryGroups;
 
@@ -53,6 +58,9 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
 
     @Field(DST_PROCESS_FILE_NAME_FIELD_NAME)
     private String dstProcessFileName;
+
+    @Field(DST_PROCESS_FILE_PATH_FIELD_NAME)
+    private String dstProcessFilePath;
 
     @Field(DST_PROCESS_DIRECTORY_GROUPS_FIELD_NAME)
     private List<String> dstProcessDirectoryGroups;
@@ -200,4 +208,20 @@ public class ProcessEnrichedEvent extends EnrichedEvent {
         this.operationType = operationType;
     }
 
+
+    public String getSrcProcessFilePath() {
+        return srcProcessFilePath;
+    }
+
+    public void setSrcProcessFilePath(String srcProcessFilePath) {
+        this.srcProcessFilePath = srcProcessFilePath;
+    }
+
+    public String getDstProcessFilePath() {
+        return dstProcessFilePath;
+    }
+
+    public void setDstProcessFilePath(String dstProcessFilePath) {
+        this.dstProcessFilePath = dstProcessFilePath;
+    }
 }
