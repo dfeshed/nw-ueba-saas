@@ -2,7 +2,7 @@ import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from './types';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-files/actions/fetch/server';
-import { fetchSchemaInfo, getFirstPageOfFiles } from 'investigate-files/actions/data-creators';
+import { fetchSchemaInfo, getFirstPageOfFiles, getAllServices } from 'investigate-files/actions/data-creators';
 import { getCertificates } from 'investigate-files/actions/certificate-data-creators';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
@@ -40,6 +40,7 @@ export const setEndpointServer = (server) => {
         dispatch(getCertificates());
         dispatch(getFirstPageOfFiles());
         dispatch(getServiceId('FILE'));
+        dispatch(getAllServices());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));

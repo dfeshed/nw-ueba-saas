@@ -78,7 +78,7 @@ const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList }, servic
   const mf = _buildFilter(metaName, metaValue, itemList);
   const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
   const query = encodeURI(encodeURIComponent(mf));
-  const path = `${baseURL}/${query}/date/${moment(startTime).tz('UTC').format()}/${moment(endTime).tz('UTC').format()}`;
+  const path = `${baseURL}/${query}/date/${moment(startTime * 1000).tz('UTC').format()}/${moment(endTime * 1000).tz('UTC').format()}`;
   window.open(path);
 };
 
