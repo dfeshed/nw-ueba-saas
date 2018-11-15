@@ -27,6 +27,31 @@ test('slowestInQuery when zeros', function(assert) {
           elapsedTime: 0
         }, {
           serviceId: 'bar',
+          elapsedTime: 0,
+          devices: [{
+            serviceId: 'baz',
+            elapsedTime: 0
+          }, {
+            serviceId: 'baz2',
+            elapsedTime: 2
+          }]
+        }]
+      }
+    }
+  });
+
+  assert.equal(slowest, 'baz2');
+});
+
+test('slowestInQuery when zeros', function(assert) {
+  const slowest = slowestInQuery({
+    investigate: {
+      queryStats: {
+        devices: [{
+          serviceId: 'foo',
+          elapsedTime: 0
+        }, {
+          serviceId: 'bar',
           elapsedTime: 0
         }]
       }

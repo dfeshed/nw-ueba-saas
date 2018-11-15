@@ -22,21 +22,17 @@ export const slowestInQuery = createSelector(
     const findSlowest = (list = []) => {
       list.forEach((device) => {
         if (device.devices && device.devices.length) {
-          return;
-        }
-
-        if (device.elapsedTime && (slowestIds.length === 0)) {
-          slowestTime = device.elapsedTime;
-          slowestIds.push(device.serviceId);
-        } else if (slowestTime && device.elapsedTime > slowestTime) {
-          slowestTime = device.elapsedTime;
-          slowestIds = [device.serviceId];
-        } else if (device.elapsedTime && (device.elapsedTime === slowestTime)) {
-          slowestIds.push(device.serviceId);
-        }
-
-        if (device.devices && device.devices.length) {
           findSlowest(device.devices);
+        } else {
+          if (device.elapsedTime && (slowestIds.length === 0)) {
+            slowestTime = device.elapsedTime;
+            slowestIds.push(device.serviceId);
+          } else if (slowestTime && device.elapsedTime > slowestTime) {
+            slowestTime = device.elapsedTime;
+            slowestIds = [device.serviceId];
+          } else if (device.elapsedTime && (device.elapsedTime === slowestTime)) {
+            slowestIds.push(device.serviceId);
+          }
         }
       });
     };
