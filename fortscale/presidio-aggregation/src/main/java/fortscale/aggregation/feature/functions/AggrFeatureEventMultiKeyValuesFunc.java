@@ -1,15 +1,12 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
-import fortscale.common.util.GenericHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
-import org.springframework.util.Assert;
 
 import java.util.HashSet;
 import java.util.Map;

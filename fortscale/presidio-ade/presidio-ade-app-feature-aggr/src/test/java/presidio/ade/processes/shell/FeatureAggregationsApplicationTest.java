@@ -263,7 +263,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     }
 
     /**
-     * Test that only feature that related to file open have been created.
+     * Test that only feature that related to file open have score greater than 0, while other scores are 0.
      */
     @Test
     public void fileOpenedFeaturesTest() throws GeneratorException {
@@ -299,12 +299,16 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
         List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
         Set<String> features = new HashSet<>();
-        features.add("numberOfFailedFileActionsUserIdFileHourly");
         features.add("numberOfSuccessfulFileActionsUserIdFileHourly");
         features.add("numberOfDistinctFileOpenedUserIdFileHourly");
 
         for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
-            Assert.assertTrue(features.contains(scoredFeatureAggregationRecord.getFeatureName()));
+            if(features.contains(scoredFeatureAggregationRecord.getFeatureName())){
+                Assert.assertTrue(scoredFeatureAggregationRecord.getScore() > 0D);
+            }
+            else{
+                Assert.assertEquals(scoredFeatureAggregationRecord.getScore(),(Double)0D);
+            }
         }
     }
 

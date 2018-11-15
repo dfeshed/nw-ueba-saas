@@ -32,7 +32,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         MultiKeyHistogram featuresGroupToMax = calculateFeaturesGroupToMaxFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        return featuresGroupToMax == null ? null : calculateFeaturesGroupToMaxValue(featuresGroupToMax);
+        return calculateFeaturesGroupToMaxValue(featuresGroupToMax);
     }
 
     protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram multiKeyHistogram);
@@ -59,7 +59,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxFunc extends AbstractA
             }
         }
 
-        return multiKeyHistogram.isEmpty()? null : multiKeyHistogram;
+        return multiKeyHistogram;
     }
 
     private String getFeatureToPick(AggregatedFeatureEventConf aggrFeatureEventConf) {

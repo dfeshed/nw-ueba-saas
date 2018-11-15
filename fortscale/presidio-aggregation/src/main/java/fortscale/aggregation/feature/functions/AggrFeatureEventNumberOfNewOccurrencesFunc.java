@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.util.GenericHistogram;
+import fortscale.common.feature.MultiKeyFeature;
+import fortscale.common.feature.MultiKeyHistogram;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @JsonTypeName(AggrFeatureEventNumberOfNewOccurrencesFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
@@ -20,17 +18,18 @@ public class AggrFeatureEventNumberOfNewOccurrencesFunc extends AbstractAggrFeat
 	@Override
 	protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
 		int prevNumberOfBuckets = multipleBucketsAggrFeaturesMapList.size() >= aggrFeatureEventConf.getBucketsLeap() ? multipleBucketsAggrFeaturesMapList.size() - aggrFeatureEventConf.getBucketsLeap() : 0;
-		GenericHistogram previousGenericHistogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(0, prevNumberOfBuckets));
-		GenericHistogram lastGenericHistogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(prevNumberOfBuckets, multipleBucketsAggrFeaturesMapList.size()));
-		Set<String> previousFeaturesSet = previousGenericHistogram.getObjects();
-		Set<String> currentFeaturesSet = lastGenericHistogram.getObjects();
-		Set<String> newOccurrencesSet = subtractSets(currentFeaturesSet, previousFeaturesSet);
+		MultiKeyHistogram previousMultiKeyHistogram = AggrFeatureMultiKeyHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(0, prevNumberOfBuckets),true, Collections.emptyList());
+		MultiKeyHistogram lastMultiKeyHistogram = AggrFeatureMultiKeyHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList.subList(prevNumberOfBuckets, multipleBucketsAggrFeaturesMapList.size()),true, Collections.emptyList());
+		Set<MultiKeyFeature> previousFeaturesSet = previousMultiKeyHistogram.getHistogram().keySet();
+		Set<MultiKeyFeature> currentFeaturesSet = lastMultiKeyHistogram.getHistogram().keySet();
+
+		Set<MultiKeyFeature> newOccurrencesSet = subtractSets(currentFeaturesSet, previousFeaturesSet);
 		return new AggrFeatureValue(newOccurrencesSet.size());
 	}
 
-	private Set<String> subtractSets(Set<String> setA, Set<String> setB) {
-		Set<String> ret = new HashSet<>();
-		for (String a : setA) {
+	private Set<MultiKeyFeature> subtractSets(Set<MultiKeyFeature> setA, Set<MultiKeyFeature> setB) {
+		Set<MultiKeyFeature> ret = new HashSet<>();
+		for (MultiKeyFeature a : setA) {
 			if (!setB.contains(a)) {
 				ret.add(a);
 			}

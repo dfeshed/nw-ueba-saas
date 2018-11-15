@@ -8,6 +8,7 @@ import fortscale.common.feature.MultiKeyHistogram;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by amira on 20/07/2015.
@@ -17,11 +18,17 @@ import java.util.Map;
 public class AggrFeatureEventHistogramMaxCountObjectFunc extends AbstractAggrFeatureEventHistogram {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_max_count_obj_func";
 
-	@Override
-	protected AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram) {
-		MultiKeyFeature max = multiKeyHistogram.getHistogram().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-		return new AggrFeatureValue(max);
-	}
+    @Override
+    protected AggrFeatureValue calculateHistogramAggrFeatureValue(MultiKeyHistogram multiKeyHistogram) {
+        MultiKeyFeature max = null;
+        if (!multiKeyHistogram.getHistogram().isEmpty()) {
+            Optional<Map.Entry<MultiKeyFeature, Double>> optional = multiKeyHistogram.getHistogram().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
+            if (optional.isPresent()) {
+                max = optional.get().getKey();
+            }
+        }
+        return max!=null ? new AggrFeatureValue(max) : null;
+    }
 
 
 }
