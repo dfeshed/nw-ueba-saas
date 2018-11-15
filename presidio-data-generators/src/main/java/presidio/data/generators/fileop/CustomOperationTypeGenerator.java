@@ -115,9 +115,6 @@ public class CustomOperationTypeGenerator extends CyclicValuesGenerator<Operatio
             if (getOpType2OpCategoryMap().containsKey(name)) {
                 categories = getOpType2OpCategoryMap().get(name);
             }
-            else {
-                categories.add("NA");
-            }
             opTypes[i] = new OperationType(name, categories);
             i++;
         }
