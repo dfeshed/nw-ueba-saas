@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, click } from '@ember/test-helpers';
+import { waitUntil, settled, render, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { respondData } from './respond-data';
 import { selectors } from '../../../../../integration/components/events-list/selectors';
@@ -55,6 +55,10 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
     assert.equal(findAll(selectors.endpointDetail).length, 0, 'detail 0');
 
     await click(`${selectors.row}:nth-of-type(1) ${selectors.endpointHeader}`);
+
+    await waitUntil(() => findAll(selectors.endpointDetail).length === 1);
+    await settled();
+
     assert.equal(findAll(selectors.endpointDetail).length, 1, 'on click detail 1');
   });
 

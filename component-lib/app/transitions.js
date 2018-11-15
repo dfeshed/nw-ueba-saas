@@ -8,7 +8,8 @@ import { get } from '@ember/object';
 
 import { isArray } from '@ember/array';
 
-const explodeDuration = 200;
+const explodeUpDownDuration = 200;
+const explodeFadeDuration = 275;
 
 // Helper to retrive an appropriate "index" for a given value.  If given
 // an object that has a number `index` attr, use that if defined. Otherwise,
@@ -62,10 +63,22 @@ export default function() {
     this.childOf('[test-id=eventsListRow]'),
     this.use('explode', {
       pickOld: '[test-id=genericEventFooter]',
-      use: ['toUp', { explodeDuration }]
+      use: ['toUp', { duration: explodeUpDownDuration }]
+    }, {
+      pickNew: '[test-id=genericEventFooter]',
+      use: ['toDown', { duration: explodeUpDownDuration }]
     }, {
       pickOld: '[test-id=endpointEventFooter]',
-      use: ['toUp', { explodeDuration }]
+      use: ['toUp', { duration: explodeUpDownDuration }]
+    }, {
+      pickNew: '[test-id=endpointEventFooter]',
+      use: ['toDown', { duration: explodeUpDownDuration }]
+    }, {
+      pickOld: '[test-id=eventsListDetail]',
+      use: ['fade', { duration: explodeFadeDuration }]
+    }, {
+      pickNew: '[test-id=eventsListDetail]',
+      use: ['fade', { duration: explodeFadeDuration }]
     })
   );
 }

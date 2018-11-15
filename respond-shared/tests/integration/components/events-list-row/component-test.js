@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, click, render, triggerKeyEvent } from '@ember/test-helpers';
+import { waitUntil, settled, find, click, render, triggerKeyEvent } from '@ember/test-helpers';
 import { uebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts } from '../events-list/data';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
@@ -325,6 +325,9 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     await click(childSelector);
 
+    await waitUntil(() => details.getAttribute('aria-hidden') === 'false', { timeout: 5000 });
+    await settled();
+
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
     assert.equal(trigger.getAttribute('aria-pressed'), 'true');
     assert.equal(details.getAttribute('tabIndex'), '0');
@@ -346,6 +349,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     const childSelector = '[test-id=endpointEventHeader]';
 
     const trigger = find(triggerSelector);
+
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');
 
     await triggerKeyEvent(childSelector, 'keydown', ENTER_KEY);
