@@ -36,11 +36,11 @@ public class FileOperationGeneratorTest {
 
         FileOperation operation = fileOpGen.getNext();
         Assert.assertEquals("KUKU", operation.getOperationType().getName());
-        Assert.assertEquals("NA", operation.getOperationType().getCategories().get(0));
+        Assert.assertTrue(operation.getOperationType().getCategories().isEmpty());
 
         operation = fileOpGen.getNext();
         Assert.assertEquals("FILE_CREATED", operation.getOperationType().getName());
-        Assert.assertEquals("NA", operation.getOperationType().getCategories().get(0));
+        Assert.assertTrue(operation.getOperationType().getCategories().isEmpty());
 
         operation = fileOpGen.getNext();
         Assert.assertEquals("FILE_DELETED", operation.getOperationType().getName());

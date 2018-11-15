@@ -6,9 +6,13 @@ import org.junit.Test;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGORIES;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
+import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE_2_CATEGORIES_MAP;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
-import presidio.data.generators.activedirectoryop.*;
+import presidio.data.generators.activedirectoryop.ActiveDirOperationTypeCyclicGenerator;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
+import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IOperationTypeGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
 import java.util.Arrays;
@@ -80,17 +84,10 @@ public class ActiveDirectoryEventsGeneratorTest {
     public void OperationTypeTest () {
         // Operation types - see that all included, in the same order as enum
         int i = 0;
-        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_COMPUTER_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.DACL_CHANGED_ON_COMPUTER_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_RENAMED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_REMOVED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_MOVED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ADDED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_ENABLED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_DISABLED.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_GROUP_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_REMOVED_FROM_GROUP.value, events.get(i++).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_GROUP.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.PERMISSIONS_ON_OBJECT_CHANGED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.SYSTEM_SECURITY_ACCESS_GRANTED_TO_ACCOUNT.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_CREATED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_ENABLED.value, events.get(i++).getOperation().getOperationType().getName());
     }
 
     @Test
@@ -100,12 +97,17 @@ public class ActiveDirectoryEventsGeneratorTest {
         Assert.assertEquals(10, events.get(1391).getUser().getUserId().length());
     }
 
+
     @Test
     public void SensitiveOperationTest () throws GeneratorException {
 
         ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
-        IActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOpGeneratorTemplateFactory().getActiveDirectoryOperationsGenerator(
-                AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value);
+        String operationType = AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value;
+
+        ActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOperationGenerator();
+        IOperationTypeGenerator opTypeGenerator = new FixedOperationTypeGenerator(new OperationType(operationType, AD_OPERATION_TYPE_2_CATEGORIES_MAP.INSTANCE.getOperation2CategoryMap().get(operationType)));
+        opGenerator.setOperationTypeGenerator(opTypeGenerator);
+
 
         generator.setActiveDirOperationGenerator(opGenerator);
         events = generator.generate();
@@ -114,20 +116,16 @@ public class ActiveDirectoryEventsGeneratorTest {
     }
 
     @Test
-    public void SensitiveGroupMembershipOperationTest () throws GeneratorException {
+    public void AllOperationsTest () throws GeneratorException {
 
         ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
-        IActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOpGeneratorTemplateFactory().getActiveDirectoryOperationsGenerator(
-                AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value
-        );
-
-        generator.setActiveDirOperationGenerator(opGenerator);
+        ActiveDirectoryOperationGenerator operationsGenerator = new ActiveDirectoryOperationGenerator();
+        IOperationTypeGenerator opTypeGenerator = new ActiveDirOperationTypeCyclicGenerator();
+        operationsGenerator.setOperationTypeGenerator(opTypeGenerator);
+        generator.setActiveDirOperationGenerator(operationsGenerator);
         events = generator.generate();
 
-        List<String> opCategories = events.get(0).getOperation().getOperationType().getCategories();
-        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
-        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP_OPERATION.value));
-
+        Assert.assertTrue(events.get(0).getOperation().getOperationType().getName().contains(AD_OPERATION_TYPE.PERMISSIONS_ON_OBJECT_CHANGED.value));
     }
 
     @Test
