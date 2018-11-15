@@ -15,11 +15,11 @@ import java.util.Map;
  */
 public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator {
 
+    private static final Map<String,List<String>> opType2OpCategoryMap = AD_OPERATION_TYPE_2_CATEGORIES_MAP.INSTANCE.getOperation2CategoryMap();
+
     private static final OperationType[] DEFAULT_ACTIVE_DIRECTORY_OPERATION_TYPES = getDefaultAdOperationTypes();
 
     private static OperationType[] getDefaultAdOperationTypes(){
-
-        Map<String,List<String>> opType2OpCategoryMap = AD_OPERATION_TYPE_2_CATEGORIES_MAP.INSTANCE.getOperation2CategoryMap();
 
         List<OperationType> ret = new ArrayList();
         for (AD_OPERATION_TYPE opType : AD_OPERATION_TYPE.values()) {
@@ -39,5 +39,9 @@ public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator
 
     public ActiveDirOperationTypeCyclicGenerator(OperationType customType) {
         super(customType);
+    }
+
+    public ActiveDirOperationTypeCyclicGenerator(String customTypeName) {
+        super(new OperationType(customTypeName, opType2OpCategoryMap.get(customTypeName)));
     }
 }
