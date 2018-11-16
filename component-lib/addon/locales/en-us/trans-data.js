@@ -1414,6 +1414,7 @@ export default {
         'one': 'event',
         'other': 'events'
       },
+      na: 'N/A',
       eventOfTotal: 'Event {{eventIndex}} of {{numEvents}}',
       seeAllEvents: 'See All Events',
       generic: {

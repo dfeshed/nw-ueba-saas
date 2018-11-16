@@ -28,7 +28,7 @@ export default Component.extend({
     }
     const i18n = get(this, 'i18n');
     const prefix = 'respond.eventDetails.labels.';
-    const postfix = itemPath.replace(/\./g, '_');
+    const postfix = itemPath ? itemPath.replace(/\./g, '_') : '';
     const result = i18n.t(`${prefix}${postfix}`, { default: `${prefix}${name}` });
     return missingTranslation(result) ? capitalizeResult(name) : result;
   }

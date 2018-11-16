@@ -13,15 +13,15 @@
     <tr>
       <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.endpoint.sourceLabel'}}</th>
       {{properties-for/meta-value key="filename" value=item.source.filename tagName="td" testId="eventSourceFileNameValue"}}
-      <td test-id="eventSourceLaunchValue">{{item.source.launch_argument}}</td>
-      <td test-id="eventSourcePathValue">{{item.source.path}}</td>
+      <td test-id="eventSourceLaunchValue">{{properties-for/na-value item.source.launch_argument}}</td>
+      <td test-id="eventSourcePathValue">{{properties-for/na-value item.source.path}}</td>
       {{properties-for/meta-value class="hash" key="hash" value=item.source.hash tagName="td" testId="eventSourceHashValue"}}
     </tr>
     <tr>
       <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.endpoint.targetLabel'}}</th>
       {{properties-for/meta-value key="filename" value=item.destination.filename tagName="td" testId="eventTargetFileNameValue"}}
-      <td test-id="eventTargetLaunchValue">{{item.destination.launch_argument}}</td>
-      <td test-id="eventTargetPathValue">{{item.destination.path}}</td>
+      <td test-id="eventTargetLaunchValue">{{properties-for/na-value item.destination.launch_argument}}</td>
+      <td test-id="eventTargetPathValue">{{properties-for/na-value item.destination.path}}</td>
       {{properties-for/meta-value class="hash" key="hash" value=item.destination.hash tagName="td" testId="eventTargetHashValue"}}
     </tr>
   </tbody>

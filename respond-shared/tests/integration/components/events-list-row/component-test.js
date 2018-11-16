@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { waitUntil, settled, find, click, render, triggerKeyEvent } from '@ember/test-helpers';
 import { uebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts } from '../events-list/data';
+import { emptyNetworkEvent, emptyEndpointEvent } from './empty-data';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
 
@@ -52,7 +53,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     generic.assertTableSource(assert, {
       ip: '192.168.100.185',
       port: '123',
-      host: '',
+      host: 'N/A',
       mac: '00:00:46:8F:F4:20',
       user: 'tbozo'
     });
@@ -66,7 +67,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     generic.assertTableTarget(assert, {
       ip: '129.6.15.28',
       port: '123',
-      host: '',
+      host: 'N/A',
       mac: '00:00:00:00:5E:00',
       user: 'xor'
     });
@@ -97,9 +98,9 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     generic.assertRowHeader(assert, {
       eventType: 'Network',
-      detectorIp: '',
-      fileName: '',
-      fileHash: ''
+      detectorIp: 'N/A',
+      fileName: 'N/A',
+      fileHash: 'N/A'
     });
 
     generic.assertRowHeaderContext(assert, {
@@ -113,9 +114,9 @@ module('Integration | Component | events-list-row', function(hooks) {
     generic.assertTableSource(assert, {
       ip: '10.4.61.97',
       port: '36749',
-      host: '',
+      host: 'N/A',
       mac: '00:50:56:33:18:18',
-      user: ''
+      user: 'N/A'
     });
 
     generic.assertTableSourceContext(assert, {
@@ -127,9 +128,9 @@ module('Integration | Component | events-list-row', function(hooks) {
     generic.assertTableTarget(assert, {
       ip: '10.4.61.44',
       port: '5671',
-      host: '',
+      host: 'N/A',
       mac: '00:50:56:33:18:15',
-      user: ''
+      user: 'N/A'
     });
 
     generic.assertTableTargetContext(assert, {
@@ -217,28 +218,28 @@ module('Integration | Component | events-list-row', function(hooks) {
     });
 
     generic.assertRowHeader(assert, {
-      eventType: '',
-      detectorIp: '',
-      fileName: '',
-      fileHash: ''
+      eventType: 'N/A',
+      detectorIp: 'N/A',
+      fileName: 'N/A',
+      fileHash: 'N/A'
     });
 
     generic.assertTableColumns(assert);
 
     generic.assertTableSource(assert, {
-      ip: '',
-      port: '',
-      host: '',
-      mac: '',
-      user: ''
+      ip: 'N/A',
+      port: 'N/A',
+      host: 'N/A',
+      mac: 'N/A',
+      user: 'N/A'
     });
 
     generic.assertTableTarget(assert, {
-      ip: '',
-      port: '',
-      host: '',
-      mac: '',
-      user: ''
+      ip: 'N/A',
+      port: 'N/A',
+      host: 'N/A',
+      mac: 'N/A',
+      user: 'N/A'
     });
   });
 
@@ -355,5 +356,120 @@ module('Integration | Component | events-list-row', function(hooks) {
     await triggerKeyEvent(childSelector, 'keydown', ENTER_KEY);
 
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+  });
+
+  test('renders N/A for each endpoint header & footer value when event is empty', async function(assert) {
+    this.set('item', emptyEndpointEvent);
+    this.set('alerts', getAllAlerts());
+
+    await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    endpoint.assertRowPresent(assert);
+
+    endpoint.assertRowAlertDetails(assert, {
+      name: 'Unsigned Open Process and Runs Command Shell',
+      summary: '(Event 1 of 8)',
+      score: '50'
+    });
+
+    endpoint.assertRowHeader(assert, {
+      eventType: 'N/A',
+      category: 'N/A',
+      action: 'N/A',
+      hostname: 'N/A',
+      userAccount: 'N/A',
+      operatingSystem: 'N/A',
+      fileHash: 'N/A'
+    });
+
+    endpoint.assertRowHeaderContext(assert, {
+      hostname: '',
+      userAccount: '',
+      fileHash: ''
+    });
+
+    endpoint.assertTableColumns(assert);
+
+    endpoint.assertTableSource(assert, {
+      fileName: 'N/A',
+      launch: 'N/A',
+      path: 'N/A',
+      hash: 'N/A'
+    });
+
+    endpoint.assertTableSourceContext(assert, {
+      fileName: '',
+      hash: ''
+    });
+
+    endpoint.assertTableTarget(assert, {
+      fileName: 'N/A',
+      launch: 'N/A',
+      path: 'N/A',
+      hash: 'N/A'
+    });
+
+    endpoint.assertTableTargetContext(assert, {
+      fileName: '',
+      hash: ''
+    });
+  });
+
+  test('renders N/A for each generic header & footer value when event is empty', async function(assert) {
+    this.set('item', emptyNetworkEvent);
+    this.set('alerts', getAllAlerts());
+
+    await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    generic.assertRowPresent(assert);
+
+    generic.assertRowAlertDetails(assert, {
+      name: 'test',
+      summary: '(Event 1 of 1)',
+      score: '90'
+    });
+
+    generic.assertRowHeader(assert, {
+      eventType: 'N/A',
+      detectorIp: 'N/A',
+      fileName: 'N/A',
+      fileHash: 'N/A'
+    });
+
+    generic.assertRowHeaderContext(assert, {
+      detectorIp: '',
+      fileName: '',
+      fileHash: ''
+    });
+
+    generic.assertTableColumns(assert);
+
+    generic.assertTableSource(assert, {
+      ip: 'N/A',
+      port: 'N/A',
+      host: 'N/A',
+      mac: 'N/A',
+      user: 'N/A'
+    });
+
+    generic.assertTableSourceContext(assert, {
+      ip: '',
+      mac: '',
+      user: ''
+    });
+
+    generic.assertTableTarget(assert, {
+      ip: 'N/A',
+      port: 'N/A',
+      host: 'N/A',
+      mac: 'N/A',
+      user: 'N/A'
+    });
+
+    generic.assertTableTargetContext(assert, {
+      ip: '',
+      mac: '',
+      user: ''
+    });
   });
 });

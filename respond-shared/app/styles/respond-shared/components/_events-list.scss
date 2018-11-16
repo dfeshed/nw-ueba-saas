@@ -6,6 +6,10 @@
   right: 0;
   bottom: 0;
 
+  .no-value {
+    color: text-color(primary);
+  }
+
   &__table-view {
     @include rsa-fill-abs();
 
