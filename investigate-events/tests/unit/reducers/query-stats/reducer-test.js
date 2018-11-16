@@ -126,7 +126,6 @@ test('QUERY_STATS reducer does not update errors when 0 code passed', function(a
   assert.equal(result.errors.length, 0);
 });
 
-
 test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   const prevState = Immutable.from({
     isConsoleOpen: true,
@@ -147,4 +146,20 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 0);
   assert.equal(result.devices.length, 0);
+});
+
+test('START_GET_EVENT_COUNT reducer clears errors and warnings', function(assert) {
+  const prevState = Immutable.from({
+    warnings: ['warning'],
+    errors: ['error']
+  });
+
+  const action = {
+    type: ACTION_TYPES.START_GET_EVENT_COUNT
+  };
+
+  const result = reducer(prevState, action);
+
+  assert.equal(result.errors.length, 0);
+  assert.equal(result.warnings.length, 0);
 });

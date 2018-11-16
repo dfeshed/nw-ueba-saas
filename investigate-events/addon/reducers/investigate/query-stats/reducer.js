@@ -28,6 +28,13 @@ export default handleActions({
     });
   },
 
+  [ACTION_TYPES.START_GET_EVENT_COUNT]: (state) => {
+    return state.merge({
+      warnings: [],
+      errors: []
+    });
+  },
+
   [ACTION_TYPES.QUERY_STATS]: (state, { payload, code }) => {
     const updatedState = {};
 

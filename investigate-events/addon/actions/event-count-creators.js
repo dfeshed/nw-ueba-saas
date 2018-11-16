@@ -44,7 +44,7 @@ export default function getEventCount() {
           });
         }
 
-        // protext against empty meta when data is passed back
+        // protect against empty meta when data is passed back
         if (response.meta) {
           dispatch({
             type: ACTION_TYPES.QUERY_STATS,

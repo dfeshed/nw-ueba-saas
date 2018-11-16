@@ -64,3 +64,18 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
   assert.equal(result.selectedEventIds.length, 0);
 });
 
+test('ACTION_TYPES.SET_ANCHOR_AND_GOAL reducer', function(assert) {
+  const action = {
+    type: ACTION_TYPES.SET_ANCHOR_AND_GOAL,
+    anchor: 1,
+    goal: 1
+  };
+
+  const result = reducer(Immutable.from({
+    anchor: 0,
+    goal: 0
+  }), action);
+
+  assert.equal(result.goal, 1);
+  assert.equal(result.anchor, 1);
+});

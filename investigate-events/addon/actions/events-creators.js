@@ -145,8 +145,7 @@ export const eventsGetMore = () => {
       onInit(stopStream) {
         this.stopStreaming = stopStream;
         dispatch(getEventCount());
-        dispatch({ type: ACTION_TYPES.SET_ANCHOR, payload: anchor });
-        dispatch({ type: ACTION_TYPES.SET_GOAL, payload: goal });
+        dispatch({ type: ACTION_TYPES.SET_ANCHOR_AND_GOAL, anchor, goal });
       },
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;

@@ -52,9 +52,12 @@ export default handleActions({
     return state.set('selectedEventIds', _.without(state.selectedEventIds, payload));
   },
 
-  [ACTION_TYPES.SET_ANCHOR]: (state, { payload }) => state.set('anchor', payload),
-
-  [ACTION_TYPES.SET_GOAL]: (state, { payload }) => state.set('goal', payload),
+  [ACTION_TYPES.SET_ANCHOR_AND_GOAL]: (state, { anchor, goal }) => {
+    return state.merge({
+      anchor,
+      goal
+    });
+  },
 
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
     return state.merge({
