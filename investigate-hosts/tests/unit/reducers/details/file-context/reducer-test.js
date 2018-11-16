@@ -76,6 +76,7 @@ module('Unit | Reducers | File Context', function() {
 
     const endState = reducer(previous, action);
     assert.deepEqual(_.values(endState.fileContext).length, 4);
+    assert.deepEqual(endState.totalItems, 4);
   });
   test('The HOST_DETAILS_DATATABLE_SORT_CONFIG resets the selected row id', function(assert) {
     const previous = Immutable.from({

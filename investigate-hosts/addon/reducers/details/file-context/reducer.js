@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 import { getSchema } from './schemas';
 import { normalize } from 'normalizr';
 import Immutable from 'seamless-immutable';
+import _ from 'lodash';
 
 const initialState = Immutable.from({
   fileContext: {}, // File context object , which holds the file information
@@ -69,7 +70,7 @@ const fileContext = reduxActions.handleActions({
         const contextType = action.meta.belongsTo;
         const normalizedData = normalize(action.payload.data, getSchema(contextType));
         const fileContext = normalizedData.entities[contextType];
-        const totalItems = normalizedData.result ? normalizedData.result.length : 0;
+        const totalItems = fileContext ? _.values(fileContext).length : 0;
         return s.merge({
           totalItems,
           fileContext,
