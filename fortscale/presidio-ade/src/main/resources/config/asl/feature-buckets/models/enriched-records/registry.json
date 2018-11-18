@@ -32,6 +32,20 @@
         "registry"
       ],
       "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "registryKeyGroup",
+          "expectedValues": [
+            "SERVICES_IMAGE_PATH"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "SET_VALUE"
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "processFilePathHistogram",
@@ -42,9 +56,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.registryKeyGroup == 'SERVICES_IMAGE_PATH' && @.operationType == 'SET_VALUE')]"
           }
         }
       ]

@@ -10,8 +10,10 @@ import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.predicate.AdeRecordReaderPredicate;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +68,15 @@ public class FeatureBucketAggregator {
             List<FeatureBucketConf> featureBucketConfs,
             FeatureBucketStrategyData strategyData) {
 
-        AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(adeRecord);
+        AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
 
         for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
             try {
+                List<AdeRecordReaderPredicate> predicates = featureBucketConf.getPredicates();
+                if (!predicates.isEmpty() && !predicates.stream().allMatch(predicate -> predicate.test(adeRecordReader))) {
+                    continue;
+                }
+
                 String strategyId = strategyData.getStrategyId();
                 String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyId);
                 String featureBucketConfName = featureBucketConf.getName();

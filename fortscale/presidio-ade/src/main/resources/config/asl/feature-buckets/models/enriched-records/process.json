@@ -58,6 +58,20 @@
         "process"
       ],
       "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "RECONNAISSANCE_TOOL"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_PROCESS"
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "userIdHistogram",
@@ -68,9 +82,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]
@@ -84,6 +95,25 @@
         "process"
       ],
       "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessDirectoryGroups",
+          "expectedValues": [
+            "SYSTEM_32"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "dstProcessFileName",
+          "pattern": "lsass.exe"
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_REMOTE_THREAD"
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "srcProcessFilePathHistogram",
@@ -94,9 +124,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?('SYSTEM_32' in @['dstProcessDirectoryGroups'] && @.dstProcessFileName == 'lsass.exe' && @.operationType == 'CREATE_REMOTE_THREAD')]"
           }
         }
       ]
@@ -110,6 +137,20 @@
         "process"
       ],
       "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "IMPORTANT_WINDOWS_PROCESS"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_REMOTE_THREAD"
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "srcProcessFilePathHistogram",
@@ -120,9 +161,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?('IMPORTANT_WINDOWS_PROCESS' in @['dstProcessCategories'] && @.operationType == 'CREATE_REMOTE_THREAD')]"
           }
         }
       ]
