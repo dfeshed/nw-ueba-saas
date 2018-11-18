@@ -51,7 +51,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                     continue;
                 }
 
-                ReflectionRecordReader recordReader = enrichedEventRecordReaderFactory.getRecordReader(e, null);
+                ReflectionRecordReader recordReader = enrichedEventRecordReaderFactory.getRecordReader(e);
                 Map features = Collections.unmodifiableMap(recordReader.get(distinctFieldNames));
 
                 if (scoredEnrichedEvent.containsKey(features)) {
