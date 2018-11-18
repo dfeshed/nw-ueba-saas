@@ -63,6 +63,15 @@
         "process"
       ],
       "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "RECONNAISSANCE_TOOL"
+          ]
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "reconnaissanceToolCounter",
@@ -71,7 +80,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
           }
         }
       ]
