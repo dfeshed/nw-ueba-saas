@@ -6,6 +6,14 @@
   label=(t 'investigateFiles.editFileStatus.title')}}
   <div class="modal-content">
     <box class='radio-controls rsa-form-radio-group' fit>
+      {{#if isMaxFileEditStatusLimit}}
+        <span class='whitelist-alert info max-limit-info'>
+          {{rsa-icon class='rsa-icon-information-circle-filled'}}
+          <p>
+            {{t 'investigateFiles.editFileStatus.whiteListAlert.limitInfo'}}
+          </p>
+        </span>
+      {{/if}}
       <h4 class='rsa-form-radio-group-label file-status-title'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
       {{#each radioButtons as |radio|}}
         <label class='rsa-form-radio-label file-status-radio {{if (and (eq radio.value 'Whitelist') disableRadio) 'disabled'}} {{if (eq radio.value formData.fileStatus) 'checked'}}'>
@@ -18,11 +26,23 @@
         </label>
         {{#if (eq radio.value 'Whitelist')}}
           {{#if showWhiteListWarning}}
-            <span class='whitelist-alert'>
-              {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
-              {{t 'investigateFiles.editFileStatus.whiteListAlert.message'}}
-            </span>
+            {{#if (eq formData.fileStatus 'Whitelist')}}
+              <span class='whitelist-alert info'>
+                {{rsa-icon class='rsa-icon-information-circle-filled'}}
+                <p>
+                  {{t 'investigateFiles.editFileStatus.whiteListAlert.info'}}
+                </p>
+              </span>
+            {{else if disableRadio}}
+              <span class='whitelist-alert'>
+                {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+                <p>
+                  {{t 'investigateFiles.editFileStatus.whiteListAlert.warningMessage'}}
+                </p>
+              </span>
+            {{/if}}
           {{/if}}
+
         {{/if}}
         {{#if (eq radio.value 'Blacklist')}}
           {{#if (eq formData.fileStatus 'Blacklist')}}

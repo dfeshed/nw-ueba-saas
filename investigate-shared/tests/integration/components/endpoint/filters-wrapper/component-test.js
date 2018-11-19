@@ -53,11 +53,11 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     this.set('applyFilter', function(action, filters) {
       assert.equal(filters.length, 2);
     });
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    expressionList=expressionList 
-    filterTypes=filterTypes 
-    applyFilters=(action applyFilter (action getFirstPageOfFiles)) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    expressionList=expressionList
+    filterTypes=filterTypes
+    applyFilters=(action applyFilter (action getFirstPageOfFiles))
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);

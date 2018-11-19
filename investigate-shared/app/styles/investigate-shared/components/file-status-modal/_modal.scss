@@ -1,6 +1,7 @@
 $modalHeaderHeight: 52px;
 $footerHeight: 43px;
 $modalWidth: 500px;
+$whitelistAlertWidth: 362px; 
 
 .rsa-application-modal.file-status-modal {
   display: none;
@@ -77,7 +78,10 @@ $modalWidth: 500px;
         padding-bottom: 7px;
       }
       .remediation-alert {
-        color:text-color(accentFour);
+        i {
+          color: text-color(accentFour);
+        }
+        color: text-color(primary, light);
         font-size: 14px;
         height: 14px;
         padding-bottom: rsa-whitespace(less);
@@ -89,7 +93,41 @@ $modalWidth: 500px;
     .blacklist-category-title {
       padding-top: rsa-whitespace(less);
     }
-
+    .whitelist-alert-icon {
+      color:text-color(accentFour);
+      padding-left: rsa-whitespace(less);
+    }
+    .whitelist-alert {
+      i {
+        color: text-color(accentFour);
+        float: left;
+        padding-right: 5px;
+        padding-top: 3px;
+      }
+      color: text-color(primary, light);
+      font-size: 14px;
+      height: 36px;
+      padding-bottom: rsa-whitespace();
+      padding-left: 19px;
+      padding-top: 0.2rem;
+      p {
+        font-size: 14px;
+        height: 36px;
+        width: $whitelistAlertWidth;
+        display: inline-block;
+        float: left;
+        word-break: break-word;
+      }
+    }
+    .info {
+      i {
+        color: text-color(secondary);
+      }
+    }
+    .max-limit-info {
+      padding-left: 0px;
+      padding-bottom: 0;
+    }
   }
 
   footer {

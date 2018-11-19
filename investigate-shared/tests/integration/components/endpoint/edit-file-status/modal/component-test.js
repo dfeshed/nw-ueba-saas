@@ -54,12 +54,33 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     assert.equal(findAll('.black-list-options').length, 1, 'blacklist options have been rendered');
   });
 
-  test('it shows the white list warning message', async function(assert) {
+  test('on click of whitelist status should show info message for multiple files with restricted file', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
     await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.whitelist-alert').length, 1, 'Warning displayed');
+    await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[2]);
+    assert.equal(findAll('.whitelist-alert').length, 1, 'info message displayed');
+  });
+  test('it shows the white list waring message for restricted file', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [itemList[0]]);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    assert.equal(findAll('.whitelist-alert').length, 1, 'warning message displayed');
+  });
+  test('it shows file status limit info for more than 1000 files selection', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', new Array(101));
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    assert.equal(findAll('.max-limit-info').length, 1, 'info message displayed');
+  });
+  test('it shows file status limit info should hide for less than or equal to 1000 files selection', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', new Array(100));
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    assert.equal(findAll('.max-limit-info').length, 0, 'info message nt displayed');
   });
 
   test('it disable the white list radio for single selection', async function(assert) {

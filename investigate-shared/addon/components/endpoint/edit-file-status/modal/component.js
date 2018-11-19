@@ -69,6 +69,11 @@ export default Component.extend({
     return itemList && isAllAreRestrictedEntry(itemList.mapBy('fileName'), restrictedFileList);
   },
 
+  @computed('itemList')
+  isMaxFileEditStatusLimit(itemList) {
+    return itemList && itemList.length > 100;
+  },
+
   actions: {
     saveFileStatus() {
       const request = lookup('service:request');

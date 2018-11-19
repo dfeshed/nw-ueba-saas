@@ -2303,7 +2303,9 @@ export default {
       commentLimitError: 'Comment is limited to 900 characters',
 
       whiteListAlert: {
-        message: 'Some file(s) you have selected will be ignored for whitelisting'
+        warningMessage: 'File cannot be whitelisted as it can be used for malicious purposes.',
+        info: 'Some selected files cannot be whitelisted as they can be used for malicious purposes.',
+        limitInfo: 'Status of only top 100 files can be edited at a time.'
       },
       remediationActionOptions: {
         blockFile: 'Block',

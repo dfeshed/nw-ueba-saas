@@ -219,7 +219,9 @@ const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => {
     if (data.fileStatus === 'Whitelist') {
       checksums = checksumsWithoutRestricted(selectedFileList, restrictedFileList);
     }
-
+    if (checksums && checksums.length > 100) {
+      checksums = checksums.slice(0, 100);
+    }
     dispatch({
       type: ACTION_TYPES.SAVE_FILE_STATUS,
       promise: setFileStatus({ ...data, checksums }),
