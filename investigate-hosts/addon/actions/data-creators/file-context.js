@@ -118,7 +118,6 @@ const _getListOfFilesToDownload = (slectedFiles, agentId) => {
 };
 
 const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
-
   HostDetails.sendFileDownloadToServerRequest(_getListOfFilesToDownload(selectedFiles, agentId))
     .then(() => {
       callbacks.onSuccess();

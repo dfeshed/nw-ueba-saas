@@ -88,8 +88,8 @@ const fileContext = reduxActions.handleActions({
     const contexts = Object.values(fileContext);
     if (fileContextSelections.length < contexts.length) {
       return state.set('fileContextSelections', contexts.map((driver) => {
-        const { id, fileName, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5 } } = driver;
-        return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size };
+        const { id, fileName, path, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } } = driver;
+        return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo };
       }));
     } else {
       return state.set('fileContextSelections', []);
