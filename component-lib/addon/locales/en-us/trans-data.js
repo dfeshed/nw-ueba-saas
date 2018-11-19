@@ -334,7 +334,7 @@ export default {
       noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
       noTextContentDataWithCompressedPayloads: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Try enabling the Display Compressed Payloads button or check the other reconstruction views.',
       permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
-      endpointMessage: 'Text data is not generated for endpoint events. However, endpoint metadata is available in the Event Meta panel.'
+      noRawDataEndpoint: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt/invalid, or that an administrator has disabled the transmission of raw endpoint events in the Endpoint server configuration. Check the other reconstruction views.'
     },
     fatalError: {
       115: 'Session is unavailable for viewing.',

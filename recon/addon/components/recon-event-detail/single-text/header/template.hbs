@@ -14,10 +14,10 @@
   <span class="text">
     {{#if isLog}}
       {{t 'recon.textView.rawLogHeader'}}
+    {{else if isEndpoint}}
+      {{t 'recon.textView.rawEndpointHeader'}}  
     {{else}}
       {{side}}
     {{/if}}
   </span>
 </div>
-
-

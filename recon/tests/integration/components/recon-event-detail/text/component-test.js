@@ -48,6 +48,18 @@ test('text view renders log text', function(assert) {
   });
 });
 
+test('text view renders raw endpoint text', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData({ meta: [['medium', 3], ['nwe.callback_id', 23]] })
+    .setViewToText()
+    .populateTexts();
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 11);
+    assert.equal(str, 'RawEndpoint');
+  });
+});
+
 test('renders spinner when data present but in the process of being rendered', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToText()

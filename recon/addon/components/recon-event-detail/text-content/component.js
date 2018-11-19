@@ -65,10 +65,10 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
     let label;
     if (isHttpEvent) {
       label = i18n.t('recon.error.noTextContentDataWithCompressedPayloads');
-    } else if (!isEndpointEvent) {
-      label = i18n.t('recon.error.noTextContentData');
+    } else if (isEndpointEvent) {
+      label = i18n.t('recon.error.noRawDataEndpoint');
     } else {
-      label = '';
+      label = i18n.t('recon.error.noTextContentData');
     }
     return label;
   },

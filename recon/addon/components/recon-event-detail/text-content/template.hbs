@@ -1,10 +1,9 @@
-{{#if isEndpointEvent}}
-  {{rsa-panel-message message=(t 'recon.error.endpointMessage')}}
-{{else if hasRenderIds}}
+{{#if hasRenderIds}}
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">
       {{recon-event-detail/single-text
         isLog=isLogEvent
+        isEndpoint=isEndpointEvent
         isSticky=true
         packet=stickyContent
         renderedAll=hideStickyShowMore
@@ -21,6 +20,7 @@
     {{#each renderedText key="firstPacketId" as |text|}}
       {{recon-event-detail/single-text
         isLog=isLogEvent
+        isEndpoint=isEndpointEvent
         isSticky=false
         metaToHighlight=metaToHighlight
         packet=text
