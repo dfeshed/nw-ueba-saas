@@ -1,9 +1,8 @@
 import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, settled, click, triggerEvent } from '@ember/test-helpers';
+import { find, findAll, render, settled, click, triggerEvent, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../helpers/patch-reducer';
@@ -359,11 +358,8 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'initial file count is 2');
     find('.rsa-data-table-load-more button.rsa-form-button').click();
-    return waitFor(() => {
-      return findAll('.rsa-data-table-body-row').length === 13;
-    }).then(() => {
-      assert.equal(findAll('.rsa-data-table-body-row').length, 13, 'After load file count is 13');
-    });
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length === 13);
+    assert.equal(findAll('.rsa-data-table-body-row').length, 13, 'After load file count is 13');
   });
 
   test('Make sure sort by works', async function(assert) {
@@ -373,20 +369,21 @@ module('Integration | Component | file list', function(hooks) {
       .loadMoreStatus('stopped')
       .setSelectedFileList([])
       .build();
+
     await render(hbs`
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-      {{file-list}}`);
+      {{file-list}}
+    `);
+
     assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'systemd-journald.service', 'check filename');
     findAll('.rsa-data-table-header-cell .column-sort')[1].click();
-    return waitFor(() => {
-      return findAll('.rsa-data-table-body-row').length === 11;
-    }).then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'xt_conntrack.ko', 'After sort filename is different');
-    });
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length === 11, { timeout: 10000 });
+
+    assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'xt_conntrack.ko', 'After sort filename is different');
   });
 
   test('Column visibility works fine', async function(assert) {
@@ -405,15 +402,12 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     find('.rsa-icon-cog-filled').click();
 
-    return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
-      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
-      return waitFor(() => {
-        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5;
-      }).then(() => {
-        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
-      });
-    });
+    await settled();
+
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
+    findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
+    await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5);
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
   });
 
   test('on row click, file details panel opens up', async function(assert) {

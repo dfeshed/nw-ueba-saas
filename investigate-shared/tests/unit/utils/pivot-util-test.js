@@ -14,7 +14,7 @@ module('Unit | Utils | pivot to investigate', function() {
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
     assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -24,7 +24,7 @@ module('Unit | Utils | pivot to investigate', function() {
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
     assert.ok(actionSpy.args[0][0].includes('/navigate/query'));
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -33,7 +33,7 @@ module('Unit | Utils | pivot to investigate', function() {
     navigateToInvestigateEventsAnalysis({ metaName: 'userName', metaValue: 'corp\\test' }, '12345', { unit: 'days', value: 2 }, 'UTC');
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('username%2520%253D%2520%2522corp%255C%255Ctest')); // escaped
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 });

@@ -6,7 +6,6 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { findAll, render, waitUntil } from '@ember/test-helpers';
 import { waitForRaf } from '../../../helpers/wait-for-raf';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { securitybanner } from './data';
 
 module('Integration | Component | rsa-routable-login', function(hooks) {
@@ -128,7 +127,7 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
 
     await render(hbs `{{rsa-routable-login displayEula=false displaySecurityBanner=true}}`);
 
-    await waitFor(() => fetchResolved === true);
+    await waitUntil(() => fetchResolved === true);
 
     assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
     assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src=\"a\">');

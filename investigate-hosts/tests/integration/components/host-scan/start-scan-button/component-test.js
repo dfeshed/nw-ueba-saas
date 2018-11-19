@@ -2,10 +2,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
+import { waitUntil } from '@ember/test-helpers';
 import $ from 'jquery';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('host-scan/start-scan-button', 'Integration | Component | Host Scan Start Button', {
@@ -71,7 +71,7 @@ test('it should show success message start scan is success', function(assert) {
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
     assert.equal($('#modalDestination .info-message').length, 0, 'Scan modal is closed');
-    return waitFor(() => counter === 1); // Wait for success message
+    return waitUntil(() => counter === 1); // Wait for success message
   });
 });
 

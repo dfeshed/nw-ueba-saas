@@ -5,8 +5,7 @@ import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import EmberObject, { get, computed } from '@ember/object';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { settled } from '@ember/test-helpers';
+import { settled, waitUntil } from '@ember/test-helpers';
 import UebaRoute from 'respond/routes/incident/ueba';
 
 let redux, transition, hasPermission;
@@ -74,7 +73,7 @@ module('Unit | Route | incident.ueba', function(hooks) {
 
     await route.model(param, engineOptions);
 
-    return waitFor(() => {
+    return waitUntil(() => {
       const { respond: { incident: { selection } } } = redux.getState();
       const selectionWasSet = selection && selection.type === 'storyPoint' && selection.ids[0] === '123';
       if (selectionWasSet) {
@@ -92,7 +91,7 @@ module('Unit | Route | incident.ueba', function(hooks) {
 
     await route.model(param, options);
 
-    return waitFor(() => {
+    return waitUntil(() => {
       const { respond: { incident: { selection } } } = redux.getState();
       const selectionWasSet = selection && selection.type === 'storyPoint' && selection.ids[0] === '123';
       if (selectionWasSet) {

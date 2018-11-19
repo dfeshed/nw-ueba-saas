@@ -1,4 +1,3 @@
-import 'sa/tests/helpers/with-feature';
 import './helpers/flash-message';
 import Application from '../app';
 import config from '../config/environment';

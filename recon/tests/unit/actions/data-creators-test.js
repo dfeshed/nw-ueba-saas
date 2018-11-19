@@ -114,7 +114,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
     callback(dispatchFn, getStateWithNetworkEventType);
 
     assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
-    dataCreators.setNewReconView.reset();
+    dataCreators.setNewReconView.resetHistory();
   });
 
   const getStateWithLogEventType = () => {
@@ -153,6 +153,6 @@ module('Unit | Actions | Data Creators', function(hooks) {
     callback(dispatchFn, getStateWithLogEventType);
 
     assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
-    dataCreators.setNewReconView.reset();
+    dataCreators.setNewReconView.resetHistory();
   });
 });

@@ -1,11 +1,11 @@
 import { test } from 'qunit';
 import { run } from '@ember/runloop';
 import wait from 'ember-test-helpers/wait';
+import { waitUntil } from '@ember/test-helpers';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import teardownSockets from '../helpers/teardown-sockets';
 import { waitForSockets } from '../helpers/wait-for-sockets';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 const indicatorsSelector = '[test-id=incidentInspectorIndicators]';
 const toggleEventsSelector = '[test-id=alertsTableToggleEvents]';
@@ -35,7 +35,7 @@ test('incident details storyline events open event analysis on click', function(
   click(indicatorsSelector);
 
   andThen(function() {
-    return waitFor(() => find(toggleEventsSelector).length > 0);
+    return waitUntil(() => find(toggleEventsSelector).length > 0);
   });
 
   andThen(function() {
@@ -62,7 +62,7 @@ test('incident details storyline events open event analysis on click', function(
 
       run(() => {
         click(closeReconButton);
-        return waitFor(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
+        return waitUntil(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
           assert.ok(true, 'The route has dropped the queryParams because recon was closed');
           return wait().then(() => done());
         });
@@ -88,7 +88,7 @@ test('incident details will rehydrate event analysis when starting from recon ur
 
       run(() => {
         click(closeReconButton);
-        return waitFor(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
+        return waitUntil(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
           assert.ok(true, 'The route has dropped the queryParams because recon was closed');
           return wait().then(() => done());
         });

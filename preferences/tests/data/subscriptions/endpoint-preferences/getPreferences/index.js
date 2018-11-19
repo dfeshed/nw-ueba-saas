@@ -2,6 +2,7 @@ export default {
   subscriptionDestination: '/user/queue/endpoint/preferences/get',
   requestDestination: '/ws/endpoint/preferences/get',
   count: 0,
+  delay: 1,
   message(/* frame */) {
     const data = {
       filePreference: {

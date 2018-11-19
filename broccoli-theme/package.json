@@ -8,15 +8,14 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
+    "broccoli": "^1.1.4",
+    "mocha": "^4.0.0",
     "mkdirp": "^0.5.1",
     "fs-extra": "^4.0.2",
     "postcss": "^6.0.14",
     "broccoli-caching-writer": "^3.0.3",
     "postcss-custom-properties": "^6.2.0"
-  },
-  "devDependencies": {
-    "broccoli": "^1.1.4",
-    "mocha": "^4.0.0"
+
   }
 }

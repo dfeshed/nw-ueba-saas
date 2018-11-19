@@ -17,7 +17,7 @@ moduleForComponent('rsa-incident-inspector', 'Integration | Component | Incident
     dispatchSpy = sinon.spy(redux, 'dispatch');
   },
   afterEach() {
-    dispatchSpy.reset();
+    dispatchSpy.resetHistory();
   }
 });
 
@@ -46,6 +46,6 @@ skip('clicking the view modes sends action - to test, please upgrade to ember-ee
   this.$().find('.js-test-view-mode').click();
   assert.ok(dispatchSpy.calledOnce);
   assert.ok(actionSpy.calledOnce);
-  actionSpy.reset();
+  actionSpy.resetHistory();
 
 });

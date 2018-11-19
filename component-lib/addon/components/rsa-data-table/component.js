@@ -5,15 +5,13 @@ import computed from 'ember-computed';
 import Component from '@ember/component';
 import EmberObject, { get, set } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import { on } from '@ember/object/evented';
 import { run } from '@ember/runloop';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
-import { EKMixin, keyUp } from 'ember-keyboard';
 
 const DEFAULT_COLUMN_WIDTH = 100;
 const DEFAULT_COLUMN_VISIBILITY = true;
 
-export default Component.extend(DomWatcher, EKMixin, {
+export default Component.extend(DomWatcher, {
   tagName: 'section',
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
@@ -410,9 +408,9 @@ export default Component.extend(DomWatcher, EKMixin, {
    * if first record is selected, select last record
    * @public
    */
-  selectNext: on(keyUp('ArrowDown'), function(e) {
-    const { activeElement } = e.currentTarget;
-    const dropDownInView = activeElement.classList.contains('rsa-form-button') || activeElement.classList.contains('ember-power-select-trigger');
+  selectNext(e) {
+    const { classList } = e.target;
+    const dropDownInView = classList.contains('rsa-form-button') || classList.contains('ember-power-select-trigger');
 
     if (!dropDownInView) {
       const fn = this.get('onRowClick');
@@ -434,7 +432,7 @@ export default Component.extend(DomWatcher, EKMixin, {
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
-  }),
+  },
 
   /**
    * @description Respond to the user pressing up on the keyboard
@@ -443,9 +441,9 @@ export default Component.extend(DomWatcher, EKMixin, {
    * if last record is selected, select first record
    * @public
    */
-  selectPrevious: on(keyUp('ArrowUp'), function(e) {
-    const { activeElement } = e.currentTarget;
-    const dropDownInView = activeElement.classList.contains('rsa-form-button') || activeElement.classList.contains('ember-power-select-trigger');
+  selectPrevious(e) {
+    const { classList } = e.target;
+    const dropDownInView = classList.contains('rsa-form-button') || classList.contains('ember-power-select-trigger');
 
     if (!dropDownInView) {
       const fn = this.get('onRowClick');
@@ -469,7 +467,7 @@ export default Component.extend(DomWatcher, EKMixin, {
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
-  }),
+  },
 
   didInsertElement() {
     this._super(...arguments);
@@ -479,6 +477,10 @@ export default Component.extend(DomWatcher, EKMixin, {
     if (this.get('scrollToInitialSelectedIndex')) {
       run.schedule('afterRender', this, this._scrollToInitial);
     }
+
+    const _boundKeyUpListener = this._onKeyUp.bind(this);
+    this.set('_boundKeyUpListener', _boundKeyUpListener);
+    window.addEventListener('keyup', _boundKeyUpListener);
   },
 
   willDestroyElement() {
@@ -486,6 +488,21 @@ export default Component.extend(DomWatcher, EKMixin, {
     if (this._resizeListener) {
       removeResizeListener(this.element, this._resizeListener);
       this._resizeListener = null;
+    }
+    window.removeEventListener('keyup', this.get('_boundKeyUpListener'));
+  },
+
+  _onKeyUp(e) {
+    // do not do anything if keyboard not activated,
+    // can be turned off by consuming component
+    if (this.get('keyboardActivated')) {
+      if (e.keyCode === 38) {
+        // up arrow
+        this.selectPrevious(e);
+      } else if (e.keyCode === 40) {
+        // down arrow
+        this.selectNext(e);
+      }
     }
   },
 

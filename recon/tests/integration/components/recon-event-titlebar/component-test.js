@@ -54,7 +54,7 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     await selectChoose('.heading-select', 'File');
     assert.equal(dataCreatorsStub.calledOnce, true, 'action is called');
     assert.equal(dataCreatorsStub.args[0][0].name, 'FILE', 'right recon view is provided');
-    dataCreatorsStub.reset();
+    dataCreatorsStub.resetHistory();
 
     await selectChoose('.heading-select', 'Packet');
     assert.equal(dataCreatorsStub.calledOnce, true, 'action is called');

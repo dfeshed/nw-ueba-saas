@@ -33,11 +33,11 @@ let newTab = false;
 module('Unit | Utility | non-url-actions-handler', function(hooks) {
 
   hooks.beforeEach(function() {
-    openStub = sinon.stub(windowProxy, 'openInNewTab', (urlPassed) => {
+    openStub = sinon.stub(windowProxy, 'openInNewTab').callsFake((urlPassed) => {
       currentUrl = urlPassed;
       newTab = true;
     });
-    locationStub = sinon.stub(windowProxy, 'openInCurrentTab', (urlPassed) => {
+    locationStub = sinon.stub(windowProxy, 'openInCurrentTab').callsFake((urlPassed) => {
       currentUrl = urlPassed;
       newTab = false;
     });

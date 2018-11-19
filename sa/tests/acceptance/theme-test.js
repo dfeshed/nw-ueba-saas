@@ -2,9 +2,8 @@ import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupLoginTest, login } from '../helpers/setup-login';
 import { waitForSockets } from '../helpers/wait-for-sockets';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { waitForRedux } from '../helpers/wait-for-redux';
-import { visit, currentURL, settled } from '@ember/test-helpers';
+import { visit, currentURL, settled, waitUntil } from '@ember/test-helpers';
 
 module('Acceptance | theme', function(hooks) {
   setupApplicationTest(hooks);
@@ -41,7 +40,7 @@ module('Acceptance | theme', function(hooks) {
     await login();
     await settled();
 
-    await waitFor(() => document.querySelector('body').classList.contains('dark-theme'));
+    await waitUntil(() => document.querySelector('body').classList.contains('dark-theme'));
 
     const darkTheme = redux.getState().global.preferences.theme;
     assert.equal(darkTheme, 'DARK');

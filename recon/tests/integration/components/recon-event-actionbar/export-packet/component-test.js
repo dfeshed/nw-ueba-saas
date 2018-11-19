@@ -30,7 +30,7 @@ module('Integration | Component | recon event actionbar/export packet', function
   });
 
   hooks.afterEach(function() {
-    didDownloadCreatorsStub.reset();
+    didDownloadCreatorsStub.resetHistory();
   });
 
   hooks.after(function() {

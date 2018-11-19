@@ -1,6 +1,5 @@
 /**
  * @file Data Table Row mixin
- * Uses the ember-cli-csp-style addon to bind a component's DOM element to a `top` attribute.
  * @public
  */
 import computed from 'ember-computed-decorators';

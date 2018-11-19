@@ -3,7 +3,7 @@ import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { Promise } from 'rsvp';
 import { next } from '@ember/runloop';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { waitUntil } from '@ember/test-helpers';
 
 // feature flag data looks like:
 //
@@ -19,7 +19,7 @@ import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 const sessionStorageClear = () => {
   sessionStorage.clear();
   return new Promise((resolve) => {
-    waitFor(() => sessionStorage.getItem('features.rsaUsm') === null).then(() => {
+    waitUntil(() => sessionStorage.getItem('features.rsaUsm') === null).then(() => {
       next(null, resolve);
     });
   });

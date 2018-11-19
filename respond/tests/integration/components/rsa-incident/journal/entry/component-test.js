@@ -74,7 +74,7 @@ module('Integration | Component | Journal Entry', function(hooks) {
     assert.ok(findModal('.respond-confirmation-dialog'), 'The confirmation dialog is showing');
     await click('.modal-footer-buttons .is-primary button');
     assert.ok(actionSpy.calledOnce, 'The deleteJournalEntry action was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -86,7 +86,7 @@ module('Integration | Component | Journal Entry', function(hooks) {
     await render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
     await editableFieldHelper.updateEditableField('.rsa-incident-journal-entry__note', 'Assigned to me. Taking a look');
     assert.ok(actionSpy.calledOnce, 'The updateJournalEntry action was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -100,7 +100,7 @@ module('Integration | Component | Journal Entry', function(hooks) {
     assert.equal(findAll('.ember-power-select-options li.ember-power-select-option').length, 9, 'There are 9 milestone options available');
     await selectChoose('.rsa-incident-journal-entry__milestone', '.ember-power-select-option', 0);
     assert.ok(actionSpy.calledOnce, 'The updateJournalEntry action creators was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 

@@ -56,7 +56,8 @@ module('Unit | Utility | build-url', function() {
   });
 
   test('it forms the Event Analysis for Apply Drill with complex filter', function(assert) {
-    const currentUriStub = sinon.stub(windowProxy, 'currentUri', () => 'www.google.com?mf=ip.src%2520%253D%252017.127.255.250');
+    const currentUriStub = sinon.stub(windowProxy, 'currentUri')
+      .callsFake(() => 'www.google.com?mf=ip.src%2520%253D%252017.127.255.250');
     selection.metaValue = '17.127.255.150';
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, false);
     assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250/ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');

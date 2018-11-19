@@ -32,7 +32,7 @@ module('Integration | Component | Free Form', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    spys.forEach((s) => s.reset());
+    spys.forEach((s) => s.resetHistory());
   });
 
   hooks.after(function() {

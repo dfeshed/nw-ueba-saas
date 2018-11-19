@@ -64,10 +64,12 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
   });
 
   test('save filter is getting called with save as option', async function(assert) {
+    const done = assert.async();
     assert.expect(4);
     this.set('showSaveFilterButton', true);
     this.set('createCustomSearch', function(action, filters) {
       assert.equal(filters.length, 2);
+      done();
     });
     this.set('applyFilter', function(filters) {
       const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
@@ -76,11 +78,15 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
-    filterTypes=filterTypes createCustomSearch=(action createCustomSearch) 
-    showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes
+        createCustomSearch=(action createCustomSearch)
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));
@@ -106,13 +112,13 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('applyFilter', () => {});
 
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    expressionList=expressionList 
-    filterTypes=filterTypes 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    expressionList=expressionList
+    filterTypes=filterTypes
     filterType=filterType
-    resetFilters=(action resetFilters) 
-    applyFilters=(action applyFilter) 
+    resetFilters=(action resetFilters)
+    applyFilters=(action applyFilter)
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await click('.reset-filter-button  button');
@@ -131,10 +137,10 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
-    filterTypes=filterTypes createCustomSearch=(action createCustomSearch) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
+    filterTypes=filterTypes createCustomSearch=(action createCustomSearch)
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
@@ -169,10 +175,10 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
       expressionList: [{ type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]
     });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
-    filterTypes=filterTypes createCustomSearch=(action createCustomSearch) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
+    filterTypes=filterTypes createCustomSearch=(action createCustomSearch)
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
@@ -190,9 +196,9 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
     filterTypes=filterTypes
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
@@ -214,9 +220,9 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
     filterTypes=filterTypes
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');

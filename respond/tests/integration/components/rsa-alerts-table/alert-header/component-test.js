@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { waitUntil } from '@ember/test-helpers';
 
 moduleForComponent('rsa-alerts-table/alert-header', 'Integration | Component | rsa alerts table alert header', {
   integration: true,
@@ -133,7 +133,7 @@ test('events tab will render ueba link component for alerts', function(assert) {
 
   this.render(hbs`{{rsa-alerts-table/alert-header group=group index=index}}`);
 
-  return waitFor(() => this.$('.rsa-alerts-table-alert-header').length === 1).then(() => {
+  return waitUntil(() => this.$('.rsa-alerts-table-alert-header').length === 1).then(() => {
     assert.equal(this.$('[test-id=respondUebaLink]').length, 1);
   });
 });

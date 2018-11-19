@@ -134,7 +134,7 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
         assert.ok(actionSpy.calledOnce);
         assert.ok(actionSpy.args[0][0].includes('vid=123123'));
         assert.ok(actionSpy.args[0][0].includes('sid=123456'));
-        actionSpy.reset();
+        actionSpy.resetHistory();
         actionSpy.restore();
       });
     });

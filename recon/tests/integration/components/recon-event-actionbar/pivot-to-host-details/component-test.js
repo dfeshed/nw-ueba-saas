@@ -17,7 +17,7 @@ module('Integration | Component | recon-event-actionbar/pivot-to-host-details', 
     await render(hbs`{{recon-event-actionbar/pivot-to-host-details}}`);
     await click(find('.pivot-to-host-details button'));
     assert.ok(actionSpy.calledOnce);
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 });

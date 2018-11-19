@@ -32,7 +32,7 @@ test('externalLookup test VirusTotal', function(assert) {
     assert.ok(actionSpy.calledOnce);
     assert.equal(actionSpy.args[0][0], 'https://www.virustotal.com/latest-scan/abc');
     assert.equal(actionSpy.args[0][1], '_blank');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
     assert.equal(result, true, 'External virusTotal lookup should true');
   });

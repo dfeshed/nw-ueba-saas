@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, settled, find, click, triggerEvent } from '@ember/test-helpers';
+import { findAll, render, settled, find, click, triggerEvent, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import Immutable from 'seamless-immutable';
@@ -8,7 +8,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let initState;
 const callback = () => {};
@@ -180,7 +179,7 @@ module('Integration | Component | certificates-container/certificates-data-table
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1, 'initial visible column count is 1');
       findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
-      return waitFor(() => {
+      return waitUntil(() => {
         return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 2;
       }).then(() => {
         assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 2, 'visible column is 2');

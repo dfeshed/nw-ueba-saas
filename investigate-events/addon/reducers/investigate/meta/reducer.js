@@ -6,5 +6,7 @@ import { handleActions } from 'redux-actions';
 const _initialState = Immutable.from({});
 
 export default handleActions({
-  _initialState
+  // have to provide something semi-legit here or else
+  // redux actions flakes out
+  foo() {}
 }, _initialState);

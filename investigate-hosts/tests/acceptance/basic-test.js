@@ -1,66 +1,48 @@
 import RSVP from 'rsvp';
-import { test, skip } from 'qunit';
-import moduleForAcceptance from '../helpers/module-for-acceptance';
-import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
+import { module, test, skip } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
 import sinon from 'sinon';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { click, waitFor, visit, currentURL } from '@ember/test-helpers';
 import { lookup } from 'ember-dependency-lookup';
+
 const deleteButton = '.host-table__toolbar-buttons .delete-host-button button';
 const popUpCont = '.rsa-application-modal-content';
 
-moduleForAcceptance('Acceptance | basic', {
-  resolver: engineResolverFor('endpoint'),
-  beforeEach() {
-    initialize(this.application);
-  }
-});
+module('Acceptance | basic', function(hooks) {
+  setupApplicationTest(hooks);
 
-test('visiting /investigate-hosts', function(assert) {
-  visit('/investigate-hosts');
-  andThen(() => {
+  test('visiting /investigate-hosts', async function(assert) {
+    await visit('/investigate-hosts');
+
     assert.equal(currentURL(), '/investigate-hosts');
-  });
-  /* Test delete flow */
-  waitFor(selectorToExist('.rsa-data-table-body-row'));
-  andThen(() => {
+
+    /* Test delete flow */
+    await waitFor('.rsa-data-table-body-row .rsa-form-checkbox', { timeout: 10000 });
+
     assert.equal($(deleteButton)[0].innerText, 'Delete');
     assert.equal($(deleteButton).attr('disabled'), 'disabled');
-    click('.rsa-data-table-body-row:first .rsa-form-checkbox');
-  });
-  andThen(() => {
+    await click('.rsa-data-table-body-row .rsa-form-checkbox');
+
     assert.equal($(deleteButton).attr('disabled'), undefined);
-  });
-  andThen(() => {
     assert.equal($(popUpCont).length, 0);
-  });
-  andThen(() => {
-    click(deleteButton);
-  });
-  andThen(() => {
+    await click(deleteButton);
+
     assert.equal($(popUpCont).length, 1);
     assert.equal($(popUpCont).find('h3')[0].innerText, 'Delete 1 host(s)');
-  });
-  /* End - Test delete flow */
-});
-
-skip('visiting /investigate-hosts shows server down message', function(assert) {
-
-  const request = lookup('service:request');
-  sinon.stub(request, 'ping', () => {
-    return new RSVP.Promise((resolve, reject) => reject());
+    /* End - Test delete flow */
   });
 
-  visit('/investigate-hosts');
+  skip('visiting /investigate-hosts shows server down message', async function(assert) {
+    const request = lookup('service:request');
+    sinon.stub(request, 'ping').callsFake(() => {
+      return new RSVP.Promise((resolve, reject) => reject());
+    });
 
-  andThen(() => {
+    await visit('/investigate-hosts');
     assert.equal(currentURL(), '/investigate-hosts');
-  });
 
-  waitFor(selectorToExist('.error-page'));
-
-  andThen(() => {
+    await waitFor('.error-page', { timeout: 10000 });
     assert.equal($('.error-page .title').text().trim(), 'Endpoint Server is offline');
   });
 });

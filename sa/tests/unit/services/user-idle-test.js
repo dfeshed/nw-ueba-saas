@@ -2,10 +2,9 @@ import { test, module } from 'qunit';
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { next } from '@ember/runloop';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { setupRenderingTest } from 'ember-qunit';
 import { inject as service } from '@ember/service';
-import { render, settled, triggerEvent } from '@ember/test-helpers';
+import { render, settled, triggerEvent, waitUntil } from '@ember/test-helpers';
 import { Promise } from 'rsvp';
 import sinon from 'sinon';
 
@@ -13,7 +12,7 @@ const sessionKey = 'rsa-nw-last-session-access';
 const clearLocalStorage = () => {
   localStorage.clear();
   return new Promise((resolve) => {
-    waitFor(() => localStorage.getItem(sessionKey) === null).then(() => {
+    waitUntil(() => localStorage.getItem(sessionKey) === null).then(() => {
       next(null, resolve);
     });
   });
@@ -51,7 +50,7 @@ module('Unit | Services | user-idle', function(hooks) {
 
     await triggerEvent('.ready', 'mousemove');
 
-    await waitFor(() => idleSpy.callCount > 0);
+    await waitUntil(() => idleSpy.callCount > 0);
 
     assert.equal(idleSpy.callCount, 1);
     assert.ok(localStorage.getItem(sessionKey) !== null);
@@ -72,7 +71,7 @@ module('Unit | Services | user-idle', function(hooks) {
 
     await triggerEvent('.ready', 'scroll');
 
-    await waitFor(() => idleSpy.callCount > 0);
+    await waitUntil(() => idleSpy.callCount > 0);
 
     assert.equal(idleSpy.callCount, 1);
     assert.ok(localStorage.getItem(sessionKey) !== null);

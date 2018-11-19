@@ -4,9 +4,9 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
+import { waitUntil } from '@ember/test-helpers';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 moduleForComponent('host-scan/stop-scan-button', 'Integration | Component | Host Stop scan Button', {
   integration: true,
@@ -69,7 +69,7 @@ test('it should show success message', function(assert) {
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
-    return waitFor(() => counter === 1); // Wait for success message
+    return waitUntil(() => counter === 1); // Wait for success message
   });
 });
 

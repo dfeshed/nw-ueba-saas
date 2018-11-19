@@ -8,7 +8,6 @@ import { throwSocket, patchSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { initializeIncidents } from 'respond/actions/creators/incidents-creators';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let i18n, redux, setState;
 
@@ -134,15 +133,15 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     await waitForReduxStateChange(redux, 'respond.incidents.items');
 
     await render(hbs`{{rsa-incidents}}`);
-    await waitFor(dateInputReady(0));
+    await waitUntil(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
 
     await click(selectors.customDateToggle);
-    await waitFor(dateInputReady(2));
+    await waitUntil(dateInputReady(2));
     assert.equal(findAll(selectors.customDateInput).length, 2, 'There are two custom date range input fields');
 
     await click(selectors.customDateToggle);
-    await waitFor(dateInputReady(0));
+    await waitUntil(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
     await settled().then(() => done());
   });

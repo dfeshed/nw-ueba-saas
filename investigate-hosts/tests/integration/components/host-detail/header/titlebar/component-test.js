@@ -3,8 +3,8 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { waitUntil } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let setState;
 
@@ -36,7 +36,7 @@ test('Should call action when the tab is clicked', function(assert) {
   new ReduxDataHelper(setState).hostName('XYZ').build();
   this.render(hbs`{{host-detail/header/titlebar}}`);
   this.$('.rsa-nav-tab')[3].click();
-  return waitFor(() => {
+  return waitUntil(() => {
     return this.get('redux').getState().endpoint.visuals.activeHostDetailTab === 'FILES';
   }).then(() => {
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');

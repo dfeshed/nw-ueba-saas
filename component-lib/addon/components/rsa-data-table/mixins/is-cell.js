@@ -1,7 +1,5 @@
 /**
  * @file Data Table Cell mixin
- * Uses the ember-cli-csp-style addon to bind a component's DOM element to a `_resolvedWidth` attribute,
- * which in turn is computed from either a `width` or `column.width` attribute.
  * @public
  */
 import HasTableParent from './has-table-parent';

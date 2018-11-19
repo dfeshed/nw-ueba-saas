@@ -39,7 +39,7 @@ module('Integration | Component | endpoint/pivot-to-investigate', function(hooks
     await click(findAll('.pivot-to-investigate-button button')[0]);
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 });

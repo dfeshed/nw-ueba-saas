@@ -37,10 +37,11 @@ module('Unit | Utility | build-context-options', function() {
   test('test action should open url in current tab', function(assert) {
     let currentUrl = null;
     let newTab = true;
-    const locationStub = sinon.stub(windowProxy, 'openInCurrentTab', (urlPassed) => {
-      currentUrl = urlPassed;
-      newTab = false;
-    });
+    const locationStub = sinon.stub(windowProxy, 'openInCurrentTab')
+      .callsFake((urlPassed) => {
+        currentUrl = urlPassed;
+        newTab = false;
+      });
     const result = buildContextOptions(data.data, i18n);
     const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'nw-event-value-drillable-contains');
     ipActions.action([selection]);

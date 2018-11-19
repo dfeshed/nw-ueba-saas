@@ -7,8 +7,7 @@ import Immutable from 'seamless-immutable';
 import { computed } from '@ember/object';
 import { getServices, isServicesLoading, isServicesRetrieveError } from 'respond/reducers/respond/recon/selectors';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { settled } from '@ember/test-helpers';
+import { settled, waitUntil } from '@ember/test-helpers';
 import ApplicationRoute from 'respond/routes/application';
 
 const getServiceState = (state) => {
@@ -63,7 +62,7 @@ module('Unit | Route | application', function(hooks) {
     assert.equal(error, undefined);
     assert.equal(services, undefined);
 
-    await waitFor(() => {
+    await waitUntil(() => {
       ({ services, loading, error } = getServiceState(redux.getState()));
       return services && Object.keys(services).length === 4;
     });
@@ -123,7 +122,7 @@ module('Unit | Route | application', function(hooks) {
     assert.equal(error, undefined);
     assert.deepEqual(services, undefined);
 
-    await waitFor(() => {
+    await waitUntil(() => {
       ({ services, loading, error } = getServiceState(redux.getState()));
       return loading === false;
     });

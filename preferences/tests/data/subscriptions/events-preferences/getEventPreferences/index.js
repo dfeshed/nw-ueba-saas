@@ -2,6 +2,7 @@ export default {
   subscriptionDestination: '/user/queue/investigate/preferences/get',
   requestDestination: '/ws/investigate/preferences/get',
   count: 0,
+  delay: 1,
   message(/* frame */) {
     const data = {
       queryTimeFormat: 'DB',

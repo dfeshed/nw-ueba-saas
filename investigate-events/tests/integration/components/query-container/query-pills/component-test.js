@@ -73,7 +73,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    spys.forEach((s) => s.reset());
+    spys.forEach((s) => s.resetHistory());
     const wormholeElement = document.querySelector('#wormhole-context-menu');
     if (wormholeElement) {
       document.querySelector('#ember-testing').removeChild(wormholeElement);

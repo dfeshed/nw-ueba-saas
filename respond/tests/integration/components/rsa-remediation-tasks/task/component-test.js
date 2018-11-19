@@ -108,7 +108,7 @@ module('Integration | Component | Remediation Task', function(hooks) {
     assert.ok(findModal('.respond-confirmation-dialog'), 'The confirmation dialog is showing');
     await click('.modal-footer-buttons .is-primary button');
     assert.ok(actionSpy.calledOnce, 'The deleteItem action creators was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -119,7 +119,7 @@ module('Integration | Component | Remediation Task', function(hooks) {
     await render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     await selectChoose('.metadata.task-priority', '.ember-power-select-option', 0);
     assert.ok(actionSpy.calledOnce, 'The updateItem action creators was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 
@@ -130,7 +130,7 @@ module('Integration | Component | Remediation Task', function(hooks) {
     await render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     await selectChoose('.metadata.task-status', '.ember-power-select-option', 3);
     assert.ok(actionSpy.calledOnce, 'The updateItem action creator was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 

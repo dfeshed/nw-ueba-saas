@@ -2,8 +2,8 @@ import { Promise } from 'rsvp';
 import { module, test } from 'qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { setupTest } from 'ember-qunit';
+import { waitUntil } from '@ember/test-helpers';
 import data from '../../helpers/actions-data';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 const assertForEventAnalysisPanelIPActions = (actions, assert) => {
   assert.equal(actions.length, 4, 'Should have minimum four actions');
@@ -45,7 +45,7 @@ module('Unit | Service | contextual-actions', function(hooks) {
   test('initialize service with proper input', async function(assert) {
     const service = this.owner.lookup('service:contextual-actions');
 
-    await waitFor(() => fetchResolved === true);
+    await waitUntil(() => fetchResolved === true);
 
     assertForEventAnalysisPanelIPActions(service.getContextualActionsForGivenScope('EventAnalysisPanel', 'ip.src'), assert);
     assertForEventAnalysisPanelDefaultActions(service.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text'), assert);

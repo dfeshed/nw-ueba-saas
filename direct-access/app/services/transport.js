@@ -84,7 +84,8 @@ export default Service.extend({
       this.handleIncomingMessage(messageEvent);
     };
     ws.onclose = (closeEvent) => {
-      alert(`WS closed, code ${closeEvent.code}`);
+      // eslint-disable-next-line no-console
+      console.log(`WS closed, code ${closeEvent.code}`);
     };
     ws.onerror = () => {
       onError('WebSocket error');

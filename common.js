@@ -242,7 +242,8 @@ const commonBuildOptions = function(projectDir) {
       plugins: [
         'transform-object-rest-spread',
         'transform-decorators-legacy'
-      ]
+      ],
+      throwUnlessParallelizable: true
     },
     'ember-cli-babel': {
       includePolyfill: true

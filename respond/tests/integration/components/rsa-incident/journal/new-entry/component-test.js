@@ -65,7 +65,7 @@ module('Integration | Component | Journal New Entry', function(hooks) {
     await settled();
 
     assert.ok(actionSpy.calledOnce, 'The createJournalEntry action was called once');
-    actionSpy.reset();
+    actionSpy.resetHistory();
     actionSpy.restore();
   });
 

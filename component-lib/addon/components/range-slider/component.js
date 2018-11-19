@@ -4,7 +4,8 @@ export default RangeSlider.extend({
   classNameBindings: [
     'isError',
     'disabled:is-disabled',
-    'isReadOnly'],
+    'isReadOnly'
+  ],
 
   isError: false,
   isReadOnly: false,

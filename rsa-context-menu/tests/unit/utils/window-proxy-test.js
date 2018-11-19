@@ -19,7 +19,7 @@ module('Unit | Utility | window-proxy', function() {
   });
   test('test window proxy openInCurrentTab', function(assert) {
     const testUrl = 'www.google.com';
-    const stub = sinon.stub(window, 'open', (url, windowName) => {
+    const stub = sinon.stub(window, 'open').callsFake((url, windowName) => {
       assert.equal(windowName, '_self', 'this should open in current window.');
       assert.equal(testUrl, url, 'this should open correct url.');
     });

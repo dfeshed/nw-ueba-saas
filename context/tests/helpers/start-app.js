@@ -2,7 +2,6 @@ import { merge } from '@ember/polyfills';
 import { run } from '@ember/runloop';
 import Application from '../../app';
 import config from '../../config/environment';
-import 'ember-wait-for-test-helper/wait-for';
 
 export default function startApp(attrs) {
   let attributes = merge({}, config.APP);

@@ -42,7 +42,7 @@ test('it should be able to set preferences for given type', function(assert) {
 
 test('it should go to catch block of set preferences for given type', function(assert) {
   const request = lookup('service:request');
-  const setPreferencesStub = sinon.stub(request, 'promiseRequest', () => {
+  const setPreferencesStub = sinon.stub(request, 'promiseRequest').callsFake(() => {
     return new rsvp.Promise((resolve, reject) => reject());
   });
   const service = this.subject();

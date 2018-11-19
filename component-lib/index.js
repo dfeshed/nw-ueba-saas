@@ -113,10 +113,6 @@ module.exports = {
             });
           }
         }
-      },
-      tether: {
-        srcDir: 'dist',
-        import: ['js/tether.js']
       }
     }
   },

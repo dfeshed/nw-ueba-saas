@@ -1,7 +1,6 @@
 import rsvp from 'rsvp';
 import { test, skip } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
-import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
 import sinon from 'sinon';
 import Service from '@ember/service';
@@ -50,7 +49,7 @@ skip('visiting /investigate-files/1234', function(assert) {
 
 skip('visiting /investigate-files shows server down message', function(assert) {
   const request = lookup('service:request');
-  sinon.stub(request, 'ping', () => {
+  sinon.stub(request, 'ping').callsFake(() => {
     return new rsvp.Promise((resolve, reject) => reject());
   });
 
@@ -60,7 +59,7 @@ skip('visiting /investigate-files shows server down message', function(assert) {
     assert.equal(currentURL(), '/investigate-files');
   });
 
-  waitFor(selectorToExist('.error-page'));
+  waitFor('.error-page');
 
   andThen(() => {
     assert.equal($('.error-page .title').text().trim(), 'Endpoint Server is offline');

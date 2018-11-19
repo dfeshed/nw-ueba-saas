@@ -9,7 +9,7 @@ import moment from 'moment';
 
 const mockService = function(owner, compliant, status) {
   const licenseService = owner.lookup('service:license');
-  return sinon.stub(licenseService, 'getCompliance', function() {
+  return sinon.stub(licenseService, 'getCompliance').callsFake(function() {
     return new RSVP.Promise((resolve) => {
       // mimic 1 sec delayed response
       setTimeout(() => {

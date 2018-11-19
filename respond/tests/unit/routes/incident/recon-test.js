@@ -5,8 +5,7 @@ import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { computed } from '@ember/object';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { settled } from '@ember/test-helpers';
+import { settled, waitUntil } from '@ember/test-helpers';
 import ReconRoute from 'respond/routes/incident/recon';
 import { patchSocket } from '../../../helpers/patch-socket';
 
@@ -75,14 +74,14 @@ module('Unit | Route | incident.recon', function(hooks) {
 
     await route.model(param, engineOptions);
 
-    return waitFor(() => {
+    await waitUntil(() => {
       const { respond: { incident: { selection } } } = redux.getState();
       const selectionWasSet = selection && selection.type === 'event' && selection.ids[0] === '123';
       if (selectionWasSet) {
         assert.ok(true, 'selection was correctly set during the model hook');
       }
       return selectionWasSet;
-    });
+    }, { timeout: 10000 });
   });
 
   test('should set selected incident with event type and id when mounted engine', async function(assert) {
@@ -93,7 +92,7 @@ module('Unit | Route | incident.recon', function(hooks) {
 
     await route.model(param, options);
 
-    return waitFor(() => {
+    await waitUntil(() => {
       const { respond: { incident: { selection } } } = redux.getState();
       const selectionWasSet = selection && selection.type === 'event' && selection.ids[0] === '123';
       if (selectionWasSet) {
@@ -122,7 +121,7 @@ module('Unit | Route | incident.recon', function(hooks) {
 
     await route.model(param, options);
 
-    await waitFor(() => {
+    await waitUntil(() => {
       const { respond: { recon: { aliases, language } } } = redux.getState();
       const aliasesAreSetup = aliases && Object.keys(aliases).length === 9;
       const languagesAreSetup = language && language.length === 94;
@@ -178,7 +177,7 @@ module('Unit | Route | incident.recon', function(hooks) {
 
     await route.model(param, options);
 
-    return waitFor(() => {
+    await waitUntil(() => {
       const { respond: { recon: { aliases, language } } } = redux.getState();
       const aliasesHydrated = aliases && Object.keys(aliases).length === 2;
       const languagesHydrated = language && language.length === 1;

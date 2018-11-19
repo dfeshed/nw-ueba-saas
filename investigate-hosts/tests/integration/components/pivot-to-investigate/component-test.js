@@ -96,7 +96,7 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
         click(findAll('.is-primary')[0]);
         return settled().then(() => {
           assert.ok(actionSpy.calledOnce);
-          actionSpy.reset();
+          actionSpy.resetHistory();
           actionSpy.restore();
         });
       });
@@ -115,7 +115,7 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 0, 'Service modal not rendered');
       assert.ok(actionSpy.calledOnce);
       assert.ok(actionSpy.args[0][0].includes('123456'));
-      actionSpy.reset();
+      actionSpy.resetHistory();
       actionSpy.restore();
     });
   });

@@ -20,7 +20,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
   });
 
   hooks.afterEach(function() {
-    spys.forEach((s) => s.reset());
+    spys.forEach((s) => s.resetHistory());
   });
 
   hooks.after(function() {

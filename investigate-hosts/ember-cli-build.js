@@ -7,5 +7,10 @@ shim(EmberAddon);
 
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, commonBuildOptions(__dirname));
+
+  app.import('node_modules/normalizr/dist/normalizr.amd.js', {
+    using: [{ transformation: 'amd', as: 'normalizr' }]
+  });
+
   return app.toTree();
 };

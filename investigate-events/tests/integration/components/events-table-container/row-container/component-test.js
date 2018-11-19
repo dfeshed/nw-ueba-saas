@@ -5,7 +5,6 @@ import EmberObject, { set, get } from '@ember/object';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, render, find, findAll, settled } from '@ember/test-helpers';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 module('Integration | Component | events table row', function(hooks) {
   setupRenderingTest(hooks, {
@@ -55,12 +54,16 @@ module('Integration | Component | events table row', function(hooks) {
       clickAction: makeClickAction(assert)
     });
 
-    await render(hbs`{{events-table-container/row-container
-      item=item height=height
-      relativeIndex=relativeIndex
-      relativeIndexOffset=relativeIndexOffset
-      table=table
-      clickAction=clickAction}}`);
+    await render(hbs`
+      {{events-table-container/row-container
+        item=item
+        height=height
+        relativeIndex=relativeIndex
+        relativeIndexOffset=relativeIndexOffset
+        table=table
+        clickAction=clickAction
+      }}
+    `);
 
     // Check row is there.
     const rowSelector = '.rsa-investigate-events-table-row';
@@ -132,7 +135,7 @@ module('Integration | Component | events table row', function(hooks) {
     return settled();
   });
 
-  test('render recon container and check recon size', async function(assert) {
+  test('will receive and issue row click action', async function(assert) {
     assert.expect(1);
 
     this.setProperties({
@@ -144,23 +147,19 @@ module('Integration | Component | events table row', function(hooks) {
       clickAction: makeClickAction(assert)
     });
 
-    await render(hbs`{{events-table-container/row-container
-      item=item height=height
-      relativeIndex=relativeIndex
-      relativeIndexOffset=relativeIndexOffset
-      table=table
-      clickAction=clickAction}}`);
+    await render(hbs`
+      {{events-table-container/row-container
+        item=item
+        height=height
+        relativeIndex=relativeIndex
+        relativeIndexOffset=relativeIndexOffset
+        table=table
+        clickAction=clickAction
+      }}
+    `);
 
-    // Click on the row to open recon container.
-    const rowSelector = '.rsa-investigate-events-table-row';
-
-    await click(rowSelector);
-
-    return settled().then(async () => {
-      waitFor('.recon-container').then(() => {
-        assert.equal(findAll('.rsa-icon-shrink-diagonal-2-filled').length, 1);
-      });
-    });
+    await click('.rsa-investigate-events-table-row');
+    await settled();
   });
 
   test('will update column value when locale is changed', async function(assert) {
@@ -175,12 +174,16 @@ module('Integration | Component | events table row', function(hooks) {
       clickAction: makeClickAction(assert)
     });
 
-    await render(hbs`{{events-table-container/row-container
-      item=item height=height
-      relativeIndex=relativeIndex
-      relativeIndexOffset=relativeIndexOffset
-      table=table
-      clickAction=clickAction}}`);
+    await render(hbs`
+      {{events-table-container/row-container
+        item=item
+        height=height
+        relativeIndex=relativeIndex
+        relativeIndexOffset=relativeIndexOffset
+        table=table
+        clickAction=clickAction
+      }}
+    `);
 
     const englishNetwork = 'Network';
     const japaneseNetwork = 'ネットワーク';

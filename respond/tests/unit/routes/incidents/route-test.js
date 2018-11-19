@@ -3,8 +3,7 @@ import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { computed } from '@ember/object';
-import { settled } from '@ember/test-helpers';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { settled, waitUntil } from '@ember/test-helpers';
 import IncidentsRoute from 'respond/routes/incidents';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
@@ -98,7 +97,7 @@ module('Unit | Route | incidents', function(hooks) {
     const route = setupRoute.call(this);
     await route.model();
 
-    await waitFor(() => {
+    await waitUntil(() => {
       const { respond: { incidents: { isSendToArcherAvailable } } } = redux.getState();
       if (isSendToArcherAvailable === true) {
         assert.ok(true, 'isSendToArcherAvailable was set meaning the action creator was called');

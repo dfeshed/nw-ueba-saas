@@ -2,9 +2,8 @@ import { module, test } from 'qunit';
 import { contextualMenuJson } from './data';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { triggerEvent, find, findAll, settled, render } from '@ember/test-helpers';
+import { triggerEvent, find, findAll, settled, render, waitUntil } from '@ember/test-helpers';
 import { patchFetch } from '../../../helpers/patch-fetch';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { Promise } from 'rsvp';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
@@ -63,7 +62,7 @@ module('Integration | Component | Context Menu', function(hooks) {
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
 
-    await waitFor(() => fetchResolved === true);
+    await waitUntil(() => fetchResolved === true);
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
 
@@ -136,7 +135,7 @@ module('Integration | Component | Context Menu', function(hooks) {
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
 
-    await waitFor(() => fetchResolved === true);
+    await waitUntil(() => fetchResolved === true);
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
 

@@ -38,10 +38,17 @@ function runEmberTestWithMockServer {
   local PID=$!
   success "$1 mock server started, process id: $PID"
 
+  local SHOULD_COVERAGE=$2
+  if [ "${IS_MASTER_BUILD}" == "false" ]
+  then
+    # don't want to run coverage in a PR build no matter what
+    SHOULD_COVERAGE="false"
+  fi
+
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
-  info "COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort"
-  COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -58,11 +65,11 @@ function runEmberTestWithMockServer {
   # since we are using ember exam with parallel and split=4 flags, the code-coverage library would
   # generate four directories coverage_<1>, coverage_<2>, coverage_<3> and coverage_<4>
   # Merge these directories to create a single coverage direcory
-  ember coverage-merge
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
   # TODO: Coverage is only enabled for master builds. Expand the functionality to PR builds later.
   if [ "${IS_MASTER_BUILD}" == "true" ]
   then
+    ember coverage-merge
     info "Copying the coverage directory for '$1' from workspace to mount."
     node -e "require('../scripts/node/sonar-coverage.js').ws_to_mount('$1')"
   fi
@@ -70,15 +77,24 @@ function runEmberTestWithMockServer {
 
 function runEmberTestNoMockServer {
   testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
+
+  local SHOULD_COVERAGE=$2
+  if [ "${IS_MASTER_BUILD}" == "false" ]
+  then
+    # don't want to run coverage in a PR build no matter what
+    SHOULD_COVERAGE="false"
+  fi
+
   info "Running 'ember exam' for $1 on port $testemPort"
-  COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
+  info "COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort"
+  COVERAGE=$SHOULD_COVERAGE NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
-  # Merge tmp coverage directories to create a single coverage direcory
-  ember coverage-merge
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
   if [ "${IS_MASTER_BUILD}" == "true" ]
   then
+    # Merge tmp coverage directories to create a single coverage direcory
+    ember coverage-merge
     info "Copying the coverage directory for '$1' from workspace to mount."
     node -e "require('../scripts/node/sonar-coverage.js').ws_to_mount('$1')"
   fi
@@ -121,8 +137,11 @@ function buildEmberApp {
     # 'ember test'
     if [ "$3" = true ]
     then
+      info '1 running tests with mock server'
       runEmberTestWithMockServer $1 $4
+      info '2 running tests with mock server done'
     else
+      info '3 running tests with no mock server'
       runEmberTestNoMockServer $1 $4
     fi
 
@@ -218,7 +237,7 @@ buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
 buildEmberApp packager false true true
 buildEmberApp license false true true
-buildEmberApp rsa-data-filters false true true
+buildEmberApp rsa-data-filters false false true
 buildEmberApp recon false true true
 buildEmberApp context false true true
 buildEmberApp investigate-shared false false true

@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, waitFor } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import rsvp from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 

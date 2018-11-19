@@ -4,8 +4,7 @@ import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { computed } from '@ember/object';
-import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { settled } from '@ember/test-helpers';
+import { settled, waitUntil } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../helpers/vnext-patch';
@@ -92,7 +91,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     await settled();
 
-    return waitFor(() => {
+    return waitUntil(() => {
 
       if (fetchInvestigateDataSpy.callCount > 0) {
         assert.ok(false, 'should not call into fetchInvestigateData');
@@ -107,7 +106,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
 
       return false;
-    });
+    }, { timeout: 10000 });
   });
 
   test('base route visit with just serviceId should initialize investigate data, no query execution', async function(assert) {
@@ -124,7 +123,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     await settled();
 
-    return waitFor(() => {
+    return waitUntil(() => {
 
       if (fetchInvestigateDataSpy.callCount > 0) {
         assert.ok(false, 'should not call into fetchInvestigateData');
@@ -146,7 +145,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
 
       return false;
-    });
+    }, { timeout: 10000 });
   });
 
   test('base route visit required query input and pill data hash will retrieve inputs and execute query', async function(assert) {
@@ -168,7 +167,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     await settled();
 
-    return waitFor(() => {
+    return waitUntil(() => {
 
       const baseComplete = isBaseInvestigateIntializationComplete();
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
@@ -187,7 +186,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
 
       return false;
-    });
+    }, { timeout: 10000 });
   });
 
   test('base route visit with required query input and pill data in URL will execute query and retrieve hash for pill data', async function(assert) {
@@ -206,7 +205,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     await route.model(params);
     await settled();
-    return waitFor(() => {
+    return waitUntil(() => {
 
       const baseComplete = isBaseInvestigateIntializationComplete();
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
@@ -226,7 +225,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
 
       return false;
-    });
+    }, { timeout: 10000 });
   });
 
 
