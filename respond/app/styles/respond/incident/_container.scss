@@ -110,3 +110,8 @@ $tasksAndJournalPanelWidth: 400px;
     right: $tasksAndJournalPanelWidth;
   }
 }
+
+.license-banner.shown + .rsa-incident-container {
+  // When license banner is shown, the absolute top position has to be adjusted
+  top: 36px;
+}

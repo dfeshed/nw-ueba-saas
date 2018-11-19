@@ -2,6 +2,7 @@ $appNavigationHeaderHeight: 40px;
 $configureNavigationHeight: 48px;
 $respondNavigationHeight: 48px;
 $incidentsToolbarHeight: 40px;
+$licenseBannerHeight: 36px;
 
 .rsa-protected {
 
@@ -39,12 +40,30 @@ $incidentsToolbarHeight: 40px;
       height: calc(100vh - #{$appNavigationHeaderHeight + $incidentsToolbarHeight + $respondNavigationHeight});
     }
   }
+
+  .license-banner.shown + .rsa-incidents,
+  .license-banner.shown + .rsa-alerts,
+  .license-banner.shown + .rsa-remediation-tasks {
+    .rsa-explorer, .rsa-aggregation-rules, .rsa-aggregation-rule {
+      height: calc(100vh - #{$appNavigationHeaderHeight} - #{$respondNavigationHeight} - #{$licenseBannerHeight});
+
+      .main-zone {
+        height: calc(100vh - #{$appNavigationHeaderHeight + $incidentsToolbarHeight + $respondNavigationHeight + $licenseBannerHeight});
+      }
+    }
+  }
 }
 
 .rsa-protected page.configure-engine {
   min-height: calc(100vh - #{$appNavigationHeaderHeight});
   .rsa-incident-rules, .rsa-incident-rule, .respond-notifications {
     height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
+  }
+
+  .license-banner.shown + .rsa-incident-rules,
+  .license-banner.shown + .rsa-incident-rule,
+  .license-banner.shown + .respond-notifications {
+    height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight} - #{$licenseBannerHeight});
   }
 }
 
