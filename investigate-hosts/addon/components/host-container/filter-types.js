@@ -4,7 +4,12 @@
  * @type {[*]}
  */
 const FILTER_TYPES = [
-
+  {
+    'name': 'score',
+    'label': 'investigateHosts.hosts.column.score',
+    'step': 1,
+    'type': 'range'
+  },
   {
     'name': 'machine.agentVersion',
     'label': 'investigateHosts.hosts.column.machine.agentVersion',

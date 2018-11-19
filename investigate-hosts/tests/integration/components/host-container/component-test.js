@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, find } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
@@ -52,5 +52,14 @@ module('Integration | Component | host-container', function(hooks) {
       .build();
     await render(hbs`{{host-container}}`);
     assert.equal(findAll('.host-container-list').length, 1, 'host container list rendered');
+  });
+
+  test('risk score filter is rendered', async function(assert) {
+    new ReduxDataHelper(setState)
+        .hasMachineId(false)
+        .build();
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.filter-controls .range-filter').length, 1, 'Range filter (score) is present');
+    assert.equal(find('.filter-controls .range-filter .filter-text').textContent, 'Risk Score', 'Filter name is Risk Score');
   });
 });
