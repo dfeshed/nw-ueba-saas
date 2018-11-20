@@ -133,6 +133,93 @@
                 "use-certainty-to-calculate-score": true,
                 "max-num-of-rare-features": 15
               }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.scriptingDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcProcessFilePath.scriptingDstProcessFileName.process.score",
+                "model": {
+                  "name": "srcProcessFilePath.scriptingDstProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-features": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score",
+                "model": {
+                  "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-features": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "OPEN_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score",
+                "model": {
+                  "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-features": 15
+              }
             }
           ]
         }
