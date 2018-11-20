@@ -86,7 +86,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
 
   test('it renders error page when endpointserver is offline', async function(assert) {
     const endpointServerClone = { ...endpointServer };
-    endpointServerClone.isServicesRetrieveError = true;
+    endpointServerClone.isSummaryRetrieveError = true;
 
     new ReduxDataHelper(initState)
       .endpointServer(endpointServerClone)

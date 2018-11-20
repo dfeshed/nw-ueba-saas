@@ -48,7 +48,7 @@ const endpointServer = {
   ],
   isServicesLoading: false,
   isServicesRetrieveError: true,
-  isSummaryRetrieveError: false
+  isSummaryRetrieveError: true
 };
 
 const endpointQuery = {
@@ -127,7 +127,7 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('it renders host detail when endpointserver is online', async function(assert) {
     const endpointServerClone = { ...endpointServer };
-    endpointServerClone.isServicesRetrieveError = false;
+    endpointServerClone.isSummaryRetrieveError = false;
 
     new ReduxDataHelper(setState)
       .hostDetailsLoading(false)

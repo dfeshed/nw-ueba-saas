@@ -4,7 +4,7 @@ const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _serviceData = (state) => state.endpointServer.serviceData;
-const _isServicesRetrieveError = (state) => state.endpointServer.isServicesRetrieveError;
+const _isSummaryRetrieveError = (state) => state.endpointServer.isSummaryRetrieveError;
 const _getSelectedServiceId = (state) => state.endpointQuery.serverId;
 
 const _selectedService = createSelector(
@@ -22,13 +22,13 @@ const _selectedService = createSelector(
 // SELECTOR FUNCTIONS
 
 export const selectedServiceWithStatus = createSelector(
-  [_selectedService, _isServicesRetrieveError],
-  (selectedService, isServicesRetrieveError) => {
+  [_selectedService, _isSummaryRetrieveError],
+  (selectedService, isSummaryRetrieveError) => {
     let { name = '' } = selectedService;
     name = name.toLowerCase().includes('broker') ? 'Broker ' : '';
     return {
       name,
-      isServiceOnline: !isServicesRetrieveError
+      isServiceOnline: !isSummaryRetrieveError
     };
   }
 );

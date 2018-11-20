@@ -50,7 +50,7 @@ const endpointServer = {
   ],
   isServicesLoading: false,
   isServicesRetrieveError: true,
-  isSummaryRetrieveError: false
+  isSummaryRetrieveError: true
 };
 const endpointQuery = {
   serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
@@ -80,7 +80,7 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('it renders error page when endpointserver is online', async function(assert) {
     const endpointServerClone = { ...endpointServer };
-    endpointServerClone.isServicesRetrieveError = false;
+    endpointServerClone.isSummaryRetrieveError = false;
 
     new ReduxDataHelper(initState)
     .columns(endpoint.schema)
