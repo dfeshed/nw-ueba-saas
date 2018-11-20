@@ -18,7 +18,8 @@ export default {
         defaultPacketFormat: 'PCAP',
         defaultMetaFormat: 'TEXT',
         autoDownloadExtractedFiles: true,
-        packetsPageSize: 100
+        packetsPageSize: 100,
+        autoUpdateSummary: false
       },
       eventPreferences: {
         columnGroup: 'EMAIL'

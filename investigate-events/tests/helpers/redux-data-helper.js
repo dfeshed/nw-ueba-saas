@@ -305,6 +305,16 @@ export default class DataHelper {
     return this;
   }
 
+  autoUpdateSummary(flag) {
+    _set(this.state, 'services.autoUpdateSummary', flag);
+    return this;
+  }
+
+  previouslySelectedTimeRanges() {
+    _set(this.state, 'queryNode.previouslySelectedTimeRanges', { 1: 'LAST_24_HOURS' });
+    return this;
+  }
+
   language(language = DEFAULT_LANGUAGES) {
     _set(this.state, 'dictionaries.language', language);
     return this;

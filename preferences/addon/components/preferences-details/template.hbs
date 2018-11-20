@@ -50,6 +50,17 @@
         </label>
       {{else if (eq item.type 'divider')}}
         <div class='rsa-preferences-divider'></div>
+      {{else if (eq item.type 'switch')}}
+        <div test-id="switchToggle" title="{{t (concat item.name '-tooltip')}}">
+          {{#x-toggle
+            onLabel=(t item.name)
+            onToggle=(action 'saveNewPreferences' item.field (if (get preferences item.field) false true))
+            showLabels=true
+            value=(readonly (get preferences item.field)) as |toggle|}}
+            {{toggle.switch}}
+            {{toggle.onLabel value=(readonly (not (get preferences item.field)))}}
+          {{/x-toggle}}
+        </div>
       {{/if}}
     </div>
   {{/each}}

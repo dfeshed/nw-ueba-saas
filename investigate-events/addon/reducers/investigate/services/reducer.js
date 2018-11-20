@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
+import _ from 'lodash';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
@@ -12,7 +13,8 @@ const _initialState = Immutable.from({
   isSummaryRetrieveError: false,
   summaryErrorMessage: undefined,
   isSummaryLoading: false,
-  summaryErrorCode: undefined
+  summaryErrorCode: undefined,
+  autoUpdateSummary: false
 });
 
 export default handleActions({
@@ -46,6 +48,11 @@ export default handleActions({
 
   [ACTION_TYPES.SUMMARY_UPDATE]: (state, { payload }) => {
     return state.set('summaryData', payload);
+  },
+
+  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+    const autoUpdateSummary = _.get(eventAnalysisPreferences, 'autoUpdateSummary', state.autoUpdateSummary);
+    return state.merge({ autoUpdateSummary });
   },
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {

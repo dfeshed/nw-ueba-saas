@@ -76,7 +76,7 @@ export const updateSummaryData = () => {
   return (dispatch, getState) => {
     const state = getState();
     const { serviceId } = state.investigate.queryNode;
-    const { summaryData } = state.investigate.services;
+    const { summaryData, autoUpdateSummary } = state.investigate.services;
     if (serviceId && summaryData) {
       fetchSummary(serviceId)
       .then((response) => {
@@ -86,10 +86,12 @@ export const updateSummaryData = () => {
             type: ACTION_TYPES.SUMMARY_UPDATE,
             payload: response.data
           });
-          // This will update the latest start and end time in queryNode - which is
-          // ultimately used by executeQuery to get results from MT
-          const range = selectedTimeRange(state);
-          dispatch(setQueryTimeRange(range));
+          if (autoUpdateSummary) {
+            // This will update the latest start and end time in queryNode - which is
+            // ultimately used by executeQuery to get results from MT
+            const range = selectedTimeRange(state);
+            dispatch(setQueryTimeRange(range));
+          }
         }
       })
       .catch((error) => {

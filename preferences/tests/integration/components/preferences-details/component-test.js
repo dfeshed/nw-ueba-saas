@@ -35,7 +35,7 @@ const renderApplicationContent = async function(ctx, assert) {
     {{/rsa-application-content}}
   `);
   await click('.rsa-icon-settings-1-filled');
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 6, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -152,5 +152,14 @@ module('Integration | Component | Preferences Details', function(hooks) {
     throwSocket();
     await renderApplicationContent(this, assert);
     assert.equal(findAll('.ember-power-select-selected-item')[0].textContent.trim(), 'Text Analysis');
+    assert.equal(findAll('.x-toggle-container-checked').length, 0, 'Found the Relative Time Window toggle disabled by default');
+  });
+
+  test('Toggle switch to update relative time window should repond on click', async function(assert) {
+    await renderApplicationContent(this, assert);
+    const switchForRelativeTimeWindow = find('.x-toggle-btn');
+    assert.equal(findAll('.x-toggle-container-checked').length, 0, 'The toggle switch is not enabled');
+    await switchForRelativeTimeWindow.click();
+    await waitUntil(() => find('.x-toggle-container-checked'), { timeout: 3000 });
   });
 });

@@ -80,6 +80,11 @@ export default {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
     field: 'eventAnalysisPreferences.autoDownloadExtractedFiles'
+  },
+  {
+    name: 'preferences.investigate-events.autoUpdateSummary',
+    type: 'switch',
+    field: 'eventAnalysisPreferences.autoUpdateSummary'
   }],
   defaultPreferences: {
     queryTimeFormat: 'DB',
@@ -89,7 +94,8 @@ export default {
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
-      packetsPageSize: 100
+      packetsPageSize: 100,
+      autoUpdateSummary: false
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'
