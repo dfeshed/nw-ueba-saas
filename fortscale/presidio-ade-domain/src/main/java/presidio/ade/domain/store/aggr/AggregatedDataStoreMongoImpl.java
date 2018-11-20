@@ -1,6 +1,7 @@
 package presidio.ade.domain.store.aggr;
 
 import com.mongodb.DBCollection;
+import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.store.record.StoreMetadataProperties;
@@ -18,19 +19,22 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.ade.domain.store.ScoredDataReader;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * @author Barak Schuster
  * @author Lior Govrin
  */
-public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreManagerAware {
+public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreManagerAware,
+        ScoredDataReader<ScoredFeatureAggregationRecord> {
     private static final String NULL_AGGREGATED_RECORD_PAGINATION_SERVICE = "pagination service must be set in order to read data in pages";
 
     private final MongoTemplate mongoTemplate;
@@ -189,4 +193,33 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public long countScoredRecords(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String
+            adeEventType) {
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap);
+        AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
+        return mongoTemplate.count(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
+    }
+
+    @Override
+    public List<ScoredFeatureAggregationRecord> readScoredRecords(TimeRange timeRange, MultiKeyFeature
+            contextFieldNameToValueMap, String adeEventType, int skip, int limit) {
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap).skip(skip).limit(limit);
+        AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
+        return mongoTemplate.find(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
+    }
+
+    private static Query buildAggregationRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap) {
+        Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
+        contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
+            contextFieldName = String.format("context.%s", contextFieldName);
+            query.addCriteria(where(contextFieldName).is(contextFieldValue));
+        });
+        return query;
+    }
+
+    private static AggrRecordsMetadata buildAggregationRecordsMetadata(String adeEventType) {
+        String aggregationRecordName = AdeAggregationRecord.getAggregationRecordName(adeEventType);
+        return new AggrRecordsMetadata(aggregationRecordName, AggregatedFeatureType.FEATURE_AGGREGATION);
+    }
 }

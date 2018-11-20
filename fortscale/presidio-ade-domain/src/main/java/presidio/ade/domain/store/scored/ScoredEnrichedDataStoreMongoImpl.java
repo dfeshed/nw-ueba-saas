@@ -2,7 +2,7 @@ package presidio.ade.domain.store.scored;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import fortscale.utils.logging.Logger;
+import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.ade.domain.store.ScoredDataReader;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -22,18 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.CONTEXT_FIELD_NAME;
-import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.SCORE_FIELD_NAME;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.*;
 import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
-import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.START_INSTANT_FIELD;
 
 /**
  * Created by YaronDL on 6/13/2017.
  */
-public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore, StoreManagerAware {
-
-    private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
-
+public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore, StoreManagerAware,
+        ScoredDataReader<AdeScoredEnrichedRecord> {
     private final MongoTemplate mongoTemplate;
     private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
@@ -125,4 +123,27 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public long countScoredRecords(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String
+            adeEventType) {
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap);
+        return mongoTemplate.count(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
+    }
+
+    @Override
+    public List<AdeScoredEnrichedRecord> readScoredRecords(TimeRange timeRange, MultiKeyFeature
+            contextFieldNameToValueMap, String adeEventType, int skip, int limit) {
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap).skip(skip).limit(limit);
+        return mongoTemplate.find(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
+    }
+
+    private static Query buildScoredEnrichedRecordsQuery(TimeRange timeRange, MultiKeyFeature
+            contextFieldNameToValueMap) {
+        Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
+        contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
+            contextFieldName = String.format("%s.%s", CONTEXT_FIELD_NAME, contextFieldName);
+            query.addCriteria(where(contextFieldName).is(contextFieldValue));
+        });
+        return query;
+    }
 }
