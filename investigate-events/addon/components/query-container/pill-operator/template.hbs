@@ -10,6 +10,7 @@
       sendMessage=(action 'handleMessage')
     )
     allowClear=false
+    calculatePosition=_calculatePosition
     defaultHighlighted=undefined
     extra=(hash labelPath='displayName')
     initiallyOpened=false
@@ -41,7 +42,8 @@
       class=(if operator.isExpensive 'is-expensive expensive-indicator' 'expensive-indicator')
       title=(if operator.isExpensive (t 'queryBuilder.expensive') '')
     }}
-    {{operator.displayName}}
+    <span class="value">{{operator.displayName}}</span>
+    <span class="description">{{operator.description}}</span>
   {{/power-select-typeahead}}
 {{else}}
   {{selection.displayName}}

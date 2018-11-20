@@ -9,7 +9,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const ARROW_LEFT = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
@@ -18,9 +18,11 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
 
-const trim = (text) => text.replace(/\s+/g, '').trim();
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
-const eq = { displayName: '=', isExpensive: false, hasValue: true };
+const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
+
+// This trim also removes extra spaces inbetween words
+const trim = (text) => text.replace(/\s+/g, ' ').trim();
 
 module('Integration | Component | Pill Operator', function(hooks) {
   setupRenderingTest(hooks, {
@@ -57,7 +59,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
         selection=selection
       }}
     `);
-    assert.equal(trim(find(PILL_SELECTORS.operator).textContent), eq.displayName);
+    assert.equal(find(PILL_SELECTORS.operator).textContent.trim(), eq.displayName);
   });
 
   // There is a bug with ember-power-select-typeahead.
@@ -74,13 +76,13 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await focus(PILL_SELECTORS.operatorTrigger);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
     assert.equal(options.length, 7);
-    assert.equal(options[0].textContent.trim(), '=');
-    assert.equal(options[1].textContent.trim(), '!=');
-    assert.equal(options[2].textContent.trim(), 'exists');
-    assert.equal(options[3].textContent.trim(), '!exists');
-    assert.equal(options[4].textContent.trim(), 'contains');
-    assert.equal(options[5].textContent.trim(), 'begins');
-    assert.equal(options[6].textContent.trim(), 'ends');
+    assert.equal(trim(options[0].textContent), '= Equals');
+    assert.equal(trim(options[1].textContent), '!= Does Not Equal');
+    assert.equal(trim(options[2].textContent), 'exists Exists');
+    assert.equal(trim(options[3].textContent), '!exists Does Not Exist');
+    assert.equal(trim(options[4].textContent), 'contains Contains');
+    assert.equal(trim(options[5].textContent), 'begins Begins');
+    assert.equal(trim(options[6].textContent), 'ends Ends');
   });
 
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
@@ -370,7 +372,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['foobar', 'operator'], 'correct data');
+        assert.propEqual(data, ['foobar', 'pill-operator'], 'correct data');
         assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '', 'meta input was reset');
         done();
       }

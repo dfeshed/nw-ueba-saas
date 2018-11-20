@@ -1,12 +1,12 @@
 import { isEmpty } from '@ember/utils';
 
-const eq = { displayName: '=', isExpensive: false, hasValue: true };
-const notEq = { displayName: '!=', isExpensive: false, hasValue: true };
-const exists = { displayName: 'exists', isExpensive: false, hasValue: false };
-const notExists = { displayName: '!exists', isExpensive: false, hasValue: false };
-const begins = { displayName: 'begins', isExpensive: false, hasValue: true };
-const contains = { displayName: 'contains', isExpensive: true, hasValue: true };
-const ends = { displayName: 'ends', isExpensive: true, hasValue: true };
+const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
+const notEq = { displayName: '!=', description: 'Does Not Equal', isExpensive: false, hasValue: true };
+const exists = { displayName: 'exists', description: 'Exists', isExpensive: false, hasValue: false };
+const notExists = { displayName: '!exists', description: 'Does Not Exist', isExpensive: false, hasValue: false };
+const begins = { displayName: 'begins', description: 'Begins', isExpensive: false, hasValue: true };
+const contains = { displayName: 'contains', description: 'Contains', isExpensive: true, hasValue: true };
+const ends = { displayName: 'ends', description: 'Ends', isExpensive: true, hasValue: true };
 
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
 

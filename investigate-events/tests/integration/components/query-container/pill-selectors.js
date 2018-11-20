@@ -1,14 +1,14 @@
 
 const metaTrigger = '.pill-meta .ember-power-select-trigger';
 const operatorTrigger = '.pill-operator .ember-power-select-trigger';
-const valueInput = '.pill-value input';
+const valueTrigger = '.pill-value .ember-power-select-trigger';
 
 const powerSelectDropdown = '.ember-power-select-dropdown';
 const newPillTriggerContainer = '.new-pill-trigger-container';
 
 const triggerMetaPowerSelect = `${newPillTriggerContainer} ${metaTrigger}`;
 const triggerOperatorPowerSelect = `${newPillTriggerContainer} ${operatorTrigger}`;
-const triggerValueInput = `${newPillTriggerContainer} ${valueInput}`;
+const triggerValuePowerSelect = `${newPillTriggerContainer} ${valueTrigger}`;
 
 export default {
   queryPill: '.query-pill',
@@ -39,9 +39,10 @@ export default {
   powerSelectOption: '.js-test-power-select-option',
   triggerMetaPowerSelect,
   triggerOperatorPowerSelect,
-  triggerValueInput,
+  triggerValuePowerSelect,
   value: '.pill-value',
-  valueInput,
+  valueSelectInput: '.pill-value .ember-power-select-trigger input',
+  valueTrigger,
   activePills: '.query-pills .is-active',
   invalidPill: '.is-invalid',
   selectedPill: '.is-selected',

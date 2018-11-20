@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { later, next, throttle } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import computed, { alias, and, empty } from 'ember-computed-decorators';
+import { isEmpty } from '@ember/utils';
+import computed, { alias } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -135,15 +136,6 @@ export default Component.extend({
   isDeletable: (isExistingPill, isActive) => isExistingPill && !isActive,
 
   /**
-   * The meta control can expand to take all the space if there is no operator
-   * selected and no value set.
-   * @private
-   */
-  @computed('selectedOperator', 'valueString')
-  canMetaExpand: (op, vs) => !op && !vs,
-
-
-  /**
    * Update the component title with error message once validation returns
    * If a valid pill, return the concatenated string
    * @public
@@ -168,25 +160,26 @@ export default Component.extend({
   },
 
   /**
-   * Should the meta field take up 100% of the available pill space?
+   * Should the meta field take up 100% of the available pill space? The meta
+   * control can expand if there is no operator set, no value set, and is
+   * active.
    * @public
    */
-  @and('canMetaExpand', 'isMetaActive')
-  shouldMetaExpand: false,
+  @computed('selectedOperator', 'valueString', 'isMetaActive')
+  shouldMetaExpand: (selectedOperator, valueString, isMetaActive) => {
+    return !selectedOperator && isEmpty(valueString) && isMetaActive;
+  },
 
   /**
-   * The operator can expand to take all the space if there is no value set
-   * @private
-   */
-  @empty('valueString')
-  canOperatorExpand: true,
-
-  /**
-   * Should the operator field take up 100% of the available pill space?
+   * Should the operator field take up 100% of the available pill space? The
+   * operator control can expand if there is no value set and is active.
    * @public
    */
-  @and('canOperatorExpand', 'isOperatorActive')
-  shouldOperatorExpand: false,
+  @computed('valueString', 'isOperatorActive')
+  shouldOperatorExpand: (valueString, isOperatorActive) => {
+    // log('shouldOperatorExpand called', valueString, isOperatorActive);
+    return isEmpty(valueString) && isOperatorActive;
+  },
 
   init() {
     this._super(arguments);
@@ -595,9 +588,9 @@ export default Component.extend({
       selectedOperator,
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: selectedOperator.hasValue
+      isValueActive: selectedOperator && selectedOperator.hasValue
     });
-    if (!selectedOperator.hasValue) {
+    if (selectedOperator && !selectedOperator.hasValue) {
       // An operator that doesn't accept a value was selected,
       // so either create or edit the pill
       if (this.get('isExistingPill')) {
@@ -885,9 +878,9 @@ export default Component.extend({
     const metaStr = this.get('selectedMeta.metaName');
     const operatorStr = this.get('selectedOperator.displayName');
     return this._getStringFromSource({
-      'meta': data,
-      'operator': `${metaStr} ${data}`,
-      'value': `${metaStr} ${operatorStr} ${data}`
+      'pill-meta': data,
+      'pill-operator': `${metaStr} ${data}`,
+      'pill-value': `${metaStr} ${operatorStr} ${data}`
     })(dataSource);
   },
 

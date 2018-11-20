@@ -9,7 +9,6 @@ import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shar
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 
-
 const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
 const _isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
@@ -281,7 +280,7 @@ const _createComplexFilterText = (complexFilterText) => ({
   complexFilterText
 });
 
-function transformTextToPillData(queryText, availableMeta) {
+function transformTextToPillData(queryText, availableMeta, shouldForceComplex = false) {
 
   // Nuke any surrounding white space
   queryText = queryText.trim();
@@ -289,7 +288,7 @@ function transformTextToPillData(queryText, availableMeta) {
   // 1. Check if the text contains characters
   // that immediately make the query complex
   const hasComplexItem = complexOperators.some((operator) => queryText.includes(operator));
-  if (hasComplexItem) {
+  if (hasComplexItem || shouldForceComplex) {
     if (!(queryText.startsWith('(') && queryText.endsWith(')'))) {
       queryText = `(${queryText})`;
     }
@@ -432,13 +431,14 @@ const selectPillsFromPosition = (pills, position, direction) => {
 
 export {
   buildMetaValueStreamInputs,
+  clientSideParseAndValidate,
+  complexOperators,
   executeMetaValuesRequest,
+  filterIsPresent,
+  getMetaFormat,
   parseBasicQueryParams,
   parsePillDataFromUri,
-  uriEncodeMetaFilters,
+  selectPillsFromPosition,
   transformTextToPillData,
-  filterIsPresent,
-  clientSideParseAndValidate,
-  getMetaFormat,
-  selectPillsFromPosition
+  uriEncodeMetaFilters
 };

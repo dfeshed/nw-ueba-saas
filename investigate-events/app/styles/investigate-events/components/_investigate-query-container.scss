@@ -863,17 +863,21 @@ input::-ms-clear {
   display: none;
 }
 
+.ember-power-select-dropdown {
+  @include border(1px, solid, primary, lighter);
+}
+
 .ember-power-select-option--no-matches-message {
   color: rsa-color(grey, light);
   font-weight: 100;
 }
-.ember-power-select-after-options {
-  min-width: 300px;
-  border-top: 1px solid text-color(primary);
-  .ember-power-select-after-option {
-    width: 100%;
+
+.ember-power-select-group {
+  .ember-power-select-option {
+    width: 400px;
     display: flex;
     font-weight: 100;
+    padding: 0 1rem;
     .value {
       flex: 1 1 auto;
       white-space: nowrap;
@@ -886,4 +890,36 @@ input::-ms-clear {
       padding-left: rsa-whitespace();
     }
   }
+}
+.ember-power-select-group:first-child {
+  border-bottom: 1px solid text-color(primary);
+  .ember-power-select-group-name {
+    display: none;
+  }
+  .ember-power-select-options {
+    max-height: 132px;
+    overflow-y: scroll;
+  }
+}
+.ember-power-select-group-name {
+  padding: 0 rsa-whitespace();
+}
+.ember-power-select-option {
+  width: 400px;
+  display: flex;
+  font-weight: 100;
+  .value {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .description {
+    flex: 0 0 auto;
+    color: rsa-color(grey, light);
+    padding-left: rsa-whitespace();
+  }
+}
+.ember-power-select-after-options {
+  border-top: 1px solid text-color(primary);
 }

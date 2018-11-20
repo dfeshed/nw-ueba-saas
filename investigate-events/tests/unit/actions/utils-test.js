@@ -169,6 +169,20 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       value: undefined
     });
   });
+
+  test('12. transformTextToPillData returns complex pill when forced to do so', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium = foo';
+    const shouldForceComplex = true;
+    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES, shouldForceComplex);
+
+    assert.deepEqual(result, {
+      complexFilterText: '(medium = foo)',
+      meta: undefined,
+      operator: undefined,
+      value: undefined
+    });
+  });
   //
   // END transformTextToPillData
   //

@@ -1,14 +1,28 @@
 {{#if isActive}}
-  {{!--
-    This span's contents mirrors what's in the <input>. This allows this
-    component to resize smoothly as the user types stuff into the <input>
-   --}}
-  <span class="shadow">{{valueString}}</span>
-  {{input
-    key-down='onKeyDown'
-    type='text'
-    value=valueString
+  {{#power-select-typeahead
+    allowClear=false
+    calculatePosition=_calculatePosition
+    defaultHighlighted=QUERY_PILL
+    initiallyOpened=true
+    matcher=_matcher
+    matchTriggerWidth=false
+    onblur=(action 'onBlur')
+    onchange=(action 'onChange')
+    onfocus=(action 'onFocus')
+    oninput=(action 'onInput')
+    onkeydown=(action 'onKeyDown')
+    options=_options
+    optionsComponent=(
+      component 'query-container/power-select-options'
+      onmousedown=(action 'onOptionMouseDown')
+    )
+    preventScroll=true
+    triggerComponent='query-container/power-select-resizable-input'
+    as |option|
   }}
+    <span class="value">{{_searchString}}</span>
+    <span class="description">{{option}}</span>
+  {{/power-select-typeahead}}
 {{else}}
   {{valueDisplay}}
 {{/if}}

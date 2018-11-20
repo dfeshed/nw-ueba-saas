@@ -16,7 +16,7 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ARROW_LEFT = KEY_MAP.arrowLeft.code;
@@ -24,6 +24,7 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
 
+// This trim also removes extra spaces inbetween words
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 let setState;
@@ -381,7 +382,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['foobar', 'meta'], 'correct data');
+        assert.propEqual(data, ['foobar', 'pill-meta'], 'correct data');
         assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
         done();
       }

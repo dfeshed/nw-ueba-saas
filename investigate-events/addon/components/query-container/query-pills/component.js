@@ -96,6 +96,11 @@ const QueryPills = RsaContextMenu.extend({
   // been updated
   startTriggeredPosition: undefined,
 
+  // Is a complex pill that was being edited, cancelled? This helps us to handle
+  // the logic for cancelling the editing of a complex pill versus a pill that
+  // is EPS based
+  isComplexPillEditCancelled: false,
+
   // Is a pill rendered by this component open for any reason?
   isPillOpen: false,
 
@@ -104,9 +109,6 @@ const QueryPills = RsaContextMenu.extend({
 
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
-
-  // Was a pill escaped in the middle of an edit?
-  isPillEditCancelled: false,
 
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
@@ -467,12 +469,10 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _pillEditCancelled(data) {
+    if (data.complexFilterText) {
+      this.set('isComplexPillEditCancelled', true);
+    }
     this._pillsExited();
-
-    // Set this flag to true as we'd want the global
-    // window escape listener to ignore this event
-    // and still retain focus
-    this.set('isPillEditCancelled', true);
     this.send('resetGuidedPill', data);
   },
 
@@ -480,13 +480,13 @@ const QueryPills = RsaContextMenu.extend({
   // and remove focus from any pill
   _escapeListener(e) {
     if (isEscape(e)) {
-      this.send('deselectAllGuidedPills');
-      if (!this.get('isPillEditCancelled')) {
-        this.send('removeGuidedPillFocus');
+      const selectedPills = this.get('selectedPills');
+      const cancelledComplexPill = this.get('isComplexPillEditCancelled');
+      if (cancelledComplexPill || (selectedPills && selectedPills.length)) {
+        this.send('deselectAllGuidedPills');
+        this.set('isComplexPillEditCancelled', false);
       } else {
-        // Toggle this flag again so the consecutive escape can
-        // remove focus
-        this.set('isPillEditCancelled', false);
+        this.send('removeGuidedPillFocus');
       }
     }
   },
@@ -509,7 +509,13 @@ const QueryPills = RsaContextMenu.extend({
     // if true, it means a pill is being created in the middle of pills
     const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
     this._pillsExited();
-    this.send('addFreeFormFilter', { freeFormText, position, shouldAddFocusToNewPill });
+    this.send('addFreeFormFilter', {
+      freeFormText,
+      position,
+      shouldAddFocusToNewPill,
+      fromFreeFormMode: false,
+      shouldForceComplex: true
+    });
   }
 });
 

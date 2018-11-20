@@ -35,15 +35,15 @@ const _metaNameForFormat = (format) => {
 const pillSelectors = {
   metaPowerSelect: PILL_SELECTORS.metaTrigger,
   operatorPowerSelect: PILL_SELECTORS.operatorTrigger,
-  powerSelectOption: PILL_SELECTORS.powerSelectOption,
-  valueInput: PILL_SELECTORS.valueInput
+  valuePowerSelect: PILL_SELECTORS.valueTrigger,
+  powerSelectOption: PILL_SELECTORS.powerSelectOption
 };
 
 const pillTriggerSelectors = {
   metaPowerSelect: PILL_SELECTORS.triggerMetaPowerSelect,
   operatorPowerSelect: PILL_SELECTORS.triggerOperatorPowerSelect,
-  powerSelectOption: PILL_SELECTORS.powerSelectOption,
-  valueInput: PILL_SELECTORS.triggerValueInput
+  valuePowerSelect: PILL_SELECTORS.triggerValuePowerSelect,
+  powerSelectOption: PILL_SELECTORS.powerSelectOption
 };
 
 export const createBasicPill = async function(fromTrigger, format, operator) {
@@ -67,9 +67,12 @@ export const createBasicPill = async function(fromTrigger, format, operator) {
 
   // Fill in the value, to properly simulate the event we need to fillIn AND
   // triggerKeyEvent for the "x" character.
-  await fillIn(selectors.valueInput, 'x');
-  await triggerKeyEvent(selectors.valueInput, 'keydown', X_KEY); // x
-  await triggerKeyEvent(selectors.valueInput, 'keydown', ENTER_KEY);
+  // await selectChoose(selectors.valuePowerSelect, 'x');
+  await fillIn(PILL_SELECTORS.valueSelectInput, 'x');
+  await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', X_KEY); // x
+
+  // Create pill
+  await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 };
 
 const ignoredInitialMessageTypes = [

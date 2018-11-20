@@ -301,7 +301,10 @@ export default Component.extend({
     this._focusOnPowerSelectTrigger();
     // send value up to create a complex pill
     if (value && value.length > 0) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'meta']);
+      // _debugContainerKey is a private Ember property that returns the full
+      // component name (component:query-container/pill-meta).
+      const [ , source ] = this._debugContainerKey.split('/');
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
     }
   },
 
@@ -347,5 +350,27 @@ export default Component.extend({
     const _metaName = meta.metaName.toLowerCase();
     const _displayName = meta.displayName.toLowerCase();
     return _metaName.indexOf(_input) & _displayName.indexOf(_input);
+  },
+
+  /**
+   * Used by power-select to position the dropdown.
+   * @private
+   */
+  _calculatePosition: (trigger, dropdown) => {
+    const { innerWidth } = window;
+    const { offsetWidth } = dropdown;
+    const pill = trigger.closest('.query-pill');
+    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
+    const rightEdge = left + offsetWidth;
+    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
+    const style = {
+      top: top + 34,
+      left: Math.max(0, left - offset)
+    };
+    return {
+      horizontalPosition: 'auto',
+      verticalPosition: 'auto',
+      style
+    };
   }
 });

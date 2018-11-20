@@ -1548,7 +1548,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async () => {
-      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
     });
   });
@@ -1576,7 +1576,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async () => {
-      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
     });
   });
@@ -1627,7 +1627,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
-  test('Pressing escape when you have a focused pill should remove focus', async function(assert) {
+  test('Pressing escape twice when you have a selected and focused pill should remove focus', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1643,14 +1643,17 @@ module('Integration | Component | Query Pills', function(hooks) {
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`);
     await click(`#${metas[1].id}`);
+    // Two pills are selected, one is focused
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
-
-    // Clicking ESC while focus is anywhere in the browser will deselect all pills
+    // Deselect all pills.
     await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
-
-    return settled().then(() => {
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
-    });
+    // Test that there are no pills selected, but one focused
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no selected pill');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be one pill focused');
+    // Remove focus
+    await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
+    // Test that there are no focused pills
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
   });
 
   test('ComplexPill - Pressing escape when you have a focused pill should remove focus', async function(assert) {
@@ -1667,14 +1670,14 @@ module('Integration | Component | Query Pills', function(hooks) {
     `);
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.complexPill);
+    // One pill is selected and focused
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
-
-    // Clicking ESC while focus is anywhere in the browser will deselect all pills
+    // Deselect all pills.
+    await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
+    // Remove focus
     await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
 
-    return settled().then(() => {
-      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
-    });
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
   });
 
   test('ComplexPill - Pressing escape from an edit should leave focus on that pill, pressing it again should remove focus', async function(assert) {
@@ -1730,7 +1733,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async () => {
-      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
       await triggerKeyEvent(PILL_SELECTORS.queryPill, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');

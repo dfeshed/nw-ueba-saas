@@ -11,7 +11,7 @@ export default {
       data: [
         {
           id: '1',
-          query: 'action = foo',
+          query: 'action = \'foo\'',
           displayName: 'HTTP',
           createdBy: 'Jay',
           createdOn: 1,
@@ -19,7 +19,7 @@ export default {
         },
         {
           id: '2',
-          query: 'action = bar',
+          query: 'action = \'bar\'',
           displayName: 'HTTP',
           createdBy: 'Jay',
           createdOn: 1,
@@ -27,7 +27,7 @@ export default {
         },
         {
           id: '3',
-          query: 'action = baz',
+          query: 'action = \'baz\'',
           displayName: 'HTTP',
           createdBy: 'Jay',
           createdOn: 1,

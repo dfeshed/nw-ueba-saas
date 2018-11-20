@@ -131,12 +131,12 @@ export default Component.extend({
       const targetValue = event.target.value;
       // If we gain focus and `lastSearchText` exists, power-select will use
       // that to down-select the list of options. This can happen if the user
-      // enters some text, focuses away, then comes back. What they previously
+      // enters some text, focuses away, then come back. What they previously
       // typed will effect the list of options.
       if (powerSelectAPI.lastSearchedText && !selection) {
         // There was no previous selection, so see if the user has started
         // typing something into the <input>. If they have use that to
-        // perform a search op options.
+        // perform a search of options.
         const txt = targetValue || '';
         powerSelectAPI.actions.search(txt);
       } else if (selection) {
@@ -242,7 +242,6 @@ export default Component.extend({
     this.get('sendMessage')(type, data);
   },
 
-
   _createFreeFormPill() {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
@@ -250,8 +249,11 @@ export default Component.extend({
     // cleanup (close dropdown, etc)
     el.value = '';
     this._focusOnPowerSelectTrigger();
+    // _debugContainerKey is a private Ember property that returns the full
+    // component name (component:query-container/pill-operator).
+    const [ , source ] = this._debugContainerKey.split('/');
     // send value up to create a complex pill
-    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, 'operator']);
+    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
   },
 
   _focusOnPowerSelectTrigger() {
@@ -282,5 +284,27 @@ export default Component.extend({
     const _input = input.toLowerCase().replace(leadingSpaces, '');
     const _displayName = operator.displayName.toLowerCase();
     return _displayName.indexOf(_input) === 0 ? 0 : -1;
+  },
+
+  /**
+   * Used by power-select to position the dropdown.
+   * @private
+   */
+  _calculatePosition: (trigger, dropdown) => {
+    const { innerWidth } = window;
+    const { offsetWidth } = dropdown;
+    const pill = trigger.closest('.query-pill');
+    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
+    const rightEdge = left + offsetWidth;
+    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
+    const style = {
+      top: top + 34,
+      left: Math.max(0, left - offset)
+    };
+    return {
+      horizontalPosition: 'auto',
+      verticalPosition: 'auto',
+      style
+    };
   }
 });
