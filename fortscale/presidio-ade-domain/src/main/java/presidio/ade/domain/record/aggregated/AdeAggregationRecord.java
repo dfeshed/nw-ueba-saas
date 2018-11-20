@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.aggregated;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -9,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by barak_schuster on 7/9/17.
- *
+ * @author Barak Schuster
+ * @author Lior Govrin
  * @see AggregatedFeatureType
  */
 @Document
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
-    public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
+    public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event.";
     public static final String FEATURE_VALUE_FIELD_NAME = "featureValue";
 
     @Field
@@ -45,7 +46,7 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
 
     @Override
     public String getAdeEventType() {
-        return ADE_AGGR_EVENT_TYPE_PREFIX + "." + getFeatureName();
+        return getAdeEventType(featureName);
     }
 
     @Override
@@ -104,5 +105,15 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public static String getAdeEventType(String aggregationRecordName) {
+        return ADE_AGGR_EVENT_TYPE_PREFIX + aggregationRecordName;
+    }
+
+    public static String getAggregationRecordName(String adeEventType) {
+        Validate.isTrue(adeEventType.startsWith(ADE_AGGR_EVENT_TYPE_PREFIX),
+                "ADE event type %s is not an aggregation record type.", adeEventType);
+        return adeEventType.substring(ADE_AGGR_EVENT_TYPE_PREFIX.length());
     }
 }
