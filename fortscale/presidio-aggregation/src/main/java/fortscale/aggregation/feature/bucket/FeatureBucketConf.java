@@ -9,6 +9,7 @@ import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.predicate.AdeRecordReaderPredicate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class FeatureBucketConf implements Serializable {
 	private String strategyName;
 	private List<AggregatedFeatureConf> aggrFeatureConfs;
 	private Set<String> allFeatureNames;
+	private List<AdeRecordReaderPredicate> predicates;
 
 	public FeatureBucketConf(
 			@JsonProperty("name") String name,
@@ -56,6 +58,7 @@ public class FeatureBucketConf implements Serializable {
 		this.strategyName = strategyName;
 		this.allFeatureNames = new HashSet<>();
 		this.aggrFeatureConfs = new ArrayList<>();
+		this.predicates = new ArrayList<>();
 		addAllAggregatedFeatureConfs(aggrFeatureConfs);
 	}
 
@@ -91,7 +94,16 @@ public class FeatureBucketConf implements Serializable {
 	public Set<String> getAllFeatureNames() {
 		return allFeatureNames;
 	}
-	
+
+	public List<AdeRecordReaderPredicate> getPredicates() {
+		return predicates;
+	}
+
+	@JsonProperty("predicates")
+	public void setPredicates(List<AdeRecordReaderPredicate> predicates) {
+		this.predicates = predicates;
+	}
+
 	public void addAllAggregatedFeatureConfs(List<AggregatedFeatureConf> aggrFeatureConfs){
 		for (AggregatedFeatureConf conf : aggrFeatureConfs) {
 			addAggregatedFeatureConf(conf);
