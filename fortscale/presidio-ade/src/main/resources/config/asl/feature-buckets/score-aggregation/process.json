@@ -107,6 +107,93 @@
           }
         }
       ]
+    },
+    {
+      "name": "srcProcessFilePathToHighestGlobalScoreMapUserIdScriptingProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.process.srcProcessFilePath.scriptingDstProcessFileName.process.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcProcessFilePathToHighestGlobalScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcProcessDirectory",
+              "context.srcProcessFileName",
+              "context.dstProcessFileName",
+              "context.machineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstProcessFilePathCreatedToHighestGlobalScoreMapUserIdScriptingProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.process.dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstProcessFilePathCreatedToHighestGlobalScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstProcessDirectory",
+              "context.dstProcessFileName",
+              "context.srcProcessFileName",
+              "context.machineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstProcessFilePathOpenedToHighestGlobalScoreMapUserIdScriptingProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.process.dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstProcessFilePathOpenedToHighestGlobalScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstProcessDirectory",
+              "context.dstProcessFileName",
+              "context.srcProcessFileName",
+              "context.machineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
