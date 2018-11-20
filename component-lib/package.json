@@ -46,7 +46,7 @@
     "ember-power-select": "~2.0.8",
     "ember-power-select-typeahead": "~0.7.2",
     "ember-radio-button": "1.2.4",
-    "ember-simple-auth": "1.7.0",
+    "ember-simple-auth": "1.1.0",
     "ember-sortable": "1.11.2",
     "ember-spaniel": "^0.4.0",
     "ember-tether": "1.0.0",

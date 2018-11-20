@@ -76,7 +76,7 @@
     "ember-redux": "4.0.0",
     "ember-redux-saga-shim": "2.0.2",
     "ember-resolver": "4.3.0",
-    "ember-simple-auth": "1.7.0",
+    "ember-simple-auth": "1.1.0",
     "ember-sinon": "2.2.0",
     "ember-sortable": "1.11.2",
     "ember-source": "3.3.1",
