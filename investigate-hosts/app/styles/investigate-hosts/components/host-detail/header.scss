@@ -10,10 +10,6 @@
   justify-content: flex-end;
 }
 
-.center {
-  align-items: center;
-}
-
 .host-header {
   background-color: background-color(primary, darkest, nearly-opaque);
 
@@ -22,6 +18,13 @@
     height: 1.5rem;
     margin: rsa-whitespace(least);
     margin-left: rsa-whitespace();
+  }
+
+  .showOverviewPanel {
+    display: flex;
+    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    max-height: 60px;
+    transition: max-height 0.25s ease-in;
   }
 }
 
@@ -72,8 +75,6 @@
 }
 
 .actionbar {
-  @include border-bottom(1px, solid, primary, dark);
-  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
   .snapshot-select {
     width: 100px;
@@ -88,7 +89,7 @@
   .divider {
     @include border-left(1px, solid, primary);
     height: 1.75rem;
-    margin-left: rsa-whitespace(more);
+    margin-right: rsa-whitespace(more);
   }
 
   .host-action-buttons {

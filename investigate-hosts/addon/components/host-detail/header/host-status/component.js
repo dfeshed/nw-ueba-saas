@@ -5,8 +5,7 @@ import { setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
   hostDetails: hostWithStatus(state),
-  lastScanTime: lastScanTime(state),
-  isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible
+  lastScanTime: lastScanTime(state)
 });
 
 const dispatchToActions = {
@@ -17,9 +16,7 @@ const HostStatus = Component.extend({
 
   tagName: 'hbox',
 
-  classNames: ['host-overview host-item flexi-fit col-xs-12'],
-
-  classNameBindings: ['isOverviewPanelVisible']
+  classNames: ['host-overview host-item flexi-fit col-xs-12']
 
 });
 

@@ -335,4 +335,8 @@ export default class DataHelper {
     _set(this.state, 'investigate.timeRange', range);
     return this;
   }
+  isOverviewPanelVisible(value) {
+    _set(this.state, 'detailsInput.isOverviewPanelVisible', value);
+    return this;
+  }
 }

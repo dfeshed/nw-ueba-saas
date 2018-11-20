@@ -8,6 +8,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { applyPatch, revertPatch } from '../../../../../../../helpers/patch-reducer';
 import $ from 'jquery';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -15,6 +16,7 @@ moduleForComponent('host-detail/header/titlebar/explore/content', 'Integration |
   integration: true,
   resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('timezone');
     setState = (state) => {

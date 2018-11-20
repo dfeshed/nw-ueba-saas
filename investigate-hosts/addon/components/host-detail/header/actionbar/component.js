@@ -37,7 +37,7 @@ const ActionBar = Component.extend({
 
   tagName: 'hbox',
 
-  classNames: 'actionbar controls center flexi-fit',
+  classNames: 'actionbar controls flexi-fit',
 
   eventBus: service(),
 
