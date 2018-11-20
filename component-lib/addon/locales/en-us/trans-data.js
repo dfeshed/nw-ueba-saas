@@ -4016,9 +4016,9 @@ export default {
       // edr policy settings
       edrPolicy: {
         scanSchedule: 'Scan Schedule',
-        schedOrManScan: 'Scheduled or Manual Scan',
-        scanTypeManual: 'Manual',
-        scanTypeScheduled: 'Scheduled',
+        schedOrManScan: 'Run Scheduled Scan',
+        scanTypeManual: 'Disabled',
+        scanTypeScheduled: 'Enabled',
         effectiveDate: 'Effective Date',
         scanStartDateInvalidMsg: 'The scan start date should not be empty',
         scanFrequency: 'Scan Frequency',
@@ -4048,7 +4048,7 @@ export default {
         startTime: 'Start Time',
         cpuMax: 'CPU Maximum',
         vmMax: 'Virtual Machine Maximum',
-        advScanSettings: 'Advanced Scan Settings',
+        advScanSettings: 'Scan Settings',
         captureFloatingCode: 'Capture Floating Code',
         downloadMbr: 'Download Master Boot Record',
         filterSignedHooks: 'Include Hooks With Signed Modules',

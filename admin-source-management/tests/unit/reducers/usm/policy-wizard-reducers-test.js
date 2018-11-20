@@ -21,7 +21,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is edr', function(assert) {
     assert.equal(initialStateEdr.policy.policyType, 'edrPolicy', 'correct policyType is loaded in initialState when type is edr');
-    assert.equal(initialStateEdr.availableSettings.length, 22, 'correct availableSettings are loaded in initialState when type is edr');
+    assert.equal(initialStateEdr.availableSettings.length, 20, 'correct availableSettings are loaded in initialState when type is edr');
   });
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
@@ -154,7 +154,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         policyType: 'edrPolicy',
         name: 'EMC Reston! 014',
         description: 'EMC Reston 014 of policy policy_014',
-        scanType: 'SCHEDULED',
+        scanType: 'ENABLED',
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: 1,
@@ -162,9 +162,9 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         runOnDaysOfWeek: ['WEDNESDAY'],
         cpuMax: 75,
         cpuMaxVm: 85,
-        captureFloatingCode: true,
+        // captureFloatingCode: true,
         downloadMbr: false,
-        filterSignedHooks: false,
+        // filterSignedHooks: false,
         requestScanOnRegistration: false,
         blockingEnabled: false,
         primaryAddress: '10.10.10.10',
@@ -177,9 +177,9 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       payload: fetchPolicyPayload
     });
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings.length, 22, 'availableSettings are properly set');
-    assert.equal(endState.availableSettings[21].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
-    assert.deepEqual(endState.selectedSettings.length, 11, 'selectedSettings are properly set');
+    assert.deepEqual(endState.availableSettings.length, 20, 'availableSettings are properly set');
+    assert.equal(endState.availableSettings[19].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
+    assert.deepEqual(endState.selectedSettings.length, 9, 'selectedSettings are properly set');
   });
 
   test('on FETCH_POLICY_LIST start, policyList is reset and policyListStatus is properly set', function(assert) {
@@ -250,18 +250,18 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('TOGGLE_SCAN_TYPE sets the scan type correctly', function(assert) {
-    const payload = 'SCHEDULED';
+    const payload = 'ENABLED';
 
-    const scanTypeExpected = 'SCHEDULED';
+    const scanTypeExpected = 'ENABLED';
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.deepEqual(endState.policy.scanType, scanTypeExpected, 'scan type updated to SCHEDULED correctly');
+    assert.deepEqual(endState.policy.scanType, scanTypeExpected, 'scan type updated to ENABLED correctly');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE clears out schedule and scan options', function(assert) {
+  test('when DISABLED, TOGGLE_SCAN_TYPE clears out schedule and scan options', function(assert) {
     const currentState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizScanType('SCHEDULED')
+      .policyWizScanType('ENABLED')
       .policyWizScanStartDate('2018-09-13')
       .policyWizScanStartTime('10:00')
       .policyWizRecurrenceInterval(1)
@@ -272,7 +272,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .build().usm.policyWizard;
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizScanType('MANUAL')
+      .policyWizScanType('DISABLED')
       .policyWizScanStartDate(null)
       .policyWizScanStartTime(null)
       .policyWizRecurrenceInterval(null)
@@ -282,90 +282,90 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .policyWizCpuMaxVm(null)
       .build().usm.policyWizard;
 
-    const payload = 'MANUAL';
+    const payload = 'DISABLED';
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(currentState)), action);
     assert.deepEqual(endState, expectedEndState, 'schedule and scan options cleared out correctly');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE greys out the effective date component in the available settings', function(assert) {
-    const payload = 'MANUAL';
+  test('when DISABLED, TOGGLE_SCAN_TYPE greys out the effective date component in the available settings', function(assert) {
+    const payload = 'DISABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
     assert.deepEqual(endState.availableSettings[2].isGreyedOut, true, 'Effective date component is greyed out correctly');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE greys out the start-time component in the available settings', function(assert) {
-    const payload = 'MANUAL';
+  test('when DISABLED, TOGGLE_SCAN_TYPE greys out the start-time component in the available settings', function(assert) {
+    const payload = 'DISABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[5].isGreyedOut, true, 'start-time component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, true, 'start-time component is greyed out correctly when DISABLED is selected');
   });
 
-  test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the start-time component in the available settings', function(assert) {
-    const payload = 'SCHEDULED';
+  test('when ENABLED, TOGGLE_SCAN_TYPE lights up the start-time component in the available settings', function(assert) {
+    const payload = 'ENABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[5].isGreyedOut, false, 'start-time component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, false, 'start-time component lights up correctly when ENABLED is selected');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE greys out the scan frequency component in the available settings', function(assert) {
-    const payload = 'MANUAL';
+  test('when DISABLED, TOGGLE_SCAN_TYPE greys out the scan frequency component in the available settings', function(assert) {
+    const payload = 'DISABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[4].isGreyedOut, true, 'scan frequency component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[4].isGreyedOut, true, 'scan frequency component is greyed out correctly when DISABLED is selected');
   });
 
-  test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the scan frequency component in the available settings', function(assert) {
-    const payload = 'SCHEDULED';
+  test('when ENABLED, TOGGLE_SCAN_TYPE lights up the scan frequency component in the available settings', function(assert) {
+    const payload = 'ENABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[4].isGreyedOut, false, 'scan frequency component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[4].isGreyedOut, false, 'scan frequency component lights up correctly when ENABLED is selected');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE greys out the cpu maximum component in the available settings', function(assert) {
-    const payload = 'MANUAL';
+  test('when DISABLED, TOGGLE_SCAN_TYPE greys out the cpu maximum component in the available settings', function(assert) {
+    const payload = 'DISABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[5].isGreyedOut, true, 'cpu maximum component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, true, 'cpu maximum component is greyed out correctly when DISABLED is selected');
   });
 
-  test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the cpu maximum component in the available settings', function(assert) {
-    const payload = 'SCHEDULED';
+  test('when ENABLED, TOGGLE_SCAN_TYPE lights up the cpu maximum component in the available settings', function(assert) {
+    const payload = 'ENABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[5].isGreyedOut, false, 'cpu maximum component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[5].isGreyedOut, false, 'cpu maximum component lights up correctly when ENABLED is selected');
   });
 
-  test('when MANUAL, TOGGLE_SCAN_TYPE greys out the virtual machine maximum component in the available settings', function(assert) {
-    const payload = 'MANUAL';
+  test('when DISABLED, TOGGLE_SCAN_TYPE greys out the virtual machine maximum component in the available settings', function(assert) {
+    const payload = 'DISABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[6].isGreyedOut, true, 'virtual machine maximum component is greyed out correctly when MANUAL is selected');
+    assert.equal(endState.availableSettings[6].isGreyedOut, true, 'virtual machine maximum component is greyed out correctly when DISABLED is selected');
   });
 
-  test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the virtual machine maximum component in the available settings', function(assert) {
-    const payload = 'SCHEDULED';
+  test('when ENABLED, TOGGLE_SCAN_TYPE lights up the virtual machine maximum component in the available settings', function(assert) {
+    const payload = 'ENABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.equal(endState.availableSettings[6].isGreyedOut, false, 'virtual machine maximum component lights up correctly when SCHEDULED is selected');
+    assert.equal(endState.availableSettings[6].isGreyedOut, false, 'virtual machine maximum component lights up correctly when ENABLED is selected');
   });
 
-  test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {
-    const payload = 'SCHEDULED';
+  test('when ENABLED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {
+    const payload = 'ENABLED';
 
     const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);
-    assert.deepEqual(endState.availableSettings[2].isGreyedOut, false, 'Effective date component lights up correctly when SCHEDULED is selected');
+    assert.deepEqual(endState.availableSettings[2].isGreyedOut, false, 'Effective date component lights up correctly when ENABLED is selected');
   });
 
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', function(assert) {
@@ -380,19 +380,19 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const payload = 'scanType';
     const initialStateCopy = _.cloneDeep(initialStateEdr);
 
-    initialStateCopy.policy.scanType = 'SCHEDULED';
+    initialStateCopy.policy.scanType = 'ENABLED';
     initialStateCopy.availableSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+      { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'DISABLED' }] },
       { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
     ];
 
     const expectedEndState = {
       availableSettings: [
-        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'MANUAL' }] },
+        { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'DISABLED' }] },
         { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] }
       ],
       selectedSettings: [
-        { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanType', value: 'MANUAL' }] }
+        { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanType', value: 'DISABLED' }] }
       ]
     };
 
@@ -428,14 +428,14 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateCopy = _.cloneDeep(initialStateEdr);
 
     initialStateCopy.selectedSettings = [
-      { index: 0, id: 'scanType', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' },
+      { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' },
       { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' },
-      { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
+      { index: 9, id: 'downloadMbr', label: 'adminUsm.policyWizard.edrPolicy.downloadMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
     ];
 
     const expectedEndState = {
       selectedSettings: [
-        { index: 10, id: 'captureFloatingCode', label: 'adminUsm.policy.captureFloatingCode', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
+        { index: 9, id: 'downloadMbr', label: 'adminUsm.policyWizard.edrPolicy.downloadMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
       ]
     };
 
@@ -464,7 +464,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
     const endState = reducers(Immutable.from(initialStateCopy), action);
     assert.deepEqual(_.sortBy(endState.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since blocking component exists on the right, the header for blocking is correctly moved to the right');
-    assert.deepEqual(endState.availableSettings[12].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
+    assert.deepEqual(endState.availableSettings[10].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
   });
 
   test('UPDATE_HEADERS_FOR_ALL_SETTINGS moves the header to the right and also keeps it on the left', function(assert) {

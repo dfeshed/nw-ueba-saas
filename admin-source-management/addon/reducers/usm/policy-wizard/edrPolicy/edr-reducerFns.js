@@ -18,7 +18,7 @@ const fetchEndpointServers = (state, action) => (
 // ACTION_TYPES.TOGGLE_SCAN_TYPE
 const toggleScanType = (state, { payload }) => {
   const { availableSettings, selectedSettings } = state;
-  if (payload === 'SCHEDULED') {
+  if (payload === 'ENABLED') {
     const newAvailableSettings = availableSettings.map((el) => {
       // if any of the objects in the array is the child of scanSchedule they should be lit up
       if (el.parentId === scanScheduleId) {
@@ -35,7 +35,7 @@ const toggleScanType = (state, { payload }) => {
       },
       availableSettings: newAvailableSettings
     }, { deep: true }); // deep merge so we don't reset everything
-  } else { // 'MANUAL'
+  } else { // 'DISABLED'
     const newAvailableSettings = availableSettings.map((el) => {
       // if any of the objects in the array is the child of scanSchedule they should be greyed out
       if (el.parentId === scanScheduleId) {

@@ -108,9 +108,9 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   test('updatePolicyProperty action creator returns proper type and payload when field is scanType', function(assert) {
     const expectedAction = {
       type: ACTION_TYPES.TOGGLE_SCAN_TYPE,
-      payload: 'MANUAL'
+      payload: 'DISABLED'
     };
-    const action = policyWizardCreators.updatePolicyProperty('scanType', 'MANUAL');
+    const action = policyWizardCreators.updatePolicyProperty('scanType', 'DISABLED');
     assert.deepEqual(action, expectedAction, 'action has correct type & payload');
   });
 

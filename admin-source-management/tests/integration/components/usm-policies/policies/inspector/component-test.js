@@ -52,7 +52,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
             name: 'Group 02'
           }
         ],
-        scanType: 'SCHEDULED',
+        scanType: 'ENABLED',
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: 1,
@@ -60,9 +60,9 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         runOnDaysOfWeek: ['WEDNESDAY'],
         cpuMax: 75,
         cpuMaxVm: 85,
-        captureFloatingCode: true,
+        // captureFloatingCode: true,
         downloadMbr: false,
-        filterSignedHooks: false,
+        // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
         primaryAddress: '10.10.10.10',
@@ -81,13 +81,13 @@ module('Integration | Component | Policy Inspector', function(hooks) {
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
     assert.equal(findAll('.usm-policies-inspector .heading')[0].innerText, 'Applied to Group(s)', 'first heading is as expected');
-    assert.equal(findAll('.usm-policies-inspector .title').length, 20, 'expected property names are shown');
-    assert.equal(findAll('.usm-policies-inspector .value').length, 22, 'expected value elements are shown');
-    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, '2018-10-23 02:13', 'created on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[18].innerText, 'admin', 'created by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[20].innerText, 'admin', 'last updated by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[21].innerText, '2018-05-28 02:32', 'last published on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .title').length, 18, 'expected property names are shown');
+    assert.equal(findAll('.usm-policies-inspector .value').length, 20, 'expected value elements are shown');
+    assert.equal(findAll('.usm-policies-inspector .value')[15].innerText, '2018-10-23 02:13', 'created on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[16].innerText, 'admin', 'created by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[18].innerText, 'admin', 'last updated by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-05-28 02:32', 'last published on value shows as expected');
   });
 
   test('It does not show the groups section when no groups', async function(assert) {
@@ -105,7 +105,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         lastModifiedBy: 'admin',
         lastModifiedOn: 1540318426092,
         associatedGroups: [],
-        scanType: 'SCHEDULED',
+        scanType: 'ENABLED',
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: 1,
@@ -113,9 +113,9 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         runOnDaysOfWeek: ['WEDNESDAY'],
         cpuMax: 75,
         cpuMaxVm: 85,
-        captureFloatingCode: true,
+        // captureFloatingCode: true,
         downloadMbr: false,
-        filterSignedHooks: false,
+        // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
         primaryAddress: '10.10.10.10',
@@ -159,7 +159,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
             name: 'Group 02'
           }
         ],
-        scanType: 'SCHEDULED',
+        scanType: 'ENABLED',
         scanStartDate: null,
         scanStartTime: null,
         recurrenceInterval: 1,
@@ -167,9 +167,9 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         runOnDaysOfWeek: ['WEDNESDAY'],
         cpuMax: 75,
         cpuMaxVm: 85,
-        captureFloatingCode: true,
+        // captureFloatingCode: true,
         downloadMbr: false,
-        filterSignedHooks: false,
+        // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
         primaryAddress: '10.10.10.10',
@@ -187,9 +187,9 @@ module('Integration | Component | Policy Inspector', function(hooks) {
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, 'System Created', 'created on value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[18].innerText, 'admin', 'created by value shows as expected');
-    assert.equal(findAll('.usm-policies-inspector .value')[19].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[15].innerText, 'System Created', 'created on value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[16].innerText, 'admin', 'created by value shows as expected');
+    assert.equal(findAll('.usm-policies-inspector .value')[17].innerText, '2018-10-23 02:13', 'last updated on value shows as expected');
     assert.equal(findAll('.usm-policies-inspector .lastModifiedBy').length, 0, 'last modified by is missing as expected');
     assert.equal(findAll('.usm-policies-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
   });

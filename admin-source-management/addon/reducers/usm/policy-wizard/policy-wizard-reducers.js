@@ -99,7 +99,7 @@ const INITIAL_STATES = {
 const scanScheduleId = 'scanType';
 const allScanScheduleIds = ['scanType', 'scanStartDate', 'recurrenceInterval', 'scanStartTime', 'cpuMax', 'cpuMaxVm'];
 const scanSchedHeaderId = 'scanScheduleHeader';
-const allAdvScanSettingsIds = ['captureFloatingCode', 'downloadMbr', 'filterSignedHooks', 'requestScanOnRegistration'];
+const allAdvScanSettingsIds = ['downloadMbr', 'requestScanOnRegistration'];
 const advScanSettingsHeaderId = 'advScanSettingsHeader';
 const invActionsHeaderId = 'invActionsHeader';
 const allInvActionsIds = 'blockingEnabled';
@@ -199,8 +199,8 @@ export default reduxActions.handleActions({
           if (!isBlank(fetchedPolicy[setting.id])) {
             newAvailableSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
             newSelectedSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
-          // settings dependent on scanType of 'SCHEDULED' must be enabled
-          } else if (setting.parentId === scanScheduleId && fetchedPolicy[setting.parentId] === 'SCHEDULED') {
+          // settings dependent on scanType of 'ENABLED' must be enabled
+          } else if (setting.parentId === scanScheduleId && fetchedPolicy[setting.parentId] === 'ENABLED') {
             newAvailableSettings.push({ ...setting, isEnabled: true, isGreyedOut: false });
           // default
           } else {
@@ -262,9 +262,9 @@ export default reduxActions.handleActions({
           isEnabled: false
         };
       }
-      // if the scan type is "SCHEDULED" in state, nothing should be greyed out
+      // if the scan type is "ENABLED" in state, nothing should be greyed out
       // in availableSettings
-      if (state.policy.scanType === 'SCHEDULED') {
+      if (state.policy.scanType === 'ENABLED') {
         return {
           ...el,
           isGreyedOut: false

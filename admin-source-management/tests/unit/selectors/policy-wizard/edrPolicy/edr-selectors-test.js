@@ -33,9 +33,9 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
   SCAN_SCHEDULE_CONFIG,
-  CAPTURE_CODE_CONFIG,
+  // CAPTURE_CODE_CONFIG,
   DOWNLOAD_MBR_CONFIG,
-  FILTER_SIGNED_CONFIG,
+  // FILTER_SIGNED_CONFIG,
   REQUEST_SCAN_CONFIG,
   BLOCKING_ENABLED_CONFIG,
   AGENT_MODE_CONFIG
@@ -48,7 +48,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
   });
 
   test('scanType', function(assert) {
-    const expectedScanType = 'MANUAL';
+    const expectedScanType = 'DISABLED';
     const fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizScanType(expectedScanType)
@@ -209,7 +209,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     assert.deepEqual(resultCpuMaxVm, expectedCpuMaxVm, `should return cpuMaxVm of ${expectedCpuMaxVm}`);
   });
 
-  test('captureFloatingCode', function(assert) {
+  /* test('captureFloatingCode', function(assert) {
     const expectedState = false;
     const fullState = new ReduxDataHelper()
       .policyWiz()
@@ -217,7 +217,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .build();
     const result = radioButtonValue(fullState, 'captureFloatingCode');
     assert.deepEqual(result, expectedState, `should return captureFloatingCode of ${expectedState}`);
-  });
+  }); */
 
   test('downloadMbr', function(assert) {
     const expectedState = true;
@@ -229,7 +229,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     assert.deepEqual(result, expectedState, `should return downloadMbr of ${expectedState}`);
   });
 
-  test('filterSignedHooks', function(assert) {
+  /* test('filterSignedHooks', function(assert) {
     const expectedState = true;
     const fullState = new ReduxDataHelper()
       .policyWiz()
@@ -237,7 +237,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .build();
     const result = radioButtonValue(fullState, 'filterSignedHooks');
     assert.deepEqual(result, expectedState, `should return filterSignedHooks of ${expectedState}`);
-  });
+  }); */
 
   test('requestScanOnRegistration', function(assert) {
     const expectedState = true;
@@ -272,12 +272,12 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
   test('radioButtonOption returns the right radio button options based on the id', function(assert) {
     const result1 = radioButtonOption('scanType');
     assert.deepEqual(result1, SCAN_SCHEDULE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanType id');
-    const result2 = radioButtonOption('captureFloatingCode');
-    assert.deepEqual(result2, CAPTURE_CODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for captureFloatingCode id');
+    // const result2 = radioButtonOption('captureFloatingCode');
+    // assert.deepEqual(result2, CAPTURE_CODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for captureFloatingCode id');
     const result3 = radioButtonOption('downloadMbr');
     assert.deepEqual(result3, DOWNLOAD_MBR_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for downloadMbr id');
-    const result4 = radioButtonOption('filterSignedHooks');
-    assert.deepEqual(result4, FILTER_SIGNED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for filterSignedHooks id');
+    // const result4 = radioButtonOption('filterSignedHooks');
+    // assert.deepEqual(result4, FILTER_SIGNED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for filterSignedHooks id');
     const result5 = radioButtonOption('requestScanOnRegistration');
     assert.deepEqual(result5, REQUEST_SCAN_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for requestScanOnRegistration id');
     const result6 = radioButtonOption('blockingEnabled');

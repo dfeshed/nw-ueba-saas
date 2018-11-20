@@ -32,7 +32,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
             associatedGroups: [],
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -40,9 +40,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
             cpuMax: 75,
             cpuMaxVm: 85,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             blockingEnabled: false,
             primaryAddress: '10.10.10.10',
@@ -66,13 +66,13 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[0].props.length, 4, 'first section has 4 properties');
     assert.equal(policyDetails[0].props[1].value, 'Every 1 week(s) on WEDNESDAY,THURSDAY', `Scan Frequency property has ${policyDetails[0].props[1].value} value`);
     assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'second section  is as expected');
-    assert.equal(policyDetails[1].props.length, 4, 'second section has 4 properties');
+    assert.equal(policyDetails[1].props.length, 2, 'second section has 2 properties');
     assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.invasiveActions', 'third section  is as expected');
-    assert.equal(policyDetails[2].props.length, 1, 'third section has 4 properties');
+    assert.equal(policyDetails[2].props.length, 1, 'third section has 1 property');
     assert.equal(policyDetails[3].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fourth section  is as expected');
-    assert.equal(policyDetails[3].props.length, 5, 'fourth section has 4 properties');
+    assert.equal(policyDetails[3].props.length, 5, 'fourth section has 5 properties');
     assert.equal(policyDetails[4].header, 'adminUsm.policyWizard.edrPolicy.agentSettings', 'fifth section  is as expected');
-    assert.equal(policyDetails[4].props.length, 1, 'fifth section has 4 properties');
+    assert.equal(policyDetails[4].props.length, 1, 'fifth section has 1 property');
   });
 
   test('selectedEdrPolicy, ignore blank properties', function(assert) {
@@ -92,7 +92,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -100,9 +100,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
             cpuMax: 75,
             cpuMaxVm: 85,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             blockingEnabled: false,
             primaryAddress: '',
@@ -157,9 +157,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             blockingEnabled: false,
             primaryAddress: '',
@@ -202,7 +202,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -251,7 +251,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -259,9 +259,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
             cpuMax: 75,
             cpuMaxVm: 85,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             primaryAddress: '',
             primaryNwServiceId: 'id1',
@@ -303,7 +303,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -311,9 +311,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
             cpuMax: 75,
             cpuMaxVm: 85,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             blockingEnabled: false,
             agentMode: 'FULL_MONITORING'
@@ -348,7 +348,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             lastModifiedBy: 'admin',
             lastModifiedOn: 1540318426092,
             lastPublishedCopy: null,
-            scanType: 'SCHEDULED',
+            scanType: 'ENABLED',
             scanStartDate: null,
             scanStartTime: null,
             recurrenceInterval: 1,
@@ -356,9 +356,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
             cpuMax: 75,
             cpuMaxVm: 85,
-            captureFloatingCode: true,
+            // captureFloatingCode: true,
             downloadMbr: false,
-            filterSignedHooks: false,
+            // filterSignedHooks: false,
             requestScanOnRegistration: true,
             blockingEnabled: false,
             primaryAddress: '',

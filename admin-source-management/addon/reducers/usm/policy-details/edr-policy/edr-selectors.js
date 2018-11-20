@@ -84,7 +84,7 @@ const _getScanSetting = (prop, focusedPolicy) => {
   const _i18n = lookup('service:i18n');
 
   let scanTypeValue = _i18n.t('adminUsm.policyWizard.edrPolicy.scanTypeManual');
-  if (focusedPolicy[prop] == 'SCHEDULED') {
+  if (focusedPolicy[prop] == 'ENABLED') {
     scanTypeValue = _i18n.t('adminUsm.policyWizard.edrPolicy.scanTypeScheduled');
   }
 
@@ -139,18 +139,19 @@ const _getAdvancedScanSetting = (prop, focusedPolicy) => {
   }
 
   const advancedScanSettings = {
-    captureFloatingCode: {
+    /* captureFloatingCode: {
       name: 'adminUsm.policyWizard.edrPolicy.captureFloatingCode',
       value: settingValue
-    },
+    },*/
     downloadMbr: {
       name: 'adminUsm.policyWizard.edrPolicy.downloadMbr',
       value: settingValue
     },
+    /*
     filterSignedHooks: {
       name: 'adminUsm.policyWizard.edrPolicy.filterSignedHooks',
       value: settingValue
-    },
+    },*/
     requestScanOnRegistration: {
       name: 'adminUsm.policyWizard.edrPolicy.requestScanOnRegistration',
       value: settingValue

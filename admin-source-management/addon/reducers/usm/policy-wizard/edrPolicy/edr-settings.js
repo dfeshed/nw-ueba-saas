@@ -23,11 +23,11 @@ export const SCAN_SCHEDULE_CONFIG = {
   type: 'radioGroup',
   items: [
     {
-      name: 'MANUAL',
+      name: 'DISABLED',
       label: 'adminUsm.policyWizard.edrPolicy.scanTypeManual'
     },
     {
-      name: 'SCHEDULED',
+      name: 'ENABLED',
       label: 'adminUsm.policyWizard.edrPolicy.scanTypeScheduled'
     }
   ]
@@ -131,9 +131,9 @@ export const AGENT_MODE_CONFIG = {
 
 export const ALL_RADIO_OPTIONS = [
   { id: 'scanType', options: SCAN_SCHEDULE_CONFIG },
-  { id: 'captureFloatingCode', options: CAPTURE_CODE_CONFIG },
+  // { id: 'captureFloatingCode', options: CAPTURE_CODE_CONFIG },
   { id: 'downloadMbr', options: DOWNLOAD_MBR_CONFIG },
-  { id: 'filterSignedHooks', options: FILTER_SIGNED_CONFIG },
+  // { id: 'filterSignedHooks', options: FILTER_SIGNED_CONFIG },
   { id: 'requestScanOnRegistration', options: REQUEST_SCAN_CONFIG },
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },
   { id: 'agentMode', options: AGENT_MODE_CONFIG }
