@@ -100,6 +100,65 @@
         "entriesToSaveInModel" : 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name" : "srcProcessFilePath.scriptingDstProcessFileName.process",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "srcProcessFilePathHistogramScriptingDstProcessFileNameProcessDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "srcProcessFilePathHistogramScriptingDstProcessFileNameProcessDaily",
+        "featureName" : "srcProcessFilePathHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name" : "dstProcessFilePathCreated.scriptingSrcProcessFileName.process",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "dstProcessFilePathCreatedHistogramScriptingSrcProcessFileNameProcessDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "dstProcessFilePathCreatedHistogramScriptingSrcProcessFileNameProcessDaily",
+        "featureName" : "dstProcessFilePathCreatedHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      },
+    {
+      "name" : "dstProcessFilePathOpened.scriptingSrcProcessFileName.process",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "dstProcessFilePathOpenedHistogramScriptingSrcProcessFileNameProcessDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "dstProcessFilePathOpenedHistogramScriptingSrcProcessFileNameProcessDaily",
+        "featureName" : "dstProcessFilePathOpenedHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }
