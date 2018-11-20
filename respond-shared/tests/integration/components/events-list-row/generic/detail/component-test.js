@@ -4,6 +4,7 @@ import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import { settled, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { emptyNetworkEvent } from '../../empty-data';
 import { reRelatedLinkOne, networkRelatedLinkOne, reEventId, ecatEventId, networkEventId, getAllEvents } from '../../../events-list/data';
 import * as generic from './helpers';
 
@@ -30,116 +31,141 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       children: 9
     });
 
-    const sourceRowElement = generic.assertDetailRowParent(assert, {
+    const sourceElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 1,
       label: 'Source',
       value: ''
     });
 
-    const sourceRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowElement,
-      subRowIndex: 1,
+    const sourceDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
       label: 'Device',
       value: ''
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 1,
+    const sourceGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceDeviceElement,
       label: 'Geolocation',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: sourceGeolocationElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceDeviceElement,
+      childRow: 2,
       label: 'IP Address',
       value: '10.4.61.97',
       metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: sourceDeviceElement,
+      childRow: 3,
       label: 'MAC Address',
       value: '00:50:56:33:18:18',
       metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 4,
+      parentElement: sourceDeviceElement,
+      childRow: 4,
       label: 'Port',
       value: '36749',
       metaKey: 'port'
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowElement,
-      subRowIndex: 2,
+    const sourceUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
+      childRow: 2,
       label: 'User',
       value: ''
     });
 
-    const destRowElement = generic.assertDetailRowParent(assert, {
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceUserElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const targetElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 2,
       label: 'Target',
       value: ''
     });
 
-    const destRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: destRowElement,
-      subRowIndex: 1,
+    const targetDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
       label: 'Device',
       value: ''
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 1,
+    const targetGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetDeviceElement,
       label: 'Geolocation',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: targetGeolocationElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: targetDeviceElement,
+      childRow: 2,
       label: 'IP Address',
       value: '10.4.61.44',
       metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: targetDeviceElement,
+      childRow: 3,
       label: 'MAC Address',
       value: '00:50:56:33:18:15',
       metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 4,
+      parentElement: targetDeviceElement,
+      childRow: 4,
       label: 'Port',
       value: '5671',
       metaKey: 'port'
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: destRowElement,
-      subRowIndex: 2,
+    const targetUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
+      childRow: 2,
       label: 'User',
       value: ''
     });
 
-    generic.assertDetailRow(assert, {
+    generic.assertDetailRowChild(assert, {
+      parentElement: targetUserElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const detectorElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 3,
       label: 'Detector',
-      value: '',
-      nestedColumns: 1
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorElement,
+      label: '',
+      value: 'N/A'
     });
 
     generic.assertDetailRow(assert, {
@@ -149,23 +175,21 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       value: '4175'
     });
 
-    const dataRowElement = generic.assertDetailRowParent(assert, {
+    const dataElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 5,
       label: 'Data',
       value: ''
     });
 
-    const dataRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: dataRowElement,
-      subRowIndex: 1,
+    const dataEmptyElement = generic.assertDetailRowChild(assert, {
+      parentElement: dataElement,
       label: '',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 1,
+      parentElement: dataEmptyElement,
       label: 'Size',
       value: '4175',
       metaKey: 'size'
@@ -221,26 +245,38 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     const detectorInGerman = 'Detektor';
+    const naInGerman = 'nee';
     const i18n = this.owner.lookup('service:i18n');
     run(i18n, 'addTranslations', 'de-de', { 'respond.eventDetails.labels.detector': detectorInGerman });
+    run(i18n, 'addTranslations', 'de-de', { 'respond.eventsList.na': naInGerman });
 
-    generic.assertDetailRow(assert, {
+    const detectorElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 3,
       label: 'Detector',
-      value: '',
-      nestedColumns: 1
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorElement,
+      label: '',
+      value: 'N/A'
     });
 
     set(i18n, 'locale', 'de-de');
 
     return settled().then(async () => {
-      generic.assertDetailRow(assert, {
+      const detectorElement = generic.assertDetailRowParent(assert, {
         column: 1,
         row: 3,
         label: detectorInGerman,
-        value: '',
-        nestedColumns: 1
+        value: ''
+      });
+
+      generic.assertDetailRowChild(assert, {
+        parentElement: detectorElement,
+        label: '',
+        value: naInGerman
       });
     });
   });
@@ -259,156 +295,170 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       children: 9
     });
 
-    const sourceRowElement = generic.assertDetailRowParent(assert, {
+    const sourceElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 1,
       label: 'Source',
       value: ''
     });
 
-    const sourceRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowElement,
-      subRowIndex: 1,
+    const sourceDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
       label: 'Device',
       value: ''
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 1,
+    const sourceGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceDeviceElement,
       label: 'Geolocation',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: sourceGeolocationElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceDeviceElement,
+      childRow: 2,
       label: 'IP Address',
       value: '192.168.100.185',
       metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: sourceDeviceElement,
+      childRow: 3,
       label: 'MAC Address',
       value: '00:00:46:8F:F4:20',
       metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowChildOneElement,
-      subRowIndex: 4,
+      parentElement: sourceDeviceElement,
+      childRow: 4,
       label: 'Port',
       value: '123',
       metaKey: 'port'
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: sourceRowElement,
-      subRowIndex: 2,
+    const sourceUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
+      childRow: 2,
       label: 'User',
       value: ''
     });
 
-    const destRowElement = generic.assertDetailRowParent(assert, {
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceUserElement,
+      label: 'Username',
+      value: 'tbozo'
+    });
+
+    const targetElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 2,
       label: 'Target',
       value: ''
     });
 
-    const destRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: destRowElement,
-      subRowIndex: 1,
+    const targetDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
       label: 'Device',
       value: ''
     });
 
-    const destRowChildTwoElement = generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 1,
+    const targetGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetDeviceElement,
       label: 'Geolocation',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 1,
+      parentElement: targetGeolocationElement,
+      childRow: 1,
       label: 'City',
       value: 'Gaithersburg',
       metaKey: 'city'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 2,
+      parentElement: targetGeolocationElement,
+      childRow: 2,
       label: 'Country',
       value: 'United States',
       metaKey: 'country'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 3,
+      parentElement: targetGeolocationElement,
+      childRow: 3,
       label: 'Domain/Host',
       value: 'nist.gov',
       metaKey: 'domain'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 4,
+      parentElement: targetGeolocationElement,
+      childRow: 4,
       label: 'Latitude',
       value: '39',
       metaKey: 'latitude'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 5,
+      parentElement: targetGeolocationElement,
+      childRow: 5,
       label: 'Longitude',
       value: '-77',
       metaKey: 'longitude'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildTwoElement,
-      subRowIndex: 6,
+      parentElement: targetGeolocationElement,
+      childRow: 6,
       label: 'Organization',
       value: 'National Bureau of Standards',
       metaKey: 'organization'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: targetDeviceElement,
+      childRow: 2,
       label: 'IP Address',
       value: '129.6.15.28',
       metaKey: 'ip_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: targetDeviceElement,
+      childRow: 3,
       label: 'MAC Address',
       value: '00:00:00:00:5E:00',
       metaKey: 'mac_address'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: destRowChildOneElement,
-      subRowIndex: 4,
+      parentElement: targetDeviceElement,
+      childRow: 4,
       label: 'Port',
       value: '123',
       metaKey: 'port'
     });
 
-    generic.assertDetailRowChild(assert, {
-      parentElement: destRowElement,
-      subRowIndex: 2,
+    const targetUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
+      childRow: 2,
       label: 'User',
       value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: targetUserElement,
+      label: 'Username',
+      value: 'xor'
     });
 
     generic.assertDetailRow(assert, {
@@ -418,7 +468,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       value: 'zap'
     });
 
-    const detectorRowElement = generic.assertDetailRowParent(assert, {
+    const detectorElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 4,
       label: 'Detector',
@@ -426,8 +476,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: detectorRowElement,
-      subRowIndex: 1,
+      parentElement: detectorElement,
       label: 'IP Address',
       value: '127.0.0.1'
     });
@@ -439,39 +488,38 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       value: '180'
     });
 
-    const dataRowElement = generic.assertDetailRowParent(assert, {
+    const dataElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 6,
       label: 'Data',
       value: ''
     });
 
-    const dataRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: dataRowElement,
-      subRowIndex: 1,
+    const dataEmptyElement = generic.assertDetailRowChild(assert, {
+      parentElement: dataElement,
       label: '',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 1,
+      parentElement: dataEmptyElement,
+      childRow: 1,
       label: 'Filename',
       value: 'foobarbaz.sh',
       metaKey: 'filename'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: dataEmptyElement,
+      childRow: 2,
       label: 'Hash',
       value: '123987def',
       metaKey: 'hash'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: dataEmptyElement,
+      childRow: 3,
       label: 'Size',
       value: '180',
       metaKey: 'size'
@@ -533,7 +581,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
-      subRowIndex: 1,
+      childRow: 1,
       label: 'Host',
       value: 'it_laptop1.eng.matrix.com',
       metaKey: 'dns_hostname'
@@ -541,7 +589,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
-      subRowIndex: 2,
+      childRow: 2,
       label: 'NWE Agent ID',
       value: '26C5C21F-4DA8-3A00-437C-AB7444987430',
       metaKey: 'ecat_agent_id'
@@ -549,7 +597,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
-      subRowIndex: 3,
+      childRow: 3,
       label: 'IP Address',
       value: '100.3.36.242',
       metaKey: 'ip_address'
@@ -557,7 +605,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
-      subRowIndex: 4,
+      childRow: 4,
       label: 'MAC Address',
       value: 'B8-4B-2F-08-6A-AD-5A-C7',
       metaKey: 'mac_address'
@@ -565,7 +613,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     generic.assertDetailRowChild(assert, {
       parentElement: detectorRowElement,
-      subRowIndex: 5,
+      childRow: 5,
       label: 'Operating System',
       value: 'Windows 7',
       metaKey: 'os'
@@ -578,71 +626,70 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       value: '23562'
     });
 
-    const dataRowElement = generic.assertDetailRowParent(assert, {
+    const dataElement = generic.assertDetailRowParent(assert, {
       column: 1,
       row: 3,
       label: 'Data',
       value: ''
     });
 
-    const dataRowChildOneElement = generic.assertDetailRowChild(assert, {
-      parentElement: dataRowElement,
-      subRowIndex: 1,
+    const dataEmptyElement = generic.assertDetailRowChild(assert, {
+      parentElement: dataElement,
       label: '',
       value: ''
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 1,
+      parentElement: dataEmptyElement,
+      childRow: 1,
       label: 'Bit9 Status',
       value: 'bad',
       metaKey: 'bit9_status'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 2,
+      parentElement: dataEmptyElement,
+      childRow: 2,
       label: 'Filename',
       value: 'AppIdPolicyEngineApi.dll',
       metaKey: 'filename'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 3,
+      parentElement: dataEmptyElement,
+      childRow: 3,
       label: 'Hash',
       value: 'de9f2c7f d25e1b3a fad3e85a 0bd17d9b 100db4b3',
       metaKey: 'hash'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 4,
+      parentElement: dataEmptyElement,
+      childRow: 4,
       label: 'Module Signature',
       value: 'ABC Inc.',
       metaKey: 'module_signature'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 5,
+      parentElement: dataEmptyElement,
+      childRow: 5,
       label: 'OPSWAT Result',
       value: 'OPSWAT result here',
       metaKey: 'opswat_result'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 6,
+      parentElement: dataEmptyElement,
+      childRow: 6,
       label: 'Size',
       value: '23562',
       metaKey: 'size'
     });
 
     generic.assertDetailRowChild(assert, {
-      parentElement: dataRowChildOneElement,
-      subRowIndex: 7,
+      parentElement: dataEmptyElement,
+      childRow: 7,
       label: 'YARA Result',
       value: 'N YARA rules matched',
       metaKey: 'yara_result'
@@ -653,6 +700,130 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
       row: 4,
       label: 'Score',
       value: '1-2-3-4'
+    });
+
+    generic.assertNoRelatedLinks(assert, {
+      column: 2
+    });
+  });
+
+  test('renders detail for empty network event', async function(assert) {
+    this.set('expandedId', networkEventId);
+    this.set('item', emptyNetworkEvent);
+
+    await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
+
+    generic.assertDetailColumns(assert, {
+      total: 12,
+      children: 4
+    });
+
+    const sourceElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 1,
+      label: 'Source',
+      value: ''
+    });
+
+    const sourceDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
+      label: 'Device',
+      value: ''
+    });
+
+    const sourceGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceDeviceElement,
+      label: 'Geolocation',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceGeolocationElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const sourceUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: sourceElement,
+      childRow: 2,
+      label: 'User',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: sourceUserElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const targetElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 2,
+      label: 'Target',
+      value: ''
+    });
+
+    const targetDeviceElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
+      label: 'Device',
+      value: ''
+    });
+
+    const targetGeolocationElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetDeviceElement,
+      label: 'Geolocation',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: targetGeolocationElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const targetUserElement = generic.assertDetailRowChild(assert, {
+      parentElement: targetElement,
+      childRow: 2,
+      label: 'User',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: targetUserElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const detectorElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 3,
+      label: 'Detector',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: detectorElement,
+      label: '',
+      value: 'N/A'
+    });
+
+    const dataElement = generic.assertDetailRowParent(assert, {
+      column: 1,
+      row: 4,
+      label: 'Data',
+      value: ''
+    });
+
+    const dataEmptyElement = generic.assertDetailRowChild(assert, {
+      parentElement: dataElement,
+      label: '',
+      value: ''
+    });
+
+    generic.assertDetailRowChild(assert, {
+      parentElement: dataEmptyElement,
+      label: '',
+      value: 'N/A'
     });
 
     generic.assertNoRelatedLinks(assert, {

@@ -53,13 +53,22 @@ export const assertDetailRowParent = (assert, { column, row, label, value }) => 
   return element;
 };
 
-export const assertDetailRowChild = (assert, { parentElement, label, value, subRowIndex, metaKey }) => {
-  const index = subRowIndex || 1;
-  const child = parentElement.querySelector(`${selectors.column}:nth-of-type(1)`);
-  const childElement = document.getElementById(child.getAttribute('id'));
-  const theChild = childElement.children[index - 1];
-  assert.equal(theChild.querySelector(selectors.key).textContent.trim(), label);
-  const parent = theChild.querySelector(selectors.value);
+const getChildElement = (parentElement, childRow) => {
+  if (!childRow) {
+    const child = parentElement.querySelector(selectors.column);
+    return document.getElementById(child.getAttribute('id'));
+  }
+  const columnElement = parentElement.querySelector(selectors.column);
+  const childRows = [].filter.call(columnElement.childNodes, (node) => {
+    return node.getAttribute && node.getAttribute('test-id') === 'keyValueRow';
+  });
+  return childRows[childRow - 1];
+};
+
+export const assertDetailRowChild = (assert, { parentElement, label, value, childRow, metaKey }) => {
+  const childElement = getChildElement(parentElement, childRow);
+  assert.equal(childElement.querySelector(selectors.key).textContent.trim(), label);
+  const parent = childElement.querySelector(selectors.value);
   assert.equal(textWithoutChildren(parent), value);
   if (metaKey) {
     assert.equal(parent.attributes['data-entity-id'].nodeValue, value);

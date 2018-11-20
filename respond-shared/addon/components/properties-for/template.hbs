@@ -5,5 +5,12 @@
 {{else}}
   {{#each keys as |key|}}
     {{properties-for/key-value member=key item=key.value itemPath=key.fullPath}}
+  {{else}}
+    <div class="key-wrapper" test-id="keyValueRow">
+      <div class="key">
+        <dt test-id="keyName"></dt>
+        <dd test-id="keyValue" class="no-value">{{t 'respond.eventsList.na'}}</dd>
+      </div>
+    </div>
   {{/each}}
 {{/if}}
