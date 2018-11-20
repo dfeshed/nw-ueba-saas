@@ -3,7 +3,7 @@
 </div>
 <div class='user-overview-tab_upper_users_rows'>
   {{#each topUsers as |user|}}
-    <div class='user-overview-tab_upper_users_row'>
+    <div class='user-overview-tab_upper_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
       <div class='user-overview-tab_upper_users_row_score'>
         {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
       </div>

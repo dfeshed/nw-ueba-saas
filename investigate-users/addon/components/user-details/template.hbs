@@ -1,0 +1,17 @@
+<div class='user-body {{if userId 'has-entity-info'}}'> 
+  <aside class='user-body_aside'>
+    {{#if userId}}
+      <div class='user-body_aside_header'>
+        <div>
+          User Details
+        </div>
+        <div>
+          {{#rsa-form-button isIconOnly=true defaultAction=(action 'resetUser')}}
+            {{rsa-icon name="close" size="small"}}
+          {{/rsa-form-button}}
+        </div>
+      </div>
+      {{mount "entity-details" model=entityDetails}}
+    {{/if}}  
+  </aside>
+</div>

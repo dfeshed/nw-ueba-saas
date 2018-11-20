@@ -12,7 +12,7 @@
         <div class='indicator_name'>
           {{alert.severity}}
         </div>
-        <div class='link'>
+        <div class='link' {{action 'initiateUser' (hash userId=userId alertId=alert.id)}}>
           {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} | {{alert.timeframe}}
         </div>
       </li>

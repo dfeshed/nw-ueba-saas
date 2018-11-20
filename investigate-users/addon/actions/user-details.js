@@ -42,9 +42,15 @@ const getUserOverview = () => {
   };
 };
 
+const resetUser = () => ({ type: ACTION_TYPES.RESET_USER });
+
+const initiateUser = (payload) => ({ type: ACTION_TYPES.INITIATE_USER, payload });
+
 export {
   getAdminUserCount,
   getRiskyUserCount,
   getWatchedUserCount,
-  getUserOverview
+  getUserOverview,
+  resetUser,
+  initiateUser
 };

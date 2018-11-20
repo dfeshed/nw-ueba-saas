@@ -1,4 +1,4 @@
-{{#rsa-data-table lazy=true items=users columnsConfig=columnsData}}
+{{#rsa-data-table lazy=true items=users columnsConfig=columnsData onRowClick=(action "selectUser")}}
   {{#rsa-data-table/body as |item index column|}}
     {{#rsa-data-table/body-cell column=column}}
       {{#if (eq column.field 'score')}}

@@ -4,7 +4,7 @@ import { initialFilterState } from 'investigate-users/reducers/users/selectors';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
-import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview } from 'investigate-users/actions/user-details';
+import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser } from 'investigate-users/actions/user-details';
 
 module('Unit | Actions | User Details Actions', (hooks) => {
   setupTest(hooks);
@@ -64,6 +64,27 @@ module('Unit | Actions | User Details Actions', (hooks) => {
       done();
     };
     getUserOverview()(dispatch);
+  });
+
+  test('it can resetUser', (assert) => {
+    assert.expect(1);
+    const done = assert.async();
+    const dispatch = ({ type }) => {
+      assert.equal(type, 'INVESTIGATE_USER::RESET_USER');
+      done();
+    };
+    dispatch(resetUser());
+  });
+
+  test('it can initiateUser', (assert) => {
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::INITIATE_USER');
+      assert.equal(payload.userId, 123);
+      done();
+    };
+    dispatch(initiateUser({ userId: 123 }));
   });
 
 });

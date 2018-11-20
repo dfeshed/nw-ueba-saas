@@ -9,7 +9,7 @@
 {{#rsa-content-tethered-panel panelId=(concat 'indi-' alertId) style="primary" position='left' displayCloseButton=false panelClass='user_alert_indicator_panel'}}
   <ul>
     {{#each indicators as |indicator|}}
-      <li>
+      <li {{action 'initiateUser' (hash userId=userId alertId=alertId indicatorId=indicator.id)}}>
         {{indicator.name}}
       </li>
     {{/each}}

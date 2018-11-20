@@ -40,7 +40,10 @@
               {{alert.severity}}
             </div>
             <div class='alertName'>
-              {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} <span class='lighter'> | {{alert.timeframe}} </span>
+              <span {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
+                {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
+              </span>
+              <span class='lighter'> | {{alert.timeframe}} </span>
             </div>
             <div class='entityName'>
               {{alert.entityName}}
@@ -52,12 +55,17 @@
               {{alert.evidenceSize}}
             </div>
             <div class='status'>
-              {{if (eq alert.status 'Open')  (t 'investigateUsers.feedback.none') (t 'investigateUsers.feedback.rejected')}}
+              {{if (eq alert.status 'Open') (t 'investigateUsers.feedback.none') (t 'investigateUsers.feedback.rejected')}}
             </div>
           </div>
           <div class='indicator-table {{if (eq alertClicked  alert.id) 'visible'}}'>
             <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators'>
-              {{#rsa-data-table lazy=true items=alert.evidences columnsConfig=columnsData}} 
+              {{#rsa-data-table 
+                lazy=true 
+                items=alert.evidences 
+                columnsConfig=columnsData 
+                onRowClick=(action "selectUser" (hash alertId=alert.id userId=alert.entityId))
+              }} 
                 {{#rsa-data-table/header as |column|}}
                   <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
                     {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}

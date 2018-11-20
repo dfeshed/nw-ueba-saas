@@ -3,16 +3,15 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import alertsList from '../../../../../data/presidio/alerts-list';
 import { later } from '@ember/runloop';
-import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
 import dataIndex from '../../../../../data/presidio';
 import { Promise } from 'rsvp';
+import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
+import waitForReduxStateChange from '../../../../../helpers/redux-async-helpers';
 
-let setState;
+let redux;
 
 module('Integration | Component | alerts-tab/body/alerts-table', function(hooks) {
   setupRenderingTest(hooks, {
@@ -20,11 +19,9 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   });
 
   hooks.beforeEach(function() {
-    setState = (state) => {
-      patchReducer(this, state);
-    };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    redux = this.owner.lookup('service:redux');
     patchFetch((url) => {
       return new Promise(function(resolve) {
         resolve({
@@ -44,28 +41,41 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   });
 
   test('it should render alert tab body with data', async function(assert) {
-    new ReduxDataHelper(setState).alertsListdata(alertsList.data).build();
+    redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date').length, 2);
+    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date').length, 7);
   });
 
   test('it should render alert tab body should show alerts', async function(assert) {
-    new ReduxDataHelper(setState).alertsListdata(alertsList.data).build();
+    redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('HighNon-StandardHours|Hourlyad') === 0);
+    click('.alertName > span');
+    const select = waitForReduxStateChange(redux, 'user.alertId');
+    return select.then(() => {
+      const state = redux.getState();
+      assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
+      assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
+      assert.equal(state.user.indicatorId, null);
+    });
   });
 
   test('it should render alert tab body should show indicators inside alerts', async function(assert) {
-    new ReduxDataHelper(setState).alertsListdata(alertsList.data).build();
+    redux.dispatch(getAlertsForGivenTimeInterval());
     const done = assert.async();
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
     click('.alerts-tab_body_body-table_body_row_date');
-    assert.ok(find('.alerts-tab_body_body-table_body_row_alerts_alert').textContent.replace(/\s/g, '').indexOf('HighNon-StandardHours|Hourlyad') === 0);
     await click('.alerts-tab_body_body-table_body_row_alerts_alert');
     later(() => {
-      assert.ok(findAll('.severity')[2].title.indexOf(93) > -1);
-      assert.equal(findAll('.rsa-data-table-body-row').length, 20);
-      done();
+      assert.equal(findAll('.rsa-data-table-body-row').length, 71);
+      click('.rsa-data-table-body-row');
+      const select = waitForReduxStateChange(redux, 'user.indicatorId');
+      return select.then(() => {
+        const state = redux.getState();
+        assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
+        assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
+        assert.equal(state.user.indicatorId, '07ce09d8-9f43-4d8a-aad0-f955c1bb413f');
+        done();
+      });
     }, 500);
   });
 });

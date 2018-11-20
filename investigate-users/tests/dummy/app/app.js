@@ -28,6 +28,21 @@ const App = Application.extend({
           'investigate.investigate-files': 'files'
         }
       }
+    },
+    entityDetails: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'eventBus',
+          'flashMessages'
+        ]
+      }
     }
   }
 });

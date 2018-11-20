@@ -248,7 +248,6 @@
                 }
 
                 &_indicators {
-
                   margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) 3*rsa-whitespace();
                   border: 1px solid text-color(primary, dark);
                   color: text-color(primary, lighter);
@@ -283,7 +282,6 @@
                 transition: max-height 1s ease-in;
               }
             }
-
           }
         }
       }

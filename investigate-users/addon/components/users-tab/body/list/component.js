@@ -4,6 +4,7 @@ import { later } from '@ember/runloop';
 import { getUsers, allUsersReceived } from 'investigate-users/reducers/users/selectors';
 import { getUsers as getUsersData } from 'investigate-users/actions/user-tab-actions';
 import { severityMap, columnConfigForUsers } from 'investigate-users/utils/column-config';
+import { initiateUser } from 'investigate-users/actions/user-details';
 
 const stateToComputed = (state) => ({
   users: getUsers(state),
@@ -11,7 +12,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  getUsersData
+  getUsersData,
+  initiateUser
 };
 
 const UsersTabBodyListComponent = Component.extend({
@@ -39,6 +41,11 @@ const UsersTabBodyListComponent = Component.extend({
   willDestroyElement() {
     this._super(...arguments);
     this.$().off('scroll');
+  },
+  actions: {
+    selectUser({ id }) {
+      this.send('initiateUser', { userId: id });
+    }
   }
 });
 

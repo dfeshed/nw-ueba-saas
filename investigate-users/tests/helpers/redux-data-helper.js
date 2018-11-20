@@ -190,4 +190,8 @@ export default class DataHelper {
     return this;
   }
 
+  userDetails(userDetails) {
+    _set(this.state, 'user', userDetails);
+    return this;
+  }
 }

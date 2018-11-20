@@ -4,13 +4,15 @@ import { later } from '@ember/runloop';
 import { getAlertsGroupedHourly, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
 import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 import { columnsDataForIndicatorTable } from 'investigate-users/utils/column-config';
+import { initiateUser } from 'investigate-users/actions/user-details';
 
 const stateToComputed = (state) => ({
   groupedAlerts: getAlertsGroupedHourly(state),
   allAlertsReceived: allAlertsReceived(state)
 });
 const dispatchToActions = {
-  getAlertsForGivenTimeInterval
+  getAlertsForGivenTimeInterval,
+  initiateUser
 };
 
 const AlertTabTableComponent = Component.extend({
@@ -43,6 +45,9 @@ const AlertTabTableComponent = Component.extend({
   actions: {
     expandAlert(alertId) {
       this.set('alertClicked', alertId);
+    },
+    selectUser(alertDetails, { id }) {
+      this.send('initiateUser', { ...alertDetails, indicatorId: id });
     }
   }
 });
