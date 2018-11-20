@@ -20,7 +20,11 @@ module.exports = function(defaults) {
   };
 
   const app = new EmberApp(defaults, buildOptions);
+  app.import('node_modules/normalizr/dist/normalizr.amd.js', {
+    using: [{ transformation: 'amd', as: 'normalizr' }]
+  });
   const tree = app.toTree();
   const ieTree = postcssCompiler([tree], 'assets', 'sa.css');
+
   return mergeTrees([tree, ieTree]);
 };
