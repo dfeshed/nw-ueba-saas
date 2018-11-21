@@ -59,6 +59,51 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_max_sum_func"
       }
+    },
+    {
+      "name": "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly",
+      "type": "P",
+      "bucketConfName": "srcProcessFilePathToHighestScoreMapUserIdScriptingProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "srcProcessFilePathToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly",
+      "type": "P",
+      "bucketConfName": "dstProcessFilePathCreatedToHighestScoreMapUserIdScriptingProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstProcessFilePathToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
+      "type": "P",
+      "bucketConfName": "dstProcessFilePathOpenedToHighestScoreMapUserIdScriptingProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstProcessFilePathToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
     }
   ]
 }

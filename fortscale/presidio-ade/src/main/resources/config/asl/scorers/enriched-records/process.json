@@ -133,6 +133,156 @@
                 "use-certainty-to-calculate-score": true,
                 "max-num-of-rare-features": 15
               }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "reduction-scorer",
+                "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+                  "model": {
+                    "name": "srcProcessFilePath.userIdDstProcessFileName.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-features": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userIdHistogram.dstProcessFileNameSrcProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userIdHistogram.dstProcessFileNameSrcProcessFilePath.process.score",
+                    "model": {
+                      "name": "userIdHistogram.dstProcessFileNameSrcProcessFilePath.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-features": 15
+                  }
+                },
+                "reduction-weight": 0.5
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "reduction-scorer",
+                "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+                  "model": {
+                    "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-features": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userIdHistogram.srcProcessFileNameCreatedDstProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userIdHistogram.srcProcessFileNameCreatedDstProcessFilePath.process.score",
+                    "model": {
+                      "name": "userIdHistogram.srcProcessFileNameCreatedDstProcessFilePath.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-features": 15
+                  }
+                },
+                "reduction-weight": 0.5
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "reduction-scorer",
+                "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+                  "model": {
+                    "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-features": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userIdHistogram.srcProcessFileNameOpenedDstProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userIdHistogram.srcProcessFileNameOpenedDstProcessFilePath.process.score",
+                    "model": {
+                      "name": "userIdHistogram.srcProcessFileNameOpenedDstProcessFilePath.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-features": 15
+                  }
+                },
+                "reduction-weight": 0.5
+              }
             }
           ]
         }

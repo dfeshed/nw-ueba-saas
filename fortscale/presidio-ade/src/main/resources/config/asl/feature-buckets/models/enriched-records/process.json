@@ -164,6 +164,237 @@
           }
         }
       ]
+    },
+    {
+      "name": "srcProcessFilePathHistogramUserIdDstProcessFileNameProcessDaily",
+      "contextFieldNames": [
+        "userId",
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcProcessFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcProcessFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramDstProcessFileNameSrcProcessFilePathProcessDaily",
+      "contextFieldNames": [
+        "dstProcessFileName",
+        "srcProcessDirectory",
+        "srcProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstProcessFilePathCreatedHistogramUserIdSrcProcessFileNameProcessDaily",
+      "contextFieldNames": [
+        "userId",
+        "srcProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "srcProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstProcessFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
+      "contextFieldNames": [
+        "srcProcessFileName",
+        "dstProcessDirectory",
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "srcProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "CREATE_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstProcessFilePathOpenedHistogramUserIdDstProcessFileNameProcessDaily",
+      "contextFieldNames": [
+        "userId",
+        "srcProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "srcProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "OPEN_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstProcessFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
+      "contextFieldNames": [
+        "srcProcessFileName",
+        "dstProcessDirectory",
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "srcProcessCategories",
+          "expectedValues": [
+            "SCRIPTING_ENGINE"
+          ]
+        },
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "OPEN_PROCESS"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
