@@ -41,19 +41,27 @@ const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONT
 
 const resetSelection = (belongsTo) => ({ type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo } });
 
-const setFileContextFileStatus = (belongsTo, checksums, data, callbacks = callbacksDefault) => ({
-  type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
-  promise: setFileStatus({ ...data, checksums }),
-  meta: {
-    belongsTo,
-    onSuccess: (response) => {
-      callbacks.onSuccess(response);
-    },
-    onFailure: (response) => {
-      callbacks.onFailure(response);
+const setFileContextFileStatus = (belongsTo, checksums, data, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    // Selecting top 100 checksums only for file status change.
+    if (checksums && checksums.length > 100) {
+      checksums = checksums.slice(0, 100);
     }
-  }
-});
+    dispatch({
+      type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
+      promise: setFileStatus({ ...data, checksums }),
+      meta: {
+        belongsTo,
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
 
 const getFileContextFileStatus = (belongsTo, selections) => ({
   type: ACTION_TYPES.GET_FILE_CONTEXT_FILE_STATUS,
