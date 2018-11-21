@@ -190,7 +190,7 @@
               "predicates": [
                 {
                   "type": "contained-in-list",
-                  "fieldName": "dstProcessCategories",
+                  "fieldName": "srcProcessCategories",
                   "expectedValues": [
                     "SCRIPTING_ENGINE"
                   ]
@@ -240,7 +240,7 @@
               "predicates": [
                 {
                   "type": "contained-in-list",
-                  "fieldName": "dstProcessCategories",
+                  "fieldName": "srcProcessCategories",
                   "expectedValues": [
                     "SCRIPTING_ENGINE"
                   ]
