@@ -289,9 +289,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
             ]
           ]
         }
-      },
-    )
-    .build();
+      })
+      .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 30, 'source count shows as expected');
