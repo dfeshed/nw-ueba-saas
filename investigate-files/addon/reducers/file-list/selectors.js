@@ -14,6 +14,7 @@ const _hostList = (state) => state.files.fileList.hostNameList;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _areFilesLoading = (state) => state.files.fileList.areFilesLoading;
 const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'RISK_PROPERTIES';
+const _servers = (state) => state.endpointServer.serviceData || [];
 
 export const files = createSelector(
   _files,
@@ -112,5 +113,13 @@ export const hostList = createSelector(
       return host.value;
     });
     return hosts;
+  }
+);
+
+export const isExportButtonDisabled = createSelector(
+  [hasFiles, _servers, _serverId],
+  (hasFiles, servers, serverId) => {
+    const isEndpointBroker = servers.some((s) => s.id === serverId && s.name === 'endpoint-broker-server');
+    return !hasFiles || isEndpointBroker;
   }
 );

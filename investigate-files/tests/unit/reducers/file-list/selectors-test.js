@@ -12,7 +12,8 @@ import {
   hostList,
   files,
   isRiskScoringServerNotConfigured,
-  areFilesLoading
+  areFilesLoading,
+  isExportButtonDisabled
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -235,4 +236,40 @@ test('areFilesLoading returns false', function(assert) {
     }
   });
   assert.equal(result, false);
+});
+
+test('isExportButtonDisabled', function(assert) {
+  const state1 = Immutable.from({
+    files: {
+      fileList: {}
+    },
+    endpointServer: {},
+    endpointQuery: {}
+  });
+  const result1 = isExportButtonDisabled(state1);
+  assert.equal(result1, true, 'export button is disabled');
+
+  const state2 = Immutable.from({
+    files: STATE.files,
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-broker-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result2 = isExportButtonDisabled(state2);
+  assert.equal(result2, true, 'export button is disabled');
+
+  const state3 = Immutable.from({
+    files: STATE.files,
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result3 = isExportButtonDisabled(state3);
+  assert.equal(result3, false, 'export button is enabled');
 });
