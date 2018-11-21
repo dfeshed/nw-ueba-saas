@@ -104,7 +104,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         label: 'resetRiskScore',
         order: 5,
         prefix: 'investigateShared.endpoint.fileActions.',
-        className: ' divider cntxBorder',
+        showDivider: true,
         action() {
           cntx.resetRiskScore(cntx.get('selections'));
         }
@@ -118,7 +118,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
           label: 'downloadToServer',
           order: 6,
           prefix: 'investigateShared.endpoint.fileActions.',
-          className: ' divider cntxBorder',
+          showDivider: true,
           disabled() {
             return cntx.get('fileDownloadButtonStatus').isDownloadToServerDisabled;
           },

@@ -5,6 +5,7 @@ import { get } from '@ember/object';
 import layout from './template';
 
 export default EmberContextMenuItem.extend({
+  classNameBindings: ['item.showDivider'],
   i18n: service(),
   layout,
   @computed('item.label', 'i18n.locale')

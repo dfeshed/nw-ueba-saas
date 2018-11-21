@@ -6,22 +6,13 @@
   }
 }
 .context-menu {
-  padding: rsa-whitespace() 0;
+  padding: rsa-whitespace(least) 0;
   .context-menu__item {
-    margin-right: 49px;
-    padding: 0.30rem 1rem;
-    &:nth-child(4), &:nth-child(7) {
-      padding-top: 0px; 
-    }
-    &::after {
-      margin-right: 7px;
-    }
-    .cntxBorder {
-      padding-top: rsa-whitespace(less);
-      margin: 0px auto;
-    }
-    ul {
-      left: 188px;
-    }
+    margin-right: 30px;
+    padding-left: rsa-whitespace();
+  }
+  .show-divider {
+    margin-top: 5px;
+    @include border-top(1px, solid, primary, base, opaque);
   }
 }
