@@ -1743,7 +1743,20 @@ export default {
       created: 'Created',
       id: 'Incident ID',
       timestamp: 'timestamp',
-      header: ''
+      header: '',
+      sourceName: {
+        'Risk Scoring Server': 'Risk Scoring Server',
+        'ESA Correlation': 'ESA Correlation',
+        ECAT: 'Endpoint',
+        'Event Stream Analysis': 'Event Stream Analysis',
+        'Event Streaming Analytics': 'Event Stream Analysis',
+        'Security Analytics Investigator': 'Security Analytics Investigator',
+        'Web Threat Detection': 'Web Threat Detection',
+        'Malware Analysis': 'Malware Analysis',
+        'Reporting Engine': 'Reporting Engine',
+        'NetWitness Investigate': 'NetWitness Investigate',
+        'User Entity Behavior Analytics': 'User Entity Behavior Analytics'
+      }
     },
     list: {
       title: 'List',

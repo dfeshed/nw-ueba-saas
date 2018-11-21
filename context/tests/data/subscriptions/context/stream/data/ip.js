@@ -271,7 +271,7 @@ export default [
         },
         'alert': {
           'risk_score': 90.0,
-          'source': 'Reporting Engine',
+          'source': 'ECAT',
           'name': 'RERULE',
           'numEvents': 41,
           'timestamp': {
@@ -285,7 +285,7 @@ export default [
           '$oid': '56b429f5e4b0a1500b38521f'
         },
         'alert': {
-          'source': 'Reporting Engine',
+          'source': 'ECAT',
           'timestamp': {
             '$date': '2016-02-05T04:49:57.000Z'
           },
@@ -300,7 +300,7 @@ export default [
           '$oid': '56b43263e4b0a1500b385321'
         },
         'alert': {
-          'source': 'Reporting Engine',
+          'source': 'ECAT',
           'timestamp': {
             '$date': '2016-02-05T05:25:55.000Z'
           },
