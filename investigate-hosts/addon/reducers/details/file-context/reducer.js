@@ -101,11 +101,20 @@ const fileContext = reduxActions.handleActions({
   [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s, action) => {
-        const { fileContextSelections, fileContext } = s;
+        const { fileContext } = s;
+        let { fileContextSelections } = s;
         const { payload: { request: { data } } } = action;
-        const { fileStatus } = data;
-        for (let i = 0; i < fileContextSelections.length; i++) {
-          const { id } = fileContextSelections[i];
+        const { fileStatus, checksums } = data;
+
+        // top 100 files we can update at a time.
+        if (fileContextSelections.length > 100) {
+          fileContextSelections = fileContextSelections.slice(0, 100);
+        }
+        const updatedSelections = fileContextSelections.filter((selection) => {
+          return checksums.includes(selection.checksumSha256);
+        });
+        for (let i = 0; i < updatedSelections.length; i++) {
+          const { id } = updatedSelections[i];
           const obj = fileContext[id];
           const newData = obj.setIn(['fileProperties', 'fileStatus'], fileStatus);
           s = s.setIn(['fileContext', `${id}`], newData);

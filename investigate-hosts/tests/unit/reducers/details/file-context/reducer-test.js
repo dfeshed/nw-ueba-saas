@@ -171,7 +171,7 @@ module('Unit | Reducers | File Context', function() {
   test('SAVE_FILE_CONTEXT_FILE_STATUS ', function(assert) {
     const previous = Immutable.from({
       selectedRowId: '123',
-      fileContextSelections: [{ id: 'library_61' }],
+      fileContextSelections: [{ id: 'library_61', checksumSha256: 1 }],
       fileContext: {
         library_61: {
           id: 'library_61',
@@ -182,7 +182,7 @@ module('Unit | Reducers | File Context', function() {
     });
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
-      payload: { request: { data: { fileStatus: 'whitelist', checksums: [ 1, 2] } } }
+      payload: { request: { data: { fileStatus: 'whitelist', checksums: [1, 2] } } }
     });
     const endState = reducer(previous, action);
     assert.equal(endState.fileContext.library_61.fileProperties.fileStatus, 'whitelist');
