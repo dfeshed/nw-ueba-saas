@@ -1,13 +1,17 @@
 .group-ranking  {
+  .source-type-top-text, .source-type-selector {
+    margin-top: rsa-whitespace();
+    margin-bottom: rsa-whitespace(more);
+    margin-left: rsa-whitespace();
+    span {
+      @include rsa-font(header);
+      margin-right: rsa-whitespace(less);
+    }
+  }
   .choose-source-step {
     .loading {
       min-height: 40px;
       margin-left: rsa-whitespace(more);
-    }
-    .source-type-top-text, .source-type-selector {
-      margin-top: rsa-whitespace();
-      margin-bottom: rsa-whitespace(more);
-      margin-left: rsa-whitespace();
     }
   }
   .edit-ranking-step {
@@ -22,7 +26,7 @@
     table {
       width: 900px;
       margin: rsa-whitespace();
-      tr {
+      tbody tr {
         cursor: pointer;
         &:hover {
           background-color: background-color(primary, darker);
@@ -32,8 +36,7 @@
         }
       }    
       th, td {
-        padding: rsa-whitespace();
-        border-bottom: 1px solid border-color(primary);
+        border-bottom: 1px solid border-color(primary, dark);
         .handle {
           display: inline-block;
           cursor: move;
@@ -52,8 +55,14 @@
         }
       }
       th {
+        padding: rsa-whitespace();
+        padding-left: rsa-whitespace(less);
         border-top: 1px solid border-color(primary);
         text-align: left;
+        @include rsa-font(header);
+      }
+      td {
+        padding: rsa-whitespace(less);
       }
     }
   }

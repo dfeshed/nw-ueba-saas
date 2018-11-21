@@ -66,27 +66,28 @@ export const availablePolicySourceTypes = createSelector(
   }
 );
 
+// loop the assignedPolicies to preserve order of creation
 export const assignedPolicyList = createSelector(
   assignedPolicies, policyList,
   (assignedPolicies, policyList) => {
     const list = [];
-    if (assignedPolicies) {
-      let allowPlaceHolder = true;
-      for (let p = 0; p < policyList.length; p++) {
-        const policy = policyList[p];
-        if (assignedPolicies.hasOwnProperty(policy.policyType) && assignedPolicies[policy.policyType]) {
-          const groupPolicyId = assignedPolicies[policy.policyType].referenceId;
-          if (allowPlaceHolder && groupPolicyId === 'placeholder') {
-            const groupPolicyName = assignedPolicies[policy.policyType].name;
-            const placeholder = {
-              id: groupPolicyId,
-              name: groupPolicyName,
-              policyType: policy.policyType
-            };
-            list.push(placeholder);
-            allowPlaceHolder = false;
-          } else if (policy.id === groupPolicyId) {
-            list.push(policy);
+    for (const key in assignedPolicies) {
+      if (assignedPolicies.hasOwnProperty(key)) {
+        // set placeholder values
+        if (assignedPolicies[key].referenceId === 'placeholder') {
+          const placeholder = {
+            id: assignedPolicies[key].referenceId,
+            name: assignedPolicies[key].name,
+            policyType: key
+          };
+          list.push(placeholder);
+        } else {
+          // loop the policyList to retrieve etire policy
+          for (let p = 0; p < policyList.length; p++) {
+            const policy = policyList[p];
+            if (policy.id === assignedPolicies[key].referenceId) {
+              list.push(policy);
+            }
           }
         }
       }
@@ -95,6 +96,21 @@ export const assignedPolicyList = createSelector(
   }
 );
 
+export const limitedPolicySourceTypes = createSelector(
+  availablePolicySourceTypes, assignedPolicyList,
+  (sourceTypes, assignedPolicyList) => {
+    const list = [];
+    for (let index = 0; index < sourceTypes.length; index++) {
+      const found = assignedPolicyList.some(function(element) {
+        return element.policyType === sourceTypes[index];
+      });
+      if (!found) {
+        list.push(sourceTypes[index]);
+      }
+    }
+    return list;
+  }
+);
 // Validation related selectors
 // ----------------------------------------
 

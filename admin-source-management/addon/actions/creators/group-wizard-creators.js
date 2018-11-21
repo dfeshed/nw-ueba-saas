@@ -1,8 +1,11 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
+import { lookup } from 'ember-dependency-lookup';
 import {
-  groupRankingQuery
+  groupRankingQuery,
+  assignedPolicies,
+  limitedPolicySourceTypes
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -80,6 +83,34 @@ const editGroup = (field, value) => {
   return {
     type: ACTION_TYPES.EDIT_GROUP,
     payload
+  };
+};
+
+const placeholderPrep = (field, key, action, previousType) => {
+  // Build the placeholder
+  // We only need id and name
+  return (dispatch, getState) => {
+    let value = { ...assignedPolicies(getState()) };
+    const limitedPST = limitedPolicySourceTypes(getState());
+    const i18n = lookup('service:i18n');
+    const placeholderName = i18n.t('adminUsm.groupWizard.applyPolicy.policyPlaceholder').toString();
+    const reference = { referenceId: 'placeholder', name: placeholderName };
+    if (action === 'change') {
+      delete value[previousType];
+      value[key] = reference;
+    } else if (action === 'add') {
+      value[limitedPST[0]] = reference;
+    } else { // remove and replace with placeholder
+      value = reference;
+    }
+    const payload = {
+      field,
+      value
+    };
+    dispatch({
+      type: ACTION_TYPES.EDIT_GROUP,
+      payload
+    });
   };
 };
 
@@ -262,5 +293,6 @@ export {
   resetRanking,
   saveGroupRanking,
   selectGroupRanking,
-  setTopRanking
+  setTopRanking,
+  placeholderPrep
 };

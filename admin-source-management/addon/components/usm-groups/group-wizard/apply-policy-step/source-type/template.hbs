@@ -11,7 +11,6 @@
         options=limitedPolicySourceTypes
         selected=selectedSourceType
         searchField='name'
-        allowClear=true
         triggerClass=(if validator.showError 'selector-error')
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
@@ -23,6 +22,10 @@
         </span>
       {{/if}}
     </label>
+    <span class="remove-source-type" {{action 'handleSourceTypeRemove' selectedSourceType}}>
+      {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+    </span>
+
   </hbox>
   <hbox class="control">
     <table class='policy-assignment'>
@@ -39,6 +42,9 @@
                   {{item.name}}
                 </td>
                 <td class="applied-to-group">
+                  {{#each item.associatedGroups as |group index|}}
+                    {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+                  {{/each}}
                 </td>
                 <td class="description">
                   {{item.description}}
@@ -64,6 +70,9 @@
                   {{selectedPolicy.name}}
                 </td>
                 <td class="applied-to-group">
+                  {{#each selectedPolicy.associatedGroups as |group index|}}
+                    {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+                  {{/each}}
                 </td>
                 <td class="description">
                   {{selectedPolicy.description}}

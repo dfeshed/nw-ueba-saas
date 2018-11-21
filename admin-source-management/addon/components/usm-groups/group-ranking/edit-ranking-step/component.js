@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 import {
   groupRanking,
   isLoadingGroupRanking,
-  selectedGroupRanking
+  selectedGroupRanking,
+  selectedSourceType
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -14,7 +15,8 @@ import {
 const stateToComputed = (state) => ({
   groupRanking: groupRanking(state),
   isLoadingGroupRanking: isLoadingGroupRanking(state),
-  selectedGroupRanking: selectedGroupRanking(state)
+  selectedGroupRanking: selectedGroupRanking(state),
+  selectedSourceType: selectedSourceType(state)
 });
 
 const dispatchToActions = {

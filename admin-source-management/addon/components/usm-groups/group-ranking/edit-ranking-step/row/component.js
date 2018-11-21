@@ -39,7 +39,10 @@ export default Component.extend(SortableItemMixin, {
   onRowClick() {},
 
   click() {
-    this.get('onRowClick').apply(this, arguments);
+    // Index 0 is top renking. No need to select and set top ranking
+    if (this.get('index') !== 0) {
+      this.get('onRowClick').apply(this, arguments);
+    }
     return false;
   }
 });

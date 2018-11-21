@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import computed from 'ember-computed-decorators';
-import { lookup } from 'ember-dependency-lookup';
 import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import {
   policyList,
@@ -12,7 +11,8 @@ import {
   applyPolicyStepShowErrors
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
-  editGroup
+  editGroup,
+  placeholderPrep
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -25,7 +25,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  editGroup
+  editGroup,
+  placeholderPrep
 };
 
 const ApplyPolicySourceType = Component.extend(Notifications, {
@@ -79,20 +80,8 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
 
   actions: {
     handleSourceTypeChange(value) {
-      if (value) {
-        const previousType = this.get('selectedSourceType');
-        const newAssignments = { ...(this.get('assignedPolicies')) };
-        delete newAssignments[previousType];
-        // Build the placeholder for policy selection
-        // We only need id and name
-        const i18n = lookup('service:i18n');
-        const placeholderName = i18n.t('adminUsm.groupWizard.applyPolicy.policyPlaceholder').toString();
-        const reference = { referenceId: 'placeholder', name: placeholderName };
-        newAssignments[value] = reference;
-        this.send('editGroup', 'group.assignedPolicies', newAssignments);
-      } else {
-        this.send('editGroup', 'group.assignedPolicies', {});
-      }
+      const previousType = this.get('selectedSourceType');
+      this.send('placeholderPrep', 'group.assignedPolicies', value, 'change', previousType);
     },
 
     handlePolicyAssignment(value) {
@@ -102,8 +91,12 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
     },
     handlePolicyRemove(value) {
       const pathGroupAssignedPolicies = 'group.assignedPolicies.';
-      const reference = { referenceId: 'placeholder', name: '' };
-      this.send('editGroup', pathGroupAssignedPolicies + value.policyType, reference);
+      this.send('placeholderPrep', pathGroupAssignedPolicies + value.policyType, null, 'remove');
+    },
+    handleSourceTypeRemove(value) {
+      const newAssignments = { ...this.get('assignedPolicies') };
+      delete newAssignments[value];
+      this.send('editGroup', 'group.assignedPolicies', newAssignments);
     }
   }
 });

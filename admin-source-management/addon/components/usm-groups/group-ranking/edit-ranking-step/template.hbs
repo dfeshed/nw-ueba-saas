@@ -4,6 +4,9 @@
   </div>
 {{else}}
   {{#sortable-group onChange="reorderRanking" as |group|}}
+    <div class="source-type-top-text">
+      <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
+    </div>
     <table>
       <thead>
         <tr>

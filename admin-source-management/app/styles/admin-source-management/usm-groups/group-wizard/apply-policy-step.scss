@@ -5,7 +5,10 @@
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
-    // margin-top: rsa-whitespace(more);
+    span.remove-source-type {
+      margin-top: rsa-whitespace(more);
+      margin-left: rsa-whitespace();
+    }
     .policy-assignment {
       max-width: calc(100vw - 350px);
       min-width: calc(100vw - 350px);
@@ -22,7 +25,7 @@
         max-width: 300px;
       }
     }
-    .remove-policy, .assign-policy {
+    .remove-policy, .assign-policy, .remove-source-type {
       cursor: pointer;
     }
     .help-title {
@@ -40,11 +43,13 @@
       padding-right: rsa-whitespace();
       padding-left: rsa-whitespace();
     }
-  
+    .source-type {
+      border-bottom: 1px solid border-color(primary);
+      padding-top: rsa-whitespace(more);
+    }
     .source-type-wrapper {
       overflow-y: auto;
       margin-bottom: rsa-whitespace();
-      border-bottom: 1px solid border-color(primary);
     }
 
     .add-source-type-button {

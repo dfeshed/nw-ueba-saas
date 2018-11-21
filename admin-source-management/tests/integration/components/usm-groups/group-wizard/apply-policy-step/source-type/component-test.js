@@ -236,7 +236,7 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
 
     const expectedAssignmentsAfterRemovel = {
       'edrPolicy': {
-        'name': '',
+        'name': 'Select a Policy',
         'referenceId': 'placeholder'
       }
     };
@@ -249,6 +249,85 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
     assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Policy test_123 vas removed');
   });
 
-  // TODO test policy selection when table implemented in flow-up story
+  test('Remove edrPolicy source type', async function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'policy_001',
+          'name': 'Policy 001'
+        },
+        'windowsLogPolicy': {
+          'referenceId': 'policy_003',
+          'name': 'Policy 003'
+        }
+      }
+    };
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+
+    const expectedAssignmentsAfterRemovel = {
+      'windowsLogPolicy': {
+        'referenceId': 'policy_003',
+        'name': 'Policy 003'
+      }
+    };
+    const selectedPolicy = { 'policyType': 'edrPolicy' };
+    this.set('selectedPolicy', selectedPolicy);
+
+    const selectedSourceType = 'edrPolicy';
+    this.set('selectedSourceType', selectedSourceType);
+
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=selectedPolicy}}`);
+    assert.equal(findAll('.remove-source-type').length, 1, 'Control to remove source type edrPolicy appears in the DOM');
+    await click('.remove-source-type');
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Source type edrPolicy vas removed');
+  });
+
+  test('Remove windowsLogPolicy source type', async function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'policy_001',
+          'name': 'Policy 001'
+        },
+        'windowsLogPolicy': {
+          'referenceId': 'policy_003',
+          'name': 'Policy 003'
+        }
+      }
+    };
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+
+    const expectedAssignmentsAfterRemovel = {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'Policy 001'
+      }
+    };
+    const selectedPolicy = { 'policyType': 'windowsLogPolicy' };
+    this.set('selectedPolicy', selectedPolicy);
+
+    const selectedSourceType = 'windowsLogPolicy';
+    this.set('selectedSourceType', selectedSourceType);
+
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=selectedPolicy}}`);
+    assert.equal(findAll('.remove-source-type').length, 1, 'Control to remove source type windowsLogPolicy appears in the DOM');
+    await click('.remove-source-type');
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Source type windowsLogPolicy vas removed');
+  });
+
 
 });

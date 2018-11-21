@@ -11,6 +11,7 @@ export default {
         policyType: policy.policyType,
         defaultPolicy: policy.defaultPolicy,
         description: policy.description,
+        associatedGroups: policy.associatedGroups,
         createdOn: policy.createdOn,
         lastModifiedOn: policy.lastModifiedOn,
         lastPublishedOn: policy.lastPublishedOn,

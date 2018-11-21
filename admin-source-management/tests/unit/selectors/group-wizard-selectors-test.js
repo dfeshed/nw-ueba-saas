@@ -23,7 +23,8 @@ import {
   assignedPolicyList,
   groupCriteriaValidator,
   policyAssignmentValidator,
-  isLoadingGroupRanking
+  isLoadingGroupRanking,
+  limitedPolicySourceTypes
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -450,6 +451,50 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       .build();
     const sourceTypes = availablePolicySourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypes, ['edrPolicy', 'windowsLogPolicy'], 'The returned value from the availablePolicySourceTypes is as expected');
+  });
+
+
+  test('limitedPolicySourceTypes selector - has edrPolicy policy', function(assert) {
+    const expectedPolicyList = ['windowsLogPolicy'];
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload1)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = limitedPolicySourceTypes(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from limitedPolicySourceTypes is as expected');
+  });
+
+  test('limitedPolicySourceTypes selector - has edrPolicy and windowsLogPolicy policies', function(assert) {
+    const expectedPolicyList = [];
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload2)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = limitedPolicySourceTypes(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from limitedPolicySourceTypes is as expected');
+  });
+
+  test('limitedPolicySourceTypes selector - has windowsLogPolicy policy', function(assert) {
+    const groupPayload3 = {
+      'id': 'group_002',
+      'name': 'Group 002',
+      'assignedPolicies': {
+        'windowsLogPolicy': {
+          'referenceId': 'policy_003',
+          'name': 'Policy 003'
+        }
+      }
+    };
+    const expectedPolicyList = ['edrPolicy'];
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload3)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    const policyList = limitedPolicySourceTypes(Immutable.from(fullState));
+    assert.deepEqual(policyList, expectedPolicyList, 'The returned value from limitedPolicySourceTypes is as expected');
   });
 
   test('assignedPolicyList selector - single assigned source type', function(assert) {
