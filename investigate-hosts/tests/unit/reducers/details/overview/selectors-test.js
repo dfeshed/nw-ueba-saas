@@ -291,6 +291,7 @@ test('getPoliciesPropertyData', function(assert) {
           }
         },
         policyDetails: {
+          evaluatedTime: '2018-11-19T09:16:35.969+0000',
           policy: {
             'edrPolicy': {
               'agentMode': 'FULL_MONITORING',
@@ -327,6 +328,7 @@ test('getPoliciesPropertyData', function(assert) {
   const result1 = getPoliciesPropertyData(Immutable.from(state1));
 
   assert.equal(result1.policyStatus, 'Updated');
+  assert.equal(result1.evaluatedTime, '2018-11-19T09:16:35.969+0000');
   assert.deepEqual(result1.edrPolicy, {
     'agentMode': 'FULL_MONITORING',
     'transportConfig': {

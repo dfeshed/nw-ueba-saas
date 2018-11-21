@@ -9,6 +9,11 @@ export default [
       {
         field: 'policyStatus',
         labelKey: 'policyStatus'
+      },
+      {
+        field: 'evaluatedTime',
+        labelKey: 'evaluatedTime',
+        format: 'DATE'
       }
     ]
   },

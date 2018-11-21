@@ -279,7 +279,7 @@ export const getPoliciesPropertyData = createSelector(
   [_policyDetails, _hostDetails, _getscheduledScanConfig],
   (policyDetails, hostDetails, scheduledScanConfig) => {
     const policyStatus = hostDetails.groupPolicy ? hostDetails.groupPolicy.policyStatus : null;
-    const { policy } = policyDetails;
+    const { policy, evaluatedTime } = policyDetails;
     const edrPolicy = policy ? policy.edrPolicy : {};
     const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
     let newTransportConfig = {};
@@ -297,6 +297,7 @@ export const getPoliciesPropertyData = createSelector(
     return {
       ...policy,
       policyStatus,
+      evaluatedTime,
       edrPolicy: {
         ...edrPolicy,
         blockingConfig: {
