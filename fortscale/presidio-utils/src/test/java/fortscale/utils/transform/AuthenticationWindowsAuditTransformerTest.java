@@ -79,7 +79,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
                 new FilterTransformer("user-is-unknown", unkonwnUser, false);
         transformerChainList.add(filterUnknownUser);
         // filter irrelevant auth events (session start and end)
-        JsonObjectRegexPredicate authEventType = new JsonObjectRegexPredicate("event-type-is-auth", "event.type", "USER_LOGIN|CRED_ACQ|USER_AUTH");
+        JsonObjectRegexPredicate authEventType = new JsonObjectRegexPredicate("event-type-is-auth", EVENT_TYPE_FIELD_NAME, "USER_LOGIN|CRED_ACQ|USER_AUTH");
         FilterTransformer filterEventType=
                 new FilterTransformer("event-type-is-auth", authEventType, true);
         transformerChainList.add(filterEventType);
@@ -329,12 +329,12 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         IJsonObjectTransformer authenticationSecureIdTransformer = buildAuthenticationSecureIdTransformer();
         IJsonObjectTransformer authenticationWindowsAuditTransformer = buildAuthenticationWindowsAuditTransformer();
         JsonObjectRegexPredicate deviceTypeEqualRsaacesrv =
-                new JsonObjectRegexPredicate("device-type-equal-rsaacesrv", DEVICE_TYPE_FIELD_NAME, "rsaacesrv");
+                new JsonObjectRegexPredicate("device-type-equal-rsaacesrv", DEVICE_TYPE_FIELD_NAME, RSAACESRV_DEVICE_TYPE);
         JsonObjectRegexPredicate deviceTypeEqualRhlinux =
-                new JsonObjectRegexPredicate("device-type-equal-rhlinux", DEVICE_TYPE_FIELD_NAME, "rhlinux");
+                new JsonObjectRegexPredicate("device-type-equal-rhlinux", DEVICE_TYPE_FIELD_NAME, RHLINUX_DEVICE_TYPE);
 
         IfElseTransformer rhlinuxIfElseTransformer =
-                new IfElseTransformer("device-type-rhlinux", deviceTypeEqualRsaacesrv, authenticationLinuxAuthTransformer, authenticationWindowsAuditTransformer);
+                new IfElseTransformer("device-type-rhlinux", deviceTypeEqualRhlinux, authenticationLinuxAuthTransformer, authenticationWindowsAuditTransformer);
         return new IfElseTransformer("device-type-secureid", deviceTypeEqualRsaacesrv, authenticationSecureIdTransformer, rhlinuxIfElseTransformer);
     }
 
@@ -711,7 +711,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
 
     @Test
     public void event_logon_succesful_logon_test() throws JsonProcessingException{
-        IJsonObjectTransformer transformer = buildAuthenticationLinuxAuthTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String sessionId = "1835299306";
         String usersrc = "gandalf";
@@ -742,7 +742,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
 
     @Test
     public void event_logon_unknown_user_logon_test() throws JsonProcessingException{
-        IJsonObjectTransformer transformer = buildAuthenticationLinuxAuthTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String sessionId = "1835299306";
         String usersrc = "";
@@ -763,7 +763,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
 
     @Test
     public void event_logon_filtered_event_type_logon_test() throws JsonProcessingException{
-        IJsonObjectTransformer transformer = buildAuthenticationLinuxAuthTransformer();
+        IJsonObjectTransformer transformer = buildAuthTransformer();
 
         String sessionId = "1835299306";
         String usersrc = "gandalf";
