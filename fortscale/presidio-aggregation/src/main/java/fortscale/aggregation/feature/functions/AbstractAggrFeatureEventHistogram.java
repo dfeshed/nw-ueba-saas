@@ -18,10 +18,7 @@ public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeat
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         MultiKeyHistogram multiKeyHistogram = AggrFeatureMultiKeyHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList, removeNA, additionalNAValues);
-        AggrFeatureValue aggrFeatureValue = null;
-        if (!multiKeyHistogram.getHistogram().isEmpty()) {
-            aggrFeatureValue = calculateHistogramAggrFeatureValue(multiKeyHistogram);
-        }
+        AggrFeatureValue aggrFeatureValue = calculateHistogramAggrFeatureValue(multiKeyHistogram);
         return aggrFeatureValue;
     }
 
