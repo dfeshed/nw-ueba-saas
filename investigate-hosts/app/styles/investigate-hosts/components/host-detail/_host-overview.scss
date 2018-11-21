@@ -77,3 +77,9 @@
 .ip-divider {
   padding: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
 }
+
+.host-overview {
+  .center-zone, .right-zone {
+    height: 100%;
+  }
+}
