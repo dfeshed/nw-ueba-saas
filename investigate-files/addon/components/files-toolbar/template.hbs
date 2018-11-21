@@ -7,6 +7,9 @@
 <div class="toolbar-actions">
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
   {{#rsa-form-button class="view-certificate-button" click=(action 'toggleCertificateView')}}
+    {{#if (eq certificateLoadStatus 'wait')}}
+      {{rsa-loader size='small'}}
+    {{/if}}
     {{t 'investigateFiles.button.viewCertificates'}}
   {{/rsa-form-button}}
   <div class="divider"/>

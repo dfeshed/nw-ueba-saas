@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, findAll, click } from '@ember/test-helpers';
+import { render, settled, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
@@ -42,12 +42,12 @@ module('Integration | Component | Files toolbar', function(hooks) {
     assert.equal(this.$('.title-header').length, 1, 'Files toolbar present');
     assert.equal(this.$('.export-button').length, 1, 'Export button present');
     assert.equal(this.$('.view-certificate-button').length, 1, 'View certificate button present');
+    assert.equal(find('.rsa-loader').classList.contains('is-small'), true, 'certificate rsa loader displayed');
     return settled().then(() => {
       actionStub.restore();
       done();
     });
   });
-
   test('On changing the service selection it calls the close risk panel actions', async function(assert) {
     assert.expect(2);
     const services = {

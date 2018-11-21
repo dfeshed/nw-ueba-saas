@@ -30,7 +30,8 @@ const stateToComputed = (state) => ({
   remediationStatus: state.files.fileList.isRemediationAllowed,
   restrictedFileList: state.fileStatus.restrictedFileList,
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  certificateLoadStatus: state.certificate.list.certificatesLoadingStatus
 });
 
 const dispatchToActions = {

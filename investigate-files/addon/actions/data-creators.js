@@ -219,6 +219,7 @@ const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => {
     if (data.fileStatus === 'Whitelist') {
       checksums = checksumsWithoutRestricted(selectedFileList, restrictedFileList);
     }
+    // Selecting top 100 checksums only for file status change.
     if (checksums && checksums.length > 100) {
       checksums = checksums.slice(0, 100);
     }
