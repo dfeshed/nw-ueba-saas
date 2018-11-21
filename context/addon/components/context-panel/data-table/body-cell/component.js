@@ -17,9 +17,10 @@ export default Component.extend({
     const selectedTimeFormat = this.get('timeFormat.selected.format');
     const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
     const dateTimeFormat = selectedDateFormat ? `${selectedDateFormat} ${selectedTimeFormat}` : 'YYYY/MM/DD HH:mm:ss';
-    const dateTimeString = moment(get(item, column.field))
-                          .locale(this.get('i18n.locale') || 'en')
-                          .tz(timeZoneId).format(dateTimeFormat.replace(/.SSS/, ''));
+    const dateTimeString =
+      moment(get(item, column.field))
+        .locale(this.get('i18n.locale') || 'en')
+        .tz(timeZoneId).format(dateTimeFormat.replace(/.SSS/, ''));
     const timeAgo = moment(get(item, column.field)).locale(this.get('i18n.locale') || 'en').fromNow();
     return `${dateTimeString} (${timeAgo})`;
   },

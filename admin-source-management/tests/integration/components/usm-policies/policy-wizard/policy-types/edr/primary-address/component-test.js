@@ -45,9 +45,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/pr
 
   test('It triggers the update policy action creator when the endpoint server value is changed', async function(assert) {
     new ReduxDataHelper(setState)
-        .policyWiz()
-        .policyWizEndpointServers()
-        .build();
+      .policyWiz()
+      .policyWizEndpointServers()
+      .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/primary-address selectedSettingId='primaryAddress'}}`);
     await selectChoose('.primary-address__list', '.ember-power-select-option', 0);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

@@ -82,7 +82,7 @@ export default Service.extend({
     StreamCache.cleanUpRouteStreams(routeName);
   },
 
-   /*
+  /*
    * updates the request opts
    * @private
    */

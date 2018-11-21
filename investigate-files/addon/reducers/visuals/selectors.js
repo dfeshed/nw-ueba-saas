@@ -31,10 +31,10 @@ const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab 
 const _riskState = (state) => state.files.risk || {};
 
 export const riskState = createSelector(
-    [_riskState],
-    (riskState) => {
-      return riskState;
-    }
+  [_riskState],
+  (riskState) => {
+    return riskState;
+  }
 );
 
 export const getFileDetailTabs = createSelector(
@@ -45,10 +45,10 @@ export const getFileDetailTabs = createSelector(
 );
 
 export const getDataSourceTab = createSelector(
-    [_activeDataSourceTab],
-    (activeDataSourceTab) => {
-      return DATASOURCE_TABS.map((tab) => ({ ...tab, selected: tab.name === activeDataSourceTab }));
-    }
+  [_activeDataSourceTab],
+  (activeDataSourceTab) => {
+    return DATASOURCE_TABS.map((tab) => ({ ...tab, selected: tab.name === activeDataSourceTab }));
+  }
 );
 
 export const selectedTabComponent = createSelector(

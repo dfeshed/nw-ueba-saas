@@ -9,10 +9,10 @@ export default function copyToClipboard(text) {
   const fakeEl = document.createElement('textarea');
   try {
     fakeEl.textContent = text;
-    fakeEl.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
+    fakeEl.style.position = 'fixed'; // Prevent scrolling to bottom of page in MS Edge.
     document.body.appendChild(fakeEl);
     fakeEl.select();
-    return document.execCommand('copy');  // Security exception may be thrown by some browsers.
+    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
   } catch (ex) {
     return false;
   } finally {

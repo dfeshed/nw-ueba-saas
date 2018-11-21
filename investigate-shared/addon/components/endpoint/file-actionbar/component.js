@@ -5,19 +5,25 @@ import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
 const FileActionConf = [
-  { panelId: 'panel1', name: 'googleLookup',
+  {
+    panelId: 'panel1',
+    name: 'googleLookup',
     subItems: [
-    { name: 'fileName', type: 'google' },
-    { name: 'md5', type: 'google' },
-    { name: 'sha1', type: 'google' },
-    { name: 'sha256', type: 'google' }
-    ] },
-  { panelId: 'panel2', name: 'virusTotalLookup',
+      { name: 'fileName', type: 'google' },
+      { name: 'md5', type: 'google' },
+      { name: 'sha1', type: 'google' },
+      { name: 'sha256', type: 'google' }
+    ]
+  },
+  {
+    panelId: 'panel2',
+    name: 'virusTotalLookup',
     subItems: [
-    { name: 'md5', type: 'VirusTotal' },
-    { name: 'sha1', type: 'VirusTotal' },
-    { name: 'sha256', type: 'VirusTotal' }
-    ] },
+      { name: 'md5', type: 'VirusTotal' },
+      { name: 'sha1', type: 'VirusTotal' },
+      { name: 'sha256', type: 'VirusTotal' }
+    ]
+  },
   { panelId: 'panel6', name: 'resetRiskScore' }
 ];
 

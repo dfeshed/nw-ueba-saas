@@ -50,7 +50,7 @@ export default Component.extend({
   collideStrength: 0.4, // strength of force that prevents node collisions (d3's default = 0.7)
   linkStrength: 0.01, // weak link strength works better with variable node radii
   linkDistance: 150,
-  centerX: null,      // centering forces produce confusing physics for users; disable by default
+  centerX: null, // centering forces produce confusing physics for users; disable by default
   centerY: null,
   alphaInitial: 0.5,
 

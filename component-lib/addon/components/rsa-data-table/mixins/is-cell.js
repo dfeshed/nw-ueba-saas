@@ -19,7 +19,7 @@ function _parseNumberAndUnits(value) {
     if (value === 'auto') {
       return { auto: true };
     } else {
-      const match = String(value).match(/([\d\.]+)([^\d]*)/);
+      const match = String(value).match(/([\d.]+)([^\d]*)/);
       const num = match && Number(match[1]);
       const units = (match && match[2]) || '';
 

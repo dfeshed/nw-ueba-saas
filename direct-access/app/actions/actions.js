@@ -163,8 +163,7 @@ const _loadLogs = ({ params, dispatch, transport }) => {
       ...params,
       op: 'start'
     }
-  })
-  .then((response) => {
+  }).then((response) => {
     dispatch({
       type: ACTION_TYPES.LOGS_ADD_NEW,
       payload: response.params
@@ -225,8 +224,7 @@ const loadLogs = (params) => {
       } else {
         resolve();
       }
-    })
-    .then((response) => {
+    }).then((response) => {
       if (latest) {
         top = parseInt(response.string, 10);
         params.id1 = Math.max(top - params.count + 1, 0).toString();
@@ -253,8 +251,7 @@ const loadLogs = (params) => {
                   id2: (newTop + 1).toString(),
                   op: 'start'
                 }
-              })
-              .then((response) => {
+              }).then((response) => {
                 dispatch({
                   type: ACTION_TYPES.LOGS_UPDATE,
                   payload: {

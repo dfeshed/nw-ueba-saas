@@ -70,9 +70,9 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('it renders error page when endpointserver is offline', async function(assert) {
     new ReduxDataHelper(initState)
-    .endpointServer(endpointServer)
-    .endpointQuery(endpointQuery)
-    .build();
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .build();
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.host-list-items').length, 0, 'host list is not rendered');
     assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');
@@ -83,13 +83,13 @@ module('Integration | Component | host-list', function(hooks) {
     endpointServerClone.isSummaryRetrieveError = false;
 
     new ReduxDataHelper(initState)
-    .columns(endpoint.schema)
-    .hostList(hostListState.machines.hostList)
-    .hostSortField('machine.machineName')
-    .endpointServer(endpointServerClone)
-    .endpointQuery(endpointQuery)
-    .selectedHostList([])
-    .build();
+      .columns(endpoint.schema)
+      .hostList(hostListState.machines.hostList)
+      .hostSortField('machine.machineName')
+      .endpointServer(endpointServerClone)
+      .endpointQuery(endpointQuery)
+      .selectedHostList([])
+      .build();
     await render(hbs`{{host-list}}`);
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
   });

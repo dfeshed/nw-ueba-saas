@@ -20,10 +20,10 @@ const PivotToArcherComponent = Component.extend({
   i18n: service(),
 
   actions: {
-      /*
-      * Pivot to archer will open the archer url on click of 'Pivot to Archer' button. It may land to login page or device details page based on the information available.
-      * Sample Pivot to archer url: http://localhost:4200/RSAarcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d224935%26moduleId%3d71
-      */
+    /*
+     * Pivot to archer will open the archer url on click of 'Pivot to Archer' button. It may land to login page or device details page based on the information available.
+     * Sample Pivot to archer url: http://localhost:4200/RSAarcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d224935%26moduleId%3d71
+     */
     pivotToArcher() {
       const archerUrl = this.get('archerUrl');
       const archerErrorMessage = this.get('archerErrorMessage');

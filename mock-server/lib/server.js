@@ -114,22 +114,19 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
           ws.send(createConnectMessage());
           break;
         case 'SUBSCRIBE':
-          {
-            ws.send(createSubscriptionReceiptMessage(frame.headers));
-            break;
+          ws.send(createSubscriptionReceiptMessage(frame.headers));
+          break;
+        case 'SEND': {
+          // get list of subscriptions and see if subscription being used is present
+          const subscriptions = subscriptionList();
+          if (subscriptions[frame.headers.destination]) {
+            const subscriptionHandler = subscriptions[frame.headers.destination];
+            _handleMessage(ws, frame, subscriptionHandler);
+          } else {
+            console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
           }
-        case 'SEND':
-          {
-            // get list of subscriptions and see if subscription being used is present
-            const subscriptions = subscriptionList();
-            if (subscriptions[frame.headers.destination]) {
-              const subscriptionHandler = subscriptions[frame.headers.destination];
-              _handleMessage(ws, frame, subscriptionHandler);
-            } else {
-              console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
-            }
-            break;
-          }
+          break;
+        }
         case 'DISCONNECT':
           // DISCONNECT means the client has disconnected
           // so terminating should not be necessary

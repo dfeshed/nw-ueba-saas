@@ -265,7 +265,7 @@ module('Integration | Component | events-list-row/generic/detail', function(hook
 
     set(i18n, 'locale', 'de-de');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const detectorElement = generic.assertDetailRowParent(assert, {
         column: 1,
         row: 3,

@@ -258,12 +258,12 @@ function buildTimeContent($content, item, opts) {
   $content
     .attr('title', tooltip)
     .append('div')
-      .attr('class', 'time')
-      .text(date);
+    .attr('class', 'time')
+    .text(date);
   $content.append('div')
     .attr('class', 'time')
     .text(time);
-    // .html(`<div>${date}</div><div>${time}</div>`);
+  // .html(`<div>${date}</div><div>${time}</div>`);
 }
 
 /**

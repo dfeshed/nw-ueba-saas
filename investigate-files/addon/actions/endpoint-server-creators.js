@@ -35,16 +35,16 @@ export const setEndpointServer = (server) => {
       dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
       dispatch({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
       return request.ping('endpoint-server-ping')
-      .then(function() {
-        dispatch(isEndpointServerOffline(false));
-        dispatch(getCertificates());
-        dispatch(getFirstPageOfFiles());
-        dispatch(getServiceId('FILE'));
-        dispatch(getAllServices());
-      })
-      .catch(function() {
-        dispatch(isEndpointServerOffline(true));
-      });
+        .then(function() {
+          dispatch(isEndpointServerOffline(false));
+          dispatch(getCertificates());
+          dispatch(getFirstPageOfFiles());
+          dispatch(getServiceId('FILE'));
+          dispatch(getAllServices());
+        })
+        .catch(function() {
+          dispatch(isEndpointServerOffline(true));
+        });
     }
   };
 };

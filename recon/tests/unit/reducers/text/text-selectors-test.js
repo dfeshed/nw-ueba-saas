@@ -410,7 +410,7 @@ test('metaHighlightCount', function(assert) {
       meta: {
         meta: [
           ['medium', 1],
-          ['category', 'HTTP']  // category does not match Network/1
+          ['category', 'HTTP'] // category does not match Network/1
         ]
       }
     })),

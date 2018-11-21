@@ -27,12 +27,12 @@ export const setEndpointServer = (server) => {
       });
       request.registerPersistentStreamOptions({ socketUrlPostfix: server.id, requiredSocketUrl: 'endpoint/socket' });
       return request.ping('endpoint-server-ping')
-      .then(function() {
-        dispatch(isEndpointServerOffline(false));
-      })
-      .catch(function() {
-        dispatch(isEndpointServerOffline(true));
-      });
+        .then(function() {
+          dispatch(isEndpointServerOffline(false));
+        })
+        .catch(function() {
+          dispatch(isEndpointServerOffline(true));
+        });
     }
   };
 };

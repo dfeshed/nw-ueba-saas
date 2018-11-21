@@ -58,13 +58,18 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    */
   @computed('status', 'showNoResultMessage')
   shouldShowNoResultMessage(status, showNoResultMessage) {
-    if (!status) {                // if status has not been passed in, default showNoResultMessage
+    // if status has not been passed in, default showNoResultMessage
+    if (!status) {
       return showNoResultMessage;
     }
-    if (!showNoResultMessage) {   // if showNoResultMessage is explicitly passed boolean false
+
+    // if showNoResultMessage is explicitly passed boolean false
+    if (!showNoResultMessage) {
       return false;
     }
-    if (status === 'streaming') { // if status has been passed, but is streaming, don't show noResults message
+
+    // if status has been passed, but is streaming, don't show noResults message
+    if (status === 'streaming') {
       return false;
     }
     return true;

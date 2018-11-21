@@ -92,9 +92,9 @@ test('Calling addFilter() with either an empty (i.e., null or undefined) field o
   query.addSortBy('riskScore', true);
 
   query.addFilter(null, 'ASSIGNED')
-      .addFilter('status')
-      .addFilter('status', [null, undefined])
-      .addFilter('status', []);
+    .addFilter('status')
+    .addFilter('status', [null, undefined])
+    .addFilter('status', []);
 
   const expectedJson = {
     filter: [],
@@ -256,7 +256,7 @@ test('Calling removeFilter() produces the expected query', function(assert) {
 
 test('Calling addFilters() produces the expected query', function(assert) {
   const query = FilterQuery.create()
-      .addFilters(['firstName', 'Ignatius'], ['lastName', 'Reilly'], ['hometown', 'New Orleans']);
+    .addFilters(['firstName', 'Ignatius'], ['lastName', 'Reilly'], ['hometown', 'New Orleans']);
   query.addSortBy('riskScore', true);
   const expectedJson = {
     filter: [

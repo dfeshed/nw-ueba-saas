@@ -19,15 +19,15 @@ export default Route.extend({
     }
   },
 
-  model({ incident_id }) {
+  model({ incidentId }) {
     // @workaround We want to fire data actions when model changes. That won't work in Safari & Firefox if you are
     // transitioning from another route (e.g., `incidents`); only works if you are coming directly to this route from
     // a url/bookmark. As a workaround, use `run.next` to let the route transition finish before firing redux actions.
     run.next(() => {
-      this.get('redux').dispatch(initializeIncident(incident_id));
+      this.get('redux').dispatch(initializeIncident(incidentId));
     });
     return {
-      incidentId: incident_id
+      incidentId
     };
   },
 

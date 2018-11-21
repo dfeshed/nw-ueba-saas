@@ -134,7 +134,7 @@ module('Integration | Component | value matching', function(hooks) {
     await triggerKeyEvent('textarea', 'keyup', 38);
     await triggerKeyEvent('textarea', 'keyup', 39);
     await triggerKeyEvent('textarea', 'keyup', 40);
-    setTimeout(async () => {
+    setTimeout(async() => {
       await triggerKeyEvent('textarea', 'keyup', 80);
     }, 200);
   });

@@ -79,24 +79,24 @@ export const updateSummaryData = () => {
     const { summaryData, autoUpdateSummary } = state.investigate.services;
     if (serviceId && summaryData) {
       fetchSummary(serviceId)
-      .then((response) => {
-        // check for any differences in summaryData objects
-        if (JSON.stringify(summaryData) !== JSON.stringify(response.data)) {
-          dispatch({
-            type: ACTION_TYPES.SUMMARY_UPDATE,
-            payload: response.data
-          });
-          if (autoUpdateSummary) {
-            // This will update the latest start and end time in queryNode - which is
-            // ultimately used by executeQuery to get results from MT
-            const range = selectedTimeRange(state);
-            dispatch(setQueryTimeRange(range));
+        .then((response) => {
+          // check for any differences in summaryData objects
+          if (JSON.stringify(summaryData) !== JSON.stringify(response.data)) {
+            dispatch({
+              type: ACTION_TYPES.SUMMARY_UPDATE,
+              payload: response.data
+            });
+            if (autoUpdateSummary) {
+              // This will update the latest start and end time in queryNode - which is
+              // ultimately used by executeQuery to get results from MT
+              const range = selectedTimeRange(state);
+              dispatch(setQueryTimeRange(range));
+            }
           }
-        }
-      })
-      .catch((error) => {
-        handleInvestigateErrorCode(error, 'UPDATE_SUMMARY_SCHEDULER');
-      });
+        })
+        .catch((error) => {
+          handleInvestigateErrorCode(error, 'UPDATE_SUMMARY_SCHEDULER');
+        });
     }
   };
 };

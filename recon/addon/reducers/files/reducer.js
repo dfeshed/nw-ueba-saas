@@ -6,10 +6,10 @@ import _ from 'lodash';
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
-  fileExtractStatus: null,  // either 'init' (creating job), 'wait' (job executing), 'success' or 'error'
-  fileExtractError: null,   // error object
-  fileExtractJobId: null,   // job id for tracking notifications (NOT CURRENTLY USED)
-  fileExtractLink: null     // url for downloading successful job's results (NOT CURRENTLY USED)
+  fileExtractStatus: null, // either 'init' (creating job), 'wait' (job executing), 'success' or 'error'
+  fileExtractError: null, // error object
+  fileExtractJobId: null, // job id for tracking notifications (NOT CURRENTLY USED)
+  fileExtractLink: null // url for downloading successful job's results (NOT CURRENTLY USED)
 };
 
 const filesInitialState = Immutable.from({

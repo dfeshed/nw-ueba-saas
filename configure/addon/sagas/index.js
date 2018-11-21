@@ -16,7 +16,7 @@ import {
 } from './respond-notifications/notifications';
 
 export default function* root() {
-  yield [
+  yield[
     fork(fetchRules),
     fork(fetchRule),
     fork(fetchFields),

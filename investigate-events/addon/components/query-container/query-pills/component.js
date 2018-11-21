@@ -349,7 +349,7 @@ const QueryPills = RsaContextMenu.extend({
     this._pillEnteredForInsert(position);
   },
 
-   /**
+  /**
    * Will need to open a new pill trigger on the right of position that's
    * being passed in. This event is triggered when you press ARROW_RIGHT
    * from a focused pill.

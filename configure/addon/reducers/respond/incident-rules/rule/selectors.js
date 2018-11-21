@@ -233,13 +233,15 @@ export const hasMissingInformation = createSelector(
     hasInvalidGroupByFields,
     getIncidentTitle
   ],
-  (ruleInfo,
-   isRuleBuilderInvalid,
-   incidentCreationOptions,
-   hasInvalidTimeValue,
-   hasInvalidPriorityScale,
-   hasInvalidGroupByFields,
-   incidentTitle) => {
+  (
+    ruleInfo,
+    isRuleBuilderInvalid,
+    incidentCreationOptions,
+    hasInvalidTimeValue,
+    hasInvalidPriorityScale,
+    hasInvalidGroupByFields,
+    incidentTitle
+  ) => {
     return isBlank(ruleInfo.name) ||
       isRuleBuilderInvalid ||
       isBlank(incidentTitle) ||

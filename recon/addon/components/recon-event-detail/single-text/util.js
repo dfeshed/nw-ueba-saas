@@ -53,8 +53,8 @@ export const prepareTextForDisplay = function(text, metaToHighlight) {
     // Escape RegEx special characters and convert < and > to HTML safe strings
     const pattern = metaToHighlight
       .replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')
-      .replace(/\</g, '&lt;')
-      .replace(/\>/g, '&gt;');
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
     const regex = new RegExp(pattern, 'gi'); // case insensitive
     if (safeText.match(regex)) {
       // Use the special replacement pattern "$&" to replace matches so that
@@ -74,10 +74,11 @@ const _isString = (s) => Object.prototype.toString.call(s) === '[object String]'
  */
 const _generateHTMLSafeText = (text) => {
   return text
-    .replace(/\</g, '&lt;')
-    .replace(/\>/g, '&gt;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
     .replace(/(?:\r\n|\r|\n)/g, '<br>')
     .replace(/\t/g, '&nbsp;&nbsp;')
+    // eslint-disable-next-line
     .replace(/[\x00-\x1F]/g, '.')
     // https://bedfordjira.na.rsa.net/browse/ASOC-35522
     // Replacing this specific character, because if we do not

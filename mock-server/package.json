@@ -15,8 +15,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "6.1.2",
-    "eslint": "3.3.1",
+    "babel-eslint": "10.0.1",
+    "eslint": "5.9.0",
     "expect.js": "0.3.1",
     "mocha": "3.0.2",
     "sockjs-client": "1.1.1",

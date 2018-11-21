@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 module('Unit | Utility | pivot to investigate url');
 
 const singleQuote = '\'';
-const singleQuoteRe = /\'/g;
+const singleQuoteRe = /'/g;
 const backslash = '\\';
 const backslashRe = /\\/g;
 

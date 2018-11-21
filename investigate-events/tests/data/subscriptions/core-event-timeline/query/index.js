@@ -9,7 +9,8 @@ export default {
     const timeRange = (bodyParsed.filter || []).filter((ele) => ele.field === 'timeRange');
     let end;
     if (timeRange.length > 0) {
-      end = timeRange[0].range.to * 1000 + minute;  // add milliseconds
+      // add milliseconds
+      end = timeRange[0].range.to * 1000 + minute;
     } else {
       // Add a minute to the current time so that the correct time is calculated
       // when we do "now -= minute" below.

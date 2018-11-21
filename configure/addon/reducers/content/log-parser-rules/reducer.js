@@ -282,20 +282,20 @@ export default reduxActions.handleActions({
     })
   ),
   [ACTION_TYPES.DELETE_LOG_PARSER]: (state, action) => (
-  handle(state, action, {
-    start: (state) => state.set('isTransactionUnderway', true),
-    failure: (state) => state.set('isTransactionUnderway', false),
-    success: (state) => {
-      const { payload: { data } } = action;
-      return state.merge(
-        {
-          logParsers: state.logParsers.filter((parser) => parser.name !== data.name),
-          selectedLogParserIndex: 0,
-          isTransactionUnderway: false
-        }
-      );
-    }
-  })
+    handle(state, action, {
+      start: (state) => state.set('isTransactionUnderway', true),
+      failure: (state) => state.set('isTransactionUnderway', false),
+      success: (state) => {
+        const { payload: { data } } = action;
+        return state.merge(
+          {
+            logParsers: state.logParsers.filter((parser) => parser.name !== data.name),
+            selectedLogParserIndex: 0,
+            isTransactionUnderway: false
+          }
+        );
+      }
+    })
   ),
   [ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE]: (state, { payload: newRule }) => {
     return state.set('parserRules', state.parserRules.map((rule, index) => index === state.selectedParserRuleIndex ? newRule : rule));

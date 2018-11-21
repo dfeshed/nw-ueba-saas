@@ -103,7 +103,7 @@ module('Unit | Route | incidents', function(hooks) {
         assert.ok(true, 'isSendToArcherAvailable was set meaning the action creator was called');
       }
       return isSendToArcherAvailable;
-    });
+    }, { timeout: 10000 });
 
     await settled();
   });

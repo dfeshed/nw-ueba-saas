@@ -26,12 +26,8 @@ export const elbow = function(d, boxWidth) {
  * @public
  */
 export const transitionElbow = function(d) {
-  return `M${ d.source.y },${ d.source.x
-    }H${ d.source.y
-    }V${ d.source.x
-    }H${ d.source.y }`;
+  return `M${ d.source.y },${ d.source.x }H${ d.source.y }V${ d.source.x }H${ d.source.y }`;
 };
-
 
 export const appendIcon = function({ node, fontSize, className, opacity = 1, text, dx = 0 }) {
   return node.append('text')

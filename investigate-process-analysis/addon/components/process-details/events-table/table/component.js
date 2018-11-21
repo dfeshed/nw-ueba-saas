@@ -5,7 +5,7 @@ import {
   eventsFilteredCount,
   eventsTableConfig,
   eventsSortField
- } from 'investigate-process-analysis/reducers/process-tree/selectors';
+} from 'investigate-process-analysis/reducers/process-tree/selectors';
 import { setSortField } from 'investigate-process-analysis/actions/creators/events-creators';
 
 const stateToComputed = (state) => ({

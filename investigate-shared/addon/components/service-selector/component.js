@@ -104,23 +104,23 @@ const ServiceSelector = Component.extend({
   @or('isSummaryLoading', 'isServicesLoading')
   isLoading: false,
 
-/**
- * For a selected service, we could have several messages. These are:
- * 1. Some error message returned from the server
- * 2. There is "No Data" for the service
- * 3. No message at all
- *
- * Bumped up the coreServiceNotUpdated message to the top
- * as summary call will always return an error when in mixed mode.
- * And so it was never showing up the coreDeviceNotUpdated message
- *
- * The error message from the server is trimmed like so:
- * Before - rsa.com.nextgen.classException: Failed to connect to broker:50003
- * After  - Failed to connect to broker:50003
- * Before - java.lang.NullPointerException
- * After  - java.lang.NullPointerException
- * @public
- */
+  /**
+   * For a selected service, we could have several messages. These are:
+   * 1. Some error message returned from the server
+   * 2. There is "No Data" for the service
+   * 3. No message at all
+   *
+   * Bumped up the coreServiceNotUpdated message to the top
+   * as summary call will always return an error when in mixed mode.
+   * And so it was never showing up the coreDeviceNotUpdated message
+   *
+   * The error message from the server is trimmed like so:
+   * Before - rsa.com.nextgen.classException: Failed to connect to broker:50003
+   * After  - Failed to connect to broker:50003
+   * Before - java.lang.NullPointerException
+   * After  - java.lang.NullPointerException
+   * @public
+   */
   @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n', 'i18n.locale')
   selectedServiceMessage(isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid, hasSummaryData, summaryErrorMessage, i18n) {
     let title = null;

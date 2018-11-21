@@ -19,7 +19,7 @@ module('Integration | Component | context-panel/add-to-list/list-view', function
     getFilteredList=listModel}}`);
     assert.equal(findAll('.rsa-form-checkbox.checked').length, 3, 'Number of lists selected');
     assert.equal(findAll('.rsa-form-checkbox ').length - this.$('.rsa-form-checkbox.checked').length, 1,
-    'Number of lists unselected');
+      'Number of lists unselected');
   });
 
   test('Test should check title for header message', async function(assert) {

@@ -27,26 +27,32 @@ test('Iteration: verify all options are available in components', function(asser
     // // iterate date format options.
     click('.rsa-application-user-preferences-panel .js-test-date-format-select .ember-power-select-trigger');
     andThen(() => {
-      assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
-          .map(trimText).get(),
-          ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY/MM/DD'], 'Date Format');
+      assert.deepEqual(
+        find('.ember-power-select-dropdown .ember-power-select-option').map(trimText).get(),
+        ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY/MM/DD'],
+        'Date Format'
+      );
     });
 
 
     // // iterate default landing page options.
     click('.rsa-application-user-preferences-panel .js-test-default-landing-page-select .ember-power-select-trigger');
     andThen(() => {
-      assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
-          .map(trimText).get(),
-          ['Respond', 'Investigate', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
+      assert.deepEqual(
+        find('.ember-power-select-dropdown .ember-power-select-option').map(trimText).get(),
+        ['Respond', 'Investigate', 'Monitor', 'Configure', 'Admin'],
+        'Default Landing Page'
+      );
     });
 
     // // iterate default investigate page landing options.
     click('.rsa-application-user-preferences-panel .js-test-default-investigate-page-select .ember-power-select-trigger');
     andThen(() => {
-      assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
-          .map(trimText).get(),
-          ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Users', 'Malware Analysis'], 'Default Investigation Landing Page');
+      assert.deepEqual(
+        find('.ember-power-select-dropdown .ember-power-select-option').map(trimText).get(),
+        ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Users', 'Malware Analysis'],
+        'Default Investigation Landing Page'
+      );
     });
 
     assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR24').length, 1);

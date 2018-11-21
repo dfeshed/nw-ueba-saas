@@ -80,19 +80,19 @@ export default Route.extend({
         request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(setSelectedEndpointServer(sid));
         return request.ping('endpoint-server-ping')
-        .then(() => {
-          const { machineId, tabName = 'OVERVIEW' } = params;
-          if (machineId) {
-            this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
-          } else {
-            this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
-          }
-          redux.dispatch(isEndpointServerOffline(false));
-          redux.dispatch(initializeHostPage(params));
-        })
-        .catch(function() {
-          redux.dispatch(isEndpointServerOffline(true));
-        });
+          .then(() => {
+            const { machineId, tabName = 'OVERVIEW' } = params;
+            if (machineId) {
+              this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
+            } else {
+              this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
+            }
+            redux.dispatch(isEndpointServerOffline(false));
+            redux.dispatch(initializeHostPage(params));
+          })
+          .catch(function() {
+            redux.dispatch(isEndpointServerOffline(true));
+          });
       }
     });
   },

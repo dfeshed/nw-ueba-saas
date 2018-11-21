@@ -320,7 +320,7 @@ const _fetchHostNameList = (checksum) => {
     const { fileList: { agentCountMapping } } = getState().files;
     const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 20;
     const input = {
-      filter: { value: `(checksum = \'${checksum}\')` },
+      filter: { value: `(checksum = '${checksum}')` },
       queryNode,
       size,
       metaName: 'alias.host',
@@ -337,7 +337,7 @@ const fetchAgentId = (hostName, callBack) => {
     const queryNode = getState().investigate;
     const input = {
       queryNode,
-      filter: { value: `(alias.host = \'${hostName}\')` },
+      filter: { value: `(alias.host = '${hostName}')` },
       size: 1,
       metaName: 'agent.id',
       onComplete: (data) => {

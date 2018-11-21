@@ -60,8 +60,8 @@ const getRiskScoreContext = (query) => {
 const getAlertEvents = (alertId) => {
   const request = lookup('service:request');
   const query = filterQuery.create()
-      .addSortBy('timestamp', false)
-      .addFilter('_id', alertId);
+    .addSortBy('timestamp', false)
+    .addFilter('_id', alertId);
 
   return request.promiseRequest({
     method: 'alert-events',

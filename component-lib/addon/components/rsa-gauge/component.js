@@ -107,11 +107,11 @@ export default Component.extend({
     // Draw ticks
     for (let i = 0; i < tickLineData.length; i++) {
       gauge.append('path')
-      .attr('class', 'gauge-ticks')
-      .attr('d', tickLineData[i])
-      .attr('stroke', colorSecondary)
-      .attr('stroke-width', arcThickness)
-      .attr('transform', `translate(${halfWidth},${halfHeight})`);
+        .attr('class', 'gauge-ticks')
+        .attr('d', tickLineData[i])
+        .attr('stroke', colorSecondary)
+        .attr('stroke-width', arcThickness)
+        .attr('transform', `translate(${halfWidth},${halfHeight})`);
     }
 
     // Draw arc

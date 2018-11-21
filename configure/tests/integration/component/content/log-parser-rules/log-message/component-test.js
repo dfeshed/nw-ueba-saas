@@ -135,7 +135,7 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     await triggerKeyEvent('pre', 'keyup', 38);
     await triggerKeyEvent('pre', 'keyup', 39);
     await triggerKeyEvent('pre', 'keyup', 40);
-    setTimeout(async () => {
+    setTimeout(async() => {
       await triggerKeyEvent('pre', 'keyup', 80);
     }, 200);
   });

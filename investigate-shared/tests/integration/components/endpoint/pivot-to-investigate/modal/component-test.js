@@ -15,7 +15,7 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('onClose', function() {});
     await render(hbs`
     {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256' onClose=(action onClose)}}`);
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll('.service-modal').length, 1, 'Expected to render service modal');
     });
   });
@@ -29,7 +29,7 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('onClose', function() {});
     await render(hbs`
     {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256'}}`);
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll('.service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
       assert.equal(findAll('.service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
     });
@@ -44,7 +44,7 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('onClose', function() {});
     await render(hbs`
     {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256' onClose=(action onClose)}}`);
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll('.service-modal').length, 1, 'Expected to render service modal');
       assert.equal(findAll('.service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
       assert.equal(findAll('.service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');

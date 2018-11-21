@@ -66,9 +66,8 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
           }
         ],
         associatedGroups: []
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 2, '2 headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Windows Log Settings', 'first heading is as expected');
@@ -101,9 +100,8 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
         secondaryDestination: 'LD_02',
         channelFilters: [],
         associatedGroups: []
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 1, '1 headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Windows Log Settings', 'first heading is as expected');

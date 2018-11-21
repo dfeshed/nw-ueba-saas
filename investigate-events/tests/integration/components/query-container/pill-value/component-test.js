@@ -197,7 +197,7 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('it removes all text when the ESCAPE key is pressed', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('handleMessage', async (type) => {
+    this.set('handleMessage', async(type) => {
       if (type === MESSAGE_TYPES.VALUE_ESCAPE_KEY) {
         assert.equal(find(PILL_SELECTORS.valueSelectInput).textContent, '', 'input should be empty');
         done();

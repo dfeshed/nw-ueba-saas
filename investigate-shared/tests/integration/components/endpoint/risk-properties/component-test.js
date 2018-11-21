@@ -49,8 +49,11 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(findAll('.risk-properties .alert-count')[2].innerText, 3, 'Medium alert count is 3');
     assert.equal(findAll('.risk-properties .alert-count')[3].innerText, 6, 'All alert count is 6');
 
-    assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
-                          'Display alert name and alert count for alert context');
+    assert.equal(
+      find('.alert-context__name').textContent.trim(),
+      'test alert (10)',
+      'Display alert name and alert count for alert context'
+    );
     assert.equal(find('.alert-context__event').textContent.trim(), '2 event(s)', 'Display 2 events for alert context');
   });
 

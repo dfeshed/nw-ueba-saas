@@ -12,7 +12,7 @@ const getDescendantProp = function(obj, desc) {
 };
 
 export async function waitForRedux(key, value) {
-  return new Promise(async (resolve) => {
+  return new Promise(async(resolve) => {
     let counter = 1;
     registerWaiter(() => counter === 0);
     const { owner } = getContext();

@@ -54,16 +54,16 @@ const _baseAsserts = (method, modelName, query, name) => {
  * @public
  */
 const streamRequest = ({
-    method,
-    modelName,
-    query,
-    onResponse,
-    streamOptions = {},
-    onInit,
-    onStopped,
-    onCompleted,
-    onError
-  }, routeName) => {
+  method,
+  modelName,
+  query,
+  onResponse,
+  streamOptions = {},
+  onInit,
+  onStopped,
+  onCompleted,
+  onError
+}, routeName) => {
 
   _baseAsserts(method, modelName, query, 'streamRequest');
   assert('Cannot call streamRequest without onResponse', onResponse);
@@ -288,12 +288,12 @@ const pagedStreamRequest = (options, routeName) => {
  * @public
  */
 const promiseRequest = ({
-    method,
-    modelName,
-    query,
-    onInit,
-    streamOptions = {}
-  }, routeName, rootCall = 'promiseRequest') => {
+  method,
+  modelName,
+  query,
+  onInit,
+  streamOptions = {}
+}, routeName, rootCall = 'promiseRequest') => {
 
   _baseAsserts(method, modelName, query, rootCall);
 

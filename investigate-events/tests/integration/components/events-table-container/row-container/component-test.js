@@ -199,7 +199,7 @@ module('Integration | Component | events table row', function(hooks) {
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const japaneseMedium = find(mediumSelector).textContent;
       assert.equal(japaneseMedium, japaneseNetwork, 'Expected medium to be translated given the locale is ja-jp');
     });

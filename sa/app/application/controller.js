@@ -60,7 +60,7 @@ export default Controller.extend({
     if (stylesheets && stylesheets[0] && stylesheets[0].href) {
       const [ stylesheet ] = stylesheets;
       const { href } = stylesheet;
-      const pattern = new RegExp('/assets/sa-(.*)\.css');
+      const pattern = new RegExp('/assets/sa-(.*).css');
       const fingerprint = pattern.exec(href);
       if (fingerprint && fingerprint[1]) {
         return `/assets/${themeName}-${fingerprint[1]}.css`;

@@ -36,9 +36,9 @@ module('Integration | Component | process-details', function(hooks) {
 
   test('Process details panel renders', async function(assert) {
     new ReduxDataHelper(setState)
-    .processProperties(processProperties)
-    .queryInput(queryInput)
-    .build();
+      .processProperties(processProperties)
+      .queryInput(queryInput)
+      .build();
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 

@@ -55,7 +55,7 @@ export default EmberObject.extend({
     // Cache state.
     this.setProperties({
       mouseIsDown: true,
-      mouseDownAt: [e.pageX, e.pageY],     // coords relative to doc, not some svg element
+      mouseDownAt: [e.pageX, e.pageY], // coords relative to doc, not some svg element
       mouseMoveCounter: 0
     });
 

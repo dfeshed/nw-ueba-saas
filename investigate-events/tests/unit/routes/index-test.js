@@ -200,7 +200,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      mf: "action = \'foo\'"
+      mf: "action = 'foo'"
     };
 
     await route.model(params);

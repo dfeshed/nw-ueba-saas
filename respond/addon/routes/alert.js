@@ -32,12 +32,12 @@ export default Route.extend({
     }
   },
 
-  model({ alert_id }) {
+  model({ alertId }) {
     next(() => {
-      this.get('redux').dispatch(initializeAlert(alert_id));
+      this.get('redux').dispatch(initializeAlert(alertId));
     });
     return {
-      alertId: alert_id
+      alertId
     };
   },
 

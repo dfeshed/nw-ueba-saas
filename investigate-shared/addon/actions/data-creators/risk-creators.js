@@ -173,12 +173,12 @@ const getRiskScoringServerStatus = () => {
   return (dispatch, getState) => {
     const request = lookup('service:request');
     return request.ping('risk-scoring-server-ping')
-        .then(() => {
-          dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
-        })
-        .catch(() => {
-          dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
-        });
+      .then(() => {
+        dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
+      })
+      .catch(() => {
+        dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
+      });
   };
 };
 

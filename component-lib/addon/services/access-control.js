@@ -173,7 +173,7 @@ export default Service.extend({
 
   // End respond access permissions
 
- // Begin Endpoint permissions
+  // Begin Endpoint permissions
 
   @computed('roles.[]')
   hasInvestigateHostsAccess(roles) {

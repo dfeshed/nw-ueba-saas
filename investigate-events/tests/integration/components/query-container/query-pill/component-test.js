@@ -884,10 +884,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -917,10 +917,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -950,10 +950,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -983,10 +983,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -1016,10 +1016,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -1086,9 +1086,9 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, message is sent up', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
-    .pillsDataEmpty()
-    .language()
-    .build();
+      .pillsDataEmpty()
+      .language()
+      .build();
 
     this.set('pillData', []);
     this.set('metaOptions', META_OPTIONS);
@@ -1115,9 +1115,9 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, message is sent up', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
-    .pillsDataEmpty()
-    .language()
-    .build();
+      .pillsDataEmpty()
+      .language()
+      .build();
 
     this.set('pillData', []);
     this.set('metaOptions', META_OPTIONS);
@@ -1143,10 +1143,10 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('If on a focused pill and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -1174,10 +1174,10 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('If on a focused pill and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markFocused(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markFocused(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);

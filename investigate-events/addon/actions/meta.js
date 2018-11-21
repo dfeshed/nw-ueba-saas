@@ -78,9 +78,12 @@ export default Mixin.create({
       const freeJobCount = MAX_JOBS_QUEUE_SIZE - this.get('state.meta.jobs.length');
       if (freeJobCount) {
         let candidates = group.keys
-          .filterBy('isOpen', true)   // only fetch open keys
-          .map((groupItem) => metaKeyStates.findBy('info.metaName', groupItem.name))  // map key name to key info
-          .compact();   // discard group keys that don't match up to anything in the given language
+          // only fetch open keys
+          .filterBy('isOpen', true)
+          // map key name to key info
+          .map((groupItem) => metaKeyStates.findBy('info.metaName', groupItem.name))
+          // discard group keys that don't match up to anything in the given language
+          .compact();
 
         // @todo: Only fetch indexed meta keys
         // candidates = candidates.filterBy('info.isIndexed');

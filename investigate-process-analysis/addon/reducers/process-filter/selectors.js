@@ -26,7 +26,7 @@ export const constructFilterQueryString = createSelector(
 
         for (let j = 0; j < selectedFilterClone.length; j++) {
           orOperator = (j === (selectedFilterClone.length - 1)) ? '' : '||';
-          queryString = `${queryString}${filter}=\'${selectedFilterClone[j]}\'${orOperator}`;
+          queryString = `${queryString}${filter}='${selectedFilterClone[j]}'${orOperator}`;
         }
         queryStringsForMeta.push({ value: `(${queryString})` });
       }

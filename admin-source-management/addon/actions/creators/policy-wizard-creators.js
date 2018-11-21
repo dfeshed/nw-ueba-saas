@@ -15,7 +15,7 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
  * @public
  */
 const initializePolicy = (policyId) => {
-  return async (dispatch, getState) => {
+  return async(dispatch, getState) => {
     if (policyId === 'create-new') {
       dispatch(newPolicy());
     } else {

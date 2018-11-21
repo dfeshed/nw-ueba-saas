@@ -49,9 +49,13 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
   // closure action expected to be passed in
   transitionToClose: null,
 
-  @computed('step',
-   'isIdentifyPolicyStepValid', 'identifyPolicyStepShowErrors',
-   'isDefinePolicyStepValid', 'definePolicyStepShowErrors')
+  @computed(
+    'step',
+    'isIdentifyPolicyStepValid',
+    'identifyPolicyStepShowErrors',
+    'isDefinePolicyStepValid',
+    'definePolicyStepShowErrors'
+  )
   isStepValid(step,
     isIdentifyPolicyStepValid, identifyPolicyStepShowErrors,
     isDefinePolicyStepValid, definePolicyStepShowErrors) {

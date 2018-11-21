@@ -321,7 +321,7 @@ export default EmberObject.extend({
     const count = added + this.get('count');
     this.set('count', count);
 
-      // The `goal` property is derived from `total`, `page.index` & `page.size`, if given.
+    // The `goal` property is derived from `total`, `page.index` & `page.size`, if given.
     let goal = meta.total;
 
     if (request) {

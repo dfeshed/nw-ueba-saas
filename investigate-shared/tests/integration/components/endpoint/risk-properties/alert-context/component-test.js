@@ -38,11 +38,11 @@ module('Integration | Component | endpoint/risk-properties/alert-context', funct
     assert.equal(findAll('.alert-context__container').length, 2, 'Number of alert context containers should be 2.');
 
     assert.equal(findAll('.alert-context__name')[0].textContent.trim(), 'test-alert1 (1)',
-                          'Display alert name and alert count for first alert context');
+      'Display alert name and alert count for first alert context');
     assert.equal(findAll('.alert-context__event')[0].textContent.trim(), '10 events', 'Display 10 events for first alert context');
 
     assert.equal(findAll('.alert-context__name')[1].textContent.trim(), 'test-alert2 (2)',
-                          'Display alert name and alert count for second alert context');
+      'Display alert name and alert count for second alert context');
     assert.equal(findAll('.alert-context__event')[1].textContent.trim(), '20 events', 'Display 20 events for second alert context');
   });
 
@@ -71,10 +71,10 @@ module('Integration | Component | endpoint/risk-properties/alert-context', funct
     `);
 
     assert.equal(findAll('.alert-context__container.is-selected div.alert-context__name')[0].textContent,
-        'test-alert1 (1)', 'First alert is selected by default');
+      'test-alert1 (1)', 'First alert is selected by default');
     await click(findAll('.alert-context__container')[1]);
 
     assert.equal(findAll('.alert-context__container.is-selected div.alert-context__name')[0].textContent,
-        'test-alert2 (2)', 'On clicking second row, that alert is selected');
+      'test-alert2 (2)', 'On clicking second row, that alert is selected');
   });
 });

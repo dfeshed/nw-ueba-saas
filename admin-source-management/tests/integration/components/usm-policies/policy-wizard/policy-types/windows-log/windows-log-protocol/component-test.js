@@ -45,9 +45,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
 
   test('It triggers the update policy action creator when the protocol is changed', async function(assert) {
     new ReduxDataHelper(setState)
-        .policyWiz('windowsLogPolicy')
-        .policyWizWinLogProtocol('TLS')
-        .build();
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogProtocol('TLS')
+      .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol}}`);
     await selectChoose('.windows-log-protocol__list', '.ember-power-select-option', 0);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

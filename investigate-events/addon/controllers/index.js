@@ -4,12 +4,12 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 export default Controller.extend({
   queryParams: [
     'sid', // serviceId
-    'st',  // startTime
-    'et',  // endTime
+    'st', // startTime
+    'et', // endTime
     'eid', // sessionId
-    'mf',  // pillData
+    'mf', // pillData
     'mps', // metaPanelSize
-    'rs'   // reconSize
+    'rs' // reconSize
   ],
 
   actions: {

@@ -50,9 +50,9 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', false);
     new ReduxDataHelper(setState)
-     .allEventsSelected(false)
-     .withSelectedEventIds()
-     .build();
+      .allEventsSelected(false)
+      .withSelectedEventIds()
+      .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.notOk(find(`${downloadSelector} .ember-power-select`), 'Download option not present');
   });

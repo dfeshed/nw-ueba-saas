@@ -130,10 +130,10 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     await waitUntil(() => fetchResolved === true);
 
     assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
-    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src=\"a\">');
+    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src="a">');
 
     assert.equal(findAll('[test-id=securityBannerText]').length, 1);
-    assert.equal(document.querySelector('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src=\"a\">');
+    assert.equal(document.querySelector('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src="a">');
   });
 
   test('security header title will render login eula title when displayEula truthy and displaySecurityBanner falsy', async function(assert) {

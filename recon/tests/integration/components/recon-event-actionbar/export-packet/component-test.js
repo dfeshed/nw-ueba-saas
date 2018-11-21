@@ -54,7 +54,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), downloadPCAP);
     });
   });
@@ -97,7 +97,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), downloadPCAP);
       assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), downloadPayload);
       assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), downloadPayload1);
@@ -122,7 +122,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll('.export-packet-button').length, 0);
     });
   });
@@ -144,7 +144,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), isDownloading);
     });
   });
@@ -166,7 +166,7 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), downloadPayload);
     });
   });
@@ -178,9 +178,9 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     const redux = this.owner.lookup('service:redux');
     new DataHelper(redux)
-        .initializeData()
-        .setAutoDownloadPreference(true)
-        .setExtractedFileLink(fileLink);
+      .initializeData()
+      .setAutoDownloadPreference(true)
+      .setExtractedFileLink(fileLink);
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
     assert.equal(didDownloadCreatorsStub.callCount, 1, 'didDownload interaction creator called one time');
@@ -197,9 +197,9 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     const redux = this.owner.lookup('service:redux');
     new DataHelper(redux)
-        .initializeData()
-        .setAutoDownloadPreference(false)
-        .setExtractedFileLink(fileLink);
+      .initializeData()
+      .setAutoDownloadPreference(false)
+      .setExtractedFileLink(fileLink);
 
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 

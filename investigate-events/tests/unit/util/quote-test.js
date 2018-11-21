@@ -19,8 +19,8 @@ test('properly quote a string', function(assert) {
   assert.equal(quote("'foo'"), "'foo'", 'already single quoted');
   assert.equal(quote("'"), "'''", 'single quote, single quote within');
   assert.equal(quote('"'), "'\"'", 'double quote,');
-  assert.equal(quote("'foo\""), "'\'foo\"'", 'mixed quotes, leading single quote');
-  assert.equal(quote("\"foo'"), "'\"foo\''", 'mixed quotes, trailing single quote');
+  assert.equal(quote("'foo\""), "''foo\"'", 'mixed quotes, leading single quote');
+  assert.equal(quote("\"foo'"), "'\"foo''", 'mixed quotes, trailing single quote');
 });
 
 test('properly escape backslash characters', function(assert) {

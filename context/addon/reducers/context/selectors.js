@@ -5,7 +5,8 @@ const _lookupData = (state) => {
 };
 
 export const getLookupData = createSelector(
- [ _lookupData],
- ([lookupData]) => {
-   return lookupData;
- });
+  [ _lookupData],
+  ([lookupData]) => {
+    return lookupData;
+  }
+);

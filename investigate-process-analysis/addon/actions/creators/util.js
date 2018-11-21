@@ -46,9 +46,9 @@ const _createProcessFilter = () => {
  */
 const _processIdFilter = (pid, isParentAndChild) => {
   if (isParentAndChild) {
-    return { value: `(process.vid.src = \'${pid}\' || process.vid.dst = \'${pid}\')` };
+    return { value: `(process.vid.src = '${pid}' || process.vid.dst = '${pid}')` };
   } else {
-    return { value: `(process.vid.src = \'${pid}\')` };
+    return { value: `(process.vid.src = '${pid}')` };
   }
 };
 

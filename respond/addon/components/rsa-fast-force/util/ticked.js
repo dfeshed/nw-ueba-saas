@@ -62,9 +62,9 @@ export default function() {
   }
 
   const shouldAutoCenter = this.get('autoCenter') &&
-    (shouldStop || alphaChangedSignificantly) &&  // simulation is done or has cooled substantially
-    !this.get('dataHasBeenDragged') &&  // user has not dragged
-    !this.get('userHasZoomed');         // user has not manually zoomed
+    (shouldStop || alphaChangedSignificantly) && // simulation is done or has cooled substantially
+    !this.get('dataHasBeenDragged') && // user has not dragged
+    !this.get('userHasZoomed'); // user has not manually zoomed
 
   if (shouldAutoCenter) {
     // For auto center, use a slower duration than the default so we don't startle the user.

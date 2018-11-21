@@ -56,8 +56,8 @@ module('Integration | Component | host-container', function(hooks) {
 
   test('risk score filter is rendered', async function(assert) {
     new ReduxDataHelper(setState)
-        .hasMachineId(false)
-        .build();
+      .hasMachineId(false)
+      .build();
     await render(hbs`{{host-container}}`);
     assert.equal(findAll('.filter-controls .range-filter').length, 1, 'Range filter (score) is present');
     assert.equal(find('.filter-controls .range-filter .filter-text').textContent, 'Risk Score', 'Filter name is Risk Score');

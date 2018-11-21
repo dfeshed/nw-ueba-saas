@@ -154,6 +154,6 @@ export {
   toggleFocusItem,
   clearFocusItem,
   toggleSelectAll
-  };
+};
 
 

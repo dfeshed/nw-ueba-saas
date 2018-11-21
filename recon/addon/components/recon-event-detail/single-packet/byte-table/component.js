@@ -113,8 +113,7 @@ const ByteTableComponent = Component.extend({
         if (byte.isHeader || byte.isKnown) {
           td.on('mousemove', (d) => {
             this.mousemoveHandler(d, byte);
-          })
-          .on('mouseleave', () => {
+          }).on('mouseleave', () => {
             this.send('hidePacketTooltip');
           });
         }
@@ -257,7 +256,7 @@ const ByteTableComponent = Component.extend({
     });
 
     drag.mousedown(e);
-    return true;  // Allow browser to perform default behavior (selection highlighting).
+    return true; // Allow browser to perform default behavior (selection highlighting).
   },
 
   _updateSelection() {

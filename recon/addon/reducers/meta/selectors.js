@@ -129,10 +129,10 @@ export const processAnalysisQueryString = createSelector(
 );
 
 export const agentId = createSelector(
-    _eventMeta,
-    (eventMeta) => {
-      return getMetaValue('agent.id', eventMeta);
-    }
+  _eventMeta,
+  (eventMeta) => {
+    return getMetaValue('agent.id', eventMeta);
+  }
 );
 
 export const endpointServiceId = createSelector(

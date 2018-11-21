@@ -92,8 +92,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
         data: {
           access_token: this.get('session').get('data.authenticated.access_token')
         }
-      })
-      .always(() => {
+      }).always(() => {
         localStorage.removeItem(csrfKey);
         this.get('session').invalidate();
         resolve();

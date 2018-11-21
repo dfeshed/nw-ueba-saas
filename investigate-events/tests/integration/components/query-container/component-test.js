@@ -30,7 +30,7 @@ async function iterateTimeRangeSelection(assert) {
   // focus out to set it
   await blur(timeRangeSelectors.minuteInput);
 
-  return settled().then(async () => {
+  return settled().then(async() => {
     // should see a invalid timerange
     assert.equal(findAll(timeRangeSelectors.invalidTimeRange).length, 1, 'Found an invalid timerange');
 

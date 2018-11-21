@@ -57,7 +57,7 @@ const Size = EmberObject.extend({
           auto: false
         });
       } else {
-        const match = String(v).match(/([\d\.]+)([^\d]*)/);
+        const match = String(v).match(/([\d.]+)([^\d]*)/);
         const number = match && Number(match[1]);
         const units = (match && match[2]) || 'px';
 

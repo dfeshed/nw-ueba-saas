@@ -192,15 +192,15 @@ module('Unit | Controller | application', function(hooks) {
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(get(moment, 'locale'), 'es');
 
       redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
 
-      return settled().then(async () => {
+      return settled().then(async() => {
         assert.equal(get(moment, 'locale'), 'en');
       });
-    }).finally(async () => {
+    }).finally(async() => {
       document.body.removeChild(dynamicScripts()[0]);
     });
   });
@@ -237,7 +237,7 @@ module('Unit | Controller | application', function(hooks) {
     patchFetch((url) => fileFetch(url));
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(fetchCount, 1);
       assert.equal(get(i18n, 'locale'), 'es-mx');
       assert.equal(dynamicScripts().length, 1);
@@ -246,7 +246,7 @@ module('Unit | Controller | application', function(hooks) {
       patchFetch((url) => fileFetch(url));
       redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
 
-      return settled().then(async () => {
+      return settled().then(async() => {
         assert.equal(fetchCount, 1);
         assert.equal(get(i18n, 'locale'), 'en-us');
         assert.equal(dynamicScripts().length, 1);
@@ -254,14 +254,14 @@ module('Unit | Controller | application', function(hooks) {
 
         redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
 
-        return settled().then(async () => {
+        return settled().then(async() => {
           assert.equal(fetchCount, 2);
           assert.equal(get(i18n, 'locale'), 'es-mx');
           assert.equal(dynamicScripts().length, 1);
           assert.equal(t('title').toString(), 'spanish_x');
         });
       });
-    }).finally(async () => {
+    }).finally(async() => {
       document.body.removeChild(dynamicScripts()[0]);
     });
   });

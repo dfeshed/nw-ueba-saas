@@ -26,7 +26,7 @@ const data = {
   owner: 'test',
   fileName: 'ntoskrnl.exe',
   pid: 'user1',
-  path: 'C:\Windows\System32',
+  path: 'C:\\Windows\\System32',
   signature: 'signed',
   launchArguments: 'xxx',
   creationTime: '12/12/2018'

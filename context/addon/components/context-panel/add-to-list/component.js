@@ -35,7 +35,7 @@ export default Component.extend({
     this.get('eventBus').off(`rsa-application-modal-close-${contextAddToListModalId}`);
     this.get('eventBus').off(`rsa-application-modal-open-${contextAddToListModalId}`);
   },
-    /**
+  /**
    * The type and id of the entity which is to be added to a list.
    * @type {{type: String, id: String}}
    * @public

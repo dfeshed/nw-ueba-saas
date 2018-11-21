@@ -59,7 +59,7 @@ const ContextToolTipActions = Component.extend({
   */
   @computed('entityType', 'entityId')
   showEndpointLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC\_ADDRESS/));
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS/));
   },
 
   /**
@@ -69,7 +69,7 @@ const ContextToolTipActions = Component.extend({
   */
   @computed('entityType', 'entityId')
   showArcherLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC\_ADDRESS/));
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS/));
   },
 
   /**
@@ -124,14 +124,14 @@ const ContextToolTipActions = Component.extend({
         // Fetch the list of meta keys that correspond to this entity type.
         //
         this.get('context').metas('CORE')
-        .then(({ data = {} }) => {
-          if (this.get('isDestroying') || this.get('isDestroyed')) {
-            return;
-          }
-          const metaKeys = data[entityType];
-          const url = pivotToInvestigateUrl(entityType, entityId, metaKeys);
-          this.set('pivotToInvestigateUrl', url);
-        });
+          .then(({ data = {} }) => {
+            if (this.get('isDestroying') || this.get('isDestroyed')) {
+              return;
+            }
+            const metaKeys = data[entityType];
+            const url = pivotToInvestigateUrl(entityType, entityId, metaKeys);
+            this.set('pivotToInvestigateUrl', url);
+          });
       }
     }
   },

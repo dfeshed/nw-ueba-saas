@@ -43,7 +43,7 @@ export const getSocManagerEmailAddresses = createSelector(
 );
 
 export const isTransactionUnderway = createSelector(
- notificationsState,
+  notificationsState,
   (notificationsState) => notificationsState.isTransactionUnderway
 );
 

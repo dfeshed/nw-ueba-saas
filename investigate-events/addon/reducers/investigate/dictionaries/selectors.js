@@ -45,15 +45,15 @@ export const metaKeySuggestionsForQueryBuilder = createSelector(
   [_language],
   (language = []) => {
     return language
-    .filter((m) => m.metaName !== 'time')
-    .filter((meta) => {
-      const { flags = 1 } = meta;
-      const index = (flags & '0xF') - 1;
-      const indexedBy = indices[index];
-      if (indexedBy !== NONE || meta.metaName === 'sessionid') {
-        return true;
-      }
-      return false;
-    });
+      .filter((m) => m.metaName !== 'time')
+      .filter((meta) => {
+        const { flags = 1 } = meta;
+        const index = (flags & '0xF') - 1;
+        const indexedBy = indices[index];
+        if (indexedBy !== NONE || meta.metaName === 'sessionid') {
+          return true;
+        }
+        return false;
+      });
   }
 );

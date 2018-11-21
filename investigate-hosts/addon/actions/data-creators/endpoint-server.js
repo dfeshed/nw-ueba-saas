@@ -32,14 +32,14 @@ export const setEndpointServer = (server) => {
       request.registerPersistentStreamOptions({ socketUrlPostfix: server.id, requiredSocketUrl: 'endpoint/socket' });
       dispatch({ type: ACTION_TYPES.RESET_HOSTS });
       return request.ping('endpoint-server-ping')
-      .then(() => {
-        dispatch(isEndpointServerOffline(false));
-        dispatch(getPageOfMachines());
-        dispatch(getServiceId('MACHINE'));
-      })
-      .catch(function() {
-        dispatch(isEndpointServerOffline(true));
-      });
+        .then(() => {
+          dispatch(isEndpointServerOffline(false));
+          dispatch(getPageOfMachines());
+          dispatch(getServiceId('MACHINE'));
+        })
+        .catch(function() {
+          dispatch(isEndpointServerOffline(true));
+        });
     }
   };
 };

@@ -42,7 +42,7 @@ module('Integration | Component | Event Details', function(hooks) {
     });
     await render(hbs`{{rsa-event-details/body model=eventDetails}}`);
     const links = findAll('.rsa-property-tree tr.related-link a');
-    const urlPartsRegex = /(http[s]?:\/\/)?([^\/\s]+)(\/.*)/;
+    const urlPartsRegex = /(http[s]?:\/\/)?([^/\s]+)(\/.*)/;
     assert.equal(links.length, 2, 'Two anchor links appear, one for each found in the data');
     assert.equal(links[0].textContent.trim(), 'Investigate Original Event', 'The text for the first link matches the type (after split/capitalized)');
     assert.equal(links[0].href.match(urlPartsRegex)[3], relatedLinks[0].url, 'The url for the first link matches that found in the data');
@@ -66,7 +66,7 @@ module('Integration | Component | Event Details', function(hooks) {
 
     set(i18n, 'locale', 'de-de');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find(selector).textContent.trim(), timestampInGerman);
     });
   });

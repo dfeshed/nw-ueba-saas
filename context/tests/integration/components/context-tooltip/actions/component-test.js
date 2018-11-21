@@ -67,7 +67,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
     assert.equal(findAll('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
     assert.equal(findAll('.action').length, 4, 'Expected to find 4 action menu options');
-      // Click the first option, that's the Add To List option
+    // Click the first option, that's the Add To List option
     await click(findAll('.action')[0]);
   });
 

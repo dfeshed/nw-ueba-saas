@@ -80,7 +80,7 @@ module('Integration | Component | Incident Overview', function(hooks) {
 
     set(i18n, 'locale', 'ja-jp');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), unassigned);
     });
   });

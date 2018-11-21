@@ -19,7 +19,7 @@ const _buildQuery = (conditions = [], metaFormatMap = {}) => {
     // if the metavalue already starts with a quote, don't add additional quotes
     //  e.g 'a``j1.[]1restonvirginia.sys' already has quotes around it, so not adding any quotes
     //  e.g a``j1.[]1restonvirginia.sys does not have outer quotes, so needs quotes or else classic blows up
-    const surroundInQuotes = String(metaFormat).toLowerCase() === 'text' && value.trim().search(/[\'\"]/g) !== 0;
+    const surroundInQuotes = String(metaFormat).toLowerCase() === 'text' && value.trim().search(/['"]/g) !== 0;
     const valueEncoded = surroundInQuotes ? `'${String(value)}'` : value;
     return `${meta} ${operator} ${valueEncoded}`;
   }).join(' && ');
@@ -32,7 +32,7 @@ export const buildInvestigateUrl = (selected, queryOperator, contextDetails, dis
     // change metavalue NT Service\MSSQLSERVER to NT Service\\MSSQLSERVER so that on pivoting to classic, the query does not blow up.
     metaValue = metaValue.replace(/\\/g, '\\\\');
     // change metavalue 'eu'Tl' to 'eu\'Tl'
-    metaValue = metaValue.replace(/[\'\"]/g, '\\\'');
+    metaValue = metaValue.replace(/['"]/g, '\\\'');
   }
   const { endpointId, startTime, endTime, queryConditions, language } = contextDetails;
   const metaFormatMap = _prepareMetaFormatMap(language);

@@ -11,16 +11,15 @@ export default Route.extend({
 
   queryParams: {
     pn: { refreshModel: true }, // process name
-    aid: { refreshModel: true },  // agent id
-    checksum: { refreshModel: true },  // checksum
-    st: { refreshModel: true },  // start time
-    et: { refreshModel: true },      // end time
-    sid: { refreshModel: true },       // service id
-    vid: { replace: true },        // process identification
-    hn: { refreshModel: true },  // host name
-    serverId: { refreshModel: true }   // serverId
+    aid: { refreshModel: true }, // agent id
+    checksum: { refreshModel: true }, // checksum
+    st: { refreshModel: true }, // start time
+    et: { refreshModel: true }, // end time
+    sid: { refreshModel: true }, // service id
+    vid: { replace: true }, // process identification
+    hn: { refreshModel: true }, // host name
+    serverId: { refreshModel: true } // serverId
   },
-
 
   model(params) {
     const redux = this.get('redux');

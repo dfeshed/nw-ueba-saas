@@ -87,7 +87,7 @@ module('Acceptance | Request | streamRequest', function(hooks) {
     const request = this.owner.lookup('service:request');
 
     request.streamRequest({
-      method: 'stream/_1',  // reusing stream/_1 just to verify onInit called
+      method: 'stream/_1', // reusing stream/_1 just to verify onInit called
       modelName: 'test',
       query: {},
       onResponse() {},
@@ -107,7 +107,7 @@ module('Acceptance | Request | streamRequest', function(hooks) {
     const request = this.owner.lookup('service:request');
 
     request.streamRequest({
-      method: 'stream/_2',  // reusing stream/_2 just to verify onStopped called
+      method: 'stream/_2', // reusing stream/_2 just to verify onStopped called
       modelName: 'test',
       query: {},
       onResponse(response, stopStreaming) {

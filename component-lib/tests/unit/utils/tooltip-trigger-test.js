@@ -159,10 +159,10 @@ test('wireTriggerToHover aborts a pending hide event if interrupted by a display
   assert.expect(2);
 
   wireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
-  $el.trigger('mouseenter');  // should trigger a `display` event in eventBus immediately
+  $el.trigger('mouseenter'); // should trigger a `display` event in eventBus immediately
   return wait().then(() => {
-    $el.trigger('mouseleave');  // should wait for `hideDelay` before triggering eventBus
-    $el.trigger('mouseenter');  // should abort the eventBus trigger from mouseleave above and instead trigger another `display` event
+    $el.trigger('mouseleave'); // should wait for `hideDelay` before triggering eventBus
+    $el.trigger('mouseenter'); // should abort the eventBus trigger from mouseleave above and instead trigger another `display` event
     return wait();
   }).then(() => {
     unwireTriggerToHover(el);

@@ -72,7 +72,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
 
     await selectChoose(powerSelector, japaneseLocale);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const powerSelect = find(powerSelector);
       assert.equal(trim(powerSelect.textContent), japaneseLocale);
     });
@@ -94,7 +94,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
 
     await selectChoose(powerSelector, japaneseLocale);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const powerSelect = find(powerSelector);
       assert.equal(trim(powerSelect.textContent), japaneseLocale);
     });
@@ -123,7 +123,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
 
     await click('.time');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find('.time').textContent, '午後');
     });
   });

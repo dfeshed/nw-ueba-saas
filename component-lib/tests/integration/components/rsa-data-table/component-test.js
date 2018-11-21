@@ -114,14 +114,14 @@ moduleForComponent('rsa-data-table', 'Integration | Component | rsa data table',
 test('Since no of columns are less and no width is given so adjusting the cell width according to the viewport should be more than 100', function(assert) {
   renderDifferentColumns(this);
   // To compare the width value, retrieving it without the units
-  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d.]+)([^\d]*)/);
   const columnWidth = match && Number(match[1]);
   assert.ok(columnWidth > 100, true);
 });
 
 test('since width is in px, hence still computes it', function(assert) {
   renderDifferentColumns(this, '120px');
-  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d.]+)([^\d]*)/);
   const columnWidth = match && Number(match[1]);
   assert.ok(columnWidth > 100, true);
 });
@@ -139,12 +139,12 @@ test('since combined cell width is more than viewport, so will not adjust the wi
 test('when the width of ViewPort of data-table changes, it needs to recalculate the width for columns', function(assert) {
   renderDifferentColumns(this);
   $('.rsa-data-table').width(1000);
-  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d.]+)([^\d]*)/);
   const columnWidth = match && Number(match[1]);
   $('.rsa-data-table').width(3000);
   const done = assert.async();
   return wait().then(() => {
-    const newMatch = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const newMatch = $('.rsa-data-table-body-cell').attr('style').match(/([\d.]+)([^\d]*)/);
     const newColumnWidth = newMatch && Number(newMatch[1]);
     assert.ok(columnWidth != newColumnWidth, true);
     done();
@@ -154,16 +154,16 @@ test('when the width of ViewPort of data-table changes, it needs to recalculate 
 test('when the width of ViewPort of data-table changes, it needs to recalculate the width for columns', function(assert) {
   renderDifferentColumns(this, null, true);
   $('.rsa-data-table').width(1000);
-  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d.]+)([^\d]*)/);
   const columnWidth = match && Number(match[1]);
   $('.rsa-data-table').width(3000);
   const done = assert.async();
   return wait().then(() => {
-    const firstMatch = $('.rsa-data-table-body-cell:first').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const firstMatch = $('.rsa-data-table-body-cell:first').attr('style').match(/([\d.]+)([^\d]*)/);
     const firstColumnWidth = firstMatch && Number(firstMatch[1]);
     assert.ok(columnWidth === firstColumnWidth, 'the first cell is same width');
 
-    const lastMatch = $('.rsa-data-table-body-cell:last').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const lastMatch = $('.rsa-data-table-body-cell:last').attr('style').match(/([\d.]+)([^\d]*)/);
     const lastColumnWidth = lastMatch && Number(lastMatch[1]);
     assert.ok(columnWidth != lastColumnWidth, 'the last cell is a different width');
     done();

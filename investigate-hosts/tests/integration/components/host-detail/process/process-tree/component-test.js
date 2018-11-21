@@ -28,8 +28,8 @@ moduleForComponent('host-detail/process/process-tree', 'Integration | Component 
 test('Column Names appear in datatable header', function(assert) {
   assert.expect(3);
   new ReduxDataHelper(setState)
-  .machineOSType('windows')
-  .build();
+    .machineOSType('windows')
+    .build();
 
   this.render(hbs`{{host-detail/process/process-tree}}`);
 

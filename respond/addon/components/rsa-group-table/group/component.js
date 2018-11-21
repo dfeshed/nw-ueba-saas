@@ -124,11 +124,11 @@ export default Component.extend({
    */
   @computed('group.items.[]', 'firstItemIndex', 'lastItemIndex')
   itemsInViewport(items, first, last) {
-    if ((last === -1) && (first === 0)) {   // all items
+    if ((last === -1) && (first === 0)) { // all items
       return items;
-    } else if (last > -1) {       // from first item index to last item index
+    } else if (last > -1) { // from first item index to last item index
       return (items || []).slice(first, last + 1);
-    } else {                      // from first item index to end of items
+    } else { // from first item index to end of items
       return (items || []).slice(first);
     }
   },

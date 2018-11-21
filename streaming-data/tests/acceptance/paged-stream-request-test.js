@@ -32,7 +32,7 @@ module('Acceptance | Request | pagedStreamRequest', function(hooks) {
     const request = this.owner.lookup('service:request');
 
     request.pagedStreamRequest({
-      method: 'stream/_1',  // reusing stream/_1 just to verify onInit called
+      method: 'stream/_1', // reusing stream/_1 just to verify onInit called
       modelName: 'test',
       query: {},
       onResponse() {

@@ -16,14 +16,14 @@ export default {
             };
             break;
 
-          // with warning
-          // case 2:
-          //   meta = {
-          //     percent: 20,
-          //     serviceId: '555d9a6fe4b0d37c827d402e',
-          //     warning: 'A warning message'
-          //   };
-          //   break;
+            // with warning
+            // case 2:
+            //   meta = {
+            //     percent: 20,
+            //     serviceId: '555d9a6fe4b0d37c827d402e',
+            //     warning: 'A warning message'
+            //   };
+            //   break;
 
           case 5:
             // fatal error

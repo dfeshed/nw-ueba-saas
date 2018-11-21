@@ -60,9 +60,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
             ]
           ]
         }
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 4, 'expected headings are shown');
     assert.equal(findAll('.usm-groups-inspector .heading')[0].innerText, 'Policy(ies) Applied', 'first heading is as expected');
@@ -117,9 +116,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
             ]
           ]
         }
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
     assert.equal(findAll('.usm-groups-inspector .heading')[2].innerText, 'History', 'History is the last section as expected');
@@ -201,9 +199,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
             ]
           ]
         }
-      }
-    )
-    .build();
+      }).build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
     assert.equal(findAll('.usm-groups-inspector .title').length, 8, 'expected titles shown');
@@ -254,9 +250,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
             ]
           ]
         }
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');

@@ -116,19 +116,17 @@ module('Integration | Component | Editable Field', function(hooks) {
     await render(hbs`{{respond-common/editable-field value=value}}`);
 
     await click('.editable-field .editable-field__value');
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find(editableFieldInputSelector).value.trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
       await fillIn(editableFieldInputSelector, 'Augustus');
       await blur(editableFieldInputSelector);
       return settled();
-    })
-    .then(async () => {
+    }).then(async() => {
       assert.equal(find(editableFieldInputSelector).value, 'Augustus', 'The value has changed in the input');
       assert.equal(find('.editable-field').classList.contains('has-changes'), true, 'The component has the "has-changes" class name');
       await click('.cancel-changes button');
       return settled();
-    })
-    .then(() => {
+    }).then(() => {
       assert.equal(find('.editable-field .editable-field__value').textContent.trim(), 'Julius Caesar', 'The value of the edit field is the original value');
       assert.equal(find('.editable-field').classList.contains('has-changes'), false, 'The component no longer has the "has-changes" class name');
       assert.equal(find('.editable-field').classList.contains('is-editing'), false, 'The component no longer has the "is-editing" class name');
@@ -147,17 +145,15 @@ module('Integration | Component | Editable Field', function(hooks) {
     const editableFieldInputSelector = '.editable-field input';
     await render(hbs`{{respond-common/editable-field value=value onFieldChange=(action fieldUpdate)}}`);
     await click('.editable-field .editable-field__value');
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find(editableFieldInputSelector).value.trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
       await fillIn(editableFieldInputSelector, 'Augustus');
       await blur(editableFieldInputSelector);
       return settled();
-    })
-    .then(async () => {
+    }).then(async() => {
       await click('.confirm-changes button');
       return settled();
-    })
-    .then(() => {
+    }).then(() => {
       assert.equal(find('.editable-field .editable-field__value').textContent.trim(), 'Augustus', 'The value of the edit field is the new value');
       assert.equal(find('.editable-field').classList.contains('has-changes'), false, 'The component no longer has the "has-changes" class name');
       assert.equal(find('.editable-field').classList.contains('is-editing'), false, 'The component no longer has the "is-editing" class name');
@@ -170,7 +166,7 @@ module('Integration | Component | Editable Field', function(hooks) {
     const editableFieldInputSelector = '.editable-field input';
     await render(hbs`{{respond-common/editable-field value=value allowEmptyValue=false }}`);
     await click('.editable-field .editable-field__value');
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find(editableFieldInputSelector).value.trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
       await fillIn(editableFieldInputSelector, '');
       await blur(editableFieldInputSelector);
@@ -187,7 +183,7 @@ module('Integration | Component | Editable Field', function(hooks) {
     const editableFieldInputSelector = '.editable-field input';
     await render(hbs`{{respond-common/editable-field value=value}}`);
     await click('.editable-field .editable-field__value');
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(find(editableFieldInputSelector).value.trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
       await fillIn(editableFieldInputSelector, 'Hadrian');
       await blur(editableFieldInputSelector);

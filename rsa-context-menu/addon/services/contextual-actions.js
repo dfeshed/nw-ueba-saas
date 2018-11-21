@@ -21,18 +21,18 @@ export default Service.extend({
   init() {
     this._super(...arguments);
     fetch('/admin/contextmenu/configuration.json')
-    .then((fetched) => fetched.json())
-    .then(({ data = [] }) => {
-      this.set('moduleBasedActions', buildContextOptions(data));
-    }).catch((error) => {
-      log('Error fetching actions', error);
-    });
+      .then((fetched) => fetched.json())
+      .then(({ data = [] }) => {
+        this.set('moduleBasedActions', buildContextOptions(data));
+      }).catch((error) => {
+        log('Error fetching actions', error);
+      });
   },
 
-/**
- * This public API returns context menu item for given moduleName and scope.
- * @public
-*/
+  /**
+   * This public API returns context menu item for given moduleName and scope.
+   * @public
+   */
   getContextualActionsForGivenScope(moduleName, scope, metaFormat) {
     const actions = this.get('moduleBasedActions');
     let mergedAction = [];

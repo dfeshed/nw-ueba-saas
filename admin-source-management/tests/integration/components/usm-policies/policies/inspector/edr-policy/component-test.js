@@ -74,9 +74,8 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
         agentMode: 'FULL_MONITORING'
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
     assert.equal(findAll('.heading').length, 5, '5 headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Scan Schedule', 'first heading is as expected');

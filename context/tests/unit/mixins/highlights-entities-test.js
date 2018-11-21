@@ -60,7 +60,8 @@ const FakeComponentClass = EmberObject.extend(HighlightsEntitiesMixin, {
   entityEndpointId,
   entityTooltipPanelId,
   entityTooltipTriggerEvent: 'click',
-  $(sel) {    // simulates Component.$() method
+  // simulates Component.$() method
+  $(sel) {
     if (this.element) {
       return sel ? jQuery(sel, this.element) : jQuery(this.element);
     }
@@ -99,7 +100,8 @@ const innerHTML = values
   .join('');
 
 test('it applies CSS classes, wires up clicks, and fires callbacks correctly', function(assert) {
-  assert.expect(14);  // 14 = 8 + 3 asserts * every callback to onEntityContextFound = 8 + 3 * 2
+  // 14 = 8 + 3 asserts * every callback to onEntityContextFound = 8 + 3 * 2
+  assert.expect(14);
 
   const element = document.createElement('svg');
   element.id = 'highlights-entities-test-element-1';

@@ -15,33 +15,33 @@ export const isRiskScoringServerOffline = (state) => state.risk.isRiskScoringSer
 export const events = (state) => state.risk.eventsData;
 
 export const currentSeverityContext = createSelector(
-    [riskScoreContext, activeRiskSeverityTab],
-    (riskScoreContext, activeRiskSeverityTab) => {
-      const severity = _.upperFirst(activeRiskSeverityTab);
-      const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
-      if (alertContext) {
-        return Object.keys(alertContext).map((key) => ({
-          alertName: key,
-          alertCount: alertContext[key].alertCount,
-          eventCount: alertContext[key].eventContexts.length,
-          filesCount: 0,
-          usersCount: 0,
-          context: alertContext[key].eventContexts
-        }));
-      }
-      return null;
+  [riskScoreContext, activeRiskSeverityTab],
+  (riskScoreContext, activeRiskSeverityTab) => {
+    const severity = _.upperFirst(activeRiskSeverityTab);
+    const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
+    if (alertContext) {
+      return Object.keys(alertContext).map((key) => ({
+        alertName: key,
+        alertCount: alertContext[key].alertCount,
+        eventCount: alertContext[key].eventContexts.length,
+        filesCount: 0,
+        usersCount: 0,
+        context: alertContext[key].eventContexts
+      }));
     }
+    return null;
+  }
 );
 
 export const riskType = createSelector(
-    _fileState, _riskType,
-    (fileState, riskType) => {
-      if (riskType) {
-        return riskType;
-      } else {
-        return fileState ? 'FILE' : 'HOST';
-      }
+  _fileState, _riskType,
+  (fileState, riskType) => {
+    if (riskType) {
+      return riskType;
+    } else {
+      return fileState ? 'FILE' : 'HOST';
     }
+  }
 );
 
 export const riskScoringServerError = createSelector(

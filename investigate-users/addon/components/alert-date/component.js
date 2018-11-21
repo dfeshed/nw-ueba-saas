@@ -13,8 +13,8 @@ export default Component.extend({
     const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
     const dateTimeFormat = selectedDateFormat ? selectedDateFormat : 'YYYY/MM/DD';
     const dateTimeString = moment(parseInt(timestamp, 10))
-                          .locale(this.get('i18n.locale') || 'en')
-                          .tz(timeZoneId).format(dateTimeFormat);
+      .locale(this.get('i18n.locale') || 'en')
+      .tz(timeZoneId).format(dateTimeFormat);
     return dateTimeString;
   }
 });

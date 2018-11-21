@@ -9,7 +9,7 @@ import {
   eventsLogsGet,
   toggleSelectAllEvents,
   toggleEventSelection
- } from 'investigate-events/actions/events-creators';
+} from 'investigate-events/actions/events-creators';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({

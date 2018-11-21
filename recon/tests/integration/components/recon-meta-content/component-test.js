@@ -18,11 +18,11 @@ module('Integration | Component | recon-meta-content', function(hooks) {
 
   test('several meta items render correctly', async function(assert) {
     new ReduxDataHelper(setState).meta([
-    [ 'size', 62750 ],
-    [ 'payload', 56460 ],
-    [ 'medium', 1 ],
-    [ 'eth.src', '70:56:81:9A:94:DD' ],
-    [ 'eth.dst', '10:0D:7F:75:C4:C8' ]
+      [ 'size', 62750 ],
+      [ 'payload', 56460 ],
+      [ 'medium', 1 ],
+      [ 'eth.src', '70:56:81:9A:94:DD' ],
+      [ 'eth.dst', '10:0D:7F:75:C4:C8' ]
     ]).build();
 
     await render(hbs`{{recon-meta-content}}`);
@@ -49,11 +49,10 @@ module('Integration | Component | recon-meta-content', function(hooks) {
     }];
 
     new ReduxDataHelper(setState).meta([
-    [ 'param.dst', 'test-value test-value' ],
-    [ 'nwe.callback_id', 'foo' ]
-    ])
-    .endpointText(endpointData)
-    .build();
+      [ 'param.dst', 'test-value test-value' ],
+      [ 'nwe.callback_id', 'foo' ]
+    ]).endpointText(endpointData)
+      .build();
 
     await render(hbs`{{recon-meta-content}}`);
     document.querySelector('.tooltip-text').setAttribute('style', 'width:100px');

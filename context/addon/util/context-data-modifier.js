@@ -147,7 +147,7 @@ const pivotToInvestigateUrl = (entityType, entityId, metas) => {
       return query;
     }
     // ECAT can provide hyphenated format, but Core requires colon format instead
-    entityId = String(entityId).replace(/\-/g, ':');
+    entityId = String(entityId).replace(/-/g, ':');
   }
 
   // For core query syntax, all single quotes and backslashes in a meta value must be prefixed by a backslash.

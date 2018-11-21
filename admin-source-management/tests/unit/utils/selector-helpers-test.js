@@ -70,7 +70,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator([], 'validHostnameContains', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
     assert.deepEqual(groupExpressionValidator([''], 'validHostnameContains', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('123$', 'validHostnameContains', true, true), { isError: true, showError: true }, '\'123$\' validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('.ABC-RST', 'validHostnameContains', true, true), { isError: false, showError: false }, '\'.ABC-RST\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('.ABC-RST', 'validHostnameContains', true, true), { isError: false, showError: false }, '\'.ABC-RST\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameContains', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameContains', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
   });
@@ -82,7 +82,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('.123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'.123\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('@123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'@123\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('-123', 'validHostnameStartsWith', true, true), { isError: true, showError: true }, '\'-123\' validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('ABC', 'validHostnameStartsWith', true, true), { isError: false, showError: false }, '\'ABC\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('ABC', 'validHostnameStartsWith', true, true), { isError: false, showError: false }, '\'ABC\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameStartsWith', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameStartsWith', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
   });
@@ -92,7 +92,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator([], 'validHostnameEndsWith', true, true), { isError: true, showError: true }, 'empty validation is bad as expected');
     assert.deepEqual(groupExpressionValidator([''], 'validHostnameEndsWith', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('123-', 'validHostnameEndsWith', true, true), { isError: true, showError: true }, '\'123-\' validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('-ABC', 'validHostnameEndsWith', true, true), { isError: false, showError: false }, '\'-ABC\ validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('-ABC', 'validHostnameEndsWith', true, true), { isError: false, showError: false }, '\'-ABC\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameEndsWith', true, true), { isError: false, showError: false }, '\'  ABC\', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('  ABC', 'validHostnameEndsWith', false, true), { isError: true, showError: true }, '\'  ABC\', trim disabledvalidation is bad as expected');
   });
@@ -116,7 +116,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('1.2.3.4', 'validIPv4', true, true), { isError: false, showError: false }, '\'1.2.3.4\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator(['1,2,3,4', '5,6,7,8'], 'validIPv4', true, true), { isError: true, showError: true }, '[\'1,2,3,4\', \'5,6,7,8\'] validation is bad as expected');
     assert.deepEqual(groupExpressionValidator(['1.2.3.4', '5.6.7.8'], 'validIPv4', true, true), { isError: false, showError: false }, '[\'1.2.3.4\', \'5.6.7.8\'] validation is good as expected');
-    assert.deepEqual(groupExpressionValidator('   1.2.3.4 ', 'validIPv4', true, true), { isError: false, showError: false }, '\   1.2.3.4 \', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('   1.2.3.4 ', 'validIPv4', true, true), { isError: false, showError: false }, '\'   1.2.3.4 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   1.2.3.4 ', 'validIPv4', false, true), { isError: true, showError: true }, '\'   1.2.3.4 \',  trim disabled validation is bad as expected');
   });
 
@@ -126,7 +126,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator([''], 'validIPv4List', true, true), { isError: true, showError: true }, '[\'\'] validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('1,2,3,4 5,6,7,8 1,2,3,4, 3.3.3.3', 'validIPv4List', true, true), { isError: true, showError: true }, '\'1,2,3,4 5,6,7,8 1,2,3,4, 3.3.3.3\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('1.2.3.4, 2.3.4.5 3.4.5.6', 'validIPv4List', true, true), { isError: false, showError: false }, '\'1.2.3.4, 2.3.4.5 3.4.5.6\' validation is good as expected');
-    assert.deepEqual(groupExpressionValidator('   1.2.3.4, 2.3.4.5 ', 'validIPv4List', true, true), { isError: false, showError: false }, '\   1.2.3.4, 2.3.4.5 \', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('   1.2.3.4, 2.3.4.5 ', 'validIPv4List', true, true), { isError: false, showError: false }, '\'   1.2.3.4, 2.3.4.5 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   1.2.3.4, 2.3.4.5 ', 'validIPv4List', false, true), { isError: false, showError: false }, '\'   1.2.3.4, 2.3.4.5 \',  trim disabled validation is good as expected, list trims automatically');
   });
 
@@ -140,7 +140,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('2001:0db8:85a3:0000:0000:8a2e:0370:7334', 'validIPv6', true, true), { isError: false, showError: false }, '\'2001:0db8:85a3:0000:0000:8a2e:0370:7334\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('1200::AB00:1234::2552:7777:1313', 'validIPv6', true, true), { isError: true, showError: true }, '\'1200::AB00:1234::2552:7777:1313\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('notextnotallowed', 'validIPv6', true, true), { isError: true, showError: true }, '\'notextnotallowed\',validation is bad as expected');
-    assert.deepEqual(groupExpressionValidator('   ::1 ', 'validIPv6', true, true), { isError: false, showError: false }, '\   ::1 \', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('   ::1 ', 'validIPv6', true, true), { isError: false, showError: false }, '\'   ::1 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1 ', 'validIPv6', false, true), { isError: true, showError: true }, '\'   ::1 \',  trim disabled validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('2041:0000:140F::875B:131B', 'validIPv6', true, true), { isError: false, showError: false }, '\'2041:0000:140F::875B:131B\' validation is good as expected');
   });
@@ -151,7 +151,7 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator([''], 'validIPv6List', true, true), { isError: true, showError: true }, 'bad [\'\'] validation is as expected');
     assert.deepEqual(groupExpressionValidator('1,2,3,4 2001:db8:0:200:0:0:0:7 2001:0db8:85a3:0000:0000:8a2e:0370:7334', 'validIPv6List', true, true), { isError: true, showError: true }, '\'1,2,3,4 2001:db8:0:200:0:0:0:7 2001:0db8:85a3:0000:0000:8a2e:0370:7334\' validation is bad as expected');
     assert.deepEqual(groupExpressionValidator('2001:db8:0:200:0:0:0:7, 2001:db8:0:200:0:0:0:8 2001:db8:0:200:0:0:0:9', 'validIPv6List', true, true), { isError: false, showError: false }, '\'2001:db8:0:200:0:0:0:7, 2001:db8:0:200:0:0:0:8 2001:db8:0:200:0:0:0:9\' validation is good as expected');
-    assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', true, true), { isError: false, showError: false }, '\   ::1, ::1 \', trim enabled validation is good as expected');
+    assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', true, true), { isError: false, showError: false }, '\'   ::1, ::1 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', false, true), { isError: false, showError: false }, '\'   ::1, ::1 \',  trim disabled validation is good as expected, list trims automatically');
   });
 

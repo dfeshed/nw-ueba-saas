@@ -34,7 +34,7 @@ export const serviceList = createSelector(
     }
     return null;
   }
- );
+);
 
 export const hostListForScanning = createSelector(
   [ _selectedHostList, _hostDetails ],

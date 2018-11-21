@@ -125,10 +125,10 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
 
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))();
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       locale = getLocale(redux.getState());
       assert.equal(locale.id, 'en_US');
-    }).finally(async () => {
+    }).finally(async() => {
       done();
     });
   });

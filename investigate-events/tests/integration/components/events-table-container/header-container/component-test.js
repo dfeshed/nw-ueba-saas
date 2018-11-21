@@ -13,7 +13,7 @@ let setState;
 
 const columnSelector = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
 
-const renderDefaultHeaderContainer = async (assert) => {
+const renderDefaultHeaderContainer = async(assert) => {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
   await render(hbs`{{events-table-container/header-container}}`);
   assert.equal(findAll('.ember-power-select-trigger').length, 2, 'there is no option to select default column group.');

@@ -18,7 +18,7 @@ export const hasSelectedApplyPoliciesItems = createSelector(
   (items) => {
     if (items) {
       // return (items.length == 1);
-      return false;  /* for now */
+      return false; /* for now */
     }
   }
 );

@@ -7,7 +7,8 @@ function applyCentering(i, isCentering) {
   if (this.isDestroyed || this.isDestroying) {
     return;
   }
-  if (i === 0) {  // only do this once per transition, not once per data point
+  // only do this once per transition, not once per data point
+  if (i === 0) {
     this.set('isCentering', isCentering);
   }
 }

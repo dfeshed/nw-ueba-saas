@@ -122,9 +122,9 @@ test('Recon should pick default Log format set by the user', function(assert) {
 test('the extracted file must be downloaded automatically', function(assert) {
   const fileLink = 'http://extracted-file-download-link/';
   new DataHelper(this.get('redux'))
-      .initializeData()
-      .setAutoDownloadPreference(true)
-      .setExtractedFileLink(fileLink);
+    .initializeData()
+    .setAutoDownloadPreference(true)
+    .setExtractedFileLink(fileLink);
   this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
 
   const iframe = this.$('.js-export-logs-iframe');
@@ -135,9 +135,9 @@ test('the extracted file must be downloaded automatically', function(assert) {
 test('the extracted file must not be downloaded automatically', function(assert) {
   const fileLink = 'http://extracted-file-download-link/';
   new DataHelper(this.get('redux'))
-      .initializeData()
-      .setAutoDownloadPreference(false)
-      .setExtractedFileLink(fileLink);
+    .initializeData()
+    .setAutoDownloadPreference(false)
+    .setExtractedFileLink(fileLink);
 
   patchFlash((flash) => {
     const translation = getOwner(this).lookup('service:i18n');

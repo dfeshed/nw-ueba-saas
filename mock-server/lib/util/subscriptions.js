@@ -17,7 +17,7 @@ const rediscover = function(directories, filePathChanged) {
 const watchDirectories = function(directories) {
   const watcher = chokidar.watch(directories, {
     ignoreInitial: true,
-    ignored: /[\/\\]\./,
+    ignored: /[/\\]\./,
     persistent: true
   });
 
@@ -70,7 +70,7 @@ const discoverSubscriptions = function(subscriptionLocations) {
           fullFileName
         };
       })
-       // filter out those that are not subscription files
+      // filter out those that are not subscription files
       .filter(({ sub }) => {
         return sub &&
           sub.subscriptionDestination &&

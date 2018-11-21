@@ -19,7 +19,7 @@ const param = {
 const options = {
   params: {
     'protected.respond.incident': {
-      incident_id: 'INC987'
+      incidentId: 'INC987'
     }
   }
 };
@@ -66,7 +66,7 @@ module('Unit | Route | incident.ueba', function(hooks) {
     const engineOptions = {
       params: {
         'respond.incident': {
-          incident_id: 'INC987'
+          incidentId: 'INC987'
         }
       }
     };

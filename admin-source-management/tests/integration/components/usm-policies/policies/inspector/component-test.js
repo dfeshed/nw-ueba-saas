@@ -74,9 +74,8 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
         agentMode: 'FULL_MONITORING'
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');
@@ -127,9 +126,8 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
         agentMode: 'FULL_MONITORING'
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 6, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[5].innerText, 'History', 'history section is last as expected');
@@ -181,9 +179,8 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
         agentMode: 'FULL_MONITORING'
-      }
-    )
-    .build();
+      }).build();
+
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
     assert.equal(findAll('.usm-policies-inspector .heading')[6].innerText, 'History', 'history section is last as expected');

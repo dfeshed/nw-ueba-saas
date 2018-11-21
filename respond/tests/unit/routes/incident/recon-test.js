@@ -20,7 +20,7 @@ const param = {
 const options = {
   params: {
     'protected.respond.incident': {
-      incident_id: 'INC987'
+      incidentId: 'INC987'
     }
   }
 };
@@ -67,7 +67,7 @@ module('Unit | Route | incident.recon', function(hooks) {
     const engineOptions = {
       params: {
         'respond.incident': {
-          incident_id: 'INC987'
+          incidentId: 'INC987'
         }
       }
     };
@@ -99,7 +99,7 @@ module('Unit | Route | incident.recon', function(hooks) {
         assert.ok(true, 'selection was correctly set during the model hook');
       }
       return selectionWasSet;
-    });
+    }, { timeout: 10000 });
   });
 
   test('should fetch languages and aliases then cache them', async function(assert) {
@@ -129,7 +129,7 @@ module('Unit | Route | incident.recon', function(hooks) {
         assert.ok(true, 'aliases and language were correctly set during the model hook');
       }
       return aliasesAreSetup && languagesAreSetup;
-    });
+    }, { timeout: 10000 });
 
     const { respond: { recon: { aliasesCache, languageCache } } } = redux.getState();
     assert.equal(Object.keys(aliasesCache[endpointId]).length, 9);

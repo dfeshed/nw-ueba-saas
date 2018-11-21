@@ -99,7 +99,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
       assert.deepEqual(
@@ -121,7 +121,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.deepEqual(
         newActionSpy.args[0][0].position,
@@ -252,7 +252,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
     await click(PILL_SELECTORS.deletePill);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
       assert.deepEqual(
@@ -273,7 +273,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await click(PILL_SELECTORS.deletePill);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(deleteActionSpy.callCount, 0, 'The delete pill action creator was called once');
     });
@@ -289,7 +289,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     doubleClick(PILL_SELECTORS.queryPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(openGuidedPillForEditSpy.callCount, 0, 'The openGuidedPillForEditSpy pill action not called at all');
     });
   });
@@ -402,7 +402,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await click(PILL_SELECTORS.meta);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(selectActionSpy.callCount, 1, 'The select pill action creator was called once');
       assert.deepEqual(
@@ -427,7 +427,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(PILL_SELECTORS.meta); // make it selected
     await click(PILL_SELECTORS.meta); // make it deselected
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(deselectActionSpy.callCount, 1, 'The deselect pill action creator was called once');
       const [ [ calledWith ] ] = deselectActionSpy.args;
@@ -536,7 +536,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // shouldn't as dispatchEvent is sync
     doubleClick(PILL_SELECTORS.queryPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       // action to store in state called
       assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action creator was called once');
     });
@@ -566,7 +566,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const pills = findAll(PILL_SELECTORS.queryPill);
     doubleClick(`#${pills[0].id}`, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
       await click(PILL_SELECTORS.meta);
       await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
@@ -602,7 +602,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
     doubleClick(PILL_SELECTORS.queryPill);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pills no longer selected');
     });
   });
@@ -666,7 +666,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const pills = findAll(PILL_SELECTORS.queryPill);
     doubleClick(`#${pills[0].id}`); // open pill for edit
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const triggers = findAll(PILL_SELECTORS.newPillTrigger);
       assert.equal(triggers.length, 2, 'Two triggers...');
       assert.equal(elementIsVisible(triggers[0]), false, '...but first is not visible...');
@@ -1389,14 +1389,14 @@ module('Integration | Component | Query Pills', function(hooks) {
       clientY: 100
     });
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       await click(`#${items[0].id}`); // execute query in same tab option
       return settled().then(() => {
         assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
         assert.deepEqual(
-        deleteActionSpy.args[0][0],
+          deleteActionSpy.args[0][0],
           { pillData: [{ id: '2', meta: 'b', operator: '=', value: '\'y\'', isSelected: false,
             complexFilterText: undefined, isEditing: false, isInvalid: false, isFocused: false }] },
           'The action creator was called with the right arguments'
@@ -1442,7 +1442,7 @@ module('Integration | Component | Query Pills', function(hooks) {
       clientY: 100
     });
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       await click(`#${items[1].id}`); // execute query in new tab option
@@ -1481,7 +1481,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present before deletion');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       await click(`#${items[2].id}`); // delete option
@@ -1517,7 +1517,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[1].id}`); // select the second pill
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should still have 1 focused pill');
       const pillText = find(PILL_SELECTORS.focusedPill).title;
       assert.equal(pillText, 'b = \'y\'', 'Focused expected on the first pill');
@@ -1547,7 +1547,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // shouldn't as dispatchEvent is sync
     doubleClick(PILL_SELECTORS.queryPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
     });
@@ -1575,7 +1575,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // shouldn't as dispatchEvent is sync
     doubleClick(PILL_SELECTORS.queryPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
     });
@@ -1622,7 +1622,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await click(PILL_SELECTORS.deletePill); // delete the first pill
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
     });
   });
@@ -1702,7 +1702,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // shouldn't as dispatchEvent is sync
     doubleClick(PILL_SELECTORS.complexPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
       await triggerKeyEvent(PILL_SELECTORS.complexPill, 'keydown', ESCAPE_KEY);
@@ -1732,7 +1732,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // shouldn't as dispatchEvent is sync
     doubleClick(PILL_SELECTORS.queryPill, true);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
       await triggerKeyEvent(PILL_SELECTORS.queryPill, 'keydown', ESCAPE_KEY);
@@ -1997,7 +1997,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
-    return settled().then(async () => {
+    return settled().then(async() => {
       // assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add free form filter creator was called once');
       // assert.deepEqual(
       //   addFreeFormFilterSpy.args[0][0],

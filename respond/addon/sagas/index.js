@@ -3,7 +3,7 @@ import { createIncident } from './alerts/incidents';
 import { fetchLanguagesAndAliases } from './recon/dictionaries';
 
 export default function* root() {
-  yield [
+  yield[
     fork(createIncident),
     fork(fetchLanguagesAndAliases)
   ];

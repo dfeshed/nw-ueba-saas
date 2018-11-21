@@ -116,9 +116,9 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('it renders error page when endpointserver is offline', async function(assert) {
     new ReduxDataHelper(setState)
-    .endpointServer(endpointServer)
-    .endpointQuery(endpointQuery)
-    .build();
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .build();
     await render(hbs`{{host-detail}}`);
     assert.equal(findAll('.host-header').length, 1, 'host header is not rendered');
     assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');

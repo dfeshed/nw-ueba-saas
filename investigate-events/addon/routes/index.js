@@ -40,11 +40,11 @@ export default Route.extend({
   queryParams: {
     pdhash: { refreshModel: true }, // pill data hashes
     sid: { refreshModel: true }, // serviceId
-    st: { refreshModel: true },  // startTime
-    et: { refreshModel: true },  // endTime
-    mf: { refreshModel: true },  // pillData
+    st: { refreshModel: true }, // startTime
+    et: { refreshModel: true }, // endTime
+    mf: { refreshModel: true }, // pillData
     mps: { refreshModel: false }, // metaPanelSize
-    rs: { refreshModel: false }   // reconSize
+    rs: { refreshModel: false } // reconSize
   },
 
   // Params used to update URL when hash comes in.

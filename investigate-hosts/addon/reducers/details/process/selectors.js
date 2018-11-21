@@ -181,38 +181,38 @@ const _consolidatedObjs = (listToConsolidate) => {
   },..]
 */
 export const imageHooksData = createSelector(
-    [_dllData, _selectedProcessId],
-    (dllData, selectedProcessId) => {
-      if (dllData && dllData.length) {
-        const [{ machineOsType }] = dllData;
-        const dllsThatHaveHooks = dllData.filter((dll) => {
-          const { imageHooks } = dll[machineOsType];
-          return imageHooks && imageHooks.length;
-        });
-        const filteredImageHooks = dllsThatHaveHooks.map((item) => {
-          const { fileName: dllFileName, fileProperties } = item;
-          const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : ['unsigned'];
-          const filteredHooks = item[machineOsType].imageHooks.filter((hookObj) => {
-            return hookObj.process.pid === selectedProcessId;
-          });
-
-          return filteredHooks.map((hookObj) => {
-            const { type, hookLocation: { fileName: hookFileName, symbol } } = hookObj;
-            return {
-              signature,
-              dllFileName,
-              type,
-              hookFileName,
-              symbol
-            };
-          });
+  [_dllData, _selectedProcessId],
+  (dllData, selectedProcessId) => {
+    if (dllData && dllData.length) {
+      const [{ machineOsType }] = dllData;
+      const dllsThatHaveHooks = dllData.filter((dll) => {
+        const { imageHooks } = dll[machineOsType];
+        return imageHooks && imageHooks.length;
+      });
+      const filteredImageHooks = dllsThatHaveHooks.map((item) => {
+        const { fileName: dllFileName, fileProperties } = item;
+        const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : ['unsigned'];
+        const filteredHooks = item[machineOsType].imageHooks.filter((hookObj) => {
+          return hookObj.process.pid === selectedProcessId;
         });
 
-        return _consolidatedObjs(filteredImageHooks);
-      }
-      return [];
+        return filteredHooks.map((hookObj) => {
+          const { type, hookLocation: { fileName: hookFileName, symbol } } = hookObj;
+          return {
+            signature,
+            dllFileName,
+            type,
+            hookFileName,
+            symbol
+          };
+        });
+      });
+
+      return _consolidatedObjs(filteredImageHooks);
     }
-  );
+    return [];
+  }
+);
 
 /*
   Fetches all the dllList items that have threads.

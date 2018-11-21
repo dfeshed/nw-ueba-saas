@@ -56,7 +56,7 @@ module('Integration | Component | Query Bar', function(hooks) {
     `);
     await click(SELECTORS.queryFormatFreeFormToggle);
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(findAll(SELECTORS.freeFormQueryBar).length, 1, 'Expected to see Free Form Query Bar');
       assert.equal(findAll(SELECTORS.freeFormQueryBarFocusedInput).length, 1, 'Expected focus on free-form');
       assert.equal(

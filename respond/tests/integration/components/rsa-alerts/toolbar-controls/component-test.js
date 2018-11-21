@@ -72,7 +72,8 @@ test('The Create/Add to Incident buttons are enabled if any alert is selected', 
 });
 
 test('The Create/Add to Incident buttons are disabled if any of the selected alerts are part of an incident already', function(assert) {
-  redux.dispatch(getItems());  // fetch the alerts and get them into state
+  // fetch the alerts and get them into state
+  redux.dispatch(getItems());
   const fetch = waitForReduxStateChange(redux, 'respond.alerts.items');
   return fetch.then(() => {
     const [firstAlert] = getAlerts(redux.getState()); // grab the first alert and check that it's part of an incident

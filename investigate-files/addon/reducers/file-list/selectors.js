@@ -101,8 +101,8 @@ export const checksums = createSelector(
 );
 
 export const selectedFileStatusHistory = createSelector(
-    _selectedFileStatusHistory,
-    (selectedFileStatusHistory) => selectedFileStatusHistory
+  _selectedFileStatusHistory,
+  (selectedFileStatusHistory) => selectedFileStatusHistory
 );
 
 export const hostList = createSelector(

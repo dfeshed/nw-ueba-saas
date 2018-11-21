@@ -55,7 +55,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
       'validations': {
         format: {
           validator: (value) => {
-            return /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~`]/.test(value);
+            return /[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?~`]/.test(value);
           },
           message: 'Error'
         }

@@ -50,9 +50,9 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
 
   test('It triggers the update policy action creator when the log server value is changed', async function(assert) {
     new ReduxDataHelper(setState)
-        .policyWiz('windowsLogPolicy')
-        .policyWizWinLogLogServers()
-        .build();
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogLogServers()
+      .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='primaryDestination'}}`);
     await selectChoose('.windows-log-destinations__list', '.ember-power-select-option', 0);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

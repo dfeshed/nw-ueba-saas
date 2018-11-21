@@ -25,9 +25,9 @@ moduleForComponent('host-detail/header/titlebar/explore/search-label', 'Integrat
 
 test('Search label should render with loader', function(assert) {
   new ReduxDataHelper(setState)
-  .searchStatus('wait')
-  .searchValue('0anacron')
-  .build();
+    .searchStatus('wait')
+    .searchValue('0anacron')
+    .build();
 
   this.render(hbs`{{host-detail/header/titlebar/explore/search-label }}`);
   const searchFieldLoader = $('.host-explore__loader');
@@ -37,9 +37,9 @@ test('Search label should render with loader', function(assert) {
 
 test('Search label should render with close button', function(assert) {
   new ReduxDataHelper(setState)
-  .searchStatus('complete')
-  .searchValue('0anacron')
-  .build();
+    .searchStatus('complete')
+    .searchValue('0anacron')
+    .build();
   this.render(hbs`{{host-detail/header/titlebar/explore/search-label }}`);
   const closingButton = $('.rsa-form-button');
   assert.equal(closingButton.length, 1, 'search-label loader clase button');

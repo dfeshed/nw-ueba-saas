@@ -136,11 +136,11 @@ export const loggedInUsersCount = createSelector(
 
 export const _osTypeSecurityConfig = createSelector(
   [ machineOsType, getSecurityConfigurations ],
-    (osType, config) => securityConfig[osType].map((sc) => {
-      const disabled = config.some((c) => c.includes(sc.keyword));
-      const label = disabled ? sc.label.red : sc.label.green;
-      return { ...sc, label, disabled };
-    })
+  (osType, config) => securityConfig[osType].map((sc) => {
+    const disabled = config.some((c) => c.includes(sc.keyword));
+    const label = disabled ? sc.label.red : sc.label.green;
+    return { ...sc, label, disabled };
+  })
 );
 
 /**

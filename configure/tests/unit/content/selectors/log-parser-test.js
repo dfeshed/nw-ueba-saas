@@ -109,8 +109,9 @@ test('the highlightedLogs selector properly reworks the class names in the highl
   };
   assert.equal(highlightedLogs(state(testState)), 'This is an <span class=\'highlight-capture EXAMPLE\'><span class=\'highlight-literal EXAMPLE\'>example</span> of highlighting</span> for a test',
     'The class names in the html of the logs get reworked to hypnenate and remove the parser rule name when that parser is not selected');
-  assert.equal(highlightedLogs(state({ ...testState, selectedParserRuleIndex: 1 })), 'This is an <span class=\'highlight-capture is-selected\'>' +
-    '<span class=\'highlight-literal is-selected\'>example</span> of highlighting</span> for a test',
+  assert.equal(
+    highlightedLogs(state({ ...testState, selectedParserRuleIndex: 1 })),
+    'This is an <span class=\'highlight-capture is-selected\'><span class=\'highlight-literal is-selected\'>example</span> of highlighting</span> for a test',
     'The class names in the html of the logs get reworked add an is-selected class name if the selected parser rule name is found in the class name');
 });
 

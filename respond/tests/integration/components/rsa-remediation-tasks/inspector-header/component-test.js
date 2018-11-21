@@ -54,12 +54,10 @@ test('The updateItem handler is called when the user changes the remediation tas
   return wait().then(() => {
     this.$(`${selectors.name} input`).val('Shutdown the host').change();
     return wait();
-  })
-  .then(() => {
+  }).then(() => {
     this.$('.confirm-changes button').click();
     return wait();
-  })
-  .then(() => {
+  }).then(() => {
     assert.equal(this.$(`${selectors.name} .editable-field__value`).text().trim(), 'Shutdown the host', 'The value of the edit field is the new value');
   });
 });

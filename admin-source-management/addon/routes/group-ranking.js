@@ -6,12 +6,12 @@ import { initializeGroup } from 'admin-source-management/actions/creators/group-
 export default Route.extend({
   redux: service(),
 
-  model({ group_id }) {
+  model({ groupId }) {
     run.next(() => {
-      this.get('redux').dispatch(initializeGroup(group_id));
+      this.get('redux').dispatch(initializeGroup(groupId));
     });
     return {
-      groupId: group_id
+      groupId
     };
   },
 

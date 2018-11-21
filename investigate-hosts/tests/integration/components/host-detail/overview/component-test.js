@@ -41,8 +41,11 @@ module('Integration | Component | host-detail/overview', function(hooks) {
 
     // assert.equal(findAll('.trends-chart').length, 1, 'Chart is rendered');
     // assert.equal(findAll('.host-detail-box .risk-properties').length, 1, 'alert tab is rendered');
-    assert.equal(findAll('.host-properties-box .rsa-loader').length, 1,
-        'By default loader is rendered in properties box');
+    assert.equal(
+      findAll('.host-properties-box .rsa-loader').length,
+      1,
+      'By default loader is rendered in properties box')
+    ;
   });
 
   test('host properties is open/close on click', async function(assert) {
@@ -53,11 +56,11 @@ module('Integration | Component | host-detail/overview', function(hooks) {
 
     await click('.right-zone .close-zone .rsa-icon-close-filled');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0,
-        'right panel is not visible after close');
+      'right panel is not visible after close');
 
     await click('.center-zone .open-properties');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1,
-        'right panel is visible on external open action');
+      'right panel is visible on external open action');
   });
 
   test('Host detail Alerts box is available', async function(assert) {

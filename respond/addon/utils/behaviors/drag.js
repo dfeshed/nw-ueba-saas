@@ -99,7 +99,8 @@ export default EmberObject.extend({
     // Cache state.
     this.setProperties({
       mouseIsDown: true,
-      mouseDownAt: [e.pageX, e.pageY],     // coords relative to entire doc, not some target element
+      // coords relative to entire doc, not some target element
+      mouseDownAt: [e.pageX, e.pageY],
       mouseMoveCounter: 0
     });
 

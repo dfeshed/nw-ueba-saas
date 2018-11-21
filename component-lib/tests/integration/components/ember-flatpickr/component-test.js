@@ -33,7 +33,7 @@ module('Integration | Component | ember-flatpickr', function(hooks) {
 
     await click('button');
 
-    return settled().then(async () => {
+    return settled().then(async() => {
       assert.equal(document.querySelector('.cur-month').textContent.trim(), '1月');
     });
   });

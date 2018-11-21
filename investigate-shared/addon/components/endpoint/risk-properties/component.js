@@ -93,7 +93,7 @@ export default Component.extend({
 
     while (alertCount[nextLandingTab] === 0) {
 
-        // Find index of current risk severity tab in ALERT_TABS array
+      // Find index of current risk severity tab in ALERT_TABS array
       const index = ALERT_TABS.findIndex((tab) => tab.name === nextLandingTab);
 
       if (index <= 2) {

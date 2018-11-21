@@ -43,7 +43,7 @@ export function setupLoginTest(hooks) {
 }
 
 export async function login() {
-  return settled().then(async () => {
+  return settled().then(async() => {
     await fillIn('[test-id=loginUsername] input', 'admin');
     await fillIn('[test-id=loginPassword] input', 'netwitness');
     return click('[test-id=loginButton] button');

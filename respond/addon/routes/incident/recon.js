@@ -24,10 +24,8 @@ export default Route.extend({
     }
   },
   model({ selection, endpointId }, { params }) {
-    // eslint-disable-next-line
-    const { incident_id } = params['protected.respond.incident'] || params['respond.incident'];
-    // eslint-disable-next-line
-    this.incidentId = incident_id;
+    const { incidentId } = params['protected.respond.incident'] || params['respond.incident'];
+    this.incidentId = incidentId;
 
     const redux = get(this, 'redux');
     redux.dispatch({

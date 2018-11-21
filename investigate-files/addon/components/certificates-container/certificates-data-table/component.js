@@ -6,7 +6,7 @@ import {
   toggleCertificateSelection,
   saveCertificateStatus,
   getSavedCertificateStatus
- } from 'investigate-files/actions/certificate-data-creators';
+} from 'investigate-files/actions/certificate-data-creators';
 
 
 const stateToComputed = (state) => ({

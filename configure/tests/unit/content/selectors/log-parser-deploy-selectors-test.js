@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import {
   hasDeployableRules
- } from 'configure/reducers/content/log-parser-rules/selectors';
+} from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-deploy');
 

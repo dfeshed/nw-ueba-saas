@@ -51,10 +51,15 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   // closure action required to be passed in
   transitionToStep: undefined,
 
-  @computed('step',
-   'isIdentifyGroupStepValid', 'identifyGroupStepShowErrors',
-   'isDefineGroupStepValid', 'defineGroupStepShowErrors',
-   'isApplyPolicyStepValid', 'applyPolicyStepShowErrors')
+  @computed(
+    'step',
+    'isIdentifyGroupStepValid',
+    'identifyGroupStepShowErrors',
+    'isDefineGroupStepValid',
+    'defineGroupStepShowErrors',
+    'isApplyPolicyStepValid',
+    'applyPolicyStepShowErrors'
+  )
   isStepValid(step,
     isIdentifyGroupStepValid, identifyGroupStepShowErrors,
     isDefineGroupStepValid, defineGroupStepShowErrors,

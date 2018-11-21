@@ -45,13 +45,13 @@ const logControls = Component.extend({
   @computed('debug', 'info', 'audit', 'warning', 'failure')
   logTypes: (debug, info, audit, warning, failure) => {
     return Object.entries({ debug, info, audit, warning, failure })
-    .filter((type) => {
-      return type[1];
-    })
-    .map((type) => {
-      return type[0];
-    })
-    .join(',');
+      .filter((type) => {
+        return type[1];
+      })
+      .map((type) => {
+        return type[0];
+      })
+      .join(',');
   },
 
   @computed('logTypes', 'selectionType', 'id1', 'id2', 'latest', 'count', 'time1', 'time2', 'regexMode', 'filter')

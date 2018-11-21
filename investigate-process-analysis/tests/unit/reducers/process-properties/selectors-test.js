@@ -60,7 +60,7 @@ module('Unit | Selectors | process-properties', function() {
       processAnalysis: {
         processProperties: {
           hostDetails: [
-           { checksumSha256: 'xyz' }
+            { checksumSha256: 'xyz' }
           ]
         }
       }

@@ -10,7 +10,7 @@ test('determine correct core version is returned', function(assert) {
   const state = {
     services: {
       serviceData: [
-          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
+        { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
       ]
     },
     queryNode: {
@@ -27,7 +27,7 @@ test('when core version is not set', function(assert) {
 
     services: {
       serviceData: [
-          {}
+        {}
       ]
     },
     queryNode: {
@@ -42,7 +42,7 @@ test('determine if core services are not updated with 10.x', function(assert) {
   const state = {
     services: {
       serviceData: [
-          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
+        { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
       ]
     },
     queryNode: {
@@ -59,7 +59,7 @@ test('determine if core services are not updated with 11.x', function(assert) {
   const state = {
     services: {
       serviceData: [
-          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
+        { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
       ]
     },
     queryNode: {
@@ -76,7 +76,7 @@ test('determine if core services are updated with 11.1', function(assert) {
   const state = {
     services: {
       serviceData: [
-          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
+        { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
       ]
     },
     queryNode: {
@@ -91,7 +91,7 @@ test('determine if core services are updated beyond 11.1', function(assert) {
   const state = {
     services: {
       serviceData: [
-          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.3.0.0-7206.5.21dd2e7' }
+        { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.3.0.0-7206.5.21dd2e7' }
       ]
     },
     queryNode: {

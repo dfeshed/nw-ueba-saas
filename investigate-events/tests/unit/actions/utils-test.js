@@ -403,11 +403,12 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       value: '2.5'
     };
 
-    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
-    });
+    queryUtils
+      .clientSideParseAndValidate(pillData.meta.format, pillData.value)
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+      });
 
   });
 
@@ -424,11 +425,12 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       value: '-23'
     };
 
-    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
-    });
+    queryUtils
+      .clientSideParseAndValidate(pillData.meta.format, pillData.value)
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+      });
 
   });
 

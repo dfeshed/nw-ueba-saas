@@ -126,10 +126,10 @@ export default EmberObject.extend({
 
         // Filter out the keys whose values don't meet their corresponding thresholds (if any).
         if (isEmpty(dataValue)) {
-          return null;    // enrichment value is not specified; skip it
+          return null; // enrichment value is not specified; skip it
         }
         if (threshold && (dataValue < threshold)) {
-          return null;    // enrichment value doesn't meet threshold; skip it
+          return null; // enrichment value doesn't meet threshold; skip it
         }
 
         // Compute the i18n string key that should be used to render this enrichment.

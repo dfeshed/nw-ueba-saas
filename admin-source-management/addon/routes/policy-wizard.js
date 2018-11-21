@@ -6,12 +6,12 @@ import { initializePolicy } from 'admin-source-management/actions/creators/polic
 export default Route.extend({
   redux: service(),
 
-  model({ policy_id }) {
+  model({ policyId }) {
     run.next(() => {
-      this.get('redux').dispatch(initializePolicy(policy_id));
+      this.get('redux').dispatch(initializePolicy(policyId));
     });
     return {
-      policyId: policy_id
+      policyId
     };
   },
 

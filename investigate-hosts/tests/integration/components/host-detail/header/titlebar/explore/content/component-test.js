@@ -58,9 +58,11 @@ test('File found category navigation calls endpoint sockets', function(assert) {
   const state = this.get('redux').getState();
   assert.equal(state.endpoint.detailsInput.scanTime, '1510889499000', 'Scan time validated');
   assert.equal(state.endpoint.explore.selectedTab.tabName, 'FILES', 'Selected tab validated');
-  assert.equal(state.endpoint.explore.selectedTab.checksum,
-              '1f3883f927e24ee4a238bf0939b47e5bf3c172bf60fa4c6d87b80a087e04246e',
-              'checksum value validated');
+  assert.equal(
+    state.endpoint.explore.selectedTab.checksum,
+    '1f3883f927e24ee4a238bf0939b47e5bf3c172bf60fa4c6d87b80a087e04246e',
+    'checksum value validated'
+  );
 });
 
 

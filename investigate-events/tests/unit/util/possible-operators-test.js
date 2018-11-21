@@ -14,7 +14,7 @@ test('Dispays expensive operators', function(assert) {
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
 });
 
-  // indexed by value and format is text
+// indexed by value and format is text
 test('Dispays expensive operators- indexed by value and format is text', function(assert) {
   const meta = { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value', expensiveCount: 2 };
   const options = relevantOperators(meta);
@@ -28,7 +28,7 @@ test('Dispays expensive operators- indexed by value and format is text', functio
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
 });
 
-  // indexed by key and format is text
+// indexed by key and format is text
 test('Dispays expensive operators - indexed by key and format is text', function(assert) {
   const meta = { format: 'Text', metaName: 'referer', count: 7, flags: -2147482878, displayName: 'Referer', indexedBy: 'key', expensiveCount: 5 };
   const options = relevantOperators(meta);
@@ -42,7 +42,7 @@ test('Dispays expensive operators - indexed by key and format is text', function
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
 });
 
-  // indexed by key and format is not text
+// indexed by key and format is not text
 test('Dispays expensive operators - indexed by key and format is not text', function(assert) {
   const meta = { format: 'UInt64', metaName: 'filename.size', count: 4, flags: -2147482878, displayName: 'File Size', indexedBy: 'key', expensiveCount: 2 };
   const options = relevantOperators(meta);
@@ -53,7 +53,7 @@ test('Dispays expensive operators - indexed by key and format is not text', func
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
 });
 
-  // special case - sessionid
+// special case - sessionid
 test('Dispays expensive operators - special case - sessionid', function(assert) {
   const meta = { format: 'UInt64', metaName: 'sessionid', count: 4, flags: -2147483631, displayName: 'Session ID', indexedBy: 'none', expensiveCount: 0 };
   const options = relevantOperators(meta);

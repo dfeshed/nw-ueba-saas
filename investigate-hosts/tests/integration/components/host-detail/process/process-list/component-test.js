@@ -35,9 +35,10 @@ test('Column Names appear in datatable header', function(assert) {
 
 test('Process list is rendered', function(assert) {
   new ReduxDataHelper(setState)
-  .processList(processData.processList)
-  .processTree(processData.processTree)
-  .selectedTab(null).build();
+    .processList(processData.processList)
+    .processTree(processData.processTree)
+    .selectedTab(null)
+    .build();
   this.render(hbs`
   <style>
       box, section {

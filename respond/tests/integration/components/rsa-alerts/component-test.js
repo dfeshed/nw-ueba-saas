@@ -216,7 +216,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await click(selectors.createdColumnSortButton);
 
     await waitUntil(() => socketSuccessOne === true).then(() => {
-       // Clicking again, and the sort is not descending (ascending)
+      // Clicking again, and the sort is not descending (ascending)
       patchSocket((method, modelName, query) => {
         assert.equal(query.sort[0].field, 'receivedTime');
         assert.equal(query.sort[0].descending, true);

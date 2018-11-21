@@ -136,10 +136,10 @@ function buildMetaValueStreamInputs(metaName, query, language, queryOptions, lim
  */
 function _makeServerInputsForQuery(query, language) {
   const {
-      serviceId, startTime, endTime, metaFilter
-    } = getProperties(
-      query || {}, 'serviceId', 'startTime', 'endTime', 'metaFilter'
-    );
+    serviceId, startTime, endTime, metaFilter
+  } = getProperties(
+    query || {}, 'serviceId', 'startTime', 'endTime', 'metaFilter'
+  );
 
   assert(
     'Cannot make a core query without a service id, start time & end time.',

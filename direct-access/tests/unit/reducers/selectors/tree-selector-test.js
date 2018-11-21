@@ -135,72 +135,72 @@ module('Unit | Selectors | Tree', (hooks) => {
 
   test('selectedIsConfigNode detects config nodes correctly', (assert) => {
     const state1 = new ReduxDataHelper()
-    .selectedIsConfigNode()
-    .selectedNode({
-      nodeType: 299067162755072 // Not config
-    })
-    .build();
+      .selectedIsConfigNode()
+      .selectedNode({
+        nodeType: 299067162755072 // Not config
+      })
+      .build();
 
     assert.strictEqual(selectedIsConfigNode(state1), false);
 
     const state2 = new ReduxDataHelper()
-    .selectedIsConfigNode()
-    .selectedNode({
-      nodeType: 914793674309632 // Is config
-    })
-    .build();
+      .selectedIsConfigNode()
+      .selectedNode({
+        nodeType: 914793674309632 // Is config
+      })
+      .build();
 
     assert.strictEqual(selectedIsConfigNode(state2), true);
   });
 
   test('selectedIsStatNode detects config nodes correctly', (assert) => {
     const state1 = new ReduxDataHelper()
-    .selectedIsStatNode()
-    .selectedNode({
-      nodeType: 299067162755072 // Not stat
-    })
-    .build();
+      .selectedIsStatNode()
+      .selectedNode({
+        nodeType: 299067162755072 // Not stat
+      })
+      .build();
 
     assert.strictEqual(selectedIsStatNode(state1), false);
 
     const state2 = new ReduxDataHelper()
-    .selectedIsStatNode()
-    .selectedNode({
-      nodeType: 598134325510144 // Is stat
-    })
-    .build();
+      .selectedIsStatNode()
+      .selectedNode({
+        nodeType: 598134325510144 // Is stat
+      })
+      .build();
 
     assert.strictEqual(selectedIsStatNode(state2), true);
   });
 
   test('isDevelopmentBuild identifies a dev build from the release', (assert) => {
     const state1 = new ReduxDataHelper()
-    .isDevelopmentBuild()
-    .release('0.0.0')
-    .build();
+      .isDevelopmentBuild()
+      .release('0.0.0')
+      .build();
 
     assert.strictEqual(isDevelopmentBuild(state1), true);
 
     const state2 = new ReduxDataHelper()
-    .isDevelopmentBuild()
-    .release('3.4.5678ffff')
-    .build();
+      .isDevelopmentBuild()
+      .release('3.4.5678ffff')
+      .build();
 
     assert.strictEqual(isDevelopmentBuild(state2), false);
   });
 
   test('isDecoder identifies a decoder from the module', (assert) => {
     const state1 = new ReduxDataHelper()
-    .isDecoder()
-    .module('concentrator')
-    .build();
+      .isDecoder()
+      .module('concentrator')
+      .build();
 
     assert.strictEqual(isDecoder(state1), false);
 
     const state2 = new ReduxDataHelper()
-    .isDecoder()
-    .module('decoder')
-    .build();
+      .isDecoder()
+      .module('decoder')
+      .build();
 
     assert.strictEqual(isDecoder(state2), true);
   });

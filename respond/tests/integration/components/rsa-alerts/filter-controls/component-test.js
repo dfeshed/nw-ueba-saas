@@ -23,7 +23,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    setState = async (state = {}) => {
+    setState = async(state = {}) => {
       const fullState = { respond: { incidents: state } };
       patchReducer(this, Immutable.from(fullState));
       const redux = this.owner.lookup('service:redux');

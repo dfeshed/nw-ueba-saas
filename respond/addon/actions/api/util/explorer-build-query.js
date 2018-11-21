@@ -12,7 +12,7 @@ export default (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract
     } else if (value && value.isRange === true) { // Non-date range filters
       query.addRangeFilter(filterField, value.start || 0, value.end || undefined, value.type || 'date');
     } else if (filterField === defaultDateFilterField) { // Date range filters
-      if ('start' in value) {  // Custom Date Range Filter
+      if ('start' in value) { // Custom Date Range Filter
         query.addRangeFilter(defaultDateFilterField, value.start || 0, value.end || undefined);
       } else { // Common date/time range filter
         query.addRangeFilter(defaultDateFilterField, moment().subtract(value.subtract, value.unit).valueOf(), undefined);

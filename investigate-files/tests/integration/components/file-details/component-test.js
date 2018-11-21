@@ -15,7 +15,10 @@ module('Integration | Component | file-details', function(hooks) {
   test('renders file-header', async function(assert) {
     await render(hbs`{{file-details}}`);
     assert.equal(findAll('.file-header').length, 1, 'Details header exists');
-    assert.equal(find('.file-header .rsa-nav-tab.is-active div').textContent.trim(),
-        'Details', 'Selected tab is overview by default');
+    assert.equal(
+      find('.file-header .rsa-nav-tab.is-active div').textContent.trim(),
+      'Details',
+      'Selected tab is overview by default'
+    );
   });
 });

@@ -155,17 +155,17 @@ export default Service.extend({
       });
     } else {
       return this.addChannel(path)
-      .then((channel) => {
-        return channel.send(message);
-      })
-      .then(({ channel, message }) => {
-        channel.delete();
-        // Adding the path to the message object helps us
-        return {
-          ...message,
-          path
-        };
-      });
+        .then((channel) => {
+          return channel.send(message);
+        })
+        .then(({ channel, message }) => {
+          channel.delete();
+          // Adding the path to the message object helps us
+          return {
+            ...message,
+            path
+          };
+        });
     }
   },
 
@@ -189,12 +189,12 @@ export default Service.extend({
       return tid;
     } else {
       this.addChannel(path, tid)
-      .then((channel) => {
-        channel.set('stream', tid);
-        channel.send(message, ({ message }) => {
-          messageCallback(message);
-        }, errorCallback);
-      });
+        .then((channel) => {
+          channel.set('stream', tid);
+          channel.send(message, ({ message }) => {
+            messageCallback(message);
+          }, errorCallback);
+        });
     }
     // Return the tid used in the creation of the channel as a handle that
     // can be used to close the channel either before or after it is established
@@ -234,12 +234,12 @@ export default Service.extend({
         this.stream(message);
       } else if (message.type === 'send') {
         this.send(message.path, message.message)
-        .then((value) => {
-          message.resolve(value);
-        })
-        .catch((err) => {
-          message.reject(err);
-        });
+          .then((value) => {
+            message.resolve(value);
+          })
+          .catch((err) => {
+            message.reject(err);
+          });
       }
     }
   },
