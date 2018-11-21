@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
@@ -86,6 +86,33 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
         'lastPublishedOn': 1523655368173,
         'lastModifiedBy': 'local',
         'lastModifiedOn': 1523655368173,
+        'sourceCount': 30,
+        'assignedPolicies': {},
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [
+            [
+              'ipv4',
+              'BETWEEN',
+              [
+                '123',
+                '22'
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        id: 'group_002',
+        'name': 'Awesome! 012',
+        'description': 'Awesome! 012 of group group_012',
+        'createdBy': 'local',
+        'createdOn': 1523655368173,
+        'dirty': true,
+        'lastPublishedCopy': null,
+        'lastPublishedOn': 1523655368173,
+        'lastModifiedBy': 'local',
+        'lastModifiedOn': 1523655368173,
         'sourceCount': -2,
         'assignedPolicies': {},
         groupCriteria: {
@@ -121,17 +148,53 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
             ['osType', 'IN', []]
           ]
         }
+      },
+      {
+        'id': 'group_013',
+        'name': 'Tom n Jerry 013',
+        'description': 'Tom n Jerry 013 of group group_013',
+        'createdBy': 'local',
+        'createdOn': 1523655354337,
+        'dirty': false,
+        'lastPublishedCopy': null,
+        'lastPublishedOn': 1523655354337,
+        'lastModifiedBy': 'local',
+        'lastModifiedOn': 1523655354337,
+        'sourceCount': 10,
+        'assignedPolicies': {},
+        'groupCriteria': {
+          'conjunction': 'AND',
+          'criteria': [
+            ['osType', 'IN', []]
+          ]
+        }
       }
     ];
     new ReduxDataHelper(setState).groupRankingWithData(rankingData).build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('.edit-ranking-step tr').length, 4, '3 groups are showing');
+    assert.equal(findAll('.edit-ranking-step tr').length, 6, '5 groups are showing');
 
-    let expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[1].cells[4].innerText.trim(), expectedSrcCount.string, 'first source count as expected');
-    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[2].cells[4].innerText.trim(), expectedSrcCount.string, 'second source count as expected');
-    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[3].cells[4].innerText.trim(), expectedSrcCount.string, 'third source count as expected');
+    let expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
+    assert.equal(document.querySelector('.edit-ranking-step table').rows[1].cells[4].innerText.trim(), '--', '-1 source count as expected');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[0], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), expectedSrcCountTip.string, '-1 source count tooltip as expected');
+
+    expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
+    assert.equal(document.querySelector('.edit-ranking-step table').rows[2].cells[4].innerText.trim(), 30, 'unpublished edit source count as expected');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[1], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(), expectedSrcCountTip.string, 'unpublished edit count tooltip as expected');
+
+    expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
+    assert.equal(document.querySelector('.edit-ranking-step table').rows[3].cells[4].innerText.trim(), '--', '-2 source count as expected');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[2], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[2].innerText.trim(), expectedSrcCountTip.string, '-2 source count tooltip as expected');
+
+    expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
+    assert.equal(document.querySelector('.edit-ranking-step table').rows[4].cells[4].innerText.trim(), '--', '-3 source count as expected');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[3], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(), expectedSrcCountTip.string, '-3 source count tooltip as expected');
+
+    assert.equal(document.querySelector('.edit-ranking-step table').rows[5].cells[4].innerText.trim(), 10, 'published and synced source count as expected');
+    assert.ok(document.querySelectorAll('.tooltip-text').length === 4, 'no tooltip rendered for normal count');
   });
 });

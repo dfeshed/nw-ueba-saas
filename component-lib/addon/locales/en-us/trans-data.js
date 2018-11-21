@@ -3718,9 +3718,10 @@ export default {
         sourceCount: 'Source Count',
         lastUpdated: 'Last Updated',
         noResultsMessage: 'No Groups found.',
-        sourceCountUnpublishedGroupTooltip: 'Count represents group as previously published.',
+        sourceCountUnpublishedEditedGroupTooltip: 'Count represents group as previously published.',
         sourceCountPublishedNoEndpointTooltip: 'No Endpoint server found in the environment.',
-        sourceCountPublishedNewGroupTooltip: 'No count available yet.'
+        sourceCountPublishedNewGroupTooltip: 'No count available yet.',
+        sourceCountUnpublishedNewGroupTooltip: 'No count available for unpublished groups.'
       },
       filter: {
         sourceType: 'Source Type',

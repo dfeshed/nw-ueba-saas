@@ -27,7 +27,7 @@ export default Mixin.create({
    */
   mouseEnter(e) {
     this.set('showToolTip', true);
-    if (this._isTextOverFlow(e.target)) {
+    if (this.get('alwaysShow') || this._isTextOverFlow(e.target)) {
       if (this.get('hideEvent')) {
         run.cancel(this.get('hideEvent'));
         this.set('hideEvent', null);

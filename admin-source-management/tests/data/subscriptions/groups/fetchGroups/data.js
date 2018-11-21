@@ -7,7 +7,7 @@ export default [
     'createdOn': 1523655354337,
     'dirty': false,
     'lastPublishedCopy': null,
-    'lastPublishedOn': 0,
+    'lastPublishedOn': 1523655354337,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'sourceCount': -1,
@@ -41,7 +41,7 @@ export default [
     'lastPublishedOn': 1523655368173,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
-    'sourceCount': -3,
+    'sourceCount': 30,
     'assignedPolicies': {},
     groupCriteria: {
       conjunction: 'AND',
@@ -193,7 +193,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
     'assignedPolicies': {},
-    'sourceCount': 0,
+    'sourceCount': 10,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -219,7 +219,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'sourceCount': 5,
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -245,7 +245,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'sourceCount': 60,
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -272,7 +272,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'sourceCount': 1025,
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -292,7 +292,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'sourceCount': -2,
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
@@ -311,7 +311,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
-    'sourceCount': 200,
+    'sourceCount': -3,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_002',
@@ -340,7 +340,7 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655354337,
-    'sourceCount': -2,
+    'sourceCount': -3,
     'assignedPolicies': {
       'edrPolicy': {
         'referenceId': 'policy_001',
@@ -401,7 +401,7 @@ export default [
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
     'assignedPolicies': {},
-    'sourceCount': 120,
+    'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [

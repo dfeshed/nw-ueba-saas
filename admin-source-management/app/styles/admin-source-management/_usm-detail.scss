@@ -35,6 +35,10 @@
       color: text-color(primary, lightest);
     }
 
+    .count {
+      padding-right: rsa-whitespace(less);
+    }
+
     .group-criteria {
       @include rsa-font(body, small);
       display: block;

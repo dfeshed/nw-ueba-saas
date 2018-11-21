@@ -75,7 +75,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .value')[4].innerText, 'admin', 'created by value shows as expected');
     assert.equal(findAll('.usm-groups-inspector .value')[5].innerText, '2018-04-13 05:35', 'last updated on value shows as expected');
     assert.equal(findAll('.usm-groups-inspector .value')[6].innerText, 'admin', 'last updated by value shows as expected');
-    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText, '10', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText.trim(), '10', 'source count shows as expected');
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on value is not shown as expected');
   });
 
@@ -125,7 +125,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
       'Sources included if\nany\nof the following criteria are met:',
       'expected ANY conjunction property');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].textContent.trim(), '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].textContent.trim(), `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 
   test('It shows the history properties with values', async function(assert) {
@@ -210,7 +211,8 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .lastModifiedBy').length, 0, 'last updated by is missing as expected');
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 
   test('It shows the source count when special case', async function(assert) {
@@ -253,7 +255,46 @@ module('Integration | Component | Group Inspector', function(hooks) {
       }).build();
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
-    const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedSrcCount.string, 'source count shows as expected');
+    const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
+  });
+
+  test('It shows the source count when unpublished edit case', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    new ReduxDataHelper(setState)
+      .focusedGroup({
+        id: 'group_002',
+        'name': 'Awesome! 012',
+        'description': 'Awesome! 012 of group group_012',
+        'createdBy': 'admin',
+        'createdOn': 1523655368173,
+        'dirty': true,
+        'lastPublishedCopy': null,
+        'lastPublishedOn': 1523655368173,
+        'lastModifiedBy': 'admin',
+        'lastModifiedOn': 1523655368173,
+        'sourceCount': 30,
+        'assignedPolicies': {},
+        groupCriteria: {
+          conjunction: 'AND',
+          criteria: [
+            [
+              'ipv4',
+              'BETWEEN',
+              [
+                '123',
+                '22'
+              ]
+            ]
+          ]
+        }
+      },
+    )
+    .build();
+    await render(hbs`{{usm-groups/groups/inspector}}`);
+    const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 30, 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 });

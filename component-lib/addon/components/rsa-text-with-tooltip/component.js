@@ -17,6 +17,10 @@ export default Component.extend(ToolTip, {
 
   value: null,
 
+  style: 'highlighted',
+
+  alwaysShow: false,
+
   /**
    * Unique panelId for the toolTip
    * @returns {string},

@@ -52,4 +52,45 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     await triggerEvent('.tooltip-text', 'mouseout');
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
+
+  test('it renders the tooltip when alwaysShow is true', async function(assert) {
+    assert.expect(3);
+    this.set('value', 'test value');
+    this.set('alwaysShow', 'true');
+    this.set('tipPosition', 'top');
+    await render(hbs`{{rsa-text-with-tooltip alwaysShow=alwaysShow value=value tipPosition=tipPosition}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
+    assert.equal(find('.ember-tether .tool-tip-value').textContent.trim(), 'test value');
+    await triggerEvent('.tooltip-text', 'mouseout');
+    assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
+  });
+
+  test('it renders the highlighted style as default', async function(assert) {
+    assert.expect(3);
+    this.set('value', 'test value 123123 123123 123123 123123 123123');
+    this.set('tipPosition', 'top');
+    await render(hbs`{{rsa-text-with-tooltip value=value tipPosition=tipPosition}}`);
+    document.querySelector('.tooltip-text').setAttribute('style', 'width:100px');
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
+    assert.equal(findAll('.ember-tether .highlighted .tool-tip-value').length, 1, 'highlighted style is rendered');
+    await triggerEvent('.tooltip-text', 'mouseout');
+    assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
+  });
+
+  test('it renders the standard style when passed', async function(assert) {
+    assert.expect(3);
+    this.set('value', 'test value');
+    this.set('alwaysShow', 'true');
+    this.set('style', 'standard');
+    this.set('tipPosition', 'top');
+    await render(hbs`{{rsa-text-with-tooltip style=style 
+      alwaysShow=alwaysShow value=value tipPosition=tipPosition}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
+    assert.equal(findAll('.ember-tether .standard .tool-tip-value').length, 1, 'standard style is rendered');
+    await triggerEvent('.tooltip-text', 'mouseout');
+    assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
+  });
 });

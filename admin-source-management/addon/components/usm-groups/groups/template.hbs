@@ -20,11 +20,11 @@
             {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
           </label>
         {{else if (eq column.field "name")}}
-          {{#rsa-text-with-tooltip value=(get item column.field)}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "description")}}
-          {{#rsa-text-with-tooltip value=(get item column.field)}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "publishStatus")}}

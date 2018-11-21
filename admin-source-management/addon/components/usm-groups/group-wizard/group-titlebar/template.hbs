@@ -1,15 +1,22 @@
 <div>
-  {{rsa-icon name='settings-1' style='lined'}}
-  <label class="group-name-label" title="{{if group.name group.name ''}}">
-    {{#if group.name}}
-      {{group.name}}
-    {{else}}
+  {{#if group.name}}
+    {{#rsa-text-with-tooltip value=group.name style="standard"}}
+      {{rsa-icon name='settings-1' style='lined'}}
+      <label class="group-name-label">
+        {{group.name}}
+      </label>
+    {{/rsa-text-with-tooltip}}
+  {{else}}
+    {{rsa-icon name='settings-1' style='lined'}}
+    <label class="group-name-label">
       {{t 'adminUsm.groupWizard.newGroup'}}
-    {{/if}}
-  </label>
+    </label>
+  {{/if}}
 </div>
 <div>
-  <label class="group-description-label" title="{{descriptions.truncatedWithEllipsis}}">
-    {{descriptions.truncated}}
-  </label>
+  {{#rsa-text-with-tooltip value=group.description style="standard"}}
+    <label class="group-description-label">
+      {{group.description}}
+    </label>
+  {{/rsa-text-with-tooltip}}
 </div>

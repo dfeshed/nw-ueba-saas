@@ -2,6 +2,8 @@ import computed, { alias } from 'ember-computed-decorators';
 import SortableItemMixin from 'ember-sortable/mixins/sortable-item';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { sourceCountTooltip, getSourceCount } from 'admin-source-management/utils/groups-util';
+
 /**
  * Extension of the Data Table default row class for supporting selecting and dragging of rows
  * @public
@@ -23,19 +25,15 @@ export default Component.extend(SortableItemMixin, {
 
   i18n: service(),
 
+  @computed('item.sourceCount', 'item.dirty', 'item.lastPublishedOn')
+  srcCountTooltip(sourceCount, isDirty, lastPublishedOn) {
+    const i18n = this.get('i18n');
+    return sourceCountTooltip(i18n, isDirty, sourceCount, lastPublishedOn);
+  },
+
   @computed('item.sourceCount')
   srcCount(sourceCount) {
-    const i18n = this.get('i18n');
-    switch (sourceCount) {
-      case -1:
-        return i18n.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-      case -2:
-        return i18n.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-      case -3:
-        return i18n.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
-      default:
-        return sourceCount;
-    }
+    return getSourceCount(sourceCount);
   },
 
   onRowClick() {},

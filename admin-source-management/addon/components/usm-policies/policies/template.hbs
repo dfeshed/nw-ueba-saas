@@ -24,11 +24,11 @@
         {{else if (eq column.field "sourceType")}}
           {{t (concat 'adminUsm.policyTypes.' item.policyType)}}
         {{else if (eq column.field "name")}}
-          {{#rsa-text-with-tooltip value=(get item column.field)}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "description")}}
-          {{#rsa-text-with-tooltip value=(get item column.field)}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
             <div class="table-cell-text">{{get item column.field}}</div>
           {{/rsa-text-with-tooltip}}
         {{else if (eq column.field "publishStatus")}}

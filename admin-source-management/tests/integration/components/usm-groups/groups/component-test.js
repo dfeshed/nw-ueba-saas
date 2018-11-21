@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
@@ -108,7 +108,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
   });
 
   test('Shows correct source count', async function(assert) {
-    assert.expect(4);
+    assert.expect(10);
     const translation = this.owner.lookup('service:i18n');
     setState('name', true);
     const getItems = waitForReduxStateChange(redux, 'usm.groups.items');
@@ -116,18 +116,43 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     await getItems;
     let expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      '--',
+      '-1 count is as expected');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
       expectedSrcCount.string,
-      '-1 sourceCountPublishedNewGroupTooltip is as expected');
+      '-1 count tooltip is as expected');
+
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      '--',
+      '-2 count is as expected');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(),
       expectedSrcCount.string,
-      '-2 sourceCountPublishedNoEndpointTooltip is as expected');
-    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedGroupTooltip');
+      '-2 count tooltip is as expected');
+
+    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      '--',
+      '-3 count is as expected');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[2].innerText.trim(),
+      expectedSrcCount.string,
+      '-3 count tooltip is as expected');
+
+    expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      30,
+      'unpublished edit count is as expected');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(),
       expectedSrcCount.string,
-      '-3 sourceCountUnpublishedGroupTooltip is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(4) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
-      250,
-      'row with count of 250 is as expected');
+      'unpublished edit count tooltip is as expected');
+
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+      10,
+      'published and synced count is as expected');
+    assert.ok(document.querySelectorAll('.tool-tip-value').length === 4, 'No tooltip expected for normal count');
   });
 });

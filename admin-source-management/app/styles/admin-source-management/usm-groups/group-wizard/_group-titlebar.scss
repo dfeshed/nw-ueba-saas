@@ -16,10 +16,12 @@
 
     .group-name-label {
       @include rsa-font(header);
+      color: text-color(primary);
     }
 
     .group-description-label {
       @include rsa-font(default, small);
+      color: text-color(primary);
     }
 
   }

@@ -17,14 +17,9 @@
   <div class="heading">{{t 'adminUsm.groups.detail.sourceCount'}}</div>
   <hbox fit class="col-xs-12">    
     <hbox class="value">
-      {{#if (eq focusedGroup.sourceCount -1)}}
-        {{t 'adminUsm.groups.list.sourceCountPublishedNewGroupTooltip'}}        
-      {{else if (eq focusedGroup.sourceCount -2)}}
-        {{t 'adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip'}}
-      {{else if (eq focusedGroup.sourceCount -3)}}
-        {{t 'adminUsm.groups.list.sourceCountUnpublishedGroupTooltip'}}
-      {{else}}
-        {{focusedGroup.sourceCount}}
+      <span class="count">{{srcCount}}</span>
+      {{#if srcCountTooltip}}
+        <span class="count-desc">({{srcCountTooltip}})</span>
       {{/if}}
     </hbox>
   </hbox>
