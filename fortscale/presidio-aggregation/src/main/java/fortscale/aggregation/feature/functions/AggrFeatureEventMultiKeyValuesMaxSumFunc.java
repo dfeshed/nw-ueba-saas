@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.MultiKeyHistogram;
 import fortscale.common.feature.MultiKeyFeature;
+import fortscale.common.feature.MultiKeyHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
 
 import java.util.HashSet;
@@ -53,9 +55,7 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
 
     @Override
     protected AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram multiKeyHistogram) {
-        @SuppressWarnings("unchecked")
         double sum = 0;
-
         Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
 
         //sum all if no keys were defined
@@ -75,5 +75,25 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
         }
 
         return new AggrFeatureValue(sum);
+    }
+
+    @Override
+    public MultiKeyHistogram calculateContributionRatios(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                         FeatureBucket featureBucket) {
+        // Assume aggregation records are built from exactly one aggregated feature.
+        String aggregatedFeatureName = aggregatedFeatureEventConf
+                .getAggregatedFeatureNamesMap().get(PICK_FIELD_NAME).get(0);
+        // Extract that aggregated feature from the feature bucket.
+        MultiKeyHistogram contextToMaxValueMap = (MultiKeyHistogram)featureBucket
+                .getAggregatedFeatures().get(aggregatedFeatureName).getValue();
+        // Calculate the sum of the max values.
+        double sum = (double)calculateFeaturesGroupToMaxValue(contextToMaxValueMap).getValue();
+        // Calculate the contribution ratio of each max value.
+        MultiKeyHistogram contextToContributionRatioMap = new MultiKeyHistogram();
+        contextToMaxValueMap.getHistogram().forEach((context, maxValue) -> {
+            double contributionRatio = sum == 0 ? 0 : maxValue / sum;
+            contextToContributionRatioMap.set(context, contributionRatio);
+        });
+        return contextToContributionRatioMap;
     }
 }
