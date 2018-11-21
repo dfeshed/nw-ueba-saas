@@ -21,10 +21,43 @@
           createCustomSearch=(action 'createCustomSearch')}}
       {{/layout.left}}
       {{#layout.center}}
-        {{host-list openFilterPanel=(action layout.open 'left')}}
+        {{host-list
+          openProperties=(action layout.open 'right')
+          closeProperties=(action layout.close 'right')
+          openFilterPanel=(action layout.open 'left')}}
       {{/layout.center}}
-      {{#layout.right}}
-        Right content
+      {{#layout.right as |rightPanel|}}
+        {{#rightPanel.header  class="host-list-properties"}}
+          <h3 class='title' title={{focusedHost.machine.machineName}}>
+            {{focusedHost.machine.machineName}}
+          </h3>
+          {{#each hostListPropertyTabs as |tab|}}
+            {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostListPropertyTab' tab.name)}}
+              <div class="label">{{t tab.label}}</div>
+            {{/rsa-nav-tab}}
+          {{/each}}
+          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+          {{/rsa-form-button}}
+        {{/rightPanel.header}}
+
+        {{#if (eq activeHostListPropertyTab 'RISK')}}
+          {{endpoint/risk-properties
+            defaultAction=(action 'getUpdatedRiskScoreContext')
+            setSelectedAlert=(action 'setSelectedAlert')
+            riskState=risk
+            riskType='HOST'
+          }}
+        {{else if (eq activeHostListPropertyTab 'HOST_DETAILS')}}
+          <vbox class="host-properties-box">
+            <box class='scroll-box'>
+              {{property-panel
+                data=focusedHost
+                localeNameSpace='investigateHosts.hosts.properties'
+                config=hostDetailsConfig}}
+            </box>
+          </vbox>
+        {{/if}}
       {{/layout.right}}
     {{/rsa-page-layout}}
   </vbox>

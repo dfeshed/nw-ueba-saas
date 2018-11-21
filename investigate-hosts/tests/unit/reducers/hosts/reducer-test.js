@@ -45,6 +45,7 @@ test('should return the initial state', function(assert) {
     hostList: null,
     hostColumnSort: [{ key: 'machine.scanStartTime', descending: true }],
     selectedHostList: [],
+    focusedHost: null,
     hostFetchStatus: 'wait',
     loadMoreHostStatus: 'stopped',
     hostExportStatus: 'completed',
@@ -52,6 +53,7 @@ test('should return the initial state', function(assert) {
     totalItems: 0,
     pageNumber: null,
     listOfServices: null,
+    activeHostListPropertyTab: 'HOST_DETAILS',
     hasNext: false
   });
 });
@@ -144,6 +146,27 @@ test('The SET_SELECTED_HOST action will sets the selected host to state', functi
   });
   const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_HOST, payload: { id: 5, version: '4.5.0.0', managed: true } });
   assert.deepEqual(result.selectedHostList[0], { id: 5, version: '4.5.0.0', managed: true });
+});
+
+test('The SET_FOCUSED_HOST action will sets the selected row data to state', function(assert) {
+  const previous = Immutable.from({
+    focusedHost: {
+      id: 1,
+      serviceId: 'serviceId',
+      score: 40
+    }
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_FOCUSED_HOST, payload: { id: 5, serviceId: 'serviceIdNew', score: 100 } });
+  assert.deepEqual(result.focusedHost, { id: 5, serviceId: 'serviceIdNew', score: 100 });
+});
+
+test('The CHANGE_HOST_LIST_PROPERTY_TAB action sets the newly selected tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeHostListPropertyTab: 'HOST_DETAILS'
+  });
+
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_HOST_LIST_PROPERTY_TAB, payload: { tabName: 'RISK' } });
+  assert.deepEqual(result.activeHostListPropertyTab, 'RISK');
 });
 
 test('The FETCH_DOWNLOAD_JOB_ID action will sets the download id to state', function(assert) {

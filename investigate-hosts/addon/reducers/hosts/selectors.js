@@ -5,6 +5,17 @@ const { createSelector } = reselect;
 
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 
+const HOST_LIST_PROPERTY_TABS = [
+  {
+    label: 'investigateHosts.tabs.hostDetails',
+    name: 'HOST_DETAILS'
+  },
+  {
+    label: 'investigateHosts.tabs.riskDetails',
+    name: 'RISK'
+  }
+];
+
 const _hostList = (state) => state.endpoint.machines.hostList || [];
 const _selectedHostList = (state) => state.endpoint.machines.selectedHostList || [];
 const _serviceList = (state) => state.endpoint.machines.listOfServices;
@@ -15,6 +26,7 @@ const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 const _servers = (state) => state.endpointServer.serviceData || [];
+const _activeHostListPropertyTab = (state) => state.endpoint.machines.activeHostListPropertyTab || 'HOST_DETAILS';
 
 const _allAreMigratedHosts = createSelector(
   _selectedHostList,
@@ -208,5 +220,12 @@ export const isExportButtonDisabled = createSelector(
   (hostList, servers, serverId) => {
     const isEndpointBroker = servers.some((s) => s.id === serverId && s.name === 'endpoint-broker-server');
     return !hostList.length || isEndpointBroker;
+  }
+);
+
+export const hostListPropertyTabs = createSelector(
+  [_activeHostListPropertyTab],
+  (activeHostListPropertyTab) => {
+    return HOST_LIST_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostListPropertyTab }));
   }
 );

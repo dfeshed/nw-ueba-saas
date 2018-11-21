@@ -8,6 +8,17 @@ $filter-panel-width: 250px;
   .host-container-list {
     width: 100%;
   }
+  .host-list-properties {
+    h3 {
+      text-align: center;
+      width: 230px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 5rem;
+      padding-right: 5rem;
+      font-size: 1rem;
+    }
+  }
   .filters {
     @include border-bottom(1px, solid, primary, dark);
     padding: rsa-whitespace(less);

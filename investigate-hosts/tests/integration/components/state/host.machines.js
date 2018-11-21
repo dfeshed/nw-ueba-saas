@@ -150,6 +150,18 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [
+            {
+              id: '5be953c28e09012123232bf2',
+              type: 'Edr',
+              name: 'nme'
+            }
+          ],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -266,6 +278,12 @@ export default {
             'firewallDisabled',
             'sudoersNoPasswordPrompt'
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -362,6 +380,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -458,6 +482,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -558,6 +588,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -655,6 +691,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -749,6 +791,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -843,6 +891,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -937,6 +991,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       },
       {
@@ -1031,6 +1091,12 @@ export default {
               ]
             }
           ]
+        },
+        groupPolicy: {
+          groups: [],
+          policyStatus: 'Updated',
+          managed: false,
+          serverName: 'Migrated'
         }
       }
     ],

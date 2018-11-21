@@ -15,7 +15,7 @@ import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import { getRiskScoreContext, resetRiskContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import { debug } from '@ember/debug';
 
@@ -298,6 +298,21 @@ const fetchHostContext = (machineName) => {
   };
 };
 
+const _setFocusedHost = (item) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST, payload: item });
+
+const setHostListPropertyTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_HOST_LIST_PROPERTY_TAB, payload: { tabName } });
+
+const onHostSelection = (item) => {
+  return (dispatch) => {
+    dispatch(_setFocusedHost(item));
+    dispatch(resetRiskContext());
+    next(() => {
+      dispatch(getRiskScoreContext(item.id, 'critical'));
+    });
+  };
+};
+
+
 export {
   getAllServices,
   getAllSchemas,
@@ -311,5 +326,7 @@ export {
   initializeHostsPreferences,
   startScan,
   stopScan,
-  fetchHostContext
+  fetchHostContext,
+  onHostSelection,
+  setHostListPropertyTab
 };

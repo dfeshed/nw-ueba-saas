@@ -55,7 +55,7 @@ const endpointQuery = {
   serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
 };
 
-module('Integration | Component | host-list', function(hooks) {
+module('Integration | Component | host-detail', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
   });

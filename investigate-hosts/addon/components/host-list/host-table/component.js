@@ -1,12 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort, fetchHostContext } from 'investigate-hosts/actions/data-creators/host';
+import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection } from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
+import { next } from '@ember/runloop';
 
 import {
   toggleMachineSelected,
@@ -36,7 +37,8 @@ const dispatchToActions = {
   toggleIconVisibility,
   setSelectedHost,
   setHostColumnSort,
-  fetchHostContext
+  fetchHostContext,
+  onHostSelection
 };
 
 const HostTable = Component.extend({
@@ -69,7 +71,24 @@ const HostTable = Component.extend({
       this.send('handleRowSelection', entity);
     },
     toggleSelectedRow(item, index, e, table) {
-      table.set('selectedIndex', index);
+      const { target: { classList } } = e;
+
+      // do not select row when checkbox is clicked
+      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
+        const isSameRowClicked = table.get('selectedIndex') === index;
+        const openProperties = this.get('openProperties');
+        this.set('selectedIndex', index);
+
+        if (!isSameRowClicked && openProperties) {
+          this.send('onHostSelection', item);
+          next(() => {
+            this.openProperties();
+          });
+        } else {
+          this.closeProperties();
+          this.set('selectedIndex', null);
+        }
+      }
     }
   }
 });

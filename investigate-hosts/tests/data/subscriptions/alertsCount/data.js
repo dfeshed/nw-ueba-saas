@@ -75,11 +75,13 @@ export default {
         'alertCount': 10,
         'eventContexts': [{
           'id': 'decoder-id1',
-          'sourceId': '1'
+          'sourceId': '1',
+          source: 'Respond'
         },
         {
           'id': 'decoder-id2',
-          'sourceId': '2'
+          'sourceId': '2',
+          source: 'Respond'
         }]
       }
     },

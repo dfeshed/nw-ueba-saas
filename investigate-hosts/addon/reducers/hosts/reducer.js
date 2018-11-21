@@ -12,6 +12,8 @@ const initialState = Immutable.from({
 
   selectedHostList: [],
 
+  focusedHost: null,
+
   // State to indicate host retriving status from the server
   hostFetchStatus: 'wait',
 
@@ -27,7 +29,9 @@ const initialState = Immutable.from({
 
   pageNumber: null,
 
-  listOfServices: null
+  listOfServices: null,
+
+  activeHostListPropertyTab: 'HOST_DETAILS'
 
 });
 
@@ -135,6 +139,8 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload }) => state.set('selectedHostList', [payload]),
 
+  [ACTION_TYPES.SET_FOCUSED_HOST]: (state, { payload }) => state.set('focusedHost', payload),
+
   [ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopAgentStream', payload),
 
   [ACTION_TYPES.SET_HOST_COLUMN_SORT]: (state, { payload }) => state.set('hostColumnSort', [ payload ]),
@@ -169,7 +175,9 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK]: (state) => state.set('hostExportLinkId', null),
 
-  [ACTION_TYPES.RESET_HOSTS]: (state) => state.merge(initialState)
+  [ACTION_TYPES.RESET_HOSTS]: (state) => state.merge(initialState),
+
+  [ACTION_TYPES.CHANGE_HOST_LIST_PROPERTY_TAB]: (state, { payload: { tabName } }) => state.set('activeHostListPropertyTab', tabName)
 
 }, initialState);
 

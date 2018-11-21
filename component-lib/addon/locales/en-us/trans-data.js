@@ -2628,7 +2628,8 @@ export default {
       kernelHooks: 'Kernel Hooks',
       registryDiscrepancies: 'Registry Discrepancies',
       hostDetails: 'Host Details',
-      policyDetails: 'Policy Details'
+      policyDetails: 'Policy Details',
+      riskDetails: 'Risk Details'
     },
     context: {
       score: 'Score',

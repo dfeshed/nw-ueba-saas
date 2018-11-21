@@ -5,7 +5,10 @@
       {{rsa-loader size='larger'}}
     </centered>
   {{else}}
-    {{host-list/host-table openFilterPanel=openFilterPanel}}
+    {{host-list/host-table
+      openFilterPanel=openFilterPanel
+      openProperties=openProperties
+      closeProperties=closeProperties}}
   {{/if}}
 {{else}}
   {{error-page

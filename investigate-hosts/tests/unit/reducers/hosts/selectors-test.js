@@ -13,7 +13,8 @@ import {
   warningMessages,
   isScanStartButtonDisabled,
   extractAgentIds,
-  isExportButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
+  isExportButtonDisabled,
+  hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -468,6 +469,18 @@ test('isExportButtonDisabled when endpoint server is empty object', function(ass
   });
   const result = isExportButtonDisabled(state);
   assert.equal(result, false, 'export button is enabled');
+});
+
+test('hostListPropertyTabs', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        activeHostListPropertyTab: 'RISK'
+      }
+    }
+  });
+  const result = hostListPropertyTabs(state).findBy('name', 'RISK');
+  assert.equal(result.selected, true, 'RISK Tab should be selected');
 });
 
 

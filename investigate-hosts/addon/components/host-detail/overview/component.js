@@ -4,8 +4,8 @@ import { connect } from 'ember-redux';
 import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getPropertyData, getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
-import hostDetailsConfig from './property-panel/overview-property-config';
-import policiesConfig from './property-panel/policies-property-config';
+import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
+import policiesConfig from 'investigate-hosts/components/property-panel/policies-property-config';
 import {
   setAlertTab,
   setPropertyPanelTabView
