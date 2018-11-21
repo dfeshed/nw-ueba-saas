@@ -15,6 +15,7 @@ module('Integration | Component | properties-for/key-value', function(hooks) {
     await render(hbs`{{properties-for/key-value member=member}}`);
     assert.equal(find(selectors.key).textContent.trim(), 'X');
     assert.equal(find(selectors.value).textContent.trim(), '127.0.0.1');
+    assert.equal(find(selectors.value).classList.contains('entity'), true);
 
     this.set('member', {
       value: '',
@@ -23,5 +24,6 @@ module('Integration | Component | properties-for/key-value', function(hooks) {
     await render(hbs`{{properties-for/key-value member=member}}`);
     assert.equal(find(selectors.key).textContent.trim(), 'X');
     assert.equal(find(selectors.value).textContent.trim(), 'N/A');
+    assert.equal(find(selectors.value).classList.contains('entity'), false);
   });
 });

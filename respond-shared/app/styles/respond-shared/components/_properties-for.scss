@@ -60,6 +60,10 @@
   .key-value {
     @include rsa-font(regular);
     color: text-color(primary, lightest);
+
+    .no-value {
+      color: text-color(primary);
+    }
   }
 
   a {

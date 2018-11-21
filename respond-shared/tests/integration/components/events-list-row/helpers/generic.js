@@ -20,15 +20,27 @@ export const assertRowAlertDetails = (assert, { name, summary, score }) => {
 };
 
 export const assertRowHeaderContext = (assert, { detectorIp, fileName, fileHash }) => {
-  assert.equal(find(generic.eventDetectorIpValue).attributes[DATA_ENTITY_ID].nodeValue, detectorIp);
-  assert.equal(find(generic.eventDetectorIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
-  assert.equal(find(generic.eventDetectorIpValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventFileNameValue).attributes[DATA_ENTITY_ID].nodeValue, fileName);
-  assert.equal(find(generic.eventFileNameValue).attributes[DATA_META_KEY].nodeValue, 'filename');
-  assert.equal(find(generic.eventFileNameValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventFileHashValue).attributes[DATA_ENTITY_ID].nodeValue, fileHash);
-  assert.equal(find(generic.eventFileHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
-  assert.equal(find(generic.eventFileHashValue).classList.contains(ENTITY_CLASS), true);
+  if (detectorIp) {
+    assert.equal(find(generic.eventDetectorIpValue).attributes[DATA_ENTITY_ID].nodeValue, detectorIp);
+    assert.equal(find(generic.eventDetectorIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
+    assert.equal(find(generic.eventDetectorIpValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventDetectorIpValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (fileName) {
+    assert.equal(find(generic.eventFileNameValue).attributes[DATA_ENTITY_ID].nodeValue, fileName);
+    assert.equal(find(generic.eventFileNameValue).attributes[DATA_META_KEY].nodeValue, 'filename');
+    assert.equal(find(generic.eventFileNameValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventFileNameValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (fileHash) {
+    assert.equal(find(generic.eventFileHashValue).attributes[DATA_ENTITY_ID].nodeValue, fileHash);
+    assert.equal(find(generic.eventFileHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
+    assert.equal(find(generic.eventFileHashValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventFileHashValue).classList.contains(ENTITY_CLASS), false);
+  }
 };
 
 export const assertRowHeader = (assert, { eventType, detectorIp, fileName, fileHash }) => {
@@ -53,15 +65,27 @@ export const assertTableColumns = (assert) => {
 };
 
 export const assertTableSourceContext = (assert, { ip, mac, user }) => {
-  assert.equal(find(generic.eventSourceIpValue).attributes[DATA_ENTITY_ID].nodeValue, ip);
-  assert.equal(find(generic.eventSourceIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
-  assert.equal(find(generic.eventSourceIpValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventSourceMacValue).attributes[DATA_ENTITY_ID].nodeValue, mac);
-  assert.equal(find(generic.eventSourceMacValue).attributes[DATA_META_KEY].nodeValue, 'mac_address');
-  assert.equal(find(generic.eventSourceMacValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventSourceUserValue).attributes[DATA_ENTITY_ID].nodeValue, user);
-  assert.equal(find(generic.eventSourceUserValue).attributes[DATA_META_KEY].nodeValue, 'username');
-  assert.equal(find(generic.eventSourceUserValue).classList.contains(ENTITY_CLASS), true);
+  if (ip) {
+    assert.equal(find(generic.eventSourceIpValue).attributes[DATA_ENTITY_ID].nodeValue, ip);
+    assert.equal(find(generic.eventSourceIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
+    assert.equal(find(generic.eventSourceIpValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventSourceIpValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (mac) {
+    assert.equal(find(generic.eventSourceMacValue).attributes[DATA_ENTITY_ID].nodeValue, mac);
+    assert.equal(find(generic.eventSourceMacValue).attributes[DATA_META_KEY].nodeValue, 'mac_address');
+    assert.equal(find(generic.eventSourceMacValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventSourceMacValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (user) {
+    assert.equal(find(generic.eventSourceUserValue).attributes[DATA_ENTITY_ID].nodeValue, user);
+    assert.equal(find(generic.eventSourceUserValue).attributes[DATA_META_KEY].nodeValue, 'username');
+    assert.equal(find(generic.eventSourceUserValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventSourceUserValue).classList.contains(ENTITY_CLASS), false);
+  }
 };
 
 export const assertTableSource = (assert, { ip, port, host, mac, user }) => {
@@ -74,15 +98,27 @@ export const assertTableSource = (assert, { ip, port, host, mac, user }) => {
 };
 
 export const assertTableTargetContext = (assert, { ip, mac, user }) => {
-  assert.equal(find(generic.eventTargetIpValue).attributes[DATA_ENTITY_ID].nodeValue, ip);
-  assert.equal(find(generic.eventTargetIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
-  assert.equal(find(generic.eventTargetIpValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventTargetMacValue).attributes[DATA_ENTITY_ID].nodeValue, mac);
-  assert.equal(find(generic.eventTargetMacValue).attributes[DATA_META_KEY].nodeValue, 'mac_address');
-  assert.equal(find(generic.eventTargetMacValue).classList.contains(ENTITY_CLASS), true);
-  assert.equal(find(generic.eventTargetUserValue).attributes[DATA_ENTITY_ID].nodeValue, user);
-  assert.equal(find(generic.eventTargetUserValue).attributes[DATA_META_KEY].nodeValue, 'username');
-  assert.equal(find(generic.eventTargetUserValue).classList.contains(ENTITY_CLASS), true);
+  if (ip) {
+    assert.equal(find(generic.eventTargetIpValue).attributes[DATA_ENTITY_ID].nodeValue, ip);
+    assert.equal(find(generic.eventTargetIpValue).attributes[DATA_META_KEY].nodeValue, 'ip_address');
+    assert.equal(find(generic.eventTargetIpValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventTargetIpValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (mac) {
+    assert.equal(find(generic.eventTargetMacValue).attributes[DATA_ENTITY_ID].nodeValue, mac);
+    assert.equal(find(generic.eventTargetMacValue).attributes[DATA_META_KEY].nodeValue, 'mac_address');
+    assert.equal(find(generic.eventTargetMacValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventTargetMacValue).classList.contains(ENTITY_CLASS), false);
+  }
+  if (user) {
+    assert.equal(find(generic.eventTargetUserValue).attributes[DATA_ENTITY_ID].nodeValue, user);
+    assert.equal(find(generic.eventTargetUserValue).attributes[DATA_META_KEY].nodeValue, 'username');
+    assert.equal(find(generic.eventTargetUserValue).classList.contains(ENTITY_CLASS), true);
+  } else {
+    assert.equal(find(generic.eventTargetUserValue).classList.contains(ENTITY_CLASS), false);
+  }
 };
 
 export const assertTableTarget = (assert, { ip, port, host, mac, user }) => {

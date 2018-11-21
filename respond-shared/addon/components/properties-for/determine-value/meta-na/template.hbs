@@ -1,0 +1,7 @@
+{{#if hasValue}}
+  {{yield (hash template=(component "properties-for/meta-value" class="key-value"))}}
+{{else}}
+  {{#let (component "properties-for/determine-value/na-element") as |block|}}
+    {{yield (hash template=(component "properties-for/key-value/item-description" block=block))}}
+  {{/let}}
+{{/if}}

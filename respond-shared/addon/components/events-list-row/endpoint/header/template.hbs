@@ -5,30 +5,30 @@
   </div>
   <div class="column">
     <dt test-id="eventTypeLabel">{{t 'respond.eventsList.endpoint.type'}}</dt>
-    <dd test-id="eventTypeValue">{{properties-for/na-value item.type}}</dd>
+    <dd test-id="eventTypeValue">{{properties-for/determine-value value=item.type}}</dd>
   </div>
   <div class="column">
     <dt test-id="eventCategoryLabel">{{t 'respond.eventsList.endpoint.category'}}</dt>
-    <dd test-id="eventCategoryValue">{{properties-for/na-value item.category}}</dd>
+    <dd test-id="eventCategoryValue">{{properties-for/determine-value value=item.category}}</dd>
   </div>
   <div class="column">
     <dt test-id="eventActionLabel">{{t 'respond.eventsList.endpoint.action'}}</dt>
-    <dd test-id="eventActionValue">{{properties-for/na-value item.action}}</dd>
+    <dd test-id="eventActionValue">{{properties-for/determine-value value=item.action}}</dd>
   </div>
   <div class="column">
     <dt test-id="eventHostnameLabel">{{t 'respond.eventsList.endpoint.hostname'}}</dt>
-    {{properties-for/meta-value key="dns_hostname" value=item.hostname testId="eventHostnameValue"}}
+    {{properties-for/determine-value key="dns_hostname" value=item.hostname testId="eventHostnameValue"}}
   </div>
   <div class="column">
     <dt test-id="eventUserAccountLabel">{{t 'respond.eventsList.endpoint.userAccount'}}</dt>
-    {{properties-for/meta-value key="username" value=item.user_account testId="eventUserAccountValue"}}
+    {{properties-for/determine-value key="username" value=item.user_account testId="eventUserAccountValue"}}
   </div>
   <div class="column">
     <dt test-id="eventOperatingSystemLabel">{{t 'respond.eventsList.endpoint.operatingSystem'}}</dt>
-    <dd test-id="eventOperatingSystemValue">{{properties-for/na-value item.operating_system}}</dd>
+    <dd test-id="eventOperatingSystemValue">{{properties-for/determine-value value=item.operating_system}}</dd>
   </div>
   <div class="column hash">
     <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.fileHash'}}</dt>
-    {{properties-for/meta-value key="hash" value=item.file_SHA256 testId="eventFileHashValue"}}
+    {{properties-for/determine-value key="hash" value=item.file_SHA256 testId="eventFileHashValue"}}
   </div>
 </div>

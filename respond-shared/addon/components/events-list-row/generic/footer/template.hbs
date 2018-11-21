@@ -13,19 +13,19 @@
   <tbody>
     <tr>
       <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.generic.sourceLabel'}}</th>
-      {{properties-for/meta-value key="ip_address" value=item.source.device.ip_address tagName="td" testId="eventSourceIpValue"}}
-      <td test-id="eventSourcePortValue">{{properties-for/na-value item.source.device.port}}</td>
-      <td test-id="eventSourceHostValue">{{properties-for/na-value item.source.device.dns_hostname}}</td>
-      {{properties-for/meta-value key="mac_address" value=item.source.device.mac_address tagName="td" testId="eventSourceMacValue"}}
-      {{properties-for/meta-value key="username" value=item.source.user.username tagName="td" testId="eventSourceUserValue"}}
+      {{properties-for/determine-value key="ip_address" value=item.source.device.ip_address tag="td" testId="eventSourceIpValue"}}
+      <td test-id="eventSourcePortValue">{{properties-for/determine-value value=item.source.device.port}}</td>
+      <td test-id="eventSourceHostValue">{{properties-for/determine-value value=item.source.device.dns_hostname}}</td>
+      {{properties-for/determine-value key="mac_address" value=item.source.device.mac_address tag="td" testId="eventSourceMacValue"}}
+      {{properties-for/determine-value key="username" value=item.source.user.username tag="td" testId="eventSourceUserValue"}}
     </tr>
     <tr>
       <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.generic.targetLabel'}}</th>
-      {{properties-for/meta-value key="ip_address" value=item.destination.device.ip_address tagName="td" testId="eventTargetIpValue"}}
-      <td test-id="eventTargetPortValue">{{properties-for/na-value item.destination.device.port}}</td>
-      <td test-id="eventTargetHostValue">{{properties-for/na-value item.destination.device.dns_hostname}}</td>
-      {{properties-for/meta-value key="mac_address" value=item.destination.device.mac_address tagName="td" testId="eventTargetMacValue"}}
-      {{properties-for/meta-value key="username" value=item.destination.user.username tagName="td" testId="eventTargetUserValue"}}
+      {{properties-for/determine-value key="ip_address" value=item.destination.device.ip_address tag="td" testId="eventTargetIpValue"}}
+      <td test-id="eventTargetPortValue">{{properties-for/determine-value value=item.destination.device.port}}</td>
+      <td test-id="eventTargetHostValue">{{properties-for/determine-value value=item.destination.device.dns_hostname}}</td>
+      {{properties-for/determine-value key="mac_address" value=item.destination.device.mac_address tag="td" testId="eventTargetMacValue"}}
+      {{properties-for/determine-value key="username" value=item.destination.user.username tag="td" testId="eventTargetUserValue"}}
     </tr>
   </tbody>
 </table>

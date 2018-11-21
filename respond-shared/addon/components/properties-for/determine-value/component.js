@@ -5,18 +5,20 @@ import Component from '@ember/component';
 
 const trim = (value) => value.toString().replace(/\s\s+/g, ' ').trim();
 
-const NaValue = Component.extend({
+export default Component.extend({
   layout,
   tagName: '',
   @computed('value')
   hasValue(incoming) {
     const value = incoming && trim(incoming);
     return value && !isNone(value);
+  },
+  @computed('tag')
+  childTagName(tag) {
+    return tag || 'dd';
+  },
+  @computed('testId')
+  childTestId(testId) {
+    return testId || 'keyValue';
   }
 });
-
-NaValue.reopenClass({
-  positionalParams: ['value']
-});
-
-export default NaValue;

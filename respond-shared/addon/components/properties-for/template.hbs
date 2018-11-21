@@ -9,7 +9,9 @@
     <div class="key-wrapper" test-id="keyValueRow">
       <div class="key">
         <dt test-id="keyName"></dt>
-        <dd test-id="keyValue" class="no-value">{{t 'respond.eventsList.na'}}</dd>
+        {{#let (component "properties-for/determine-value/na-element" tagName="") as |block|}}
+          {{properties-for/key-value/item-description class="no-value" block=block}}
+        {{/let}}
       </div>
     </div>
   {{/each}}

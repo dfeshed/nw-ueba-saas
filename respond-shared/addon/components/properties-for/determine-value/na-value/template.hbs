@@ -1,0 +1,5 @@
+{{#if hasValue}}
+  {{yield (hash template=(component "properties-for/determine-value/tagless-value"))}}
+{{else}}
+  {{yield (hash template=(component "properties-for/determine-value/na-element"))}}
+{{/if}}
