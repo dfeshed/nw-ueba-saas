@@ -1,6 +1,6 @@
 {{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machine.machineOsType') value=hostDetails.machine.machineOsType}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}
-  {{host-scan-status agent=hostDetails onButtonClick=(action 'setSelectedHost' hostDetails.id)}}
+  {{host-scan-status agent=hostDetails}}
 {{/rsa-content-definition}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.lastSeenTime')}}
   <span>{{moment-from-now hostDetails.agentStatus.lastSeenTime locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>

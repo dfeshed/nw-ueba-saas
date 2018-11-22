@@ -105,12 +105,12 @@ const hosts = reduxActions.handleActions({
   // On start loading of the schema reset the host list
   [ACTION_TYPES.FETCH_ALL_SCHEMAS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0, selectedHostList: [] })
+      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0 })
     });
   },
   [ACTION_TYPES.FETCH_ALL_MACHINES]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0, selectedHostList: [] }),
+      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0 }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
       success: (s) => s.merge({
         hostList: action.payload.data.items,

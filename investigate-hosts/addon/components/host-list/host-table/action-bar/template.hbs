@@ -5,7 +5,7 @@
       <span>{{t 'investigateFiles.filter.filter'}}</span>
     {{/rsa-form-button}}
   </h2>
-  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer' true)}}
   {{host-scan/scan-command command='START_SCAN'}}
   {{host-scan/scan-command command='STOP_SCAN'}}
   {{#rsa-button-with-confirmation

@@ -24,7 +24,6 @@ const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.de
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 const _serverId = (state) => state.endpointQuery.serverId;
-const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 const _servers = (state) => state.endpointServer.serviceData || [];
 const _activeHostListPropertyTab = (state) => state.endpoint.machines.activeHostListPropertyTab || 'HOST_DETAILS';
 
@@ -48,24 +47,8 @@ export const serviceList = createSelector(
   }
 );
 
-export const hostListForScanning = createSelector(
-  [ _selectedHostList, _hostDetails ],
-  (selectedHostList, hostDetails) => {
-    if (hostDetails.id) {
-      const { machine, id } = hostDetails;
-      const { agentVersion } = machine;
-      if (agentVersion && !agentVersion.startsWith('4.4')) {
-        return [{ id, version: agentVersion }];
-      } else {
-        return [];
-      }
-    }
-    return selectedHostList;
-  }
-);
-
 export const areSomeScanning = createSelector(
-  _hostList, hostListForScanning, _hostDetailId,
+  _hostList, _selectedHostList, _hostDetailId,
   (machines, selectedHostList, hostDetailId) => {
     if (hostDetailId) {
       return false;
@@ -153,12 +136,12 @@ export const warningClass = createSelector(
 );
 
 export const allAreEcatAgents = createSelector(
-  hostListForScanning,
+  _selectedHostList,
   (selectedHostList) => selectedHostList.every((host) => host && host.version && host.version.startsWith('4.4'))
 );
 
 export const hasEcatAgents = createSelector(
-  hostListForScanning,
+  _selectedHostList,
   (selectedHostList) => selectedHostList.some((host) => host && host.version && host.version.startsWith('4.4'))
 );
 
@@ -197,22 +180,22 @@ export const warningMessages = createSelector(
 );
 
 export const isScanStartButtonDisabled = createSelector(
-  [tooManyHostsSelected, hostListForScanning, allAreEcatAgents, _allAreMigratedHosts],
-  (tooManyHostsSelected, hostListForScanning, allAreEcatAgents, allAreMigratedHosts) => {
-    return !hostListForScanning.length || tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts;
+  [tooManyHostsSelected, allAreEcatAgents, _allAreMigratedHosts],
+  (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
+    return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts;
   }
 );
 
 export const extractAgentIds = createSelector(
-  hostListForScanning,
-  (hostListForScanning) => {
-    return getSelectedAgentIds(hostListForScanning);
+  _selectedHostList,
+  (selectedHostList) => {
+    return getSelectedAgentIds(selectedHostList);
   }
 );
 
 export const scanCount = createSelector(
-  hostListForScanning,
-  (hostListForScanning) => hostListForScanning.length
+  _selectedHostList,
+  (selectedHostList) => selectedHostList.length
 );
 
 export const isExportButtonDisabled = createSelector(

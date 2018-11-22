@@ -193,17 +193,12 @@ test('The FETCH_ALL_SCHEMAS action start will reset the host list', function(ass
   const previous = Immutable.from({
     hostList: HOST_LIST,
     hostFetchStatus: 'completed',
-    selectedHostList: [{
-      id: '123',
-      agentVersion: '4.4'
-    }],
     totalItems: 3
 
   });
 
   assert.equal(previous.hostList.length, 3);
   assert.equal(previous.hostFetchStatus, 'completed');
-  assert.equal(previous.selectedHostList.length, 1);
   assert.equal(previous.totalItems, 3);
 
   const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_ALL_SCHEMAS });
@@ -211,7 +206,6 @@ test('The FETCH_ALL_SCHEMAS action start will reset the host list', function(ass
 
   assert.equal(endState.hostList.length, 0);
   assert.equal(endState.hostFetchStatus, 'wait');
-  assert.equal(endState.selectedHostList.length, 0);
   assert.equal(endState.totalItems, 0);
 });
 

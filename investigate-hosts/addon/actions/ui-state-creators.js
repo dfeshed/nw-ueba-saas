@@ -51,6 +51,7 @@ const resetDetailsInputAndContent = () => {
   return (dispatch) => {
     dispatch(_resetInputData());
     dispatch(_resetHostDetails());
+    dispatch(deSelectAllHosts());
   };
 };
 

@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { hostListForScanning, hasMachineId, hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
+import { hasMachineId, hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { getPageOfMachines, setHostListPropertyTab } from 'investigate-hosts/actions/data-creators/host';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
@@ -21,7 +21,6 @@ import {
 import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
 
 const stateToComputed = (state) => ({
-  selectedHostList: hostListForScanning(state),
   focusedHost: state.endpoint.machines.focusedHost,
   hostListPropertyTabs: hostListPropertyTabs(state),
   hasMachineId: hasMachineId(state),

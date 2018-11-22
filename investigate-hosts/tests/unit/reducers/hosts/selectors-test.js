@@ -391,16 +391,27 @@ test('isScanStartButtonDisabled', function(assert) {
 });
 
 test('extractAgentIds', function(assert) {
-  const state = Immutable.from({
+  const state1 = Immutable.from({
     endpoint: {
       machines: {
-        selectedHostList: [ { id: 1, version: '4.4' }, { id: 2, version: '11.1' }]
+        selectedHostList: [ { id: 1, version: '4.4', managed: true }, { id: 2, version: '11.1', managed: false }]
       },
       overview: {}
     }
   });
-  const result = extractAgentIds(state);
-  assert.equal(result.length, 1, 'Should extract only one agent');
+  const result1 = extractAgentIds(state1);
+  assert.equal(result1.length, 0, 'Should extract zero agent');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [ { id: 1, version: '4.4', managed: true }, { id: 2, version: '11.1', managed: true }]
+      },
+      overview: {}
+    }
+  });
+  const result2 = extractAgentIds(state2);
+  assert.equal(result2.length, 1, 'Should extract zero agent');
 });
 
 test('isExportButtonDisabled', function(assert) {

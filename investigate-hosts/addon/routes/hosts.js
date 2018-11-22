@@ -59,18 +59,15 @@ export default Route.extend({
 
   activate() {
     const redux = this.get('redux');
-    run.next(() => {
-      redux.dispatch(setSelectedEndpointServer(null));
-      // get host list
-      redux.dispatch(getEndpointServers());
-    });
+    // get host list
+    redux.dispatch(getEndpointServers());
   },
 
   model(params) {
     const redux = this.get('redux');
     const { sid, machineId } = params;
     const request = lookup('service:request');
-    run.next(() => {
+    run.scheduleOnce('afterRender', () => {
       // refreshing host details page or routing using url
       if (!machineId) {
         redux.dispatch(resetDetailsInputAndContent());

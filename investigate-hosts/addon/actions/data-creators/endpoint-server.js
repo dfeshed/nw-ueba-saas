@@ -10,7 +10,7 @@ export const initializeEndpoint = () => {
     const persistedServerId = localStorage.getItem('endpoint:persistedServerId') != 'null' ? localStorage.getItem('endpoint:persistedServerId') : null;
     let [server] = getState().endpointServer.serviceData || [];
     server = persistedServerId ? { id: persistedServerId } : server;
-    dispatch(setEndpointServer(server));
+    dispatch(setEndpointServer(false, server));
   };
 };
 
@@ -19,11 +19,11 @@ export const isEndpointServerOffline = (status) => ({
   payload: status
 });
 
-export const setEndpointServer = (server) => {
+export const setEndpointServer = (isDispatchedFromServiceSelector, server) => {
   return (dispatch, getState) => {
     const { serverId } = getState().endpointQuery;
     const request = lookup('service:request');
-    if (server && serverId !== server.id) {
+    if (server && (serverId !== server.id || !isDispatchedFromServiceSelector)) {
       dispatch({
         type: ACTION_TYPES.ENDPOINT_SERVER_SELECTED,
         payload: server.id

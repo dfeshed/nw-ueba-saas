@@ -130,7 +130,10 @@ const getAllSchemas = () => {
   return request.promiseRequest({
     method: 'machine-schema',
     modelName: 'endpoint',
-    query: {}
+    query: {},
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };
 

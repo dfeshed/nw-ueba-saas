@@ -12,6 +12,9 @@ export const fetchEndpointServers = () => {
   return request.promiseRequest({
     method: 'findAll',
     modelName: 'endpoint-server',
-    query: {}
+    query: {},
+    streamOptions: {
+      socketUrlPostfix: 'any'
+    }
   });
 };

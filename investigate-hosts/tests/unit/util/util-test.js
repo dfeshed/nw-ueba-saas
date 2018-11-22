@@ -76,11 +76,11 @@ test('Generate OS specific Columns', function(assert) {
 });
 
 test('Extract the agent id', function(assert) {
-  const list1 = [{ id: 1, version: '4.4' }, { id: 2, version: '4.4' }];
-  assert.equal(getSelectedAgentIds(list1).length, 0, 'All are legacy ecat agent');
-  const list2 = [{ id: 1, version: '4.4' }, { id: 2, version: '11.1' }];
-  assert.equal(getSelectedAgentIds(list2).length, 1, 'Some are legacy ecat agent');
-  const list3 = [{ id: 1, version: '11.1' }, { id: 2, version: '11.1' }];
-  assert.equal(getSelectedAgentIds(list3).length, 2, 'No legacy ecat agent');
+  const list1 = [{ id: 1, version: '4.4', managed: true }, { id: 2, version: '4.4', managed: false }];
+  assert.equal(getSelectedAgentIds(list1).length, 0, 'All are legacy ecat agents');
+  const list2 = [{ id: 1, version: '4.4', managed: true }, { id: 2, version: '11.1', managed: false }];
+  assert.equal(getSelectedAgentIds(list2).length, 0, 'has ecat and unmanaged agents');
+  const list3 = [{ id: 1, version: '11.1', managed: false }, { id: 2, version: '11.1', managed: true }];
+  assert.equal(getSelectedAgentIds(list3).length, 1, 'some agents are managed');
 
 });

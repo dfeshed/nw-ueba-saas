@@ -5,7 +5,7 @@ import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
 import { getFileContext, getPaginatedFileContext } from './file-context';
 import { fetchHostContext, getAllServices } from './host';
-import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
+import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
@@ -61,12 +61,14 @@ const _getHostDetails = (forceRefresh) => {
         promise: HostDetails.getHostDetails({ agentId, scanTime }),
         meta: {
           onSuccess: (response) => {
+            const { data } = response;
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());
             dispatch(getServiceId('MACHINE'));
-            dispatch(fetchHostContext(response.data.machine.machineName));
+            dispatch(fetchHostContext(data.machine.machineName));
+            dispatch(setSelectedHost(data));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
           },
