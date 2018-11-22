@@ -872,7 +872,7 @@ indicators:
 
 - id: sumOfHighestSrcProcessFilePathGlobalScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
-  name: abnormal_process_executes_scripting_engine
+  name: abnormal_process_executed_a_scripting_tool
   adeEventType: scored_enriched.process.srcProcessFilePath.scriptingDstProcessFileName.process.score
   modelContextField: dstProcessFileName
   schema: PROCESS
@@ -891,7 +891,7 @@ indicators:
 
 - id: sumOfHighestDstProcessFilePathCreatedGlobalScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
-  name: abnormal_process_executed_by_scripting_engine
+  name: abnormal_application_triggered_by_scripting_tool
   adeEventType: scored_enriched.process.dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score
   modelContextField: srcProcessFileName
   schema: PROCESS
@@ -910,7 +910,7 @@ indicators:
 
 - id: sumOfHighestDstProcessFilePathOpenedGlobalScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
-  name: abnormal_process_opened_by_scripting_engine
+  name: abnormal_process_opened_by_scripting_tool
   adeEventType: scored_enriched.process.dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score
   modelContextField: srcProcessFileName
   schema: PROCESS
