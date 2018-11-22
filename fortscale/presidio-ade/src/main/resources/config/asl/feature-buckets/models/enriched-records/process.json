@@ -277,7 +277,7 @@
       ]
     },
     {
-      "name": "srcProcessFilePathHistogramUserIdDstProcessFileNameProcessDaily",
+      "name": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily",
       "contextFieldNames": [
         "userId",
         "dstProcessFileName"
@@ -315,7 +315,7 @@
       ]
     },
     {
-      "name": "userIdHistogramDstProcessFileNameSrcProcessFilePathProcessDaily",
+      "name": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily",
       "contextFieldNames": [
         "dstProcessFileName",
         "srcProcessDirectory",
@@ -354,7 +354,7 @@
       ]
     },
     {
-      "name": "dstProcessFilePathCreatedHistogramUserIdSrcProcessFileNameProcessDaily",
+      "name": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
       "contextFieldNames": [
         "userId",
         "srcProcessFileName"
@@ -392,7 +392,7 @@
       ]
     },
     {
-      "name": "userIdHistogramSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
+      "name": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
       "contextFieldNames": [
         "srcProcessFileName",
         "dstProcessDirectory",
@@ -431,7 +431,7 @@
       ]
     },
     {
-      "name": "dstProcessFilePathOpenedHistogramUserIdDstProcessFileNameProcessDaily",
+      "name": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
       "contextFieldNames": [
         "userId",
         "srcProcessFileName"
@@ -469,7 +469,7 @@
       ]
     },
     {
-      "name": "userIdHistogramSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
+      "name": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
       "contextFieldNames": [
         "srcProcessFileName",
         "dstProcessDirectory",

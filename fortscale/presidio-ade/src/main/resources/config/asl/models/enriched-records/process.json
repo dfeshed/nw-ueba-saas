@@ -105,13 +105,13 @@
       "name": "srcProcessFilePath.userIdDstProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "srcProcessFilePathHistogramUserIdDstProcessFileNameProcessDaily"
+        "featureBucketConfName": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "srcProcessFilePathHistogramUserIdDstProcessFileNameProcessDaily",
+        "featureBucketConfName": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily",
         "featureName": "srcProcessFilePathHistogram"
       },
       "builder": {
@@ -122,16 +122,16 @@
       }
     },
     {
-      "name": "userIdHistogram.dstProcessFileNameSrcProcessFilePath.process",
+      "name": "userId.dstProcessFileNameSrcProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "userIdHistogramDstProcessFileNameSrcProcessFilePathProcessDaily"
+        "featureBucketConfName": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "userIdHistogramDstProcessFileNameSrcProcessFilePathProcessDaily",
+        "featureBucketConfName": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily",
         "featureName": "userIdHistogram"
       },
       "builder": {
@@ -145,13 +145,13 @@
       "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdSrcProcessFileNameProcessDaily"
+        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdSrcProcessFileNameProcessDaily",
+        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
         "featureName": "dstProcessFilePathHistogram"
       },
       "builder": {
@@ -162,16 +162,16 @@
       }
     },
     {
-      "name": "userIdHistogram.srcProcessFileNameCreatedDstProcessFilePath.process",
+      "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "userIdHistogramSrcProcessFileNameCreatedDstProcessFilePathProcessDaily"
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "userIdHistogramSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
         "featureName": "userIdHistogram"
       },
       "builder": {
@@ -185,13 +185,13 @@
       "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdDstProcessFileNameProcessDaily"
+        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdDstProcessFileNameProcessDaily",
+        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
         "featureName": "dstProcessFilePathHistogram"
       },
       "builder": {
@@ -202,16 +202,16 @@
       }
     },
     {
-      "name": "userIdHistogram.srcProcessFileNameOpenedDstProcessFilePath.process",
+      "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "userIdHistogramSrcProcessFileNameOpenedDstProcessFilePathProcessDaily"
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "userIdHistogramSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
         "featureName": "userIdHistogram"
       },
       "builder": {
