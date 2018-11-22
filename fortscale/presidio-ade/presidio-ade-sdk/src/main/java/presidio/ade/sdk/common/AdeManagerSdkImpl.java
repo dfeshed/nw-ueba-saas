@@ -15,6 +15,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.smart.MultipleSmartCollectionsPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -25,6 +26,8 @@ import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
+import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors;
+import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordSplitter;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
@@ -56,6 +59,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     private Map<String, String> aggregationNameToFeatureBucketConfName;
     private StoreManager storeManager;
+    private ScoreAggregationRecordSplitter scoreAggregationRecordSplitter;
 
     public AdeManagerSdkImpl(
             StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore,
@@ -65,7 +69,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
             FeatureBucketReader featureBucketReader,
             AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader,
             SmartRecordConfService smartRecordConfService,
-            StoreManager storeManager) {
+            StoreManager storeManager,
+            ScoreAggregationRecordSplitter scoreAggregationRecordSplitter) {
 
         this.storeManagerAwareEnrichedDataStore = storeManagerAwareEnrichedDataStore;
         this.smartDataReader = smartDataReader;
@@ -75,6 +80,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
         this.smartRecordConfService = smartRecordConfService;
         this.storeManager = storeManager;
+        this.scoreAggregationRecordSplitter = scoreAggregationRecordSplitter;
     }
 
     @Override
@@ -268,6 +274,13 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
+    public ScoreAggregationRecordContributors splitScoreAggregationRecordToContributors(
+            AdeAggregationRecord scoreAggregationRecord, List<String> splitFieldNames) {
+
+        return scoreAggregationRecordSplitter.split(scoreAggregationRecord, splitFieldNames);
+    }
+
+    @Override
     public PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold) {
         Collection<String> configurationNames = smartRecordConfService.getSmartRecordConfs().stream().map(SmartRecordConf::getName).collect(Collectors.toSet());
         return new MultipleSmartCollectionsPaginationService(configurationNames, smartDataReader, pageSize, maxGroupSize).getPageIterator(timeRange, scoreThreshold);
@@ -303,7 +316,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     /**
      * Create StoreMetadataProperties
-     * @param schema
+     *
      * @return StoreMetadataProperties
      */
     private StoreMetadataProperties createStoreMetadataProperties(String schema){
