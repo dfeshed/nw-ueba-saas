@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import {
   isCoreServiceNotUpdated,
-  getCoreDeviceVersion
+  getCoreDeviceVersion,
+  hasSummaryData
 } from 'investigate-shared/selectors/services/selectors';
 
 module('Unit | Selectors | services');
@@ -100,4 +101,31 @@ test('determine if core services are updated beyond 11.1', function(assert) {
   };
   const flag = isCoreServiceNotUpdated(state, '11.1');
   assert.notOk(flag, 'Core Service is up to date');
+});
+
+test('hasSummaryData', function(assert) {
+  const state1 = {
+    services: {
+      summaryData: { startTime: 0 },
+      isSummaryRetrieveData: true
+    }
+  };
+  const result1 = hasSummaryData(state1);
+  assert.equal(result1, false);
+
+  const state2 = {
+    services: {
+      isSummaryRetrieveData: true
+    }
+  };
+  const result2 = hasSummaryData(state2);
+  assert.equal(result2, true);
+
+  const state3 = {
+    services: {
+      summaryData: { startTime: 123 }
+    }
+  };
+  const result3 = hasSummaryData(state3);
+  assert.equal(result3, true);
 });

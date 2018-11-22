@@ -42,6 +42,8 @@ const ServiceSelector = Component.extend({
 
   onServiceSelection: null,
 
+  isSummaryRetrieveError: false,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const services = this.get('services');
@@ -60,7 +62,8 @@ const ServiceSelector = Component.extend({
           isSummaryLoading: services.isSummaryLoading,
           serviceData: services.serviceData,
           summaryErrorMessage: services.summaryErrorMessage,
-          hasSummaryData: hasSummaryData(state)
+          hasSummaryData: hasSummaryData(state),
+          isSummaryRetrieveError: services.isSummaryRetrieveError
         }
       );
     }

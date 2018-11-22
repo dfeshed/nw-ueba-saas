@@ -61,8 +61,14 @@ export const hasServices = createSelector(
  * @public
  */
 export const hasSummaryData = createSelector(
-  [_summaryData],
-  (summaryData) => !!summaryData && summaryData.startTime !== 0
+  [_summaryData, _isSummaryRetrieveError],
+  (summaryData, isSummaryRetrieveError) => {
+    // this is required because endpoint does not have summaryData
+    if (!summaryData) {
+      return !isSummaryRetrieveError;
+    }
+    return !!summaryData && summaryData.startTime !== 0;
+  }
 );
 
 /**
