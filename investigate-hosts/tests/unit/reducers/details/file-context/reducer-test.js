@@ -5,6 +5,7 @@ import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../../helpers/make-pack-action';
 import { driversData, filesData } from '../../../state/state';
+import { libraryTestData } from './test-data';
 import _ from 'lodash';
 
 const initialState = {
@@ -186,6 +187,34 @@ module('Unit | Reducers | File Context', function() {
     });
     const endState = reducer(previous, action);
     assert.equal(endState.fileContext.library_61.fileProperties.fileStatus, 'whitelist');
+  });
+
+  test('SAVE_FILE_CONTEXT_FILE_STATUS with more than 100 file selections', function(assert) {
+    const selections = new Array(101)
+      .join().split(',')
+      .map(function(item, index) {
+        return { id: ++index, checksumSha256: index };
+      });
+
+    const checksums = new Array(100)
+      .join().split(',')
+      .map(function(item, index) {
+        return ++index;
+      });
+
+    const previous = Immutable.from({
+      selectedRowId: '123',
+      fileContextSelections: selections,
+      fileContext: libraryTestData(102)
+    });
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
+      payload: { request: { data: { fileStatus: 'whitelist', checksums } } }
+    });
+    const endState = reducer(previous, action);
+    assert.equal(endState.fileContext['100'].fileProperties.fileStatus, 'whitelist');
+    assert.equal(endState.fileContext['101'].fileProperties.fileStatus, 'blacklist');
+    assert.equal(endState.fileContext['102'].fileProperties.fileStatus, 'blacklist');
   });
 
 
