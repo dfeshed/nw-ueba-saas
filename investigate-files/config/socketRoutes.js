@@ -12,7 +12,6 @@ const filesConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
   const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
-  const riskScoreSocketUrl = common.determineSocketUrl(environment, '/risk/score/socket');
   const respondSocketUrl = common.determineSocketUrl(environment, '/respond/socket');
 
 
@@ -23,14 +22,22 @@ const filesConfigGen = function(environment) {
     'contexthub-server-ping': {
       socketUrl: contextSocketUrl
     },
-    'risk-scoring-server-ping': {
-      socketUrl: riskScoreSocketUrl
+    'respond-server-ping': {
+      socketUrl: respondSocketUrl
     },
     'respond-server': {
       socketUrl: respondSocketUrl,
       'alert-events': {
         subscriptionDestination: '/user/queue/alerts/events',
         requestDestination: '/ws/respond/alerts/events'
+      },
+      getFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/file',
+        requestDestination: '/ws/respond/risk/context/file'
+      },
+      resetRiskScore: {
+        subscriptionDestination: '/user/queue/risk/context/file/reset',
+        requestDestination: '/ws/respond/risk/context/file/reset'
       }
     },
     'investigate-service': {
@@ -130,17 +137,6 @@ const filesConfigGen = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/server/get-all',
         requestDestination: '/ws/endpoint/server/get-all'
-      }
-    },
-    'risk-score-server': {
-      socketUrl: riskScoreSocketUrl,
-      getFileContext: {
-        subscriptionDestination: '/user/queue/risk/score/file/context/get',
-        requestDestination: '/ws/risk/score/file/context/get'
-      },
-      resetRiskScore: {
-        subscriptionDestination: '/user/queue/risk/score/file/context/reset',
-        requestDestination: '/ws/risk/score/file/context/reset'
       }
     },
     'endpoint-certificates': {

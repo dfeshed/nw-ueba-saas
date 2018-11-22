@@ -17,7 +17,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
 
   test('Risk Score related severity and context are rendered', async function(assert) {
     const riskScoreContext = {
-      'hash': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+      'id': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
       'distinctAlertCount': {
         'critical': 1,
         'high': 2,
@@ -60,7 +60,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
   test('change landing severity tab if currentActiveTab has 0 alerts', async function(assert) {
     assert.expect(2);
     const riskScoreContext = {
-      'hash': 'test-hash',
+      'id': 'test-hash',
       'distinctAlertCount': {
         'critical': 0,
         'high': 1,
@@ -162,47 +162,30 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
   });
 
-  test('relevant error message is displayed when risk scoring server mongo is down', async function(assert) {
-    this.set('isRiskScoringServerNotConfigured', false);
+  test('relevant error message is displayed when respond server mongo is down', async function(assert) {
     this.set('state', {
       riskScoreContextError: {
         error: 'mongo.connection.failed'
       },
-      isRiskScoringServerOffline: false
+      isRespondServerOffline: false
     });
 
     await render(hbs`{{endpoint/risk-properties
-      riskState=state
-      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+      riskState=state}}`);
 
     assert.equal(find('.rsa-panel-message').textContent.trim(), 'Database is not reachable. Retry after sometime.');
   });
 
-  test('relevant error message is displayed when risk scoring server is down', async function(assert) {
-    this.set('isRiskScoringServerNotConfigured', false);
+  test('relevant error message is displayed when respond server is down', async function(assert) {
     this.set('state', {
-      isRiskScoringServerOffline: true
+      isRespondServerOffline: true
     });
 
     await render(hbs`{{endpoint/risk-properties
-      riskState=state
-      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+      riskState=state}}`);
 
-    assert.equal(findAll('.error-page').length, 1, 'Risk Scoring Server is offline');
-    assert.equal(find('.error-page .title').textContent.trim(), 'Risk Scoring Server is offline');
-  });
-
-  test('relevant error message is displayed when risk scoring server is configured', async function(assert) {
-    this.set('isRiskScoringServerNotConfigured', true);
-
-    this.set('state', { activeRiskSeverityTab: 'critical' });
-
-    await render(hbs`{{endpoint/risk-properties
-      riskState=state
-      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
-
-    assert.equal(findAll('.error-page').length, 1, 'Risk Scoring Server is not configured');
-    assert.equal(find('.error-page .title').textContent.trim(), 'Risk Scoring Server is not configured');
+    assert.equal(findAll('.error-page').length, 1, 'Respond Server is offline');
+    assert.equal(find('.error-page .title').textContent.trim(), 'Respond Server is offline');
   });
 
   test('relevant error message is displayed when empty risk score context is returned', async function(assert) {
@@ -220,8 +203,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     });
 
     await render(hbs`{{endpoint/risk-properties
-      riskState=state
-      isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}`);
+      riskState=state}}`);
 
     assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for No alerts available exists.');
   });

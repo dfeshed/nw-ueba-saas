@@ -1,5 +1,5 @@
 export default {
-  'hash': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+  'id': 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
   'distinctAlertCount': {
     'critical': 1,
     'high': 2,

@@ -7,7 +7,6 @@ import {
   isAllSelected,
   files,
   checksums,
-  isRiskScoringServerNotConfigured,
   areFilesLoading
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
@@ -51,7 +50,6 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isCertificateView: state.certificate.list.isCertificateView,
-  isRiskScoringServerNotConfigured: isRiskScoringServerNotConfigured(state),
   selectedIndex: state.files.fileList.selectedIndex,
   serverId: state.endpointQuery.serverId,
   servers: state.endpointServer.serviceData

@@ -1,4 +1,4 @@
-{{#if (and (not isRiskScoringServerNotConfigured) (not isRiskScoringServerOffline))}}
+{{#if (not isRespondServerOffline)}}
   {{#if riskScoringServerError}}
     <box class='alert-error-message'>
       {{rsa-panel-message message=(t riskScoringServerError)}}
@@ -44,10 +44,6 @@
       </centered>
     {{/if}}
   {{/if}}
-{{else if isRiskScoringServerNotConfigured}}
-  {{error-page
-    errorDescription=(t 'investigateShared.endpoint.riskProperties.errorPage.notConfiguredDescription')
-    title=(t 'investigateShared.endpoint.riskProperties.errorPage.notConfigured')}}
 {{else}}
   {{error-page
   errorDescription=(t 'investigateShared.endpoint.riskProperties.errorPage.serviceDownDescription')

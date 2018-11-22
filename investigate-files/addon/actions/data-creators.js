@@ -19,7 +19,7 @@ import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/fil
 import _ from 'lodash';
 import { initializeEndpoint } from './endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import { resetRiskContext, getRiskScoreContext, getRiskScoringServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
@@ -56,7 +56,7 @@ const _fetchFiles = (type) => {
 
 const initializeFileDetails = (checksum) => {
   return (dispatch) => {
-    dispatch(getRiskScoringServerStatus());
+    dispatch(getRespondServerStatus());
     dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(checksum));
@@ -250,7 +250,7 @@ const _setSelectedFile = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payl
 
 const onFileSelection = (item) => {
   return (dispatch) => {
-    dispatch(getRiskScoringServerStatus());
+    dispatch(getRespondServerStatus());
     dispatch(_setSelectedFile(item));
     dispatch(resetRiskContext());
     next(() => {

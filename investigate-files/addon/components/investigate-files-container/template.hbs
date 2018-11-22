@@ -58,8 +58,7 @@
       {{endpoint/risk-properties
         defaultAction=(action 'getUpdatedRiskScoreContext')
         riskState=risk
-        riskType='FILE'
-        isRiskScoringServerNotConfigured=isRiskScoringServerNotConfigured}}
+        riskType='FILE'}}
     {{else if (eq activeDataSourceTab 'HOSTS')}}
       {{file-found-on-hosts}}
     {{else}}

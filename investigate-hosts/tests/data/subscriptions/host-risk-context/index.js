@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/risk/score/file/context/get',
-  requestDestination: '/ws/risk/score/file/context/get',
+  subscriptionDestination: '/user/queue/risk/context/host',
+  requestDestination: '/ws/respond/risk/context/host',
   message(/* frame */) {
     return {
       meta: {

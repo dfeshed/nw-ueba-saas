@@ -1,16 +1,15 @@
+/* eslint-env node */
 const common = require('../../../common');
 const agentSocket = require('./agentRoutes');
 const endpointSocket = require('./endpointRoutes');
 const hostDetailSocket = require('./hostDetails');
 const adminSocket = require('./adminRoutes');
-const riskScoreSocket = require('./riskScoreRoutes');
 
 const configGenerator = [
   agentSocket,
   endpointSocket,
   hostDetailSocket,
-  adminSocket,
-  riskScoreSocket
+  adminSocket
 ];
 
 

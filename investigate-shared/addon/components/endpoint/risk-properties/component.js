@@ -9,7 +9,7 @@ import {
   riskType,
   riskScoringServerError,
   isRiskScoreContextEmpty,
-  isRiskScoringServerOffline
+  isRespondServerOffline
 } from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -60,7 +60,7 @@ export default Component.extend({
       riskType: riskType(state),
       riskScoringServerError: riskScoringServerError(state),
       isRiskScoreContextEmpty: isRiskScoreContextEmpty(state),
-      isRiskScoringServerOffline: isRiskScoringServerOffline(state)
+      isRespondServerOffline: isRespondServerOffline(state)
     });
   },
 
@@ -71,7 +71,7 @@ export default Component.extend({
     // Count All alerts by adding alerts of critical, high and medium severities.
     alertCount.all = alertCount.critical + alertCount.high + alertCount.medium;
 
-    const id = riskScoreContext ? (riskScoreContext.hash || riskScoreContext.id) : null;
+    const id = riskScoreContext ? riskScoreContext.id : null;
 
     this.changeLandingSeverityTab(activeRiskSeverityTab, id, alertCount);
 

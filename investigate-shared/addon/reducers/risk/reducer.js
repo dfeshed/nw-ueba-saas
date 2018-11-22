@@ -16,7 +16,7 @@ const riskScoreState = Immutable.from({
   alertsError: null,
   selectedAlert: null,
   expandedEventId: null,
-  isRiskScoringServerOffline: false
+  isRespondServerOffline: false
 });
 
 const _handleAppendEvents = (action, isRespondEvent) => {
@@ -106,8 +106,8 @@ const riskScoreReducer = handleActions({
     }
     return state.set('expandedEventId', id);
   },
-  [ACTION_TYPES.RISK_SCORING_SERVER_STATUS]: (state, { payload }) => {
-    return state.set('isRiskScoringServerOffline', payload);
+  [ACTION_TYPES.GET_RESPOND_SERVER_STATUS]: (state, { payload }) => {
+    return state.set('isRespondServerOffline', payload);
   }
 }, riskScoreState);
 

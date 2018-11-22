@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/risk/score/file/context/reset',
-  requestDestination: '/ws/risk/score/file/context/reset',
+  subscriptionDestination: '/user/queue/risk/context/file/reset',
+  requestDestination: '/ws/respond/risk/context/file/reset',
   message(/* frame */) {
     return {
       meta: {

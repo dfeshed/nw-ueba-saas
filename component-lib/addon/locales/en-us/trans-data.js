@@ -3430,10 +3430,8 @@ export default {
           noEvents: 'No Events are available for this file.'
         },
         errorPage: {
-          serviceDown: 'Risk Scoring Server is offline',
-          serviceDownDescription: 'The Risk Scoring Server is not running or is inaccessible. Check with your administrator to resolve this issue.',
-          notConfigured: 'Risk Scoring Server is not configured',
-          notConfiguredDescription: 'Risk Scoring Server may not be configured properly , please check deployment guide for risk scoring server provisioning steps and ensure all the steps are followed.'
+          serviceDown: 'Respond Server is offline',
+          serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
         }
       },
       riskPanel: {

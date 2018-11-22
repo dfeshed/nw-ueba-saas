@@ -7,12 +7,12 @@ import filterQuery from 'respond-shared/utils/filter-query';
  * @returns {*}
  * @public
  */
-const sendDataToResetRiskScore = (query) => {
+const sendDataToResetRiskScore = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'resetRiskScore',
-    modelName: 'risk-score-server',
-    query
+    modelName: 'respond-server',
+    query: { data }
   });
 };
 
@@ -24,12 +24,12 @@ const sendDataToResetRiskScore = (query) => {
  * @public
  * @returns {Promise}
  */
-const getHostRiskScoreContext = (query) => {
+const getHostRiskScoreContext = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostContext',
-    modelName: 'risk-score-server',
-    query
+    modelName: 'respond-server',
+    query: { data }
   });
 };
 
@@ -41,12 +41,12 @@ const getHostRiskScoreContext = (query) => {
  * @public
  * @returns {Promise}
  */
-const getRiskScoreContext = (query) => {
+const getRiskScoreContext = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileContext',
-    modelName: 'risk-score-server',
-    query
+    modelName: 'respond-server',
+    query: { data }
   });
 };
 

@@ -11,7 +11,6 @@ import {
   selectedFileStatusHistory,
   hostList,
   files,
-  isRiskScoringServerNotConfigured,
   areFilesLoading,
   isExportButtonDisabled
 } from 'investigate-files/reducers/file-list/selectors';
@@ -188,32 +187,6 @@ test('hostList test', function(assert) {
   });
   const result = hostList(state);
   assert.equal(result, 'Machine1');
-});
-
-test('check if risk scoring server is configured or not', function(assert) {
-  let state = Immutable.from({
-    files: {
-      fileList: {
-        listOfServices: [
-          { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'local-risk-scoring-server', 'name': 'risk-scoring-server' }
-        ]
-      }
-    }
-  });
-  let result = isRiskScoringServerNotConfigured(state);
-  assert.equal(result, false);
-
-  state = Immutable.from({
-    files: {
-      fileList: {
-        listOfServices: [
-          { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'endpoint-server', 'name': 'endpoint-server' }
-        ]
-      }
-    }
-  });
-  result = isRiskScoringServerNotConfigured(state);
-  assert.equal(result, true);
 });
 
 test('areFilesLoading returns true', function(assert) {

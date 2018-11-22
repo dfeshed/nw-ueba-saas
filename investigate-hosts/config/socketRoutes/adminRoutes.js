@@ -22,6 +22,10 @@ module.exports = function(environment) {
       'alert-events': {
         subscriptionDestination: '/user/queue/alerts/events',
         requestDestination: '/ws/respond/alerts/events'
+      },
+      getHostContext: {
+        subscriptionDestination: '/user/queue/risk/context/host',
+        requestDestination: '/ws/respond/risk/context/host'
       }
     }
   };

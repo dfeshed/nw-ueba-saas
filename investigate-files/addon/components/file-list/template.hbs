@@ -77,9 +77,7 @@
             {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
           {{else if (eq column.field 'score')}}
             <centered>
-              {{#if isRiskScoringServerNotConfigured}}
-                {{rsa-risk-score score='?' size='small'}}
-              {{else if (get item column.field)}}
+              {{#if (get item column.field)}}
                 {{rsa-risk-score score=(get item column.field) size='small'}}
               {{else}}
                 {{rsa-risk-score score='0' size='small'}}

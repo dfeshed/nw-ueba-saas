@@ -12,19 +12,12 @@ const STATE_MAP = {
   HOST: 'endpoint'
 };
 
-const _prepareResetQuery = (fileList) => {
-  return {
-    filter: [
-      { field: 'hashes', value: fileList }
-    ]
-  };
-};
 const resetRiskScore = (selectedFiles, callbacks = callbacksDefault) => {
   const fileList = selectedFiles.map((file) => file.checksumSha256);
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.RESET_RISK_SCORE,
-      promise: api.sendDataToResetRiskScore(_prepareResetQuery(fileList)),
+      promise: api.sendDataToResetRiskScore({ fileList }),
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
@@ -37,27 +30,6 @@ const resetRiskScore = (selectedFiles, callbacks = callbacksDefault) => {
   };
 };
 
-const _prepareContextQuery = (checksum, severity = 'Critical') => {
-  const categoryValue = _.upperFirst(severity);
-  return {
-    filter: [
-      { field: 'hash', value: checksum },
-      { field: 'alertCategory', value: categoryValue }
-    ]
-  };
-};
-
-const _prepareHostContextQuery = (id, severity = 'Critical', timeStamp) => {
-  const categoryValue = _.upperFirst(severity);
-  return {
-    filter: [
-      { field: 'id', value: id },
-      { field: 'alertCategory', value: categoryValue },
-      { field: 'timeStamp', value: timeStamp ? timeStamp : '0' }
-    ]
-  };
-};
-
 const resetRiskContext = () => {
   return (dispatch, getState) => {
     dispatch({
@@ -67,7 +39,15 @@ const resetRiskContext = () => {
   };
 };
 
-const getRiskScoreContext = (id, severity, timeStamp) => {
+const getRiskScoreContext = (id, severity = 'Critical', timeStamp = 0) => {
+  const alertCategory = _.upperFirst(severity);
+
+  const data = {
+    id,
+    alertCategory,
+    timeStamp
+  };
+
   return (dispatch, getState) => {
     const type = riskType(getState());
     if (type === 'FILE') {
@@ -76,7 +56,7 @@ const getRiskScoreContext = (id, severity, timeStamp) => {
         meta: {
           belongsTo: type
         },
-        promise: api.getRiskScoreContext(_prepareContextQuery(id, severity))
+        promise: api.getRiskScoreContext(data)
       });
     } else {
       dispatch({
@@ -84,7 +64,7 @@ const getRiskScoreContext = (id, severity, timeStamp) => {
         meta: {
           belongsTo: type
         },
-        promise: api.getHostRiskScoreContext(_prepareHostContextQuery(id, severity, timeStamp))
+        promise: api.getHostRiskScoreContext(data)
       });
     }
 
@@ -169,15 +149,15 @@ const expandEvent = (id) => {
   };
 };
 
-const getRiskScoringServerStatus = () => {
+const getRespondServerStatus = () => {
   return (dispatch, getState) => {
     const request = lookup('service:request');
-    return request.ping('risk-scoring-server-ping')
+    return request.ping('respond-server-ping')
       .then(() => {
-        dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
+        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
       })
       .catch(() => {
-        dispatch({ type: ACTION_TYPES.RISK_SCORING_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
+        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
       });
   };
 };
@@ -190,5 +170,5 @@ export {
   getAlertEvents,
   setSelectedAlert,
   expandEvent,
-  getRiskScoringServerStatus
+  getRespondServerStatus
 };
