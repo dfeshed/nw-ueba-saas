@@ -145,14 +145,17 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
             AbstractDataRetrieverConf retrieverConf = modelConf.getDataRetrieverConf();
             IModelBuilderConf builderConf = modelConf.getModelBuilderConf();
 
+           List<Integer> expectedModelSize = new ArrayList<>();
+            expectedModelSize.add(10);
+            expectedModelSize.add(50);
             if (retrieverConf instanceof ContextHistogramRetrieverConf && builderConf instanceof TimeModelBuilderConf) {
-                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
+                Assert.isTrue(expectedModelSize.contains(models.size()), unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel1), unexpectedModelMessage));
             } else if (retrieverConf instanceof CategoricalFeatureValueRetrieverConf && builderConf instanceof CategoryRarityModelBuilderConf) {
-                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
+                Assert.isTrue(expectedModelSize.contains(models.size()), unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel2), unexpectedModelMessage));
             } else if (retrieverConf instanceof EpochtimeToHighestDoubleMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
-                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
+                Assert.isTrue(expectedModelSize.contains(models.size()), unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel3), unexpectedModelMessage));
             } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
                 Assert.isTrue(models.size() == 1, unexpectedNumMessage);
@@ -170,16 +173,17 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         Duration interval = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName()).toDuration();
         ITimeGenerator startTimeGenerator = new FixedRangeTimeGenerator(startInstant, endInstant, interval);
 
+        String contextFormat = getContextFormat(featureBucketConf.getContextFieldNames().size());
         // Create a context field values generator
         List<StringRegexCyclicValuesGenerator> stringRegexCyclicValuesGenerators = featureBucketConf.getContextFieldNames().stream()
                 .map(contextFieldName -> {
                     /*
                      * Note:
                      * =====
-                     * This returns a generator that creates 50 values for the context
+                     * This returns a generator that creates x values for the context
                      * field. This affects the number of models created per model conf.
                      */
-                    return new StringRegexCyclicValuesGenerator(String.format("%s[0-4][0-9]", contextFieldName));
+                    return new StringRegexCyclicValuesGenerator(String.format(contextFormat, contextFieldName));
                 })
                 .collect(Collectors.toList());
         RegexStringListGenerator contextFieldValuesGenerator = new RegexStringListGenerator(stringRegexCyclicValuesGenerators);
@@ -190,6 +194,17 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         // Generate and store the feature buckets
         List<FeatureBucket> featureBuckets = featureBucketGenerator.generate();
         featureBucketStore.storeFeatureBucket(featureBucketConf, featureBuckets, new StoreMetadataProperties());
+    }
+
+    private String getContextFormat(int numOfContexts){
+        if(numOfContexts == 1){
+            // creates 50 values for the context
+            return "%s[0-4][0-9]";
+        }
+        else{
+            // creates 10 values for the context
+            return "%s[0-4][0-1]";
+        }
     }
 
     private void generateDataForContextHistogramRetrieverAndTimeModelBuilder(ContextHistogramRetrieverConf retrieverConf) throws GeneratorException {

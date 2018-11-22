@@ -82,22 +82,142 @@
       }
     },
     {
-      "name" : "srcProcessFilePath.windowsDstProcessFileName.process",
-      "selector" : {
-        "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily"
+      "name": "srcProcessFilePath.windowsDstProcessFileName.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily"
       },
-      "retriever" : {
-        "type" : "categorical_feature_value_retriever",
-        "timeRangeInSeconds" : 7776000,
-        "functions" : [ ],
-        "featureBucketConfName" : "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily",
-        "featureName" : "srcProcessFilePathHistogram"
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily",
+        "featureName": "srcProcessFilePathHistogram"
       },
-      "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100000,
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "srcProcessFilePath.userIdDstProcessFileName.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily",
+        "featureName": "srcProcessFilePathHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "userId.dstProcessFileNameSrcProcessFilePath.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily",
+        "featureName": "userIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
+        "featureName": "dstProcessFilePathHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily",
+        "featureName": "userIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily",
+        "featureName": "dstProcessFilePathHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily",
+        "featureName": "userIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
     },
