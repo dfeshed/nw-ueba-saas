@@ -53,7 +53,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		Assert.assertEquals(1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
 		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
+		Assert.assertEquals(20,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
@@ -69,8 +69,8 @@ public class TimeModelTest extends AbstractScorerTest {
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
 		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
-        Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
-		Assert.assertEquals(1, buckets.get(1), 0.001);
+        Assert.assertEquals(38,         buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(2, buckets.get(1), 0.001);
 	}
 
 	@Test
@@ -83,9 +83,9 @@ public class TimeModelTest extends AbstractScorerTest {
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(4, model.getCategoryRarityModel().getNumOfSamples());
+		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
         List<Double> buckets = model.getCategoryRarityModel().getBuckets();
-        Assert.assertEquals(2,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
+        Assert.assertEquals(38,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
 		Assert.assertEquals(2, buckets.get(1), 0.001);
 	}
 

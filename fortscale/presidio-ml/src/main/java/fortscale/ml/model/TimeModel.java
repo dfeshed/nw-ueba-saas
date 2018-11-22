@@ -48,11 +48,11 @@ public class TimeModel implements PartitionedDataModel {
 
 		// fill smooth buckets and smoothedBucketsThatWereHitToNubOfBuckets (category rarity model data)
 		smoothedBuckets = createInitializedBuckets();
-		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNubOfBuckets = new HashMap<>();
-		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNubOfBuckets,bucketHits);
+		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNumOfBuckets = new HashMap<>();
+		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNumOfBuckets,bucketHits);
 
 		// build categorical model
-		buildCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNubOfBuckets);
+		buildCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNumOfBuckets);
 
 		// fill metrics data
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
@@ -120,7 +120,7 @@ public class TimeModel implements PartitionedDataModel {
 	 * @return the sum of bucket hits at {@param resolutionBucketHits}
 	 */
 	public long getNumOfSamples(Map<Long, List<Double>> resolutionBucketHits) {
-		return (long) resolutionBucketHits.values().stream().flatMap(List::stream).mapToDouble(Double::doubleValue).sum();
+		return resolutionBucketHits.size();//long) resolutionBucketHits.values().stream().flatMap(List::stream).mapToDouble(Double::doubleValue).sum();
 	}
 
 	/**
@@ -153,9 +153,9 @@ public class TimeModel implements PartitionedDataModel {
 			Map<Long, Double> timeCounters = resoutlionTimeCounters.get(timeResolutionId);
 			if (timeCounters == null) {
 				timeCounters = new HashMap<>();
+				resoutlionTimeCounters.put(timeResolutionId, timeCounters);
 			}
 			timeCounters.put(entry.getKey(), entry.getValue());
-			resoutlionTimeCounters.put(timeResolutionId, timeCounters);
 		}
 		return resoutlionTimeCounters;
 	}

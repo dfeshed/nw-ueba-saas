@@ -32,7 +32,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         CategoricalFeatureValue categoricalFeatureValue = getCategoricalFeatureValue(modelBuilderData);
-        Map<Pair<String, Long/*name,partitionId*/>, Double/*sum of occurrences*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
+        Map<Pair<String, Long/*name,partitionId*/>, Double/*1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
         Map<String, Long> featureValueToCountMap = castModelBuilderData(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
@@ -65,6 +65,9 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     }
 
     Map<Long, Integer> calcOccurrencesToNumOfDistinctPartitions(Map<Pair<String, Long>, Double> sequenceReducedData) {
+        if(sequenceReducedData.isEmpty()){
+            return Collections.emptyMap();
+        }
 
         Map<String, Set<Long>> nameToPartitionsSet = new HashMap<>();
         for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
@@ -77,10 +80,10 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
             }
         }
 
-        Map<Long, Set<Long>> occurrencesToPartitionSet = new HashMap<>();
-        Map<Long, Set<String>> occurrencesToNameSet = new HashMap<>();
+
+        Map<Integer, Set<Long>> occurrencesToPartitionSet = new HashMap<>();
         for (Map.Entry<String, Set<Long>> nameToPartitionsEntry : nameToPartitionsSet.entrySet()) {
-            long numOfOccurrences = nameToPartitionsEntry.getValue().size();
+            int numOfOccurrences = nameToPartitionsEntry.getValue().size();
             // filling occurrencesToPartitionSet
             Set<Long> occurrencesPartitionsSet = occurrencesToPartitionSet.get(numOfOccurrences);
             if (occurrencesPartitionsSet == null) {
@@ -88,18 +91,19 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
                 occurrencesToPartitionSet.put(numOfOccurrences,occurrencesPartitionsSet);
             }
             occurrencesPartitionsSet.addAll(nameToPartitionsEntry.getValue());
-
-
-            //filling occurrencesToNameSet
-            Set<String> occurrencesNameSet = occurrencesToNameSet.get(numOfOccurrences);
-            if (occurrencesNameSet == null) {
-                occurrencesNameSet = new HashSet<>();
-                occurrencesToNameSet.put(numOfOccurrences,occurrencesNameSet);
-            }
-            occurrencesNameSet.add(nameToPartitionsEntry.getKey());
         }
 
-        Map<Long, Integer> ret = occurrencesToPartitionSet.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> Math.min(e.getValue().size(), occurrencesToNameSet.get(e.getKey()).size())));
+        int maxOccurrences = occurrencesToPartitionSet.keySet().stream().mapToInt(v->v).max().orElseThrow(NoSuchElementException::new);
+        Set<Long> partitionSet = new HashSet<>();
+        Map<Long, Integer> ret = new HashMap<>();
+        for(int i = 1; i<=maxOccurrences; i++){
+            Set<Long> occurrencePartitionSet = occurrencesToPartitionSet.get(i);
+            if(occurrencePartitionSet != null){
+                partitionSet.addAll(occurrencePartitionSet);
+            }
+            ret.put((long)i,partitionSet.size());
+        }
+
         return ret;
     }
 

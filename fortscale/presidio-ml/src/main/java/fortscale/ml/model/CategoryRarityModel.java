@@ -32,17 +32,25 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
 		this.numOfPartitions = numOfPartitions;
+		this.numOfSamples = numOfPartitions;
 		buckets = new ArrayList<>(Collections.nCopies(numOfBuckets,0.0));
 
-		this.numOfSamples = 0L;
+		int occurrencesNumOfPartitionsMax = 0;
 		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
 			long occurrences = entry.getKey();
-			int occurencesNumOfPartitions = entry.getValue();
-
 			if (occurrences <= buckets.size()) {
-				buckets.set((int)(occurrences - 1), (double) occurencesNumOfPartitions);
+				int occurrencesNumOfPartitions = entry.getValue();
+				occurrencesNumOfPartitionsMax = Math.max(occurrencesNumOfPartitionsMax, occurrencesNumOfPartitions);
+				buckets.set((int)(occurrences - 1), (double) occurrencesNumOfPartitions);
 			}
-			this.numOfSamples += occurencesNumOfPartitions * occurrences;
+		}
+
+		if(occurrencesNumOfPartitionsMax>0) {
+			for (int i = numOfBuckets-1; i > 0 && buckets.get(i)==0; i--) {
+				if (buckets.get(i) == 0) {
+					buckets.set(i, (double) occurrencesNumOfPartitionsMax);
+				}
+			}
 		}
 	}
 

@@ -55,27 +55,22 @@ public class CategoryRarityModelScorerAlgorithm {
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
         Assert.isTrue(maxRareCount  <= model.getBuckets().size() / 2,
                 String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().size() / 2, maxRareCount));
-        long totalEvents = model.getNumOfSamples();
-        if (totalEvents == 0 || featureCount > maxRareCount) {
+        if (model.getNumOfPartitions() == 0 || featureCount > maxRareCount) {
             return 0D;
         }
-        double numRareEvents = numRareEventsFactor;
-        double numDistinctRareFeatures = 0;
+
         List<Double> buckets = model.getBuckets();
-        for (int i = 0; i < featureCount; i++) {
-            numRareEvents += (i + 1) * buckets.get(i);
-            numDistinctRareFeatures += buckets.get(i);
-        }
+        double numOfDistinctDaysContainingRareFeatureValue = buckets.get((int) featureCount-1);
         for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2);
-            numRareEvents += (i + 1) * buckets.get(i) * commonnessDiscount;
-            numDistinctRareFeatures += buckets.get(i) * commonnessDiscount;
+            double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
+            numOfDistinctDaysContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
-        numRareEvents = Math.min(numRareEvents,totalEvents);
-        double commonEventProbability = 1 - numRareEvents / totalEvents;
-        double numRareFeaturesDiscount = Math.pow(Math.max(0, (maxNumOfRareFeatures - numDistinctRareFeatures) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
+        double commonEventProbability = 1 - numOfDistinctDaysContainingRareFeatureValue / model.getNumOfPartitions();
+        commonEventProbability = commonEventProbability < 0.85 ? 0.0 : (commonEventProbability - 0.85) / 0.15;
+        double numRareFeaturesDiscount = Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
         double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
-         return Math.floor(MAX_POSSIBLE_SCORE * score);
+        return Math.floor(MAX_POSSIBLE_SCORE * score);
     }
 
     private double calcCommonnessDiscounting(double occurrence) {
