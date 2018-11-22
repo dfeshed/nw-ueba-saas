@@ -3,16 +3,16 @@ package fortscale.aggregation.feature.functions;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.MultiKeyFeature;
+import fortscale.common.feature.MultiKeyHistogram;
 import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
+import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Oren Dor
@@ -33,26 +33,37 @@ public class AggrFeatureEventNumberOfNewOccurrencesFuncTest {
 	public void testCalculateAggrFeature() {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 
-		GenericHistogram histogram1 = new GenericHistogram();
-		histogram1.add("first", 1.0);
-		histogram1.add("second", 2.0);
-		histogram1.add("third", 3.0);
+		MultiKeyHistogram histogram1 = new MultiKeyHistogram();
+		MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+		multiKeyFeature1.add("firstFeatureName", "firstFeatureValue");
+		MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+		multiKeyFeature2.add("secondFeatureName", "secondFeatureValue");
+		MultiKeyFeature multiKeyFeature3 = new MultiKeyFeature();
+		multiKeyFeature3.add("thirdFeatureName", "thirdFeatureValue");
+		histogram1.set(multiKeyFeature1, 1.0);
+		histogram1.set(multiKeyFeature2, 2.0);
+		histogram1.set(multiKeyFeature3, 3.0);
 
-		GenericHistogram notListedHistogram = new GenericHistogram();
-		notListedHistogram.add("first", 1.0);
-		notListedHistogram.add("fifths", 5.0);
-		notListedHistogram.add("tenth", 10.0);
+		MultiKeyHistogram notListedHistogram = new MultiKeyHistogram();
+		MultiKeyFeature multiKeyFeature4 = new MultiKeyFeature();
+		multiKeyFeature4.add("fifthsFeatureName", "fifthsFeatureValue");
+		MultiKeyFeature multiKeyFeature5 = new MultiKeyFeature();
+		multiKeyFeature5.add("tenthFeatureName", "tenthFeatureValue");
+		notListedHistogram.set(multiKeyFeature1, 1.0);
+		notListedHistogram.set(multiKeyFeature2, 5.0);
+		notListedHistogram.set(multiKeyFeature3, 10.0);
 
 		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", histogram1),
 				new ImmutablePair<>("feature2", notListedHistogram)
 		);
 
-		GenericHistogram histogram2 = new GenericHistogram();
-		histogram2.add("first", 1.0);
-		histogram2.add("second", 2.0);
-		String newOccurrenceValue = "newOccurrence";
-		histogram2.add(newOccurrenceValue, 4.0);
+		MultiKeyHistogram histogram2 = new MultiKeyHistogram();
+		histogram2.set(multiKeyFeature1, 1.0);
+		histogram2.set(multiKeyFeature2, 2.0);
+		MultiKeyFeature multiKeyFeatureNewOccurence = new MultiKeyFeature();
+		multiKeyFeatureNewOccurence.add("newOccurrenceFeatureName", "newOccurrenceFeatureValue");
+		histogram2.set(multiKeyFeatureNewOccurence, 4.0);
 		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
 				new ImmutablePair<>("feature1", histogram2),
 				new ImmutablePair<>("feature2", 42)
@@ -73,11 +84,11 @@ public class AggrFeatureEventNumberOfNewOccurrencesFuncTest {
 		Assert.assertEquals(expectedAggrFeatureValue, actualAggrFeatureValue);
 	}
 
-	private AggrFeatureValue createExpected(int numberOfNewOccurrences, GenericHistogram... genericHistograms) {
+	private AggrFeatureValue createExpected(int numberOfNewOccurrences, MultiKeyHistogram... multiKeyHistograms) {
 		AggrFeatureValue ret = new AggrFeatureValue(numberOfNewOccurrences);
-		GenericHistogram sumGenericHistogram = new GenericHistogram();
-		for (GenericHistogram hist : genericHistograms) {
-			sumGenericHistogram.add(hist);
+		MultiKeyHistogram sumMultiKeyHistogram = new MultiKeyHistogram();
+		for (MultiKeyHistogram hist : multiKeyHistograms) {
+			sumMultiKeyHistogram.add(hist, new HashSet<>());
 		}
 		return ret;
 	}

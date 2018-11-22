@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -10,7 +11,6 @@ import fortscale.utils.AggrFeatureFunctionUtils;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @JsonTypeName(AggrFeatureMultiKeyHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
@@ -19,9 +19,17 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_histogram_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
 
+    private Map<String, List<String>> groupByValues;
+
+    public AggrFeatureMultiKeyHistogramFunc(@JsonProperty("groupByValues") Map<String, List<String>> groupByValues) {
+        this.groupByValues = groupByValues;
+    }
+
     /**
      * Updates the histogram within aggrFeature.
      * Uses the features as input for the function according to the configuration in the aggregatedFeatureConf.
+     *
+     * Each multiKeyFeature count number of events.
      *
      * @param aggregatedFeatureConf aggregated feature configuration
      * @param features              mapping of feature name to feature
@@ -47,7 +55,7 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
         MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram) value;
         if (features != null) {
             List<String> featureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
-            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames);
+            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames, groupByValues);
 
             multiKeyFeatures.forEach(multiKeyFeature -> {
                 Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);

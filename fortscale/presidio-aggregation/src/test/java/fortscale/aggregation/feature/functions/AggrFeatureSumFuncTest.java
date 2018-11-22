@@ -112,7 +112,8 @@ public class AggrFeatureSumFuncTest {
 		AggregatedFeatureEventConf conf = createAggregatedFeatureEventConf("NonExistingFeature", 1);
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
-		Assert.assertNull(actual1);
+		Assert.assertNotNull(actual1);
+		Assert.assertEquals(0D,  ((AggrFeatureValue) actual1.getValue()).getValue());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

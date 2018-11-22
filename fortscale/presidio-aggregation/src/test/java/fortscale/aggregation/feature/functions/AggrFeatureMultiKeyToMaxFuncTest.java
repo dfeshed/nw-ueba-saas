@@ -3,8 +3,10 @@ package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureListValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
+import fortscale.utils.AggrFeatureFunctionUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
@@ -25,7 +27,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
     public void testUpdateWithWrongAggrFeatureValueType() {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf("maximizeFeatureName", "groupByFeatureName");
         Feature aggrFeature = new Feature("MyAggrFeature", "I'm a string, not a MultiKeyHistogram");
-        new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(aggrFuncConf, new HashMap<>(), aggrFeature);
+        new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(aggrFuncConf, new HashMap<>(), aggrFeature);
     }
 
     @Test
@@ -40,7 +42,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         int max = 10;
         MultiKeyFeature multiKeyFeature = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue);
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(multiKeyFeature, max));
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 new HashMap<>(),
                 aggrFeature);
@@ -69,7 +71,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
                 new ImmutablePair<>(maximizeFeatureName, max - 1)
         );
 
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -97,7 +99,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
                 new ImmutablePair<>(maximizeFeatureName, max)
         );
 
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -129,7 +131,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
                 new ImmutablePair<>(maximizeFeatureName, max)
         );
 
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName),
                 featureMap,
                 aggrFeature);
@@ -152,7 +154,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
                 new ImmutablePair<>(maximizeFeatureName, max)
         );
 
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName),
                 featureMap,
                 aggrFeature);
@@ -160,6 +162,54 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
 
         Assert.assertEquals(1, featuresGroupToMax.size());
         Assert.assertEquals(max, featuresGroupToMax.get(multiKeyFeature).intValue());
+    }
+
+    @Test
+    public void shouldUpdateWithGroupingByValues() {
+        final String maximizeFeatureName = "score";
+
+        final int max = 10;
+        MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
+        Feature aggrFeature = new Feature("MyAggrFeature", multiKeyHistogram);
+
+        List<String> values = new ArrayList<>();
+        values.add("dest_machine1");
+        values.add("dest_machine2");
+        values.add("dest_machine3");
+
+        Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
+                new ImmutablePair<>("dest_machine", new FeatureListValue(values)),
+                new ImmutablePair<>(maximizeFeatureName, max)
+        );
+
+        Map<String, List<String>> groupByValues = new HashMap<>();
+        List<String> allowedValues = new ArrayList<>();
+        allowedValues.add("dest_machine1");
+        groupByValues.put("dest_machine", allowedValues);
+
+        AggrFeatureMultiKeyToMaxFunc func = new AggrFeatureMultiKeyToMaxFunc(groupByValues);
+
+        List<String> groupByFeatureNames = new ArrayList<>();
+        groupByFeatureNames.add("dest_machine");
+        Map<String, List<String>> featureNamesMap = new HashMap<>();
+        featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.GROUP_BY_FIELD_NAME, groupByFeatureNames);
+        featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.MAXIMIZE_FIELD_NAME, Collections.singletonList(maximizeFeatureName));
+        AggregatedFeatureConf aggregatedFeatureConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+
+
+        Object value =  func.updateAggrFeature(
+                aggregatedFeatureConf,
+                featureMap,
+                aggrFeature);
+        Map<MultiKeyFeature, Double> featuresGroupToMax = ((MultiKeyHistogram)value).getHistogram();
+
+        MultiKeyFeature expected1 = new MultiKeyFeature();
+        expected1.add("dest_machine", "dest_machine1");
+        MultiKeyFeature expected2 = new MultiKeyFeature();
+        expected2.add("dest_machine", AggrFeatureFunctionUtils.OTHER_FIELD_NAME);
+
+        Assert.assertNotNull(featuresGroupToMax.get(expected1));
+        Assert.assertNotNull(featuresGroupToMax.get(expected2));
     }
 
     @Test
@@ -194,7 +244,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
                 new ImmutablePair<>(maximizeFeatureName, maxB)
         );
 
-        Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+        Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                 createAggrFeatureConf(maximizeFeatureName, groupByFeatureName1, groupByFeatureName2),
                 featureMap,
                 aggrFeature);
@@ -246,7 +296,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
 
             Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(featureValues);
 
-            Object value = new AggrFeatureMultiKeyToMaxFunc().updateAggrFeature(
+            Object value = new AggrFeatureMultiKeyToMaxFunc(null).updateAggrFeature(
                     createAggrFeatureConf(maximizeFeatureName, groupByFeatureName1, groupByFeatureName2),
                     featureMap,
                     aggrFeature);

@@ -153,7 +153,8 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 
 		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
-		Assert.assertNull(actual1);
+		Assert.assertNotNull(actual1);
+		Assert.assertEquals(0L,  ((AggrFeatureValue) actual1.getValue()).getValue());
 	}
 
 	@Test
@@ -179,7 +180,8 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 
 		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
-		Assert.assertNull(actual1);
+		Assert.assertNotNull(actual1);
+		Assert.assertEquals(0L,  ((AggrFeatureValue) actual1.getValue()).getValue());
 	}
 
 	@Test
