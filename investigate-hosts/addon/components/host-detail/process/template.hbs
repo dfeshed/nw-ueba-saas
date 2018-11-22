@@ -1,20 +1,43 @@
-<vbox class="process-list-box">
-  <div class="process-list-header">
-    <span class="title">{{t 'investigateHosts.process.title'}}</span>
-    {{#if (not isNavigatedFromExplore)}}
-      <span class="toggle-icon" {{action 'toggleProcessView'}}>
-        {{rsa-icon active=isTreeView class="tree-icon" name='flow-chart-3' is-filled=true}}
-      </span>
-    {{/if}}
-  </div>
-  {{#if isTreeView}}
-    {{host-detail/process/process-tree}}
-  {{else}}
-    {{host-detail/process/process-list}}
-  {{/if}}
-</vbox>
-
-
-
+{{#unless isProcessDataEmpty}}
+  {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+    {{#layout.center}}
+      <box class="process-list-box scroll-box">
+        <div class="process-list-header">
+          <span class="title">{{t 'investigateHosts.process.title'}}</span>
+          {{#if (not isNavigatedFromExplore)}}
+            <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
+              {{rsa-icon active=isTreeView class="tree-icon" name='flow-chart-3' is-filled=true}}
+            </span>
+          {{/if}}
+        </div>
+        {{#if isTreeView}}
+          {{host-detail/process/process-tree
+            openPropertyPanel=(action layout.open 'right')
+            closePropertyPanel=(action layout.close 'right')}}
+        {{else}}
+          {{host-detail/process/process-list
+            openPropertyPanel=(action layout.open 'right')
+            closePropertyPanel=(action layout.close 'right')}}
+        {{/if}}
+      </box>
+    {{/layout.center}}
+    {{#layout.right as |right|}}
+      {{#right.header}}
+        <hbox>
+          <h2 class="header-section__title">{{t 'investigateHosts.process.properties'}}</h2>
+          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+          {{/rsa-form-button}}
+        </hbox>
+      {{/right.header}}
+      <box class="process-property-box scroll-box">
+        {{host-detail/utils/file-property-panel
+          config=propertyConfig
+          localeNameSpace='investigateHosts.property.file'
+          data=process}}
+      </box>
+    {{/layout.right}}
+  {{/rsa-page-layout}}
+{{/unless}}
 
 

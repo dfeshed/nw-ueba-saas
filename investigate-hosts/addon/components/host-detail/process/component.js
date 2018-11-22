@@ -7,11 +7,11 @@ import {
   isProcessLoading,
   noProcessData } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
-import { toggleProcessView } from 'investigate-hosts/actions/data-creators/process';
+import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
-import summaryItems from './summary-item-config';
 
+import summaryItems from './summary-item-config';
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
   process: getProcessData(state),
@@ -23,14 +23,15 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  toggleProcessView
+  toggleProcessView,
+  setRowIndex
 };
 
 const Container = Component.extend({
 
-  tagName: 'hbox',
+  tagName: 'box',
 
-  classNames: 'host-process-info host-process-wrapper',
+  classNames: ['host-process-info', 'host-process-wrapper'],
 
   propertyConfig: CONFIG,
 
@@ -41,6 +42,17 @@ const Container = Component.extend({
       return i18n.t(`investigateHosts.process.dll.note.${machineOsType}`);
     } else {
       return '';
+    }
+  },
+
+  actions: {
+    toggleView(closePanel) {
+      closePanel();
+      this.send('toggleProcessView');
+    },
+
+    onPropertyPanelClose() {
+      this.send('setRowIndex', null);
     }
   }
 });

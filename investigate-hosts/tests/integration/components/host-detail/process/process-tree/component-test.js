@@ -185,4 +185,33 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     });
   });
 
+  test('clicking on the row calls the external function', async function(assert) {
+    assert.expect(5);
+    this.set('openPanel', function() {
+      assert.ok(true, 'open panel is called');
+    });
+    this.set('closePanel', function() {
+      assert.ok(true, 'close panel is called');
+    });
+
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+
+    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
+
+
+    assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is not selected before click');
+    await click(findAll('.rsa-data-table-body-row')[2]);
+    return settled().then(async() => {
+      assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), true, '2nd row is selected after click');
+      await click(findAll('.rsa-data-table-body-row')[2]); // clicking on same row deselect the row
+      assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is selected after click');
+    });
+  });
+
+
 });

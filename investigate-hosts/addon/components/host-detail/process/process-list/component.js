@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { processList, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
-import { getProcessDetails, sortBy, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
+import { setRowIndex, getProcessDetails, sortBy, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import CONFIG from './process-list-config';
@@ -11,7 +11,8 @@ const dispatchToActions = {
   sortBy,
   toggleProcessSelection,
   selectAllProcess,
-  deSelectAllProcess
+  deSelectAllProcess,
+  setRowIndex
 };
 
 const stateToComputed = (state) => ({
@@ -24,7 +25,8 @@ const stateToComputed = (state) => ({
   osType: machineOsType(state),
   hostName: hostName(state),
   selectedProcessList: state.endpoint.process.selectedProcessList,
-  areAllSelected: areAllSelected(state)
+  areAllSelected: areAllSelected(state),
+  selectedRowIndex: state.endpoint.process.selectedRowIndex
 });
 
 const ListComponent = Component.extend({
@@ -38,20 +40,30 @@ const ListComponent = Component.extend({
      * Handle for the row click action
      * @param item
      * @param index
-     * @param e
-     * @param table
      * @public
      */
-    handleRowClickAction(item, index, e, table) {
+    handleRowClickAction(item, index) {
       const { pid } = item;
-      table.set('selectedIndex', index);
-      this.send('getProcessDetails', pid);
+      if (this.get('selectedRowIndex') !== index) {
+        this.send('setRowIndex', index);
+        if (this.openPropertyPanel) {
+          this.openPropertyPanel();
+        }
+        this.send('getProcessDetails', pid);
+      } else {
+        this.send('setRowIndex', null);
+        if (this.closePropertyPanel) {
+          this.closePropertyPanel();
+        }
+      }
     },
+
     sort(column) {
       const { field: sortField, isDescending: isDescOrder } = column;
       this.send('sortBy', sortField, !isDescOrder);
       column.set('isDescending', !isDescOrder);
     },
+
     toggleAllSelection() {
       if (!this.get('areAllSelected')) {
         this.send('selectAllProcess');

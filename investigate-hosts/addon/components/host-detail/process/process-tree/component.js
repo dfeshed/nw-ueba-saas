@@ -5,7 +5,7 @@ import CONFIG from './process-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
-import { getProcessDetails, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
+import { setRowIndex, getProcessDetails, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
@@ -13,13 +13,15 @@ const dispatchToActions = {
   getProcessDetails,
   toggleProcessSelection,
   selectAllProcess,
-  deSelectAllProcess
+  deSelectAllProcess,
+  setRowIndex
 };
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   treeAsList: processTree(state),
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
+  selectedRowIndex: state.endpoint.process.selectedRowIndex,
   agentId: state.endpoint.detailsInput.agentId,
   selectedProcessList: state.endpoint.process.selectedProcessList,
   osType: machineOsType(state),
@@ -82,14 +84,22 @@ const TreeComponent = Component.extend({
      * Handle for the row click action
      * @param item
      * @param index
-     * @param e
-     * @param table
      * @public
      */
-    handleRowClickAction(item, index, e, table) {
+    handleRowClickAction(item, index) {
       const { pid } = item;
-      table.set('selectedIndex', index);
-      this.send('getProcessDetails', pid);
+      if (this.get('selectedRowIndex') !== index) {
+        this.send('setRowIndex', index);
+        if (this.openPropertyPanel) {
+          this.openPropertyPanel();
+        }
+        this.send('getProcessDetails', pid);
+      } else {
+        this.send('setRowIndex', null);
+        if (this.closePropertyPanel) {
+          this.closePropertyPanel();
+        }
+      }
     }
   }
 });

@@ -1,7 +1,7 @@
 export default [
   {
     'dataType': 'checkbox',
-    'width': 20,
+    'width': '2vw',
     'class': 'rsa-form-row-checkbox',
     'componentClass': 'rsa-form-checkbox',
     'visible': true,
@@ -11,44 +11,44 @@ export default [
   {
     field: 'name',
     dataType: 'tree-column',
-    width: 265,
+    width: '22vw',
     title: 'investigateHosts.process.processName',
     componentClass: 'host-detail/process/process-tree/tree-name'
   },
   {
     field: 'pid',
-    width: 100,
+    width: '5vw',
     title: 'investigateHosts.process.pid'
   },
   {
     field: 'score',
-    width: 200,
+    width: '5vw',
     title: 'investigateHosts.process.riskScore'
   },
   {
     field: 'fileStatus',
-    width: 200,
+    width: '10vw',
     title: 'investigateHosts.process.fileStatus'
   },
   {
     field: 'reputationStatus',
-    width: 200,
+    width: '10vw',
     title: 'investigateHosts.process.reputationStatus'
   },
   {
     field: 'downloadInfo.status',
-    width: 200,
+    width: '6vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded'
   },
   {
     field: 'signature.features',
-    width: 200,
+    width: '10vw',
     title: 'investigateHosts.process.signature'
   },
   {
     field: 'path',
-    width: 200,
+    width: '20vw',
     title: 'investigateHosts.process.filePath'
   }
 ];

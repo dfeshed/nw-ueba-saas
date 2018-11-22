@@ -4,6 +4,7 @@ import { handleError } from '../creator-utils';
 
 const toggleProcessView = () => {
   return (dispatch, getState) => {
+    dispatch(setRowIndex(null));
     dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
     const { process: { processTree, processList }, visuals: { isTreeView } } = getState().endpoint;
     if (isTreeView) {
@@ -115,6 +116,8 @@ const selectAllProcess = () => ({ type: ACTION_TYPES.SELECT_ALL_PROCESS });
 
 const deSelectAllProcess = () => ({ type: ACTION_TYPES.DESELECT_ALL_PROCESS });
 
+const setRowIndex = (index) => ({ type: ACTION_TYPES.SET_ROW_INDEX, payload: index });
+
 export {
   sortBy,
   toggleProcessView,
@@ -122,5 +125,6 @@ export {
   getAllProcess,
   toggleProcessSelection,
   selectAllProcess,
-  deSelectAllProcess
+  deSelectAllProcess,
+  setRowIndex
 };

@@ -14,7 +14,8 @@ const initialState = Immutable.from({
 
   processDetailsLoading: false,
   isProcessTreeLoading: false,
-  selectedProcessList: []
+  selectedProcessList: [],
+  selectedRowIndex: null
 });
 
 const processReducer = handleActions({
@@ -77,7 +78,13 @@ const processReducer = handleActions({
     return state.set('selectedProcessList', selectedList);
   },
 
-  [ACTION_TYPES.DESELECT_ALL_PROCESS]: (state) => state.set('selectedProcessList', [])
+  [ACTION_TYPES.DESELECT_ALL_PROCESS]: (state) => state.set('selectedProcessList', []),
+
+  [ACTION_TYPES.SET_ROW_INDEX]: (state, action) => state.set('selectedRowIndex', action.payload),
+
+  [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state) => {
+    return state.set('selectedRowIndex', null);
+  }
 
 }, initialState);
 
