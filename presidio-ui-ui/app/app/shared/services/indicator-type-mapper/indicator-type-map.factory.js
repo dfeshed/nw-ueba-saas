@@ -133,17 +133,24 @@
 
             },
 
-            'singleColumnHistogram': {
+                'singleColumnHistogram': {
                 queries: [
                     {
-
                         anomalyTypeFieldName: 'email_sender',
                         evidenceType: 'AnomalySingleEvent'
                     },
                     {
-
                         anomalyTypeFieldName: 'account_management_change_anomaly',
                         evidenceType: 'AnomalySingleEvent'
+                    },
+                    {
+                        anomalyTypeFieldName: 'high_number_of_distinct_reconnaissance_tools_executed'
+                    },
+                    {
+                        anomalyTypeFieldName: 'high_numner_of_reconnaissance_tool_activities_executed'
+                    },
+                    {
+                        anomalyTypeFieldName: 'high_number_of_reconnaissance tools_executed_process'
                     }
 
                 ],
@@ -176,7 +183,8 @@
                 templateUrl: 'app/layouts/user/components/user-indicator/components/indicator-templates/activity-time-anomaly.html',
                 settings: activityTimeAnomalySettings.settings,
                 indicatorClass: 'gen'
-            },
+            },anomalyTypeFieldName
+
             'geoLocation': {
                 queries: [
                     {
@@ -266,7 +274,25 @@
                         anomalyTypeFieldName: 'abnormal_computer_accessed_remotely'
                     },
                     {
+                        anomalyTypeFieldName: 'abnormal_process_injects_into_lsass'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_reconnaissance_tool_executed'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_process_executed_a_scripting_tool'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_application_triggered_by_scripting_tool'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_process_opened_by_scripting_tool'
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_file_permision_change_operation_type'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_process_modified_a_service_key_registry'
                     },
                     {
                         anomalyTypeFieldName: 'abnormal_file_action_operation_type'
