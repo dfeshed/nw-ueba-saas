@@ -19,7 +19,9 @@ import {
   isProcessLoading,
   isJazzAgent,
   imageHooksData,
-  suspiciousThreadsData
+  suspiciousThreadsData,
+  areAllSelected,
+  selectedFileChecksums
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -1022,6 +1024,37 @@ test('suspiciousThreadsData returns [] if dllList is empty', function(assert) {
       }
     }
   }));
-
   assert.deepEqual(result, [], 'Rreturns [] if dllList is empty');
+});
+
+test('areAllSelected will check if all processes are selected or not', function(assert) {
+  const result = areAllSelected(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: [ { pid: 123 }, { pid: 566 } ],
+        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ]
+      }
+    }
+  }));
+  assert.deepEqual(result, true, 'Returns true if processList and selectedProcessList have same lengths');
+  const result1 = areAllSelected(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: [ { pid: 123 } ],
+        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ]
+      }
+    }
+  }));
+  assert.deepEqual(result1, false, 'Returns false if processList and selectedProcessList have unequal lengths');
+});
+
+test('selectedFileChecksums returns the checksums from the selected list of processes', function(assert) {
+  const result = selectedFileChecksums(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 } ]
+      }
+    }
+  }));
+  assert.deepEqual(result, ['46965656dffsdf664'], 'Returns checksum from the selectedProcessList');
 });

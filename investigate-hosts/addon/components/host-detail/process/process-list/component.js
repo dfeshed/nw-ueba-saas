@@ -1,13 +1,17 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { processList } from 'investigate-hosts/reducers/details/process/selectors';
-import { getProcessDetails, sortBy } from 'investigate-hosts/actions/data-creators/process';
+import { processList, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
+import { getProcessDetails, sortBy, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+import CONFIG from './process-list-config';
 
 const dispatchToActions = {
   getProcessDetails,
-  sortBy
+  sortBy,
+  toggleProcessSelection,
+  selectAllProcess,
+  deSelectAllProcess
 };
 
 const stateToComputed = (state) => ({
@@ -18,33 +22,16 @@ const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   agentId: state.endpoint.detailsInput.agentId,
   osType: machineOsType(state),
-  hostName: hostName(state)
+  hostName: hostName(state),
+  selectedProcessList: state.endpoint.process.selectedProcessList,
+  areAllSelected: areAllSelected(state)
 });
 
 const ListComponent = Component.extend({
 
   tagName: 'box',
 
-  columnsConfig: [
-    {
-      'field': 'name',
-      'title': 'investigateHosts.process.processName',
-      'dataType': 'STRING',
-      'defaultProjection': true,
-      'wrapperType': 'STRING',
-      'width': 265,
-      'isDescending': false
-    },
-    {
-      'field': 'pid',
-      'title': 'investigateHosts.process.pid',
-      'dataType': 'STRING',
-      'defaultProjection': true,
-      'wrapperType': 'STRING',
-      'width': 65,
-      'isDescending': false
-    }
-  ],
+  columnsConfig: CONFIG,
 
   actions: {
     /**
@@ -64,6 +51,13 @@ const ListComponent = Component.extend({
       const { field: sortField, isDescending: isDescOrder } = column;
       this.send('sortBy', sortField, !isDescOrder);
       column.set('isDescending', !isDescOrder);
+    },
+    toggleAllSelection() {
+      if (!this.get('areAllSelected')) {
+        this.send('selectAllProcess');
+      } else {
+        this.send('deSelectAllProcess');
+      }
     }
   }
 

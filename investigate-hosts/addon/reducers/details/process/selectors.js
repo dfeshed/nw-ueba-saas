@@ -12,6 +12,8 @@ const _processDetailsLoading = (state) => state.endpoint.process.processDetailsL
 const _isProcessTreeLoading = (state) => state.endpoint.process.isProcessTreeLoading;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 const _selectedProcessId = (state) => state.endpoint.process.selectedProcessId;
+const _processList = (state) => state.endpoint.process.processList;
+const _selectedProcessList = (state) => state.endpoint.process.selectedProcessList;
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -260,3 +262,18 @@ export const suspiciousThreadsData = createSelector(
     }
     return [];
   });
+
+export const areAllSelected = createSelector(
+  [_processList, _selectedProcessList],
+  (processList, selectedProcessList) => {
+    if (selectedProcessList && selectedProcessList.length) {
+      return processList.length === selectedProcessList.length;
+    }
+    return false;
+  }
+);
+
+export const selectedFileChecksums = createSelector(
+  _selectedProcessList,
+  (selectedProcessList) => selectedProcessList.map((process) => process.checksumSha256)
+);

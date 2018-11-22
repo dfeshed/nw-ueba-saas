@@ -6,7 +6,15 @@
   columnsConfig=columnsConfig}}
 
   {{#rsa-data-table/header as |column|}}
-    {{t column.title}}
+    {{#if (eq column.dataType "checkbox")}}
+      <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
+        {{rsa-form-checkbox checked=areAllSelected change=(action 'toggleAllSelection')}}
+      </label>
+    {{else}}
+      <span class='js-move-handle'>
+        {{t column.title}}
+      </span>
+    {{/if}}
   {{/rsa-data-table/header}}
   {{#if isProcessTreeLoading}}
     <centered>
@@ -15,15 +23,10 @@
   {{else}}
     {{#rsa-data-table/body
       noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
-      as |item index column|}}
+    as |item index column|}}
       {{#if column.componentClass}}
-        {{#rsa-data-table/body-cell item=item column=column}}
-          {{#host-detail/process/pivot-to-process-analysis
-            serviceList=serviceList
-            agentId=agentId
-            osType=osType
-            hostName=hostName
-            contextSelection=item}}
+        {{#if (eq column.dataType 'tree-column')}}
+          {{#rsa-data-table/body-cell item=item column=column}}
             {{host-detail/process/process-tree/process-name
               serviceList=serviceList
               agentId=agentId
@@ -31,10 +34,20 @@
               index=index
               osType=osType
               onToggleExpand=(action 'handleToggleExpand')}}
-          {{/host-detail/process/pivot-to-process-analysis}}
-        {{/rsa-data-table/body-cell}}
+          {{/rsa-data-table/body-cell}}
+        {{else}}
+          {{#rsa-data-table/body-cell item=item column=column}}
+            <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) 'checked'}}">
+              {{rsa-form-checkbox checked=false change=(action 'toggleProcessSelection' item)}}
+            </label>
+          {{/rsa-data-table/body-cell}}
+        {{/if}}
       {{else}}
-        {{rsa-data-table/body-cell item=item column=column}}
+        {{#if (eq column.format 'DOWNLOADSTATUS')}}
+          {{host-detail/utils/table-cell item=item column=column}}
+        {{else}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/if}}
       {{/if}}
     {{/rsa-data-table/body}}
   {{/if}}

@@ -1,4 +1,4 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
@@ -47,7 +47,8 @@ test('it renders data when isProcessDataEmpty is true', function(assert) {
   });
 });
 
-test('it renders data when isProcessDataEmpty is false', function(assert) {
+// skipping the test as this component is removed, but will be further needed for process-details page
+skip('it renders data when isProcessDataEmpty is false', function(assert) {
 
   new ReduxDataHelper(setState)
     .processList(processList)

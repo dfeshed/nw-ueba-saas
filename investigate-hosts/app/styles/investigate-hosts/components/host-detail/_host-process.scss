@@ -24,6 +24,9 @@
       }
     }
   }
+  .process-list-actions {
+    display: inline-block;
+  }
 }
 
 .rsa-data-table-header {
@@ -33,6 +36,7 @@
 .process-list-box {
   @include border(1px, solid, primary, dark);
   position: relative;
+  width: 100%;
   .rsa-data-table {
     height: 100%;
     background-color: $host-details-table-row-color;

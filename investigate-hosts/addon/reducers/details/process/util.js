@@ -6,8 +6,8 @@ const _visitNode = function(node, hashMap, array) {
     array.push(data);
   }
 };
-const _extractData = function({ id, parentPid, pid, name, level, checksumSha256, vpid }) {
-  return { id, parentPid, pid, name, level, checksumSha256, vpid };
+const _extractData = function(node) {
+  return { ...node };
 };
 /**
  * Converts the tree json into flat list. Set the depth the tree node as the row level, level is used to

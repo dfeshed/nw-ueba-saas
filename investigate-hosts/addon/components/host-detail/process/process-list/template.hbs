@@ -5,10 +5,18 @@
   onRowClick=(action "handleRowClickAction")
   columnsConfig=columnsConfig}}
   {{#rsa-data-table/header as |column|}}
-    {{t column.title}}
-    {{rsa-icon size="small"
-      click=(action 'sort' column)
-      name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+    {{#if (eq column.dataType "checkbox")}}
+      <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
+        {{rsa-form-checkbox checked=areAllSelected change=(action 'toggleAllSelection')}}
+      </label>
+    {{else}}
+      <span class='js-move-handle'>
+        {{t column.title}}
+        {{rsa-icon size="small"
+          click=(action 'sort' column)
+          name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+      </span>
+    {{/if}}
   {{/rsa-data-table/header}}
   {{#if isProcessTreeLoading}}
     <centered>
@@ -17,21 +25,21 @@
   {{else}}
     {{#rsa-data-table/body
       noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
-      as |item index column|}}
-      {{#rsa-data-table/body-cell column=column}}
-        {{#if (eq column.field 'name')}}
-          {{#host-detail/process/pivot-to-process-analysis
-            serviceList=serviceList
-            agentId=agentId
-            osType=osType
-            hostName=hostName
-            contextSelection=item}}
-            <span title="{{get item column.field}}">{{get item column.field}}</span>
-          {{/host-detail/process/pivot-to-process-analysis}}
+    as |item index column|}}
+      {{#if column.componentClass}}
+        {{#rsa-data-table/body-cell item=item column=column}}
+          <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) 'checked'}}">
+            {{rsa-form-checkbox checked=false change=(action 'toggleProcessSelection' item)}}
+          </label>
+        {{/rsa-data-table/body-cell}}
+
+      {{else}}
+        {{#if (eq column.format 'DOWNLOADSTATUS')}}
+          {{host-detail/utils/table-cell item=item column=column}}
         {{else}}
-          <span title="{{get item column.field}}">{{get item column.field}}</span>
+          {{rsa-data-table/body-cell item=item column=column}}
         {{/if}}
-      {{/rsa-data-table/body-cell}}
+      {{/if}}
     {{/rsa-data-table/body}}
   {{/if}}
 {{/rsa-data-table}}

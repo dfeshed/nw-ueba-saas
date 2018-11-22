@@ -1,15 +1,19 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { observer } from '@ember/object';
+import CONFIG from './process-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
-import { processTree } from 'investigate-hosts/reducers/details/process/selectors';
-import { getProcessDetails } from 'investigate-hosts/actions/data-creators/process';
+import { processTree, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
+import { getProcessDetails, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const dispatchToActions = {
-  getProcessDetails
+  getProcessDetails,
+  toggleProcessSelection,
+  selectAllProcess,
+  deSelectAllProcess
 };
 
 const stateToComputed = (state) => ({
@@ -17,8 +21,10 @@ const stateToComputed = (state) => ({
   treeAsList: processTree(state),
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
   agentId: state.endpoint.detailsInput.agentId,
+  selectedProcessList: state.endpoint.process.selectedProcessList,
   osType: machineOsType(state),
-  hostName: hostName(state)
+  hostName: hostName(state),
+  areAllSelected: areAllSelected(state)
 });
 
 const TreeComponent = Component.extend({
@@ -32,19 +38,7 @@ const TreeComponent = Component.extend({
    * @type [Object]
    * @public
    */
-  columnsConfig: [
-    {
-      field: 'name',
-      width: 265,
-      title: 'investigateHosts.process.processName',
-      componentClass: 'host-detail/process/process-tree/process-name'
-    },
-    {
-      field: 'pid',
-      width: 65,
-      title: 'investigateHosts.process.pid'
-    }
-  ],
+  columnsConfig: CONFIG,
 
   /**
    * Filtering the the items based on visible property, hiding the virtual child element based the parent expanded or not
@@ -75,6 +69,15 @@ const TreeComponent = Component.extend({
       const { pid, expanded } = item;
       updateRowVisibility(rows, pid, expanded);
     },
+
+    toggleAllSelection() {
+      if (!this.get('areAllSelected')) {
+        this.send('selectAllProcess');
+      } else {
+        this.send('deSelectAllProcess');
+      }
+    },
+
     /**
      * Handle for the row click action
      * @param item

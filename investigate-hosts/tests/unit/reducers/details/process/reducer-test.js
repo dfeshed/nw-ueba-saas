@@ -21,7 +21,8 @@ const initialState = Immutable.from({
   processTree: null,
   processDetails: null,
   processDetailsLoading: false,
-  isProcessTreeLoading: false
+  isProcessTreeLoading: false,
+  selectedProcessList: []
 
 });
 
@@ -132,4 +133,41 @@ test('The GET_PROCESS_FILE_CONTEXT sets server response to the list', function(a
   });
   const endState = reducer(previous, action);
   assert.equal(endState.dllList.length, 10);
+});
+
+test('The SET_SELECTED_PROCESS sets the selectedProcesList', function(assert) {
+  const previous = Immutable.from({
+    selectedProcessList: []
+  });
+  const process = { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 };
+  const result = reducer(
+    previous,
+    { type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process }
+  );
+  assert.deepEqual(result.selectedProcessList, [{ checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 }]);
+});
+
+test('The SELECT_ALL_PROCESS sets the selectedProcesList', function(assert) {
+  const previous = Immutable.from({
+    selectedProcessList: [],
+    processList: [
+      { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0, hasChild: true, vpid: 154354 },
+      { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1, hasChild: false, vpid: 98765 }]
+  });
+  const result = reducer(
+    previous,
+    { type: ACTION_TYPES.SELECT_ALL_PROCESS }
+  );
+  assert.deepEqual(result.selectedProcessList, previous.processList);
+});
+
+test('The DESELECT_ALL_PROCESS sets the selectedProcesList', function(assert) {
+  const previous = Immutable.from({
+    selectedProcessList: [{ checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0, hasChild: true, vpid: 154354 }]
+  });
+  const result = reducer(
+    previous,
+    { type: ACTION_TYPES.DESELECT_ALL_PROCESS }
+  );
+  assert.deepEqual(result.selectedProcessList, []);
 });

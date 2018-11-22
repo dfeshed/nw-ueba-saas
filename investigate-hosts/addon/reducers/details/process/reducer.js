@@ -13,7 +13,8 @@ const initialState = Immutable.from({
   processDetails: null,
 
   processDetailsLoading: false,
-  isProcessTreeLoading: false
+  isProcessTreeLoading: false,
+  selectedProcessList: []
 });
 
 const processReducer = handleActions({
@@ -54,7 +55,29 @@ const processReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_SELECTED_PROCESS_ID]: (state, action) => state.set('selectedProcessId', action.payload)
+  [ACTION_TYPES.SET_SELECTED_PROCESS_ID]: (state, action) => state.set('selectedProcessId', action.payload),
+
+  [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, action) => {
+    const { selectedProcessList } = state;
+    const { checksumSha256, name, pid, parentPid, hasChild, vpid } = action.payload;
+    let selectedList = [];
+    if (selectedProcessList.some((process) => process.pid === pid)) {
+      selectedList = selectedProcessList.filter((process) => process.pid !== pid);
+    } else {
+      selectedList = [...selectedProcessList, { checksumSha256, name, pid, parentPid, hasChild, vpid }];
+    }
+    return state.merge({ 'selectedProcessList': selectedList });
+  },
+
+  [ACTION_TYPES.SELECT_ALL_PROCESS]: (state) => {
+    const selectedList = Object.values(state.processList).map((process) => {
+      const { checksumSha256, name, pid, parentPid, hasChild, vpid } = process;
+      return { checksumSha256, name, pid, parentPid, hasChild, vpid };
+    });
+    return state.set('selectedProcessList', selectedList);
+  },
+
+  [ACTION_TYPES.DESELECT_ALL_PROCESS]: (state) => state.set('selectedProcessList', [])
 
 }, initialState);
 

@@ -14,7 +14,7 @@ test('it renders is-selected helper', function(assert) {
   this.render(hbs`{{is-selected selectedList item}}`);
   assert.equal($('.ember-view')[0].innerText, 'false', 'is-selected should false');
 
-  this.set('item', { id: 0 });
+  this.set('item', { id: 1 });
   this.render(hbs`{{is-selected selectedList item}}`);
   assert.equal($('.ember-view')[0].innerText, 'true', 'is-selected should true');
 

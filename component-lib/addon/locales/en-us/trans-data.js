@@ -2510,6 +2510,11 @@ export default {
       launchArguments: 'Launch Arguments',
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
+      fileStatus: 'File Status',
+      downloaded: 'Downloaded',
+      riskScore: 'Risk Score',
+      hosts: 'Hosts',
+      filePath: 'File Path',
       message: {
         noResultsMessage: 'No process information was found.'
       },

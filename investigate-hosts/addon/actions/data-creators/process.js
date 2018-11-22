@@ -109,9 +109,18 @@ const _getProcessFileContext = (processId) => {
 
 const _setSelectedProcessId = (processId) => ({ type: ACTION_TYPES.SET_SELECTED_PROCESS_ID, payload: processId });
 
+const toggleProcessSelection = (process) => ({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process });
+
+const selectAllProcess = () => ({ type: ACTION_TYPES.SELECT_ALL_PROCESS });
+
+const deSelectAllProcess = () => ({ type: ACTION_TYPES.DESELECT_ALL_PROCESS });
+
 export {
   sortBy,
   toggleProcessView,
   getProcessDetails,
-  getAllProcess
+  getAllProcess,
+  toggleProcessSelection,
+  selectAllProcess,
+  deSelectAllProcess
 };
