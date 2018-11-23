@@ -339,6 +339,10 @@ export default class DataHelper {
     _set(this.state, 'detailsInput.isOverviewPanelVisible', value);
     return this;
   }
+  services(data) {
+    _set(this.state, 'endpointServer', data);
+    return this;
+  }
   isRightPanelVisible(value) {
     _set(this.state, 'detailsInput.isRightPanelVisible', value);
     return this;

@@ -1,6 +1,6 @@
 import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click } from '@ember/test-helpers';
+import { render, settled, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -104,6 +104,27 @@ module('Integration | Component | host table action bar', function(hooks) {
         assert.equal(document.querySelectorAll('#modalDestination.active .confirmation-modal').length, 0, 'delete hosts confirmation modal is closed');
       });
     });
+  });
+
+  test('On changing the service host properties is closed', async function(assert) {
+    assert.expect(2);
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(setState)
+      .totalItems(3)
+      .services(services)
+      .selectedHostList([])
+      .build();
+    this.set('closeProperties', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{host-list/host-table/action-bar closeProperties=closeProperties}}`);
+    assert.equal(findAll('.rsa-investigate-query-container__service-selector').length, 1, 'service selector is rendered');
+    await click('.rsa-content-tethered-panel-trigger');
+    await click('.service-selector-panel li');
   });
 
   skip('it renders flash message when pivot to endpoint is clicked with not 4.4 host selected', function(assert) {

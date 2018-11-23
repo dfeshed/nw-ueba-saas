@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render, find, click } from '@ember/test-helpers';
+import { findAll, render, find, click, settled } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
@@ -178,5 +178,24 @@ module('Integration | Component | host-container', function(hooks) {
 
     await click(find('.host-list-properties .close-zone')); // click on close button
     assert.equal(findAll('.host-container-list .show-right-zone').length, 0, 'Properties panel is closed on close button click');
+  });
+
+  test('changing server list closes right properties', async function(assert) {
+    assert.expect(2);
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`{{host-container}}`);
+
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.show-right-zone').length, 1, 'Properties panel is open on host row click');
+
+    click('.rsa-content-tethered-panel-trigger');
+    return settled().then(() => {
+      click('.service-selector-panel li');
+      return settled().then(() => {
+        assert.equal(findAll('.show-right-zone').length, 0, 'right zone is closed');
+      });
+    });
   });
 });

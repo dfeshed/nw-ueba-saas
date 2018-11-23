@@ -48,6 +48,13 @@ const ActionBar = Component.extend({
         onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
       };
       this.send('deleteHosts', callBackOptions);
+    },
+
+    handleServiceSelection(service) {
+      this.send('setEndpointServer', true, service);
+      if (this.closeProperties) {
+        this.closeProperties();
+      }
     }
   }
 });

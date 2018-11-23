@@ -44,7 +44,6 @@
         {{#if (eq activeHostListPropertyTab 'RISK')}}
           {{endpoint/risk-properties
             defaultAction=(action 'getUpdatedRiskScoreContext')
-            setSelectedAlert=(action 'setSelectedAlert')
             riskState=risk
             riskType='HOST'
           }}
