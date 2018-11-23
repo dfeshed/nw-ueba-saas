@@ -17,7 +17,8 @@ export default {
   },
   {
     field: 'fileName',
-    title: 'dllFileName'
+    title: 'dllFileName',
+    format: 'FILENAME'
   },
   {
     field: 'fileProperties.score',

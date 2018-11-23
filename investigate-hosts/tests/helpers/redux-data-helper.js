@@ -147,6 +147,10 @@ export default class DataHelper {
     _set(this.state, 'visuals.activeHostDetailTab', tabName);
     return this;
   }
+  fileAnalysis(fileAnalysis) {
+    _set(this.state, 'fileAnalysis', fileAnalysis);
+    return this;
+  }
   isSnapshotsAvailable(flag) {
     _set(this.state, 'detailsInput.snapShots', flag ? [0, 1] : []);
     return this;

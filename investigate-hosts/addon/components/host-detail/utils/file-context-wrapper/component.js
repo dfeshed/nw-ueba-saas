@@ -19,6 +19,8 @@ import {
   downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 
+import { openAndFetchFileAnalyzerData } from 'investigate-hosts/actions/data-creators/file-analysis';
+
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
@@ -38,7 +40,8 @@ const dispatchToActions = {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
-  downloadFilesToServer
+  downloadFilesToServer,
+  openAndFetchFileAnalyzerData
 };
 
 
@@ -90,7 +93,10 @@ const ContextWrapper = Component.extend({
       // Placeholder for the next PR.
     },
     onAnalyzeFile() {
-      // Placeholder for the next PR.
+      // Open analyze file.
+      const fileContextSelections = this.get('fileContextSelections');
+      const { checksumSha256 } = fileContextSelections;
+      this.send('openAndFetchFileAnalyzerData', checksumSha256);
     },
 
     resetRiskScoreAction() {

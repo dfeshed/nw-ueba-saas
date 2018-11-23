@@ -133,10 +133,9 @@ module('Integration | Component | host-detail', function(hooks) {
       .hostDetailsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('OVERVIEW')
-      .endpointServer(endpointServerClone)
-      .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{host-detail}}`);
+
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
     assert.equal(findAll('.host-header').length, 1, 'host header is rendered');
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'host detail is rendered');
@@ -162,4 +161,27 @@ module('Integration | Component | host-detail', function(hooks) {
     await click(find('.open-properties .rsa-form-button'));
     assert.equal(findAll('.right-zone').length, 0, 'Host property panel is closed');
   });
+
+  test('file analysis view hidden on load', async function(assert) {
+    const fileAnalysis = { isfileAnalysisView: true, fileData: { format: 'pe' } };
+
+    new ReduxDataHelper(setState)
+      .hostDetailsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
+      .fileAnalysis(fileAnalysis)
+      .build();
+    await render(hbs`{{host-detail}}`);
+
+    assert.equal(findAll('.is-show-file-analysis').length, 0, 'File analysis is not visible');
+  });
+
+  test('file analysis view visible when isFileAnalysisView is set to true', async function(assert) {
+
+    this.set('isFileAnalysisView', true);
+    await render(hbs`{{host-detail isFileAnalysisView=isFileAnalysisView}}`);
+
+    assert.equal(findAll('.is-show-file-analysis').length, 1, 'File analysis is visible');
+  });
+
 });

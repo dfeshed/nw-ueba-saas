@@ -63,6 +63,7 @@ const defaultColumns = [
     'field': 'fileName',
     'label': 'investigateHosts.files.fields.fileName',
     'title': 'Filename',
+    'format': 'FILENAME',
     'width': 150
   },
   {

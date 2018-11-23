@@ -10,7 +10,8 @@ const stateToComputed = (state) => ({
   isSnapshotsAvailable: isSnapshotsAvailable(state),
   hostDetailsLoading: state.endpoint.visuals.hostDetailsLoading,
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
-  selectedServiceData: selectedServiceWithStatus(state)
+  selectedServiceData: selectedServiceWithStatus(state),
+  isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView
 });
 
 const DetailComponent = Component.extend({

@@ -12,7 +12,8 @@ const defaultColumns = [
   },
   {
     field: 'fileName',
-    title: 'Filename'
+    title: 'Filename',
+    format: 'FILENAME'
   },
   {
     field: 'fileProperties.score',

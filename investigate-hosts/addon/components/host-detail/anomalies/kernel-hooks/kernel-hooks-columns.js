@@ -17,7 +17,8 @@ export default {
   },
   {
     field: 'driverFileName',
-    title: 'driverFileName'
+    title: 'driverFileName',
+    format: 'FILENAME'
   },
   {
     field: 'fileProperties.score',

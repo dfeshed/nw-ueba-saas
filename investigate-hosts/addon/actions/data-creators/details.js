@@ -10,6 +10,7 @@ import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/a
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
+import { toggleFileAnalysisView } from 'investigate-hosts/actions/data-creators/file-analysis';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch, getState) => {
@@ -190,6 +191,7 @@ const setAnomaliesTabView = (tabName) => {
 
 const changeDetailTab = (tabName) => {
   return (dispatch) => {
+    dispatch(toggleFileAnalysisView(false));
     dispatch({ type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName } });
     dispatch({ type: ACTION_TYPES.CLOSE_PROCESS_DETAILS });
   };

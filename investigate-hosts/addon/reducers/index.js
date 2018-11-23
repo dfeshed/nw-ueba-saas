@@ -7,6 +7,7 @@ import detailsInput from './details/reducer';
 import overview from './details/overview/reducer';
 import schema from './schema/reducer';
 import filter from 'investigate-shared/reducers/endpoint-filter/reducer';
+import fileAnalysis from './details/file-analysis/reducer';
 import preferences from './preferences/reducer';
 import datatable from './details/datatable/reducer';
 import endpointServer from './endpoint-server/reducer';
@@ -43,6 +44,7 @@ export default combineReducers({
     drivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE')),
+    fileAnalysis,
     risk: createFilteredReducer(risk, reducerPredicate('HOST'))
   }),
   fileStatus: createFilteredReducer(fileStatus, reducerPredicate),

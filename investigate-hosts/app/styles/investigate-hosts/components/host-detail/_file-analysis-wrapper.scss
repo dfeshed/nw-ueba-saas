@@ -1,0 +1,33 @@
+.file-analysis-wrapper {
+  background-color: background-color(primary, darkest);
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: absolute;
+  left: 100%;
+  @include rsa-vendor-prefix(transition-property, left);
+  @include rsa-vendor-prefix(transition-duration, 0.4s);
+  .file-analysis-header {
+    width: 60%;
+    padding: 20px;
+    .file-analysis-title {
+      border-left: 1px solid;
+      height: 28px;
+      display: inline-block;
+      line-height: 2rem;
+      padding-left: 10px;
+      margin: 0 14px;
+      font-size: 1.2rem;
+    }
+    .view-type {
+      font-size: 1.2rem;
+      border-bottom: 3px solid border-color(secondary);
+    }
+  }
+};
+
+.is-show-file-analysis {
+  .file-analysis-wrapper {
+    left: 0;
+  }
+}

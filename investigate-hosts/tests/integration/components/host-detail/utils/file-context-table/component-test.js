@@ -70,7 +70,8 @@ const config = [
   },
   {
     field: 'fileName',
-    title: 'File Name'
+    title: 'File Name',
+    format: 'FILENAME'
   },
   {
     field: 'timeModified',
@@ -305,4 +306,25 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
   });
 
+  test('File name is an anchor tag', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          fileContextSelections: [],
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+
+    assert.equal(findAll('a.file-name-link').length, 3);
+    assert.equal(find('a.file-name-link').href.search('/investigate/files/file'), 21);
+  });
 });

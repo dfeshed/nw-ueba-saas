@@ -1,6 +1,8 @@
 {{host-detail/header}}
 {{#if selectedServiceData.isServiceOnline}}
-  <box class="host-detail-wrapper">
+  <box class="host-detail-wrapper {{if isFileAnalysisView 'is-show-file-analysis'}}">
+
+    {{host-detail/utils/file-analysis-wrapper}}
     {{#if showSnapshotEmptyMessage}}
       {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
     {{else if hostDetailsLoading}}
@@ -12,6 +14,7 @@
     {{else}}
       {{component selectedTabComponent}}
     {{/if}}
+
   </box>
 {{else}}
   {{error-page

@@ -1,0 +1,9 @@
+<div class='file-analysis-header'>
+  {{#rsa-form-button class='close-zone' defaultAction=(action 'toggleFileAnalysisView')}}
+    <span>{{t 'investigateShared.endpoint.fileAnalysis.backButton'}}</span>
+  {{/rsa-form-button}}
+  <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
+  <span class='view-type'>{{t componentConfig.title}}</span>
+</div>
+
+{{component componentConfig.component}}

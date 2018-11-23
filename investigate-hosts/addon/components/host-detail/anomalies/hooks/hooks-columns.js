@@ -17,7 +17,8 @@ export default {
   },
   {
     field: 'dllFileName',
-    title: 'dllFileName'
+    title: 'dllFileName',
+    format: 'FILENAME'
   },
   {
     field: 'signature',

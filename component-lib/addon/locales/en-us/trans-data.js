@@ -3486,6 +3486,13 @@ export default {
       filter: {
         select: 'Select',
         noSavedFilters: 'No saved filters'
+      },
+      fileAnalysis: {
+        title: 'File Analysis',
+        backButton: '< Back',
+        stringsView: 'Strings View',
+        textView: 'Text View',
+        fileDetails: '{{fileType}} FILE DETAILS'
       }
     }
   },
