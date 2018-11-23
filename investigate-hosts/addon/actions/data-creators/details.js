@@ -1,3 +1,4 @@
+import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { HostDetails } from '../api';
@@ -11,10 +12,11 @@ import { getServiceId } from 'investigate-shared/actions/data-creators/investiga
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 
 const _getAllSnapShots = (agentId) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { serverId } = getState().endpointQuery;
     dispatch({
       type: ACTION_TYPES.FETCH_ALL_SNAP_SHOTS,
-      promise: HostDetails.getAllSnapShots({ agentId }),
+      promise: HostDetails.getAllSnapShots({ agentId }, serverId),
       meta: {
         onSuccess: (response) => {
           dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: response.data[0] });
@@ -55,14 +57,17 @@ const setTransition = (type) => ({ type: ACTION_TYPES.SET_ANIMATION, payload: ty
 const _getHostDetails = (forceRefresh) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
+    const { serverId } = getState().endpointQuery;
     if (forceRefresh) {
       dispatch({
         type: ACTION_TYPES.FETCH_HOST_DETAILS,
-        promise: HostDetails.getHostDetails({ agentId, scanTime }),
+        promise: HostDetails.getHostDetails({ agentId, scanTime }, serverId),
         meta: {
           onSuccess: (response) => {
             const { data } = response;
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
+            const request = lookup('service:request');
+            request.registerPersistentStreamOptions({ socketUrlPostfix: response.data.serviceId, requiredSocketUrl: 'endpoint/socket' });
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());

@@ -11,12 +11,15 @@ const NOOP = () => {};
  * @public
  * @returns {Promise}
  */
-const getAllSnapShots = (data) => {
+const getAllSnapShots = (data, serverId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getAllSnapShots',
     modelName: 'endpoint',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: serverId
+    }
   });
 };
 
@@ -28,12 +31,15 @@ const getAllSnapShots = (data) => {
  * @public
  * @returns {Promise}
  */
-const getHostDetails = (data) => {
+const getHostDetails = (data, serverId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostDetails',
     modelName: 'endpoint',
-    query: { data }
+    query: { data },
+    streamOptions: {
+      socketUrlPostfix: serverId
+    }
   });
 };
 

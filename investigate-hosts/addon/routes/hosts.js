@@ -67,15 +67,23 @@ export default Route.extend({
     const redux = this.get('redux');
     const { sid, machineId } = params;
     const request = lookup('service:request');
+    const selectedServerId = redux.getState().endpointQuery.serverId;
+
     run.scheduleOnce('afterRender', () => {
       // refreshing host details page or routing using url
-      if (!machineId) {
+      if (!machineId && selectedServerId) {
+        request.registerPersistentStreamOptions({ socketUrlPostfix: selectedServerId, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(resetDetailsInputAndContent());
       }
+
       if (sid) {
         // get host details
-        request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
-        redux.dispatch(setSelectedEndpointServer(sid));
+        // if endpointQuery serverId is already set and is equal to sid then
+        // there is no point of calling registerPersistentStreamOptions again
+        if (!selectedServerId || selectedServerId !== sid) {
+          request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
+          redux.dispatch(setSelectedEndpointServer(sid));
+        }
         return request.ping('endpoint-server-ping')
           .then(() => {
             const { machineId, tabName = 'OVERVIEW' } = params;
