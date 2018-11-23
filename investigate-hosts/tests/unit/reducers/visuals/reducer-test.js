@@ -15,8 +15,8 @@ test('should return the initial state', function(assert) {
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
-    activePropertyPanelTab: 'HOST_DETAILS'
-
+    activePropertyPanelTab: 'HOST_DETAILS',
+    isProcessDetailsView: false
   });
 });
 
@@ -29,7 +29,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     showDeleteHostsModal: false,
     hostDetailsLoading: true,
     activeSystemInformationTab: 'HOST_ENTRIES',
-    activePropertyPanelTab: 'POLICIES'
+    activePropertyPanelTab: 'POLICIES',
+    isProcessDetailsView: false
   });
 
   const expectedEndState = {
@@ -40,7 +41,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
-    activePropertyPanelTab: 'HOST_DETAILS'
+    activePropertyPanelTab: 'HOST_DETAILS',
+    isProcessDetailsView: false
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -128,6 +130,32 @@ test('The SET_PROPERTY_PANEL_TAB action sets the property panel tab', function(a
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.SET_PROPERTY_PANEL_TAB, payload: { tabName: 'POLICIES' } });
+
+  assert.deepEqual(result, expectedEndState);
+});
+test('The TOGGLE_PROCESS_DETAILS_VIEW ', function(assert) {
+  const previous = Immutable.from({
+    isProcessDetailsView: false
+  });
+
+  const expectedEndState = {
+    isProcessDetailsView: true
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
+
+  assert.deepEqual(result, expectedEndState);
+});
+test('The CLOSE_PROCESS_DETAILS ', function(assert) {
+  const previous = Immutable.from({
+    isProcessDetailsView: true
+  });
+
+  const expectedEndState = {
+    isProcessDetailsView: false
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.CLOSE_PROCESS_DETAILS });
 
   assert.deepEqual(result, expectedEndState);
 });

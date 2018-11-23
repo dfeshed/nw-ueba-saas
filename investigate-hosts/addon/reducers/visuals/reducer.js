@@ -10,13 +10,18 @@ const visualsInitialState = Immutable.from({
   isTreeView: true,
   showDeleteHostsModal: false,
   hostDetailsLoading: false,
-  activeSystemInformationTab: 'HOST_ENTRIES'
+  activeSystemInformationTab: 'HOST_ENTRIES',
+  isProcessDetailsView: false
 });
 
 const visuals = handleActions({
   [ACTION_TYPES.RESET_INPUT_DATA]: (state) => state.merge(visualsInitialState),
 
   [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.set('isTreeView', !state.isTreeView),
+
+  [ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW]: (state) => state.set('isProcessDetailsView', !state.isProcessDetailsView),
+
+  [ACTION_TYPES.CLOSE_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', false),
 
   [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (state, { payload: { tabName } }) => state.set('activeAutorunTab', tabName),
 

@@ -10,11 +10,13 @@ const defaultColumnsConfig = [
   {
     field: 'signature',
     title: 'investigateHosts.process.signature',
-    format: 'SIGNATURE'
+    format: 'SIGNATURE',
+    width: 50
   },
   {
     field: 'path',
-    title: 'investigateHosts.process.dll.filePath'
+    title: 'investigateHosts.process.dll.filePath',
+    width: 50
   }
 ];
 
@@ -23,13 +25,13 @@ const machineOsBasedColumnsConfig = {
     field: 'timeCreated',
     title: 'investigateHosts.process.creationTime',
     format: 'DATE',
-    width: '22%'
+    width: 50
   }],
   windows: [{
     field: 'timeCreated',
     title: 'investigateHosts.process.creationTime',
     format: 'DATE',
-    width: '22%'
+    width: 50
   }],
   linux: []
 };

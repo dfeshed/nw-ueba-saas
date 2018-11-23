@@ -2515,6 +2515,8 @@ export default {
       riskScore: 'Risk Score',
       hosts: 'Hosts',
       filePath: 'File Path',
+      backToProcesses: 'Processes',
+      processDetails: 'Process Details',
       message: {
         noResultsMessage: 'No process information was found.'
       },

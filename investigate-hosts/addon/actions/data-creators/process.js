@@ -15,6 +15,10 @@ const toggleProcessView = () => {
   };
 };
 
+const toggleProcessDetailsView = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
+
+const toggleSelectedProcessDllRow = (item) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_ROW, payload: item });
+
 const _getList = () => {
   return (dispatch, getState) => {
     const { sortField: key, isDescOrder: descending } = getState().endpoint.process;
@@ -126,5 +130,7 @@ export {
   toggleProcessSelection,
   selectAllProcess,
   deSelectAllProcess,
-  setRowIndex
+  setRowIndex,
+  toggleProcessDetailsView,
+  toggleSelectedProcessDllRow
 };

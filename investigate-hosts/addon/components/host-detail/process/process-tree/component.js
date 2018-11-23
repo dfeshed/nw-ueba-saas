@@ -5,7 +5,12 @@ import CONFIG from './process-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
-import { setRowIndex, getProcessDetails, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
+import {
+  setRowIndex,
+  getProcessDetails,
+  toggleProcessSelection,
+  selectAllProcess,
+  deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
@@ -26,7 +31,8 @@ const stateToComputed = (state) => ({
   selectedProcessList: state.endpoint.process.selectedProcessList,
   osType: machineOsType(state),
   hostName: hostName(state),
-  areAllSelected: areAllSelected(state)
+  areAllSelected: areAllSelected(state),
+  isProcessDetailsView: state.endpoint.process.isProcessDetailsView
 });
 
 const TreeComponent = Component.extend({
