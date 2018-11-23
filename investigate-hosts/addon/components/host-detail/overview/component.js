@@ -10,13 +10,15 @@ import {
   setAlertTab,
   setPropertyPanelTabView
 } from 'investigate-hosts/actions/data-creators/details';
+import { toggleRightPanel } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
   setAlertTab,
   getUpdatedRiskScoreContext,
   setSelectedAlert,
   setPropertyPanelTabView,
-  expandEvent
+  expandEvent,
+  toggleRightPanel
 };
 
 const stateToComputed = (state) => ({
@@ -27,7 +29,8 @@ const stateToComputed = (state) => ({
   risk: riskState(state),
   activePropertyPanelTab: state.endpoint.visuals.activePropertyPanelTab,
   propertyPanelTabs: getPropertyPanelTabs(state),
-  policiesPropertyData: getPoliciesPropertyData(state)
+  policiesPropertyData: getPoliciesPropertyData(state),
+  isRightPanelVisible: state.endpoint.detailsInput.isRightPanelVisible
 });
 
 const HostOverview = Component.extend({
@@ -41,6 +44,8 @@ const HostOverview = Component.extend({
   hostDetailsConfig,
 
   policiesConfig,
+
+  isRightPanelClosed: false,
 
   @computed('activePropertyPanelTab')
   propertyPanelData(tab) {
@@ -65,6 +70,12 @@ const HostOverview = Component.extend({
         this.set('domIsReady', true);
       }
     }, 250);
+  },
+
+  actions: {
+    closeRightPanel() {
+      this.send('toggleRightPanel');
+    }
   }
 });
 

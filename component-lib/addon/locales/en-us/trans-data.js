@@ -2716,7 +2716,8 @@ export default {
         close: 'Close Host Details',
         shrink: 'Contract View',
         update: 'Update',
-        reset: 'Reset'
+        reset: 'Reset',
+        rightPanel: 'Show/Hide Right Panel'
       },
       autoruns: {
         services: {

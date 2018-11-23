@@ -17,7 +17,17 @@
   {{/link-to}}
 {{/host-detail/utils/host-title-bar}}
 {{host-detail/header/titlebar/explore}}
+
 <hbox class="titlebar__buttons-holder flexi-fit">
+  {{#rsa-form-button
+    title=(t 'investigateHosts.hosts.button.rightPanel')
+    class="open-properties"
+    isActive=isRightPanelVisible
+    isIconOnly=true
+    defaultAction=(action 'toggleRightPanel')
+  }}
+    {{rsa-icon name='layout-2' size='small'}}
+  {{/rsa-form-button}}
   <div class='divider'/>
   {{rsa-icon
     click=(action 'toggleOverviewPanel')

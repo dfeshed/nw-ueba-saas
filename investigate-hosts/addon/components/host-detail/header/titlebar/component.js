@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
-import { toggleOverviewPanel } from 'investigate-hosts/actions/ui-state-creators';
+import { toggleOverviewPanel, toggleRightPanel } from 'investigate-hosts/actions/ui-state-creators';
 import { getHostDetailTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
@@ -13,12 +13,14 @@ const stateToComputed = (state) => ({
   hostName: hostName(state),
   serviceList: serviceList(state),
   isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible,
+  isRightPanelVisible: state.endpoint.detailsInput.isRightPanelVisible,
   serviceId: serviceId(state)
 });
 
 const dispatchToActions = {
   setNewTabView,
-  toggleOverviewPanel
+  toggleOverviewPanel,
+  toggleRightPanel
 };
 
 const TitleBarComponent = Component.extend({

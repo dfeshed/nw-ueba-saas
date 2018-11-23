@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find } from '@ember/test-helpers';
+import { render, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
@@ -140,5 +140,26 @@ module('Integration | Component | host-detail', function(hooks) {
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
     assert.equal(findAll('.host-header').length, 1, 'host header is rendered');
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'host detail is rendered');
+  });
+
+  test('on selecting Show/Hide right panel button, right panel is open', async function(assert) {
+    setState({ activePropertyPanelTab: 'HOST_DETAILS' });
+    const endpointServerClone = { ...endpointServer };
+    endpointServerClone.isSummaryRetrieveError = false;
+    new ReduxDataHelper(setState)
+      .hostDetailsLoading(false)
+      .isSnapshotsAvailable(false)
+      .selectedTabComponent('OVERVIEW')
+      .endpointServer(endpointServerClone)
+      .endpointQuery(endpointQuery)
+      .host('XYZ')
+      .isRightPanelVisible(true)
+      .build();
+    await render(hbs`{{host-detail}}`);
+    assert.equal(findAll('.host-header').length, 1, 'header rendered');
+    assert.equal(findAll('.host-detail-wrapper').length, 1, 'details rendered');
+    assert.equal(findAll('.right-zone').length, 1, 'Host property panel is displayed');
+    await click(find('.open-properties .rsa-form-button'));
+    assert.equal(findAll('.right-zone').length, 0, 'Host property panel is closed');
   });
 });

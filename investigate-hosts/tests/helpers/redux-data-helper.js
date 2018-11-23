@@ -339,4 +339,8 @@ export default class DataHelper {
     _set(this.state, 'detailsInput.isOverviewPanelVisible', value);
     return this;
   }
+  isRightPanelVisible(value) {
+    _set(this.state, 'detailsInput.isRightPanelVisible', value);
+    return this;
+  }
 }
