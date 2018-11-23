@@ -309,14 +309,21 @@
                     },
                     {
                         anomalyTypeFieldName: 'abnormal_source_machine'
-                    },{
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_object_change_operation'
-                    },{
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_group_membership_sensitive_operation'
-                    },{
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_remote_destination_machine'
-                    },{
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_site'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_reconnaissance_tool_executed'
                     }
                 ],
                 templateUrl: 'app/layouts/user/components/user-indicator/components/indicator-templates/pie.html',
