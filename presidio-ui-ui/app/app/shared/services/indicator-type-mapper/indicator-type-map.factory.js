@@ -183,7 +183,7 @@
                 templateUrl: 'app/layouts/user/components/user-indicator/components/indicator-templates/activity-time-anomaly.html',
                 settings: activityTimeAnomalySettings.settings,
                 indicatorClass: 'gen'
-            },anomalyTypeFieldName
+            },
 
             'geoLocation': {
                 queries: [
