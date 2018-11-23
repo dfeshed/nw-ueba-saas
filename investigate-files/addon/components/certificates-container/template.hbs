@@ -32,11 +32,9 @@
         {{t 'investigateFiles.certificatePageTitle'}}
       </label>
       {{certificates-container/certificate-status}}
-      <box class='close-certificate'>
-        {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
-          {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
-        {{/rsa-form-button}}
-      </box>
+      {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
+        {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
+      {{/rsa-form-button}}
     </hbox>
     {{#if selectedServiceData.isServiceOnline}}
       <box class="certificates-body">

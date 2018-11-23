@@ -16,10 +16,10 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   .certificates-action-bar {
     padding: 19px 7px 19px 18px;
     .padding-right {
-        padding-right: 1rem;
+      padding-right: 1rem;
     }
     .padding-left {
-        padding-left: 1rem;
+      padding-left: 1rem;
     }
     .divider {
       @include border-left(1px, solid, primary);
@@ -31,15 +31,16 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       padding: 6px 4px 1px 13px;
       font-size: 1.28rem;
       font-weight: 100;
-    }  
+    }
     .back-to-file {
       i {
         font-size: 9.8px;
       }
     }
-    .close-certificate {
-      text-align: right;
-      .close-certificate-view-button button i {
+    .close-certificate-view-button {
+      position: absolute;
+      right: 0;
+      i {
         font-size: 14px;
         color: text-color(primary);
         cursor: pointer;
@@ -47,8 +48,8 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
         padding: 0 rsa-whitespace(least);
         &:hover {
           color: text-color(primary, lightest);
-          }
         }
+      }
     }
     .close-zone {
       margin-right: 0.5rem;
@@ -96,6 +97,7 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   @include rsa-vendor-prefix(transition-property, width);
   @include rsa-vendor-prefix(transition-duration, 0.3s);
 }
+
 .license-banner.shown + .certificates-container {
   // When license banner is shown, the absolute top position has to be adjusted
   top: 86px;
