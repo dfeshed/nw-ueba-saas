@@ -73,22 +73,22 @@ public class AdeManagerSdkTest {
         List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData(30);
         String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
         List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
-        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE-0.01);
+        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE - 0.01);
         Assert.assertEquals(generatedScoredRecords.size(), retrievedScoredEnrichedRecords.size());
         Instant startInstant = retrievedScoredEnrichedRecords.stream().min(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         TimeRange timeRange = new TimeRange(startInstant, endInstant);
         Pair<String, String> contextFieldAndValue = Pair.of("userId", GENERATED_USER);
-        List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE-0.1);
-        Assert.assertTrue(distinctOperationTypes.size()>=1);
+        List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE - 0.1);
+        Assert.assertTrue(distinctOperationTypes.size() >= 1);
     }
 
     @Test
     public void shouldGetScoreAggregationNameToAdeEventTypeMap() {
         Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap = adeManagerSdk.getAggregationNameToAdeEventTypeMap();
         Assert.assertNotNull(scoreAggregationNameToAdeEventTypeMap);
-        Assert.assertTrue(scoreAggregationNameToAdeEventTypeMap.size()>0);
-        scoreAggregationNameToAdeEventTypeMap.values().forEach(value -> Assert.assertTrue(value.size()>=1));
+        Assert.assertTrue(scoreAggregationNameToAdeEventTypeMap.size() > 0);
+        scoreAggregationNameToAdeEventTypeMap.values().forEach(value -> Assert.assertTrue(value.size() >= 1));
     }
 
     @Test
@@ -103,13 +103,11 @@ public class AdeManagerSdkTest {
         Assert.assertTrue("ADE input records are missing.", insertedRecords.size() > 0);
         List<IndexInfo> indexInfo = mongoTemplate.indexOps(collectionName).getIndexInfo();
         Assert.assertEquals("Unexpected number of indexes.", 2, indexInfo.size());
-        Assert.assertEquals("Unexpected index name.",
-                new HashSet<>(Arrays.asList("_id_", "start")),
-                indexInfo.stream().map(IndexInfo::getName).collect(Collectors.toSet()));
+        Assert.assertEquals("Unexpected index name.", new HashSet<>(Arrays.asList("_id_", "start")), indexInfo.stream().map(IndexInfo::getName).collect(Collectors.toSet()));
     }
 
     /**
-     * Test cleanup of enriched data
+     * Test cleanup of enriched data.
      */
     @Test
     public void cleanupEnrichedData() {
@@ -119,20 +117,15 @@ public class AdeManagerSdkTest {
         EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata(adeEventType, startInstant, endInstant);
         List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
         adeManagerSdk.storeEnrichedRecords(metaData, records);
-
         Instant removeFrom = startInstant.plus(Duration.ofHours(1));
         Instant removeTo = removeFrom.plus(Duration.ofHours(1));
         AdeDataStoreCleanupParams adeDataStoreCleanupParams = new AdeDataStoreCleanupParams(removeFrom, removeTo, adeEventType);
         adeManagerSdk.cleanupEnrichedRecords(adeDataStoreCleanupParams);
-
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
-
         insertedRecords.forEach(insertedRecord -> {
             Instant start = insertedRecord.getStartInstant();
-            Assert.assertTrue(start.isAfter(removeTo) ||
-                    start.equals(removeTo) ||
-                    start.isBefore(removeFrom));
+            Assert.assertTrue(start.isAfter(removeTo) || start.equals(removeTo) || start.isBefore(removeFrom));
         });
     }
 
@@ -140,20 +133,16 @@ public class AdeManagerSdkTest {
     public void doNotCleanupEnrichedData() {
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(4, ChronoUnit.HOURS);
-
         EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource-2", startInstant, endInstant);
         List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
         adeManagerSdk.storeEnrichedRecords(metaData, records);
-
         Instant removeFrom = startInstant.plus(Duration.ofHours(1));
         Instant removeTo = removeFrom.plus(Duration.ofHours(1));
         AdeDataStoreCleanupParams adeDataStoreCleanupParams = new AdeDataStoreCleanupParams(removeFrom, removeTo, "testDataSource");
         adeManagerSdk.cleanupEnrichedRecords(adeDataStoreCleanupParams);
-
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
-
-        Assert.assertTrue(records.size() == insertedRecords.size());
+        Assert.assertEquals(records.size(), insertedRecords.size());
         insertedRecords = insertedRecords.stream().filter(data -> data.getStartInstant().isBefore(removeTo) && data.getStartInstant().isAfter(removeFrom)).collect(Collectors.toList());
         Assert.assertTrue(!insertedRecords.isEmpty());
     }
@@ -183,7 +172,7 @@ public class AdeManagerSdkTest {
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("spring.application.name", "test-app-name");
-            properties.put("enable.metrics.export",false);
+            properties.put("enable.metrics.export", false);
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

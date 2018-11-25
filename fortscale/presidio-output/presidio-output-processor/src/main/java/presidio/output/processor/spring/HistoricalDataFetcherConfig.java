@@ -72,13 +72,7 @@ public class HistoricalDataFetcherConfig {
     }
 
     @Bean
-    HistoricalDataFetcher historicalDataFetcher() {
-        return new HistoricalDataFetcherADEModelsBased(
-                adeManagerSdk,
-                enrichedDataStore,
-                inMemoryFeatureBucketAggregator,
-                aggregationRecordsCreator(),
-                accumulatorService(),
-                accumulationsCache);
+    public HistoricalDataFetcher historicalDataFetcher() {
+        return new HistoricalDataFetcherADEModelsBased(adeManagerSdk, enrichedDataStore, inMemoryFeatureBucketAggregator, aggregationRecordsCreator(), accumulatorService(), accumulationsCache);
     }
 }

@@ -24,15 +24,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
-
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant UNTIL_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(1)), DURATION);
     private static final String COLLECTION_NAME = "enriched_file";
-
     public static final String EXECUTION_COMMAND = String.format("enriched_ttl_cleanup --until_date %s", UNTIL_DATE.toString());
 
     @Autowired
@@ -60,24 +57,22 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
 
     /**
      * 1. Generate enriched file records.
-     * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval
-     * @param generatedData
+     * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval.
      */
     @Override
     protected void assertSanityTest(List generatedData) {
         List<EnrichedFileRecord> enrichedFileRecordList = mongoTemplate.findAll(EnrichedFileRecord.class, COLLECTION_NAME);
-
-        enrichedFileRecordList.forEach(
-                enrichedFile -> {
-                    Assert.assertTrue(enrichedFile.getStartInstant().compareTo(UNTIL_DATE.minus(ttl)) >= 0);
-                }
-        );
+        enrichedFileRecordList.forEach(enrichedFile -> Assert.assertTrue(enrichedFile.getStartInstant().compareTo(UNTIL_DATE.minus(ttl)) >= 0));
     }
 
-
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, AdeManagerApplicationConfigurationTest.class, AdeManagerApplicationCommands.class, EnrichedFileGeneratorConfig.class})
-    protected static class AdeManagerApplicationTestConfig {
+    @Import({
+            EnrichedSourceSpringConfig.class,
+            AdeManagerApplicationConfigurationTest.class,
+            AdeManagerApplicationCommands.class,
+            EnrichedFileGeneratorConfig.class
+    })
+    public static class AdeManagerApplicationTestConfig {
         @MockBean
         private RecordReaderFactoryService recordReaderFactoryService;
         @MockBean
@@ -85,6 +80,4 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
         @MockBean
         private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
     }
-
-
 }

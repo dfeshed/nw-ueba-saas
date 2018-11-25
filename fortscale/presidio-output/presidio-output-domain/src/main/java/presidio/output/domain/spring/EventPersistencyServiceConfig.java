@@ -20,22 +20,20 @@ import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 /**
- * Created by efratn on 02/08/2017.
+ * @author Efrat Noam
  */
 @Configuration
-@Import({MongoDbBulkOpUtilConfig.class,
+@Import({
+        MongoDbBulkOpUtilConfig.class,
         AdeManagerSdkConfig.class,
         TransformationConfig.class,
         OutputRecordReaderFactoryServiceConfig.class
 })
 public class EventPersistencyServiceConfig {
-
     @Autowired
     private MongoTemplate mongoTemplate;
-
     @Autowired
     private AdeManagerSdk adeManagerSdk;
-
     @Autowired
     private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
 

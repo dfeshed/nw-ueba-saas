@@ -3,7 +3,6 @@ package presidio.output.proccesor.spring;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.shell.BootShimConfig;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,7 +14,6 @@ import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
-import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.services.MetricCollectingService;
@@ -37,14 +35,15 @@ import presidio.output.processor.spring.OutputMonitoringConfiguration;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class,
+@Import({
+        EventPersistencyServiceConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
         BootShimConfig.class,
-        OutputMonitoringConfiguration.class})
+        OutputMonitoringConfiguration.class
+})
 public class OutputProcessorTestConfiguration {
-
-    private final String APPLICATION_NAME = "output-core";
+    private static final String APPLICATION_NAME = "output-core";
 
     @Bean
     public MetricCollectingService metricCollectingService() {
@@ -89,7 +88,6 @@ public class OutputProcessorTestConfiguration {
     @Value("${smart.page.size}")
     private int smartPageSize;
 
-
     @Value("${alert.page.size}")
     private int alertPageSize;
 
@@ -104,7 +102,9 @@ public class OutputProcessorTestConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService,
+                outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays,
+                retentionOutputDataDays);
     }
 
     @MockBean

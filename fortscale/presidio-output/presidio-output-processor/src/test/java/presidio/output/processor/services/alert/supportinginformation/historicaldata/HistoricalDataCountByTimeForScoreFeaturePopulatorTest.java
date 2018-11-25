@@ -34,18 +34,21 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {
+        AlertServiceElasticConfig.class,
+        MongodbTestConfig.class,
+        TestConfig.class,
+        ElasticsearchTestConfig.class
+})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
-
     @Autowired
     private HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator;
-
     @Autowired
     private SupportingInformationConfig config;
 
     @MockBean
-    HistoricalDataFetcher historicalDataFetcher;
+    private HistoricalDataFetcher historicalDataFetcher;
     @MockBean
     private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
@@ -54,9 +57,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
         HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
-
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
-        LocalDate date = LocalDate.of(2018, 02, 25);
+        LocalDate date = LocalDate.of(2018, 2, 25);
         Map<String, Number> histogram = new HashMap<>();
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
@@ -72,9 +74,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
         HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
-
         List<DailyHistogram<String, Number>> result = new ArrayList<>();
-        LocalDate date = LocalDate.of(2018, 02, 25);
+        LocalDate date = LocalDate.of(2018, 2, 25);
         Map<String, Number> histogram = new HashMap<>();
         histogram.put("one_hour_resolution_epochtime#1517400000", 120.0);
         histogram.put("one_hour_resolution_epochtime#1517425200", 51.0);
@@ -93,13 +94,10 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, CommonStrings.CONTEXT_USERID, contextValue, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
         Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
         Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
-
         historicalData.getAggregation().getBuckets().forEach(o -> {
-            if (anomalyValue.equals(((Bucket)o).getValue().toString())){
+            if (anomalyValue.equals(((Bucket)o).getValue().toString())) {
                 Assert.assertTrue(((Bucket)o).isAnomaly());
             }
         });
-
     }
-
 }

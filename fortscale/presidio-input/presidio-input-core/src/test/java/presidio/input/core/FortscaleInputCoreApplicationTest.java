@@ -1,6 +1,5 @@
 package presidio.input.core;
 
-
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.shell.command.PresidioCommands;
@@ -39,21 +38,19 @@ import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;
 
-
 @RunWith(SpringRunner.class)
 public class FortscaleInputCoreApplicationTest {
     public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
 
     @Autowired
     private BootShim bootShim;
-
     @Autowired
     private PresidioExecutionService processService;
-
     @Autowired
     private MetricCollectingService metricCollectingService;
+
     @MockBean
-    MetricRepository metricRepository;
+    private MetricRepository metricRepository;
     @MockBean
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @MockBean
@@ -66,7 +63,7 @@ public class FortscaleInputCoreApplicationTest {
     private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Test
-    public void contextLoads() throws Exception {
+    public void contextLoads() {
         Assert.assertTrue(processService instanceof InputExecutionServiceImpl);
     }
 
@@ -82,12 +79,11 @@ public class FortscaleInputCoreApplicationTest {
             MongodbTestConfig.class,
             BootShimConfig.class,
             PresidioCommands.class,
-            OutputDataServiceConfig.class})
+            OutputDataServiceConfig.class
+    })
     @EnableSpringConfigured
     public static class springConfig {
-
         private String applicationName = "input-core";
-
 
         @Bean
         public MetricCollectingService metricCollectingService() {
@@ -123,6 +119,5 @@ public class FortscaleInputCoreApplicationTest {
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
-
     }
 }
