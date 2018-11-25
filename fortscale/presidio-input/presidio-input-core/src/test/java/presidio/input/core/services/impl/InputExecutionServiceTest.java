@@ -1,9 +1,11 @@
 package presidio.input.core.services.impl;
 
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +15,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.authentication.EnrichedAuthenticationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.input.core.FortscaleInputCoreApplicationTest;
 import presidio.input.core.services.data.AdeDataService;
@@ -65,6 +69,12 @@ public class InputExecutionServiceTest {
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @MockBean
     private PresidioElasticsearchTemplate elasticsearchTemplate;
+    @MockBean
+    private RecordReaderFactoryService recordReaderFactoryService;
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Autowired
     PresidioInputPersistencyService inputPersistencyService;

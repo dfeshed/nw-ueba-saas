@@ -1,7 +1,6 @@
 package presidio.output.domain.spring;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
-import fortscale.utils.recordreader.transformation.Transformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +19,15 @@ import presidio.output.domain.services.event.ScoredEventServiceImpl;
 import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 /**
  * Created by efratn on 02/08/2017.
  */
 @Configuration
 @Import({MongoDbBulkOpUtilConfig.class,
         AdeManagerSdkConfig.class,
-        TransformationConfig.class})
+        TransformationConfig.class,
+        OutputRecordReaderFactoryServiceConfig.class
+})
 public class EventPersistencyServiceConfig {
 
     @Autowired
@@ -39,8 +37,7 @@ public class EventPersistencyServiceConfig {
     private AdeManagerSdk adeManagerSdk;
 
     @Autowired
-    private Collection<Transformation<?>> transformations;
-
+    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
 
     @Bean
     public EventPersistencyService eventPersistencyService() {
@@ -49,7 +46,7 @@ public class EventPersistencyServiceConfig {
 
     @Bean
     public ScoredEventService scoredEventService() {
-        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk, enrichedEventRecordReaderFactory());
+        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk, enrichedEventRecordReaderFactory);
     }
 
     @Bean
@@ -66,10 +63,4 @@ public class EventPersistencyServiceConfig {
     public OutputToClassNameTranslator outputToClassNameTranslator() {
         return new OutputToClassNameTranslator();
     }
-
-
-    @Bean EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory() {
-        return new EnrichedEventRecordReaderFactory(transformations.stream().collect(Collectors.toMap(Transformation::getFeatureName, t -> t)));
-    }
-
 }

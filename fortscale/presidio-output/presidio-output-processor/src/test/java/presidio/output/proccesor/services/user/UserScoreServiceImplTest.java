@@ -1,5 +1,6 @@
 package presidio.output.proccesor.services.user;
 
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.commons.services.user.UserSeverityServiceImpl;
@@ -58,7 +61,10 @@ public class UserScoreServiceImplTest {
 
     @MockBean
     private UserSeveritiesRangeRepository userSeveritiesRangeRepository;
-
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
     @Autowired
     private UserSeverityService userSeverityService;
 

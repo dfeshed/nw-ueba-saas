@@ -1,9 +1,11 @@
 package presidio.input.core;
 
 
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -19,6 +21,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfigurationTest;
 import presidio.monitoring.aspect.MonitoringAspects;
@@ -54,6 +58,12 @@ public class FortscaleInputCoreApplicationTest {
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @MockBean
     private PresidioElasticsearchTemplate elasticsearchTemplate;
+    @MockBean
+    private RecordReaderFactoryService recordReaderFactoryService;
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Test
     public void contextLoads() throws Exception {

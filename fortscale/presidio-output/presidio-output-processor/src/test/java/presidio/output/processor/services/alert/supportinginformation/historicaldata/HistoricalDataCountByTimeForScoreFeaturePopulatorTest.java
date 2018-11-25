@@ -15,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.proccesor.spring.TestConfig;
@@ -44,7 +46,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
 
     @MockBean
     HistoricalDataFetcher historicalDataFetcher;
-
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Test
     public void test_NoEvents() {

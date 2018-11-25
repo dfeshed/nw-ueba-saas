@@ -2,9 +2,11 @@ package presidio.output.domain.services;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
@@ -44,6 +48,12 @@ public class EventPersistencyServiceTest {
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @MockBean
     private PresidioElasticsearchTemplate elasticsearchTemplate;
+    @MockBean
+    private RecordReaderFactoryService recordReaderFactoryService;
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Before
     public void before() {

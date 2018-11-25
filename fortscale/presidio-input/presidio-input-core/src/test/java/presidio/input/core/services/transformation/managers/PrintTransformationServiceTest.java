@@ -1,13 +1,18 @@
 package presidio.input.core.services.transformation.managers;
 
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.spring.InputConfigTest;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -21,6 +26,12 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {InputConfigTest.class})
 public class PrintTransformationServiceTest {
+    @MockBean
+    private RecordReaderFactoryService recordReaderFactoryService;
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Autowired
     TransformationService transformationService;

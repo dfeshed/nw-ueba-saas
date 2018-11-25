@@ -7,24 +7,18 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorImpl;
 import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainer;
 import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainerConfig;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
-import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
-import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainerConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
-import presidio.ade.sdk.aggregation_records.BucketConfigurationServiceConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -36,33 +30,21 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 @Import({
         EventPersistencyServiceConfig.class,
         AdeManagerSdkConfig.class,
-        BucketConfigurationServiceConfig.class,
         EnrichedDataStoreConfig.class,
-        RecordReaderFactoryServiceConfig.class,
         AggrFeatureFuncServiceConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
         AccumulationsCacheConfig.class,
-        FeatureBucketAggregatorMetricsContainerConfig.class,
         AggregationRecordsCreatorMetricsContainerConfig.class
-
-
 })
 public class HistoricalDataFetcherConfig {
+    @Autowired
+    private EventPersistencyService eventPersistencyService;
 
     @Autowired
-    EventPersistencyService eventPersistencyService;
+    private AdeManagerSdk adeManagerSdk;
 
     @Autowired
-    AdeManagerSdk adeManagerSdk;
-
-    @Autowired
-    BucketConfigurationService bucketConfigurationService;
-
-    @Autowired
-    RecordReaderFactoryService recordReaderFactoryService;
-
-    @Autowired
-    EnrichedDataStore enrichedDataStore;
+    private EnrichedDataStore enrichedDataStore;
 
     @Autowired
     private IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
@@ -74,15 +56,10 @@ public class HistoricalDataFetcherConfig {
     private AccumulationsCache accumulationsCache;
 
     @Autowired
-    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
 
     @Autowired
     private AggregationRecordsCreatorMetricsContainer aggregationRecordsCreatorMetricsContainer;
-
-    @Bean
-    public InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator() {
-        return new InMemoryFeatureBucketAggregator(bucketConfigurationService, recordReaderFactoryService,featureBucketAggregatorMetricsContainer );
-    }
 
     @Bean
     public AggregationRecordsCreator aggregationRecordsCreator() {
@@ -96,17 +73,12 @@ public class HistoricalDataFetcherConfig {
 
     @Bean
     HistoricalDataFetcher historicalDataFetcher() {
-        return new HistoricalDataFetcherADEModelsBased(adeManagerSdk,
-                                                enrichedDataStore,
-                                                inMemoryFeatureBucketAggregator(),
-                                                aggregationRecordsCreator(),
-                                                accumulatorService(),
-                                                accumulationsCache
-                                                );
+        return new HistoricalDataFetcherADEModelsBased(
+                adeManagerSdk,
+                enrichedDataStore,
+                inMemoryFeatureBucketAggregator,
+                aggregationRecordsCreator(),
+                accumulatorService(),
+                accumulationsCache);
     }
-
-
-
-
-
 }
