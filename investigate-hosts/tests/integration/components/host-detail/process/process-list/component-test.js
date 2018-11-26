@@ -187,6 +187,29 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is selected after click');
     });
   });
+  test('clicking on the process name process details view should open', async function(assert) {
+    assert.expect(3);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'getProcess');
+      assert.equal(modelName, 'endpoint');
+    });
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+
+    await render(hbs`{{host-detail/process/process-list}}`);
+    await click(findAll('.rsa-data-table-body-cell')[1]);
+
+    return settled().then(async() => {
+      const redux = this.owner.lookup('service:redux');
+      const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
+      assert.equal(isProcessDetailsView, true, 'isProcessDetailsView state updated to true');
+    });
+  });
 
 
 });

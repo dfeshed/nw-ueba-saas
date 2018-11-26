@@ -162,9 +162,27 @@ module('Integration | Component | host-detail', function(hooks) {
     assert.equal(findAll('.right-zone').length, 0, 'Host property panel is closed');
   });
 
+  test('Process details from host details', async function(assert) {
+    const endpointServerClone = { ...endpointServer };
+    endpointServerClone.isSummaryRetrieveError = false;
+
+    new ReduxDataHelper(setState)
+      .hostDetailsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('PROCESS')
+      .endpointServer(endpointServerClone)
+      .isProcessDetailsView(true)
+      .endpointQuery(endpointQuery)
+      .processList([])
+      .processTree([])
+      .machineOSType('windows')
+      .build();
+    await render(hbs`{{host-detail}}`);
+    assert.equal(findAll('.host-process-details').length, 1, 'host process detail is rendered');
+  });
+
   test('file analysis view hidden on load', async function(assert) {
     const fileAnalysis = { isfileAnalysisView: true, fileData: { format: 'pe' } };
-
     new ReduxDataHelper(setState)
       .hostDetailsLoading(false)
       .isSnapshotsAvailable(true)
@@ -183,5 +201,4 @@ module('Integration | Component | host-detail', function(hooks) {
 
     assert.equal(findAll('.is-show-file-analysis').length, 1, 'File analysis is visible');
   });
-
 });

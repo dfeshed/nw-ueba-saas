@@ -1,0 +1,22 @@
+.host-process-details {
+  .rsa-page-layout {
+    height: inherit;
+    .process-content-box {
+        width: 100%;
+    }
+    .rsa-header {
+      height: 35px;
+      margin-bottom: 0px;
+      border: none;
+      z-index: 302;
+      height: 38px;
+      background-color: text-color(primary, darkest);
+    }
+    .open-properties {
+        text-align: right;
+    }
+    .process-content-box-wrapper {
+      width: 100%;
+    }
+  }
+}

@@ -15,7 +15,16 @@ const toggleProcessView = () => {
   };
 };
 
-const toggleProcessDetailsView = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
+const toggleProcessDetailsView = (item) => {
+  return (dispatch) => {
+    if (item) {
+      const { pid } = item;
+      dispatch(getProcessDetails(pid));
+    }
+    dispatch(deSelectAllProcess());
+    dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
+  };
+};
 
 const toggleSelectedProcessDllRow = (item) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_ROW, payload: item });
 

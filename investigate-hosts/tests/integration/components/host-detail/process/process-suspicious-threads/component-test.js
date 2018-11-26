@@ -1,6 +1,6 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render } from '@ember/test-helpers';
+import { find, findAll, render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
@@ -52,5 +52,16 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Start Address', 'Header text in third column, Start Address');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Thread ID', 'Header text in forth column, Thread ID');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Thread Environment Block', 'Header text in fifth column, Thread Environment Block');
+  });
+  test('row click of suspicious threads table', async function(assert) {
+    new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
+    this.set('openProperties', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{host-detail/process/process-suspicious-threads openProperties=openProperties}}`);
+    await click(findAll('.process-suspicious-threads-list .rsa-data-table-body-row')[0]);
+    const state = this.owner.lookup('service:redux').getState();
+    const dllFile = state.endpoint.process.selectedDllItem;
+    assert.equal(dllFile.dllFileName, 'gmodule-2.0.dll', 'Shows 1 row selected');
   });
 });

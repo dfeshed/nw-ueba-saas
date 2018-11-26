@@ -5,6 +5,6 @@
     </span>
   {{/if}}
   <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
-    {{item.name}}
+    <label {{action 'toggleProcessDetailsView' item}}>{{item.name}}</label>
   </span>
 </span>

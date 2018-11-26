@@ -1,7 +1,8 @@
 {{#rsa-data-table
   items=hookList
   lazy=true
-  columnsConfig=columnsConfig}}
+  columnsConfig=columnsConfig
+  onRowClick=(action 'toggleSelectedRow')}}
   {{#rsa-data-table/header as |column|}}
     {{t column.title}}
   {{/rsa-data-table/header}}

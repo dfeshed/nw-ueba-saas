@@ -1,0 +1,50 @@
+{{#rsa-page-layout showRightZone=false as |layout|}}
+  {{#layout.center}}
+    {{host-detail/process/process-details/process-details-action-bar}}
+    {{#if isProcessLoading}}
+      <centered>
+        {{rsa-loader size='large'}}
+      </centered>
+    {{else}}
+      {{#if (not isProcessDataEmpty)}}
+        <vbox class="process-content-box panel-shadow">
+          <vbox class='process-content-box-wrapper'>
+            {{host-detail/process/summary-items config=summaryConfig data=process}}
+            <box class="process-content-box__accordion-content">
+              {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
+                <div class="process-dll-note">{{loadedDLLNote}}</div>
+                {{host-detail/process/process-dll-list openProperties=(action layout.open 'right')}}
+              {{/rsa-content-accordion}}
+            </box>
+            {{#if isMachineWindows}}
+              <box class="process-content-box__accordion-content">
+                {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title')}}
+                  {{host-detail/process/process-image-hooks openProperties=(action layout.open 'right')}}
+                {{/rsa-content-accordion}}
+              </box>
+              <box class="process-content-box__accordion-content">
+                {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title')}}
+                  {{host-detail/process/process-suspicious-threads openProperties=(action layout.open 'right')}}
+                {{/rsa-content-accordion}}
+              </box>
+            {{/if}}
+          </vbox>
+        </vbox>
+      {{/if}}
+    {{/if}}
+  {{/layout.center}}
+  {{#layout.right as |right|}}
+    {{#right.header}}
+      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+        {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+      {{/rsa-form-button}}
+    {{/right.header}}
+    <vbox class="process-property-box">
+      {{host-detail/utils/file-property-panel
+        config=propertyConfig
+        localeNameSpace='investigateHosts.property.file'
+        data=selectedDll
+        title=(t 'investigateHosts.process.properties')}}
+    </vbox>
+  {{/layout.right}}
+{{/rsa-page-layout}}

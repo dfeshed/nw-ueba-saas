@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, find, findAll, click } from '@ember/test-helpers';
+import { render, settled, find, findAll, click, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import processData from '../../../../../integration/components/state/process-data';
@@ -212,6 +212,32 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is selected after click');
     });
   });
+  test('clicking on the process name get process-details view', async function(assert) {
+    assert.expect(2);
+    this.set('openPanel', function() {
+      assert.ok(true, 'open panel is called');
+    });
+    this.set('closePanel', function() {
+      assert.ok(true, 'close panel is called');
+    });
 
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+
+    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
+    await click(find(findAll('.process-name label')[1]));
+    return settled().then(async() => {
+      const redux = this.owner.lookup('service:redux');
+      await waitUntil(() => {
+        return redux.getState().endpoint.detailsInput.animation !== 'default';
+      }, { timeout: 6000 });
+      const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
+      assert.equal(isProcessDetailsView, true, 'isProcessDetailsView state updated to true');
+    });
+  });
 
 });

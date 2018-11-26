@@ -1,0 +1,42 @@
+.host-process-details-action-bar {
+  display: inherit;
+  padding: 1rem;
+  .action-bar {
+    display: inherit;
+    z-index: 301;
+  }
+  .back-to-process {
+    color: text-color(primary, lighter);
+    i {
+      font-size: 0.9rem;
+    }
+  }
+  .process-details-label {
+    padding: 0.5rem;
+    color: text-color(primary, lighter);
+    font-size: 1.28rem;
+    font-weight: 100;
+  }
+  .divider {
+    @include border-left(1px, solid, primary);
+    height: 1.5rem;
+    margin: rsa-whitespace(least);
+    margin-left: rsa-whitespace();
+  }
+  .file-actionbar {
+    padding: 0;
+  }
+  .process-details-close {
+    text-align: right;
+    width: 98%;
+    position: fixed;
+    z-index: 300;
+    .close-zone {
+      i {
+        font-size: 0.8rem;
+      }
+      width: fit-content;
+    }
+  }
+
+}

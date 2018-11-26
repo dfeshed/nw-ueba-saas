@@ -1,0 +1,25 @@
+<div class='action-bar'>
+  {{#rsa-form-button class='back-to-process' isDisabled=isDisabled defaultAction=(action 'toggleProcessDetailsView')}}
+    {{rsa-icon name='arrow-left-12'}}
+    {{t 'investigateHosts.process.backToProcesses'}}
+  {{/rsa-form-button}}
+  <div class='divider'/>
+  <label class='process-details-label'>
+    {{t 'investigateHosts.process.processDetails'}}
+  </label>
+  {{endpoint/file-actionbar
+    serviceList=serviceList
+    metaName='checksumSha256'
+    isRemediationAllowed=isRemediationAllowed
+    itemList=fileContextSelections
+    fileStatusData=fileStatus
+    restrictedFileList=restrictedFileList
+    serviceId=serviceId
+    timeRange=timeRange
+    fileDownloadButtonStatus=fileDownloadButtonStatus}}
+</div>  
+<div class='process-details-close'>
+  {{#rsa-form-button class='close-zone' isIconOnly=true click=(action 'toggleProcessDetailsView') }}
+    {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+  {{/rsa-form-button}}
+</div>  

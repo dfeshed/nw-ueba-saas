@@ -1,6 +1,6 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render } from '@ember/test-helpers';
+import { find, findAll, render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
@@ -52,5 +52,19 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'DLL Name', 'Header text in second column, DLL Name');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Hooked FileName', 'Header text in third column, Hooked FileName');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
+  });
+  test('row click of Image hooks table', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
+    this.set('openProperties', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{host-detail/process/process-image-hooks openProperties=openProperties}}`);
+    await click(findAll('.process-image-hooks-list .rsa-data-table-body-row')[0]);
+    const state = this.owner.lookup('service:redux').getState();
+    const selectedImageHook = state.endpoint.process.selectedDllItem;
+    assert.equal(selectedImageHook.hookFileName, 'gobject-2.0.dll', 'Shows 1 row selected');
+
+
   });
 });

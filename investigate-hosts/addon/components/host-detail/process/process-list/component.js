@@ -1,7 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { processList, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
-import { setRowIndex, getProcessDetails, sortBy, toggleProcessSelection, selectAllProcess, deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
+import {
+  setRowIndex,
+  getProcessDetails,
+  sortBy,
+  toggleProcessSelection,
+  selectAllProcess,
+  deSelectAllProcess,
+  toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import CONFIG from './process-list-config';
@@ -12,7 +19,8 @@ const dispatchToActions = {
   toggleProcessSelection,
   selectAllProcess,
   deSelectAllProcess,
-  setRowIndex
+  setRowIndex,
+  toggleProcessDetailsView
 };
 
 const stateToComputed = (state) => ({

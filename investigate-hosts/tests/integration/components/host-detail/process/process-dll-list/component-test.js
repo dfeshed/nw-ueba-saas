@@ -39,7 +39,6 @@ test('it renders data table with libraries not signed by microsoft', function(as
     assert.equal(this.$('.process-dll-list .rsa-data-table-header-cell:eq(3)').text().trim(), 'Creation Time', 'Third column should be Creation Time');
   });
 });
-
 test('test when there is loaded library information', function(assert) {
   const dllData = [{
     fileName: 'ld-2.17.so',
@@ -62,6 +61,36 @@ test('test when there is loaded library information', function(assert) {
   this.render(hbs`{{host-detail/process/process-dll-list}}`);
   return wait().then(() => {
     assert.equal(this.$('.process-dll-list .rsa-data-table-body-row').length, '1', 'Shows 1 row of loaded library');
+  });
+});
+test('row click on libraries not signed by microsoft', function(assert) {
+  assert.expect(2);
+  const dllData = [{
+    fileName: 'ld-2.17.so',
+    path: '/usr/lib64',
+    fileProperties: {
+      checksumMd5: 'f8b84b5d75c85a9124704f2a3dee8d06',
+      checksumSha1: '33a48cbc6a0a00a64d29e5c211443aebc94e9595',
+      checksumSha256: '2446d290781c8d2182c83560a16b5c956a0f6ccc3f0d840f244eb9a01ac54d30',
+      firstFileName: 'ld-2.17.so',
+      firstSeenTime: 1515427075000,
+      format: 'elf',
+      id: '2446d290781c8d2182c83560a16b5c956a0f6ccc3f0d840f244eb9a01ac54d30',
+      machineOsType: 'linux',
+      size: 159640
+    }
+  }];
+  new ReduxDataHelper(initState)
+    .dllList(dllData)
+    .build();
+  this.set('openProperties', function() {
+    assert.ok(true);
+  });
+  this.render(hbs`{{host-detail/process/process-dll-list openProperties=openProperties}}`);
+  return wait().then(() => {
+    this.$('.process-dll-list .rsa-data-table-body-row').trigger('click');
+    const selectedDll = this.get('redux').getState().endpoint.process.selectedDllItem;
+    assert.equal(selectedDll.fileName, 'ld-2.17.so', 'Shows 1 row selected');
   });
 });
 

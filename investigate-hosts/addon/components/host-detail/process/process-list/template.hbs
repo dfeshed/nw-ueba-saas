@@ -36,6 +36,10 @@
       {{else}}
         {{#if (eq column.format 'DOWNLOADSTATUS')}}
           {{host-detail/utils/table-cell item=item column=column}}
+        {{else if (eq column.field 'name')}}
+          <label {{action 'toggleProcessDetailsView' item }}>
+            {{rsa-data-table/body-cell item=item column=column class='process-name'}}
+          </label>
         {{else}}
           {{rsa-data-table/body-cell item=item column=column}}
         {{/if}}
