@@ -1,7 +1,7 @@
 <box class='host-table'>
   {{#rsa-data-table
     lazy=true
-    selectedIndex=selectedIndex
+    selectedIndex=focusedHostIndex
     items=hostList
     columnsConfig=updatedColumns
     onRowClick=(action 'toggleSelectedRow')}}

@@ -172,16 +172,18 @@ module('Integration | Component | host-container', function(hooks) {
       {{host-container}}`);
     await click(findAll('.rsa-data-table-body-row')[1]);
     assert.equal(findAll('.host-container-list .show-right-zone').length, 1, 'Properties panel is open on host row click');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Clicked row is highlighted');
     await click(findAll('.host-list-properties .rsa-nav-tab')[1]); // click on risk details
     assert.equal(find('.host-list-properties .rsa-nav-tab.is-active .label').textContent, 'Risk Details', 'selected tab is risk details');
     assert.equal(findAll('.right-zone .risk-properties').length, 1, 'Risk properties displayed');
 
     await click(find('.host-list-properties .close-zone')); // click on close button
     assert.equal(findAll('.host-container-list .show-right-zone').length, 0, 'Properties panel is closed on close button click');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'Clicked row is not highlighted on closing right panel');
   });
 
   test('changing server list closes right properties', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
     setState(endpointState);
     this.set('closeProperties', () => {});
     this.set('openProperties', () => {});
@@ -189,12 +191,14 @@ module('Integration | Component | host-container', function(hooks) {
 
     await click(findAll('.rsa-data-table-body-row')[1]);
     assert.equal(findAll('.show-right-zone').length, 1, 'Properties panel is open on host row click');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Clicked row is highlighted');
 
     click('.rsa-content-tethered-panel-trigger');
     return settled().then(() => {
       click('.service-selector-panel li');
       return settled().then(() => {
         assert.equal(findAll('.show-right-zone').length, 0, 'right zone is closed');
+        assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'Clicked row is not highlighted on closing right panel');
       });
     });
   });

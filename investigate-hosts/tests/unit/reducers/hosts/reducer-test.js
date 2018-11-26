@@ -46,6 +46,7 @@ test('should return the initial state', function(assert) {
     hostColumnSort: [{ key: 'machine.scanStartTime', descending: true }],
     selectedHostList: [],
     focusedHost: null,
+    focusedHostIndex: null,
     hostFetchStatus: 'wait',
     loadMoreHostStatus: 'stopped',
     hostExportStatus: 'completed',
@@ -158,6 +159,14 @@ test('The SET_FOCUSED_HOST action will sets the selected row data to state', fun
   });
   const result = reducer(previous, { type: ACTION_TYPES.SET_FOCUSED_HOST, payload: { id: 5, serviceId: 'serviceIdNew', score: 100 } });
   assert.deepEqual(result.focusedHost, { id: 5, serviceId: 'serviceIdNew', score: 100 });
+});
+
+test('The SET_FOCUSED_HOST_INDEX action will sets the selected row data to state', function(assert) {
+  const previous = Immutable.from({
+    focusedHostIndex: null
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_FOCUSED_HOST_INDEX, payload: 2 });
+  assert.deepEqual(result.focusedHostIndex, 2);
 });
 
 test('The CHANGE_HOST_LIST_PROPERTY_TAB action sets the newly selected tab to state', function(assert) {

@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hasMachineId, hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
-import { getPageOfMachines, setHostListPropertyTab } from 'investigate-hosts/actions/data-creators/host';
+import { getPageOfMachines, setHostListPropertyTab, setFocusedHostIndex } from 'investigate-hosts/actions/data-creators/host';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 import {
   applyFilters,
@@ -41,7 +41,8 @@ const dispatchToActions = {
   deleteFilter,
   resetFilters,
   getUpdatedRiskScoreContext,
-  setSelectedAlert
+  setSelectedAlert,
+  setFocusedHostIndex
 };
 
 const Container = Component.extend({
@@ -62,7 +63,6 @@ const Container = Component.extend({
     // this trigger is required to open start/stop scan modal window
     this.get('eventBus').trigger('rsa-application-click', event.target);
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(Container);

@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection } from 'investigate-hosts/actions/data-creators/host';
+import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection, setFocusedHostIndex }
+  from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList } from 'investigate-hosts/reducers/hosts/selectors';
@@ -28,7 +29,8 @@ const stateToComputed = (state) => ({
   selectedHostsCount: state.endpoint.machines.selectedHostList.length,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  servers: state.endpointServer.serviceData
+  servers: state.endpointServer.serviceData,
+  focusedHostIndex: state.endpoint.machines.focusedHostIndex
 });
 
 const dispatchToActions = {
@@ -38,7 +40,8 @@ const dispatchToActions = {
   setSelectedHost,
   setHostColumnSort,
   fetchHostContext,
-  onHostSelection
+  onHostSelection,
+  setFocusedHostIndex
 };
 
 const HostTable = Component.extend({
@@ -77,7 +80,7 @@ const HostTable = Component.extend({
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         const isSameRowClicked = table.get('selectedIndex') === index;
         const openProperties = this.get('openProperties');
-        this.set('selectedIndex', index);
+        this.send('setFocusedHostIndex', index);
 
         if (!isSameRowClicked && openProperties) {
           this.send('onHostSelection', item);
@@ -86,7 +89,7 @@ const HostTable = Component.extend({
           });
         } else {
           this.closeProperties();
-          this.set('selectedIndex', null);
+          this.send('setFocusedHostIndex', null);
         }
       }
     }

@@ -14,6 +14,8 @@ const initialState = Immutable.from({
 
   focusedHost: null,
 
+  focusedHostIndex: null,
+
   // State to indicate host retriving status from the server
   hostFetchStatus: 'wait',
 
@@ -140,6 +142,8 @@ const hosts = reduxActions.handleActions({
   [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload }) => state.set('selectedHostList', [payload]),
 
   [ACTION_TYPES.SET_FOCUSED_HOST]: (state, { payload }) => state.set('focusedHost', payload),
+
+  [ACTION_TYPES.SET_FOCUSED_HOST_INDEX]: (state, action) => state.set('focusedHostIndex', action.payload),
 
   [ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopAgentStream', payload),
 

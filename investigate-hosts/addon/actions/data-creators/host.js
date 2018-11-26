@@ -300,6 +300,8 @@ const fetchHostContext = (machineName) => {
 
 const _setFocusedHost = (item) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST, payload: item });
 
+const setFocusedHostIndex = (index) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST_INDEX, payload: index });
+
 const setHostListPropertyTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_HOST_LIST_PROPERTY_TAB, payload: { tabName } });
 
 const onHostSelection = (item) => {
@@ -328,5 +330,6 @@ export {
   stopScan,
   fetchHostContext,
   onHostSelection,
-  setHostListPropertyTab
+  setHostListPropertyTab,
+  setFocusedHostIndex
 };
