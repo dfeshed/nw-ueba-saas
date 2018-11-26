@@ -1,0 +1,12 @@
+@import 'components/manifest';
+
+.users-container {
+  background-color: background-color(primary, darker);
+  @include rsa-col(justify,fill);
+  height: 100%;
+}
+
+.center {
+  position: relative;
+  top: 50%;
+}

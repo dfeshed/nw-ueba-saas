@@ -1,0 +1,1 @@
+export { default } from 'entity-details/components/entity-details-container/component';

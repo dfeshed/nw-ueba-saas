@@ -1,0 +1,22 @@
+<div class='entity-details-container-header_leftArrow'>
+</div>
+<div class='entity-details-container-header_avtar'>
+  {{rsa-icon size='larger' style='filled' name='account-group-5'}}
+</div>
+<div class='entity-details-container-header_name'>
+  {{entityDetails.displayName}}
+</div>
+<div class='entity-details-container-header_score'>
+  {{rsa-content-badge-score score=entityDetails.score size='small' style=entitySeverity invertColor=true}}
+</div>
+<div class='entity-details-container-header_watch'>
+  {{#rsa-form-button}}
+    {{#if (eq entityDetails.followed true)}}
+      {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
+    {{else}}
+      {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'entityDetails.entity.addWatch'}}
+    {{/if}}
+  {{/rsa-form-button}}
+</div>
+<div class='entity-details-container-header_switch'>
+</div>

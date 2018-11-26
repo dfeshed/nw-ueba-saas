@@ -1,0 +1,14 @@
+{{#if isClassic}}
+  <iframe id='ueba-iframe' src={{entityDetailUrl}} frameborder="0" width=100%></iframe>
+{{else}}
+  <div class='entity-details-container-body_alerts_list'>
+    Alert List Container
+  </div>
+  <div class='entity-details-container-body_details'>
+    {{#if indicatorId}}
+      Indicator Details
+    {{else}}
+      Alert Details
+    {{/if}}
+  </div>
+{{/if}}

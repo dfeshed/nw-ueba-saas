@@ -13,17 +13,18 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   resetUser
 };
-const UserDetailComponent = Component.extend({
+const UserDetailsComponent = Component.extend({
   tagName: '',
 
   @computed('userId', 'alertId', 'indicatorId')
   entityDetails(userId, alertId, indicatorId) {
     return {
-      userId,
+      entityId: userId,
+      entityType: 'user',
       alertId,
       indicatorId
     };
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(UserDetailComponent);
+export default connect(stateToComputed, dispatchToActions)(UserDetailsComponent);

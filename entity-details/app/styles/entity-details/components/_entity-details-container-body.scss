@@ -1,0 +1,36 @@
+.entity-details-container-body {
+  @include rsa-font(default);
+  color: text-color(primary, lighter);
+  flex-direction: row;
+  display: flex;
+  flex-grow: 100;
+  &_alerts_list {
+    width: 30%;
+    min-width: 300px;
+    padding: rsa-whitespace();
+    background-color: text-color(primary, darker);
+    display: flex;
+    flex-direction: column;
+    &_header {
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      &_sort {
+        @include rsa-font(default);
+        color: text-color(primary);
+      }
+    }
+    &_content {
+       @include rsa-font(default);
+       height: calc(100% - 40px);
+       flex-grow: 100;
+    }
+  }
+  &_details {
+    width: 70%;
+    margin-left: rsa-whitespace();
+    padding: rsa-whitespace();
+    background-color: text-color(primary, darker);
+  }
+}

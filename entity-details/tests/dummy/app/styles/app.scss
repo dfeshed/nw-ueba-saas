@@ -3,6 +3,8 @@
 /* pulling in component-lib from inside respond */
 @import 'component-lib/manifest';
 
+@import 'entity-details/manifest';
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.engine-dummy {
   color: text-color(primary, light);
@@ -22,8 +24,6 @@ body.engine-dummy {
 
 body > .ember-view {
   height: 100%;
-  @include rsa-font(header, larger, bold);
-  color: text-color(accentFour, light);
   > page > centered {
     flex-direction: column;
     > h1 {

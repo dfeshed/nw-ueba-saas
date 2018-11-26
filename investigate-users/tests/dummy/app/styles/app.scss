@@ -3,6 +3,10 @@
 /* pulling in component-lib from inside respond */
 @import 'component-lib/manifest';
 
+
+/* putting the engines styles */
+@import "entity-details/manifest";
+
 /* putting the engines styles */
 @import "investigate-users/manifest";
 

@@ -1,0 +1,26 @@
+.entity-details-container-header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  float: left;
+  &_leftArrow {
+    width: 50px;
+  }
+  &_name {
+    padding: rsa-whitespace();
+  }
+  &_avtar {
+    padding: rsa-whitespace();
+  }
+  &_score {
+    padding: rsa-whitespace();
+    width: 70px;
+  }
+  &_watch {
+    padding: rsa-whitespace();
+  }
+  &_switch {
+    width: 70px;
+    height: 70px;
+  }
+}

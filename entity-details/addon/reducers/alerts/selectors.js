@@ -1,0 +1,1 @@
+export const alertId = (state) => state.alerts.alertId;

@@ -1,0 +1,1 @@
+export const indicatorId = (state) => state.indicators.indicatorId;

@@ -37,5 +37,6 @@ module('Integration | Component | user-details', function(hooks) {
 
     await render(hbs`{{user-details}}`);
     assert.equal(findAll('.user-body_aside_header').length, 1);
+
   });
 });

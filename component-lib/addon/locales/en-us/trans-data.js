@@ -4282,6 +4282,12 @@ export default {
     note: 'Note: ',
     labelMessage: 'Only the initial 255 characters of the value are indexed as part of this meta, and will be included in any indexed search.'
   },
+  entityDetails: {
+    entity: {
+      removeWatch: 'Stop Watching',
+      addWatch: 'Watch Profile'
+    }
+  },
   investigateUsers: {
     export: 'Export',
     sortBy: 'Sort By',

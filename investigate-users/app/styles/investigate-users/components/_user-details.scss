@@ -14,11 +14,14 @@
     color: text-color(primary, lighter);
     background-color: background-color(primary, darkest);
 
-    &_header {
-      display: flex;
-      justify-content: space-between;
-      padding: rsa-whitespace();
+    &_leftArrow {
+      width: 40px;
+      padding: 1rem;
       max-height: 40px;
+      position: absolute;
+      top: 25px;
+      left: 0px;
+      z-index: 100;
     }
   }
 
