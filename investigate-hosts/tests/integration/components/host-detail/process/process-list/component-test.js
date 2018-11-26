@@ -200,6 +200,8 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       .scanTime(123456789)
       .processList(processData.processList)
       .processTree(processData.processTree)
+      .sortField('name')
+      .isDescOrder(true)
       .selectedTab(null).build();
 
     await render(hbs`{{host-detail/process/process-list}}`);
