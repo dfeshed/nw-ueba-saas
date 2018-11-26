@@ -40,6 +40,8 @@
           <label {{action 'toggleProcessDetailsView' item }}>
             {{rsa-data-table/body-cell item=item column=column class='process-name'}}
           </label>
+        {{else if (eq column.field 'score')}}
+          {{host-detail/utils/table-cell item=item column=column}}
         {{else}}
           {{rsa-data-table/body-cell item=item column=column}}
         {{/if}}

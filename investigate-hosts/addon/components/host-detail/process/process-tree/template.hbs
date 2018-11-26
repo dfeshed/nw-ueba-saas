@@ -45,6 +45,8 @@
       {{else}}
         {{#if (eq column.format 'DOWNLOADSTATUS')}}
           {{host-detail/utils/table-cell item=item column=column}}
+        {{else if (eq column.field 'score')}}
+          {{host-detail/utils/table-cell item=item column=column}}
         {{else}}
           {{rsa-data-table/body-cell item=item column=column}}
         {{/if}}
