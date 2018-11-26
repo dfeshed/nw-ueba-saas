@@ -17,7 +17,7 @@ const resetRiskScore = (selectedFiles, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.RESET_RISK_SCORE,
-      promise: api.sendDataToResetRiskScore({ fileList }),
+      promise: api.sendDataToResetRiskScore(fileList),
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);

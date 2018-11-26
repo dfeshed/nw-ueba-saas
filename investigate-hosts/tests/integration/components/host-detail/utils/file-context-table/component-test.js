@@ -1,5 +1,4 @@
 import { module, test, setupRenderingTest } from 'ember-qunit';
-
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -326,5 +325,47 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
 
     assert.equal(findAll('a.file-name-link').length, 3);
     assert.equal(find('a.file-name-link').href.search('/investigate/files/file'), 21);
+  });
+
+  test('Reset risk score confirmation dialog is opened', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          fileContextSelections: [],
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+  });
+
+  test('Reset risk score confirmation dialog is closed on click of cancel', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          fileContextSelections: [],
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await click('.closeReset');
+    assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });
 });

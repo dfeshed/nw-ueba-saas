@@ -22,6 +22,8 @@ import {
 import { openAndFetchFileAnalyzerData } from 'investigate-hosts/actions/data-creators/file-analysis';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const stateToComputed = (state, { storeName }) => ({
   fileProperty: fileContextFileProperty(state, storeName),
@@ -41,7 +43,8 @@ const dispatchToActions = {
   getFileContextFileStatus,
   retrieveRemediationStatus,
   downloadFilesToServer,
-  openAndFetchFileAnalyzerData
+  openAndFetchFileAnalyzerData,
+  resetRiskScore
 };
 
 
@@ -99,8 +102,14 @@ const ContextWrapper = Component.extend({
       this.send('openAndFetchFileAnalyzerData', checksumSha256);
     },
 
-    resetRiskScoreAction() {
-      // Placeholder for the next PR.
+    resetRiskScoreAction(itemsList) {
+      const callBackOptions = {
+        onSuccess: () => {
+          success('investigateFiles.riskScore.success');
+        },
+        onFailure: () => failure('investigateFiles.riskScore.error')
+      };
+      this.send('resetRiskScore', itemsList, callBackOptions);
     }
   }
 

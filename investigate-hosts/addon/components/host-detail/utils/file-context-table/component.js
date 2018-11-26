@@ -1,9 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { failure } from 'investigate-shared/utils/flash-messages';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
   listOfFiles,
@@ -58,7 +59,8 @@ const dispatchToActions = {
   setFileContextFileStatus,
   getPaginatedFileContext,
   retrieveRemediationStatus,
-  resetSelection
+  resetSelection,
+  resetRiskScore
 };
 
 const FileContextTable = Component.extend({
@@ -76,6 +78,8 @@ const FileContextTable = Component.extend({
   showServiceModal: false,
 
   showFileStatusModal: false,
+
+  showResetScoreModal: false,
 
   _isAlreadySelected(selections, item) {
     let selected = false;
@@ -157,6 +161,27 @@ const FileContextTable = Component.extend({
 
     onCloseEditFileStatus() {
       this.set('showFileStatusModal', false);
+    },
+
+    showRiskScoreModal(fileList) {
+      this.set('selectedFiles', fileList);
+      this.set('showResetScoreModal', true);
+    },
+
+    resetRiskScoreAction() {
+      const callBackOptions = {
+        onSuccess: () => {
+          success('investigateFiles.riskScore.success');
+        },
+        onFailure: () => failure('investigateFiles.riskScore.error')
+      };
+      this.set('showResetScoreModal', false);
+      this.send('resetRiskScore', this.get('selectedFiles'), callBackOptions);
+      this.set('selectedFiles', null);
+    },
+
+    onResetScoreModalClose() {
+      this.set('showResetScoreModal', false);
     }
   }
 });

@@ -44,6 +44,7 @@
           analyzeFile=analyzeFile
           retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
           onSaveFileStatus = (action 'setFileContextFileStatus' tabName checksums)
+          resetRiskScore=(action 'showRiskScoreModal')
         )
         noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{#if column.componentClass}}
@@ -83,4 +84,20 @@
     data=fileStatus
     isRemediationAllowed=isRemediationAllowed
     closeModal=(action 'onCloseEditFileStatus')}}
+{{/if}}
+{{#if showResetScoreModal}}
+  {{#rsa-application-modal
+    autoOpen=true
+    label=(t 'investigateFiles.riskScore.label')
+    onClose=(action 'onResetScoreModalClose')}}
+    <div class='modal-content reset-risk-score'>
+      {{t 'investigateFiles.riskScore.confirmMessage'}}
+      <div class="confirmationButtons">
+        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style='primary' click=(action 'resetRiskScoreAction')}}
+          {{t 'investigateFiles.riskScore.reset'}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
 {{/if}}
