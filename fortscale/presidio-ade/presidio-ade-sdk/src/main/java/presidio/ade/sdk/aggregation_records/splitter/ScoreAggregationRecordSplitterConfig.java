@@ -10,13 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.ScoredDataReader;
+import presidio.ade.sdk.aggregation_records.splitter.ScoredRecordPageIteratorFactoryService.ClassToFactoryMap;
 
 @Configuration
 public class ScoreAggregationRecordSplitterConfig {
     private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private final RecordReaderFactoryService recordReaderFactoryService;
     private final InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
-    private final ScoredRecordPageIteratorFactory scoredRecordPageIteratorFactory;
+    private final ScoredRecordPageIteratorFactoryService scoredRecordPageIteratorFactoryService;
 
     @Autowired
     public ScoreAggregationRecordSplitterConfig(
@@ -31,11 +32,15 @@ public class ScoreAggregationRecordSplitterConfig {
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
-        this.scoredRecordPageIteratorFactory = new ScoredRecordPageIteratorFactory(
-                scoredEnrichedDataReader,
-                scoredFeatureAggregationDataReader,
-                scoredEnrichedRecordPageSize,
-                scoredFeatureAggregationRecordPageSize);
+
+        ClassToFactoryMap classToFactoryMap = new ClassToFactoryMap();
+        // Add a page iterator factory for the scored enriched records.
+        classToFactoryMap.put(AdeScoredEnrichedRecord.class, new ScoredRecordPageIteratorFactory<>(
+                scoredEnrichedDataReader, scoredEnrichedRecordPageSize));
+        // Add a page iterator factory for the scored feature aggregation records.
+        classToFactoryMap.put(ScoredFeatureAggregationRecord.class, new ScoredRecordPageIteratorFactory<>(
+                scoredFeatureAggregationDataReader, scoredFeatureAggregationRecordPageSize));
+        scoredRecordPageIteratorFactoryService = new ScoredRecordPageIteratorFactoryService(classToFactoryMap);
     }
 
     @Bean
@@ -44,6 +49,6 @@ public class ScoreAggregationRecordSplitterConfig {
                 aggregatedFeatureEventsConfService,
                 recordReaderFactoryService,
                 inMemoryFeatureBucketAggregator,
-                scoredRecordPageIteratorFactory);
+                scoredRecordPageIteratorFactoryService);
     }
 }

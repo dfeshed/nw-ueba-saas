@@ -17,18 +17,18 @@ public class ScoreAggregationRecordSplitter {
     private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private final RecordReaderFactoryService recordReaderFactoryService;
     private final InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
-    private final ScoredRecordPageIteratorFactory scoredRecordPageIteratorFactory;
+    private final ScoredRecordPageIteratorFactoryService scoredRecordPageIteratorFactoryService;
 
     public ScoreAggregationRecordSplitter(
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
             RecordReaderFactoryService recordReaderFactoryService,
             InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
-            ScoredRecordPageIteratorFactory scoredRecordPageIteratorFactory) {
+            ScoredRecordPageIteratorFactoryService scoredRecordPageIteratorFactoryService) {
 
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
-        this.scoredRecordPageIteratorFactory = scoredRecordPageIteratorFactory;
+        this.scoredRecordPageIteratorFactoryService = scoredRecordPageIteratorFactoryService;
     }
 
     public ScoreAggregationRecordContributors split(AdeAggregationRecord scoreAggregationRecord, List<String> splitFieldNames) {
@@ -64,7 +64,7 @@ public class ScoreAggregationRecordSplitter {
 
     private FeatureBucket getFeatureBucket(ScoreAggregationRecordDetails scoreAggregationRecordDetails) {
         List<FeatureBucket> featureBuckets = inMemoryFeatureBucketAggregator.aggregate(
-                scoredRecordPageIteratorFactory.getScoredRecordPageIterator(scoreAggregationRecordDetails),
+                scoredRecordPageIteratorFactoryService.getScoredRecordPageIterator(scoreAggregationRecordDetails),
                 scoreAggregationRecordDetails.getFeatureBucketConfName(),
                 scoreAggregationRecordDetails.getFeatureBucketStrategyData());
         Validate.isTrue(
