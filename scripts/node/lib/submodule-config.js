@@ -2,6 +2,7 @@ const ALL_SUBMODULES = [
   'component-lib',
   'mock-server',
   'packager',
+  'rsa-dashboard',
   'recon',
   'investigate-shared',
   'investigate-events',
@@ -44,6 +45,7 @@ const saModuleDependants = {
     'entity-details',
     'investigate-users',
     'packager',
+    'rsa-dashboard',
     'respond-shared',
     'respond',
     'configure',
@@ -69,6 +71,7 @@ const saModuleDependants = {
     'investigate-users',
     'investigate',
     'packager',
+    'rsa-dashboard',
     'license',
     'respond',
     'configure',
@@ -94,6 +97,12 @@ const saModuleDependants = {
   'investigate-users': ['sa'],
   'investigate-process-analysis': ['sa'],
   packager: ['sa'],
+  'rsa-dashboard': [
+    'investigate-hosts',
+    'investigate-files',
+    'investigate-users',
+    'sa'
+  ],
   recon: [
     'sa',
     'investigate-events'
@@ -118,6 +127,7 @@ const saModuleDependants = {
     'entity-details',
     'investigate-users',
     'packager',
+    'rsa-dashboard',
     'license',
     'respond',
     'configure',
