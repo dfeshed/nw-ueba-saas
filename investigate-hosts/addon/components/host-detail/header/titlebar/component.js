@@ -14,7 +14,8 @@ const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible,
   isRightPanelVisible: state.endpoint.detailsInput.isRightPanelVisible,
-  serviceId: serviceId(state)
+  serviceId: serviceId(state),
+  activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab
 });
 
 const dispatchToActions = {
@@ -32,6 +33,11 @@ const TitleBarComponent = Component.extend({
   @computed('isOverviewPanelVisible')
   expandContract(isOverviewPanelVisible) {
     return isOverviewPanelVisible ? 'shrink-diagonal-2' : 'expand-diagonal-4';
+  },
+
+  @computed('activeHostDetailTab')
+  showRightPanelButton(activeHostDetailTab) {
+    return activeHostDetailTab === 'OVERVIEW';
   }
 });
 

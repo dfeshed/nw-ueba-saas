@@ -202,4 +202,17 @@ module('Integration | Component | host-container', function(hooks) {
       });
     });
   });
+
+  test('show right panel button is not present for process tab', async function(assert) {
+    const state = {
+      endpoint: { detailsInput: { agentId: 'agentId' } }
+    };
+    setState(state);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.open-properties').length, 1, 'Right panel button is visible');
+    await click(findAll('.rsa-nav-tab')[1]);
+    assert.equal(findAll('.open-properties').length, 0, 'Right panel button is hidden');
+  });
 });

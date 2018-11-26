@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { render, waitUntil, findAll } from '@ember/test-helpers';
+import { render, waitUntil, findAll, click } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { snapShot } from '../../../../../data/data';
 
@@ -41,13 +41,25 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
     });
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
   });
-  test('Show/Hide right panel button is present', async function(assert) {
+  test('Show right panel button is present when Details tab is selected', async function(assert) {
+    this.set('showRightPanelButton', true);
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .hostName('XYZ')
+      .isRightPanelVisible(true)
+      .build();
+    await render(hbs`{{host-detail/header/titlebar showRightPanelButton=showRightPanelButton}}`);
+    assert.equal(findAll('.open-properties').length, 1, 'Show/Hide right panel button is present');
+  });
+
+  test('Right panel button is hidden when Process tab is selected', async function(assert) {
     new ReduxDataHelper(setState)
       .snapShot(snapShot)
       .hostName('XYZ')
       .isRightPanelVisible(true)
       .build();
     await render(hbs`{{host-detail/header/titlebar}}`);
-    assert.equal(findAll('.open-properties').length, 1, 'Show/Hide right panel button is present');
+    await click(findAll('.rsa-nav-tab')[1]);
+    assert.equal(findAll('.open-properties').length, 0, 'Right panel button is hidden');
   });
 });
