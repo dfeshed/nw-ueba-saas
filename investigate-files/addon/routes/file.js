@@ -9,11 +9,11 @@ export default Route.extend({
 
   queryParams: {
     /**
-     * selected serverId for multi-server endpoint server
+     * selected sid for multi-server endpoint server
      * @type {string}
      * @public
      */
-    serverId: {
+    sid: {
       refreshModel: true
     },
     /**
@@ -28,11 +28,11 @@ export default Route.extend({
 
   model(params) {
     const redux = this.get('redux');
-    const { checksum, serverId } = params;
+    const { checksum, sid } = params;
     const request = lookup('service:request');
     next(() => {
-      if (serverId) {
-        request.registerPersistentStreamOptions({ socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' });
+      if (sid) {
+        request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(getAllServices());
         redux.dispatch(initializeFileDetails(checksum));
       }

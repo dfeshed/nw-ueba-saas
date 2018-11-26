@@ -3489,7 +3489,7 @@ export default {
       },
       fileAnalysis: {
         title: 'File Analysis',
-        backButton: '< Back',
+        backButton: '{{sourceTab}}',
         stringsView: 'Strings View',
         textView: 'Text View',
         fileDetails: '{{fileType}} FILE DETAILS'

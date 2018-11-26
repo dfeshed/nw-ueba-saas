@@ -51,7 +51,7 @@
         {{#file-list/body-cell column=column}}
           {{#if (eq column.field 'firstFileName')}}
             <div class="file-name">
-              {{#link-to 'file' (query-params serverId=serverId checksum=(get item 'checksumSha256'))}}{{get item column.field}}{{/link-to}}
+              {{#link-to 'file' (query-params sid=serverId checksum=(get item 'checksumSha256'))}}{{get item column.field}}{{/link-to}}
             </div>
           {{else if (eq column.field 'size')}}
             {{rsa-content-memsize size=(get item column.field)}}

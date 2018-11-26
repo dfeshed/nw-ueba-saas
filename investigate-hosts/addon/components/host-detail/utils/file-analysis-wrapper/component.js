@@ -5,7 +5,8 @@ import { toggleFileAnalysisView } from 'investigate-hosts/actions/data-creators/
 import { componentConfig } from 'investigate-hosts/reducers/details/file-analysis/selectors';
 
 const stateToComputed = (state) => ({
-  componentConfig: componentConfig(state)
+  componentConfig: componentConfig(state),
+  activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab
 });
 
 const dispatchToActions = {

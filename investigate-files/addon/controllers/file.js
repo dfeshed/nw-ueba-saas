@@ -2,9 +2,9 @@ import Controller from '@ember/controller';
 
 export default Controller.extend({
   // Query Params
-  queryParams: [ 'checksum', 'serverId' ],
+  queryParams: [ 'checksum', 'sid' ],
 
   checksum: null,
 
-  serverId: null
+  sid: null
 });
