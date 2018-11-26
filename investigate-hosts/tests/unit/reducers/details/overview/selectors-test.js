@@ -218,11 +218,11 @@ test('downloadLink', function(assert) {
     endpointQuery: {}
   }));
 
-  assert.ok(result.includes('/rsa/endpoint/machine/download?id=123'));
+  assert.deepEqual(result, null);
 });
 
 test('downloadLink with serverId', function(assert) {
-  const result = downloadLink(Immutable.from({
+  const result1 = downloadLink(Immutable.from({
     endpoint: {
       overview: {
         downloadId: '123'
@@ -233,7 +233,20 @@ test('downloadLink with serverId', function(assert) {
     }
   }));
 
-  assert.ok(result.includes('/rsa/endpoint/234/machine/download?id=123'));
+  assert.ok(result1.includes('/rsa/endpoint/234/machine/download?id=123'));
+
+  const result2 = downloadLink(Immutable.from({
+    endpoint: {
+      overview: {
+        downloadId: '123'
+      }
+    },
+    endpointQuery: {
+      selectedMachineServerId: '2456'
+    }
+  }));
+
+  assert.ok(result2.includes('/rsa/endpoint/2456/machine/download?id=123'));
 });
 
 test('hostWithStatus', function(assert) {

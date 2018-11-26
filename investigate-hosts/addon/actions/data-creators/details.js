@@ -69,6 +69,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             const request = lookup('service:request');
             request.registerPersistentStreamOptions({ socketUrlPostfix: response.data.serviceId, requiredSocketUrl: 'endpoint/socket' });
+            dispatch({ type: ACTION_TYPES.SET_SELECTED_MACHINE_SERVER_ID, payload: response.data.serviceId });
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());

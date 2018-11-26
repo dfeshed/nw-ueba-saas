@@ -4,7 +4,8 @@ import reducer from 'investigate-hosts/reducers/endpoint-query/reducer';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 
 const initialState = Immutable.from({
-  serverId: null
+  serverId: null,
+  selectedMachineServerId: null
 });
 
 module('Unit | Reducers | Endpoint Query', function() {
@@ -29,5 +30,14 @@ module('Unit | Reducers | Endpoint Query', function() {
     const result = reducer(previous, { type: ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE });
 
     assert.deepEqual(result.serverId, null, 'reset server id');
+  });
+
+  test('SET_SELECTED_MACHINE_SERVER_ID setting the endpoint id from response', function(assert) {
+    const previous = Immutable.from({
+      selectedMachineServerId: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MACHINE_SERVER_ID, payload: '123qwe-5674' });
+
+    assert.equal(result.selectedMachineServerId, '123qwe-5674', 'endpoint id from response');
   });
 });

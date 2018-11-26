@@ -11,6 +11,7 @@ const _downloadId = (state) => state.endpoint.overview.downloadId;
 const _arrangeSecurityConfigsBy = (state) => state.endpoint.overview.arrangeSecurityConfigsBy;
 const _policyDetails = (state) => state.endpoint.overview.policyDetails || {};
 const _serverId = (state) => state.endpointQuery.serverId;
+const _selectedMachineServerId = (state) => state.endpointQuery.selectedMachineServerId;
 
 const _hostAgentStatus = createSelector(
   _hostDetails,
@@ -71,13 +72,15 @@ export const isSnapshotsAvailable = createSelector(
 );
 
 export const downloadLink = createSelector(
-  [ _downloadId, _serverId ],
-  (downloadId, serverId) => {
+  [ _downloadId, _selectedMachineServerId, _serverId ],
+  (downloadId, selectedMachineServerId, serverId) => {
     if (downloadId) {
-      if (serverId) {
+      if (selectedMachineServerId) {
+        return `${location.origin}/rsa/endpoint/${selectedMachineServerId}/machine/download?id=${downloadId}`;
+      } else if (serverId) {
         return `${location.origin}/rsa/endpoint/${serverId}/machine/download?id=${downloadId}`;
       }
-      return `${location.origin}/rsa/endpoint/machine/download?id=${downloadId}`;
+      return null;
     }
   }
 );
