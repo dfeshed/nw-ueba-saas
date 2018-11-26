@@ -328,6 +328,9 @@
                         anomalyTypeFieldName: 'user_password_changed'
                     },
                     {
+                        anomalyTypeFieldName: 'user_password_reset'
+                    },
+                    {
                         anomalyTypeFieldName: 'nested_member_added_to_critical_enterprise_group'
                     },
                     {
