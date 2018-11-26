@@ -68,7 +68,7 @@ const processReducer = handleActions({
     if (selectedProcessList.some((process) => process.pid === pid)) {
       selectedList = selectedProcessList.filter((process) => process.pid !== pid);
     } else {
-      selectedList = [...selectedProcessList, { checksumSha256, name, pid, parentPid, hasChild, vpid }];
+      selectedList = [...selectedProcessList, { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid }];
     }
     return state.merge({ 'selectedProcessList': selectedList });
   },
@@ -76,7 +76,7 @@ const processReducer = handleActions({
   [ACTION_TYPES.SELECT_ALL_PROCESS]: (state) => {
     const selectedList = Object.values(state.processList).map((process) => {
       const { checksumSha256, name, pid, parentPid, hasChild, vpid } = process;
-      return { checksumSha256, name, pid, parentPid, hasChild, vpid };
+      return { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid };
     });
     return state.set('selectedProcessList', selectedList);
   },

@@ -48,7 +48,17 @@ const PivotToPA = Component.extend({
    * context menu config for process analysis
    * @public
    */
-  @computed
+  @computed('item')
+  disableAnalyzeButton(item) {
+    return item && item.length ? !(item.length === 1) : true;
+  },
+
+
+  @computed('isSortDescending')
+  iconName(isSortDescending) {
+    return isSortDescending ? 'arrow-down-7' : 'arrow-up-7';
+  },
+
   contextItems() {
     const cntx = this;
     return [
@@ -84,7 +94,7 @@ const PivotToPA = Component.extend({
         osType,
         hostName,
         timeRange } = this.getProperties('item', 'agentId', 'osType', 'hostName', 'timeRange');
-      const { name, checksumSha256, vpid } = item;
+      const [{ name, checksumSha256, vpid }] = item;
       const { value, unit } = timeRange;
       const serverId = this.get('serverId');
       const range = buildTimeRange(value, unit, zoneId);

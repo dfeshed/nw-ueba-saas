@@ -14,6 +14,8 @@ const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 const _selectedProcessId = (state) => state.endpoint.process.selectedProcessId;
 const _processList = (state) => state.endpoint.process.processList;
 const _selectedProcessList = (state) => state.endpoint.process.selectedProcessList;
+const _sortField = (state) => state.endpoint.process.sortField;
+const _isDescOrder = (state) => state.endpoint.process.isDescOrder;
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -136,8 +138,18 @@ export const processTree = createSelector(
 );
 
 export const processList = createSelector(
-  [_getProcessList],
-  (processList) => processList && processList.list.length ? processList.list : []
+  [_getProcessList, _sortField, _isDescOrder],
+  (processList, sortField, isDescOrder) => {
+    if (processList && processList.list.length) {
+      let data = processList.list.asMutable();
+      data = data.sortBy(sortField);
+      if (isDescOrder) {
+        data.reverse();
+      }
+      return data && data.length ? data : [];
+    }
+    return [];
+  }
 );
 
 export const isNavigatedFromExplore = createSelector(
@@ -275,5 +287,10 @@ export const areAllSelected = createSelector(
 
 export const selectedFileChecksums = createSelector(
   _selectedProcessList,
-  (selectedProcessList) => selectedProcessList.map((process) => process.checksumSha256)
+  (selectedProcessList) => {
+    if (selectedProcessList && selectedProcessList.length) {
+      return selectedProcessList.map((process) => process.checksumSha256);
+    }
+    return [];
+  }
 );

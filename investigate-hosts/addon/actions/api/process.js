@@ -13,8 +13,8 @@ const getProcessTree = (query) => {
 };
 
 // Get processes based on sorted order. query = { agentId, scanTime }
-const getProcessList = (query, { key, descending }) => {
-  query.sort = { keys: [key], descending };
+const getProcessList = (query) => {
+  query.sort = { keys: ['name'], descending: true };
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getProcessList',

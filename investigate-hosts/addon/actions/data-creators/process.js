@@ -67,16 +67,8 @@ const _getTree = () => {
 
 /**
  * Action Creator to sorting the process.
- * @return {function} redux-thunk
- * @public
  */
-const sortBy = (sortField, isDescOrder) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SORT_BY, payload: { sortField, isDescOrder } });
-    dispatch({ type: ACTION_TYPES.RESET_PROCESS_LIST });
-    dispatch(_getList());
-  };
-};
+const sortBy = (sortField, isDescOrder) => ({ type: ACTION_TYPES.SET_SORT_BY, payload: { sortField, isDescOrder } });
 
 /**
  * Get the process list based in tree or flat list

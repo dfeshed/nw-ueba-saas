@@ -35,7 +35,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     await render(hbs`{{host-detail/process/process-tree}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 9, '9 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 10, '10 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'PID', 'Second column is PID');
   });
@@ -46,6 +46,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .machineOSType('windows')
       .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
       <style>
@@ -68,6 +70,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
       <style>
@@ -121,6 +125,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
       <style>
@@ -145,6 +151,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
       <style>
@@ -169,6 +177,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
       <style>
@@ -199,7 +209,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .scanTime(123456789)
       .processList(processData.processList)
       .processTree(processData.processTree)
-      .selectedTab(null).build();
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
 
     await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
 

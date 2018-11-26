@@ -1,5 +1,5 @@
 .process-list-header {
-  height: $process-list-header-height;
+  height: 70px;
   line-height: $process-list-header-height;
   font-weight: 100;
   color: text-color(primary, lightest);
@@ -8,6 +8,7 @@
     padding-left: rsa-whitespace();
   }
   .toggle-icon {
+    padding-top: 12px;
     float: right;
     .tree-icon {
       font-size: 16px;
@@ -26,6 +27,10 @@
   }
   .process-list-actions {
     display: inline-block;
+    padding-left: rsa-whitespace();
+  }
+  .file-actionbar {
+    display: inline-flex;
   }
 }
 
@@ -173,5 +178,8 @@
         transform: rotate(360deg);
       }
     }
+  }
+  .rsa-data-table {
+    width: 100%;
   }
 }

@@ -1,10 +1,9 @@
-{{#if disabledContextMenu}}
-  {{yield}}
-{{else}}
-  {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}
-    {{yield}}
-  {{/rsa-context-menu}}
-{{/if}}
+{{#rsa-form-button
+  isDisabled=disableAnalyzeButton
+  click=(action 'toggleServiceSelection' item)}}
+  {{rsa-icon name='expand-6' style='filled' size='smaller'}}
+  {{t 'investigateHosts.process.analyzeProcess'}}
+{{/rsa-form-button}}
 
 {{#if showServiceModal}}
   {{#endpoint/core-services-modal

@@ -2517,6 +2517,11 @@ export default {
       filePath: 'File Path',
       backToProcesses: 'Processes',
       processDetails: 'Process Details',
+      analyzeProcess: 'Analyze Process',
+      toolTip: {
+        treeView: 'Switch to Tree view',
+        listView: 'Switch to Process view'
+      },
       message: {
         noResultsMessage: 'No process information was found.'
       },

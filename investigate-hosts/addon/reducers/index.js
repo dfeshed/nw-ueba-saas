@@ -43,6 +43,7 @@ export default combineReducers({
     kernelHooks: createFilteredReducer(fileContext, reducerPredicate('KERNELHOOK')),
     drivers: createFilteredReducer(fileContext, reducerPredicate('DRIVER')),
     libraries: createFilteredReducer(fileContext, reducerPredicate('LIBRARY')),
+    processes: createFilteredReducer(fileContext, reducerPredicate('PROCESS')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE')),
     fileAnalysis,
     risk: createFilteredReducer(risk, reducerPredicate('HOST'))

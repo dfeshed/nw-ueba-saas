@@ -28,9 +28,16 @@ module('Integration | Component | host-detail/process/process-list', function(ho
   });
 
   test('Column Names appear in datatable header', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
     assert.expect(3);
     await render(hbs`{{host-detail/process/process-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell .rsa-icon').length, 8, '8 sortable columns in header, along with the checkbox');
+    assert.equal(findAll('.rsa-data-table-header-cell .rsa-icon').length, 9, '9 sortable columns in header, along with the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'PID', 'First column is PID');
   });
@@ -40,6 +47,8 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       .processList(processData.processList)
       .processTree(processData.processTree)
       .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
     <style>
@@ -57,7 +66,10 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       .scanTime(123456789)
       .processList(processData.processList)
       .processTree(processData.processTree)
-      .selectedTab(null).build();
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
     await render(hbs`<style>
         box, section {
           min-height: 2000px
@@ -71,7 +83,7 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       assert.deepEqual(query, {
         'data': {
           'agentId': 1,
-          'pid': 664,
+          'pid': 517,
           'scanTime': 123456789
         }
       });
@@ -85,7 +97,7 @@ module('Integration | Component | host-detail/process/process-list', function(ho
   });
 
   test('Check that sort action is performed & correct values are passed', async function(assert) {
-    assert.expect(5);
+    assert.expect(2);
     new ReduxDataHelper(setState)
       .sortField('name')
       .agentId(1)
@@ -97,22 +109,6 @@ module('Integration | Component | host-detail/process/process-list', function(ho
         }
     </style>
     {{host-detail/process/process-list}}`);
-
-    patchSocket((method, modelName, query) => {
-      assert.equal(method, 'getProcessList');
-      assert.equal(modelName, 'endpoint');
-      assert.deepEqual(query, {
-        'data': {
-          'agentId': 1,
-          'scanTime': 1234567890,
-          'sort': {
-            'descending': true,
-            'keys': ['name']
-          }
-        }
-      });
-    });
-
     assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-12-filled'), true, 'Default arrow up icon before sorting');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     return settled().then(() => {
@@ -144,6 +140,8 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       .processList(processData.processList)
       .processTree(processData.processTree)
       .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`
     <style>
@@ -174,7 +172,10 @@ module('Integration | Component | host-detail/process/process-list', function(ho
       .scanTime(123456789)
       .processList(processData.processList)
       .processTree(processData.processTree)
-      .selectedTab(null).build();
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
 
     await render(hbs`{{host-detail/process/process-list openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
 

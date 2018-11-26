@@ -3,12 +3,34 @@
     {{#layout.center}}
       <box class="process-list-box scroll-box">
         <div class="process-list-header">
-          <span class="title">{{t 'investigateHosts.process.title'}}</span>
           {{#if (not isNavigatedFromExplore)}}
             <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
               {{rsa-icon active=isTreeView class="tree-icon" name='flow-chart-3' is-filled=true}}
             </span>
           {{/if}}
+          <div class="process-list-actions analyze-process-button">
+            {{host-detail/process/pivot-to-process-analysis
+              item=selectedProcessList
+              serviceList=serviceList
+              agentId=agentId
+              osType=osType
+              hostName=hostName}}
+          </div>
+
+          {{endpoint/file-actionbar
+            onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums)
+            getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+            resetRiskScore = (action 'resetRiskScoreAction')
+            serviceList=serviceList
+            metaName='checksumSha256'
+            itemList=selectedProcessList
+            serviceId=serviceId
+            timeRange=timeRange
+            fileStatusData=fileStatus
+            selectedFileCount=selectedFileCount
+            restrictedFileList=restrictedFileList
+            isRemediationAllowed=isRemediationAllowed
+            retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)}}
         </div>
         {{#if isTreeView}}
           {{host-detail/process/process-tree

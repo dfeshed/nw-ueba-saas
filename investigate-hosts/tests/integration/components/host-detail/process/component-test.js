@@ -4,6 +4,7 @@ import { render, settled, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
+import sinon from 'sinon';
 import {
   processDetails,
   processList,
@@ -20,6 +21,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
   });
 
   hooks.beforeEach(function() {
+    this.owner.lookup('service:timezone').set('selected', { zoneId: 'UTC' });
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
@@ -37,6 +39,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList([])
       .processTree([])
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -55,6 +59,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processTree(processTree)
       .processDetails(processDetails)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
 
     // set height to get all lazy rendered items on the page
@@ -90,6 +96,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -114,6 +122,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processTree(processTree)
       .processDetails(processDetails)
       .isTreeView(false)
+      .sortField('name')
+      .isDescOrder(true)
       .build();
 
     // set height to get all lazy rendered items on the page
@@ -137,6 +147,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
       .build();
     await render(hbs`{{host-detail/process}}`);
 
@@ -155,5 +167,77 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     });
   });
 
+  test('The action buttons are rendered', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(processList)
+      .processTree(processTree)
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 1, 'Analyze Process button is present');
+    assert.equal(findAll('.file-status-button .rsa-form-button').length, 1, 'Edit File Status button is present.');
+    assert.equal(findAll('.actionbar-pivot-to-investigate .rsa-form-button').length, 1, 'Analyze Events button is present.');
+  });
 
+  test('renders the process analysis item on click on Analyze process', async function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1,
+        vpid: 123123
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.process-list-actions .pivot-to-process-analysis .rsa-form-button');
+    return settled().then(() => {
+      assert.ok(actionSpy.calledOnce);
+      assert.ok(actionSpy.args[0][0].includes('vid=123123'));
+      assert.ok(actionSpy.args[0][0].includes('sid=123456'));
+      actionSpy.resetHistory();
+      actionSpy.restore();
+    });
+  });
+
+
+  test('renders the edit file status modal window,on click of edit file status button', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.file-status-button .rsa-form-button');
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('#modalDestination').length, 1, 'Edit file status modal has appeared.');
+    });
+  });
 });

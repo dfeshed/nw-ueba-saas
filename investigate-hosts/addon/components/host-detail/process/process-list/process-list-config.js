@@ -40,6 +40,12 @@ export default [
     isDescending: false
   },
   {
+    field: 'launchArguments',
+    width: '10vw',
+    title: 'investigateHosts.process.launchArguments',
+    isDescending: false
+  },
+  {
     field: 'downloadInfo.status',
     width: '6vw',
     format: 'DOWNLOADSTATUS',

@@ -40,7 +40,9 @@ test('processTree', function(assert) {
     endpoint: {
       process: {
         processList: processListData,
-        processTree: processTreeData
+        processTree: processTreeData,
+        sortField: 'name',
+        isDescOrder: true
       },
       explore: {
         selectedTab: 'process'
@@ -55,7 +57,9 @@ test('isNavigatedFromExplore', function(assert) {
     endpoint: {
       process: {
         processList: processListData,
-        processTree: processTreeData
+        processTree: processTreeData,
+        sortField: 'name',
+        isDescOrder: true
       },
       explore: {
         selectedTab: {
@@ -72,7 +76,9 @@ test('noProcessData returns true when processTree is empty', function(assert) {
     endpoint: {
       process: {
         processTree: [],
-        processList: []
+        processList: [],
+        sortField: 'name',
+        isDescOrder: true
       },
       explore: {
         selectedTab: {
@@ -89,7 +95,9 @@ test('noProcessData returns false when processTree is not empty', function(asser
     endpoint: {
       process: {
         processTree: processTreeData,
-        processList: processListData
+        processList: processListData,
+        sortField: 'name',
+        isDescOrder: true
       },
       explore: {
         selectedTab: {
@@ -239,7 +247,9 @@ test('processList', function(assert) {
             name: 'test',
             checksumSha256: 1
           }
-        ]
+        ],
+        sortField: 'name',
+        isDescOrder: true
 
       }
     }
@@ -322,8 +332,9 @@ test('processTree extract the matching checksum', function(assert) {
             name: 'test',
             checksumSha256: 1
           }
-        ]
-
+        ],
+        sortField: 'name',
+        isDescOrder: true
       }
     }
   }));

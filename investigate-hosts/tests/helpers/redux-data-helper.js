@@ -167,12 +167,17 @@ export default class DataHelper {
     _set(this.state, 'process.selectedProcessId', processId);
     return this;
   }
+  selectedProcessList(process) {
+    _set(this.state, 'process.selectedProcessList', process);
+    return this;
+  }
   host(host) {
     _set(this.state, 'overview.hostDetails', host);
     return this;
   }
   hostName(value) {
     const machine = { machineName: value };
+    _set(this.state, 'overview.hostDetails', { machine });
     _set(this.state, 'overview.hostDetails', { machine });
     return this;
   }
