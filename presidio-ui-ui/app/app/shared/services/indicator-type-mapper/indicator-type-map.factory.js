@@ -295,6 +295,9 @@
                         anomalyTypeFieldName: 'abnormal_process_modified_a_service_key_registry'
                     },
                     {
+                        anomalyTypeFieldName: 'abnormal_process_injects_into_windows_process'
+                    },
+                    {
                         anomalyTypeFieldName: 'abnormal_file_action_operation_type'
                     },
                     {
