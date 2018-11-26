@@ -147,10 +147,10 @@
                         anomalyTypeFieldName: 'high_number_of_distinct_reconnaissance_tools_executed'
                     },
                     {
-                        anomalyTypeFieldName: 'high_numner_of_reconnaissance_tool_activities_executed'
+                        anomalyTypeFieldName: 'high_number_of_reconnaissance_tool_activities_executed'
                     },
                     {
-                        anomalyTypeFieldName: 'high_number_of_reconnaissance tools_executed_process'
+                        anomalyTypeFieldName: 'high_number_of_reconnaissance_tools_executed_process'
                     }
 
                 ],
