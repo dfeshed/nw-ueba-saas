@@ -17,7 +17,7 @@
 
 {{#rsa-form-button
   class='save-button'
-  defaultAction=(action 'save' false)
+  defaultAction=(action 'save')
   isDisabled=step.saveButtonDisabled
 }}
   {{t 'adminUsm.groupWizard.saveAndClose'}}
@@ -25,7 +25,7 @@
 
 {{#rsa-form-button
   class='publish-button'
-  defaultAction=(action 'save' true)
+  defaultAction=(action 'publish')
   isDisabled=step.publishButtonDisabled
 }}
   {{t 'adminUsm.groupWizard.publishGroup'}}

@@ -68,8 +68,11 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizPolicy(policy) {
+  policyWizPolicy(policy, updateOrig) {
     _set(this.state, 'usm.policyWizard.policy', policy);
+    if (updateOrig) {
+      _set(this.state, 'usm.policyWizard.policyOrig', policy);
+    }
     return this;
   }
 
@@ -345,7 +348,7 @@ export default class DataHelper {
     return this;
   }
 
-  groupWizGroup(group) {
+  groupWizGroup(group, updateOrig = false) {
     if (group.groupCriteria && group.groupCriteria.criteria) {
       const criteria = group.groupCriteria.criteria.slice();
       _set(this.state, 'usm.groupWizard.criteriaCache', criteria);
@@ -353,6 +356,9 @@ export default class DataHelper {
       _set(this.state, 'usm.groupWizard.criteriaCache', null);
     }
     _set(this.state, 'usm.groupWizard.group', group);
+    if (updateOrig) {
+      _set(this.state, 'usm.groupWizard.groupOrig', group);
+    }
     return this;
   }
 

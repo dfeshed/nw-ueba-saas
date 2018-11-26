@@ -637,7 +637,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
         groupCriteria: {
           conjunction: 'AND',
           criteria: [
-            ['osType', 'IN', []]
+            ['osType', 'IN', ['Linux']]
           ]
         }
       }
@@ -645,7 +645,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
 
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizGroup(fetchGroupPayload.data)
+      .groupWizGroup(fetchGroupPayload.data, true)
       .groupWizGroupStatus('complete')
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
@@ -724,13 +724,22 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   });
 
   test('on SAVE_GROUP success, group & groupStatus are properly set', function(assert) {
-    const nameExpected = 'test name';
-    const descExpected = 'test description';
+    const saveGroupPayload = {
+      id: 'group_001',
+      name: 'Zebra 001',
+      description: 'Zebra 001 of group group_001',
+      dirty: false,
+      groupCriteria: {
+        conjunction: 'AND',
+        criteria: [
+          ['osType', 'IN', []]
+        ]
+      }
+    };
     const groupStatusExpected = 'complete';
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizDescription(descExpected)
+      .groupWizGroup(saveGroupPayload, true)
       .groupWizGroupStatus(groupStatusExpected)
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
@@ -753,13 +762,22 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   });
 
   test('on SAVE_PUBLISH_GROUP success, group & groupStatus are properly set', function(assert) {
-    const nameExpected = 'test name';
-    const descExpected = 'test description';
+    const publishGroupPayload = {
+      id: 'group_001',
+      name: 'Zebra 001',
+      description: 'Zebra 001 of group group_001',
+      dirty: false,
+      groupCriteria: {
+        conjunction: 'AND',
+        criteria: [
+          ['osType', 'IN', []]
+        ]
+      }
+    };
     const groupStatusExpected = 'complete';
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizName(nameExpected)
-      .groupWizDescription(descExpected)
+      .groupWizGroup(publishGroupPayload, true)
       .groupWizGroupStatus(groupStatusExpected)
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {

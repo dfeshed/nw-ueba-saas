@@ -17,7 +17,7 @@
 
 {{#rsa-form-button
   class='save-button'
-  defaultAction=(action 'save' false)
+  defaultAction=(action 'save')
   isDisabled=step.saveButtonDisabled
 }}
   {{t 'adminUsm.policyWizard.saveAndClose'}}
@@ -26,7 +26,7 @@
 {{#rsa-form-button
   class='publish-button'
   style='primary'
-  defaultAction=(action 'save' true)
+  defaultAction=(action 'publish')
   isDisabled=step.publishButtonDisabled
 }}
   {{t 'adminUsm.policyWizard.publishPolicy'}}

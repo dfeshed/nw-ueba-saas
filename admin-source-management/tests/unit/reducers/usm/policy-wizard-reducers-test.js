@@ -500,13 +500,31 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('on SAVE_POLICY success, policy & policyStatus are properly set', function(assert) {
-    const nameExpected = 'test name';
-    const descExpected = 'test description';
+    const savePolicyPayload = {
+      id: 'policy_014',
+      policyType: 'edrPolicy',
+      name: 'EMC Reston! 014',
+      description: 'EMC Reston 014 of policy policy_014',
+      scanType: 'SCHEDULED',
+      scanStartDate: null,
+      scanStartTime: null,
+      recurrenceInterval: 1,
+      recurrenceUnit: 'WEEKS',
+      runOnDaysOfWeek: ['WEDNESDAY'],
+      cpuMax: 75,
+      cpuMaxVm: 85,
+      captureFloatingCode: true,
+      downloadMbr: false,
+      filterSignedHooks: false,
+      requestScanOnRegistration: false,
+      blockingEnabled: false,
+      primaryAddress: '10.10.10.10',
+      agentMode: false
+    };
     const policyStatusExpected = 'complete';
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizName(nameExpected)
-      .policyWizDescription(descExpected)
+      .policyWizPolicy(savePolicyPayload, true)
       .policyWizPolicyStatus(policyStatusExpected)
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
@@ -529,13 +547,31 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('on SAVE_PUBLISH_POLICY success, policy & policyStatus are properly set', function(assert) {
-    const nameExpected = 'test name';
-    const descExpected = 'test description';
+    const publishPolicyPayload = {
+      id: 'policy_014',
+      policyType: 'edrPolicy',
+      name: 'EMC Reston! 014',
+      description: 'EMC Reston 014 of policy policy_014',
+      scanType: 'SCHEDULED',
+      scanStartDate: null,
+      scanStartTime: null,
+      recurrenceInterval: 1,
+      recurrenceUnit: 'WEEKS',
+      runOnDaysOfWeek: ['WEDNESDAY'],
+      cpuMax: 75,
+      cpuMaxVm: 85,
+      captureFloatingCode: true,
+      downloadMbr: false,
+      filterSignedHooks: false,
+      requestScanOnRegistration: false,
+      blockingEnabled: false,
+      primaryAddress: '10.10.10.10',
+      agentMode: false
+    };
     const policyStatusExpected = 'complete';
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizName(nameExpected)
-      .policyWizDescription(descExpected)
+      .policyWizPolicy(publishPolicyPayload, true)
       .policyWizPolicyStatus(policyStatusExpected)
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {

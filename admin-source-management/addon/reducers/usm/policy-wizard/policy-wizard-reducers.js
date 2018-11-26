@@ -26,6 +26,7 @@ const INITIAL_STATES = {
       // policy type specific props will be merged in each time we run:
       // - NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
     },
+    policyOrig: {},
     policyStatus: null, // wait, complete, error
 
     // TODO if the reducer doesn't need to modify these, and the selectors aren't doing anything special,
@@ -209,6 +210,7 @@ export default reduxActions.handleActions({
         }
         return mergedInitialState.merge({
           policy: fetchedPolicy,
+          policyOrig: fetchedPolicy,
           availableSettings: newAvailableSettings,
           selectedSettings: newSelectedSettings,
           policyStatus: 'complete'
@@ -424,6 +426,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           policy: action.payload.data,
+          policyOrig: action.payload.data,
           policyStatus: 'complete'
         });
       }
@@ -441,6 +444,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           policy: action.payload.data,
+          policyOrig: action.payload.data,
           policyStatus: 'complete'
         });
       }

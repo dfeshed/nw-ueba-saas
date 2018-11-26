@@ -8,6 +8,7 @@ import { inject } from '@ember/service';
 import {
   group,
   isGroupCriteriaEmpty,
+  hasGroupChanged,
   isIdentifyGroupStepValid,
   isDefineGroupStepValid,
   defineGroupStepShowErrors,
@@ -26,6 +27,7 @@ import {
 const stateToComputed = (state) => ({
   group: group(state),
   isGroupCriteriaEmpty: isGroupCriteriaEmpty(state),
+  hasGroupChanged: hasGroupChanged(state),
   isIdentifyGroupStepValid: isIdentifyGroupStepValid(state),
   isDefineGroupStepValid: isDefineGroupStepValid(state),
   defineGroupStepShowErrors: defineGroupStepShowErrors(state),
@@ -140,48 +142,69 @@ const GroupWizardToolbar = Component.extend(Notifications, {
       }
     },
 
-    save(publish) {
-      let validationMessage = 'adminUsm.groupWizard.actionMessages.saveValidationFailure';
-      if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
-        validationMessage = 'adminUsm.groupWizard.actionMessages.saveEmptyFailure';
-      }
-      let successMessage = 'adminUsm.groupWizard.actionMessages.saveSuccess';
-      let failureMessage = 'adminUsm.groupWizard.actionMessages.saveFailure';
-      let dispatchAction = 'saveGroup';
-
-      if (publish) {
-        validationMessage = 'adminUsm.groupWizard.actionMessages.savePublishValidationFailure';
-        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
-          validationMessage = 'adminUsm.groupWizard.actionMessages.savePublishEmptyFailure';
-        }
-        successMessage = 'adminUsm.groupWizard.actionMessages.savePublishSuccess';
-        failureMessage = 'adminUsm.groupWizard.actionMessages.savePublishFailure';
-        dispatchAction = 'savePublishGroup';
-      }
-
-      if (this.isWizardValid) {
-
+    save() {
+      if (this.hasGroupChanged && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
-            if (!this.isDestroyed) {
-              this.send('success', successMessage);
+            if (!this.isDestroyed && !this.isDestroying) {
+              this.send('success', 'adminUsm.groupWizard.actionMessages.saveSuccess');
               this.get('transitionToClose')();
             }
           },
           onFailure: (response = {}) => {
-            if (!this.isDestroyed) {
+            if (!this.isDestroyed && !this.isDestroying) {
               const { code } = response;
               const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
               const codeResponse = this.get('i18n').t(codeKey);
-              this.send('failure', failureMessage, { errorType: codeResponse });
+              this.send('failure', 'adminUsm.groupWizard.actionMessages.saveFailure', { errorType: codeResponse });
             }
           }
         };
         this.send('updateCriteriaFromCache');
-        this.send(dispatchAction, this.get('group'), saveCallbacks);
+        this.send('saveGroup', this.get('group'), saveCallbacks);
       } else {
+        // validation issues found
+        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.saveEmptyFailure');
+        } else if (this.hasGroupChanged) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.saveValidationFailure');
+        } else {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.saveNoChangeFailure');
+        }
         this.setShowErrors(true);
-        this.send('failure', validationMessage);
+      }
+    },
+
+    publish() {
+      if ((this.hasGroupChanged || this.group.dirty) && this.isWizardValid) {
+        const saveCallbacks = {
+          onSuccess: () => {
+            if (!this.isDestroyed && !this.isDestroying) {
+              this.send('success', 'adminUsm.groupWizard.actionMessages.savePublishSuccess');
+              this.get('transitionToClose')();
+            }
+          },
+          onFailure: (response = {}) => {
+            if (!this.isDestroyed && !this.isDestroying) {
+              const { code } = response;
+              const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
+              const codeResponse = this.get('i18n').t(codeKey);
+              this.send('failure', 'adminUsm.groupWizard.actionMessages.savePublishFailure', { errorType: codeResponse });
+            }
+          }
+        };
+        this.send('updateCriteriaFromCache');
+        this.send('savePublishGroup', this.get('group'), saveCallbacks);
+      } else {
+        // validation issues found
+        if ((this.step.id === 'defineGroupStep') && this.isGroupCriteriaEmpty) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.savePublishEmptyFailure');
+        } else if (this.hasGroupChanged) {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.savePublishValidationFailure');
+        } else {
+          this.send('failure', 'adminUsm.groupWizard.actionMessages.savePublishNoChangeFailure');
+        }
+        this.setShowErrors(true);
       }
     },
 

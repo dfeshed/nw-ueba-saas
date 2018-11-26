@@ -12,6 +12,7 @@ export const groupRanking = (state) => _groupWizardState(state).groupRanking;
 const _groupRankingOrig = (state) => _groupWizardState(state).groupRankingOrig;
 export const groupRankingStatus = (state) => _groupWizardState(state).groupRankingStatus;
 export const group = (state) => _groupWizardState(state).group;
+const _groupOrig = (state) => _groupWizardState(state).groupOrig;
 export const assignedPolicies = (state) => _groupWizardState(state).group.assignedPolicies;
 export const groupList = (state) => _groupWizardState(state).groupList;
 export const policyList = (state) => _groupWizardState(state).policyList;
@@ -36,6 +37,13 @@ export const groupRankingQuery = createSelector(
   (selectedSourceType, groupRanking) => {
     const groupRankingIDs = groupRanking.map((rank) => rank.id);
     return { policyType: selectedSourceType, groupIds: groupRankingIDs };
+  }
+);
+
+export const hasGroupChanged = createSelector(
+  _groupOrig, group,
+  (_groupOrig, group) => {
+    return !_.isEqual(_groupOrig, group);
   }
 );
 

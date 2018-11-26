@@ -8,6 +8,7 @@ import { inject } from '@ember/service';
 import {
   policy,
   isPolicySettingsEmpty,
+  hasPolicyChanged,
   isIdentifyPolicyStepValid,
   identifyPolicyStepShowErrors,
   isDefinePolicyStepValid,
@@ -23,6 +24,7 @@ import {
 
 const stateToComputed = (state) => ({
   policy: policy(state),
+  hasPolicyChanged: hasPolicyChanged(state),
   isPolicySettingsEmpty: isPolicySettingsEmpty(state),
   isIdentifyPolicyStepValid: isIdentifyPolicyStepValid(state),
   identifyPolicyStepShowErrors: identifyPolicyStepShowErrors(state),
@@ -121,47 +123,67 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
       }
     },
 
-    save(publish) {
-      let validationMessage = 'adminUsm.policyWizard.actionMessages.saveValidationFailure';
-      if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
-        validationMessage = 'adminUsm.policyWizard.actionMessages.saveEmptyFailure';
-      }
-      let successMessage = 'adminUsm.policyWizard.actionMessages.saveSuccess';
-      let failureMessage = 'adminUsm.policyWizard.actionMessages.saveFailure';
-      let dispatchAction = 'savePolicy';
-
-      if (publish) {
-        validationMessage = 'adminUsm.policyWizard.actionMessages.savePublishValidationFailure';
-        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
-          validationMessage = 'adminUsm.policyWizard.actionMessages.savePublishEmptyFailure';
-        }
-        successMessage = 'adminUsm.policyWizard.actionMessages.savePublishSuccess';
-        failureMessage = 'adminUsm.policyWizard.actionMessages.savePublishFailure';
-        dispatchAction = 'savePublishPolicy';
-      }
-
-      if (this.isWizardValid) {
-
+    save() {
+      if (this.hasPolicyChanged && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
-            if (!this.isDestroyed) {
-              this.send('success', successMessage);
+            if (!this.isDestroyed && !this.isDestroying) {
+              this.send('success', 'adminUsm.policyWizard.actionMessages.saveSuccess');
               this.get('transitionToClose')();
             }
           },
           onFailure: (response = {}) => {
-            if (!this.isDestroyed) {
+            if (!this.isDestroyed && !this.isDestroying) {
               const { code } = response;
               const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
               const codeResponse = this.get('i18n').t(codeKey);
-              this.send('failure', failureMessage, { errorType: codeResponse });
+              this.send('failure', 'adminUsm.policyWizard.actionMessages.saveFailure', { errorType: codeResponse });
             }
           }
         };
-        this.send(dispatchAction, this.get('policy'), saveCallbacks);
+        this.send('savePolicy', this.get('policy'), saveCallbacks);
       } else {
+        // validation issues found
+        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.saveEmptyFailure');
+        } else if (this.hasPolicyChanged) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.saveValidationFailure');
+        } else {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.saveNoChangeFailure');
+        }
         this.setShowErrors(true);
-        this.send('failure', validationMessage);
+      }
+    },
+
+    publish() {
+      if ((this.hasPolicyChanged || this.policy.dirty) && this.isWizardValid) {
+        const saveCallbacks = {
+          onSuccess: () => {
+            if (!this.isDestroyed && !this.isDestroying) {
+              this.send('success', 'adminUsm.policyWizard.actionMessages.savePublishSuccess');
+              this.get('transitionToClose')();
+            }
+          },
+          onFailure: (response = {}) => {
+            if (!this.isDestroyed && !this.isDestroying) {
+              const { code } = response;
+              const codeKey = `adminUsm.errorCodeResponse.${(code || 'default')}`;
+              const codeResponse = this.get('i18n').t(codeKey);
+              this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishFailure', { errorType: codeResponse });
+            }
+          }
+        };
+        this.send('savePublishPolicy', this.get('policy'), saveCallbacks);
+      } else {
+        // validation issues found
+        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishEmptyFailure');
+        } else if (this.hasPolicyChanged) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishValidationFailure');
+        } else {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishNoChangeFailure');
+        }
+        this.setShowErrors(true);
       }
     },
 

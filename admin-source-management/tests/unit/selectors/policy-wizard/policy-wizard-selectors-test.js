@@ -20,6 +20,7 @@ import {
   isDefinePolicyStepValid,
   isWizardValid,
   isPolicyLoading,
+  hasPolicyChanged,
   isPolicySettingsEmpty
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
@@ -482,6 +483,27 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     isPolicyLoadingExpected = false;
     isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
     assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is false when policyStatus is complete');
+  });
+
+  test('hasPolicyChanged selector', function(assert) {
+    const policyPayload = {
+      id: 'policy_014',
+      policyType: 'edrPolicy',
+      name: 'EMC Reston! 014',
+      description: 'EMC Reston 014 of policy policy_014',
+      blockingEnabled: false
+    };
+    const nochangeState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policyPayload, true)
+      .build();
+    assert.equal(hasPolicyChanged(Immutable.from(nochangeState)), false, 'The returned value from the hasPolicyChanged selector is as false when no change has been made');
+
+    const changeState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(policyPayload, false)
+      .build();
+    assert.equal(hasPolicyChanged(Immutable.from(changeState)), true, 'The returned value from the hasPolicyChanged selector is as true when change has been made');
   });
 
   test('isPolicySettingsEmpty selector - no settings', function(assert) {

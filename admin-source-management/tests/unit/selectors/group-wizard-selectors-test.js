@@ -18,6 +18,7 @@ import {
   // TODO when implemented isReviewGroupStepValid,
   // TODO when implemented isWizardValid
   isGroupLoading,
+  hasGroupChanged,
   policyList,
   availablePolicySourceTypes,
   assignedPolicyList,
@@ -309,6 +310,31 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     isGroupLoadingExpected = false;
     isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is false when groupStatus is complete');
+  });
+
+  test('hasGroupChanged selector', function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'groupCriteria': {
+        'conjunction': 'AND',
+        'criteria': [
+          ['osType', 'IN', []]
+        ]
+      },
+      'assignedPolicies': {}
+    };
+    const nochangeState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload, true)
+      .build();
+    assert.equal(hasGroupChanged(Immutable.from(nochangeState)), false, 'The returned value from the hasGroupChanged selector is as false when no change has been made');
+
+    const changeState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroup(groupPayload, false)
+      .build();
+    assert.equal(hasGroupChanged(Immutable.from(changeState)), true, 'The returned value from the hasGroupChanged selector is as true when change has been made');
   });
 
   test('steps selector', function(assert) {

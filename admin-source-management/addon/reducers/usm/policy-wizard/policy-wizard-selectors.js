@@ -10,8 +10,16 @@ const { createSelector } = reselect;
 
 const _policyWizardState = (state) => state.usm.policyWizard;
 export const policy = (state) => _policyWizardState(state).policy;
+const _policyOrig = (state) => _policyWizardState(state).policyOrig;
 export const steps = (state) => _policyWizardState(state).steps;
 export const visited = (state) => _policyWizardState(state).visited;
+
+export const hasPolicyChanged = createSelector(
+  _policyOrig, policy,
+  (_policyOrig, policy) => {
+    return !_.isEqual(_policyOrig, policy);
+  }
+);
 
 export const isPolicyLoading = createSelector(
   _policyWizardState,

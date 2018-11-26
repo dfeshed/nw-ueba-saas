@@ -86,6 +86,7 @@ export const initialState = {
     lastPublishedOn: 0,
     assignedPolicies: {}
   },
+  groupOrig: {},
   groupStatus: null, // wait, complete, error
 
   // the summary list of policies objects to fill the group select/dropdown
@@ -197,6 +198,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           group: action.payload.data,
+          groupOrig: action.payload.data,
           groupStatus: 'complete',
           criteriaCache: action.payload.data.groupCriteria.criteria.slice()
         });
@@ -454,6 +456,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           group: action.payload.data,
+          groupOrig: action.payload.data,
           groupStatus: 'complete'
         });
       }
@@ -471,6 +474,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           group: action.payload.data,
+          groupOrig: action.payload.data,
           groupStatus: 'complete'
         });
       }

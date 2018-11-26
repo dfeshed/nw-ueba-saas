@@ -3974,10 +3974,12 @@ export default {
         nextEmptyFailure: 'At least one condition is required before continuing to next step.',
         saveValidationFailure: 'Please fix all the validation errors before Saving the Group.',
         saveEmptyFailure: 'At least one condition is required before Saving the Group.',
+        saveNoChangeFailure: 'No changes detected from previous saved version of the Group.',
         saveFailure: 'A problem occurred while trying to save the group: {{errorType}}',
         saveSuccess: 'The group has been saved successfully in an unpublished state.',
         savePublishValidationFailure: 'Please fix all the validation errors before Publishing the Group.',
         savePublishEmptyFailure: 'At least one condition is required before Publishing the Group.',
+        savePublishNoChangeFailure: 'No changes detected from previous published version of the Group.',
         savePublishFailure: 'A problem occurred while trying to save and publish the group: {{errorType}}',
         savePublishSuccess: 'The group has been saved and published successfully.'
       }
@@ -4040,10 +4042,12 @@ export default {
         nextEmptyFailure: 'At least one condition is required before continuing to next step.',
         saveValidationFailure: 'Please fix all the validation errors before Saving the Policy.',
         saveEmptyFailure: 'At least one condition is required before Saving the Policy.',
+        saveNoChangeFailure: 'No changes detected from previous saved version of the Policy.',
         saveFailure: 'A problem occurred while trying to save the policy: {{errorType}}',
         saveSuccess: 'The policy has been saved successfully in an unpublished state.',
         savePublishValidationFailure: 'Please fix all the validation errors before Publishing the Policy.',
         savePublishEmptyFailure: 'At least one condition is required before Publishing the Policy.',
+        savePublishNoChangeFailure: 'No changes detected from previous published version of the Policy.',
         savePublishFailure: 'A problem occurred while trying to save and publish the policy: {{errorType}}',
         savePublishSuccess: 'The policy has been saved and published successfully.'
       },

@@ -50,8 +50,8 @@ export default [
           'ipv4',
           'BETWEEN',
           [
-            '123',
-            '22'
+            '1.2.3.4',
+            '5.6.7.8'
           ]
         ]
       ]
@@ -73,7 +73,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -197,13 +197,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        [
-          'hostname',
-          'EQUAL',
-          [
-            'IN*'
-          ]
-        ]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -276,7 +270,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -296,7 +290,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -325,7 +319,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -350,7 +344,7 @@ export default [
     'groupCriteria': {
       'conjunction': 'AND',
       'criteria': [
-        ['osType', 'IN', []]
+        ['osType', 'IN', ['Linux']]
       ]
     }
   },
@@ -407,7 +401,7 @@ export default [
       'criteria': [
         [
           'hostname',
-          'EQUAL',
+          'IN',
           [
             'jaylpt, monilpt, johnlpt, viveklpt'
           ]

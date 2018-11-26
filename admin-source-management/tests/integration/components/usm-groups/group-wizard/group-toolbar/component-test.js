@@ -460,6 +460,33 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     await click(savePublishBtnEl);
   });
 
+  test('On attempting to saving and publishing an unchanged group, an error flash message is shown', async function(assert) {
+    const done = assert.async();
+    assert.expect(3);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadApplyPolicyStep, true)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar step=step}}`);
+    await settled();
+
+    assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
+
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
+      const expectedMessage = translation.t('adminUsm.groupWizard.actionMessages.savePublishNoChangeFailure', { errorType: codeResponse });
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+
+    const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
+    await click(savePublishBtnEl);
+  });
+
   test('On successfully saving and publishing a group, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
     const done = assert.async();
     assert.expect(4);
