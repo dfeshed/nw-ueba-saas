@@ -60,6 +60,11 @@ export default function getEventCount() {
       }
     };
 
-    fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold, handlers);
+    // It's possible for getEventCount to be kicked off twice when executing a
+    // query via Query Events button. The _if_ below ensures we do not receive
+    // double message frames in the query console.
+    if (state.eventCount.status !== 'wait') {
+      fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold, handlers);
+    }
   };
 }

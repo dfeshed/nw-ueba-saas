@@ -126,6 +126,28 @@ test('QUERY_STATS reducer does not update errors when 0 code passed', function(a
   assert.equal(result.errors.length, 0);
 });
 
+test('INITIALIZE_INVESTIGATE reducer clears state', function(assert) {
+  const prevState = Immutable.from({
+    isConsoleOpen: true,
+    description: 'foo',
+    percent: 100,
+    warnings: ['foo'],
+    errors: ['foo'],
+    devices: ['foo']
+  });
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.isConsoleOpen, false);
+  assert.equal(result.description, null);
+  assert.equal(result.percent, 0);
+  assert.equal(result.errors.length, 0);
+  assert.equal(result.warnings.length, 0);
+  assert.equal(result.devices.length, 0);
+});
+
 test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   const prevState = Immutable.from({
     isConsoleOpen: true,

@@ -12,6 +12,11 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
+  // ensure back button clears query console
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
+    return state.merge(_initialState);
+  },
+
   [ACTION_TYPES.INITIALIZE_QUERYING]: (state) => {
     return state.merge(_initialState);
   },
