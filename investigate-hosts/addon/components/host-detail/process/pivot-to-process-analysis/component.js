@@ -5,9 +5,6 @@ import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
-import { isJazzAgent } from 'investigate-hosts/reducers/details/process/selectors';
-import { isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
-
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const dispatchToActions = {
@@ -15,8 +12,6 @@ const dispatchToActions = {
 };
 
 const stateToComputed = (state) => ({
-  isJazzAgent: isJazzAgent(state),
-  isEcatAgent: isEcatAgent(state),
   serverId: state.endpointQuery.serverId,
   serviceId: serviceId(state),
   timeRange: timeRange(state)
@@ -69,11 +64,6 @@ const PivotToPA = Component.extend({
         }
       }
     ];
-  },
-
-  @computed('osType', 'isJazzAgent', 'isEcatAgent')
-  disabledContextMenu(osType, isJazzAgent, isEcatAgent) {
-    return osType === 'linux' || isJazzAgent || isEcatAgent;
   },
 
   _closeModal() {

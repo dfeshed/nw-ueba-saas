@@ -79,10 +79,10 @@ const TreeComponent = Component.extend({
     },
 
     toggleAllSelection() {
-      if (!this.get('areAllSelected')) {
-        this.send('selectAllProcess');
-      } else {
+      if (this.get('areAllSelected')) {
         this.send('deSelectAllProcess');
+      } else {
+        this.send('selectAllProcess');
       }
     },
 

@@ -109,10 +109,10 @@ module('Integration | Component | host-detail/process/process-list', function(ho
         }
     </style>
     {{host-detail/process/process-list}}`);
-    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-12-filled'), true, 'Default arrow up icon before sorting');
+    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-12-filled'), true, 'Arrow down icon appears after sorting');
+      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
     });
   });
 
@@ -135,7 +135,7 @@ module('Integration | Component | host-detail/process/process-list', function(ho
     assert.equal(find('.rsa-data-table-body').textContent.trim(), 'No process information was found.', 'No process information message rendered');
   });
 
-  test('Check if checkbox selects the items', async function(assert) {
+  test('Testing Selection of all items, followed by deselecting one', async function(assert) {
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree(processData.processTree)
@@ -156,6 +156,27 @@ module('Integration | Component | host-detail/process/process-list', function(ho
     await click(findAll('.rsa-form-checkbox')[1]);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.endpoint.process.selectedProcessList.length, 76, '76 processes selected after deselecting one');
+  });
+
+  test('Test for deselecting all selected items', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .selectedProcessList(processData.processList)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 2000px
+        }
+    </style>
+    {{host-detail/process/process-list}}`);
+    await click(findAll('.rsa-form-checkbox')[0]);
+    const state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.endpoint.process.selectedProcessList.length, 0, 'All processes are deselected');
   });
 
   test('clicking on the row calls the external function', async function(assert) {

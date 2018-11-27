@@ -17,7 +17,6 @@ import {
   enrichedDllData,
   processList,
   isProcessLoading,
-  isJazzAgent,
   imageHooksData,
   suspiciousThreadsData,
   areAllSelected,
@@ -257,6 +256,91 @@ test('processList', function(assert) {
   assert.equal(result.length, 3);
 });
 
+test('processList reversing data, when sorting is based on name and order is descending', function(assert) {
+  const result = processList(Immutable.from({
+    endpoint: {
+      explore: {
+        selectedTab: 'process'
+      },
+      process: {
+        processTree: [
+          {
+            id: 1,
+            parentPid: 0,
+            pid: 1,
+            name: 'test',
+            checksumSha256: 1,
+            childProcesses: [
+              {
+                id: 3,
+                parentPid: 1,
+                pid: 3,
+                name: 'test',
+                checksumSha256: 111
+              },
+              {
+                id: 4,
+                parentPid: 1,
+                pid: 4,
+                name: 'test',
+                checksumSha256: 1
+              }
+            ]
+          }
+        ],
+        processList: [
+          {
+            id: 1,
+            parentPid: 0,
+            pid: 1,
+            name: 'alpha',
+            checksumSha256: 1
+          },
+          {
+            id: 3,
+            parentPid: 2,
+            pid: 3,
+            name: 'beta',
+            checksumSha256: 111
+          },
+          {
+            id: 4,
+            parentPid: 2,
+            pid: 4,
+            name: 'gamma',
+            checksumSha256: 1
+          }
+        ],
+        sortField: 'name',
+        isDescOrder: true
+      }
+    }
+  }));
+  const expectedResult = [
+    {
+      id: 4,
+      parentPid: 2,
+      pid: 4,
+      name: 'gamma',
+      checksumSha256: 1
+    },
+    {
+      id: 3,
+      parentPid: 2,
+      pid: 3,
+      name: 'beta',
+      checksumSha256: 111
+    },
+    {
+      id: 1,
+      parentPid: 0,
+      pid: 1,
+      name: 'alpha',
+      checksumSha256: 1
+    }
+  ];
+  assert.equal(result[0].name, expectedResult[0].name);
+});
 
 test('processTree extract the matching checksum', function(assert) {
 
@@ -375,42 +459,6 @@ test('isProcessLoading', function(assert) {
     }
   }));
   assert.equal(result, true);
-});
-
-test('isJazzAgent return true when the agentVersion includes 11.1', function(assert) {
-  const result = isJazzAgent(Immutable.from({
-    endpoint: {
-      overview: {
-        hostDetails: {
-          machine: {
-            agentVersion: '11.2.0'
-          },
-          machineIdentity: {
-            agentMode: 'userModeOnly'
-          }
-        }
-      }
-    }
-  }));
-  assert.equal(result, true);
-});
-
-test('isJazzAgent return false when the agentVersion does not includes 11.1', function(assert) {
-  const result = isJazzAgent(Immutable.from({
-    endpoint: {
-      overview: {
-        hostDetails: {
-          machine: {
-            agentVersion: '11.2.0'
-          },
-          machineIdentity: {
-            agentMode: 'full'
-          }
-        }
-      }
-    }
-  }));
-  assert.equal(result, false);
 });
 
 test('imageHooksData returns revelent processId data', function(assert) {
@@ -1068,4 +1116,15 @@ test('selectedFileChecksums returns the checksums from the selected list of proc
     }
   }));
   assert.deepEqual(result, ['46965656dffsdf664'], 'Returns checksum from the selectedProcessList');
+});
+
+test('selectedFileChecksums returns the empty array for the empty selected list of processes', function(assert) {
+  const result = selectedFileChecksums(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: []
+      }
+    }
+  }));
+  assert.deepEqual(result, [], 'Returns empty array, for no selected processes');
 });

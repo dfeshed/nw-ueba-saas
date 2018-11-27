@@ -14,7 +14,8 @@
         {{t column.title}}
         {{rsa-icon size="small"
           click=(action 'sort' column)
-          name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+          class='sort'
+          name=(if column.isDescending "arrow-down-7" "arrow-up-7")}}
       </span>
     {{/if}}
   {{/rsa-data-table/header}}

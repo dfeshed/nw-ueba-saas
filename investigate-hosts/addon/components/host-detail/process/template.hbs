@@ -5,7 +5,7 @@
         <div class="process-list-header">
           {{#if (not isNavigatedFromExplore)}}
             <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-              {{rsa-icon active=isTreeView class="tree-icon" name='flow-chart-3' is-filled=true}}
+              {{rsa-icon active=isTreeView title= treeIconTooltip class="tree-icon" name='flow-chart-3' is-filled=true}}
             </span>
           {{/if}}
           <div class="process-list-actions analyze-process-button">

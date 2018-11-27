@@ -10,7 +10,6 @@ const _dllData = (state) => state.endpoint.process.dllList;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _processDetailsLoading = (state) => state.endpoint.process.processDetailsLoading;
 const _isProcessTreeLoading = (state) => state.endpoint.process.isProcessTreeLoading;
-const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 const _selectedProcessId = (state) => state.endpoint.process.selectedProcessId;
 const _processList = (state) => state.endpoint.process.processList;
 const _selectedProcessList = (state) => state.endpoint.process.selectedProcessList;
@@ -163,15 +162,6 @@ export const isProcessLoading = createSelector(
 );
 
 export const noProcessData = createSelector(processTree, (tree) => !tree.length);
-
-export const isJazzAgent = createSelector(
-  _hostDetails,
-  (hostDetails) => {
-    if (hostDetails && hostDetails.machineIdentity && hostDetails.machine) {
-      const { machine: { agentVersion }, machineIdentity: { agentMode } } = hostDetails;
-      return (agentVersion && agentVersion.startsWith('11.2')) && (agentMode === 'userModeOnly');
-    }
-  });
 
 const _consolidatedObjs = (listToConsolidate) => {
   let consolidatedList = [];
