@@ -1,0 +1,18 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.edrPolicy.customConfigSetting'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'customConfig'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+{{rsa-form-textarea
+  class='custom-config__textarea'
+  maxLength=4000
+  value=(readonly customConfig)
+  isError=customConfigValidator.showError
+  focusOut=(action 'handleCustomSettingChange' value='target.value')
+}}
+<div class="input-error">
+  {{#if customConfigValidator.showError}}
+    {{t customConfigValidator.errorMessage}}
+  {{/if}}
+</div>

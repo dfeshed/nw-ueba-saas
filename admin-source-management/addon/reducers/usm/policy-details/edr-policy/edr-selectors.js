@@ -25,6 +25,7 @@ export const selectedEdrPolicy = createSelector(
     const invasiveActionsSettings = [];
     const endpointServersSettings = [];
     const agentSettings = [];
+    const advancedConfigSettings = [];
 
     for (const prop in focusedPolicy) {
       if (!isBlank(focusedPolicy[prop])) {
@@ -33,6 +34,8 @@ export const selectedEdrPolicy = createSelector(
         const invActionSetting = _getInvasiveActionsSetting(prop, focusedPolicy);
         const endpointSetting = _getEndpointServerSetting(prop, focusedPolicy);
         const agentSetting = _getAgentSetting(prop, focusedPolicy);
+        const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy);
+
         if (scanSetting) {
           scanScheduleSettings.push(scanSetting);
         } else if (advScanSetting) {
@@ -43,6 +46,8 @@ export const selectedEdrPolicy = createSelector(
           endpointServersSettings.push(endpointSetting);
         } else if (agentSetting) {
           agentSettings.push(agentSetting);
+        } else if (advancedConfigSetting) {
+          advancedConfigSettings.push(advancedConfigSetting);
         }
       }
     }
@@ -74,6 +79,12 @@ export const selectedEdrPolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policyWizard.edrPolicy.agentSettings',
         props: agentSettings
+      });
+    }
+    if (advancedConfigSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.edrPolicy.advancedConfig',
+        props: advancedConfigSettings
       });
     }
     return policyDetails;
@@ -222,4 +233,14 @@ const _getAgentSetting = (prop, focusedPolicy) => {
     }
   };
   return agentSettings[prop];
+};
+
+const _getAdvancedConfigSetting = (prop, focusedPolicy) => {
+  const advancedConfigSettings = {
+    customConfig: {
+      name: 'adminUsm.policyWizard.edrPolicy.customConfigSetting',
+      value: focusedPolicy[prop]
+    }
+  };
+  return advancedConfigSettings[prop];
 };

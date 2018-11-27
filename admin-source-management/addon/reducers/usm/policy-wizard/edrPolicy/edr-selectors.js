@@ -358,6 +358,34 @@ export const selectedBeaconIntervalUnit = (state, selectedSettingId) => {
   return selected;
 };
 
+export const customConfig = (state, selectedSettingId) => {
+  return _policyWizardState(state).policy[selectedSettingId];
+};
+
+/**
+ * validates the custom config setting value
+ * returns error if value blank
+ * @public
+ */
+export const customConfigValidator = (state, selectedSettingId) => {
+  const value = customConfig(state, selectedSettingId);
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  // custom config cannot be blank
+  if (isBlank(value) || value.length > 4000) {
+    error = true;
+    enableMessage = true;
+    message = `adminUsm.policyWizard.edrPolicy.${selectedSettingId}InvalidMsg`;
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
 // ====================================================================
 // Agent settings
 // * all edr-radios so all use radioButtonOption & radioButtonValue
@@ -373,5 +401,6 @@ export const edrPolicyValidatorFnMap = {
   'primaryHttpsPort': isPortValid,
   'primaryUdpPort': isPortValid,
   'primaryHttpsBeaconInterval': beaconIntervalValueValidator,
-  'primaryUdpBeaconInterval': beaconIntervalValueValidator
+  'primaryUdpBeaconInterval': beaconIntervalValueValidator,
+  'customConfig': customConfigValidator
 };

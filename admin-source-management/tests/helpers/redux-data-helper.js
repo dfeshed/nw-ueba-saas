@@ -196,6 +196,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizCustomConfig(customConfig) {
+    _set(this.state, 'usm.policyWizard.policy.customConfig', customConfig);
+    return this;
+  }
+
   policyWizVisited(visitedFieldsArray) {
     _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
     return this;

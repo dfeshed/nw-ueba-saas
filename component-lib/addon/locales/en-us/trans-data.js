@@ -4113,7 +4113,11 @@ export default {
         agentSettings: 'Agent Settings',
         agentMode: 'Monitoring Mode',
         noMonitoring: 'No Monitoring',
-        fullMonitoring: 'Full Monitoring'
+        fullMonitoring: 'Full Monitoring',
+        advancedConfig: 'Advanced Configuration',
+        customConfigSetting: 'Setting',
+        customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
+
       },
       // windowsLog policy settings
       windowsLogPolicy: {

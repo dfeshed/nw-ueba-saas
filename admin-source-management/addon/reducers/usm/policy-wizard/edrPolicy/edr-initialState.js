@@ -40,7 +40,8 @@ export default {
     primaryUdpPort: null, // 1 to 65535
     primaryUdpBeaconInterval: null, // 30 (seconds)
     primaryUdpBeaconIntervalUnit: null, // 'SECONDS' | 'MINUTES'
-    agentMode: null // 'NO_MONITORING' | 'FULL_MONITORING'
+    agentMode: null, // 'NO_MONITORING' | 'FULL_MONITORING'
+    customConfig: null // free text
   },
 
   // define-policy-step - available settings to render the left col
@@ -71,7 +72,9 @@ export default {
     { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
     { index: 20, id: 'agentSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.agentSettings', isHeader: true, isEnabled: true },
-    { index: 21, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'FULL_MONITORING' }] }
+    { index: 21, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'FULL_MONITORING' }] },
+    { index: 22, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
+    { index: 23, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfigSetting', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]
 
 };

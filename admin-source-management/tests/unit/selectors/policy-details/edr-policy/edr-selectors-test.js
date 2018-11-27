@@ -373,7 +373,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         }
       }
     };
-    assert.expect(2);
+    assert.expect(3);
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails);
     assert.equal(policyDetails.length, 4, '4 sections returned as expected');
@@ -381,5 +381,61 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
       header: 'adminUsm.policyWizard.edrPolicy.agentSettings',
       props: []
     }), false, 'No agent settings section as expected');
+    assert.equal(policyDetails.includes({
+      header: 'adminUsm.policyWizard.edrPolicy.advancedConfigSettings',
+      props: []
+    }), false, 'No Advanced configuration settings section as expected');
+  });
+
+  test('selectedEdrPolicy has advanced config settings section', function(assert) {
+    const state = {
+      usm: {
+        policies: {
+          focusedItem: {
+            id: 'policy_003',
+            policyType: 'edrPolicy',
+            name: 'EMC Bangalore! 013',
+            description: 'EMC Bangalore 013 of policy policy_013',
+            dirty: true,
+            defaultPolicy: false,
+            lastPublishedOn: 1527489158739,
+            createdBy: 'admin',
+            createdOn: 1540318426092,
+            lastModifiedBy: 'admin',
+            lastModifiedOn: 1540318426092,
+            associatedGroups: [],
+            scanType: 'DISABLED',
+            scanStartDate: null,
+            scanStartTime: null,
+            recurrenceInterval: null,
+            recurrenceUnit: null,
+            runOnDaysOfWeek: null,
+            cpuMax: null,
+            cpuMaxVm: null,
+            downloadMbr: true,
+            requestScanOnRegistration: false,
+            blockingEnabled: false,
+            primaryAddress: '10.10.10.12',
+            primaryNwServiceId: 'id2',
+            primaryHttpsPort: 443,
+            primaryHttpsBeaconInterval: 5,
+            primaryHttpsBeaconIntervalUnit: 'MINUTES',
+            primaryUdpPort: 444,
+            primaryUdpBeaconInterval: 5,
+            primaryUdpBeaconIntervalUnit: 'SECONDS',
+            agentMode: 'FULL_MONITORING',
+            customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
+          }
+        }
+      }
+    };
+    assert.expect(3);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails);
+    assert.equal(policyDetails.length, 6, '6 sections returned as expected');
+    assert.equal(policyDetails[5].props.length, 1, '1 property returned as expected');
+    assert.equal(policyDetails[5].props[0].value,
+      '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}',
+      'property value returned as expected');
   });
 });

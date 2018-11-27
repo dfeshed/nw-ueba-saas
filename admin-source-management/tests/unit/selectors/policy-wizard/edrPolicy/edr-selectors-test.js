@@ -29,7 +29,9 @@ import {
   beaconIntervalValue,
   beaconIntervalValueValidator,
   beaconIntervalUnits,
-  selectedBeaconIntervalUnit
+  selectedBeaconIntervalUnit,
+  customConfig,
+  customConfigValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
   SCAN_SCHEDULE_CONFIG,
@@ -650,6 +652,59 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .build();
     unitActual = selectedBeaconIntervalUnit(fullState, settingId);
     assert.deepEqual(unitActual.unit, unitExpected, `${settingId}Unit is ${unitExpected}`);
+  });
+
+  test('customConfig', function(assert) {
+    const customConfigExpected = '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCustomConfig(customConfigExpected)
+      .build();
+    const resultCustomConfig = customConfig(fullState, 'customConfig');
+    assert.deepEqual(resultCustomConfig, customConfigExpected, `should return custom config ${customConfigExpected}`);
+  });
+
+  test('customConfigValidator selector', function(assert) {
+    const settingId = 'customConfig';
+    const visited = [`policy.${settingId}`];
+    // blank value not allowed
+    let customSettingValue = ' ';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCustomConfig(customSettingValue)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.edrPolicy.customConfigInvalidMsg'
+    };
+    let validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for '${customSettingValue}'`);
+
+    // value greater than 4k
+    let testSetting = '';
+    for (let index = 0; index < 110; index++) {
+      testSetting += 'the-description-is-greater-than-4000-';
+    }
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCustomConfig(testSetting)
+      .policyWizVisited(visited)
+      .build();
+    validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${testSetting}`);
+
+    // valid value
+    customSettingValue = 'foobar';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizCustomConfig(customSettingValue)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = customConfigValidator(fullState, settingId);
+    assert.deepEqual(validActual, validExpected, `${settingId} value validated as expected for ${customSettingValue}`);
   });
 
 });

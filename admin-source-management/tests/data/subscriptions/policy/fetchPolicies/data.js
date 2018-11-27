@@ -240,7 +240,8 @@ export default [
       primaryUdpPort: 444,
       primaryUdpBeaconInterval: 5,
       primaryUdpBeaconIntervalUnit: 'SECONDS',
-      agentMode: 'FULL_MONITORING'
+      agentMode: 'FULL_MONITORING',
+      customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
     },
     associatedGroups: [],
     scanType: 'DISABLED',
@@ -264,7 +265,8 @@ export default [
     primaryUdpPort: 444,
     primaryUdpBeaconInterval: 5,
     primaryUdpBeaconIntervalUnit: 'SECONDS',
-    agentMode: 'FULL_MONITORING'
+    agentMode: 'FULL_MONITORING',
+    customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
   },
   {
     id: 'policy_014',

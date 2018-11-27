@@ -108,6 +108,8 @@ const endpointServerHeaderId = 'endpointServerHeader';
 const allEndpointServerIds = ['primaryAddress', 'primaryHttpsPort', 'primaryHttpsBeaconInterval', 'primaryUdpPort', 'primaryUdpBeaconInterval'];
 const agentSettingsHeaderId = 'agentSettingsHeader';
 const allAgentSettingsIds = 'agentMode';
+const advancedConfigHeaderId = 'advancedConfigHeader';
+const allAdvancedConfigIds = 'customConfig';
 
 // run for NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
 export const buildInitialState = (state, policyType, isUpdatePolicyType = false) => {
@@ -326,6 +328,13 @@ export default reduxActions.handleActions({
       newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, agentSettingsHeaderId);
     }
 
+    const showAdvancedConfigHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allAdvancedConfigIds]);
+    if (showAdvancedConfigHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, advancedConfigHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, advancedConfigHeaderId);
+    }
+
     const newAvailableSettings = availableSettings.map((el) => {
       if (el.id === scanSchedHeaderId) {
         return _shouldShowHeaderInAvailSettings(allScanScheduleIds, selectedSettingsIds, el);
@@ -341,6 +350,9 @@ export default reduxActions.handleActions({
       }
       if (el.id === agentSettingsHeaderId) {
         return _shouldShowHeaderInAvailSettings([allAgentSettingsIds], selectedSettingsIds, el);
+      }
+      if (el.id === advancedConfigHeaderId) {
+        return _shouldShowHeaderInAvailSettings([allAdvancedConfigIds], selectedSettingsIds, el);
       }
       return el;
     });
