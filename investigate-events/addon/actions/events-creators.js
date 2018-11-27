@@ -86,7 +86,10 @@ export const eventsGetFirst = () => {
       },
       ...commonHandlers(dispatch)
     };
-    fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers);
+
+    if (state.eventResults.status !== 'streaming') {
+      fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers);
+    }
   };
 };
 
@@ -164,7 +167,9 @@ export const eventsGetMore = () => {
       ...commonHandlers(dispatch)
     };
 
-    fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers, lastSessionId);
+    if (state.eventResults.status !== 'streaming') {
+      fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers, lastSessionId);
+    }
   };
 };
 
