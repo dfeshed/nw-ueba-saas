@@ -155,8 +155,8 @@ export default Component.extend({
      * This function is called on every `input` event from the power-select's
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
-     * result, then broadcast a `select` event. Ultimately, this triggers the
-     * `onChange` action above.
+     * result (a result that accepts a pill value), then broadcast a `select`
+     * event. Ultimately, this triggers the `onChange` action above.
      * If the input string is empty, it resets the `selection`. We do this to
      * prevent the previously highlighted item from staying highlighted.
      * @private
@@ -164,7 +164,8 @@ export default Component.extend({
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
       const { options, results } = powerSelectAPI;
-      if (isSpace && results.length === 1) {
+      const operatorAcceptsValue = this._operatorAcceptsValue(options, input);
+      if (isSpace && results.length === 1 && operatorAcceptsValue) {
         this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
       } else if (input.length === 0) {
         this.set('selection', null);
@@ -242,6 +243,28 @@ export default Component.extend({
     this.get('sendMessage')(type, data);
   },
 
+  /**
+   * Used by power-select to position the dropdown.
+   * @private
+   */
+  _calculatePosition: (trigger, dropdown) => {
+    const { innerWidth } = window;
+    const { offsetWidth } = dropdown;
+    const pill = trigger.closest('.query-pill');
+    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
+    const rightEdge = left + offsetWidth;
+    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
+    const style = {
+      top: top + 34,
+      left: Math.max(0, left - offset)
+    };
+    return {
+      horizontalPosition: 'auto',
+      verticalPosition: 'auto',
+      style
+    };
+  },
+
   _createFreeFormPill() {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
@@ -287,24 +310,17 @@ export default Component.extend({
   },
 
   /**
-   * Used by power-select to position the dropdown.
+   * Helps determine if the text typed in is an operator that accepts a value,
+   * or if it's a valueless operator like "exists" and "!exists".
+   * @param {Object} operators An Array of possible operators
+   * @param {string} text The possible operator text.
+   * @return {boolean}
    * @private
    */
-  _calculatePosition: (trigger, dropdown) => {
-    const { innerWidth } = window;
-    const { offsetWidth } = dropdown;
-    const pill = trigger.closest('.query-pill');
-    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
-    const rightEdge = left + offsetWidth;
-    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
-    const style = {
-      top: top + 34,
-      left: Math.max(0, left - offset)
-    };
-    return {
-      horizontalPosition: 'auto',
-      verticalPosition: 'auto',
-      style
-    };
+  _operatorAcceptsValue(operators, text) {
+    const _text = text.trim();
+    // find operator given the supplied text
+    const operator = operators.find((d) => d.displayName === _text);
+    return operator ? operator.hasValue : false;
   }
 });

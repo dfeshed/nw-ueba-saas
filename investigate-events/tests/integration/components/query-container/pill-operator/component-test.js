@@ -266,13 +266,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
-    // We go back to old-skool jQuery for this because fillIn() performs a focus
-    // event on the input every time you call it which causes the search to
-    // clear out. PowerSelect test helper typeInSearch() ends up just calling
-    // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
-    // so the input handler doesn't get a down-selected list of meta options.
-    this.$(PILL_SELECTORS.operatorSelectInput).val('=').trigger('input');
-    this.$(PILL_SELECTORS.operatorSelectInput).val(' ').trigger('input');
+    await typeInSearch('=');
+    await typeInSearch('= ');
   });
 
   test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
