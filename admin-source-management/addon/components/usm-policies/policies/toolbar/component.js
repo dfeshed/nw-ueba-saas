@@ -1,6 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { success, failure } from 'admin-source-management/utils/flash-messages';
+import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
 
 import {
   hasSelectedEditItem,
@@ -32,6 +34,22 @@ const dispatchToActions = {
 
 const UsmPoliciesToolbar = Component.extend({
   classNames: ['usm-policies-toolbar'],
+  accessControl: service(),
+
+  @computed('hasSelectedEditItem', 'accessControl.canManageSourceServerPolicies')
+  cannotEditPolicies(hasSelectedEditItem, canManageSourceServerPolicies) {
+    return !hasSelectedEditItem || !canManageSourceServerPolicies;
+  },
+
+  @computed('hasSelectedDeleteItems', 'accessControl.canManageSourceServerPolicies')
+  cannotDeletePolicies(hasSelectedDeleteItems, canManageSourceServerPolicies) {
+    return !hasSelectedDeleteItems || !canManageSourceServerPolicies;
+  },
+
+  @computed('hasSelectedPublishItems', 'accessControl.canManageSourceServerPolicies')
+  cannotPublishPolicies(hasSelectedPublishItems, canManageSourceServerPolicies) {
+    return !hasSelectedPublishItems || !canManageSourceServerPolicies;
+  },
 
   actions: {
 

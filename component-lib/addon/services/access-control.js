@@ -219,10 +219,29 @@ export default Service.extend({
     return this._hasPermission(roles, 'content-server.logparser');
   },
 
-
   @computed('roles.[]')
   canManageLogParsers(roles) {
     return this._hasPermission(roles, 'content-server.logparser.manage');
+  },
+
+  @computed('roles.[]')
+  hasSourceServerGroupAccess(roles) {
+    return this._hasPermission(roles, 'source-server.group');
+  },
+
+  @computed('roles.[]')
+  canManageSourceServerGroups(roles) {
+    return this._hasPermission(roles, 'source-server.group.manage');
+  },
+
+  @computed('roles.[]')
+  hasSourceServerPolicyAccess(roles) {
+    return this._hasPermission(roles, 'source-server.policy');
+  },
+
+  @computed('roles.[]')
+  canManageSourceServerPolicies(roles) {
+    return this._hasPermission(roles, 'source-server.policy.manage');
   },
 
   // End Configure Permissions

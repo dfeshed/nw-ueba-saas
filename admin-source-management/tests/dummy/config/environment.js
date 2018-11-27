@@ -77,7 +77,8 @@ module.exports = function(environment) {
       'viewUnifiedSources',
       'accessHealthWellness',
       'manageSystemSettings',
-      'manageSASecurity'
+      'manageSASecurity',
+      'source-server.*'
     ];
   }
 
@@ -97,7 +98,8 @@ module.exports = function(environment) {
       'viewUnifiedSources',
       'accessHealthWellness',
       'manageSystemSettings',
-      'manageSASecurity'
+      'manageSASecurity',
+      'source-server.*'
     ];
   }
 

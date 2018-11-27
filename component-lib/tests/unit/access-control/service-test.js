@@ -252,6 +252,46 @@ module('Unit | Service | access control', function(hooks) {
     assert.equal(service.get('canManageLogParsers'), true);
   });
 
+  test('hasSourceServerGroupAccess is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    service.set('roles', []);
+    assert.equal(service.get('hasSourceServerGroupAccess'), false);
+    service.set('roles', ['source-server.group.read']);
+    assert.equal(service.get('hasSourceServerGroupAccess'), true);
+    service.set('roles', ['source-server.group.manage']);
+    assert.equal(service.get('hasSourceServerGroupAccess'), true);
+  });
+
+  test('canManageSourceServerGroups is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    service.set('roles', []);
+    assert.equal(service.get('canManageSourceServerGroups'), false);
+    service.set('roles', ['source-server.group.read']);
+    assert.equal(service.get('canManageSourceServerGroups'), false);
+    service.set('roles', ['source-server.group.manage']);
+    assert.equal(service.get('canManageSourceServerGroups'), true);
+  });
+
+  test('hasSourceServerPolicyAccess is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    service.set('roles', []);
+    assert.equal(service.get('hasSourceServerPolicyAccess'), false);
+    service.set('roles', ['source-server.policy.read']);
+    assert.equal(service.get('hasSourceServerPolicyAccess'), true);
+    service.set('roles', ['source-server.policy.manage']);
+    assert.equal(service.get('hasSourceServerPolicyAccess'), true);
+  });
+
+  test('canManageSourceServerPolicies is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    service.set('roles', []);
+    assert.equal(service.get('canManageSourceServerPolicies'), false);
+    service.set('roles', ['source-server.policy.read']);
+    assert.equal(service.get('canManageSourceServerPolicies'), false);
+    service.set('roles', ['source-server.policy.manage']);
+    assert.equal(service.get('canManageSourceServerPolicies'), true);
+  });
+
   test('hasAdminAccess is set when required roles are included', function(assert) {
     const service = this.owner.lookup('service:access-control');
     assert.equal(service.get('hasAdminAccess'), false);

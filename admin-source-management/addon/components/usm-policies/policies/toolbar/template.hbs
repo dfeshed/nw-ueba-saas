@@ -1,7 +1,8 @@
 <hbox>
   <div class="action-control policies-create-new-button">
     {{#link-to 'policy-wizard' 'create-new'}}
-      {{#rsa-form-button}}
+      {{#rsa-form-button
+      isDisabled=(not accessControl.canManageSourceServerPolicies)}}
         {{rsa-icon size='small' name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
       {{/rsa-form-button}}
     {{/link-to}}
@@ -11,7 +12,7 @@
       title=(t 'adminUsm.policies.modals.publishPolicies.title')
       confirmationMessage=(t 'adminUsm.policies.modals.publishPolicies.confirm' numItems=selectedPublishItems.length)
       confirmButtonLabel=(t 'adminUsm.policies.modals.publishPolicies.ok')
-      isDisabled=(not hasSelectedPublishItems)
+      isDisabled=cannotPublishPolicies
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handlePublishPolicies')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
@@ -23,7 +24,7 @@
       confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
       confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
       confirmButtonStyle='danger'
-      isDisabled=(not hasSelectedDeleteItems)
+      isDisabled=cannotDeletePolicies
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handleDeletePolicies')}}
       {{t 'adminUsm.button.delete'}}
@@ -32,7 +33,7 @@
   <div class="action-control policies-edit-button">
     {{#link-to 'policy-wizard' selectedEditItem}}
       {{#rsa-form-button
-        isDisabled=(not hasSelectedEditItem)}}
+        isDisabled=cannotEditPolicies}}
         {{t 'adminUsm.button.edit'}}
       {{/rsa-form-button}}
     {{/link-to}}

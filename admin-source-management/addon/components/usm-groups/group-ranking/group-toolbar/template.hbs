@@ -40,7 +40,7 @@
     class='publish-button'
     style='primary'
     defaultAction=(action 'handleSaveRanking')
-    isDisabled=(not hasGroupRankingChanged)
+    isDisabled=cannotPublishRanking
   }}
     {{t 'adminUsm.groupWizard.publishRanking'}}
   {{/rsa-form-button}}

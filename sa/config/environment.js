@@ -116,6 +116,7 @@ module.exports = function(environment) {
       'respond-server.*',
       'integration-server.*',
       'content-server.*',
+      'source-server.*',
       'endpoint-server.machine.read'
     ];
 
@@ -145,6 +146,7 @@ module.exports = function(environment) {
       'respond-server.*',
       'integration-server.*',
       'content-server.*',
+      'source-server.*',
       'endpoint-server.machine.read'
     ];
 

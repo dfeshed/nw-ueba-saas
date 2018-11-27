@@ -32,7 +32,12 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['group-wizard-toolbar'],
   i18n: inject(),
+  accessControl: inject(),
 
+  @computed('hasGroupRankingChanged', 'accessControl.canManageSourceServerGroups')
+  cannotPublishRanking(hasGroupRankingChanged, canManageSourceServerGroups) {
+    return !hasGroupRankingChanged || !canManageSourceServerGroups;
+  },
   // step object required to be passed in
   step: undefined,
   // closure action required to be passed in

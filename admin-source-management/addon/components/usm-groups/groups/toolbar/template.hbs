@@ -1,7 +1,8 @@
 <hbox>
   <div class="action-control groups-create-new-button">
     {{#link-to 'group-wizard' 'create-new'}}
-      {{#rsa-form-button}}
+      {{#rsa-form-button
+        isDisabled=(not accessControl.canManageSourceServerGroups)}}
         {{rsa-icon size='small' name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
       {{/rsa-form-button}}
     {{/link-to}}
@@ -11,7 +12,7 @@
       title=(t 'adminUsm.groups.modals.publishGroups.title')
       confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=selectedPublishItems.length)
       confirmButtonLabel=(t 'adminUsm.groups.modals.publishGroups.ok')
-      isDisabled=(not hasSelectedPublishItems)
+      isDisabled=cannotPublishGroups
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handlePublishGroups')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
@@ -23,7 +24,7 @@
       confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=selectedDeleteItems.length)
       confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
       confirmButtonStyle='danger'
-      isDisabled=(not hasSelectedDeleteItems)
+      isDisabled=cannotDeleteGroups
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handleDeleteGroups')}}
       {{t 'adminUsm.button.delete'}}
@@ -32,7 +33,7 @@
   <div class="action-control groups-edit-button">
     {{#link-to 'group-wizard' selectedEditItem}}
       {{#rsa-form-button
-        isDisabled=(not hasSelectedEditItem)}}
+        isDisabled=cannotEditGroups}}
         {{t 'adminUsm.button.edit'}}
       {{/rsa-form-button}}
     {{/link-to}}
