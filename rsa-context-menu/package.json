@@ -64,7 +64,7 @@
     "ember-sinon": "2.2.0"
   },
   "engines": {
-    "node": "8.12.0"
+    "node": "10.13.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
