@@ -113,8 +113,10 @@ export default Route.extend({
 
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {
+    const redux = this.get('redux');
     const request = lookup('service:request');
-    this.get('redux').dispatch(userLeftListPage());
+    redux.dispatch(userLeftListPage());
+    redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
     request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
     this.set('contextualHelp.topic', null);
   }
