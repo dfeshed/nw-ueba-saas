@@ -170,7 +170,7 @@
   .tree-expand-icon {
     cursor: pointer;
     font-size: 10px;
-    padding-right: rsa-whitespace();
+    padding-right: rsa-whitespace(less);
     i {
       transform: rotate(630deg);
     }

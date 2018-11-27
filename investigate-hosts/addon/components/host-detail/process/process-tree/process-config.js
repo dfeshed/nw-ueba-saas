@@ -11,13 +11,13 @@ export default [
   {
     field: 'name',
     dataType: 'tree-column',
-    width: '22vw',
+    width: '18vw',
     title: 'investigateHosts.process.processName',
     componentClass: 'host-detail/process/process-tree/tree-name'
   },
   {
     field: 'pid',
-    width: '5vw',
+    width: '4vw',
     title: 'investigateHosts.process.pid'
   },
   {
@@ -27,12 +27,12 @@ export default [
   },
   {
     field: 'fileStatus',
-    width: '10vw',
+    width: '5vw',
     title: 'investigateHosts.process.fileStatus'
   },
   {
     field: 'reputationStatus',
-    width: '10vw',
+    width: '8vw',
     title: 'investigateHosts.process.reputationStatus'
   },
   {

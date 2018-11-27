@@ -107,7 +107,7 @@
     }
     .rsa-form-button {
       height: 32px;
-      width: 151px;
+      width: 130px;
     }
     .rsa-loader {
       float: left;
@@ -115,6 +115,9 @@
   }
   .ember-basic-dropdown-trigger {
     min-width: 160px;
+  }
+  .host-start-scan-button {
+    padding-left: rsa-whitespace(less);
   }
 }
 

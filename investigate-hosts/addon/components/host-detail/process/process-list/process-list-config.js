@@ -17,7 +17,7 @@ export default [
   },
   {
     field: 'pid',
-    width: '6vw',
+    width: '4vw',
     title: 'investigateHosts.process.pid',
     isDescending: false
   },
@@ -29,13 +29,13 @@ export default [
   },
   {
     field: 'fileStatus',
-    width: '10vw',
+    width: '5vw',
     title: 'investigateHosts.process.fileStatus',
     isDescending: false
   },
   {
     field: 'reputationStatus',
-    width: '10vw',
+    width: '8vw',
     title: 'investigateHosts.process.reputationStatus',
     isDescending: false
   },
