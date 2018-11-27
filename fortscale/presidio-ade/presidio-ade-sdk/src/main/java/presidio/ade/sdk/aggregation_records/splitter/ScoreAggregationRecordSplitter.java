@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import org.apache.commons.lang3.Validate;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors.Contributor;
 
@@ -46,7 +45,7 @@ public class ScoreAggregationRecordSplitter {
                 // Reduce the <tuple, contribution ratio> entries according to the split field names.
                 .collect(Collectors.toMap(
                         // Key mapper: Leave only the split field names and values.
-                        entry -> buildSplitFieldNameToValueMap(splitFieldNames, entry.getKey()),
+                        entry -> reduceToSplitContexts(splitFieldNames, entry.getKey()),
                         // Value mapper: Leave the contribution ratio as is.
                         Entry::getValue,
                         // Merge function: Sum all the contribution ratios that fall under the same reduced key.
@@ -63,17 +62,13 @@ public class ScoreAggregationRecordSplitter {
     }
 
     private FeatureBucket getFeatureBucket(ScoreAggregationRecordDetails scoreAggregationRecordDetails) {
-        List<FeatureBucket> featureBuckets = inMemoryFeatureBucketAggregator.aggregate(
+        return inMemoryFeatureBucketAggregator.createFeatureBucket(
                 scoredRecordPageIteratorFactoryService.getScoredRecordPageIterator(scoreAggregationRecordDetails),
                 scoreAggregationRecordDetails.getFeatureBucketConfName(),
                 scoreAggregationRecordDetails.getFeatureBucketStrategyData());
-        Validate.isTrue(
-                featureBuckets.size() == 1,
-                "Score aggregation records built from more than one feature bucket are not supported.");
-        return featureBuckets.get(0);
     }
 
-    private static MultiKeyFeature buildSplitFieldNameToValueMap(
+    private static MultiKeyFeature reduceToSplitContexts(
             List<String> splitFieldNames, MultiKeyFeature contextFieldNameToValueMap) {
 
         MultiKeyFeature splitFieldNameToValueMap = new MultiKeyFeature();

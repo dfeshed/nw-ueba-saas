@@ -34,7 +34,8 @@ import presidio.output.processor.services.alert.supportinginformation.historical
         AggrFeatureFuncServiceConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
         AccumulationsCacheConfig.class,
-        AggregationRecordsCreatorMetricsContainerConfig.class
+        AggregationRecordsCreatorMetricsContainerConfig.class,
+        InMemoryFeatureBucketAggregatorConfig.class
 })
 public class HistoricalDataFetcherConfig {
     @Autowired

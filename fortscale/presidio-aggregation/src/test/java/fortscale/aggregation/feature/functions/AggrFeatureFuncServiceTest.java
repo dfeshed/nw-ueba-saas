@@ -1070,28 +1070,27 @@ public class AggrFeatureFuncServiceTest {
         aggregatedFeatureNamesList.add(aggregatedFeatureName);
         Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
         aggregatedFeatureNamesMap.put("dummyFunctionArgument", aggregatedFeatureNamesList);
-
         JSONObject params = new JSONObject();
         params.put("dummyFunctionParam", 42);
         JSONObject dummyFunction = new JSONObject();
         dummyFunction.put("type", "unknownFunctionType");
         dummyFunction.put("params", params);
-
-        AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf(
-                "testAggregatedFeatureEvent",
-                "aggregated_feature_event_type_F",
-                "testBucketConf",
-                3, 1,
-                aggregatedFeatureNamesMap,
-                dummyFunction);
-
-        Map<String, Feature> aggregatedFeatureMap = AggrFeatureTestUtils.createFeatureMap(
-                new ImmutablePair<String, Object>(aggregatedFeatureName, -1)
-        );
+        AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf("testAggregatedFeatureEvent",
+                "aggregated_feature_event_type_F", "testBucketConf", 3, 1, aggregatedFeatureNamesMap, dummyFunction);
+        ImmutablePair<String, Object> immutablePair = new ImmutablePair<>(aggregatedFeatureName, -1);
+        @SuppressWarnings("unchecked")
+        Map<String, Feature> aggregatedFeatureMap = AggrFeatureTestUtils.createFeatureMap(immutablePair);
         List<Map<String, Feature>> listOfAggregatedFeatureMaps = new ArrayList<>();
         listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
+        boolean exceptionThrown = false;
 
-        Assert.assertNull(funcService.calculateAggrFeature(conf, listOfAggregatedFeatureMaps));
+        try {
+            funcService.calculateAggrFeature(conf, listOfAggregatedFeatureMaps);
+        } catch (IllegalArgumentException e) {
+            exceptionThrown = true;
+        }
+
+        Assert.assertTrue(exceptionThrown);
         Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
     }
 

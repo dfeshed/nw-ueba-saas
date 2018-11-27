@@ -18,14 +18,14 @@ import java.util.Set;
 /**
  * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
  * Such a mapping (of type MultiKeyHistogram) is created by AggrFeatureMultiKeyToMaxFunc.
- * First {@link AbstractAggrFeatureEventFeatureToMaxFunc} is used in order to aggregate multiple buckets
- * (refer to its documentation to learn more).
+ * First {@link AbstractAggrFeatureEventFeatureToMaxFunc} is used in order to aggregate multiple buckets (refer to its
+ * documentation to learn more).
  * Then, all of the values or filtered values by keys are summed up in order to create a new aggregated feature.
- * <p>
+ *
  * Example:
  * Suppose a user accesses several machines many times, and each machine access gets some score.
  * This class can be used in order to know the sum of the maximal score each machine got.
- * <p>
+ *
  * Parameters this class gets from the ASL:
  * 1. pick: refer to {@link AbstractAggrFeatureEventFeatureToMaxFunc}'s documentation to learn more.
  */
@@ -37,8 +37,9 @@ import java.util.Set;
         setterVisibility = Visibility.NONE
 )
 public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatureEventFeatureToMaxFunc {
-    public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_values_max_sum_func";
+    public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_values_max_sum_func";
     public static final String KEY_FIELD_NAME = "keys";
+
     private Set<MultiKeyFeature> keys;
 
     public AggrFeatureEventMultiKeyValuesMaxSumFunc() {
@@ -58,11 +59,11 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
         double sum = 0;
         Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
 
-        //sum all if no keys were defined
         if (keys.isEmpty()) {
+            // Sum all if no keys were defined.
             sum = histogram.values().stream().mapToDouble(Double::doubleValue).sum();
         } else {
-            //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
+            // Sum all max values of histogram, that contain one of the keys (e.g. operationType = FILE_OPENED).
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
                     if (multiKeyRecordEntry.getKey().contains(key)) {
@@ -78,12 +79,11 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
     }
 
     @Override
-    public MultiKeyHistogram calculateContributionRatios(AggregatedFeatureEventConf aggregatedFeatureEventConf,
-                                                         FeatureBucket featureBucket) {
-        // Assume aggregation records are built from exactly one aggregated feature.
-        String aggregatedFeatureName = aggregatedFeatureEventConf
-                .getAggregatedFeatureNamesMap().get(PICK_FIELD_NAME).get(0);
-        // Extract that aggregated feature from the feature bucket.
+    public MultiKeyHistogram calculateContributionRatios(
+            AggregatedFeatureEventConf aggregatedFeatureEventConf, FeatureBucket featureBucket) {
+
+        // Extract the aggregated feature from the feature bucket.
+        String aggregatedFeatureName = getNameOfAggregatedFeatureToPick(aggregatedFeatureEventConf);
         MultiKeyHistogram contextToMaxValueMap = (MultiKeyHistogram)featureBucket
                 .getAggregatedFeatures().get(aggregatedFeatureName).getValue();
         // Calculate the sum of the max values.

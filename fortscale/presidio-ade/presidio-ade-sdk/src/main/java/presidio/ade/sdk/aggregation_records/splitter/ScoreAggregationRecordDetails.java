@@ -5,10 +5,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunction;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.Validate;
 import presidio.ade.domain.record.AdeAggregationReader;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -17,7 +19,6 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ScoreAggregationRecordDetails {
@@ -43,8 +44,10 @@ public class ScoreAggregationRecordDetails {
         AdeAggregationReader adeAggregationReader = (AdeAggregationReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecord);
         FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
         featureBucketConfName = featureBucketConf.getName();
-        // Assume the feature buckets are built from exactly one scored record ADE event type.
-        scoredRecordAdeEventType = featureBucketConf.getAdeEventTypes().get(0);
+        List<String> adeEventTypes = featureBucketConf.getAdeEventTypes();
+        String message = "Feature buckets built from more than one scored record ADE event type are not supported.";
+        Validate.isTrue(adeEventTypes.size() == 1, message);
+        scoredRecordAdeEventType = adeEventTypes.get(0);
         List<String> contextFieldNames = featureBucketConf.getContextFieldNames();
         String strategyName = featureBucketConf.getStrategyName();
         scoredRecordClass = resolveScoredRecordClass(scoredRecordAdeEventType);
@@ -54,7 +57,8 @@ public class ScoreAggregationRecordDetails {
             contextFieldNameToValueMap.add(contextFieldName, contextFieldValue);
         });
         featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
-        aggrFeatureEventFunction = deserializeAggrFeatureEventFunction(aggregatedFeatureEventConf);
+        JSONObject jsonObject = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
+        aggrFeatureEventFunction = AggrFeatureFuncService.deserializeAggrFeatureEventFunction(jsonObject);
     }
 
     public TimeRange getTimeRange() {
@@ -102,17 +106,6 @@ public class ScoreAggregationRecordDetails {
         } else {
             String s = String.format("Scored record ADE event type %s is not supported.", scoredRecordAdeEventType);
             throw new IllegalArgumentException(s);
-        }
-    }
-
-    private static IAggrFeatureEventFunction deserializeAggrFeatureEventFunction(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
-        String jsonString = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction().toJSONString();
-
-        try {
-            return objectMapper.readValue(jsonString, IAggrFeatureEventFunction.class);
-        } catch (IOException e) {
-            String message = String.format("Failed to deserialize aggregated feature event function %s.", jsonString);
-            throw new IllegalArgumentException(message, e);
         }
     }
 }

@@ -26,8 +26,7 @@ import presidio.output.processor.services.alert.supportinginformation.transforme
 @Import({
         EventPersistencyServiceConfig.class,
         AdeManagerSdkConfig.class,
-        HistoricalDataFetcherConfig.class,
-        InMemoryFeatureBucketAggregatorConfig.class
+        HistoricalDataFetcherConfig.class
 })
 public class SupportingInformationServiceConfig extends ApplicationConfiguration {
     @Autowired
