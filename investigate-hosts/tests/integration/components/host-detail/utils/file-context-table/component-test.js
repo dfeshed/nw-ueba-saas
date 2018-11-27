@@ -171,9 +171,10 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    assert.equal(findAll('.rsa-data-table-body-row:nth-child(1).is-selected').length, 0, 'Row is not selected');
-    await click('.rsa-data-table-body-row:nth-child(1)');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-child(1).is-selected').length, 1, 'Row is not selected');
+
+    assert.equal(findAll('.rsa-data-table-body-row:nth-child(1).is-selected').length, 1, 'First row is selected by default');
+    await click('.rsa-data-table-body-row:nth-child(2)');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-child(2).is-selected').length, 1, 'Second row is selected');
   });
 
 

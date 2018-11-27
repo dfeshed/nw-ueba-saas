@@ -82,6 +82,8 @@ const FileContextTable = Component.extend({
 
   showResetScoreModal: false,
 
+  selectedIndex: 0,
+
   _isAlreadySelected(selections, item) {
     let selected = false;
     if (selections && selections.length) {
