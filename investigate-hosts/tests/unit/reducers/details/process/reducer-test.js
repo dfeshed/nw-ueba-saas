@@ -23,7 +23,8 @@ module('Unit | Reducers | process', function() {
     isProcessTreeLoading: false,
     selectedRowIndex: null,
     selectedProcessList: [],
-    selectedDllItem: null
+    selectedDllItem: null,
+    selectedDllRowIndex: -1
 
   });
 
@@ -196,5 +197,15 @@ module('Unit | Reducers | process', function() {
       { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_ROW, payload: { id: 'test' } }
     );
     assert.deepEqual(result.selectedDllItem.id, 'test');
+  });
+  test('The SET_PROCESS_DLL_ROW_ID sets the selectedRow', function(assert) {
+    const previous = Immutable.from({
+      selectedDllItem: null
+    });
+    const result = reducer(
+      previous,
+      { type: ACTION_TYPES.SET_PROCESS_DLL_ROW_ID, payload: 1 }
+    );
+    assert.deepEqual(result.selectedDllRowIndex, 1);
   });
 });

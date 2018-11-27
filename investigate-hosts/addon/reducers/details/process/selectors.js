@@ -203,11 +203,13 @@ export const imageHooksData = createSelector(
         return filteredHooks.map((hookObj) => {
           const { type, hookLocation: { fileName: hookFileName, symbol } } = hookObj;
           return {
+            ...item,
             signature,
             dllFileName,
             type,
             hookFileName,
-            symbol
+            symbol,
+            fileProperties
           };
         });
       });

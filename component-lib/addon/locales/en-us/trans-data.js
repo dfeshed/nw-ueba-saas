@@ -2498,7 +2498,7 @@ export default {
     process: {
       title: 'Processes',
       processName: 'Process Name',
-      properties: 'Process Properties',
+      properties: 'Details',
       pid: 'PID',
       parentId: 'PPID',
       owner: 'Owner',
@@ -2528,13 +2528,13 @@ export default {
       dll: {
         dllName: 'DLL Name',
         filePath: 'File Path',
-        title: 'Loaded Libraries',
+        title: 'Loaded Libraries ({{count}})',
         message: {
           noResultsMessage: 'No loaded library information was found'
         },
         note: {
-          windows: 'Note: Displays libraries that are not signed by Microsoft',
-          mac: 'Note: Displays libraries that are not signed by Apple.'
+          windows: ' Displays libraries that are not signed by Microsoft',
+          mac: ' Displays libraries that are not signed by Apple.'
         }
       },
       suspiciousThreads: {
@@ -2543,7 +2543,7 @@ export default {
         dllFileName: 'DLL Name',
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
-        title: 'Suspicious Threads',
+        title: 'Suspicious Threads ({{count}})',
         message: {
           noResultsMessage: 'No Suspicious Thread information was found.'
         }
@@ -2554,7 +2554,7 @@ export default {
         dllFileName: 'DLL Name',
         hookFileName: 'Hooked FileName',
         symbol: 'Symbol',
-        title: 'Image Hooks',
+        title: 'Image Hooks ({{count}})',
         message: {
           noResultsMessage: 'No Image Hooks information was found.'
         }

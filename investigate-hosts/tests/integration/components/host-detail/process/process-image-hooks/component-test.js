@@ -54,7 +54,7 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
   });
   test('row click of Image hooks table', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
     this.set('openProperties', function() {
       assert.ok(true);
@@ -62,9 +62,9 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     await render(hbs`{{host-detail/process/process-image-hooks openProperties=openProperties}}`);
     await click(findAll('.process-image-hooks-list .rsa-data-table-body-row')[0]);
     const state = this.owner.lookup('service:redux').getState();
-    const selectedImageHook = state.endpoint.process.selectedDllItem;
-    assert.equal(selectedImageHook.hookFileName, 'gobject-2.0.dll', 'Shows 1 row selected');
-
-
+    const { endpoint: { process: { selectedDllItem } } } = state;
+    const { endpoint: { process: { selectedDllRowIndex } } } = state;
+    assert.equal(selectedDllItem.hookFileName, 'gobject-2.0.dll', 'Shows 1 row selected');
+    assert.equal(selectedDllRowIndex, 0, 'selected row index updated in the state');
   });
 });

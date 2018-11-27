@@ -55,7 +55,24 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     assert.equal(findAll('.host-process-details').length, 1, 'process details page rendered');
     assert.equal(findAll('.host-process-details-action-bar').length, 1, 'process details action bar should rendered');
     assert.equal(findAll('.process-content-box').length, 1, 'summary panel should rendered');
-    assert.equal(findAll('.process-content-box__accordion-content').length, 3, 'Accordians should render');
+    assert.equal(findAll('.process-content-box__accordion-content').length, 3, 'Accordions should render');
+  });
+  test('process-details accordions expand test', async function(assert) {
+    new ReduxDataHelper(initState)
+      .agentId(1)
+      .dllList(dllListData)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .machineOSType('windows')
+      .processDetails(data)
+      .build();
+
+    await render(hbs`{{host-detail/process/process-details}}`);
+    assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 3, 'On render all accordions should collapsed');
+    await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
+    assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 2, 'On click only one accordion should expand');
   });
   test('Property panel on process-details', async function(assert) {
     new ReduxDataHelper(initState)

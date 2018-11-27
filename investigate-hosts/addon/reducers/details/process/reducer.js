@@ -16,12 +16,15 @@ const initialState = Immutable.from({
   isProcessTreeLoading: false,
   selectedProcessList: [],
   selectedRowIndex: null,
-  selectedDllItem: null
+  selectedDllItem: null,
+  selectedDllRowIndex: -1
 });
 
 const processReducer = handleActions({
 
   [ACTION_TYPES.RESET_HOST_DETAILS]: (state) => state.merge(initialState),
+
+  [ACTION_TYPES.SET_PROCESS_DLL_ROW_ID]: (state, action) => state.set('selectedDllRowIndex', action.payload),
 
   [ACTION_TYPES.RESET_PROCESS_LIST]: (state) => state.set('processList', null),
 

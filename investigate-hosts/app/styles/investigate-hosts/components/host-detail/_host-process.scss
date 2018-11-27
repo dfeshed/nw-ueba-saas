@@ -88,6 +88,7 @@
   overflow-y: auto;
   .process-content-box-wrapper{
     padding: rsa-whitespace() rsa-whitespace(more);
+    padding-top: 0;
     position: absolute;
     max-width: 100%;
     .value hbox{

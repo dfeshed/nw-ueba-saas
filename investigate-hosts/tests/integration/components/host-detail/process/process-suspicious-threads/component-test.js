@@ -61,7 +61,9 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
     await render(hbs`{{host-detail/process/process-suspicious-threads openProperties=openProperties}}`);
     await click(findAll('.process-suspicious-threads-list .rsa-data-table-body-row')[0]);
     const state = this.owner.lookup('service:redux').getState();
-    const dllFile = state.endpoint.process.selectedDllItem;
-    assert.equal(dllFile.dllFileName, 'gmodule-2.0.dll', 'Shows 1 row selected');
+    const { endpoint: { process: { selectedDllItem } } } = state;
+    const { endpoint: { process: { selectedDllRowIndex } } } = state;
+    assert.equal(selectedDllItem.dllFileName, 'gmodule-2.0.dll', 'Shows 1 row selected');
+    assert.equal(selectedDllRowIndex, 0, 'selected row index updated in the state');
   });
 });

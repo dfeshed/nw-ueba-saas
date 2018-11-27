@@ -4,11 +4,19 @@ import CONFIG from '../process-property-config';
 import {
   getProcessData,
   isProcessLoading,
-  noProcessData } from 'investigate-hosts/reducers/details/process/selectors';
+  noProcessData,
+  enrichedDllData,
+  imageHooksData,
+  suspiciousThreadsData } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import summaryItems from '../summary-item-config';
+import { setDllRowSelectedId } from 'investigate-hosts/actions/data-creators/process';
+
+const dispatchToActions = {
+  setDllRowSelectedId
+};
 
 const stateToComputed = (state) => ({
   process: getProcessData(state),
@@ -16,7 +24,10 @@ const stateToComputed = (state) => ({
   summaryConfig: getColumnsConfig(state, summaryItems),
   isProcessLoading: isProcessLoading(state),
   isProcessDataEmpty: noProcessData(state),
-  isMachineWindows: isMachineWindows(state)
+  isMachineWindows: isMachineWindows(state),
+  dllList: enrichedDllData(state),
+  hookList: imageHooksData(state),
+  threadList: suspiciousThreadsData(state)
 });
 
 const ProcessDetails = Component.extend({
@@ -27,6 +38,8 @@ const ProcessDetails = Component.extend({
 
   propertyConfig: CONFIG,
 
+  selectedAccordion: '',
+
   @computed('process')
   loadedDLLNote({ machineOsType }) {
     if (machineOsType && machineOsType !== 'linux') {
@@ -35,7 +48,13 @@ const ProcessDetails = Component.extend({
     } else {
       return '';
     }
+  },
+  actions: {
+    selectAccordion(accordion) {
+      this.set('selectedAccordion', accordion);
+      this.send('setDllRowSelectedId', -1);
+    }
   }
 });
 
-export default connect(stateToComputed)(ProcessDetails);
+export default connect(stateToComputed, dispatchToActions)(ProcessDetails);

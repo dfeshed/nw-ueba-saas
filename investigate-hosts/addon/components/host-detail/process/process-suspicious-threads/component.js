@@ -3,14 +3,16 @@ import { connect } from 'ember-redux';
 import { suspiciousThreadsData } from 'investigate-hosts/reducers/details/process/selectors';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './process-suspicious-threads-columns';
-import { toggleSelectedProcessDllRow } from 'investigate-hosts/actions/data-creators/process';
+import { toggleSelectedProcessDllRow, setDllRowSelectedId } from 'investigate-hosts/actions/data-creators/process';
 
 const dispatchToActions = {
-  toggleSelectedProcessDllRow
+  toggleSelectedProcessDllRow,
+  setDllRowSelectedId
 };
 const stateToComputed = (state) => ({
   threadList: suspiciousThreadsData(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig)
+  columnsConfig: getColumnsConfig(state, columnsConfig),
+  selectedIndex: state.endpoint.process.selectedDllRowIndex
 });
 
 const suspiciousThreads = Component.extend({
@@ -20,10 +22,11 @@ const suspiciousThreads = Component.extend({
   classNames: ['process-suspicious-threads-list'],
 
   actions: {
-    toggleSelectedRow(item, index, e, table) {
-      table.set('selectedIndex', index);
+    toggleSelectedRow(item, index, e) {
       this.send('toggleSelectedProcessDllRow', item);
+      this.send('setDllRowSelectedId', index);
       this.openProperties();
+      e.stopPropagation();
     }
   }
 });

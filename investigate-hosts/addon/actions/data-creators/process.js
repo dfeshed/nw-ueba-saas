@@ -28,6 +28,8 @@ const toggleProcessDetailsView = (item) => {
 
 const toggleSelectedProcessDllRow = (item) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_ROW, payload: item });
 
+const setDllRowSelectedId = (rowId) => ({ type: ACTION_TYPES.SET_PROCESS_DLL_ROW_ID, payload: rowId });
+
 const _getList = () => {
   return (dispatch, getState) => {
     const { sortField: key, isDescOrder: descending } = getState().endpoint.process;
@@ -133,5 +135,6 @@ export {
   deSelectAllProcess,
   setRowIndex,
   toggleProcessDetailsView,
-  toggleSelectedProcessDllRow
+  toggleSelectedProcessDllRow,
+  setDllRowSelectedId
 };
