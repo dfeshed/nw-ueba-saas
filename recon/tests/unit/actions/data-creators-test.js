@@ -1,20 +1,20 @@
 import { module, test } from 'qunit';
-import * as dataCreators from 'recon/actions/data-creators';
 import ACTION_TYPES from 'recon/actions/types';
 import { patchSocket } from '../../helpers/patch-socket';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import sinon from 'sinon';
+import * as DataCreators from 'recon/actions/data-creators';
 import Immutable from 'seamless-immutable';
 
-const { _cookieStore } = dataCreators;
+const { _cookieStore } = DataCreators;
 
 module('Unit | Actions | Data Creators', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
     initialize(this.owner);
-    dataCreators._authCookie.reconPrefInitialized = false;
+    DataCreators._authCookie.reconPrefInitialized = false;
     _cookieStore.persist({
       authenticated: {}
     });
@@ -22,7 +22,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
 
   hooks.afterEach(function() {
     _cookieStore.clear();
-    dataCreators._authCookie.reconPrefInitialized = false;
+    DataCreators._authCookie.reconPrefInitialized = false;
   });
 
   const getState = () => {
@@ -36,7 +36,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
   test('test if preferences are initialized for the first time after login', function(assert) {
     const done = assert.async();
     assert.expect(3);
-    const callback = dataCreators.determineReconView([]);
+    const callback = DataCreators.determineReconView([]);
     assert.equal(typeof callback, 'function');
     patchSocket((method, modelName) => {
       assert.equal(method, 'getPreferences');
@@ -53,7 +53,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
   test('test that preferences are not set after the first time', function(assert) {
     const done = assert.async();
     _cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
-      const callback = dataCreators.determineReconView([]);
+      const callback = DataCreators.determineReconView([]);
       assert.equal(typeof callback, 'function');
       const dispatchFn = function(action) {
         assert.notEqual(action.type, ACTION_TYPES.RESET_PREFERENCES, 'should not set preferences again');
@@ -67,7 +67,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
     const done = assert.async();
     const restoreSpy = sinon.spy(_cookieStore, 'restore');
     _cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
-      const callback = dataCreators.determineReconView([]);
+      const callback = DataCreators.determineReconView([]);
       callback(() => ({}), getState);
       setTimeout(() => { // delay to allow cookieStore to be read.
         callback(() => ({}), getState);
@@ -84,7 +84,7 @@ module('Unit | Actions | Data Creators', function(hooks) {
     return Immutable.from({
       recon: {
         meta: {
-          meta: []
+          meta: ['medium', 1]
         },
         visuals: {
           currentReconView: {
@@ -94,28 +94,6 @@ module('Unit | Actions | Data Creators', function(hooks) {
       }
     });
   };
-
-  test('test that on preferences update, new recon view is set only if changed', function(assert) {
-    assert.expect(2);
-    const preferences = {
-      eventAnalysisPreferences: {
-        currentReconView: 'PACKET'
-      }
-    };
-    const dispatchFn = (action) => {
-      if (action.type === ACTION_TYPES.SET_PREFERENCES) {
-        assert.deepEqual(action.payload, preferences);
-      }
-    };
-    if (!dataCreators.setNewReconView.isSinonProxy) {
-      sinon.stub(dataCreators, 'setNewReconView');
-    }
-    const callback = dataCreators.reconPreferencesUpdated(preferences);
-    callback(dispatchFn, getStateWithNetworkEventType);
-
-    assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
-    dataCreators.setNewReconView.resetHistory();
-  });
 
   const getStateWithLogEventType = () => {
     return Immutable.from({
@@ -134,25 +112,80 @@ module('Unit | Actions | Data Creators', function(hooks) {
     });
   };
 
-  test('test that on preferences update, new recon view is not set if current event type is log', function(assert) {
-    assert.expect(2);
+  let setNewReconViewCalled = false;
+  const reconDispatch = (action) => {
+    if (action.type) {
+      setNewReconViewCalled = true;
+    }
+  };
+
+  test('test that on preferences update, new recon view is not set if not changed', function(assert) {
     const preferences = {
       eventAnalysisPreferences: {
         currentReconView: 'PACKET'
       }
     };
+
     const dispatchFn = (action) => {
-      if (action.type === ACTION_TYPES.SET_PREFERENCES) {
-        assert.deepEqual(action.payload, preferences);
+      if (typeof action === 'function') {
+        const setReconViewThunk = action;
+        setReconViewThunk(reconDispatch, getStateWithNetworkEventType);
+      } else {
+        if (action.type === ACTION_TYPES.SET_PREFERENCES) {
+          assert.deepEqual(action.payload, preferences);
+        }
       }
     };
-    if (!dataCreators.setNewReconView.isSinonProxy) {
-      sinon.stub(dataCreators, 'setNewReconView');
-    }
-    const callback = dataCreators.reconPreferencesUpdated(preferences);
-    callback(dispatchFn, getStateWithLogEventType);
 
-    assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
-    dataCreators.setNewReconView.resetHistory();
+    const callback = DataCreators.reconPreferencesUpdated(preferences);
+    callback(dispatchFn, getStateWithNetworkEventType);
+    assert.equal(setNewReconViewCalled, false, 'action is not called if no change is made');
+  });
+
+  test('test that on preferences update, even if view changes, new recon view is not set if current event type is log', function(assert) {
+    assert.expect(2);
+    const preferences = {
+      eventAnalysisPreferences: {
+        currentReconView: 'FILE'
+      }
+    };
+
+    const dispatchFn = (action) => {
+      if (typeof action === 'function') {
+        const setReconViewThunk = action;
+        setReconViewThunk(reconDispatch, getStateWithLogEventType);
+      } else {
+        if (action.type === ACTION_TYPES.SET_PREFERENCES) {
+          assert.deepEqual(action.payload, preferences);
+        }
+      }
+    };
+    const callback = DataCreators.reconPreferencesUpdated(preferences);
+    callback(dispatchFn, getStateWithLogEventType);
+    assert.equal(setNewReconViewCalled, false, 'setReconView action is not called when event type is log/endpoint');
+  });
+
+  test('test that on preferences update, if view changes, new recon view is set if current event type is not log/endpoint', function(assert) {
+    assert.expect(2);
+    const preferences = {
+      eventAnalysisPreferences: {
+        currentReconView: 'FILE'
+      }
+    };
+
+    const dispatchFn = (action) => {
+      if (typeof action === 'function') {
+        const setReconViewThunk = action;
+        setReconViewThunk(reconDispatch, getStateWithNetworkEventType);
+      } else {
+        if (action.type === ACTION_TYPES.SET_PREFERENCES) {
+          assert.deepEqual(action.payload, preferences);
+        }
+      }
+    };
+
+    const callback = DataCreators.reconPreferencesUpdated(preferences);
+    callback(dispatchFn, getStateWithNetworkEventType);
+    assert.equal(setNewReconViewCalled, true, 'setReconView action is called when event type is not log/endpoint');
   });
 });

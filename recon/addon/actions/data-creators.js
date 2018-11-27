@@ -46,7 +46,6 @@ import {
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import CookieStore from 'component-lib/session-stores/application';
-import { getStoredState } from 'redux-persist';
 import _ from 'lodash';
 
 const cookieStore = CookieStore.create();
@@ -333,6 +332,18 @@ const setNewReconView = (newView) => {
   };
 };
 
+/*
+ * An action creator to update the defaultReconView for recon
+ * defaultReconView is synced with investigate-preferences, but can be updated for recon from recon-titlebar
+ * this is the view that is used when opening event in recon
+ */
+const storeDefaultReconView = (newView) => {
+  return {
+    type: ACTION_TYPES.STORE_RECON_VIEW,
+    payload: { newView }
+  };
+};
+
 /**
  * An Action Creator thunk that builds/sends action for initializing recon.
  * If the incoming event is the same as the existing event, no dispatch occurs,
@@ -473,17 +484,13 @@ const determineReconView = (meta) => {
 };
 
 const _reconPreferencesAlreadyInitialized = (dispatch, forcedView, getState) => {
+  // in case the selected event has a forcedView (eg: log/endpoint)
   if (forcedView) {
     dispatch(setNewReconView(forcedView));
   } else {
-    getStoredState({}, (err, storedState) => {
-      let newView = getState().recon.visuals.defaultReconView;
-      const storedReconView = _.get(storedState, 'recon.visuals.currentReconView.name');
-      if (!err && storedReconView) {
-        newView = RECON_VIEW_TYPES_BY_NAME[storedReconView];
-      }
-      dispatch(setNewReconView(newView));
-    });
+    // defaultReconView is the default view for recon that is updated from investigate-preferences and recon-titlebar
+    const newView = getState().recon.visuals.defaultReconView;
+    dispatch(setNewReconView(newView));
   }
 };
 
@@ -659,6 +666,7 @@ export {
   textPageNext,
   textPageLast,
   setNewReconView,
+  storeDefaultReconView,
   teardownNotifications,
   toggleMetaData,
   togglePayloadOnly,

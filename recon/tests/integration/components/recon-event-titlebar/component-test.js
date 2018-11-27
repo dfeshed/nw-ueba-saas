@@ -9,13 +9,17 @@ import sinon from 'sinon';
 import * as VisualCreators from 'recon/actions/visual-creators';
 import * as DataCreators from 'recon/actions/data-creators';
 
-const visualCreatorsStub = sinon.stub(VisualCreators, 'closeRecon');
-const dataCreatorsStub = sinon.stub(DataCreators, 'setNewReconView');
-
-let setState;
+let setState, visualCreatorsStub, storeDefaultReconViewStub, setNewReconViewStub;
+const stubs = [];
 
 module('Integration | Component | recon event titlebar', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.before(function() {
+    stubs.push(visualCreatorsStub = sinon.stub(VisualCreators, 'closeRecon'));
+    stubs.push(storeDefaultReconViewStub = sinon.stub(DataCreators, 'storeDefaultReconView'));
+    stubs.push(setNewReconViewStub = sinon.stub(DataCreators, 'setNewReconView'));
+  });
 
   hooks.beforeEach(function() {
     setState = (state) => {
@@ -23,6 +27,13 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     };
   });
 
+  hooks.afterEach(function() {
+    stubs.forEach((s) => s.resetHistory());
+  });
+
+  hooks.after(function() {
+    stubs.forEach((s) => s.restore());
+  });
   // recon view
 
   test('renders log event label and no view selection for log events', async function(assert) {
@@ -52,14 +63,16 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.ember-power-select-trigger').textContent.trim(), 'Text Analysis', 'power select is populated with correct default');
     await selectChoose('.heading-select', 'File');
-    assert.equal(dataCreatorsStub.calledOnce, true, 'action is called');
-    assert.equal(dataCreatorsStub.args[0][0].name, 'FILE', 'right recon view is provided');
-    dataCreatorsStub.resetHistory();
+    assert.equal(setNewReconViewStub.calledOnce, true, 'action is called');
+    assert.equal(setNewReconViewStub.args[0][0].name, 'FILE', 'right recon view is provided');
+    assert.equal(storeDefaultReconViewStub.calledOnce, true, 'store default action is called');
+    setNewReconViewStub.resetHistory();
+    storeDefaultReconViewStub.resetHistory();
 
     await selectChoose('.heading-select', 'Packet');
-    assert.equal(dataCreatorsStub.calledOnce, true, 'action is called');
-    assert.equal(dataCreatorsStub.args[0][0].name, 'PACKET', 'right recon view is provided');
-    dataCreatorsStub.restore();
+    assert.equal(setNewReconViewStub.calledOnce, true, 'action is called');
+    assert.equal(setNewReconViewStub.args[0][0].name, 'PACKET', 'right recon view is provided');
+    assert.equal(storeDefaultReconViewStub.calledOnce, true, 'store default action is called');
   });
 
   test('all views enabled for network sessions', async function(assert) {
@@ -286,6 +299,5 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     await render(hbs`{{recon-event-titlebar}}`);
     await click('.rsa-icon-close-filled');
     assert.equal(visualCreatorsStub.callCount, 1, 'close recon action creator called one time');
-    visualCreatorsStub.restore();
   });
 });

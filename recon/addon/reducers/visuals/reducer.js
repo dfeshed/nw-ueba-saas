@@ -35,6 +35,10 @@ const visuals = handleActions({
     return state.set('currentReconView', newView);
   },
 
+  [ACTION_TYPES.STORE_RECON_VIEW]: (state, { payload: { newView } }) => {
+    return state.set('defaultReconView', newView);
+  },
+
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const defaultLogFormat = handlePreference(eventAnalysisPreferences, 'defaultLogFormat', state);
     const defaultPacketFormat = handlePreference(eventAnalysisPreferences, 'defaultPacketFormat', state);

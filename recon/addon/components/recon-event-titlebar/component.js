@@ -10,7 +10,7 @@ import {
   toggleReconExpanded,
   closeRecon
 } from 'recon/actions/visual-creators';
-import { toggleMetaData, setNewReconView } from 'recon/actions/data-creators';
+import { toggleMetaData, setNewReconView, storeDefaultReconView } from 'recon/actions/data-creators';
 import { isLogEvent, isEndpointEvent } from 'recon/reducers/meta/selectors';
 
 const stateToComputed = ({ recon, recon: { visuals } }) => ({
@@ -32,7 +32,8 @@ const dispatchToActions = {
   toggleResponseData,
   toggleReconExpanded,
   closeRecon,
-  setNewReconView
+  setNewReconView,
+  storeDefaultReconView
 };
 
 const TitlebarComponent = Component.extend({
@@ -69,11 +70,15 @@ const TitlebarComponent = Component.extend({
   toggleEventsTitle: (isReconExpanded) => isReconExpanded ? 'recon.toggles.shrink' : 'recon.toggles.expand',
 
   actions: {
-    // translates code to the recon view and sends action to update view
+    // translates code to the recon view and sends action to update current view(currentReconView) and stored default view(defaultReconView)
     findNewReconstructionView({ code }) {
       const newView = RECON_VIEW_TYPES.findBy('code', parseInt(code, 10));
       if (newView) {
+        // update  current recon view (currentReconView)
         this.send('setNewReconView', newView);
+
+        // update stored default view for recon (defaultReconView)
+        this.send('storeDefaultReconView', newView);
       }
     }
   }
