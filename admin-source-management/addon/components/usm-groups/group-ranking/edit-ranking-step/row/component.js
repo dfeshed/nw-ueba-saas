@@ -38,7 +38,7 @@ export default Component.extend(SortableItemMixin, {
 
   onRowClick() {},
 
-  click() {
+  doubleClick() {
     // Index 0 is top renking. No need to select and set top ranking
     if (this.get('index') !== 0) {
       this.get('onRowClick').apply(this, arguments);

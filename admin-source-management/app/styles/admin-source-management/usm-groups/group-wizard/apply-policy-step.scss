@@ -1,28 +1,49 @@
 .usm-group-wizard {
-  
   .apply-policy-step {
-    overflow: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: auto;
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
+    .apply-policy-step-inner {
+      width: 1000px;
+    }
     span.remove-source-type {
       margin-top: rsa-whitespace(more);
       margin-left: rsa-whitespace();
     }
-    .policy-assignment {
-      max-width: calc(100vw - 350px);
-      min-width: calc(100vw - 350px);
-    }
-    .available-selected {
-      width: 50%;
-      td {
-        padding-top: rsa-whitespace();
-        padding-right: rsa-whitespace();
-        padding-left: rsa-whitespace();
-        overflow-wrap: break-word;
-  
-        min-width: 100px;
-        max-width: 300px;
+    table.policy-assignment {
+      .remove-cell {
+        vertical-align: middle;
+      }
+      td.available, td.selected {
+        overflow-x: auto;
+        padding-top: rsa-whitespace(more);
+        padding-bottom: rsa-whitespace(more);
+        table {
+          width: 650px;
+          .table-cell-text {
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            overflow-wrap: break-word;
+            max-width: 250px;
+            min-width: 250px;
+          }
+          .policy-name.table-cell-text {
+            max-width: 100px;
+            min-width: 100px;
+          }
+          td {
+            padding-top: rsa-whitespace();
+            padding-right: rsa-whitespace();
+            padding-left: rsa-whitespace();
+          }
+        }
+      }
+      td.selected {
+        padding-left: rsa-whitespace(more);
       }
     }
     .remove-policy, .assign-policy, .remove-source-type {

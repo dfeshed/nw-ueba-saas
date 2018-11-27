@@ -1,92 +1,100 @@
-<vbox>
-  <hbox class="control source-type-selector">
-    <label class="rsa-form-label power-select">
-      <div class="label-text">
-        {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
-      </div>
-      {{#power-select
-        searchEnabled=true
-        tabIndex='1'
-        placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
-        options=limitedPolicySourceTypes
-        selected=selectedSourceType
-        searchField='name'
-        triggerClass=(if validator.showError 'selector-error')
-        onchange=(action 'handleSourceTypeChange') as |option|
-      }}
-        {{t (concat 'adminUsm.policyTypes.' option)}}
-      {{/power-select}}
-      {{#if validator.showError}}
-        <span class="input-error">
-          {{t (concat 'adminUsm.groupCriteria.inputValidations.' 'validPolicyAssigned' )}}
-        </span>
-      {{/if}}
-    </label>
-    <span class="remove-source-type" {{action 'handleSourceTypeRemove' selectedSourceType}}>
-      {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
-    </span>
 
-  </hbox>
-  <hbox class="control">
-    <table class='policy-assignment'>
-      <tr>
-        <td class='available-selected'>
-          <div class="label-header">
-            {{t 'adminUsm.groupWizard.applyPolicy.available'}}
-          </div>
-          <table>
-            <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
-            {{#each availablePoliciesForSourceType as |item|}}
-              <tr>
-                <td class="policy-name">
-                  {{item.name}}
-                </td>
-                <td class="applied-to-group">
-                  {{#each item.associatedGroups as |group index|}}
-                    {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
-                  {{/each}}
-                </td>
-                <td class="description">
-                  {{item.description}}
-                </td>
-                <td>
-                  <span class="assign-policy" {{action 'handlePolicyAssignment' item}}>
-                    {{rsa-icon size='large' name="add-circle-1" style="lined"}}
-                  </span>
-                </td>
-              </tr>
-            {{/each}}
-          </table>
-        </td>
-        <td class='available-selected'>
-          <div class="label-header">
-            {{t 'adminUsm.groupWizard.applyPolicy.selected'}}
-          </div>
-          <table>
-            <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
-            {{#if selectedPolicy}}
-              <tr>
-                <td class="policy-name">
-                  {{selectedPolicy.name}}
-                </td>
-                <td class="applied-to-group">
-                  {{#each selectedPolicy.associatedGroups as |group index|}}
-                    {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
-                  {{/each}}
-                </td>
-                <td class="description">
-                  {{selectedPolicy.description}}
-                </td>
-                <td>
-                  <span class="remove-policy" {{action 'handlePolicyRemove' selectedPolicy}}>
-                    {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
-                  </span>
-                </td>
-              </tr>
-            {{/if}}
-          </table>
-        </td>
-      </tr>
-    </table>
-  </hbox>
-</vbox>
+<table class='policy-assignment'>
+  <tr>
+    <td class='source-type-selector'>
+      <label class="rsa-form-label power-select">
+        <div class="label-text">
+          {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
+        </div>
+        {{#power-select
+          searchEnabled=true
+          tabIndex='1'
+          placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
+          options=limitedPolicySourceTypes
+          selected=selectedSourceType
+          searchField='name'
+          triggerClass=(if validator.showError 'selector-error')
+          onchange=(action 'handleSourceTypeChange') as |option|
+        }}
+          {{t (concat 'adminUsm.policyTypes.' option)}}
+        {{/power-select}}
+        {{#if validator.showError}}
+          <span class="input-error">
+            {{t (concat 'adminUsm.groupCriteria.inputValidations.' 'validPolicyAssigned' )}}
+          </span>
+        {{/if}}
+      </label>
+    </td>
+    <td class="remove-cell">
+      <span class="remove-source-type" {{action 'handleSourceTypeRemove' selectedSourceType}}>
+        {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <td class='available'>
+      <div class="label-header">
+        {{t 'adminUsm.groupWizard.applyPolicy.available'}}
+      </div>
+      <table>
+        <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
+        {{#each availablePoliciesForSourceType as |item|}}
+          <tr>
+            <td class="policy-name table-cell-text">
+              {{#rsa-text-with-tooltip value=item.name style="standard"}}
+                {{item.name}}
+              {{/rsa-text-with-tooltip}}
+            </td>
+            <td class="applied-to-group">
+              {{#each item.associatedGroups as |group index|}}
+                {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+              {{/each}}
+            </td>
+            <td class="description table-cell-text">
+              {{#rsa-text-with-tooltip value=item.description style="standard"}}
+                {{item.description}}
+              {{/rsa-text-with-tooltip}}
+            </td>
+            <td>
+              <span class="assign-policy" {{action 'handlePolicyAssignment' item}}>
+                {{rsa-icon size='large' name="add-circle-1" style="lined"}}
+              </span>
+            </td>
+          </tr>
+        {{/each}}
+      </table>
+    </td>
+    <td class='selected'>
+      <div class="label-header">
+        {{t 'adminUsm.groupWizard.applyPolicy.selected'}}
+      </div>
+      <table>
+        <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
+        {{#if selectedPolicy}}
+          <tr>
+            <td class="policy-name table-cell-text">
+              {{#rsa-text-with-tooltip value=selectedPolicy.name style="standard"}}
+                {{selectedPolicy.name}}
+              {{/rsa-text-with-tooltip}}
+            </td>
+            <td class="applied-to-group">
+              {{#each selectedPolicy.associatedGroups as |group index|}}
+                {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+              {{/each}}
+            </td>
+            <td class="description table-cell-text">
+              {{#rsa-text-with-tooltip value=selectedPolicy.description style="standard"}}
+                {{selectedPolicy.description}}
+              {{/rsa-text-with-tooltip}}
+            </td>
+            <td>
+              <span class="remove-policy" {{action 'handlePolicyRemove' selectedPolicy}}>
+                {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+              </span>
+            </td>
+          </tr>
+        {{/if}}
+      </table>
+    </td>
+  </tr>
+</table>

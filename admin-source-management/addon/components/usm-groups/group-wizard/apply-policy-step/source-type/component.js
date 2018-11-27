@@ -8,7 +8,8 @@ import {
   assignedPolicies,
   assignedPolicyList,
   availablePolicySourceTypes,
-  applyPolicyStepShowErrors
+  applyPolicyStepShowErrors,
+  limitedPolicySourceTypes
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
   editGroup,
@@ -21,7 +22,8 @@ const stateToComputed = (state) => ({
   assignedPolicyList: assignedPolicyList(state),
   policyList: policyList(state),
   availablePolicySourceTypes: availablePolicySourceTypes(state),
-  stepShowErrors: applyPolicyStepShowErrors(state)
+  stepShowErrors: applyPolicyStepShowErrors(state),
+  limitedPolicySourceTypes: limitedPolicySourceTypes(state)
 });
 
 const dispatchToActions = {
@@ -30,29 +32,9 @@ const dispatchToActions = {
 };
 
 const ApplyPolicySourceType = Component.extend(Notifications, {
-  tagName: 'hbox',
   classNames: ['source-type'],
   selectedSourceType: null,
   selectedPolicy: null,
-
-  // Computed value to filter out a list of possible remaining source types based on existing group policy assignments
-  @computed('availablePolicySourceTypes', 'assignedPolicyList', 'selectedPolicy')
-  limitedPolicySourceTypes(sourceTypes, assignedPolicyList, selectedPolicy) {
-    const list = [];
-    for (let index = 0; index < sourceTypes.length; index++) {
-      if (selectedPolicy && (sourceTypes[index] === selectedPolicy.policyType)) {
-        list.push(sourceTypes[index]);
-      } else {
-        const found = assignedPolicyList.some(function(element) {
-          return element.policyType === sourceTypes[index];
-        });
-        if (!found) {
-          list.push(sourceTypes[index]);
-        }
-      }
-    }
-    return list;
-  },
 
   @computed('policyList', 'selectedSourceType')
   availablePoliciesForSourceType(policyList, sourceType) {
