@@ -62,23 +62,24 @@ public class CategoryRarityModelScorerAlgorithm {
         List<Double> buckets = model.getBuckets();
         double numOfDistinctDaysContainingRareFeatureValue = buckets.get((int) featureCount-1);
         for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
-            double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2);
+            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
             double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
             numOfDistinctDaysContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
         double commonEventProbability = 1 - numOfDistinctDaysContainingRareFeatureValue / model.getNumOfPartitions();
-        commonEventProbability = commonEventProbability < 0.85 ? 0.0 : (commonEventProbability - 0.85) / 0.15;
-        double numRareFeaturesDiscount = Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
-        double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
+        commonEventProbability = commonEventProbability < 0.7 ? 0.0 : (commonEventProbability - 0.7) / 0.3;
+        double numRareFeaturesDiscount = calcCommonnessDiscounting(maxNumOfRareFeatures, numOfDistinctDaysContainingRareFeatureValue+1);//Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
+        double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
+        double score = commonEventProbability * Math.min(featureCountDiscount,numRareFeaturesDiscount);
         return Math.floor(MAX_POSSIBLE_SCORE * score);
     }
 
-    private double calcCommonnessDiscounting(double occurrence) {
+    private double calcCommonnessDiscounting(int range, double occurrence) {
         // make sure getMaxRareCount() will be scored less than MIN_POSSIBLE_SCORE - so once we multiply
         // by MAX_POSSIBLE_SCORE (inside calculateScore function) we get a rounded score of 0
         return Sigmoid.calcLogisticFunc(
-                maxRareCount * xWithValueHalfFactor,
-                maxRareCount,
+                range * xWithValueHalfFactor,
+                range,
                 (MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) * 0.99999999,
                 occurrence - 1);
     }

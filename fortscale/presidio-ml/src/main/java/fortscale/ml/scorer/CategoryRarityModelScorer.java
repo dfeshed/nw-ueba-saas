@@ -123,8 +123,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         }
 
         Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
-        if (count == null) count = 1d; // The scorer should handle it as if count = 1
-        return algorithm.calculateScore((int)Math.round(count), (CategoryRarityModel)model);
+        if (count == null) count = 0d;
+        return algorithm.calculateScore((int)Math.round(count+1), (CategoryRarityModel)model);
     }
 
     public int getMinNumOfDistinctValuesToInfluence() {
