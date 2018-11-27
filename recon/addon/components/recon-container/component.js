@@ -159,6 +159,12 @@ const ReconContainer = Component.extend({
     }
 
     this._super(...arguments);
+  },
+
+  actions: {
+    closeReconWhenFatalError() {
+      this.get('closeAction')();
+    }
   }
 });
 

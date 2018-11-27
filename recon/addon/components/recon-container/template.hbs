@@ -1,4 +1,10 @@
 {{#if apiFatalErrorCode}}
+  {{rsa-icon
+  class='fatal-error-close-button'
+  click=(action 'closeReconWhenFatalError')
+  name='close'
+  title=(t 'recon.toggles.close')}}
+
   {{rsa-panel-message message=errorMessage}}
 {{else}}
   {{#if isReady}}

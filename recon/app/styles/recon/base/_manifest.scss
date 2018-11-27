@@ -12,6 +12,15 @@
   &.loading {
     background-color: $baseColorNoTransparency;
   }
+  .rsa-panel-message {
+    z-index: -1;
+  }
+  .fatal-error-close-button {
+    display: flex;
+    justify-content: flex-end;
+    padding: rsa-whitespace();
+    margin: rsa-whitespace();
+  }
 }
 
 .recon-event-content {

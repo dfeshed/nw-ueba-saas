@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, find, render, settled } from '@ember/test-helpers';
+import { findAll, find, render, settled, click } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
@@ -62,6 +62,7 @@ module('Integration | Component | recon container', function(hooks) {
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Invalid session ID: 5', 'Appropriate error description for invaild session Id');
+    assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
 
     return settled().then(() => done());
   });
@@ -77,6 +78,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The session id is too large to be handled: 5456544654654564654654', 'Appropriate error description for session Id too large');
+    assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
 
     return settled().then(() => done());
   });
@@ -92,6 +94,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
+    assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
 
     return settled().then(() => done());
   });
@@ -107,6 +110,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
+    assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
 
     return settled().then(() => done());
   });
@@ -122,8 +126,29 @@ module('Integration | Component | recon container', function(hooks) {
 
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The service is unavailable', 'Service is unavailable');
+    assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
 
     return settled().then(() => done());
+  });
+
+  test('recon container with fatal error should always have a close icon on the right, so the window can be closed', async function(assert) {
+    const done = waitForSockets();
+    assert.expect(2);
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(1000).build();
+    this.set('eventId', '5');
+    this.set('oldEventId', '5');
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+    this.set('closeAction', function() {
+      assert.ok('close action clicked');
+      done();
+    });
+
+    await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId closeAction=closeAction}}`);
+    const closeSelector = '.fatal-error-close-button';
+    assert.equal(findAll(closeSelector).length, 1, 'Found a close recon button');
+    await click(closeSelector);
+
   });
 
 });
