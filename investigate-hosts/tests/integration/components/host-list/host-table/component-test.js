@@ -33,6 +33,6 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
     assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
     assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Agent Version', 'Fourth column should be Agent Version');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Operating System', 'Sixth column should be Operating System');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(8)').textContent.trim(), 'Operating System', 'Sixth column should be Operating System');
   });
 });
