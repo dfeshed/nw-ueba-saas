@@ -84,14 +84,12 @@ module('Unit | Reducers | risk', function(hooks) {
     });
     assert.equal(previous.eventsData.length, 1, 'Initial length is 1');
 
-    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    const newEndState = reducer(previous, {
       type: ACTION_TYPES.GET_RESPOND_EVENTS,
-      payload: { data: [{ 'agent_id': '123-xyz', 'device_type': 'nwendpoint' }] },
-      meta: { indicatorId: '123-456' }
+      payload: { indicatorId: '234-xyz', events: [{ 'agent_id': '234-xyz', 'device_type': 'nwendpoint' }] }
     });
-    const newEndState = reducer(previous, successAction);
 
-    assert.equal(newEndState.eventsData[1].id, '123-456:0', 'unique id is properly set for each event');
+    assert.equal(newEndState.eventsData[1].id, '234-xyz:0', 'unique id is properly set for each event');
     assert.equal(newEndState.eventsData.length, 2);
   });
 

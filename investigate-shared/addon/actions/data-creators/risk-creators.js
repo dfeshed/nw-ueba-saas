@@ -5,6 +5,12 @@ import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { riskType, eventsLoadingStatus, selectedAlert } from 'investigate-shared/selectors/risk/selectors';
+import { warn } from '@ember/debug';
+
+const _handleError = (response, type) => {
+  const warnResponse = JSON.stringify(response);
+  warn(`_handleError ${type} ${warnResponse}`, { id: 'investigate-shared.actions.data-creators.risk-creators' });
+};
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 const STATE_MAP = {
@@ -91,36 +97,36 @@ const setSelectedAlert = (context) => {
     dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
     next(() => {
       dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED, meta: { belongsTo: type } });
-      context.context.forEach((event) => {
-        if (!eventsLoadingStatus(getState()[STATE_MAP[type]]) || !selectedAlert(getState()[STATE_MAP[type]])) {
-          // if already loading events for another alert, CLEAR!
-          dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
-          return;
-        } else {
-          if (event.source === 'Respond') {
-            // High and Critical alerts are fetched from Respond server
-            dispatch(getRepondAlertEvents(event.id));
+      (async() => {
+        for (let i = 0; i < context.context.length; i++) {
+          const event = context.context[i];
+          if (!eventsLoadingStatus(getState()[STATE_MAP[type]]) || !selectedAlert(getState()[STATE_MAP[type]])) {
+            // if already loading events for another alert, CLEAR!
+            dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
+            return;
           } else {
-            // Medium alerts will be fetch from Decoder
-            dispatch(getAlertEvents(context));
+            if (event.source === 'Respond') {
+              // High and Critical alerts are fetched from Respond server
+              await api.getAlertEvents(event.id)
+                .then(({ data }) => {
+                  // Data is valid. Notify the reducers to update state.
+                  dispatch({
+                    type: ACTION_TYPES.GET_RESPOND_EVENTS,
+                    payload: { indicatorId: event.id, events: data },
+                    meta: { belongsTo: type }
+                  });
+                })
+                .catch((error) => {
+                  _handleError(ACTION_TYPES.GET_RESPOND_EVENTS, error);
+                });
+            } else if (event.source === 'ESA') {
+              // Medium alerts will be fetch from Decoder
+              dispatch(getAlertEvents(context));
+            }
           }
         }
-
-      });
+      })();
       dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED, meta: { belongsTo: type } });
-    });
-  };
-};
-
-const getRepondAlertEvents = (alertId) => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: ACTION_TYPES.GET_RESPOND_EVENTS,
-      promise: api.getAlertEvents(alertId),
-      meta: {
-        belongsTo: riskType(getState()),
-        indicatorId: alertId
-      }
     });
   };
 };

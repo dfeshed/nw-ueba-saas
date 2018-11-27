@@ -3,7 +3,6 @@ import Immutable from 'seamless-immutable';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
-import { transform } from 'investigate-shared/utils/meta-util';
 import fixNormalizedEvents from './util';
 
 const riskScoreState = Immutable.from({
@@ -18,31 +17,6 @@ const riskScoreState = Immutable.from({
   expandedEventId: null,
   isRespondServerOffline: false
 });
-
-const _handleAppendEvents = (action, isRespondEvent) => {
-  return (state) => {
-    const { payload: { data }, meta: { indicatorId } } = action;
-    const { eventsData } = state;
-    data.forEach((evt, index) => {
-      // Tag each retrieved event with its parent indicator id.
-      // This is useful downstream for mapping events back to their parent.
-      evt.indicatorId = indicatorId;
-      evt.eventIndex = index;
-
-      // Ensure each event has an id.
-      // This is useful for selecting individual events in the UI.
-      if (!evt.id) {
-        evt.id = `${indicatorId}:${index}`;
-      }
-    });
-    if (isRespondEvent) {
-      fixNormalizedEvents(data);
-    } else {
-      transform(data);
-    }
-    return state.set('eventsData', [ ...eventsData, ...data ]);
-  };
-};
 
 const riskScoreReducer = handleActions({
 
@@ -80,10 +54,22 @@ const riskScoreReducer = handleActions({
   [ACTION_TYPES.GET_EVENTS]: (state, { payload }) => {
     return state.set('eventsData', payload);
   },
-  [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, action) => {
-    return handle(state, action, {
-      success: _handleAppendEvents(action, true)
+  [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, { payload: { indicatorId, events } }) => {
+    const { eventsData } = state;
+    events.forEach((evt, index) => {
+      // Tag each retrieved event with its parent indicator id.
+      // This is useful downstream for mapping events back to their parent.
+      evt.indicatorId = indicatorId;
+      evt.eventIndex = index;
+
+      // Ensure each event has an id.
+      // This is useful for selecting individual events in the UI.
+      if (!evt.id) {
+        evt.id = `${indicatorId}:${index}`;
+      }
     });
+    fixNormalizedEvents(events);
+    return state.set('eventsData', [ ...eventsData, ...events ]);
   },
   [ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED]: (state) => {
     return state.set('eventsLoadingStatus', 'loading');
