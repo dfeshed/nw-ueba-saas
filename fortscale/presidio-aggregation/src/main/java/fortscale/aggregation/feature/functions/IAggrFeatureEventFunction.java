@@ -2,8 +2,10 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.MultiKeyHistogram;
 
 import java.util.List;
 import java.util.Map;
@@ -32,4 +34,10 @@ public interface IAggrFeatureEventFunction {
      * @return a new feature created by the relevant function.
      */
     Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList);
+
+    default MultiKeyHistogram calculateContributionRatios(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                          FeatureBucket featureBucket) {
+        throw new UnsupportedOperationException(String.format("'Calculate contribution ratios' is not supported by " +
+                "%s.", getClass().getSimpleName()));
+    }
 }

@@ -1,5 +1,7 @@
 package presidio.ade.manager;
 
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
@@ -7,11 +9,14 @@ import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
@@ -19,15 +24,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
-
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant UNTIL_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(1)), DURATION);
     private static final String COLLECTION_NAME = "enriched_file";
-
     public static final String EXECUTION_COMMAND = String.format("enriched_ttl_cleanup --until_date %s", UNTIL_DATE.toString());
 
     @Autowired
@@ -55,26 +57,27 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
 
     /**
      * 1. Generate enriched file records.
-     * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval
-     * @param generatedData
+     * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval.
      */
     @Override
     protected void assertSanityTest(List generatedData) {
         List<EnrichedFileRecord> enrichedFileRecordList = mongoTemplate.findAll(EnrichedFileRecord.class, COLLECTION_NAME);
-
-        enrichedFileRecordList.forEach(
-                enrichedFile -> {
-                    Assert.assertTrue(enrichedFile.getStartInstant().compareTo(UNTIL_DATE.minus(ttl)) >= 0);
-                }
-        );
+        enrichedFileRecordList.forEach(enrichedFile -> Assert.assertTrue(enrichedFile.getStartInstant().compareTo(UNTIL_DATE.minus(ttl)) >= 0));
     }
-
 
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, AdeManagerApplicationConfigurationTest.class, AdeManagerApplicationCommands.class, EnrichedFileGeneratorConfig.class})
-    protected static class AdeManagerApplicationTestConfig {
-
+    @Import({
+            EnrichedSourceSpringConfig.class,
+            AdeManagerApplicationConfigurationTest.class,
+            AdeManagerApplicationCommands.class,
+            EnrichedFileGeneratorConfig.class
+    })
+    public static class AdeManagerApplicationTestConfig {
+        @MockBean
+        private RecordReaderFactoryService recordReaderFactoryService;
+        @MockBean
+        private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+        @MockBean
+        private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
     }
-
-
 }
