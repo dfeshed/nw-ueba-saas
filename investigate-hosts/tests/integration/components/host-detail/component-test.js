@@ -141,7 +141,7 @@ module('Integration | Component | host-detail', function(hooks) {
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'host detail is rendered');
   });
 
-  test('on selecting Show/Hide right panel button, right panel is open', async function(assert) {
+  test('on selecting Show/Hide right panel button, details right panel is open', async function(assert) {
     setState({ activePropertyPanelTab: 'HOST_DETAILS' });
     const endpointServerClone = { ...endpointServer };
     endpointServerClone.isSummaryRetrieveError = false;
@@ -152,7 +152,7 @@ module('Integration | Component | host-detail', function(hooks) {
       .endpointServer(endpointServerClone)
       .endpointQuery(endpointQuery)
       .host('XYZ')
-      .isRightPanelVisible(true)
+      .isDetailRightPanelVisible(true)
       .build();
     await render(hbs`{{host-detail}}`);
     assert.equal(findAll('.host-header').length, 1, 'header rendered');

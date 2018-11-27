@@ -12,7 +12,7 @@ const dataInitialState = Immutable.from({
   snapShots: null,
   isOverviewPanelVisible: true,
   showNonEmptyProperty: false,
-  isRightPanelVisible: true
+  isDetailRightPanelVisible: true
 
 });
 
@@ -43,8 +43,8 @@ const data = handleActions({
     return state.set('showNonEmptyProperty', !state.showNonEmptyProperty);
   },
 
-  [ACTION_TYPES.TOGGLE_RIGHT_PANEL]: (state) => {
-    return state.set('isRightPanelVisible', !state.isRightPanelVisible);
+  [ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL]: (state) => {
+    return state.set('isDetailRightPanelVisible', !state.isDetailRightPanelVisible);
   }
 
 }, dataInitialState);

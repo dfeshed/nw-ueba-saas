@@ -107,6 +107,13 @@ export const riskState = createSelector(
   }
 );
 
+export const isOnOverviewTab = createSelector(
+  _activeHostDetailTab,
+  (activeHostDetailTab) => {
+    return activeHostDetailTab === 'OVERVIEW';
+  }
+);
+
 export const hasMachineId = createSelector(
   _agentId,
   (agentId) => {

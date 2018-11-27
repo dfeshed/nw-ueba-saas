@@ -10,7 +10,7 @@ import {
   setAlertTab,
   setPropertyPanelTabView
 } from 'investigate-hosts/actions/data-creators/details';
-import { toggleRightPanel } from 'investigate-hosts/actions/ui-state-creators';
+import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
   setAlertTab,
@@ -18,7 +18,7 @@ const dispatchToActions = {
   setSelectedAlert,
   setPropertyPanelTabView,
   expandEvent,
-  toggleRightPanel
+  toggleDetailRightPanel
 };
 
 const stateToComputed = (state) => ({
@@ -30,7 +30,7 @@ const stateToComputed = (state) => ({
   activePropertyPanelTab: state.endpoint.visuals.activePropertyPanelTab,
   propertyPanelTabs: getPropertyPanelTabs(state),
   policiesPropertyData: getPoliciesPropertyData(state),
-  isRightPanelVisible: state.endpoint.detailsInput.isRightPanelVisible
+  isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible
 });
 
 const HostOverview = Component.extend({
@@ -44,8 +44,6 @@ const HostOverview = Component.extend({
   hostDetailsConfig,
 
   policiesConfig,
-
-  isRightPanelClosed: false,
 
   @computed('activePropertyPanelTab')
   propertyPanelData(tab) {
@@ -70,12 +68,6 @@ const HostOverview = Component.extend({
         this.set('domIsReady', true);
       }
     }, 250);
-  },
-
-  actions: {
-    closeRightPanel() {
-      this.send('toggleRightPanel');
-    }
   }
 });
 

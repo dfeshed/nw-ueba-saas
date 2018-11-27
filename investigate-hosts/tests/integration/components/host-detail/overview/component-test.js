@@ -81,9 +81,9 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
   });
-  test('Right panel is visible', async function(assert) {
+  test('Detail Right panel is visible', async function(assert) {
     setState({ activePropertyPanelTab: 'HOST_DETAILS' });
-    this.set('isRightPanelVisible', true);
+    this.set('isDetailRightPanelVisible', true);
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'Right panel- host properties is open');
   });

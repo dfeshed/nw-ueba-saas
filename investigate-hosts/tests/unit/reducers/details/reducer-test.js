@@ -14,7 +14,7 @@ const initialState = {
   snapShots: null,
   isOverviewPanelVisible: true,
   showNonEmptyProperty: false,
-  isRightPanelVisible: true
+  isDetailRightPanelVisible: true
 };
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
@@ -89,11 +89,11 @@ test('The FETCH_ALL_SNAP_SHOTS sets all the fetched snapshot to the state', func
   assert.equal(newEndState.snapShots.length, 2);
 });
 
-test('The TOGGLE_RIGHT_PANEL will toggles isRightPanelVisible', function(assert) {
+test('The TOGGLE_DETAIL_RIGHT_PANEL will toggles isDetailRightPanelVisible', function(assert) {
   const previous = Immutable.from({
-    isRightPanelVisible: true
+    isDetailRightPanelVisible: true
   });
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_RIGHT_PANEL });
-  assert.equal(result.isRightPanelVisible, false);
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL });
+  assert.equal(result.isDetailRightPanelVisible, false);
 });
 

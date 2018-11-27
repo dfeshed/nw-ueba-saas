@@ -17,11 +17,11 @@
         </box>
       </hbox>
     {{/layout.center}}
-    {{#if isRightPanelVisible}}
+    {{#if isDetailRightPanelVisible}}
       {{#layout.right as |right|}}
         {{#right.header}}
           {{host-detail/utils/host-title-bar tabs=propertyPanelTabs defaultAction=(action 'setPropertyPanelTabView')}}
-          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action 'closeRightPanel') }}
+          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action 'toggleDetailRightPanel') }}
             {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
           {{/rsa-form-button}}
         {{/right.header}}

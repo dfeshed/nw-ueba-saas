@@ -352,8 +352,8 @@ export default class DataHelper {
     _set(this.state, 'endpointServer', data);
     return this;
   }
-  isRightPanelVisible(value) {
-    _set(this.state, 'detailsInput.isRightPanelVisible', value);
+  isDetailRightPanelVisible(value) {
+    _set(this.state, 'detailsInput.isDetailRightPanelVisible', value);
     return this;
   }
   isProcessDetailsView(value) {

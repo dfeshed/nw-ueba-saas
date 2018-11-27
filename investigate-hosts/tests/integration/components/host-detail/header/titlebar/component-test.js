@@ -42,13 +42,12 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
   });
   test('Show right panel button is present when Details tab is selected', async function(assert) {
-    this.set('showRightPanelButton', true);
     new ReduxDataHelper(setState)
       .snapShot(snapShot)
       .hostName('XYZ')
-      .isRightPanelVisible(true)
+      .isDetailRightPanelVisible(true)
       .build();
-    await render(hbs`{{host-detail/header/titlebar showRightPanelButton=showRightPanelButton}}`);
+    await render(hbs`{{host-detail/header/titlebar}}`);
     assert.equal(findAll('.open-properties').length, 1, 'Show/Hide right panel button is present');
   });
 
@@ -56,7 +55,7 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
     new ReduxDataHelper(setState)
       .snapShot(snapShot)
       .hostName('XYZ')
-      .isRightPanelVisible(true)
+      .isDetailRightPanelVisible(true)
       .build();
     await render(hbs`{{host-detail/header/titlebar}}`);
     await click(findAll('.rsa-nav-tab')[1]);

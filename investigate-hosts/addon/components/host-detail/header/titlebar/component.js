@@ -1,8 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
-import { toggleOverviewPanel, toggleRightPanel } from 'investigate-hosts/actions/ui-state-creators';
-import { getHostDetailTabs } from 'investigate-hosts/reducers/visuals/selectors';
+import { toggleOverviewPanel, toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
+import { getHostDetailTabs, isOnOverviewTab } from 'investigate-hosts/reducers/visuals/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
@@ -13,15 +13,16 @@ const stateToComputed = (state) => ({
   hostName: hostName(state),
   serviceList: serviceList(state),
   isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible,
-  isRightPanelVisible: state.endpoint.detailsInput.isRightPanelVisible,
+  isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
   serviceId: serviceId(state),
-  activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab
+  activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab,
+  showRightPanelButton: isOnOverviewTab(state)
 });
 
 const dispatchToActions = {
   setNewTabView,
   toggleOverviewPanel,
-  toggleRightPanel
+  toggleDetailRightPanel
 };
 
 const TitleBarComponent = Component.extend({
@@ -33,12 +34,8 @@ const TitleBarComponent = Component.extend({
   @computed('isOverviewPanelVisible')
   expandContract(isOverviewPanelVisible) {
     return isOverviewPanelVisible ? 'shrink-diagonal-2' : 'expand-diagonal-4';
-  },
-
-  @computed('activeHostDetailTab')
-  showRightPanelButton(activeHostDetailTab) {
-    return activeHostDetailTab === 'OVERVIEW';
   }
+
 });
 
 export default connect(stateToComputed, dispatchToActions)(TitleBarComponent);

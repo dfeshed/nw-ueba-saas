@@ -39,7 +39,7 @@ const userLeftListPage = () => ({ type: ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE })
 const setAppliedHostFilter = (filterId, isCustomFilter) => ({ type: ACTION_TYPES.SET_APPLIED_HOST_FILTER, payload: { filterId, isCustomFilter } });
 
 const toggleOverviewPanel = createToggleActionCreator(ACTION_TYPES.TOGGLE_OVERVIEW_PANEL);
-const toggleRightPanel = createToggleActionCreator(ACTION_TYPES.TOGGLE_RIGHT_PANEL);
+const toggleDetailRightPanel = createToggleActionCreator(ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL);
 const toggleExploreSearchResults = (flag) => ({ type: ACTION_TYPES.TOGGLE_EXPLORE_SEARCH_RESULTS, payload: { flag } });
 
 const selectAllHosts = () => ({ type: ACTION_TYPES.SELECT_ALL_HOSTS });
@@ -79,5 +79,5 @@ export {
   resetHostDownloadLink,
   arrangeSecurityConfigs,
   setSystemInformationTab,
-  toggleRightPanel
+  toggleDetailRightPanel
 };

@@ -2725,7 +2725,7 @@ export default {
         shrink: 'Contract View',
         update: 'Update',
         reset: 'Reset',
-        rightPanel: 'Show/Hide Right Panel'
+        rightPanel: 'Show/Hide Detail Right Panel'
       },
       autoruns: {
         services: {
