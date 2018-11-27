@@ -11,10 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents single evidence in MongoDB
@@ -61,6 +58,7 @@ public class Evidence extends AbstractDocument{
 	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataEntityIdField = "dataEntitiesIds";
 	public static final String evidenceTypeField = "evidenceType";
+	public static final String contextField = "contexts";
 
 	// The 3 top events
 	public static final String top3eventsField = "top3eventsJsonStr";
@@ -75,7 +73,10 @@ public class Evidence extends AbstractDocument{
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 
+
 	public static final String scoreContributionField = "scoreContribution";
+
+
 
 
 	//-- Document's Fields
@@ -116,6 +117,10 @@ public class Evidence extends AbstractDocument{
 
 	@Field(dataEntityIdField)
 	private List<String> dataEntitiesIds;
+
+
+	@Field(contextField)
+	private Map<String, String> contexts;
 
 	@Field(evidenceTypeField)
 	private EvidenceType evidenceType;
@@ -173,7 +178,7 @@ public class Evidence extends AbstractDocument{
 	}
 
 	public Evidence(EntityType entityType, String entityTypeFieldName, String entityName, EvidenceType evidenceType, Long startDate, Long endDate, String anomalyTypeFieldName,
-			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents, EvidenceTimeframe timeframe) {
+			String anomalyValue, List<String> dataEntitiesIds, Integer score, Severity severity,Integer totalAmountOfEvents, EvidenceTimeframe timeframe, Map<String, String> contexts) {
 		this.entityType = entityType;
 		this.entityTypeFieldName = entityTypeFieldName;
 		this.entityName = entityName;
@@ -193,6 +198,7 @@ public class Evidence extends AbstractDocument{
 		this.dataEntitiesIds = dataEntitiesIds;
 		this.score = score;
 		this.severity = severity;
+		this.contexts = contexts;
 
 		this.timeframe = timeframe;
 
@@ -249,6 +255,9 @@ public class Evidence extends AbstractDocument{
 	public void setAnomalyType(String anomalyType) {
 		this.anomalyType = anomalyType;
 	}
+
+	public void setContexts(Map<String, String> contexts) { this.contexts = contexts; }
+
 
 	// Getters
 
@@ -323,6 +332,9 @@ public class Evidence extends AbstractDocument{
 	public List<String> getDataEntitiesIds() {
 		return dataEntitiesIds;
 	}
+
+	public Map<String, String> getContexts() { return contexts; }
+
 
 	public void setSupportingInformation(EntitySupportingInformation supportingInformationData){
 		this.supportingInformation = supportingInformationData;
