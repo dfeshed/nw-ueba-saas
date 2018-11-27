@@ -65,7 +65,8 @@ module Fortscale.layouts.user {
                 let locals = {
                     value: filterFn(indicator.anomalyValue, indicator),
                     username: indicator.entityName,
-                    entityName: indicator.entityName
+                    entityName: indicator.entityName,
+                    contexts: indicator.contexts
                 };
 
                 return this.$interpolate(configItem.value)(locals);
