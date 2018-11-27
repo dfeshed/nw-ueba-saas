@@ -35,14 +35,6 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status div.some-offline').length, 0);
   });
 
-  test('renders the correct dom when no elapsedTime', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsNoTime().eventCount(10).build();
-    await render(hbs`
-      {{query-container/console-panel/devices}}
-    `);
-    assert.notOk(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('seconds'));
-  });
-
   test('renders the offline status when a single device is offline', async function(assert) {
     new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().queryStatsWithOffline().build();
     await render(hbs`
@@ -82,8 +74,7 @@ module('Integration | Component | console-devices', function(hooks) {
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
-    assert.notOk(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('events'));
-    assert.notOk(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('second'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('0 event(s) in <1 second.'));
   });
 
   test('renders when hasError', async function(assert) {

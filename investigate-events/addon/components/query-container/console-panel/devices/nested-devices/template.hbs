@@ -47,6 +47,8 @@
 
   {{#if device.elapsedTime}}
     <span class="elapsed-time">{{t 'investigate.queryStats.nestedElapsedTime' time=device.elapsedTime}}</span>
+  {{else}}
+    <span class="elapsed-time">{{t 'investigate.queryStats.nestedNoElapsedTime'}}</span>
   {{/if}}
 
   {{#if device.devices.length}}

@@ -46,9 +46,14 @@ export default handleActions({
     if (payload.description) {
       updatedState.description = payload.description;
     }
+
     if (payload.percent) {
-      updatedState.percent = parseInt(payload.percent, 10);
+      const percent = parseInt(payload.percent, 10);
+      // true completion is denoted by the presence of devices or errors
+      // we can receive percent of 100 while processing is still occurring
+      updatedState.percent = percent === 100 ? 99 : percent;
     }
+
     if (payload.devices) {
       updatedState.devices = payload.devices;
     }

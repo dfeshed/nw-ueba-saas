@@ -570,7 +570,7 @@ export default {
     },
     queryStats: {
       summary: 'returned {{eventCount}} event(s) in {{elapsedTime}} second(s).',
-      summaryNoTime: 'returned {{eventCount}} events.',
+      summaryNoTime: 'returned {{eventCount}} event(s) in <1 second.',
       offline: 'This service is offline.',
       allOnline: 'All services are online.',
       oneOffline: '1 service is offline.',
@@ -580,6 +580,7 @@ export default {
       progress: 'Progress:',
       complete: 'Complete',
       nestedElapsedTime: '({{time}}s)',
+      nestedNoElapsedTime: '(<1s)',
       slowest: 'This is the slowest service in the query.',
       hasError: 'This query returned an error.',
       hasWarning: 'This query returned a warning.',

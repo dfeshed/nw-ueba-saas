@@ -606,11 +606,11 @@
         &.has-error {
           top: rsa-whitespace(less);
           color: text-color(accentOne);
-          &:hover {
+          &:hover:not(.is-disabled) {
             color: text-color(accentOne, lighter);
           }
 
-          &:active {
+          &:active:not(.is-disabled) {
             color: text-color(accentOne);
           }
         }

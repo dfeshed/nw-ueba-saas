@@ -69,7 +69,7 @@ module('Integration | Component | nested-devices', function(hooks) {
     `);
 
     assert.equal(find('.nested-devices .one-line-summary .device').textContent.trim(), 'Foo');
-    assert.notOk(find('.nested-devices .one-line-summary .elapsed-time'));
+    assert.ok(find('.nested-devices .one-line-summary .elapsed-time').textContent.trim().includes('(<1s)'));
   });
 
   test('renders the correct dom when isSlowest', async function(assert) {

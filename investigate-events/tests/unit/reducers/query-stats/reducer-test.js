@@ -81,6 +81,21 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   assert.equal(lastResult.devices[0].serviceId, 'baz');
 });
 
+test('QUERY_STATS reducer updates percent to 99 when percent is 100', function(assert) {
+  const prevState = Immutable.from({
+    percent: 0
+  });
+  const action = {
+    type: ACTION_TYPES.QUERY_STATS,
+    payload: {
+      percent: 100
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.percent, 99);
+});
+
 test('QUERY_STATS reducer updates errors when code/message passed', function(assert) {
   const prevState = Immutable.from({
     description: null,
