@@ -90,6 +90,25 @@ const processReducer = handleActions({
 
   [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state) => {
     return state.set('selectedRowIndex', null);
+  },
+
+  [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const { processList } = s;
+        const { payload: { request: { data } } } = action;
+        const { fileStatus, checksums } = data;
+        const newProcessList = processList.map((process) => {
+          const processClone = process.asMutable();
+          if (checksums.includes(processClone.checksumSha256)) {
+            processClone.fileStatus = fileStatus;
+          }
+          return processClone;
+        });
+        s = s.set(['processList'], newProcessList);
+        return s;
+      }
+    });
   }
 
 }, initialState);

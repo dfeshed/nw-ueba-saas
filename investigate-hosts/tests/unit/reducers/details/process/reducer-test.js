@@ -208,4 +208,51 @@ module('Unit | Reducers | process', function() {
     );
     assert.deepEqual(result.selectedDllRowIndex, 1);
   });
+
+  test('The SAVE_FILE_CONTEXT_FILE_STATUS sets the processList in state, with the updated fileStatus', function(assert) {
+    const previous = Immutable.from({
+      processList: [
+        {
+          checksumSha256: '7b7f8973702f72655ece594ec9179a2228c62912a1f37d1c77d243476088271d',
+          createTime: '2018-11-08T10:03:06.835+0000',
+          fileStatus: 'Blacklist',
+          launchArguments: '',
+          name: 'winlogon.exe',
+          parentPid: 456,
+          path: 'C:',
+          pid: 516,
+          reputationStatus: 'Known Good',
+          score: 0,
+          serviceId: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
+          serviceName: 'EPS1-server - Endpoint Server' },
+        {
+          checksumSha256: '9179a2228c62912a1f37d1c77d243476088271d7b7f8973702f72655ece594ec',
+          createTime: '2018-11-08T10:03:06.835+0000',
+          fileStatus: 'Blacklist',
+          launchArguments: '',
+          name: 'winlogon.exe',
+          parentPid: 456,
+          path: 'C:',
+          pid: 516,
+          reputationStatus: 'Known Good',
+          score: 0,
+          serviceId: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
+          serviceName: 'EPS1-server - Endpoint Server' }]
+    });
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS,
+      payload: {
+        request: {
+          data: {
+            checksums: ['7b7f8973702f72655ece594ec9179a2228c62912a1f37d1c77d243476088271d'],
+            fileStatus: 'Graylist'
+          }
+        }
+      }
+    });
+    const endState = reducer(previous, action);
+    assert.deepEqual(endState.processList[0].fileStatus, 'Graylist', 'File status in processlist of corresponding file is updated.');
+    assert.deepEqual(endState.processList[1].fileStatus, 'Blacklist', 'File status for the file, whose status hasnot been changes, remains unaffected in the state.');
+  });
 });
