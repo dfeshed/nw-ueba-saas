@@ -1,3 +1,26 @@
+# [10.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.1.0)
+## Features
+* [ASOC-60593](https://bedfordjira.na.rsa.net/browse/ASOC-60593):&emsp;Filtering on host page for risk score
+* [ASOC-64118](https://bedfordjira.na.rsa.net/browse/ASOC-64118):&emsp;Update value so that it is capable of creating free form pill
+* [ASOC-65109](https://bedfordjira.na.rsa.net/browse/ASOC-65109):&emsp;Provide specific service(s) where threshold was met
+* [ASOC-65144](https://bedfordjira.na.rsa.net/browse/ASOC-65144):&emsp;Endpoint Server to be updated with risk score on restart and new endpoint server
+* [ASOC-65627](https://bedfordjira.na.rsa.net/browse/ASOC-65627):&emsp;Host row click - show properties, risk
+* [ASOC-65634](https://bedfordjira.na.rsa.net/browse/ASOC-65634):&emsp;Empty leaf nodes should display "N/A" when otherwise blank
+* [ASOC-66727](https://bedfordjira.na.rsa.net/browse/ASOC-66727):&emsp;Display of lengthy meta greater than 255 chars
+* [ASOC-67480](https://bedfordjira.na.rsa.net/browse/ASOC-67480):&emsp;Verify if Tony can gather the list of risky host and files thru the UI which is having score more than 80 and verifying the alert in respond
+* [ASOC-67653](https://bedfordjira.na.rsa.net/browse/ASOC-67653):&emsp;Hide related links when the data structure is empty
+* [ASOC-67654](https://bedfordjira.na.rsa.net/browse/ASOC-67654):&emsp;Enhance the hide/show of event details with animation
+* [ASOC-67899](https://bedfordjira.na.rsa.net/browse/ASOC-67899):&emsp;Keep profile preQuery as part of query when transition from Navigate & Events to Event Analysis
+* [ASOC-68062](https://bedfordjira.na.rsa.net/browse/ASOC-68062):&emsp;Align host details top section as per the wireframes
+* [ASOC-68112](https://bedfordjira.na.rsa.net/browse/ASOC-68112):&emsp;Moving RSS to Respond considering only Transient Alert
+* [ASOC-68114](https://bedfordjira.na.rsa.net/browse/ASOC-68114):&emsp;Removing RSS from services - UI
+* [ASOC-68115](https://bedfordjira.na.rsa.net/browse/ASOC-68115):&emsp;Changes in endpoint
+* [ASOC-68119](https://bedfordjira.na.rsa.net/browse/ASOC-68119):&emsp;Cleanup Repo/RPM/Docker images
+* [ASOC-68322](https://bedfordjira.na.rsa.net/browse/ASOC-68322):&emsp;RBAC for Risk score
+* [ASOC-68446](https://bedfordjira.na.rsa.net/browse/ASOC-68446):&emsp;Automation for Web Link
+
+
+
 # [9.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.7.0)
 ## Features
 * [ASOC-60671](https://bedfordjira.na.rsa.net/browse/ASOC-60671):&emsp;Storyline event analysis support for endpoint specifically
