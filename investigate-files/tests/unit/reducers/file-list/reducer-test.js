@@ -476,4 +476,13 @@ module('Unit | Reducers | file-list', function() {
     assert.equal(newEndState.areFilesLoading, 'completed', 'data loaded');
     assert.equal(Object.values(newEndState.fileData).length, 1);
   });
+
+  test('AGENT_COUNT_INIT set the status to loading', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: {}
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.AGENT_COUNT_INIT, payload: ['123456', '34567'] });
+    assert.equal(result.agentCountMapping['123456'], 'loading');
+  });
+
 });

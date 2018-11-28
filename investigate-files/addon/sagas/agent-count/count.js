@@ -5,7 +5,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import _ from 'lodash';
 
-const MAX_PENDING_QUERIES = 15; // SDK configuration, currently hardcoded for UI
+const MAX_PENDING_QUERIES = 2; // SDK configuration, currently hardcoded for UI
 /**
  * For each child process getting the children count.
  * Iterating over the list of children and invoking the fetchEventCount api for each children and waiting for all the
@@ -34,17 +34,17 @@ function* fetchAgentCountAsync({ payload }) {
     const timeZone = lookup('service:timezone');
     const { zoneId } = timeZone.get('selected');
     const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
-
-    // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
-    // children into chunks
-    const childrenChunks = _.chunk(payload, MAX_PENDING_QUERIES);
-    for (let i = 0; i < childrenChunks.length; i++) {
-      const result = yield all(getAPICalls(serviceId, startTime, endTime, childrenChunks[i]));
-      payload = { ...payload, ...result };
+    if (serviceId && serviceId !== '-1') {
+      // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
+      // children into chunks
+      const childrenChunks = _.chunk(payload, MAX_PENDING_QUERIES);
+      for (let i = 0; i < childrenChunks.length; i++) {
+        put({ type: ACTION_TYPES.AGENT_COUNT_INIT, payload: childrenChunks[i] });
+        const result = yield all(getAPICalls(serviceId, startTime, endTime, childrenChunks[i]));
+        payload = { ...payload, ...result };
+      }
+      yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: _.mapValues(payload, 'data') });
     }
-
-    yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: _.mapValues(payload, 'data') });
-
   } catch (e) {
     yield put({ type: ACTION_TYPES.SET_AGENT_COUNT_FAILED });
   }

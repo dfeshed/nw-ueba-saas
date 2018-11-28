@@ -13,7 +13,7 @@ const FilesTableBody = DataTableBody.extend({
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {
-    run.debounce(this, this._fetchMachineCount, 50);
+    run.debounce(this, this._fetchMachineCount, 100);
   }),
 
   _fetchMachineCount() {

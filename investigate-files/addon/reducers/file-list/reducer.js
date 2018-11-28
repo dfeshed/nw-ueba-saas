@@ -35,6 +35,7 @@ const fileListState = Immutable.from({
   selectedDetailFile: null,
   selectedIndex: null
 });
+const LOADING_STATUS = 'loading';
 
 const _handleAppendFiles = (action) => {
   return (state) => {
@@ -169,6 +170,14 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
     return state.merge({ lookupData, contextLoadingStatus: 'completed' });
+  },
+
+  [ACTION_TYPES.AGENT_COUNT_INIT]: (state, { payload }) => {
+    const data = {};
+    payload.forEach((checksum) => {
+      data[checksum] = LOADING_STATUS;
+    });
+    return state.set('agentCountMapping', { ...state.agentCountMapping, ...data });
   },
 
   [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait' }),
