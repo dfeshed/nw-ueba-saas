@@ -6,7 +6,7 @@ export const entityType = (state) => state.entity.entityType;
 
 export const entityDetails = (state) => state.entity.entityDetails;
 
-export const alerts = createSelector(
+export const alertsForEntity = createSelector(
   [entityDetails],
   (details) => {
     return details.alerts;

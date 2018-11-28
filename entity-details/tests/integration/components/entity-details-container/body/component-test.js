@@ -37,7 +37,11 @@ module('Integration | Component | entity-details-container/body', function(hooks
     new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
     this.set('isClassic', false);
     await render(hbs`{{entity-details-container/body isClassic=isClassic}}`);
-    assert.equal(find('.entity-details-container-body').textContent.replace(/\s/g, ''), 'AlertListContainerAlertDetails', 'Should render Alert container');
+    assert.equal(findAll('#ueba-iframe').length, 0, 'Should not render ueba iframe');
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
+    // Will remove this after putting actusl content
+    assert.equal(find('.entity-details-container-body_details').textContent.trim(), 'Alert Details', 'Should render Alert container');
   });
 
   test('it renders Indicator container if indicator id passed', async function(assert) {
@@ -45,6 +49,10 @@ module('Integration | Component | entity-details-container/body', function(hooks
     new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).alertId('alertId').indicatorId('Inc-1').build();
     this.set('isClassic', false);
     await render(hbs`{{entity-details-container/body isClassic=isClassic}}`);
-    assert.equal(find('.entity-details-container-body').textContent.replace(/\s/g, ''), 'AlertListContainerIndicatorDetails', 'Should render Indicator container');
+    assert.equal(findAll('#ueba-iframe').length, 0, 'Should not render ueba iframe');
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
+    // Will remove this after putting actusl content
+    assert.equal(find('.entity-details-container-body_details').textContent.trim(), 'Indicator Details', 'Should render Indicator container');
   });
 });

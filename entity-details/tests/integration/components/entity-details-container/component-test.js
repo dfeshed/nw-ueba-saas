@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -30,7 +30,7 @@ module('Integration | Component | entity-details-container', function(hooks) {
   test('it renders', async function(assert) {
 
     await render(hbs`{{entity-details-container entityId='123' entityType='user' alertId='alert-1' indicatorId='ind-1'}}`);
-
-    assert.equal(this.element.textContent.trim(), 'Watch Profile');
+    assert.equal(findAll('.entity-details-container-body').length, 1);
+    assert.equal(findAll('#ueba-iframe').length, 1, 'Should not render ueba iframe');
   });
 });

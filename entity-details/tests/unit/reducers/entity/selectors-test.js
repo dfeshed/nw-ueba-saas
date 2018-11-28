@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { entityId, entityType, entityDetails, alerts } from 'entity-details/reducers/entity/selectors';
+import { entityId, entityType, entityDetails, alertsForEntity } from 'entity-details/reducers/entity/selectors';
 import details from '../../../data/presidio/user_details';
 
 module('Unit | Selector | Entity Selector');
@@ -16,5 +16,5 @@ test('test entity state', function(assert) {
   assert.equal(entityId(state), 'user-1');
   assert.equal(entityType(state), 'user');
   assert.deepEqual(entityDetails(state), details.data[0]);
-  assert.deepEqual(alerts(state), details.data[0].alerts);
+  assert.deepEqual(alertsForEntity(state), details.data[0].alerts);
 });

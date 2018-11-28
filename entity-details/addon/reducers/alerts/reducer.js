@@ -7,8 +7,8 @@ const initialState = Immutable.from({
 });
 
 const alerts = handleActions({
-  [ACTION_TYPES.RESET_ENTITY]: () => Immutable.from(initialState),
-  [ACTION_TYPES.INITIATE_ENTITY]: (state, { payload: { alertId } }) => state.merge({ alertId })
+  [ACTION_TYPES.RESET_ALERT]: () => Immutable.from(initialState),
+  [ACTION_TYPES.INITIATE_ALERT]: (state, { payload: { alertId } }) => state.merge({ alertId })
 }, initialState);
 
 export default alerts;

@@ -12,8 +12,8 @@ const EntityDetailContainerComponent = Component.extend({
   classNames: ['entity-details-container'],
 
   _initializeEntityDetails() {
-    const { entityId, entityType, alertId, indicatorId } = this.getProperties('entityId', 'entityType', 'alertId', 'indicatorId');
-    this.send('initializeEntityDetails', { entityId, entityType, alertId, indicatorId });
+    const iniitalizeProps = this.getProperties('entityId', 'entityType', 'alertId', 'indicatorId');
+    this.send('initializeEntityDetails', iniitalizeProps);
   },
 
   didReceiveAttrs() {

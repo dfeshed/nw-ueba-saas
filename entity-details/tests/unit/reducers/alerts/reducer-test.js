@@ -10,7 +10,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
   test('test init alerts', (assert) => {
 
     const result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.INITIATE_ENTITY,
+      type: ACTION_TYPES.INITIATE_ALERT,
       payload: { entityId: 123, entityType: 'user', alertId: 'alert-1' }
     });
 
@@ -20,14 +20,14 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
   test('test reset alerts', (assert) => {
 
     let result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.INITIATE_ENTITY,
+      type: ACTION_TYPES.INITIATE_ALERT,
       payload: { entityId: 123, entityType: 'user', alertId: 'alert-1' }
     });
 
     assert.equal(result.alertId, 'alert-1');
 
     result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.RESET_ENTITY
+      type: ACTION_TYPES.RESET_ALERT
     });
 
 

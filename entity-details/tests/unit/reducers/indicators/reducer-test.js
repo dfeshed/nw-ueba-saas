@@ -10,7 +10,7 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
   test('test init indicator', (assert) => {
 
     const result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.INITIATE_ENTITY,
+      type: ACTION_TYPES.INITIATE_INDICATOR,
       payload: { entityId: 123, entityType: 'user', alertId: 'alert-1', indicatorId: 'inc-1' }
     });
 
@@ -20,14 +20,14 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
   test('test reset indicator', (assert) => {
 
     let result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.INITIATE_ENTITY,
+      type: ACTION_TYPES.INITIATE_INDICATOR,
       payload: { entityId: 123, entityType: 'user', alertId: 'alert-1', indicatorId: 'inc-1' }
     });
 
     assert.equal(result.indicatorId, 'inc-1');
 
     result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.RESET_ENTITY
+      type: ACTION_TYPES.RESET_INDICATOR
     });
 
     assert.equal(result.indicatorId, null);

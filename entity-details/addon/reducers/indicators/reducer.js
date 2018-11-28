@@ -7,8 +7,8 @@ const initialState = Immutable.from({
 });
 
 const indicators = handleActions({
-  [ACTION_TYPES.RESET_ENTITY]: () => Immutable.from(initialState),
-  [ACTION_TYPES.INITIATE_ENTITY]: (state, { payload: { indicatorId } }) => state.merge({ indicatorId })
+  [ACTION_TYPES.RESET_INDICATOR]: () => Immutable.from(initialState),
+  [ACTION_TYPES.INITIATE_INDICATOR]: (state, { payload: { indicatorId } }) => state.merge({ indicatorId })
 }, initialState);
 
 export default indicators;

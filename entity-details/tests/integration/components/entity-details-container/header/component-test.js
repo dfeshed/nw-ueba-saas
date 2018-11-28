@@ -31,4 +31,18 @@ module('Integration | Component | entity-details-container/header', function(hoo
     assert.equal(find('.entity-details-container-header_name').textContent.trim(), 'file_qa_1_101', 'Should show entity name');
     assert.equal(find('.score').textContent.trim(), 220, 'Should show entity score');
   });
+
+  test('it should allow user to be watched', async function(assert) {
+
+    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
+    await render(hbs`{{entity-details-container/header}}`);
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Watch Profile');
+  });
+
+  test('it should allow user to be unwatched', async function(assert) {
+    const newData = { ...details.data[0], followed: true };
+    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(newData).build();
+    await render(hbs`{{entity-details-container/header}}`);
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Stop Watching');
+  });
 });
