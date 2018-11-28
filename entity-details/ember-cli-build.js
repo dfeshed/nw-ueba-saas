@@ -1,21 +1,12 @@
 /* eslint-env node */
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
+const { commonBuildOptions } = require('../common');
 
 shim(EmberAddon);
 
 module.exports = function(defaults) {
-  const app = new EmberAddon(defaults, {
-    babel: {
-      plugins: [
-        'transform-object-rest-spread',
-        'transform-decorators-legacy'
-      ]
-    },
-    'ember-cli-babel': {
-      includePolyfill: true
-    }
-  });
-
+  const app = new EmberAddon(defaults, commonBuildOptions(__dirname));
   return app.toTree();
 };
+

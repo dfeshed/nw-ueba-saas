@@ -65,7 +65,7 @@
             <div class="rule-control incident-title">
               {{rsa-form-input
                 value=(readonly incidentRuleTitle)
-                focusOut=(action 'handleIncidentTitleChange' value='target.value')
+                focusOut=(action 'handleIncidentTitleChange')
                 placeholder=(t 'configure.incidentRules.incidentTitlePlaceholder')
                 isError=(not incidentRuleTitle)
                 errorMessage=(t 'configure.incidentRules.incidentTitleRequired')

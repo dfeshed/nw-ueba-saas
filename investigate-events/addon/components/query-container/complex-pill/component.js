@@ -143,7 +143,7 @@ export default Component.extend({
       }
     },
 
-    onKeyDown(event) {
+    onKeyDown(value, event) {
       if (isEnter(event) && event.target.value.trim().length > 0) {
         this._editPill(event.target.value);
       } else if (isEscape(event)) {

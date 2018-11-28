@@ -14,7 +14,7 @@
       type="text"
       value=(readonly filterValue.value)
       placeholder='Enter Value'
-      key-up="handleKeyUp"}}
+      key-up=(action "handleKeyUp")}}
 
     {{#if (and isError errorMessage)}}
       <div class="input-error">

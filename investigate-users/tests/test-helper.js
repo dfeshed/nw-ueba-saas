@@ -4,7 +4,7 @@ import config from '../config/environment';
 
 import './helpers/flash-message';
 
-import { start } from 'ember-cli-qunit';
+import { start } from 'ember-qunit';
 import loadEmberExam from 'ember-exam/test-support/load';
 
 setApplication(Application.create(config.APP));

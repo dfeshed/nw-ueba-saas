@@ -1,7 +1,7 @@
 <div>
   <label class="rsa-form-input">
     <span class="rsa-form-label">{{t 'respond.alerts.incidentSearch.searchInputLabel'}}</span>
-    {{input type="text" placeholder=(t 'respond.alerts.incidentSearch.searchInputPlaceholder') key-up="handleSearchKeyup"}}
+    {{input type="text" placeholder=(t 'respond.alerts.incidentSearch.searchInputPlaceholder') key-up=(action 'handleSearchKeyup')}}
   </label>
 </div>
 {{#rsa-data-table

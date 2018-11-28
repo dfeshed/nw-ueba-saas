@@ -45,7 +45,7 @@
         <label class="rsa-form-input">
           <span class="rsa-form-label">{{ t 'configure.incidentRules.ruleBuilder.value'}}</span>
           {{input
-            focus-out='handleInputChange'
+            focus-out=(action 'handleInputChange')
             value=(readonly info.value)
             type=(if (eq selectedField.type 'numberfield') 'number' 'text') }}
         </label>

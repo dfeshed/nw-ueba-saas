@@ -69,7 +69,7 @@ const freeForm = Component.extend({
   },
 
   actions: {
-    keyDown(e) {
+    keyDown(value, e) {
       if (e.keyCode === 13 && this.get('hasRequiredValuesToQuery')) {
         e.target.blur();
         this.throttledFocusOut(e);
@@ -77,11 +77,11 @@ const freeForm = Component.extend({
       }
     },
 
-    keyUp(e) {
+    keyUp(value, e) {
       debounce(this, this.debouncedKeyUp, { event: e }, 100);
     },
 
-    focusOut(e) {
+    focusOut(value, e) {
       this.throttledFocusOut(e);
     }
   }

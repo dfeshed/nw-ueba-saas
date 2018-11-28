@@ -52,7 +52,7 @@ const TokenMatching = Component.extend({
       next(this, () => this.set('newToken', ''));
     },
 
-    editToken(originalToken, tokenIndex, event) {
+    editToken(originalToken, tokenIndex, value, event) {
       const updatedToken = event.target.value;
       // If the token is only whitespace or it exists, replace with the original/previous token
       const { rule, tokens } = this.getProperties('rule', 'tokens');

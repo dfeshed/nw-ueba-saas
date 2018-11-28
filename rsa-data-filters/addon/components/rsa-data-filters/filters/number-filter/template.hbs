@@ -16,14 +16,14 @@
         type="number"
         value=(readonly filterValue.value.[0])
         placeholder='Enter Value'
-        key-up="handleKeyUp"}}
+        key-up=(action 'handleKeyUp')}}
     </div>
     <div class="number-input end rsa-form-input">
       {{input
         type="number"
         value=(readonly filterValue.value.[1])
         placeholder='Enter Value'
-        key-up="handleKeyUp"}}
+        key-up=(action 'handleKeyUp')}}
     </div>
   {{else}}
     <div class="number-input rsa-form-input">
@@ -31,7 +31,7 @@
         type="number"
         value=(readonly filterValue.value.[0])
         placeholder='Enter Value'
-        key-up="handleKeyUp"}}
+        key-up=(action 'handleKeyUp')}}
     </div>
   {{/if}}
   {{#if hasUnits}}

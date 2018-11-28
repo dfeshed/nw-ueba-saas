@@ -8,7 +8,7 @@
       type="text"
       value=(readonly idFilter)
       placeholder=(t 'respond.incidents.filters.idFilterPlaceholder')
-      key-up="idFilterChanged"}}
+      key-up=(action 'idFilterChanged')}}
 
     {{#unless isIdFilterValid}}
       <div class="input-error">

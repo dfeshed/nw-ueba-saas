@@ -5,7 +5,7 @@
     isError=(or firstValueValidator.showError firstlockError)
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
     focusIn=(action 'firstValueFocusIn')
-    focusOut=(action 'firstValueChange' value='target.value')
+    focusOut=(action 'firstValueChange')
     spellcheck=false
   }}
   <span>{{t 'adminUsm.groupCriteria.and'}}</span>
@@ -18,7 +18,7 @@
     isError=(or secondValueValidator.showError secondlockError)
     errorMessage=(t (concat 'adminUsm.groupCriteria.inputValidations.' validation))
     focusIn=(action 'secondValueFocusIn')
-    focusOut=(action 'secondValueChange' value='target.value')
+    focusOut=(action 'secondValueChange')
     spellcheck=false    
   }}
 </div>

@@ -245,6 +245,9 @@ const commonBuildOptions = function(projectDir) {
       ],
       throwUnlessParallelizable: true
     },
+    'ember-cli-template-lint': {
+      testGenerator: 'qunit' // or 'mocha', etc.
+    },
     'ember-cli-babel': {
       includePolyfill: true
     },

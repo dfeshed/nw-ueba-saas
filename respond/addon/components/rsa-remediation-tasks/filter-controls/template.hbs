@@ -8,7 +8,7 @@
       type="text"
       value=(readonly idFilter)
       placeholder=(t 'respond.remediationTasks.filters.idFilterPlaceholder')
-      key-up="idFilterChanged"}}
+      key-up=(action "idFilterChanged")}}
 
     {{#unless isIdFilterValid}}
       <div class="input-error">

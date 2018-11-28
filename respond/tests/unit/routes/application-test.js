@@ -65,7 +65,7 @@ module('Unit | Route | application', function(hooks) {
     await waitUntil(() => {
       ({ services, loading, error } = getServiceState(redux.getState()));
       return services && Object.keys(services).length === 4;
-    });
+    }, { timeout: 8000 });
 
     assert.equal(loading, false);
     assert.equal(error, false);

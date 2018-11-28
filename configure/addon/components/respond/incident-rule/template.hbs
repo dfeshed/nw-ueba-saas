@@ -23,7 +23,7 @@
               label=(concat (t 'configure.incidentRules.name') '*')
               value=(readonly ruleInfo.name)
               placeholder=(t 'configure.incidentRules.namePlaceholder')
-              focusOut=(action 'handleNameChange' value='target.value')
+              focusOut=(action 'handleNameChange')
               isError=(and (contains 'ruleInfo.name' visited) (not ruleInfo.name))
               errorMessage=(t 'configure.incidentRules.ruleNameRequired')
             }}
