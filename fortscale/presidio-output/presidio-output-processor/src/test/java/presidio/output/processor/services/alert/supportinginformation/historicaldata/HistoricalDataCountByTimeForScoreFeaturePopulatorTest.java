@@ -28,10 +28,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {
@@ -62,10 +59,11 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         Map<String, Number> histogram = new HashMap<>();
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
-        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyString(), Mockito.anyString(), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
+        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyMap(), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, CommonStrings.CONTEXT_USERID, contextValue, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
+        Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
+        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
         Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().getBuckets()));
     }
 
@@ -88,10 +86,11 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         histogram.put("one_hour_resolution_epochtime#1517382000", 64.0);
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
-        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyString(), Mockito.anyString(), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
+        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyMap(), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, CommonStrings.CONTEXT_USERID, contextValue, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
+        Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
+        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
         Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
         Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
         historicalData.getAggregation().getBuckets().forEach(o -> {

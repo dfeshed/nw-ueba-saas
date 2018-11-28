@@ -10,6 +10,7 @@ import presidio.output.processor.config.IndicatorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SupportingInformationUtils {
 
@@ -25,26 +26,34 @@ public class SupportingInformationUtils {
         return buildAnomalyFeatures(config, null);
     }
 
-    public List<Pair<String, Object>> buildAnomalyFeatures(IndicatorConfig config, String anomalyIndicatorValue) {
+
+    public List<Pair<String, Object>> buildAnomalyFeatures(IndicatorConfig config, Map<String, String> contexts) {
 
         List<Pair<String, Object>> features = new ArrayList<>();
 
-        String anomalyField = config.getAnomalyDescriptior()!=null? config.getAnomalyDescriptior().getAnomalyField(): null;
-        String anomalyValue = anomalyIndicatorValue;
-        // if anomaly value is specified explicitly use it, otherwise use the anomaly value from configuration
-        if (anomalyValue == null && config.getAnomalyDescriptior() != null ) {
-            anomalyValue = config.getAnomalyDescriptior().getAnomalyValue();
+        // add anomaly values - temp - add to context
+        if (config.getAnomalyDescriptior()!=null) {
+            String anomalyField = config.getAnomalyDescriptior().getAnomalyField();
+            String anomalyValue = config.getAnomalyDescriptior().getAnomalyValue();
+            if (StringUtils.isNotEmpty(anomalyField) && StringUtils.isNotEmpty(anomalyValue)) {
+                features.addAll(buildFeaturePairs(anomalyField, anomalyValue, config.getSchema()));
+            }
         }
-        features.addAll(buildFeaturePairs(anomalyField, anomalyValue, config.getSchema()));
 
+        // add anomaly filters - temp - add to context
         List<AnomalyFiltersConfig> anomalyFiltersConfigs = config.getAnomalyDescriptior().getAnomalyFilters();
-
         if(anomalyFiltersConfigs!=null) {
             anomalyFiltersConfigs.forEach(anomalyFiltersConfig -> {
                 String anomalyFilterField = anomalyFiltersConfig.getFieldName();
                 String anomalyFilterValue = anomalyFiltersConfig.getFieldValue();
                 features.addAll(buildFeaturePairs(anomalyFilterField, anomalyFilterValue, config.getSchema()));
             });
+        }
+
+        // add contexts
+        if (contexts != null) {
+            contexts.entrySet().forEach(context ->
+                                features.addAll(buildFeaturePairs(context.getKey(),context.getValue(), config.getSchema())));
         }
 
         return features;

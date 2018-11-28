@@ -78,8 +78,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
      * (aggr_<feature_name>. the missing data are completed using the aggregation framework (i.e: presidio-aggragtion package)
      *
      * @param timeRange
-     * @param contextField the context id (i.e userId)
-     * @param contextValue the context value (i.e the user name)
+     * @param contexts     map of contexts key and values (the context id (i.e userId) -> the context value (i.e: the user name))
      * @param schema       the schema for which to populate historical behavior
      * @param featureName  the feature for which to populate historical behavior (e.g: login time)
      * @return List of feature histogram for each day in the range
@@ -87,20 +86,20 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
      * Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
      */
     @Override
-    public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
+    public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
 
         // get historical data from models
-        String contextId = FeatureBucketUtils.buildContextId(getContextIdMap(contextField, contextValue));
+        String contextId = FeatureBucketUtils.buildContextId(contexts);
         String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();//getFeatureBucketConfName(schema, featureName);
         List<FeatureBucket> featureBucketsFromModels = adeManagerSdk.findFeatureBuckets(contextId, featureBucketConfName, timeRange);
 
         // complete historical data in memory
-        List<FeatureBucket> featureBucketsInMemory = calculateFeatureBuckets(timeRange, contextValue, schema, featureName, featureBucketsFromModels, historicalDataConfig);
+        //List<FeatureBucket> featureBucketsInMemory = calculateFeatureBuckets(timeRange, contextValue, schema, featureName, featureBucketsFromModels, historicalDataConfig);
 
         // translate FeatureBuckets to dailyHistogram
         List<DailyHistogram<String, Number>> dailyHistogramList = new ArrayList<DailyHistogram<String, Number>>();
         dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsFromModels));
-        dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsInMemory));
+        //dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsInMemory));
 
         return dailyHistogramList;
     }

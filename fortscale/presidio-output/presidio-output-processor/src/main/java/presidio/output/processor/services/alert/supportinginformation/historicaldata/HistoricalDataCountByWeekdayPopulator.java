@@ -29,13 +29,13 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         // map of day of week -> <hour -> count>
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
 
         // fetch daily histograms
-        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
 
         // iterate over days
         for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {

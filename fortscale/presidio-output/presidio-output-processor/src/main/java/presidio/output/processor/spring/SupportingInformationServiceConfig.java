@@ -92,7 +92,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
         return new SupportingInformationForScoreAggr(supportingInformationConfig, historicalDataPopulatorFactory(),
-                scoredEventService, supportingInformationUtils(), enrichedEventRecordReaderFactory);
+                scoredEventService, supportingInformationUtils(), enrichedEventRecordReaderFactory, adeManagerSdk);
     }
 
     @Bean

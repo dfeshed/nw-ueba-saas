@@ -6,6 +6,7 @@ import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.DailyHistogram;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for Historical data fetching
@@ -17,8 +18,7 @@ public interface HistoricalDataFetcher {
      * Fetches the historical feature usage of the context (i.e. user) during the specified time period grouped by day
      *
      * @param timeRange
-     * @param contextField the context id (i.e userId)
-     * @param contextValue the context value (i.e the user name)
+     * @param contexts Map of contexts (context id (i.e userId) to context value (i.e the user name))
      * @param schema the schema for which to populate historical behavior
      * @param featureName the feature for which to populate historical behavior (e.g: login time)
      *
@@ -27,7 +27,7 @@ public interface HistoricalDataFetcher {
      *                Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
      *
      */
-    List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig);
+    List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig);
 
 
     /**

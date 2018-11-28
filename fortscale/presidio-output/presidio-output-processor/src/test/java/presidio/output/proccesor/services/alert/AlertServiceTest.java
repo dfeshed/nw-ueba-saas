@@ -8,6 +8,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -119,6 +120,7 @@ public class AlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void generateAlertWithOnlyStaticIndicatorsTest() {
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
@@ -148,6 +150,7 @@ public class AlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void generateAlertWithNotOnlyStaticIndicatorsTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -192,6 +195,7 @@ public class AlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void testSingleIndicatorsWithMultipleEventsTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -334,6 +338,7 @@ public class AlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void testAlertWithSourceMachineTransformer() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -356,6 +361,7 @@ public class AlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void testScoreIndicatorsContribution() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);

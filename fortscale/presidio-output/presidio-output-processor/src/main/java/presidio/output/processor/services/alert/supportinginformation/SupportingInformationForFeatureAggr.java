@@ -1,12 +1,11 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.time.TimeRange;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -17,7 +16,6 @@ import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
 import presidio.output.domain.services.event.EventPersistencyService;
-import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
@@ -129,11 +127,12 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
         String contextField = CommonStrings.CONTEXT_USERID;
         String contextValue = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
+        Map<String, String> contexts = Collections.singletonMap(contextField, contextValue);
         Schema schema = indicatorConfig.getSchema();
         String featureName = adeAggregationRecord.getFeatureName();
         String anomalyValue = adeAggregationRecord.getFeatureValue().toString();
 
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, contextField, contextValue, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, contexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());
         return historicalData;

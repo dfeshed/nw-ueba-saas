@@ -5,6 +5,9 @@ import fortscale.utils.time.TimeRange;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.processor.config.HistoricalDataConfig;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Interface for Historical data population. Populator should provide the complete
  * historical data based on the context value, time and anomaly value.
@@ -23,7 +26,7 @@ public interface HistoricalDataPopulator {
      *
      * @return Historical data with anomaly value indication
      */
-    HistoricalData createHistoricalData(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig);
+    HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig);
 
     String getType();
 

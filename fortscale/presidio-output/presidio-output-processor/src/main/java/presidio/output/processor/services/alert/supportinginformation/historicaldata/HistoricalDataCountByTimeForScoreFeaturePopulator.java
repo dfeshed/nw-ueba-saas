@@ -11,6 +11,7 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HistoricalDataCountByTimeForScoreFeaturePopulator implements HistoricalDataPopulator {
     Logger logger = Logger.getLogger(HistoricalDataCountByTimeForScoreFeaturePopulator.class);
@@ -25,12 +26,12 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
         // fetch daily histograms
-        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
 
         // iterate over days
         for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {
