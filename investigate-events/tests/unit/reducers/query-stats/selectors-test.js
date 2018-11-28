@@ -378,6 +378,15 @@ test('isConsoleEmpty', function(assert) {
   assert.equal(isConsoleEmpty({
     investigate: {
       queryStats: {
+        description: null,
+        errors: ['foo']
+      }
+    }
+  }), false);
+
+  assert.equal(isConsoleEmpty({
+    investigate: {
+      queryStats: {
         description: null
       }
     }

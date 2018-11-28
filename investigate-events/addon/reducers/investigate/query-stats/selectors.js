@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import { isEmpty } from '@ember/utils';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -110,9 +111,9 @@ export const hasError = createSelector(
 );
 
 export const isConsoleEmpty = createSelector(
-  [_queryStats],
-  (queryStats) => {
-    return queryStats.description === null;
+  [_queryStats, _errors],
+  (queryStats, errors) => {
+    return queryStats.description === null && isEmpty(errors);
   }
 );
 
