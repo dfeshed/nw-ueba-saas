@@ -113,13 +113,15 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       if (!isEmpty(scopesString)) {
         data.scope = scopesString;
       }
-      this.makeRequest(serverTokenEndpoint, data).then((response, status, jqXHR) => {
+      this.makeRequest(serverTokenEndpoint, data).then((response) => {
         run(() => {
+          let { responseJSON } = response;
+          const { headers } = response;
           const csrfKey = this.get('csrfLocalstorageKey');
 
-          if (jqXHR) {
-            const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
-            const idleSessionTimeout = (parseInt(jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout') || 10, 10)) * 60000;
+          if (headers) {
+            const csrf = headers.get('X-CSRF-TOKEN') || null;
+            const idleSessionTimeout = (parseInt(headers.get('X-NW-Idle-Session-Timeout') || 10, 10)) * 60000;
             localStorage.setItem('rsa-x-idle-session-timeout', idleSessionTimeout);
             localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
 
@@ -128,7 +130,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
             }
           }
 
-          const daysRemaining = response.expiryUserNotify;
+          const daysRemaining = responseJSON.expiryUserNotify;
           let passwordChangeKey = 'login.changePasswordSoon';
 
           if (daysRemaining === 0) {
@@ -143,12 +145,12 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
             });
           }
 
-          const expiresAt = this._absolutizeExpirationTime(response.expires_in);
-          this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
+          const expiresAt = this._absolutizeExpirationTime(responseJSON.expires_in);
+          this._scheduleAccessTokenRefresh(responseJSON.expires_in, expiresAt, responseJSON.refresh_token);
           if (!isEmpty(expiresAt)) {
-            response = assign(response, { 'expires_at': expiresAt });
+            responseJSON = assign(responseJSON, { 'expires_at': expiresAt });
           }
-          resolve(response);
+          resolve(responseJSON);
         });
       }, (xhr) => {
         run(null, reject, xhr.responseJSON || xhr.responseText);

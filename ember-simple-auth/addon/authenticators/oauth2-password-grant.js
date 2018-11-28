@@ -360,7 +360,8 @@ export default BaseAuthenticator.extend({
               response.responseJSON = json;
               reject(response);
             } else {
-              resolve(json);
+              response.responseJSON = json;
+              resolve(response);
             }
           } catch (SyntaxError) {
             response.responseText = text;
