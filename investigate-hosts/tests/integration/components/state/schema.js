@@ -38,6 +38,14 @@ export default {
       wrapperType: 'STRING'
     },
     {
+      name: 'score',
+      description: 'Risk Score',
+      dataType: 'INT',
+      searchable: true,
+      defaultProjection: true,
+      wrapperType: 'STRING'
+    },
+    {
       name: 'machine.scanStartTime',
       description: 'Last Scan Time',
       dataType: 'DATE',

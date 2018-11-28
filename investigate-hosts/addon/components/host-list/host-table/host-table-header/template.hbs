@@ -1,4 +1,3 @@
-
 {{#rsa-content-tethered-panel-trigger
   panel='columnSelectorpanel'
   triggerEvent='click'
@@ -21,19 +20,16 @@
     </section>
     <ul id="rsa-data-table__column-selctor__sorted-columns" class="column-chooser-lists">
       {{#each filterList as |column|}}
-        {{#if (not-eq column.dataType "checkbox")}}
-          {{#if (not-eq column.field "machine.machineName") }}
-            {{#if (not-eq column.field "machineIdentity.machineName") }}
-              <li>
-                <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
-                  {{rsa-form-checkbox
-                    checked=column.selected
-                    change=(action 'toggleColumn' column)}}
-                  {{t column.title}}
-                </label>
-              </li>
-            {{/if}}
-          {{/if}}
+        {{#if (and (not-eq column.dataType "checkbox") (not-eq column.field "machine.machineName")
+                (not-eq column.field "machineIdentity.machineName") (not-eq column.field 'score'))}}
+          <li>
+            <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
+              {{rsa-form-checkbox
+                checked=column.selected
+                change=(action 'toggleColumn' column)}}
+              {{t column.title}}
+            </label>
+          </li>
         {{/if}}
       {{/each}}
     </ul>

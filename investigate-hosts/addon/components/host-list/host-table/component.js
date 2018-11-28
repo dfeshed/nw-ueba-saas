@@ -50,12 +50,10 @@ const HostTable = Component.extend({
 
   classNames: 'machine-zone',
 
-  CONFIG_FIXED_COLUMNS: ['machine.machineName', 'score'],
-
   @computed('columns')
   updatedColumns(columns) {
-    const nonFixedColumns = columns.filter((column) => !this.CONFIG_FIXED_COLUMNS.includes(column.field));
     const fixedColumns = columns.slice(0, 3); // checkbox, machine name and risk score should be displayed first
+    const nonFixedColumns = columns.slice(3); // Remaining column sort by title
     const sortedColumn = this._sortList(nonFixedColumns);
     return [...fixedColumns, ...sortedColumn];
   },
