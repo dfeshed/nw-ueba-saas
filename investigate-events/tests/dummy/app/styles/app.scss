@@ -18,6 +18,17 @@
 /* Pulling in settings */
 @import 'preferences/manifest';
 
+/* Import license styles */
+@import 'license/manifest';
+
+// BEGIN Remove these to see the license stuff in the dummy app
+.license-banner {
+  display: none;
+}
+.license-banner.shown + .rsa-investigate-query {
+  top: 56px;
+}
+// END
 
 /*
   Overlays the context panel over the right-side of the app's main outlet.
@@ -27,7 +38,7 @@
   &__main {
     &-body {
       z-index: 1;
-    }  
+    }
     &-aside {
       overflow: hidden;
       position: fixed;
@@ -38,7 +49,7 @@
       z-index: 500;
       transition: width 300ms;
     }
-  
+
     &.has-entity-info {
       .investigate-dummy__main {
         &-aside {

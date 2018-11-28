@@ -9,6 +9,7 @@ const subscriptionPath = path.join(__dirname, 'tests', 'data');
 const recon = require('../recon').mockDestinations;
 const preferences = require('../preferences').mockDestinations;
 const contextMockDirectory = require('../context').mockDestinations;
+const licenseMockDirectory = require('../license').mockDestinations;
 
 
 module.exports = EngineAddon.extend({
@@ -40,7 +41,9 @@ module.exports = EngineAddon.extend({
   socketRouteGenerator: require('./config/socketRoutes'),
 
   // local mock endpoints last as any dupes = last one wins
-  mockDestinations: [subscriptionPath, ...recon, preferences, contextMockDirectory],
+  mockDestinations: [
+    subscriptionPath, ...recon, preferences, contextMockDirectory, licenseMockDirectory
+  ],
 
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),

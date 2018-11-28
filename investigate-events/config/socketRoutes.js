@@ -2,6 +2,7 @@
 const reconConfigGen = require('../../recon').socketRouteGenerator;
 const contextConfigGen = require('../../context').socketRouteGenerator;
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
+const licenseConfigGen = require('../../license').socketRouteGenerator;
 const common = require('../../common');
 let mergedConfig;
 
@@ -127,7 +128,7 @@ module.exports = function(environment) {
     return {};
   }
 
-  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen, preferencesConfigGen];
+  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen, preferencesConfigGen, licenseConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };
