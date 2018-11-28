@@ -1,6 +1,5 @@
 package presidio.input.core.spring;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
@@ -38,9 +37,15 @@ import java.util.Map;
 
 @Configuration
 @ComponentScan()
-@Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
+@Import({
+        PresidioInputPersistencyServiceConfig.class,
+        AdeDataServiceConfig.class,
+        OutputDataServiceConfig.class,
+        PresidioMonitoringConfiguration.class,
+        ElasticsearchConfig.class,
+        InputAdeManagerSdkConfig.class
+})
 public class InputCoreConfiguration {
-
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
 
     @Autowired
@@ -55,10 +60,10 @@ public class InputCoreConfiguration {
     public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Map<Schema, Map<String, List<String>>>> mapping;
+
         try {
             Resource resource = applicationContext.getResources(filePath)[0];
-            mapping = mapper.readValue(resource.getFile(), new TypeReference<Map<String, Map<Schema, Map<String, List<String>>>>>() {
-            });
+            mapping = mapper.readValue(resource.getFile(), new TypeReference<Map<String, Map<Schema, Map<String, List<String>>>>>() {});
             return mapping.get("mapping");
         } catch (IOException e) {
             logger.error("error loading the {} mapping file", filePath, e);
