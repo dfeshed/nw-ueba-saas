@@ -81,8 +81,8 @@ public class Indicator {
     @JsonProperty("historicalData")
     private HistoricalData historicalData = null;
 
-    @JsonProperty("context")
-    private Map<String, Object> contexts = null;
+    @JsonProperty("contexts")
+    private Map<String, String> contexts = null;
 
     @JsonProperty("eventsNum")
     private Integer eventsNum = null;
@@ -294,11 +294,11 @@ public class Indicator {
     }
 
 
-    public Map<String, Object> getContexts() {
+    public Map<String, String> getContexts() {
         return contexts;
     }
 
-    public void setContexts(Map<String, Object> contexts) {
+    public void setContexts(Map<String, String> contexts) {
         this.contexts = contexts;
     }
 
