@@ -308,12 +308,12 @@ public class CategoryRarityModelScorerTest {
         double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-count-100", featureWithCount100));
         Assert.assertEquals(0.0, score, 0.0);
         score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-zero-count", "feature-zero-count")); // The scorer should handle it as if count=1
-        Assert.assertEquals(100.0, score, 0.0);
+        Assert.assertEquals(96, score, 0.0);
 
     }
 
     @Test
-    public void calculateScore_elementaryCheck2_test() throws Exception{
+    public void calculateScore_elementaryCheck2_test(){
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
@@ -327,12 +327,9 @@ public class CategoryRarityModelScorerTest {
         calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
 
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100), categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
-        model.setFeatureCount(featureWithCount100, count);
-        model.setNumOfPartitions(10);
 
-        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("test99").getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
@@ -341,7 +338,7 @@ public class CategoryRarityModelScorerTest {
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
-        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(96, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
@@ -389,7 +386,7 @@ public class CategoryRarityModelScorerTest {
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
-        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(96, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
@@ -495,7 +492,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -516,7 +513,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -537,7 +534,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
     }
 
@@ -558,7 +555,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -581,7 +578,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d / (enough - min + 1), score.getCertainty(), 0.0);
     }
 
@@ -604,7 +601,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
     }
 

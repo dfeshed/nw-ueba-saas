@@ -185,6 +185,6 @@ public class TimeModelTest extends AbstractScorerTest {
 		long smoothedCounterFromModel2 = modelWithTime2.getSmoothedTimeCounter(timeInMiddle);
 		long smoothedCounterFromModel1And2 = modelWithTime1AndTime2.getSmoothedTimeCounter(timeInMiddle);
 
-		Assert.assertEquals(smoothedCounterFromModel1 + smoothedCounterFromModel2, smoothedCounterFromModel1And2, 0.00001);
+		Assert.assertEquals(smoothedCounterFromModel1 + smoothedCounterFromModel2, smoothedCounterFromModel1And2, 1);
 	}
 }
