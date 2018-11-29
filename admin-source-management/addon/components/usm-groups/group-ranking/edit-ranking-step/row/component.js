@@ -34,15 +34,5 @@ export default Component.extend(SortableItemMixin, {
   @computed('item.sourceCount')
   srcCount(sourceCount) {
     return getSourceCount(sourceCount);
-  },
-
-  onRowClick() {},
-
-  doubleClick() {
-    // Index 0 is top renking. No need to select and set top ranking
-    if (this.get('index') !== 0) {
-      this.get('onRowClick').apply(this, arguments);
-    }
-    return false;
   }
 });

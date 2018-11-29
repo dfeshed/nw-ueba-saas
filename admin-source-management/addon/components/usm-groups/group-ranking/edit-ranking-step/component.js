@@ -26,7 +26,15 @@ const dispatchToActions = {
 
 const EditRankingStep = Component.extend({
   tagName: 'hbox',
-  classNames: 'edit-ranking-step'
+  classNames: 'edit-ranking-step',
+  actions: {
+    handelSelectGroupRanking(index, evt) {
+      // top rank is index 0, no need to select
+      if (index !== 0) {
+        evt.currentTarget.focus();
+      }
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(EditRankingStep);

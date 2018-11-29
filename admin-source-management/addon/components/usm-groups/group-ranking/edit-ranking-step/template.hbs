@@ -30,10 +30,12 @@
         {{#each groupRanking as |item index|}}
           {{#usm-groups/group-ranking/edit-ranking-step/row
             item=item
-            index=index
             group=group
+            index=index
             selectedItemId=selectedGroupRanking
-            onRowClick=(action 'selectGroupRanking' item.name)}}
+            tabindex=0
+            focusIn=(action 'selectGroupRanking' item.name)
+            click=(action 'handelSelectGroupRanking' index)}}
           {{/usm-groups/group-ranking/edit-ranking-step/row}}
         {{/each}}
       </tbody>

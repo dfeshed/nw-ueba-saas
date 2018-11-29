@@ -1,5 +1,6 @@
 .usm-group-wizard {
   .apply-policy-step {
+    margin-right: 20px;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -8,7 +9,7 @@
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
     .apply-policy-step-inner {
-      width: 1000px;
+      width: 50px;
     }
     span.remove-source-type {
       margin-top: rsa-whitespace(more);
@@ -25,7 +26,6 @@
         table {
           width: 650px;
           .table-cell-text {
-            overflow-x: hidden;
             text-overflow: ellipsis;
             overflow-wrap: break-word;
             max-width: 250px;

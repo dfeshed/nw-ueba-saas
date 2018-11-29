@@ -34,6 +34,16 @@
         &.is-selected {
           background-color: background-color(secondary, dark);
         }
+        &.sortable-item.is-dragging {
+          transition-duration: 0s;
+          background: background-color(secondary, darker);
+          z-index: 10;
+        }
+        &.sortable-item.is-dropping {
+          transition-duration: .1s;
+          background: background-color(secondary, light);
+          z-index: 10;
+        }
       }    
       th, td {
         border-bottom: 1px solid border-color(primary, dark);
