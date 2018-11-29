@@ -52,7 +52,8 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
         Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc().calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, "not_existing_feature"),
                 listOfMaps);
-        Assert.assertNull(res);
+        Assert.assertNotNull(res);
+        Assert.assertEquals(0D,  ((AggrFeatureValue) res.getValue()).getValue());
     }
 
     @Test

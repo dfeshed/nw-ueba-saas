@@ -17,6 +17,7 @@ import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
 @Mapping(mappingPath = "elasticsearch/indexes/presidio-output-indicator/mappings.json")
@@ -36,8 +37,7 @@ public class Indicator extends AbstractElasticDocument {
     public static final String SCORE = "score";
     public static final String EVENTS_NUM = "eventsNum";
     public static final String SCORE_CONTRIBUTION = "scoreContribution";
-    public static final String MODEL_CONTEXT_FIELD = "modelContextField";
-    public static final String MODEL_CONTEXT_VALUE = "modelContextValue";
+    public static final String CONTEXTS = "contexts";
 
     @JsonProperty(NAME)
     private String name;
@@ -73,11 +73,8 @@ public class Indicator extends AbstractElasticDocument {
     @JsonProperty(EVENTS_NUM)
     private int eventsNum;
 
-    @JsonProperty(MODEL_CONTEXT_FIELD)
-    private String modelContextField;
-
-    @JsonProperty(MODEL_CONTEXT_VALUE)
-    private String modelContextValue;
+    @JsonProperty(CONTEXTS)
+    private Map<String,String> contexts;
 
     @JsonIgnore
     @ToStringExclude
@@ -207,20 +204,12 @@ public class Indicator extends AbstractElasticDocument {
         this.alert = alert;
     }
 
-    public String getModelContextField() {
-        return modelContextField;
+    public Map<String, String> getContexts() {
+        return contexts;
     }
 
-    public void setModelContextField(String modelContextField) {
-        this.modelContextField = modelContextField;
-    }
-
-    public String getModelContextValue() {
-        return modelContextValue;
-    }
-
-    public void setModelContextValue(String modelContextValue) {
-        this.modelContextValue = modelContextValue;
+    public void setContexts(Map<String, String> contexts) {
+        this.contexts = contexts;
     }
 
     @Override

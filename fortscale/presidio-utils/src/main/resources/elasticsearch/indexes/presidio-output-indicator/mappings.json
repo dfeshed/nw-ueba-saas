@@ -71,6 +71,9 @@
       "modelContextValue": {
         "store": true,
         "type": "string"
+      },
+      "contexts": {
+        "enabled": false
       }
     }
   }

@@ -36,8 +36,9 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 
 	/**
 	 * C'tor.
-	 * @param mongoTemplate             the {@link MongoTemplate}
-	 * @param mongoDbBulkOpUtil
+	 *
+	 * @param mongoTemplate     the {@link MongoTemplate}
+	 * @param mongoDbBulkOpUtil the {@link MongoDbBulkOpUtil}
 	 */
 	public FeatureBucketStoreMongoImpl(
 			MongoTemplate mongoTemplate, MongoDbBulkOpUtil mongoDbBulkOpUtil, long selectorPageSize) {
@@ -133,9 +134,9 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	}
 
 	@Override
-	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextIds, TimeRange timeRange) {
+	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextId, TimeRange timeRange) {
 		Query query = new Query()
-				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextIds))
+				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId))
 				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
 		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
 	}

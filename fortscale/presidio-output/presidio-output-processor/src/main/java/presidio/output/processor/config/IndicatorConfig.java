@@ -7,13 +7,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
         "type",
         "name",
         "adeEventType",
-        "modelContextField",
+        "modelContextFields",
         "schema",
         "anomalyDescriptior",
         "historicalData",
@@ -22,7 +27,9 @@ import fortscale.common.general.Schema;
 })
 public class IndicatorConfig {
 
-    public static final String DEFAULT_MODEL_CONTEXT = CommonStrings.CONTEXT_USERID;
+    public IndicatorConfig() {
+        this.modelContextFields = Arrays.asList(CommonStrings.CONTEXT_USERID);
+    }
 
     @JsonProperty("id")
     private String id;
@@ -36,8 +43,8 @@ public class IndicatorConfig {
     @JsonProperty("ade_event_type")
     private String adeEventType;
 
-    @JsonProperty("modelContextField")
-    private String modelContextField = DEFAULT_MODEL_CONTEXT;
+    @JsonProperty("modelContextFields")
+    private List<String> modelContextFields;
 
     @JsonProperty("schema")
     private Schema schema;
@@ -143,13 +150,13 @@ public class IndicatorConfig {
         this.transformer = transformer;
     }
 
-    @JsonProperty("modelContextField")
-    public String getModelContextField() {
-        return modelContextField;
+    @JsonProperty("modelContextFields")
+    public List<String> getModelContextFields() {
+        return modelContextFields;
     }
 
-    @JsonProperty("modelContextField")
-    public void setModelContextField(String modelContextField) {
-        this.modelContextField = modelContextField;
+    @JsonProperty("modelContextFields")
+    public void setModelContextFields(List<String> modelContextFields) {
+        this.modelContextFields = modelContextFields;
     }
 }

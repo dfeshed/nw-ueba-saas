@@ -14,6 +14,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HistoricalDataCountByTimePopulator implements HistoricalDataPopulator {
 
@@ -27,11 +28,14 @@ public class HistoricalDataCountByTimePopulator implements HistoricalDataPopulat
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String,Double >> buckets = new ArrayList<Bucket<String, Double>>();
 
         // fetch daily histograms
+        // temporary !!! single context fields for F
+        String contextField = contexts.keySet().stream().findFirst().get();
+        String contextValue = contexts.get(contextField);
         List<DailyHistogram<Integer, Double>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForAggregatedFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
 
         // iterate over days

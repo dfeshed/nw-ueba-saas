@@ -3,6 +3,8 @@ package presidio.ade.sdk.aggregation_records;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 
 import java.util.List;
@@ -35,8 +37,8 @@ public interface AggregationRecordsManagerSdk {
 	Map<String,List<String>> getAggregationNameToAdeEventTypeMap();
 
 	/**
-	 * syntactic suger for {@link this#getAggregationNameToAdeEventTypeMap()}
-	 * @param scoreAggregationName
+	 * syntactic sugar for {@link this#getAggregationNameToAdeEventTypeMap()}
+	 *
 	 * @return adeEventTypes for scoreAggregationName
 	 */
 	default List<String> getScoreAggregationNameAdeEventTypes(String scoreAggregationName)
@@ -47,7 +49,7 @@ public interface AggregationRecordsManagerSdk {
 	Map<String,String> getAggregationNameToFeatureBucketConfNameMap();
 
 	/**
-	 * NOTE: featurebuckets are not a product the ADE should expose. it should be calculated separately.
+	 * NOTE: feature buckets are not a product the ADE should expose. it should be calculated separately.
 	 * it  is only for temporal usage. do not add any more calls to this method!!!
 	 *
 	 * @param contextId context to retrieve feature buckets for
@@ -58,4 +60,6 @@ public interface AggregationRecordsManagerSdk {
 	@Deprecated
 	List<FeatureBucket> findFeatureBuckets(String contextId, String bucketConfName, TimeRange timeRange);
 
+	ScoreAggregationRecordContributors splitScoreAggregationRecordToContributors(
+			AdeAggregationRecord scoreAggregationRecord, List<String> splitFieldNames);
 }

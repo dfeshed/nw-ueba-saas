@@ -34,11 +34,9 @@
       "strategyName": "fixed_duration_daily",
       "predicates": [
         {
-          "type": "contained-in-list",
+          "type": "regex",
           "fieldName": "registryKeyGroup",
-          "expectedValues": [
-            "SERVICES_IMAGE_PATH"
-          ]
+          "pattern": "SERVICES_IMAGE_PATH"
         },
         {
           "type": "regex",

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -79,6 +80,9 @@ public class Indicator {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("historicalData")
     private HistoricalData historicalData = null;
+
+    @JsonProperty("context")
+    private Map<String, Object> contexts = null;
 
     @JsonProperty("eventsNum")
     private Integer eventsNum = null;
@@ -290,6 +294,14 @@ public class Indicator {
     }
 
 
+    public Map<String, Object> getContexts() {
+        return contexts;
+    }
+
+    public void setContexts(Map<String, Object> contexts) {
+        this.contexts = contexts;
+    }
+
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
@@ -308,12 +320,13 @@ public class Indicator {
                 Objects.equals(this.type, indicator.type) &&
                 Objects.equals(this.score, indicator.score) &&
                 Objects.equals(this.historicalData, indicator.historicalData) &&
-                Objects.equals(this.eventsNum, indicator.eventsNum);
+                Objects.equals(this.eventsNum, indicator.eventsNum) &&
+                Objects.equals(this.contexts, indicator.contexts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, startDate, endDate, anomalyValue, schema, type, score, historicalData, eventsNum);
+        return Objects.hash(id, name, startDate, endDate, anomalyValue, schema, type, score, historicalData, eventsNum, contexts);
     }
 
     @Override
@@ -331,6 +344,7 @@ public class Indicator {
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
         sb.append("    historicalData: ").append(toIndentedString(historicalData)).append("\n");
         sb.append("    eventsNum: ").append(toIndentedString(eventsNum)).append("\n");
+        sb.append("    contexts: ").append(toIndentedString(contexts)).append("\n");
         sb.append("}");
         return sb.toString();
     }

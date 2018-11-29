@@ -32,5 +32,6 @@ public interface FeatureBucketReader {
 	 * @return a list of {@link FeatureBucket}s
 	 */
 	List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, Set<String> contextIds, TimeRange timeRange);
-	List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextIds, TimeRange timeRange);
+
+	List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextId, TimeRange timeRange);
 }

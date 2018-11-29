@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
+import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
@@ -18,6 +19,8 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
+import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordSplitter;
+import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordSplitterConfig;
 import presidio.ade.sdk.smart_records.SmartRecordConfServiceConfig;
 import presidio.ade.sdk.store.StoreManagerConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
@@ -30,12 +33,14 @@ import presidio.monitoring.spring.PresidioMonitoringConfiguration;
         EnrichedDataStoreConfig.class,
         SmartDataReaderConfig.class,
         ScoredEnrichedDataStoreMongoConfig.class,
+        AggregatedDataStoreConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
         FeatureBucketStoreMongoConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
         SmartRecordConfServiceConfig.class,
         StoreManagerConfig.class,
-        PresidioMonitoringConfiguration.class
+        PresidioMonitoringConfiguration.class,
+        ScoreAggregationRecordSplitterConfig.class
 })
 public class AdeManagerSdkConfig {
     @Autowired
@@ -62,6 +67,9 @@ public class AdeManagerSdkConfig {
     @Autowired
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
 
+    @Autowired
+    private ScoreAggregationRecordSplitter scoreAggregationRecordSplitter;
+
     @Bean
     public AdeManagerSdk adeManagerSdk() {
         return new AdeManagerSdkImpl(
@@ -72,6 +80,7 @@ public class AdeManagerSdkConfig {
                 featureBucketReader,
                 aggregationEventsAccumulationDataReader,
                 smartRecordConfService,
-                storeManager);
+                storeManager,
+                scoreAggregationRecordSplitter);
     }
 }

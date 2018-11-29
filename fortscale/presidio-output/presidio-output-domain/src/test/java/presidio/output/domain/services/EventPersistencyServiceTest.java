@@ -2,9 +2,11 @@ package presidio.output.domain.services;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.store.ScoredDataReader;
 import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
@@ -31,19 +35,25 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongodbTestConfig.class, EventPersistencyServiceConfig.class, TestConfig.class})
 public class EventPersistencyServiceTest {
-
     @Autowired
     private EventPersistencyService eventPersistencyService;
     @Autowired
     private OutputToCollectionNameTranslator toCollectionNameTranslator;
     @Autowired
     private MongoTemplate mongoTemplate;
+
     @MockBean
     private MetricRepository metricRepository;
     @MockBean
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @MockBean
     private PresidioElasticsearchTemplate elasticsearchTemplate;
+    @MockBean
+    private RecordReaderFactoryService recordReaderFactoryService;
+    @MockBean
+    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
+    @MockBean
+    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Before
     public void before() {
@@ -51,7 +61,7 @@ public class EventPersistencyServiceTest {
     }
 
     @Test
-    public void contextLoads() throws Exception {
+    public void contextLoads() {
         Assert.assertNotNull(eventPersistencyService);
     }
 
@@ -60,28 +70,24 @@ public class EventPersistencyServiceTest {
         //creating event Pojo
         Instant eventDate = Instant.now();
         FileEnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
-                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
-                EventResult.FAILURE, "resultCode", new HashMap<String, String>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
+                EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         List<FileEnrichedEvent> events = new ArrayList<>();
         events.add(event);
-
-        //store the events into mongp
+        //store the events into Mongo
         try {
             eventPersistencyService.store(Schema.FILE, events);
         } catch (Exception e) {
             Assert.fail();
         }
-
         //check that data was stored
         String collectionName = toCollectionNameTranslator.toCollectionName(Schema.FILE);
-
         List<FileEnrichedEvent> insertedRecords = mongoTemplate.findAll(FileEnrichedEvent.class, collectionName);
-        Assert.assertTrue("output enriched events exists", insertedRecords.size() == 1);
+        Assert.assertEquals("output enriched events exists", 1, insertedRecords.size());
         DBCollection collection = mongoTemplate.getCollection(collectionName);
         List<DBObject> indexInfo = collection.getIndexInfo();
         // 1 index is always created for _id_ field. because of that reason we need to check that are at least 2
         Assert.assertTrue("more than one index created", indexInfo.size() >= 2);
-
     }
 }
