@@ -5,7 +5,9 @@
     .rsa-form-radio-group-label {
       margin-bottom: rsa-whitespace();
     }
-
+    .rsa-form-checkbox-label {
+      margin-top: rsa-whitespace(more);
+    }
   }
   &-loader-position{
     margin-top: 50%;

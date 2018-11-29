@@ -81,7 +81,7 @@ export default {
   },
   {
     name: 'preferences.investigate-events.autoUpdateSummary',
-    type: 'switch',
+    type: 'checkbox',
     field: 'eventAnalysisPreferences.autoUpdateSummary'
   }],
   defaultPreferences: {

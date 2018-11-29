@@ -1981,7 +1981,7 @@ export default {
       'DB-tooltip': 'Database time where events are stored',
       'WALL-tooltip': 'Current time with timezone set in user preferences',
       autoDownloadExtractedFiles: 'Download extracted files automatically',
-      autoUpdateSummary: 'Update Relative Time Window Automatically',
+      autoUpdateSummary: 'Update relative time window automatically',
       'autoUpdateSummary-tooltip': 'Enable this option to automatically update the time range window in the breadcrumb when the service is polled and sends fresh results. When the time range is updated, you can see the Submit Query button activated and click to get the fresh results. To keep the time range window in the breadcrumb synchronized with the current results, do not enable this option.'
     },
     'endpoint-preferences': {

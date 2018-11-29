@@ -15,11 +15,18 @@
   .rsa-panel-message {
     z-index: -1;
   }
-  .fatal-error-close-button {
+  .fatal-error-icons {
     display: flex;
     justify-content: flex-end;
-    padding: rsa-whitespace();
-    margin: rsa-whitespace();
+  }
+  .fatal-error-close-button, .fatal-error-toggle-button {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    margin: rsa-whitespace() rsa-whitespace() 0 0;
+    color: text-color(primary, light);
+    cursor: pointer;
+    &:hover {
+      color: text-color(primary, lightest);
+    }
   }
 }
 

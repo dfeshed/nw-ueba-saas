@@ -63,6 +63,7 @@ module('Integration | Component | recon container', function(hooks) {
 
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Invalid session ID: 5', 'Appropriate error description for invaild session Id');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -79,6 +80,7 @@ module('Integration | Component | recon container', function(hooks) {
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The session id is too large to be handled: 5456544654654564654654', 'Appropriate error description for session Id too large');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -95,6 +97,7 @@ module('Integration | Component | recon container', function(hooks) {
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -111,6 +114,7 @@ module('Integration | Component | recon container', function(hooks) {
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'Session is unavailable for viewing.', 'Session is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -127,6 +131,7 @@ module('Integration | Component | recon container', function(hooks) {
     await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
     assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The service is unavailable', 'Service is unavailable');
     assert.equal(findAll('.fatal-error-close-button').length, 1, 'Found a close recon button');
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
 
     return settled().then(() => done());
   });
@@ -149,6 +154,28 @@ module('Integration | Component | recon container', function(hooks) {
     assert.equal(findAll(closeSelector).length, 1, 'Found a close recon button');
     await click(closeSelector);
 
+  });
+
+  test('recon container with fatal error should have a shrink/expand toggle and clicking it should execute an action', async function(assert) {
+    new ReduxDataHelper(setState).apiFatalErrorCode(1000).isReconExpanded(true).build();
+    const done = assert.async();
+    this.set('eventId', '5');
+    this.set('oldEventId', '5');
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+    this.set('expandAction', function() {
+      assert.ok('action to expand recon');
+      done();
+    });
+    this.set('shrinkAction', function() {
+      assert.ok('action to shrink recon');
+    });
+
+    await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId expandAction=expandAction shrinkAction=shrinkAction}}`);
+    assert.ok(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is visible');
+    await click('.rsa-icon-shrink-diagonal-2-filled');
+    assert.notOk(find('.rsa-icon-shrink-diagonal-2-filled'), 'icon is not visible');
+    assert.ok(find('.rsa-icon-expand-diagonal-4-filled'), 'icon is visible');
+    await click('.rsa-icon-expand-diagonal-4-filled');
   });
 
 });

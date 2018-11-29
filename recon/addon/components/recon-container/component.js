@@ -75,6 +75,9 @@ const ReconContainer = Component.extend({
     return i18n.t(`recon.fatalError.${code}`, { eventId });
   },
 
+  @computed('isReconExpanded')
+  toggleEventsClass: (isReconExpanded) => isReconExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+
   isReconExpandedChanged: observer('isReconExpanded', function() {
     if (this.get('isReconExpanded')) {
       this.get('expandAction')();
