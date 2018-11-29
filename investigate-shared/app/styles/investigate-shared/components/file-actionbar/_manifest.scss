@@ -95,12 +95,15 @@
 .reset-risk-score {
   padding: rsa-whitespace();
   width: 400px;
-  height: 100px;
   @include rsa-font(paragraph);
   .confirmationButtons {
     padding-top: rsa-whitespace();
     float: right;
   }
+}
+
+.modal-content.reset-risk-score {
+  height: 100px;
 }
 
 .saved-filter-name {
