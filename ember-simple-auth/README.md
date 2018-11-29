@@ -1,13 +1,3 @@
-# IMPORTANT, WHEN YOU REMOVE THIS FROM THIS REPO LOOK INTO THE FOLLOWING LIBRARIES TO SEE IF THEY CAN ALSO BE REMOVED!
-
-At the time this was included in the repo, this library was the only one using the following libraries:
-
-* base-64
-* ember-cookies
-
-
-
-
 [![Build Status](https://travis-ci.org/simplabs/ember-simple-auth.svg?branch=master)](https://travis-ci.org/simplabs/ember-simple-auth)
 
 __[Ember Simple Auth API docs](http://ember-simple-auth.com/api/)__
