@@ -6,6 +6,12 @@
       margin-bottom: rsa-whitespace();
     }
     .rsa-form-checkbox-label {
+      vertical-align: bottom;
+      box-sizing: border-box;
+      color: text-color(primary, light);
+      margin-bottom: rsa-whitespace(less);
+      @include rsa-font(header, small);
+      text-transform: uppercase;
       margin-top: rsa-whitespace(more);
     }
   }
