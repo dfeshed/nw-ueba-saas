@@ -44,7 +44,7 @@ public class TimeModel implements PartitionedDataModel {
 		List<Double> bucketHits = mergeBuckets(resolutionIdToBucketHits);
 
 		// create smoothed buckets for each resolution id
-		Map<Long, List<Double>> resolutionIdToSmoothedBuckets = createResolutionIdToSmoothedBucketsMap(resolutionIdToBucketHits);
+		Map<Long, List<Double>> resolutionIdToSmoothedBuckets = createResolutionIdToSmoothedBucketsMap(resolutionIdToBucketHits, bucketHits);
 
 		// fill smooth buckets and smoothedBucketsThatWereHitToNubOfBuckets (category rarity model data)
 		smoothedBuckets = createInitializedBuckets();
@@ -88,7 +88,7 @@ public class TimeModel implements PartitionedDataModel {
 				smoothedBuckets.set(i,smoothedBuckets.get(i) + resolutionIdBucketHit);
 				if( bucketHits.get(i)>0 && resolutionIdBucketHit >0)
 				{
-					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),SMOOTH_BUCKET_MAX_VALUE);
+					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),resolutionIdBucketHit);
 				}
 			}
 		}
@@ -110,9 +110,9 @@ public class TimeModel implements PartitionedDataModel {
 		return timeToCounter.entrySet().stream().collect(Collectors.toMap(entry-> ConversionUtils.convertToLong(entry.getKey()), Map.Entry::getValue));
 	}
 
-	private Map<Long, List<Double>> createResolutionIdToSmoothedBucketsMap(Map<Long, List<Double>> resolutionIdToBucketHits) {
+	private Map<Long, List<Double>> createResolutionIdToSmoothedBucketsMap(Map<Long, List<Double>> resolutionIdToBucketHits, List<Double> bucketHits) {
 		return resolutionIdToBucketHits.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, e->calcSmoothedBuckets(e.getValue())));
+				.collect(Collectors.toMap(Map.Entry::getKey, e-> calcSmoothedBucketsForResolutionId(bucketHits, e.getValue())));
 	}
 
 	/**
@@ -182,23 +182,23 @@ public class TimeModel implements PartitionedDataModel {
 		return bucketHits;
 	}
 
-	private List<Double> calcSmoothedBuckets(List<Double> bucketHits) {
+	private List<Double> calcSmoothedBucketsForResolutionId(List<Double> bucketHits, List<Double> resolutionIdBucketHits) {
 		List<Double> smoothedBucketHits = createInitializedBuckets();
-		for (int bucketInd = 0; bucketInd < bucketHits.size(); bucketInd++) {
-			double hits = bucketHits.get(bucketInd);
+		for (int bucketInd = 0; bucketInd < resolutionIdBucketHits.size(); bucketInd++) {
+			double hits = resolutionIdBucketHits.get(bucketInd);
 			if (hits > 0) {
-				addSmoothedHits(smoothedBucketHits, bucketInd, hits, SMOOTHING_DISTANCE);
+				addSmoothedHitsForResolutionId(smoothedBucketHits, bucketInd, bucketHits.get(bucketInd), SMOOTHING_DISTANCE);
 			}
 		}
 		return smoothedBucketHits;
 	}
 
-	private void addSmoothedHits(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
+	private void addSmoothedHitsForResolutionId(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
 		smoothingDistance = Math.min(smoothingDistance, (smoothedBucketHits.size() - 1) / 2);
-		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
+		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, 1);
 		for (int distance = 1; distance <= smoothingDistance; distance++) {
-			double addVal = hits * Sigmoid.calcLogisticFunc(
-					smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
+			double addVal = Sigmoid.calcLogisticFunc(
+					smoothingDistance * 0.33, smoothingDistance, 0.1 / hits, distance);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
 		}
@@ -206,7 +206,7 @@ public class TimeModel implements PartitionedDataModel {
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {
 		index = (index + buckets.size()) % buckets.size();
-		buckets.set(index, Math.min(buckets.get(index) + add, SMOOTH_BUCKET_MAX_VALUE));
+		buckets.set(index, Math.max(buckets.get(index), add));
 	}
 
 	private int getBucketIndex(long epochSeconds) {

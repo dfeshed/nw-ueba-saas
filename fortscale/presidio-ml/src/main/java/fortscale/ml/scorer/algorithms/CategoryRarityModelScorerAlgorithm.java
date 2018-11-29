@@ -60,15 +60,15 @@ public class CategoryRarityModelScorerAlgorithm {
         }
 
         List<Double> buckets = model.getBuckets();
-        double numOfDistinctDaysContainingRareFeatureValue = buckets.get((int) featureCount-1);
+        double numOfDistinctDaysContainingRareFeatureValue = 1 + buckets.get((int) featureCount-1);
         for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
             double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
             numOfDistinctDaysContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
-        double commonEventProbability = 1 - numOfDistinctDaysContainingRareFeatureValue / model.getNumOfPartitions();
+        double commonEventProbability = 1 - numOfDistinctDaysContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
         commonEventProbability = commonEventProbability < 0.7 ? 0.0 : (commonEventProbability - 0.7) / 0.3;
-        double numRareFeaturesDiscount = calcCommonnessDiscounting(maxNumOfRareFeatures, numOfDistinctDaysContainingRareFeatureValue+1);//Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
+        double numRareFeaturesDiscount = calcCommonnessDiscounting(maxNumOfRareFeatures, numOfDistinctDaysContainingRareFeatureValue);//Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
         double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
         double score = commonEventProbability * Math.min(featureCountDiscount,numRareFeaturesDiscount);
         return Math.floor(MAX_POSSIBLE_SCORE * score);
