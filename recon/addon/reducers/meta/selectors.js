@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect';
-
+import moment from 'moment';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import { getMetaValue } from '../util';
-
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -46,6 +45,8 @@ const _queryInputs = (state) => state.recon.data.queryInputs || {};
 
 // Takes queryNode from state
 const _queryNode = (state) => state.investigate ? state.investigate.queryNode : {};
+
+const _reconData = (state) => state.recon ? state.recon.data : null;
 
 const _determineEventType = (meta) => {
   if (!meta || meta.length === 0) {
@@ -108,23 +109,55 @@ export const isLogEvent = createSelector(
   (eventType, isEndpointEvent) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name && !isEndpointEvent
 );
 
+/**
+ * Creates a String that can be used for a URL query param fragment. Fallbacks
+ * for serviceId and start/end time are in place if Recon is opened in Respond
+ * versus Investigate Events.
+ * @public
+ */
 export const processAnalysisQueryString = createSelector(
   _eventMeta,
   _queryInputs,
   _queryNode,
-  (eventMeta, queryInputs, queryNode) => {
-    const timeStr = `st=${queryInputs.startTime}&et=${queryInputs.endTime}`;
-    const osType = getMetaValue('OS', eventMeta);
+  _reconData,
+  (eventMeta, queryInputs, queryNode, reconData) => {
     const agentId = getMetaValue('agent.id', eventMeta);
     const checksumSha256 = getMetaValue('checksum.src', eventMeta);
-    const vpid = getMetaValue('process.vid.src', eventMeta);
     const fileName = getMetaValue('filename.src', eventMeta);
-    const { serviceId } = queryNode;
-    const osTypeParam = `osType=${osType}&vid=${vpid}`;
     const hostName = getMetaValue('alias.host', eventMeta);
+    const osType = getMetaValue('OS', eventMeta);
+    const pvid = getMetaValue('process.vid.src', eventMeta);
+    let serviceId, timeStr;
 
-    const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${fileName}&${timeStr}&${osTypeParam}`;
-    return queryParams;
+    // The serviceId could be in queryNode if Recon was spawned from
+    // Investigate Events, or in reconData if spawned from Respond.
+    if (queryNode && queryNode.serviceId) {
+      serviceId = queryNode.serviceId;
+    } else if (reconData && reconData.endpointId) {
+      serviceId = reconData.endpointId;
+    }
+
+    // If the time range is not defined in queryInputs, we'll set it to the
+    // last 7 days
+    if (queryInputs && !isNaN(queryInputs.startTime)) {
+      timeStr = `st=${queryInputs.startTime}&et=${queryInputs.endTime}`;
+    } else {
+      const now = moment();
+      const endDate = now.unix();
+      const startDate = now.subtract(7, 'days').unix();
+      timeStr = `st=${startDate}&et=${endDate}`;
+    }
+
+    return [
+      `checksum=${checksumSha256}`,
+      `sid=${serviceId}`,
+      `aid=${agentId}`,
+      `hn=${hostName}`,
+      `pn=${fileName}`,
+      `osType=${osType}`,
+      `vid=${pvid}`,
+      `${timeStr}`
+    ].join('&');
   }
 );
 

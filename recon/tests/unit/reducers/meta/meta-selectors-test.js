@@ -1,5 +1,6 @@
-import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
+import Immutable from 'seamless-immutable';
+import moment from 'moment';
 
 import {
   isHttpData,
@@ -220,9 +221,7 @@ test('eventTypeFromMetaArray', function(assert) {
   assert.equal(tests.noMeta.name, 'NETWORK', 'eventType should return network when no meta');
 });
 
-
-test('processAnalysisQueryString  test', function(assert) {
-
+test('processAnalysisQueryString test', function(assert) {
   const data = {
     investigate: {
       queryNode: {
@@ -249,11 +248,40 @@ test('processAnalysisQueryString  test', function(assert) {
     }
   };
   const result = processAnalysisQueryString(Immutable.from(data));
-  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&hn=TestHostName&pn=testfile&st=10&et=12&osType=windows&vid=1', 'should return valid queryString');
+  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&st=10&et=12', 'should return valid queryString');
+});
+
+test('processAnalysisQueryString test as if Respond opened Recon', function(assert) {
+  const data = {
+    investigate: {
+      queryNode: undefined
+    },
+    recon: {
+      data: {
+        endpointId: 666,
+        queryInputs: {}
+      },
+      meta: {
+        meta: [
+          ['OS', 'windows'],
+          ['checksum.src', 'test-checksum'],
+          ['agent.id', 'abcd'],
+          ['filename.src', 'testfile'],
+          ['process.vid.src', 1],
+          ['alias.host', 'TestHostName']
+        ]
+      }
+    }
+  };
+  const now = moment();
+  const endDate = now.unix();
+  const startDate = now.subtract(7, 'days').unix();
+  const timeStr = `st=${startDate}&et=${endDate}`;
+  const result = processAnalysisQueryString(Immutable.from(data));
+  assert.equal(result, `checksum=test-checksum&sid=666&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&${timeStr}`, 'should return valid queryString');
 });
 
 test('isProcessAnalysisDisabled test', function(assert) {
-
   const data = {
     recon: {
       meta: {
