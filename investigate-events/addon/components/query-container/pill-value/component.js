@@ -6,11 +6,14 @@ import { isArrowLeft, isBackspace, isEscape } from 'investigate-events/util/keys
 import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import { complexOperators } from 'investigate-events/actions/utils';
 import * as MESSAGE_TYPES from '../message-types';
+import Ember from 'ember';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const QUERY_PILL = 'Query Filter';
 const FREE_FORM_PILL = 'Free-Form Filter';
+// This is used for an internal Ember API function: escapeExpression
+const { Handlebars: { Utils } } = Ember;
 
 export default Component.extend({
   classNameBindings: ['isPopulated', ':pill-value'],
@@ -89,9 +92,13 @@ export default Component.extend({
     if (typeof(valueString) === 'string') {
       const match = valueString.match(properlyQuoted);
       if (match) {
+        // For text values with html tags, we will need to encode the string,
+        // before passing it through htmlSafe so that the original value is retained.
+        // This is an internal Ember API function
+        const transformedString = Utils.escapeExpression(match[1]);
         ret = htmlSafe(`
           <span class="quote-highlight">'</span>
-          ${match[1]}
+          ${transformedString}
           <span class="quote-highlight">'</span>
         `);
       }
