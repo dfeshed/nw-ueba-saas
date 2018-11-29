@@ -13,7 +13,7 @@ const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileS
 const _hostList = (state) => state.files.fileList.hostNameList;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _areFilesLoading = (state) => state.files.fileList.areFilesLoading;
-const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'RISK_PROPERTIES';
+const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'FILE_DETAILS';
 const _servers = (state) => state.endpointServer.serviceData || [];
 
 export const files = createSelector(

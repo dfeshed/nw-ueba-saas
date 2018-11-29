@@ -9,7 +9,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeFileDetailTab: 'OVERVIEW',
-    activeDataSourceTab: 'RISK_PROPERTIES'
+    activeDataSourceTab: 'FILE_DETAILS'
   });
 });
 

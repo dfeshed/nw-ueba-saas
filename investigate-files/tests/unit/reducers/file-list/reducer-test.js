@@ -63,7 +63,7 @@ module('Unit | Reducers | file-list', function() {
       downloadStatus: 'completed',
       downloadId: null,
       listOfServices: null,
-      activeDataSourceTab: 'RISK_PROPERTIES',
+      activeDataSourceTab: 'FILE_DETAILS',
       lookupData: [{}],
       contextError: null,
       contextLoadingStatus: 'wait',

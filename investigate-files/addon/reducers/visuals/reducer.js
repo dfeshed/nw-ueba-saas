@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 
 const visualsInitialState = Immutable.from({
   activeFileDetailTab: 'OVERVIEW',
-  activeDataSourceTab: 'RISK_PROPERTIES'
+  activeDataSourceTab: 'FILE_DETAILS'
 });
 
 const visuals = handleActions({

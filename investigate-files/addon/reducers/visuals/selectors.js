@@ -27,7 +27,7 @@ const FILE_DETAIL_TABS = [
   }];
 
 const _activeFileDetailTab = (state) => state.files.visuals.activeFileDetailTab;
-const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'RISK_PROPERTIES';
+const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'FILE_DETAILS';
 const _riskState = (state) => state.files.risk || {};
 
 export const riskState = createSelector(
