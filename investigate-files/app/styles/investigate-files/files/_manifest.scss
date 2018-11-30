@@ -273,6 +273,9 @@ page.investigate-files-engine {
       left: 0;
     }
   }
+  .filter-wrapper .filter-controls .noUi-connects .noUi-connect{
+    background-color: background-color(secondary, dark);
+  }
 }
 
 .license-banner.shown + .rsa-investigate-files {

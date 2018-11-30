@@ -7,6 +7,9 @@ $filter-panel-width: 250px;
    max-height: calc(100vw - 50px);
   .host-container-list {
     width: 100%;
+    .filter-wrapper .filter-controls .noUi-connects .noUi-connect{
+      background-color: background-color(secondary, dark);
+    }
   }
   .host-list-properties {
     h3 {

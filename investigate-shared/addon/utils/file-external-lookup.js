@@ -11,15 +11,9 @@ const VirusTotalSearchUrl = 'https://www.virustotal.com/latest-scan/';
 export function externalLookup(action, selectedList) {
   const url = action.type === 'google' ? googleSearchUrl : VirusTotalSearchUrl;
   selectedList.map((selectedItem) => {
-    let fileName;
     switch (action.name) {
       case 'fileName':
-        if (selectedItem.name) {
-          fileName = selectedItem.name;
-        } else {
-          fileName = { selectedItem };
-        }
-        _lookup(url, fileName);
+        _lookup(url, selectedItem.fileName);
         break;
       case 'md5':
         _lookup(url, selectedItem.checksumMd5);
