@@ -120,7 +120,9 @@ export default Component.extend({
 
     changeOperator(option) {
       this.set('filterValue.operator', option);
-      this._onFilterChange();
+      if (!this.get('isError')) {
+        this._onFilterChange();
+      }
     }
   }
 });

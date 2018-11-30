@@ -112,4 +112,17 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     assert.equal(document.querySelectorAll('.is-error').length, 0);
     assert.equal(document.querySelectorAll('.input-error').length, 0);
   });
+
+  test('if error on changing the operator not updates the query', async function(assert) {
+    assert.expect(1);
+    this.set('onQueryChange', () => {
+      assert.ok(true);
+    });
+    this.set('options', { name: 'fileName', filterOnBlur: true });
+    await render(hbs`{{rsa-data-filters/filters/text-filter isError=true filterOptions=options onChange=(action onQueryChange)}}`);
+    await clickTrigger('.text-filter .operators');
+    assert.equal(document.querySelectorAll('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
+    await selectChoose('.operators', 'Contains');
+  });
+
 });
