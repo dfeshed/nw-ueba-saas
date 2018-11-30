@@ -6,8 +6,8 @@ import {
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
-import { deleteHosts, getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
-import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { deleteHosts, getPageOfMachines, triggerMachineActions } from 'investigate-hosts/actions/data-creators/host';
+import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 
 const stateToComputed = (state) => ({
@@ -51,7 +51,7 @@ const ActionBar = Component.extend({
     },
 
     handleServiceSelection(service) {
-      this.send('setEndpointServer', true, service);
+      this.send('setEndpointServer', true, service, triggerMachineActions);
       if (this.closeProperties) {
         this.closeProperties();
       }

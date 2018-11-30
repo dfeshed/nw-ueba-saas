@@ -1,3 +1,4 @@
+import { lookup } from 'ember-dependency-lookup';
 import { Machines } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
@@ -9,13 +10,13 @@ import {
 } from 'investigate-hosts/actions/ui-state-creators';
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
-import { initializeEndpoint } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
-import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
 import { debug } from '@ember/debug';
 
@@ -84,13 +85,35 @@ const getAllSchemas = () => {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
           dispatch(initializeHostsPreferences());
-          dispatch(getFilter(initializeEndpoint, 'MACHINE'));
+          dispatch(getFilter(_initializeHostView, 'MACHINE'));
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);
         }
       }
     });
+  };
+};
+
+const _initializeHostView = () => {
+  return (dispatch) => {
+    dispatch(setEndpointServer(null, null, triggerMachineActions));
+  };
+};
+
+const triggerMachineActions = () => {
+  return (dispatch) => {
+    const request = lookup('service:request');
+    dispatch({ type: ACTION_TYPES.RESET_HOSTS });
+    return request.ping('endpoint-server-ping')
+      .then(() => {
+        dispatch(isEndpointServerOffline(false));
+        dispatch(getPageOfMachines());
+        dispatch(getServiceId('MACHINE'));
+      })
+      .catch(function() {
+        dispatch(isEndpointServerOffline(true));
+      });
   };
 };
 
@@ -331,5 +354,6 @@ export {
   fetchHostContext,
   onHostSelection,
   setHostListPropertyTab,
-  setFocusedHostIndex
+  setFocusedHostIndex,
+  triggerMachineActions
 };

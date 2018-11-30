@@ -10,6 +10,7 @@ import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/a
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
+import { setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { toggleFileAnalysisView } from 'investigate-hosts/actions/data-creators/file-analysis';
 
 const _getAllSnapShots = (agentId) => {
@@ -69,7 +70,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             const request = lookup('service:request');
             request.registerPersistentStreamOptions({ socketUrlPostfix: response.data.serviceId, requiredSocketUrl: 'endpoint/socket' });
-            dispatch({ type: ACTION_TYPES.SET_SELECTED_MACHINE_SERVER_ID, payload: response.data.serviceId });
+            dispatch(setSelectedMachineServerId(response.data.serviceId));
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());

@@ -10,7 +10,7 @@ import sinon from 'sinon';
 
 import { patchReducer } from '../../helpers/vnext-patch';
 import InvestigateHosts from 'investigate-hosts/routes/hosts';
-import endpointServerCreators from 'investigate-hosts/actions/data-creators/endpoint-server';
+import endpointServerCreators from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 
 let redux;
 

@@ -17,12 +17,14 @@ import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import _ from 'lodash';
-import { initializeEndpoint } from './endpoint-server-creators';
+import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
+import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
+import { getCertificates } from 'investigate-files/actions/certificate-data-creators';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -129,8 +131,34 @@ const initializeFilesPreferences = () => {
         }
       }
       dispatch(getRestrictedFileList('FILE'));
-      dispatch(getFilter(initializeEndpoint, 'FILE'));
+      dispatch(getFilter(_initializeFilesView, 'FILE'));
     });
+  };
+};
+
+const _initializeFilesView = () => {
+  return (dispatch) => {
+    dispatch(setEndpointServer(null, null, triggerFileActions));
+  };
+};
+
+const triggerFileActions = () => {
+  return (dispatch) => {
+    const request = lookup('service:request');
+    dispatch({ type: ACTION_TYPES.RESET_FILES });
+    dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
+    dispatch({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
+    return request.ping('endpoint-server-ping')
+      .then(function() {
+        dispatch(isEndpointServerOffline(false));
+        dispatch(getCertificates());
+        dispatch(getFirstPageOfFiles());
+        dispatch(getServiceId('FILE'));
+        dispatch(getAllServices());
+      })
+      .catch(function() {
+        dispatch(isEndpointServerOffline(true));
+      });
   };
 };
 
@@ -395,5 +423,6 @@ export {
   userLeftFilesPage,
   setDataSourceTab,
   initializeFileDetails,
-  setSelectedIndex
+  setSelectedIndex,
+  triggerFileActions
 };

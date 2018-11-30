@@ -7,8 +7,8 @@ import investigate from 'investigate-shared/reducers/investigate/reducer';
 import fileStatus from 'investigate-shared/reducers/file-status/reducer';
 import visuals from './visuals/reducer';
 import preferences from './preferences/reducer';
-import endpointServer from './endpoint-server/reducer';
-import endpointQuery from './endpoint-query/reducer';
+import endpointServer from 'investigate-shared/reducers/endpoint-server/reducer';
+import endpointQuery from 'investigate-shared/reducers/endpoint-query/reducer';
 import certificate from './certificates/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 

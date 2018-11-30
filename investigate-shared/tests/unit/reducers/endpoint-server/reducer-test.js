@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
-import reducer from 'investigate-files/reducers/endpoint-server/reducer';
-import * as ACTION_TYPES from 'investigate-files/actions/types';
+import reducer from 'investigate-shared/reducers/endpoint-server/reducer';
+import * as ACTION_TYPES from 'investigate-shared/actions/types';
 
 const initialState = Immutable.from({
   isServicesLoading: undefined,

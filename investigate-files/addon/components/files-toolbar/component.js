@@ -8,9 +8,10 @@ import {
   getAllServices,
   saveFileStatus,
   getSavedFileStatus,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  triggerFileActions
 } from 'investigate-files/actions/data-creators';
-import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
+import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
@@ -71,7 +72,7 @@ const ToolBar = Component.extend({
     },
 
     handleServiceSelection(service) {
-      this.send('setEndpointServer', service);
+      this.send('setEndpointServer', true, service, triggerFileActions);
       if (this.closeRiskPanel) {
         this.closeRiskPanel();
       }

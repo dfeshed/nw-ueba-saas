@@ -2,7 +2,7 @@ import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
 import { handle } from 'redux-pack';
 
-import * as ACTION_TYPES from 'investigate-hosts/actions/types';
+import * as ACTION_TYPES from 'investigate-shared/actions/types';
 
 const initialState = Immutable.from({
   serviceData: undefined,

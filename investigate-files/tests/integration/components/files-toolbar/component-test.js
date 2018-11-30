@@ -6,7 +6,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import * as serverActions from 'investigate-files/actions/endpoint-server-creators';
+import * as serverActions from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import sinon from 'sinon';
 
 let setState;

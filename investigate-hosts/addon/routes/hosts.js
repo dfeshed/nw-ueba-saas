@@ -1,11 +1,14 @@
 import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeHostPage } from 'investigate-hosts/actions/data-creators/host';
+import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
-import { getEndpointServers, isEndpointServerOffline, setSelectedEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
+import {
+  getEndpointServers,
+  isEndpointServerOffline,
+  setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -67,7 +70,7 @@ export default Route.extend({
   activate() {
     const redux = this.get('redux');
     // get host list
-    redux.dispatch(getEndpointServers());
+    redux.dispatch(getEndpointServers(getAllSchemas));
   },
 
   model(params) {
