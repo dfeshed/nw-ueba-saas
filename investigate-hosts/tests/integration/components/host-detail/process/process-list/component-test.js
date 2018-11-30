@@ -8,8 +8,10 @@ import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Service from '@ember/service';
 
 let setState;
+const transitions = [];
 
 module('Integration | Component | host-detail/process/process-list', function(hooks) {
   setupRenderingTest(hooks, {
@@ -21,6 +23,15 @@ module('Integration | Component | host-detail/process/process-list', function(ho
     setState = (state) => {
       applyPatch(state);
     };
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'host',
+      generateURL: () => {
+        return;
+      },
+      transitionTo: (name, args, queryParams) => {
+        transitions.push({ name, queryParams });
+      }
+    }));
   });
 
   hooks.afterEach(function() {
@@ -210,12 +221,6 @@ module('Integration | Component | host-detail/process/process-list', function(ho
     });
   });
   test('clicking on the process name process details view should open', async function(assert) {
-    assert.expect(3);
-
-    patchSocket((method, modelName) => {
-      assert.equal(method, 'getProcess');
-      assert.equal(modelName, 'endpoint');
-    });
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)
@@ -229,9 +234,14 @@ module('Integration | Component | host-detail/process/process-list', function(ho
     await click(findAll('.rsa-data-table-body-cell')[1]);
 
     return settled().then(async() => {
-      const redux = this.owner.lookup('service:redux');
-      const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
-      assert.equal(isProcessDetailsView, true, 'isProcessDetailsView state updated to true');
+      assert.deepEqual(transitions, [{
+        name: 'hosts',
+        queryParams: {
+          pid: 4928,
+          subTabName: 'process-details',
+          tabName: 'PROCESS'
+        }
+      }]);
     });
   });
 

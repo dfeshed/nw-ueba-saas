@@ -19,7 +19,9 @@ const visuals = handleActions({
 
   [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.set('isTreeView', !state.isTreeView),
 
-  [ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW]: (state) => state.set('isProcessDetailsView', !state.isProcessDetailsView),
+  [ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW]: (state, { payload: { isOpen } }) => state.set('isProcessDetailsView', isOpen),
+
+  [ACTION_TYPES.OPEN_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', true),
 
   [ACTION_TYPES.CLOSE_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', false),
 

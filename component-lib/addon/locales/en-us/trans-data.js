@@ -3295,7 +3295,8 @@ export default {
       }
     },
     files: {
-      footer: 'Showing {{count}} of {{total}} {{label}} | {{selectedItems}} selected',
+      footer: 'Showing {{count}} of {{total}} {{label}}',
+      footerSelected: '| {{selectedItems}} selected',
       filter: {
         filters: 'Saved Filters',
         newFilter: 'New Filter',

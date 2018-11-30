@@ -5,18 +5,18 @@ const defaultColumnsConfig = [
   {
     field: 'fileName',
     title: 'investigateHosts.process.dll.dllName',
-    width: 50
+    width: '20vw'
   },
   {
     field: 'signature',
     title: 'investigateHosts.process.signature',
     format: 'SIGNATURE',
-    width: 50
+    width: '8vw'
   },
   {
     field: 'path',
     title: 'investigateHosts.process.dll.filePath',
-    width: 50
+    width: '20vw'
   }
 ];
 
@@ -25,13 +25,13 @@ const machineOsBasedColumnsConfig = {
     field: 'timeCreated',
     title: 'investigateHosts.process.creationTime',
     format: 'DATE',
-    width: 50
+    width: '30vw'
   }],
   windows: [{
     field: 'timeCreated',
     title: 'investigateHosts.process.creationTime',
     format: 'DATE',
-    width: 50
+    width: '30vw'
   }],
   linux: []
 };

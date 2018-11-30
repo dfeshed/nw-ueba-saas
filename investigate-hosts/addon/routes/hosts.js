@@ -5,6 +5,7 @@ import { initializeHostPage } from 'investigate-hosts/actions/data-creators/host
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
 import { getEndpointServers, isEndpointServerOffline, setSelectedEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -35,6 +36,12 @@ export default Route.extend({
       refreshModel: true
     },
     tabName: {
+      refreshModel: true
+    },
+    subTabName: {
+      refreshModel: true
+    },
+    pid: {
       refreshModel: true
     },
     /**
@@ -68,14 +75,12 @@ export default Route.extend({
     const { sid, machineId } = params;
     const request = lookup('service:request');
     const selectedServerId = redux.getState().endpointQuery.serverId;
-
     run.scheduleOnce('afterRender', () => {
       // refreshing host details page or routing using url
       if (!machineId && selectedServerId) {
         request.registerPersistentStreamOptions({ socketUrlPostfix: selectedServerId, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(resetDetailsInputAndContent());
       }
-
       if (sid) {
         // get host details
         // if endpointQuery serverId is already set and is equal to sid then
@@ -86,7 +91,7 @@ export default Route.extend({
         }
         return request.ping('endpoint-server-ping')
           .then(() => {
-            const { machineId, tabName = 'OVERVIEW' } = params;
+            const { machineId, tabName = 'OVERVIEW', subTabName, pid } = params;
             if (machineId) {
               this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
             } else {
@@ -94,6 +99,12 @@ export default Route.extend({
             }
             redux.dispatch(isEndpointServerOffline(false));
             redux.dispatch(initializeHostPage(params));
+            // To redirect to the Process details panel in the process tab
+            run(() => {
+              if (tabName === 'PROCESS' && subTabName === 'process-details') {
+                redux.dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
+              }
+            });
           })
           .catch(function() {
             redux.dispatch(isEndpointServerOffline(true));

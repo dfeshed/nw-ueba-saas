@@ -15,14 +15,14 @@ const toggleProcessView = () => {
   };
 };
 
-const toggleProcessDetailsView = (item) => {
+const toggleProcessDetailsView = (item, isOpen = false) => {
   return (dispatch) => {
+    dispatch(deSelectAllProcess());
     if (item) {
       const { pid } = item;
       dispatch(getProcessDetails(pid));
     }
-    dispatch(deSelectAllProcess());
-    dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
+    dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen } });
   };
 };
 

@@ -137,14 +137,8 @@ test('The TOGGLE_PROCESS_DETAILS_VIEW ', function(assert) {
   const previous = Immutable.from({
     isProcessDetailsView: false
   });
-
-  const expectedEndState = {
-    isProcessDetailsView: true
-  };
-
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW });
-
-  assert.deepEqual(result, expectedEndState);
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen: true } });
+  assert.deepEqual(result.isProcessDetailsView, true);
 });
 test('The CLOSE_PROCESS_DETAILS ', function(assert) {
   const previous = Immutable.from({

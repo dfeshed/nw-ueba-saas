@@ -1,3 +1,4 @@
+
 {{#rsa-data-table
   items=dllList
   selectedIndex=selectedIndex
@@ -11,3 +12,6 @@
     {{host-detail/utils/table-cell item=item column=column}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
+<box>
+  {{host-table-footer total=dllList.length index=dllList.length label='dlls' selectedItems=-1 }}
+</box>

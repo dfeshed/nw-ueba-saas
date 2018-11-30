@@ -86,9 +86,10 @@
   border-top: 0;
   border-right: 0;
   overflow-y: auto;
-  .process-content-box-wrapper{
+  .process-content-box-wrapper {
     padding: rsa-whitespace() rsa-whitespace(more);
     padding-top: 0;
+    padding-left: 1.5rem;
     position: absolute;
     max-width: 100%;
     .value hbox{
@@ -122,9 +123,11 @@
     display: block;
     flex: initial;
     .rsa-data-table {
-      background-color: $host-details-table-row-color;
       min-height: 130px;
       height: auto;
+      .rsa-data-table-body {
+        overflow: hidden;
+      }
       .rsa-data-table-body-row {
         cursor: default !important;
         width: fit-content;
@@ -135,6 +138,10 @@
           left: 0;
           padding-left: 1rem;
         }
+        &.is-selected {
+          background-color: background-color(secondary, dark);
+          padding-left: rsa-whitespace();
+        }
       }
     }
     .accordion-content-title {
@@ -144,12 +151,16 @@
         padding-left: 0px;
       }
     }
+    .file-pager {
+      background-color: text-color(primary, darker);
+      margin-bottom: -32px;
+    }
   }
 }
 
 .header-data {
   background-color: background-color(primary, darkest, transparent);
-  padding: rsa-whitespace(less) 0;
+  padding: 0 0;
   margin-bottom: rsa-whitespace();
   .tool-tip-value {
     padding: rsa-whitespace();

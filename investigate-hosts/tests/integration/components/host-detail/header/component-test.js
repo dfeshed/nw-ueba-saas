@@ -7,6 +7,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findAll, render } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { snapShot } from '../../../../data/data';
+import Service from '@ember/service';
 
 let setState;
 
@@ -18,6 +19,14 @@ module('Integration | Component | host detail header', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'host',
+      generateURL: () => {
+        return;
+      },
+      transitionTo: () => {
+      }
+    }));
     setState = (state) => {
       patchReducer(this, state);
     };

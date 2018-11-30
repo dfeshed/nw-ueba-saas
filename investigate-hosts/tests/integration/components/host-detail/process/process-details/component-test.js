@@ -10,6 +10,7 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { dllListData } from '../../../../../unit/state/state';
 import processData from '../../../../../integration/components/state/process-data';
 import Immutable from 'seamless-immutable';
+import Service from '@ember/service';
 
 const data = {
   parentPid: 1,
@@ -22,6 +23,8 @@ const data = {
   creationTime: '12/12/2018'
 };
 
+const transitions = [];
+
 let initState;
 module('Integration | Component | endpoint host-detail/process/process-details', function(hooks) {
   setupRenderingTest(hooks, {
@@ -33,6 +36,15 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'host',
+      generateURL: () => {
+        return;
+      },
+      transitionTo: (name, args, queryParams) => {
+        transitions.push({ name, queryParams });
+      }
+    }));
   });
 
   hooks.afterEach(function() {
@@ -107,7 +119,14 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
-    await click(findAll('.back-to-process')[0]);
+    await click(findAll('.action-bar a')[0]);
+    assert.deepEqual(transitions, [{
+      name: 'hosts',
+      queryParams: {
+        pid: null,
+        subTabName: null
+      }
+    }]);
     const redux = this.owner.lookup('service:redux');
     const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
     assert.equal(isProcessDetailsView, false, 'process property panel should close');

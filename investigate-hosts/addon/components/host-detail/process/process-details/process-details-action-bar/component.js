@@ -1,10 +1,4 @@
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
-import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
-
-const dispatchToActions = {
-  toggleProcessDetailsView
-};
 
 const ProcessDetailsActionBar = Component.extend({
 
@@ -12,4 +6,4 @@ const ProcessDetailsActionBar = Component.extend({
 
 });
 
-export default connect(undefined, dispatchToActions)(ProcessDetailsActionBar);
+export default ProcessDetailsActionBar;

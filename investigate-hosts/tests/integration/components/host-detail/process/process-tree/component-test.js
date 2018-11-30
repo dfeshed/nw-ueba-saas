@@ -8,8 +8,10 @@ import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Service from '@ember/service';
 
 let setState;
+const transitions = [];
 
 module('Integration | Component | host-detail/process/process-tree', function(hooks) {
   setupRenderingTest(hooks, {
@@ -21,6 +23,15 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     setState = (state) => {
       applyPatch(state);
     };
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'host',
+      generateURL: () => {
+        return;
+      },
+      transitionTo: (name, args, queryParams) => {
+        transitions.push({ name, queryParams });
+      }
+    }));
   });
 
   hooks.afterEach(function() {
@@ -226,7 +237,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     });
   });
   test('clicking on the process name get process-details view', async function(assert) {
-    assert.expect(2);
     this.set('openPanel', function() {
       assert.ok(true, 'open panel is called');
     });
@@ -242,14 +252,20 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null).build();
 
     await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
-    await click(find(findAll('.process-name label')[1]));
+    await click(find(findAll('.process-name a')[1]));
     return settled().then(async() => {
       const redux = this.owner.lookup('service:redux');
       await waitUntil(() => {
         return redux.getState().endpoint.detailsInput.animation !== 'default';
       }, { timeout: 6000 });
-      const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
-      assert.equal(isProcessDetailsView, true, 'isProcessDetailsView state updated to true');
+      assert.deepEqual(transitions, [{
+        name: 'hosts',
+        queryParams: {
+          pid: 517,
+          subTabName: 'process-details',
+          tabName: 'PROCESS'
+        }
+      }]);
     });
   });
 

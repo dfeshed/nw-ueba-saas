@@ -52,6 +52,8 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Start Address', 'Header text in third column, Start Address');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Thread ID', 'Header text in forth column, Thread ID');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Thread Environment Block', 'Header text in fifth column, Thread Environment Block');
+
+    assert.equal(this.$('.file-info').text().trim(), 'Showing 2 of 2 threads', 'Shows footer message');
   });
   test('row click of suspicious threads table', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();

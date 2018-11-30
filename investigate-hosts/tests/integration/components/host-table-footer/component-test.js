@@ -26,15 +26,29 @@ module('Integration | Component | host table footer', function(hooks) {
     await render(
       hbs`{{host-table-footer total=hostItemsLength index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const expected = `Showing ${hostCount} of ${hostItems.length} hosts | ${selectedHosts} selected`;
-    assert.equal(find('div.file-info').textContent.trim(), expected, 'When count of hosts displayed is less than total hosts length');
-
+    const expected1 = `Showing ${hostCount} of ${hostItems.length} hosts`;
+    const expected2 = `| ${selectedHosts} selected`;
+    assert.equal(find('div.file-info').textContent.trim().includes(expected1), true, 'When count of hosts displayed is less than total hosts length');
+    assert.equal(find('div.file-info').textContent.trim().includes(expected2), true, 'The selected count When count of hosts displayed is less than total hosts length');
     const hostItems2 = ['Harp', 'WIN10x64', 'WIN8x64', 'server.local'];
     this.set('hostItems2Length', hostItems2.length);
     await render(
       hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const expected2 = `Showing ${hostCount} of ${hostItems2.length} hosts | ${selectedHosts} selected`;
-    assert.equal(find('div.file-info').textContent.trim(), expected2, 'When count of hosts displayed is equal to total hosts length');
+    const part1 = `Showing ${hostCount} of ${hostItems2.length} hosts`;
+    const part2 = ` | ${selectedHosts} selected`;
+
+    assert.equal(find('div.file-info').textContent.trim().includes(part1), true, 'When count of hosts displayed is equal to total hosts length');
+    assert.equal(find('div.file-info').textContent.trim().includes(part2), true, 'When count of hosts displayed selected hosts');
+
+    this.set('hostItems2Length', hostItems2.length);
+    this.set('selectedHosts', -1);
+
+    await render(
+      hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label selectedItems=selectedHosts}}`
+    );
+
+    assert.equal(find('div.file-info').textContent.trim().includes(part1), true, 'When count of hosts displayed is equal to total hosts length');
+    assert.equal(find('div.file-info').textContent.trim().includes(part2), false, 'When count of selected hosts -1');
   });
 });

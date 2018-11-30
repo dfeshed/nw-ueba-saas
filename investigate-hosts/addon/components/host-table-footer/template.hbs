@@ -1,5 +1,8 @@
 {{#if (and index total)}}
   <div class="file-info lighter right">
-    {{t 'investigateHosts.files.footer' count=index total=total label=label selectedItems=selectedItems}}
+    {{t 'investigateHosts.files.footer' count=index total=total label=label }}
+    {{#if (not-eq selectedItems -1)}}
+      {{t 'investigateHosts.files.footerSelected' selectedItems=selectedItems }}
+    {{/if}}
   </div>
 {{/if}}
