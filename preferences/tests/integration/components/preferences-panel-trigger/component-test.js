@@ -55,7 +55,8 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
 
     await waitFor('.rsa-preferences-panel-trigger');
     this.$('.rsa-icon-settings-1-filled').trigger('click');
-    await waitFor('.ember-power-select-selected-item', { count: 4 });
+    // TODO bring download back. Add meta download preference back
+    await waitFor('.ember-power-select-selected-item', { count: 3 });
     assert.equal(this.$('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
   });
 

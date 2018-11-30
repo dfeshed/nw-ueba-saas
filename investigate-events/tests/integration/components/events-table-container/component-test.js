@@ -14,11 +14,9 @@ let setState;
 
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
 
+const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroup';
 const PS_TRIGGER = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-trigger';
 const PS_SELECTED_ITEM = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
-
-const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
-const downloadPowerSelect = '.rsa-investigate-events-table__header__downloadEvents .ember-power-select-trigger';
 
 const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOption, isNotEmptyRow) {
   await selectChoose(PS_TRIGGER, selectedOption);
@@ -66,27 +64,32 @@ module('Integration | Component | Events Table Container', function(hooks) {
 
   test('it should show columns for Email Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 41, 'Email Analysis');
+    // TODO bring download back. 16 with checkbox
+    await assertForInvestigateColumnAndColumnSelector(assert, 15, 41, 'Email Analysis');
   });
 
   test('it should show columns for Malware Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 27, 'Malware Analysis');
+    // TODO bring download back. 16 with checkbox
+    await assertForInvestigateColumnAndColumnSelector(assert, 15, 27, 'Malware Analysis');
   });
 
   test('it should show columns for Threat Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 57, 'Threat Analysis');
+    // TODO bring download back. 16 with checkbox
+    await assertForInvestigateColumnAndColumnSelector(assert, 15, 57, 'Threat Analysis');
   });
 
   test('it should show columns for Web Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 53, 'Web Analysis');
+    // TODO bring download back. 16 with checkbox
+    await assertForInvestigateColumnAndColumnSelector(assert, 15, 53, 'Web Analysis');
   });
 
   test('it should show columns for Endpoint Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 16, 32, 'Endpoint Analysis');
+    // TODO bring download back. 16 with checkbox
+    await assertForInvestigateColumnAndColumnSelector(assert, 15, 32, 'Endpoint Analysis');
   });
 
   test('it should show "no results" message only if there are zero results', async function(assert) {
@@ -154,8 +157,8 @@ module('Integration | Component | Events Table Container', function(hooks) {
     });
 
     await render(hbs` {{events-table-container selectEvent=handleSelectEvent}}`);
-    await clickTrigger(downloadSelector);
-    await triggerKeyEvent(downloadPowerSelect, 'keyup', ARROW_DOWN_KEY);
+    await clickTrigger(columnGroupSelector);
+    await triggerKeyEvent(PS_TRIGGER, 'keyup', ARROW_DOWN_KEY);
     assert.notOk(eventSelected, 'Keystroke does not trigger event selection when dropdown in view');
   });
 

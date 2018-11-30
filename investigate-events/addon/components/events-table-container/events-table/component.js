@@ -36,12 +36,9 @@ const dispatchToActions = {
   toggleEventSelection
 };
 
+// TODO bring download back
 /*
- * Since the events table is a special custom table which has html tags with meta and value injected from the javascript
- * we cannot use the rsa-context-menu component as-is. This extended class captures the right click event, extracts the
- * meta and value from the html span, prepares the contextSelection property before invoking the parent rsa-context-menu action.
- */
-const checkBoxElement = {
+  const checkBoxElement = {
   title: '',
   class: 'rsa-form-row-checkbox',
   width: 18,
@@ -51,8 +48,14 @@ const checkBoxElement = {
   visible: true,
   disableSort: true,
   headerComponentClass: 'rsa-form-checkbox'
-};
+};*/
 
+
+/*
+ * Since the events table is a special custom table which has html tags with meta and value injected from the javascript
+ * we cannot use the rsa-context-menu component as-is. This extended class captures the right click event, extracts the
+ * meta and value from the html span, prepares the contextSelection property before invoking the parent rsa-context-menu action.
+ */
 const EventsTableContextMenu = RsaContextMenu.extend({
 
   metaName: null,
@@ -73,10 +76,13 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   }),
 
   @computed('columns', 'accessControl.hasInvestigateContentExportAccess', 'allItemsChecked')
-  extendedColumns: (columns, hasPermissions) => {
-    if (hasPermissions) {
+  extendedColumns: (columns) => {
+  // TODO bring download back
+  // extendedColumns: (columns, hasPermissions) => {
+
+    /* if (hasPermissions) {
       return [checkBoxElement, ...columns];
-    }
+    }*/
     return columns;
   },
 
