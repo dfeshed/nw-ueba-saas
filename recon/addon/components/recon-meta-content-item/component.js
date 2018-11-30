@@ -60,18 +60,6 @@ const MetaContentItem = Component.extend({
   value: null,
 
   /**
-   * translated meta name with
-   * all dots replaced with underscores
-   * ex. param.dst to param_dst
-   * @type {string}
-   * @public
-   */
-  @computed('name')
-  translatedName(name) {
-    return name.replace(/\./g, '_');
-  },
-
-  /**
    * Determines if the meta should be highlighted and selected
    * @param {boolean} isTextView If text view or not, so we can deselect on other views
    * @param {object} metaToHighlight The meta to highlighted, passed down in, grabbed from redux
@@ -150,23 +138,6 @@ const MetaContentItem = Component.extend({
       ...queryInputs,
       language
     };
-  },
-
-  /**
-   * whether to display tooltip for lengthy meta value.
-   * @param {boolean} isEndpointEvent Endpoint event flag.
-   * @param {boolean} hasTextContent has Text Content available
-   * @param {array} lengthyMetaKeys array of all lengthy meta keys
-   * @param {string} name meta key name
-   * @return {boolean}
-   * @public
-   */
-  @computed('isEndpointEvent', 'hasTextContent', 'lengthyMetaKeys', 'name')
-  showTextWithTooltip(isEndpointEvent, hasTextContent, lengthyMetaKeys, name) {
-    if (isEndpointEvent && hasTextContent && lengthyMetaKeys.length) {
-      return lengthyMetaKeys.indexOf(name) > -1;
-    }
-    return false;
   },
 
   actions: {

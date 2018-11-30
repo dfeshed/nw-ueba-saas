@@ -6,8 +6,6 @@
     {{rsa-content-datetime
       displayMilliseconds=false
       timestamp=value}}
-  {{else if showTextWithTooltip}}
-    {{rsa-text-with-tooltip value=(get lengthyMetas translatedName) tipPosition='left' showNote=true}}
   {{else}}
     {{#rsa-context-menu
       contextSelection=contextSelection
