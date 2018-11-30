@@ -4224,6 +4224,15 @@ ember-macro-helpers@^0.17.0:
     ember-cli-test-info "^1.0.0"
     ember-weakmap "^3.0.0"
 
+ember-macro-helpers@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/ember-macro-helpers/-/ember-macro-helpers-1.0.0.tgz#bdb875f5752814f3e0c886e2ed650f01cc302712"
+  dependencies:
+    ember-cli-babel "^6.6.0"
+    ember-cli-string-utils "^1.1.0"
+    ember-cli-test-info "^1.0.0"
+    ember-weakmap "^3.0.0"
+
 ember-math-helpers@2.7.1:
   version "2.7.1"
   resolved "https://registry.npmjs.org/ember-math-helpers/-/ember-math-helpers-2.7.1.tgz#19c1e676d74e6166a57c4d0b52b72cdf10263a49"
@@ -4247,13 +4256,13 @@ ember-maybe-in-element@^0.2.0:
   dependencies:
     ember-cli-babel "^7.1.0"
 
-ember-moment@7.7.0:
-  version "7.7.0"
-  resolved "https://registry.npmjs.org/ember-moment/-/ember-moment-7.7.0.tgz#febf7cc5bfc665c8f1d45fa24e5c7a5f5f91afa5"
+ember-moment@7.8.0:
+  version "7.8.0"
+  resolved "https://registry.npmjs.org/ember-moment/-/ember-moment-7.8.0.tgz#12f33f786b9b8b08d7ca46314b8a59d38cc39048"
   dependencies:
     ember-cli-babel "^6.7.2"
     ember-getowner-polyfill "^2.0.1"
-    ember-macro-helpers "^0.17.0"
+    ember-macro-helpers "^1.0.0"
 
 ember-native-dom-helpers@^0.5.10:
   version "0.5.10"

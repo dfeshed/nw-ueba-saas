@@ -12,7 +12,10 @@ module.exports = {
     nodeAssets: {
       'sockjs-client-web': {
         srcDir: 'dist',
-        import: ['sockjs.js']
+        import: [
+          'sockjs.js',
+          'sockjs.js.map'
+        ]
       },
       '@mind-trace/stompjs': {
         srcDir: 'lib',

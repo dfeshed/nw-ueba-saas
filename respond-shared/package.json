@@ -24,7 +24,7 @@
     "@html-next/flexi-dsl": "2.0.1",
     "@html-next/flexi-layouts": "2.0.1",
     "@html-next/vertical-collection": "^1.0.0-beta.12",
-    "ember-moment": "7.7.0",
+    "ember-moment": "7.8.0",
     "ember-cli-babel": "^6.17.2",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-cli-seamless-immutable-shim": "1.0.0",

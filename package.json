@@ -67,7 +67,7 @@
     "ember-load-initializers": "1.0.0",
     "ember-lodash-shim": "4.0.0",
     "ember-math-helpers": "2.7.1",
-    "ember-moment": "7.7.0",
+    "ember-moment": "7.8.0",
     "ember-power-select": "2.0.8",
     "ember-power-select-typeahead": "0.7.2",
     "ember-qunit": "^3.4.1",
