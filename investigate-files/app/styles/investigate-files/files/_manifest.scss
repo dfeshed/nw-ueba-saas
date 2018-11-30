@@ -60,7 +60,7 @@ page.investigate-files-engine {
   }
   .file-name {
     text-decoration: underline;
-    color: text-color(secondary,lightest);
+    color: text-color(secondary);
     cursor: pointer;
   }
   .filter-zone {
@@ -183,7 +183,12 @@ page.investigate-files-engine {
   }
   .rsa-data-table-body-row {
     width: fit-content;
-    min-width: 98%
+    min-width: 98%;
+    &.is-selected {
+      .file-name {
+        color: text-color(secondary,lightest);
+      }
+    }
   }
 
   .pivot-to-investigate {

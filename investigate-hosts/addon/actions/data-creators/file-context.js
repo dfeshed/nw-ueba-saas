@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import HostFiles from '../api/files';
+import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -41,8 +42,13 @@ const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONT
 
 const resetSelection = (belongsTo) => ({ type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo } });
 
-const setFileContextFileStatus = (belongsTo, checksums, data, callbacks = callbacksDefault) => {
-  return (dispatch) => {
+const setFileContextFileStatus = (belongsTo, checksums, selectedList, data, callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { fileStatus: { restrictedFileList } } = state;
+    if (data.fileStatus === 'Whitelist') {
+      checksums = checksumsWithoutRestricted(selectedList, restrictedFileList);
+    }
     // Selecting top 100 checksums only for file status change.
     if (checksums && checksums.length > 100) {
       checksums = checksums.slice(0, 100);

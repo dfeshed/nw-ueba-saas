@@ -21,6 +21,13 @@
     color: text-color(secondary, lightest);
     cursor: pointer;
   }
+  .rsa-data-table-body-row {
+    &.is-selected {
+      .host-name a{
+        color: text-color(secondary,lightest);
+      }
+    }
+  }
   .rsa-data-table-body-cell {
     width: 20px;
   }

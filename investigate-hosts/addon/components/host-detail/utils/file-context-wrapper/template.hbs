@@ -1,6 +1,6 @@
 <box xs='9'>
   {{endpoint/file-actionbar
-    onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums)
+    onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
     getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
     retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
     resetRiskScore = (action 'resetRiskScoreAction')

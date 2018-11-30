@@ -44,7 +44,7 @@
           timeRange=timeRange
           analyzeFile=analyzeFile
           retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-          onSaveFileStatus = (action 'setFileContextFileStatus' tabName checksums)
+          onSaveFileStatus = (action 'setFileContextFileStatus' tabName checksums fileContextSelections)
           resetRiskScore=(action 'showRiskScoreModal')
         )
         noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
@@ -80,7 +80,7 @@
   {{endpoint/edit-file-status/modal
     itemList=fileContextSelections
     restrictedFileList=restrictedFileList
-    onSaveFileStatus=(action 'setFileContextFileStatus' tabName selectedFileChecksums)
+    onSaveFileStatus=(action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
     retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
     data=fileStatus
     isRemediationAllowed=isRemediationAllowed

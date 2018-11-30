@@ -18,7 +18,7 @@
           </div>
 
           {{endpoint/file-actionbar
-            onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums)
+            onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
             getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
             resetRiskScore = (action 'resetRiskScoreAction')
             serviceList=serviceList
