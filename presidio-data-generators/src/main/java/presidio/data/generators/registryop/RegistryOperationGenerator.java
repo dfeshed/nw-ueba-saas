@@ -3,7 +3,7 @@ package presidio.data.generators.registryop;
 import presidio.data.domain.event.registry.RegistryOperation;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IOperationTypeGenerator;
-import presidio.data.generators.event.process.CyclicOperationTypeGenerator;
+import presidio.data.generators.event.registry.CyclicOperationTypeGenerator;
 import presidio.data.generators.processentity.IProcessEntityGenerator;
 import presidio.data.generators.processentity.ProcessEntityGenerator;
 import presidio.data.generators.registryentry.IRegistryEntryGenerator;
