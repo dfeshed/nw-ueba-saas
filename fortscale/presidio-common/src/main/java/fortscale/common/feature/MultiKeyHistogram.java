@@ -1,6 +1,5 @@
 package fortscale.common.feature;
 
-
 import fortscale.utils.data.Pair;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.Transient;
@@ -8,11 +7,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Document
 public class MultiKeyHistogram implements Serializable, FeatureValue {
+    public static final String FEATURE_VALUE_TYPE = "multi_key_histogram";
     private static final String HISTOGRAM_FIELD_NAME = "histogram";
 
     @Transient
@@ -28,12 +31,13 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
 
     public MultiKeyHistogram add(MultiKeyHistogram multiKeyHistogram, Set<String> filter) {
         for (Map.Entry<MultiKeyFeature, Double> entry : multiKeyHistogram.getHistogram().entrySet()) {
-            if(!entry.getKey().containsAtLeastOneValue(filter)){
+            if (!entry.getKey().containsAtLeastOneValue(filter)) {
                 Double oldCount = histogram.get(entry.getKey());
-                Double newValCount = oldCount != null ?  entry.getValue() + oldCount :  entry.getValue();
+                Double newValCount = oldCount != null ? entry.getValue() + oldCount : entry.getValue();
                 set(entry.getKey(), newValCount);
             }
         }
+
         return this;
     }
 
@@ -67,5 +71,4 @@ public class MultiKeyHistogram implements Serializable, FeatureValue {
     public void setHistogramList(List<Pair<MultiKeyFeature, Double>> histogramList) {
         this.histogram = histogramList.stream().collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
-
 }
