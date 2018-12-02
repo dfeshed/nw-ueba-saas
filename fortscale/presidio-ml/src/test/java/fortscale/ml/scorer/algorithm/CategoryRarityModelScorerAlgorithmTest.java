@@ -83,41 +83,41 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     private double calcScore(int maxRareCount,
-                             int maxNumOfRareFeatures,
+                             int maxNumOfRarePartitions,
                              Map<String, Long> featureValueToCountMap,
                              long featureCountToScore) {
-        return calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore, true);
+        return calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, featureCountToScore, true);
     }
 
     private double calcScore(int maxRareCount,
-                             int maxNumOfRareFeatures,
+                             int maxNumOfRarePartitions,
                              Map<String, Long> featureValueToCountMap,
                              long featureCountToScore,  boolean isRestartTimeForEachFeature) {
         Instant startTime = Instant.parse("2007-12-03T10:00:00.00Z");
         CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
         updateCategoricalFeatureValue(categoricalFeatureValue, featureValueToCountMap, startTime, isRestartTimeForEachFeature);
 
-        return calcScore(maxRareCount, maxNumOfRareFeatures, featureCountToScore,categoricalFeatureValue);
+        return calcScore(maxRareCount, maxNumOfRarePartitions, featureCountToScore,categoricalFeatureValue);
     }
 
     private double calcScore(int maxRareCount,
-                             int maxNumOfRareFeatures,
+                             int maxNumOfRarePartitions,
                              long featureCountToScore,
                              CategoricalFeatureValue categoricalFeatureValue) {
 
         CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount * 2);
         config.setPartitionsResolutionInSeconds(86400);
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, X_WITH_VALUE_HALF_FACTOR);
+        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRarePartitions, X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
 
-    private void assertScoreRange(int maxRareCount, int maxNumOfRareFeatures, Map<String, Long> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
-        assertScoreRange(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCount, expectedRangeMin, expectedRangeMax, true);
+    private void assertScoreRange(int maxRareCount, int maxNumOfRarePartitions, Map<String, Long> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax) {
+        assertScoreRange(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, featureCount, expectedRangeMin, expectedRangeMax, true);
     }
 
-    private void assertScoreRange(int maxRareCount, int maxNumOfRareFeatures, Map<String, Long> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax, boolean isRestartTimeForEachFeature) {
-        double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCount, isRestartTimeForEachFeature);
+    private void assertScoreRange(int maxRareCount, int maxNumOfRarePartitions, Map<String, Long> featureValueToCountMap, int featureCount, double expectedRangeMin, double expectedRangeMax, boolean isRestartTimeForEachFeature) {
+        double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, featureCount, isRestartTimeForEachFeature);
         Assert.assertTrue(String.format("score (%e) >= expectedRangeMin (%e) does not hold", score, expectedRangeMin), score >= expectedRangeMin);
         Assert.assertTrue(String.format("score (%e) <= expectedRangeMax (%e) does not hold", score, expectedRangeMax), score <= expectedRangeMax);
     }
@@ -148,9 +148,9 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenScoring0() {
         int maxRareCount = 5;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
-        calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 1), 0);
+        calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, 1), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -159,7 +159,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
+    public void shouldFailGivenNegativeAsmaxNumOfRarePartitions() {
         new CategoryRarityModelScorerAlgorithm(1, -1, X_WITH_VALUE_HALF_FACTOR);
     }
 
@@ -175,67 +175,67 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void shouldScore0ToFeatureCountsGreaterThanMaxRareCount() {
-        int maxNumOfRareFeatures = 10;
+        int maxNumOfRarePartitions = 10;
         for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
             for (int count = 1; count <= maxRareCount + 1; count++) {
                 double rangeMin = (count == maxRareCount + 1) ? 0 : 1;
                 double rangeMax = (count == maxRareCount + 1) ? 0 : 100;
-                assertScoreRange(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 10000), count, rangeMin, rangeMax);
+                assertScoreRange(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, 10000), count, rangeMin, rangeMax);
             }
         }
     }
 
     @Test
     public void shouldScore96ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxRareCount() {
-        int maxNumOfRareFeatures = 10;
+        int maxNumOfRarePartitions = 10;
         int veryRareFeatureCount = 1;
         for (int maxRareCount = 1; maxRareCount < 10; maxRareCount++) {
-            Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 10000), veryRareFeatureCount), 0.0001);
+            Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, 10000), veryRareFeatureCount), 0.0001);
         }
     }
 
     @Test
     public void shouldScore96ToVeryRareFeatureEvenWhenThereAreCommonFeatures() {
         int maxRareCount = 20;
-        int maxNumOfRareFeatures = 20;
+        int maxNumOfRarePartitions = 20;
         int veryRareFeatureCount = 1;
-        Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(10000, maxRareCount + 2), veryRareFeatureCount, false), 0.0001);
+        Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(10000, maxRareCount + 2), veryRareFeatureCount, false), 0.0001);
     }
 
     @Test
-    public void shouldScore0WhenThereAreMoreThanMaxNumOfRareFeaturesRareFeatures() {
+    public void shouldScore0WhenThereAreMoreThanmaxNumOfRarePartitionsRareFeatures() {
         int maxRareCount = 10;
         int count = 1;
-        for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
-            for (int numOfFeatures = 0; numOfFeatures <= maxNumOfRareFeatures; numOfFeatures++) {
-                double rangeMin = (numOfFeatures == maxNumOfRareFeatures) ? 0 : 1;
-                double rangeMax = (numOfFeatures == maxNumOfRareFeatures) ? 0 : 100;
-                assertScoreRange(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(numOfFeatures, count, 1, 10000), count, rangeMin, rangeMax, false);
+        for (int maxNumOfRarePartitions = 1; maxNumOfRarePartitions < 10; maxNumOfRarePartitions++) {
+            for (int numOfFeatures = 0; numOfFeatures <= maxNumOfRarePartitions; numOfFeatures++) {
+                double rangeMin = (numOfFeatures == maxNumOfRarePartitions) ? 0 : 1;
+                double rangeMax = (numOfFeatures == maxNumOfRarePartitions) ? 0 : 100;
+                assertScoreRange(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(numOfFeatures, count, 1, 10000), count, rangeMin, rangeMax, false);
             }
         }
     }
 
     @Test
-    public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsMaxNumOfRareFeatures() {
+    public void shouldScore100ToVeryRareFeatureWhenNoOtherRareFeaturesNoMatterWhatIsmaxNumOfRarePartitions() {
         int maxRareCount = 10;
         int veryRareFeatureCount = 1;
-        for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures < 10; maxNumOfRareFeatures++) {
-            Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 90), veryRareFeatureCount), 0.0001);
+        for (int maxNumOfRarePartitions = 1; maxNumOfRarePartitions < 10; maxNumOfRarePartitions++) {
+            Assert.assertEquals(96, calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, 90), veryRareFeatureCount), 0.0001);
         }
     }
 
-    private double[][][] calcScoresOverConfigurationMatrix(int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
-        return calcScoresOverConfigurationMatrix(createFeatureValueToCountWithConstantCounts(1, 100), maxMaxRareCount, maxMaxNumOfRareFeatures, maxFeatureCountToScore);
+    private double[][][] calcScoresOverConfigurationMatrix(int maxMaxRareCount, int maxmaxNumOfRarePartitions, int maxFeatureCountToScore) {
+        return calcScoresOverConfigurationMatrix(createFeatureValueToCountWithConstantCounts(1, 100), maxMaxRareCount, maxmaxNumOfRarePartitions, maxFeatureCountToScore);
     }
 
-    private double[][][] calcScoresOverConfigurationMatrix(Map<String, Long> featureValueToCountMap, int maxMaxRareCount, int maxMaxNumOfRareFeatures, int maxFeatureCountToScore) {
+    private double[][][] calcScoresOverConfigurationMatrix(Map<String, Long> featureValueToCountMap, int maxMaxRareCount, int maxmaxNumOfRarePartitions, int maxFeatureCountToScore) {
         double[][][] scores = new double[maxMaxRareCount][][];
         for (int maxRareCount = 1; maxRareCount <= maxMaxRareCount; maxRareCount++) {
-            scores[maxRareCount - 1] = new double[maxMaxNumOfRareFeatures][];
-            for (int maxNumOfRareFeatures = 1; maxNumOfRareFeatures <= maxMaxNumOfRareFeatures; maxNumOfRareFeatures++) {
-                scores[maxRareCount - 1][maxNumOfRareFeatures - 1] = new double[maxFeatureCountToScore];
+            scores[maxRareCount - 1] = new double[maxmaxNumOfRarePartitions][];
+            for (int maxNumOfRarePartitions = 1; maxNumOfRarePartitions <= maxmaxNumOfRarePartitions; maxNumOfRarePartitions++) {
+                scores[maxRareCount - 1][maxNumOfRarePartitions - 1] = new double[maxFeatureCountToScore];
                 for (int featureCountToScore = 1; featureCountToScore <= maxFeatureCountToScore; featureCountToScore++) {
-                    scores[maxRareCount - 1][maxNumOfRareFeatures - 1][featureCountToScore - 1] = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, featureCountToScore);
+                    scores[maxRareCount - 1][maxNumOfRarePartitions - 1][featureCountToScore - 1] = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, featureCountToScore);
                 }
             }
         }
@@ -273,11 +273,11 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     private void assertMonotonicity(double[][][] scores, PARAMETER overParameter, Boolean shouldIncrease) {
         List<List<Double>> scoresSeries = new ArrayList<>();
         if (overParameter == PARAMETER.MAX_RARE_COUNT) {
-            for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
+            for (int maxNumOfRarePartitionsInd = 0; maxNumOfRarePartitionsInd < scores[0].length; maxNumOfRarePartitionsInd++) {
                 for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
                     scoresSeries.add(new ArrayList<>());
                     for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
-                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRarePartitionsInd][featureCountInd]);
                     }
                 }
             }
@@ -285,17 +285,17 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
                 for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
                     scoresSeries.add(new ArrayList<>());
-                    for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
-                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+                    for (int maxNumOfRarePartitionsInd = 0; maxNumOfRarePartitionsInd < scores[0].length; maxNumOfRarePartitionsInd++) {
+                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRarePartitionsInd][featureCountInd]);
                     }
                 }
             }
         } else {
             for (int maxRareCountInd = 0; maxRareCountInd < scores.length; maxRareCountInd++) {
-                for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {
+                for (int maxNumOfRarePartitionsInd = 0; maxNumOfRarePartitionsInd < scores[0].length; maxNumOfRarePartitionsInd++) {
                     scoresSeries.add(new ArrayList<>());
                     for (int featureCountInd = 0; featureCountInd < scores[0][0].length; featureCountInd++) {
-                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRareFeaturesInd][featureCountInd]);
+                        scoresSeries.get(scoresSeries.size() - 1).add(scores[maxRareCountInd][maxNumOfRarePartitionsInd][featureCountInd]);
                     }
                 }
             }
@@ -309,7 +309,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     @Test
-    public void shouldScoreIncreasinglyWhenMaxNumOfRareFeaturesIncreases() {
+    public void shouldScoreIncreasinglyWhenmaxNumOfRarePartitionsIncreases() {
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         featureValueToCountMap.put("veryRareFeature", 1L);
         featureValueToCountMap.put("veryCommonFeature", 100L);
@@ -317,19 +317,19 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     @Test
-    public void shouldScoreConstantlyWhenMaxNumOfRareFeaturesIncreasesButModelDataIsEmpty() {
+    public void shouldScoreConstantlyWhenmaxNumOfRarePartitionsIncreasesButModelDataIsEmpty() {
         assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
     }
 
     @Test
     public void shouldScoreIncreasinglyWhenProbabilityForRareFeatureEventsIncreases() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 6;
+        int maxNumOfRarePartitions = 6;
 
         int veryRareFeatureCount = 1;
         List<Double> scores = new ArrayList<>();
         for (int commonFeatureCount = 10; commonFeatureCount < 100; commonFeatureCount += 10) {
-            scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
+            scores.add(calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
         }
         List<List<Double>> scoresSeries = new ArrayList<>();
         scoresSeries.add(scores);
@@ -375,14 +375,14 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
         assertMonotonicity(scores, PARAMETER.MAX_RARE_COUNT, true);
 
-        int maxNumOfRareFeaturesToPrint = 10;
+        int maxNumOfRarePartitionsToPrint = 10;
         boolean printedHeader = false;
         for (int maxRareCount = 0; maxRareCount < scores.length; maxRareCount++) {
             printNewLineOrHeader(printedHeader, "maxRareCountEffect", 1, scores[0][0].length);
             printedHeader = true;
             print(maxRareCount + "\t");
             for (int featureCount = 0; featureCount < scores[0][0].length; featureCount++) {
-                print(scores[maxRareCount][maxNumOfRareFeaturesToPrint - 1][featureCount] + "\t");
+                print(scores[maxRareCount][maxNumOfRarePartitionsToPrint - 1][featureCount] + "\t");
             }
         }
     }
@@ -390,28 +390,28 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void shouldScoreDecreasinglyWhenNumberOfRareFeaturesWithSameCountIncreases() {
         int maxRareCountToPrint = 15;
-        int maxNumOfRareFeaturess[] = new int[]{5, 7, 9, 11, 13, 15};
+        int maxNumOfRarePartitionss[] = new int[]{5, 7, 9, 11, 13, 15};
         int counts[] = new int[]{1,4};
 
         boolean printedHeader = false;
         List<List<Double>> scoresSeries = new ArrayList<>();
         for (int maxRareCount = 1; maxRareCount < 20; maxRareCount++) {
             for (int count : counts) {
-                for (int maxNumOfRareFeatures : maxNumOfRareFeaturess) {
+                for (int maxNumOfRarePartitions : maxNumOfRarePartitionss) {
                     int maxNumOfFeatures = maxRareCount + 1;
                     if (maxRareCount == maxRareCountToPrint) {
                         revertPrinting();
-                        printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect1", 0, maxNumOfFeatures - 1);
+                        printNewLineOrHeader(printedHeader, "maxNumOfRarePartitionsEffect1", 0, maxNumOfFeatures - 1);
                         printedHeader = true;
                     } else {
                         turnOffPrinting();
                     }
-                    print(count + "->" + maxNumOfRareFeatures + "\t");
+                    print(count + "->" + maxNumOfRarePartitions + "\t");
                     List<Double> scores = new ArrayList<>(maxNumOfFeatures + 1);
                     for (int numOfFeatures = 0; numOfFeatures <= maxNumOfFeatures; numOfFeatures++) {
                         double score = calcScore(
                                 maxRareCount,
-                                maxNumOfRareFeatures,
+                                maxNumOfRarePartitions,
                                 createFeatureValueToCountWithConstantCounts(numOfFeatures, count, 10, 100),
                                 count, false);
                         scores.add(score);
@@ -428,24 +428,24 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void shouldScoreDecreasinglyWhenThereAreManyFeaturesWithTheSameCountAndThenTheirCountIncreasesByOne() {
         int maxNumOfFeaturesToPrint = 2;
         int maxRareCountToPrint = 15;
-        int maxNumOfRareFeaturessToPrint[] = new int[]{5, 10, 15, 20, 30, 40, 50};
+        int maxNumOfRarePartitionssToPrint[] = new int[]{5, 10, 15, 20, 30, 40, 50};
 
         List<List<Double>> scoresSeries = new ArrayList<>();
         boolean printedHeader = false;
         for (int maxRareCount = 1; maxRareCount < 30; maxRareCount++) {
             for (int numOfFeatures = 0; numOfFeatures < 10; numOfFeatures++) {
-                for (int maxNumOfRareFeatures = 5; maxNumOfRareFeatures < 100; maxNumOfRareFeatures += 5) {
-                    if (numOfFeatures <= maxNumOfFeaturesToPrint && maxRareCount == maxRareCountToPrint && ArrayUtils.contains(maxNumOfRareFeaturessToPrint, maxNumOfRareFeatures)) {
+                for (int maxNumOfRarePartitions = 5; maxNumOfRarePartitions < 100; maxNumOfRarePartitions += 5) {
+                    if (numOfFeatures <= maxNumOfFeaturesToPrint && maxRareCount == maxRareCountToPrint && ArrayUtils.contains(maxNumOfRarePartitionssToPrint, maxNumOfRarePartitions)) {
                         revertPrinting();
-                        printNewLineOrHeader(printedHeader, "maxNumOfRareFeaturesEffect2", 1, maxRareCount);
+                        printNewLineOrHeader(printedHeader, "maxNumOfRarePartitionsEffect2", 1, maxRareCount);
                         printedHeader = true;
                     } else {
                         turnOffPrinting();
                     }
-                    print(numOfFeatures + "->" + maxNumOfRareFeatures + "\t");
+                    print(numOfFeatures + "->" + maxNumOfRarePartitions + "\t");
                     List<Double> scores = new ArrayList<>(maxRareCount - 1);
                     for (int featureCount = 1; featureCount <= maxRareCount; featureCount++) {
-                        double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(numOfFeatures, featureCount, 10, 10), featureCount, false);
+                        double score = calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(numOfFeatures, featureCount, 10, 10), featureCount, false);
                         if (featureCount > 1) {
                             scores.add(score);
                         }
@@ -460,7 +460,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void shouldScoreIncreasinglyWhenLessRareFeatureComparedToVeryRareFeatureBecomesEvenLessRare() {
-        int maxNumOfRareFeatures = 20;
+        int maxNumOfRarePartitions = 20;
         int maxMaxRareCount = 10;
         int maxFeatureCount = maxMaxRareCount + 1;
 
@@ -476,7 +476,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                 CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
                 updateCategoricalFeatureValue(categoricalFeatureValue, "daily-feature", 90L, startTime, 90);
                 updateCategoricalFeatureValue(categoricalFeatureValue, createFeatureValueToCountWithConstantCounts(maxFeatureCount, featureCount), startTime, maxFeatureCount, false);
-                double score = calcScore(maxRareCount, maxNumOfRareFeatures, 1, categoricalFeatureValue);
+                double score = calcScore(maxRareCount, maxNumOfRarePartitions, 1, categoricalFeatureValue);
                 if (featureCount > 0) {
                     scores.add(score);
                 }
@@ -499,11 +499,11 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void shouldScoreFirstSeenVeryRareFeatureTheSameWhenBuildingWithVeryCommonFeaturesAndWithoutThem() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
         int veryRareFeatureCount = 1;
         int veryCommonFeatureCount = 10000;
-        double scoreWithManyCommons = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, veryCommonFeatureCount), veryRareFeatureCount);
-        double scoreWithOneCommon = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryCommonFeatureCount), veryRareFeatureCount);
+        double scoreWithManyCommons = calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(maxNumOfRarePartitions - 1, veryCommonFeatureCount), veryRareFeatureCount);
+        double scoreWithOneCommon = calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, veryCommonFeatureCount), veryRareFeatureCount);
         Assert.assertEquals(scoreWithOneCommon, scoreWithManyCommons, 1);
         Assert.assertTrue(scoreWithOneCommon >= 96);
     }
@@ -511,12 +511,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void shouldScoreSecondSeenVeryRareFeatureIncreasinglyWhenCommonFeatureCountIncreases() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         int veryRareFeatureCount = 1;
         List<Double> scores = new ArrayList<>();
         for (int commonFeatureCount = 20; commonFeatureCount < 1000; commonFeatureCount += 10) {
-            scores.add(calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
+            scores.add(calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, veryRareFeatureCount, 1, commonFeatureCount), veryRareFeatureCount));
         }
         List<List<Double>> scoresSeries = new ArrayList<>(1);
         scoresSeries.add(scores);
@@ -526,14 +526,14 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void elementaryCheck() {
         int maxRareCount = 15;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         long count = 100;
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
-        double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, count);
+        double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, count);
         Assert.assertEquals(0.0, score, 0.0);
     }
 
@@ -541,7 +541,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void simpleInputOutput() {
         for (int modelConfig = 0; modelConfig < 2; modelConfig++) {
             int maxRareCount = modelConfig == 0 ? 10 : 8;
-            int maxNumOfRareFeatures = modelConfig == 0 ? 15 : 10;
+            int maxNumOfRarePartitions = modelConfig == 0 ? 15 : 10;
 
             Map<String, Long> featureValueToCountMap = new HashMap<>();
             for (int i = 0; i < 2; i++) {
@@ -556,7 +556,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                 if(count>1) {
                     featureValueToCountMapWithRareValue.put("rare-feature", count - 1L);
                 }
-                double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapWithRareValue, count);
+                double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMapWithRareValue, count);
                 Assert.assertEquals(scores[i], score, 0);
             }
         }
@@ -565,7 +565,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFeatureValuesWithValuesIncreasingByTime() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         String rareFeature = "rareFeature";
         long[] rareCounts = new long[]{1, 2, 3, 4, 8, 9};
@@ -573,13 +573,13 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         double[] scores = new double[]{84, 83, 74, 50, 3, 1};
         for (int i = 0; i < scores.length; i++) {
             Map<String, Long> featureValueToCountMap = new HashMap<>();
-            for (int j = 0; j < maxNumOfRareFeatures - 1; j++) {
+            for (int j = 0; j < maxNumOfRarePartitions - 1; j++) {
                 featureValueToCountMap.put("commonFeature-" + j, commonCounts[i]);
             }
             if(rareCounts[i]>1) {
                 featureValueToCountMap.put(rareFeature, rareCounts[i]-1);
             }
-            double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareCounts[i]);
+            double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareCounts[i]);
             Assert.assertEquals(scores[i], score, 0);
         }
     }
@@ -588,19 +588,19 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFeatureValues() {
         for (int modelConfig = 0; modelConfig < 2; modelConfig++) {
             int maxRareCount = modelConfig == 0 ? 8 : 12;
-            int maxNumOfRareFeatures = modelConfig == 0 ? 10 : 15;
+            int maxNumOfRarePartitions = modelConfig == 0 ? 10 : 15;
 
 
-            Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, 200);
+            Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRarePartitions - 1, 200);
             long rareFeatureCountA = 1;
             featureValueToCountMap.put("rareFeatureA", rareFeatureCountA);
-            double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountA);
+            double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCountA);
             Assert.assertEquals(modelConfig == 0 ? 92 : 92, score,1);
 
             long rareFeatureCountB = 2L;
             featureValueToCountMap.put("rareFeatureB", rareFeatureCountB);
-            double scoreA = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountA,false);
-            double scoreB = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCountB, false);
+            double scoreA = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCountA,false);
+            double scoreB = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCountB, false);
             Assert.assertEquals(scoreA, scoreB, 1);
             Assert.assertEquals(modelConfig == 0 ? 52 : 76, scoreA, 1);
 
@@ -608,7 +608,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             double[] scores = modelConfig == 0 ? new double[]{12, 6, 4, 0} : new double[]{40, 24, 14, 8};
             for (int i = 0; i < scores.length; i++) {
                 featureValueToCountMap.put(String.format("rareFeature-%d", i), counts[i]);
-                score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, counts[i], false);
+                score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, counts[i], false);
                 Assert.assertEquals(scores[i], score, 1);
             }
         }
@@ -618,12 +618,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void testingScoreOfOneVeryRareFeatureValueAndManyRareFeatureValuesAgainstVeryLargeFeatureValues() {
         for (int modelConfig = 0; modelConfig < 2; modelConfig++) {
             int maxRareCount = modelConfig == 0 ? 6 : 8;
-            int maxNumOfRareFeatures = modelConfig == 0 ? 10 : 15;
+            int maxNumOfRarePartitions = modelConfig == 0 ? 10 : 15;
 
-            Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, 2000);
+            Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRarePartitions - 1, 2000);
             long veryRareFeatureCount = 1;
             featureValueToCountMap.put("veryRareFeatureValue", veryRareFeatureCount);
-            double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, 1);
+            double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, 1);
             Assert.assertEquals(modelConfig == 0 ? 92 : 93, score, 1);
 
             long[] rareFeatureCounts = modelConfig == 0 ? new long[]{4, 3, 4, 3, 4} : new long[]{4, 3, 4, 3, 4};
@@ -631,9 +631,9 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             double[] veryRareFeaturesScores = modelConfig == 0 ? new double[]{86, 48, 32, 10, 6} : new double[]{82, 42, 20, 6, 3};
             for (int i = 0; i < rareFeatureCounts.length; i++) {
                 featureValueToCountMap.put("rareFeatureValue-" + i, rareFeatureCounts[i]);
-                score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, veryRareFeatureCount, false);
+                score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, veryRareFeatureCount, false);
                 Assert.assertEquals(veryRareFeaturesScores[i], score, 1);
-                score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCounts[i], false);
+                score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCounts[i], false);
                 Assert.assertEquals(rareFeaturesScores[i], score, 1);
             }
         }
@@ -642,25 +642,25 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValuesWhichSpreadAccross90Days() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
-        Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, 15);
+        Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRarePartitions - 1, 15);
         Instant startTime = Instant.parse("2007-12-03T10:00:00.00Z");
         CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
         updateCategoricalFeatureValue(categoricalFeatureValue, featureValueToCountMap, startTime, false);
 
         long rareFeatureCountA = 2;
         updateCategoricalFeatureValue(categoricalFeatureValue,"rareFeatureValue-A", rareFeatureCountA, startTime);
-        double score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCountA, categoricalFeatureValue);
+        double score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCountA, categoricalFeatureValue);
         Assert.assertEquals(87, score, 1);
 
         long rareFeatureCountB = 3;
         updateCategoricalFeatureValue(categoricalFeatureValue,"rareFeatureValue-B", rareFeatureCountB, startTime);
 
-        score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCountA, categoricalFeatureValue);
+        score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCountA, categoricalFeatureValue);
         Assert.assertEquals(76, score, 1);
 
-        score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCountB, categoricalFeatureValue);
+        score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCountB, categoricalFeatureValue);
         Assert.assertEquals(76, score, 1);
 
 
@@ -668,21 +668,21 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         for (int i = 0; i < 3; i++) {
             long rareFeatureCount6 = 6;
             updateCategoricalFeatureValue(categoricalFeatureValue,"newRareFeatureValue-" + i, rareFeatureCount6, startTime);
-            score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCount6, categoricalFeatureValue);
+            score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCount6, categoricalFeatureValue);
             Assert.assertEquals(11, score, 1);
         }
 
-        score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCountA, categoricalFeatureValue);
+        score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCountA, categoricalFeatureValue);
         Assert.assertEquals(59, score, 1);
 
-        score = calcScore(maxRareCount, maxNumOfRareFeatures, rareFeatureCountB, categoricalFeatureValue);
+        score = calcScore(maxRareCount, maxNumOfRarePartitions, rareFeatureCountB, categoricalFeatureValue);
         Assert.assertEquals(42, score, 1);
     }
 
     @Test
     public void testingScoreOfOnlyRareFeatureValues() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         long rareFeatureCount = 1;
@@ -691,14 +691,14 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             featureValueToCountMap.put("newRareFeatureValue-" + i, 2L);
         }
 
-        double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCount, false);
+        double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCount, false);
         Assert.assertEquals(0, score, 1);
     }
 
     @Test
     public void testingScoreOfRareFeatureValueAgainstMediumFeatureValuesAcrossTime() {
         int maxRareCount = 8;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         Map<String, Long> featureValueToCountMap = new HashMap<>();
 
@@ -710,7 +710,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                 featureValueToCountMap.put("mediumFeatureValue-" + j, mediumFeatureCounts[i]);
             }
             featureValueToCountMap.put("rareFeatureValue", rareFeatureCounts[i]);
-            double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCounts[i], false);
+            double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, rareFeatureCounts[i], false);
             Assert.assertEquals(rareFeatureScores[i], score, 1);
         }
     }
@@ -718,11 +718,11 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void testRareToMediumFeatureValueAgainstMediumLargeFeatureValues() {
         int maxRareCount = 8;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         int mediumLargeFeatureCount = 13;
-        Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRareFeatures - 1, mediumLargeFeatureCount);
-        double score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, mediumLargeFeatureCount);
+        Map<String, Long> featureValueToCountMap = createFeatureValueToCountWithConstantCounts(maxNumOfRarePartitions - 1, mediumLargeFeatureCount);
+        double score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, mediumLargeFeatureCount);
         Assert.assertEquals(0, score, 0);
 
         long[] rareFeatureCounts = new long[]{1, 2, 3, 4, 5, 8};
@@ -732,7 +732,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             if(rareFeatureCounts[i]>1) {
                 featureValueToCountMapWithRareValue.put("rareFeature", rareFeatureCounts[i] - 1);
             }
-            score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMapWithRareValue, rareFeatureCounts[i], false);
+            score = calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMapWithRareValue, rareFeatureCounts[i], false);
             Assert.assertEquals(rareFeatureScores[i], score, 1);
         }
     }
@@ -740,11 +740,11 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void testRareToMediumFeatureValueAgainstRareFeatureValueAndMediumFeatureValue() {
         int maxRareCount = 10;
-        int maxNumOfRareFeatures = 15;
+        int maxNumOfRarePartitions = 15;
 
         double[] scores = new double[]{40, 6, 0, 0, 0, 0, 0, 0, 0, 0};
         for (int rareFeatureCount = 1; rareFeatureCount < 11; rareFeatureCount++) {
-            double score = calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(1, 4, 1, 15, 1, rareFeatureCount-1), rareFeatureCount, false);
+            double score = calcScore(maxRareCount, maxNumOfRarePartitions, createFeatureValueToCountWithConstantCounts(1, 4, 1, 15, 1, rareFeatureCount-1), rareFeatureCount, false);
             Assert.assertEquals(scores[rareFeatureCount - 1], score, 1);
         }
     }
@@ -855,14 +855,14 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private class CategoryRarityScenarioCallbacks extends ScenarioCallbacks {
         private int maxRareCount;
-        private int maxNumOfRareFeatures;
+        private int maxNumOfRarePartitions;
         private Map<String, Long> featureValueToCountMap;
         private Map<String, Set<Date>> featureValueToDaysMap;
 
         @Override
         public void onScenarioRunStart() {
             maxRareCount = 10;
-            maxNumOfRareFeatures = 6;
+            maxNumOfRarePartitions = 6;
             featureValueToCountMap = new HashMap<>();
             featureValueToDaysMap = new HashMap<>();
         }
@@ -870,7 +870,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         @Override
         public Double onScore(TestEventsBatch eventsBatch) {
             long eventFeatureCount = featureValueToCountMap.getOrDefault(eventsBatch.getFeature(), 0L);
-            return calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, eventFeatureCount + 1);
+            return calcScore(maxRareCount, maxNumOfRarePartitions, featureValueToCountMap, eventFeatureCount + 1);
         }
 
         @Override

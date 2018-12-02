@@ -17,8 +17,8 @@
               },
               "number-of-partitions-to-influence-enough": 10,
               "min-number-of-partitions-to-influence": 1,
-              "max-rare-timestamp-count": 8,
-              "max-num-of-rare-timestamps": 8,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
               "use-certainty-to-calculate-score": true
             },
             {
@@ -50,7 +50,7 @@
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
-                  "max-num-of-rare-features": 15
+                  "max-num-of-rare-partitions": 15
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
@@ -65,7 +65,7 @@
                     "number-of-partitions-to-influence-enough": 10,
                     "min-number-of-partitions-to-influence": 10,
                     "use-certainty-to-calculate-score": true,
-                    "max-num-of-rare-features": 15
+                    "max-num-of-rare-partitions": 15
                   }
                 },
                 "reduction-weight": 0.5
@@ -102,7 +102,7 @@
                 "max-rare-count": 8,
                 "number-of-partitions-to-influence-enough": 10,
                 "use-certainty-to-calculate-score": true,
-                "max-num-of-rare-features": 15
+                "max-num-of-rare-partitions": 15
               }
             },
             {
@@ -131,7 +131,7 @@
                 "max-rare-count": 8,
                 "number-of-partitions-to-influence-enough": 10,
                 "use-certainty-to-calculate-score": true,
-                "max-num-of-rare-features": 15
+                "max-num-of-rare-partitions": 15
               }
             },
             {
@@ -160,7 +160,7 @@
                 "max-rare-count": 8,
                 "number-of-partitions-to-influence-enough": 10,
                 "use-certainty-to-calculate-score": true,
-                "max-num-of-rare-features": 15
+                "max-num-of-rare-partitions": 15
               }
             },
             {
@@ -189,7 +189,7 @@
                 "max-rare-count": 8,
                 "number-of-partitions-to-influence-enough": 10,
                 "use-certainty-to-calculate-score": true,
-                "max-num-of-rare-features": 15
+                "max-num-of-rare-partitions": 15
               }
             },
             {
@@ -218,7 +218,7 @@
                 "max-rare-count": 8,
                 "number-of-partitions-to-influence-enough": 10,
                 "use-certainty-to-calculate-score": true,
-                "max-num-of-rare-features": 15
+                "max-num-of-rare-partitions": 15
               }
             },
             {
@@ -250,7 +250,7 @@
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
-                  "max-num-of-rare-features": 15
+                  "max-num-of-rare-partitions": 15
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
@@ -265,7 +265,7 @@
                     "number-of-partitions-to-influence-enough": 10,
                     "min-number-of-partitions-to-influence": 10,
                     "use-certainty-to-calculate-score": true,
-                    "max-num-of-rare-features": 15
+                    "max-num-of-rare-partitions": 15
                   }
                 },
                 "reduction-weight": 0.5
@@ -300,7 +300,7 @@
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
-                  "max-num-of-rare-features": 15
+                  "max-num-of-rare-partitions": 15
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
@@ -315,7 +315,7 @@
                     "number-of-partitions-to-influence-enough": 10,
                     "min-number-of-partitions-to-influence": 10,
                     "use-certainty-to-calculate-score": true,
-                    "max-num-of-rare-features": 15
+                    "max-num-of-rare-partitions": 15
                   }
                 },
                 "reduction-weight": 0.5
@@ -350,7 +350,7 @@
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
-                  "max-num-of-rare-features": 15
+                  "max-num-of-rare-partitions": 15
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
@@ -365,7 +365,7 @@
                     "number-of-partitions-to-influence-enough": 10,
                     "min-number-of-partitions-to-influence": 10,
                     "use-certainty-to-calculate-score": true,
-                    "max-num-of-rare-features": 15
+                    "max-num-of-rare-partitions": 15
                   }
                 },
                 "reduction-weight": 0.5

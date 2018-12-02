@@ -5,8 +5,8 @@ import fortscale.ml.model.TimeModel;
 public class TimeModelScorerAlgorithm {
     private CategoryRarityModelScorerAlgorithm algorithm;
 
-    public TimeModelScorerAlgorithm(Integer maxRareTimestampCount, Integer maxNumOfRareTimestamps, double xWithValueHalfFactor) {
-        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps, xWithValueHalfFactor);
+    public TimeModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRarePartitions, double xWithValueHalfFactor) {
+        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRarePartitions, xWithValueHalfFactor);
     }
 
     public double calculateScore(long time, TimeModel model) {

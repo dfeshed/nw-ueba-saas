@@ -23,11 +23,11 @@ import static org.mockito.Mockito.mock;
 public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
     private static final int DAILY_BUCKET_SIZE = 60 * 10;
-    private static final int MAX_RARE_TIMESTAMP_COUNT = 8;
+    private static final int MAX_RARE_COUNT = 8;
     private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
     private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
     private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
-    private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 15;
+    private static final int MAX_NUM_OF_RARE_PARTITIONS = 15;
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
 
 
@@ -49,13 +49,13 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     private Double calcScore(TimeModel model, long timeToScore) {
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS,X_WITH_VALUE_HALF_FACTOR);
+        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_COUNT, MAX_NUM_OF_RARE_PARTITIONS,X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 
     private TimeModel getTimeModel(Map<Long, Double> timeToCounter){
         TimeModel model = new TimeModel();
-        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
 
         return model;
     }

@@ -59,7 +59,7 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
                 scorerConf.getMinNumOfDistinctValuesToInfluence(),
                 scorerConf.getEnoughNumOfDistinctValuesToInfluence(),
                 scorerConf.getMaxRareCount(),
-                scorerConf.getMaxNumOfRareFeatures(),
+                scorerConf.getMaxNumOfRarePartitions(),
                 scorerConf.getXWithValueHalfFactor(),
                 eventModelsCacheService);
     }

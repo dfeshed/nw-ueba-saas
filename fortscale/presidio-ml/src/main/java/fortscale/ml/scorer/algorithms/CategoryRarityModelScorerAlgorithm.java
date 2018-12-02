@@ -17,33 +17,34 @@ public class CategoryRarityModelScorerAlgorithm {
     private static final double MAX_POSSIBLE_SCORE = 100;
 
     private int maxRareCount;
-    private int maxNumOfRareFeatures;
+    private int maxNumOfRarePartitions;
     private double xWithValueHalfFactor;
 
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor) {
-        assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRarePartitions, double xWithValueHalfFactor) {
+        assertMaxNumOfRarePartitionsValue(maxNumOfRarePartitions);
         assertMaxRareCountValue(maxRareCount);
-        if(maxRareCount > 99) {
-            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
-            throw new RuntimeException();
-        }
-        if(maxNumOfRareFeatures > 99) {
-            logger.warn(String.format("maxNumOfRareFeatures is suspiciously big: %d", maxNumOfRareFeatures));
-            throw new RuntimeException();
-        }
+
         this.maxRareCount = maxRareCount;
-        this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        this.maxNumOfRarePartitions = maxNumOfRarePartitions;
         this.xWithValueHalfFactor = xWithValueHalfFactor;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {
         Assert.notNull(maxRareCount, "maxRareCount must not be null");
         Assert.isTrue(maxRareCount >= 0, String.format("maxRareCount must be >= 0: %d", maxRareCount));
+        if(maxRareCount > 99) {
+            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
+            throw new RuntimeException();
+        }
     }
 
-    public static void assertMaxNumOfRareFeaturesValue(Integer maxNumOfRareFeatures) {
-        Assert.notNull(maxNumOfRareFeatures, "maxNumOfRareFeatures must not be null");
-        Assert.isTrue(maxNumOfRareFeatures >= 0, String.format("maxNumOfRareFeatures must be >= 0: %d", maxNumOfRareFeatures));
+    public static void assertMaxNumOfRarePartitionsValue(Integer maxNumOfRarePartitions) {
+        Assert.notNull(maxNumOfRarePartitions, "maxNumOfRarePartitions must not be null");
+        Assert.isTrue(maxNumOfRarePartitions >= 0, String.format("maxNumOfRarePartitions must be >= 0: %d", maxNumOfRarePartitions));
+        if(maxNumOfRarePartitions > 99) {
+            logger.warn(String.format("maxNumOfRarePartitions is suspiciously big: %d", maxNumOfRarePartitions));
+            throw new RuntimeException();
+        }
     }
 
     public double calculateScore(long featureCount, CategoryRarityModel model) {
@@ -56,17 +57,17 @@ public class CategoryRarityModelScorerAlgorithm {
         }
 
         List<Double> buckets = model.getBuckets();
-        double numOfDistinctDaysContainingRareFeatureValue = 1 + buckets.get((int) featureCount-1);
+        double numOfDistinctPartitionsContainingRareFeatureValue = 1 + buckets.get((int) featureCount-1);
         for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
             double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
-            numOfDistinctDaysContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
+            numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
-        double commonEventProbability = 1 - numOfDistinctDaysContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
+        double commonEventProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
         commonEventProbability = commonEventProbability < 0.7 ? 0.0 : (commonEventProbability - 0.7) / 0.3;
-        double numRareFeaturesDiscount = calcCommonnessDiscounting(maxNumOfRareFeatures, numOfDistinctDaysContainingRareFeatureValue);//Math.pow(Math.max(0, (maxNumOfRareFeatures - numOfDistinctDaysContainingRareFeatureValue) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
+        double numOfDistinctPartitionsContainingRareFeatureValueDiscount = calcCommonnessDiscounting(maxNumOfRarePartitions, numOfDistinctPartitionsContainingRareFeatureValue);
         double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
-        double score = commonEventProbability * Math.min(featureCountDiscount,numRareFeaturesDiscount);
+        double score = commonEventProbability * Math.min(featureCountDiscount,numOfDistinctPartitionsContainingRareFeatureValueDiscount);
         return Math.floor(MAX_POSSIBLE_SCORE * score);
     }
 
@@ -84,7 +85,7 @@ public class CategoryRarityModelScorerAlgorithm {
         return maxRareCount;
     }
 
-    public int getMaxNumOfRareFeatures() {
-        return maxNumOfRareFeatures;
+    public int getMaxNumOfRarePartitions() {
+        return maxNumOfRarePartitions;
     }
 }

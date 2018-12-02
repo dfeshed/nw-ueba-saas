@@ -21,8 +21,8 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     private int enoughNumOfDistinctValuesToInfluence;
     @JsonProperty("max-rare-count")
     private Integer maxRareCount = null;
-    @JsonProperty("max-num-of-rare-features")
-    private Integer maxNumOfRareFeatures = null;
+    @JsonProperty("max-num-of-rare-partitions")
+    private Integer maxNumOfRarePartitions = null;
     @JsonProperty("x-with-value-half-factor")
     private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
 
@@ -31,12 +31,12 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
                                          @JsonProperty("model") ModelInfo modelInfo,
                                          @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
                                          @JsonProperty("max-rare-count")Integer maxRareCount,
-                                         @JsonProperty("max-num-of-rare-features") Integer maxNumOfRareFeatures) {
+                                         @JsonProperty("max-num-of-rare-partitions") Integer maxNumOfRarePartitions) {
         super(name, modelInfo, additionalModelInfos);
-        CategoryRarityModelScorerAlgorithm.assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+        CategoryRarityModelScorerAlgorithm.assertMaxNumOfRarePartitionsValue(maxNumOfRarePartitions);
         CategoryRarityModelScorerAlgorithm.assertMaxRareCountValue(maxRareCount);
         this.maxRareCount = maxRareCount;
-        this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        this.maxNumOfRarePartitions = maxNumOfRarePartitions;
     }
 
     public CategoryRarityModelScorerConf setMinNumOfDistinctValuesToInfluence(Integer minNumOfDistinctValuesToInfluence) {
@@ -63,8 +63,8 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
         return maxRareCount;
     }
 
-    public int getMaxNumOfRareFeatures() {
-        return maxNumOfRareFeatures;
+    public int getMaxNumOfRarePartitions() {
+        return maxNumOfRarePartitions;
     }
 
     public double getXWithValueHalfFactor() {

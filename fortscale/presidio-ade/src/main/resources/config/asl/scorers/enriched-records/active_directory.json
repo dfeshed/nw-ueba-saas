@@ -17,8 +17,8 @@
               },
               "number-of-partitions-to-influence-enough": 10,
               "min-number-of-partitions-to-influence": 1,
-              "max-rare-timestamp-count": 8,
-              "max-num-of-rare-timestamps": 8,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
               "use-certainty-to-calculate-score": true
             },
             {
@@ -45,7 +45,7 @@
                       "name": "operationType.userIdSecuritySensitive.activeDirectory"
                     },
                     "max-rare-count": 8,
-                    "max-num-of-rare-features": 15,
+                    "max-num-of-rare-partitions": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
                   },
@@ -56,7 +56,7 @@
                       "name": "operationType.userId.activeDirectory"
                     },
                     "max-rare-count": 8,
-                    "max-num-of-rare-features": 15,
+                    "max-num-of-rare-partitions": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
                   }
@@ -86,7 +86,7 @@
                       "name": "operationType.userIdObjectManagement.activeDirectory"
                     },
                     "max-rare-count": 8,
-                    "max-num-of-rare-features": 15,
+                    "max-num-of-rare-partitions": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
                   },
@@ -97,7 +97,7 @@
                       "name": "operationType.userId.activeDirectory"
                     },
                     "max-rare-count": 8,
-                    "max-num-of-rare-features": 15,
+                    "max-num-of-rare-partitions": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
                   }

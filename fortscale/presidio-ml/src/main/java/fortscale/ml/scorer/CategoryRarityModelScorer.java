@@ -65,7 +65,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                                      int minNumOfDistinctValuesToInfluence,
                                      int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
-                                     int maxNumOfRareFeatures,
+                                     int maxNumOfRarePartitions,
                                      double xWithValueHalfFactor,
                                      EventModelsCacheService eventModelsCacheService) {
 
@@ -74,7 +74,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                 isUseCertaintyToCalculateScore, eventModelsCacheService);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
-        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, xWithValueHalfFactor);
+        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRarePartitions, xWithValueHalfFactor);
     }
 
     @Override
