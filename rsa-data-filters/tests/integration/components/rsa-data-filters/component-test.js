@@ -159,4 +159,21 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     click('.save-as-filter-button button');
   });
 
+  test('Setting showSaveAsFilterButton shows/hides the Save As filter button', async function(assert) {
+    // Save As filter button should render by default if unset
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    await render(hbs`{{rsa-data-filters config=config}}`);
+    assert.equal(findAll('.save-as-filter-button').length, 1, 'Save As filter button is in the DOM');
+
+    // Save As filter button should render when showSaveAsFilterButton=true
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    await render(hbs`{{rsa-data-filters config=config showSaveAsFilterButton=true}}`);
+    assert.equal(findAll('.save-as-filter-button').length, 1, 'Save As filter button is in the DOM');
+
+    // Save As filter button should NOT render when showSaveAsFilterButton=false
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    await render(hbs`{{rsa-data-filters config=config showSaveAsFilterButton=false}}`);
+    assert.equal(findAll('.save-as-filter-button').length, 0, 'Save As filter button is NOT in the DOM');
+  });
+
 });

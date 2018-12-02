@@ -1,8 +1,9 @@
 @charset "UTF-8";
 
 
-/* pulling in component-lib from inside admin-source-management */
+/* pulling in external css dependencies from inside admin-source-management */
 @import 'component-lib/manifest';
+@import 'rsa-data-filters/manifest';
 
 /* pulling in local admin-source-managment styles */
 @import "admin-source-management/manifest";

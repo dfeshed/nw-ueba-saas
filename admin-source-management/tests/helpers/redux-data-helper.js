@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import { buildInitialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-reducers';
 import { initialState as groupWizInitialState } from 'admin-source-management/reducers/usm/group-wizard-reducers';
+import { initialState as filtersInitialState } from 'admin-source-management/reducers/usm/filters/filters-reducers';
 import {
   groups,
   policies,
@@ -434,6 +435,24 @@ export default class DataHelper {
 
   selectedPolicies(config) {
     _set(this.state, 'usm.policies.itemsSelected', config);
+    return this;
+  }
+
+  // ====================================================================
+  // policies filter (filtersInitialState is used for all filters)
+  // ====================================================================
+  policiesFilter() {
+    _set(this.state, 'usm.policiesFilter', _.cloneDeep(filtersInitialState));
+    return this;
+  }
+
+  policiesFilterSelectedFilter(selectedFilter) {
+    _set(this.state, 'usm.policiesFilter.selectedFilter', selectedFilter);
+    return this;
+  }
+
+  policiesFilterExpressionList(expressionList) {
+    _set(this.state, 'usm.policiesFilter.expressionList', expressionList);
     return this;
   }
 

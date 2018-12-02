@@ -1,25 +1,7 @@
-{{!-- 
-    Developer Note:
-    This filter panel can follow the same pattern used in respond alerts.
-    Look at these files for getting started:
-        respond\addon\components\rsa-alerts\filter-controls\template.hbs
-        respond\addon\components\rsa-alerts\filter-controls\component.js
-
-        "SOURCE TYPE" should be a dynamic checkbox list of available source types
-        "APPLIED GROUPS" is a multi-select listbox of available groups 
-        "POLICY PARAMETERS" is a list of policy parameters to match"
---}}
-
-<section class="filter-option source-type-filter">
-  <h2>{{ t 'adminUsm.policies.filter.sourceType'}}</h2>
-  {{!-- TODO --}}
-</section>
-<section class="filter-option applied-group-filter">
-  <h2>{{ t 'adminUsm.policies.filter.appliedGroups'}}</h2>
-  {{!-- TODO --}}
-</section>
-<section class="filter-option policy-parameter-filter">
-  <h2>{{ t 'adminUsm.policies.filter.policyParameters'}}</h2>
-  {{!-- TODO --}}
-</section>
-
+{{usm-shared/filters-wrapper
+  filterState=filterState
+  filterType='POLICIES'
+  filterTypes=filterTypes
+  resetFilters=(action 'resetFilters')
+  applyFilters=(action 'applyFilters' (action 'fetchPolicies'))
+}}

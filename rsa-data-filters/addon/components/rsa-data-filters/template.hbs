@@ -14,7 +14,9 @@
       {{t 'dataFilters.save'}}
     {{/rsa-form-button}}
   {{/if}}
-  {{#rsa-form-button class='save-as-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' true)}}
-    {{t 'dataFilters.saveAs'}}
-  {{/rsa-form-button}}
+  {{#if showSaveAsFilterButton}}
+    {{#rsa-form-button class='save-as-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters' true)}}
+      {{t 'dataFilters.saveAs'}}
+    {{/rsa-form-button}}
+  {{/if}}
 </hbox>

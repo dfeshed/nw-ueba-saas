@@ -23,10 +23,9 @@ const initializePolicies = () => {
 const fetchPolicies = (callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const pageNumber = 0;
-    const expressionList = [];
     const { /* itemsFilters, */ sortField, isSortDescending } = getState().usm.policies;
-    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
-    // const { expressionList } = getState().files.filter;
+    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().usm.policiesFilter;
+    const { expressionList } = getState().usm.policiesFilter;
     dispatch({
       type: ACTION_TYPES.FETCH_POLICIES,
       promise: policyAPI.fetchPolicies(pageNumber, { sortField, isSortDescending }, expressionList),

@@ -34,6 +34,31 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body').length, 1, 'The component appears in the DOM');
   });
 
+  test('Policies filter panel and data-filters rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    assert.equal(findAll('.usm-policies-filter').length, 1, 'Policies filter panel rendered');
+    assert.equal(findAll('.usm-policies-filter .rsa-data-filters').length, 1, 'data-filters rendered within policies filter panel');
+  });
+
+  test('Publication Status filter rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    const translation = this.owner.lookup('service:i18n');
+    const expectedFilterText = translation.t('adminUsm.policies.list.publishStatus');
+    const exOptLen = 3;
+    // published filter will be the first list-filter
+    const [el] = findAll('.filter-controls .list-filter');
+    assert.equal(el.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
+    assert.equal(el.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
+  });
+
   test('Show policy list', async function(assert) {
     assert.expect(2);
     setState('name', false);

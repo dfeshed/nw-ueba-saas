@@ -39,10 +39,12 @@
   {{/if}}
   {{yield (hash filterControls=(component filterControlsComponent updateFilter=updateFilter))}}
 </section>
-<footer>
-  {{#rsa-form-button
-    isFullWidth=true
-    defaultAction='reset'}}
-    {{t 'rsaExplorer.filters.reset'}}
-  {{/rsa-form-button}}
-</footer>
+{{#if showFooter}}
+  <footer>
+    {{#rsa-form-button
+      isFullWidth=true
+      defaultAction='reset'}}
+      {{t 'rsaExplorer.filters.reset'}}
+    {{/rsa-form-button}}
+  </footer>
+{{/if}}

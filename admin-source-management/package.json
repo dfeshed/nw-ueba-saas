@@ -81,6 +81,7 @@
     "paths": [
       "../test-helpers",
       "../component-lib",
+      "../rsa-data-filters",
       "../streaming-data",
       "../context"
     ]

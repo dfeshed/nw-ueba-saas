@@ -59,6 +59,20 @@ module('Integration | Component | RSA Explorer Filters', function(hooks) {
     assert.equal(find('input.flatpickr-input:first-of-type').value, '04/02/2015 12:01:01 AM', 'The expected date appears in the start input');
   });
 
+  test('Setting showFooter shows/hides the footer', async function(assert) {
+    // footer should render by default if unset
+    await render(hbs`{{rsa-explorer/explorer-filters}}`);
+    assert.equal(findAll('.explorer-filters footer').length, 1, 'The Explorer Filters footer is in the DOM');
+
+    // footer should render when showFooter=true
+    await render(hbs`{{rsa-explorer/explorer-filters showFooter=true}}`);
+    assert.equal(findAll('.explorer-filters footer').length, 1, 'The Explorer Filters footer is in the DOM');
+
+    // footer should NOT render when showFooter=false
+    await render(hbs`{{rsa-explorer/explorer-filters showFooter=false}}`);
+    assert.equal(findAll('.explorer-filters footer').length, 0, 'The Explorer Filters footer is NOT in the DOM');
+  });
+
   test('Reset Filters executes as expected', async function(assert) {
     assert.expect(1);
     this.set('reset', () => {
