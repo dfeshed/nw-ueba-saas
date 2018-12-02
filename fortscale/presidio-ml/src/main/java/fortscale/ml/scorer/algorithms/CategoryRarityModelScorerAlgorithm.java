@@ -15,15 +15,12 @@ public class CategoryRarityModelScorerAlgorithm {
 
     private static final double MIN_POSSIBLE_SCORE = 1;
     private static final double MAX_POSSIBLE_SCORE = 100;
-    private static final double RARITY_SUM_EXPONENT = 1.8;
 
     private int maxRareCount;
     private int maxNumOfRareFeatures;
     private double xWithValueHalfFactor;
-    private double numRareEventsFactor;
 
-
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor, double numRareEventsFactor) {
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor) {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
@@ -37,7 +34,6 @@ public class CategoryRarityModelScorerAlgorithm {
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
         this.xWithValueHalfFactor = xWithValueHalfFactor;
-        this.numRareEventsFactor = numRareEventsFactor;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {

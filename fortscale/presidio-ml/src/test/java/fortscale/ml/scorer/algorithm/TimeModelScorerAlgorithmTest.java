@@ -49,7 +49,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     private Double calcScore(TimeModel model, long timeToScore) {
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS,X_WITH_VALUE_HALF_FACTOR, 0.0);
+        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS,X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 

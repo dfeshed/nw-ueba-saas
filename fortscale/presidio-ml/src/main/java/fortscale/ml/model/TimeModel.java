@@ -120,7 +120,7 @@ public class TimeModel implements PartitionedDataModel {
 	 * @return the sum of bucket hits at {@param resolutionBucketHits}
 	 */
 	public long getNumOfSamples(Map<Long, List<Double>> resolutionBucketHits) {
-		return resolutionBucketHits.size();//long) resolutionBucketHits.values().stream().flatMap(List::stream).mapToDouble(Double::doubleValue).sum();
+		return (long) resolutionBucketHits.values().stream().flatMap(List::stream).mapToDouble(Double::doubleValue).sum();
 	}
 
 	/**
