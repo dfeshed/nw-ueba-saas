@@ -141,4 +141,33 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
   });
 
+
+  test('it toggles save button based data modification state', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [
+      {
+        fileName: 'test',
+        signature: {
+          signer: 'Microsoft Signed'
+        },
+        size: 100
+      },
+      {
+        fileName: 'test2',
+        signature: {
+          signer: 'Microsoft Signed'
+        },
+        size: 100
+      }
+    ]);
+    this.set('data', {
+      comment: 'Test',
+      fileStatus: 'Whitelist'
+    });
+    await render(hbs`{{endpoint/edit-file-status/modal data=data itemList=itemList showFileStatusModal=showFileStatusModal}}`);
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
+    await fillIn('.rsa-form-textarea  textarea', 'Updated comment');
+    await blur('.rsa-form-textarea  textarea');
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 0, 'Save button not disabled');
+  });
 });

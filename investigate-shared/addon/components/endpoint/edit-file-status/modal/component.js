@@ -5,7 +5,10 @@ import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import { lookup } from 'ember-dependency-lookup';
 import { hasRestrictedEntry, isAllAreRestrictedEntry } from 'investigate-shared/utils/file-status-util';
+import _ from 'lodash';
+
 const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
+
 
 export default Component.extend({
   layout,
@@ -49,9 +52,12 @@ export default Component.extend({
     return { ...data }; // required this to reset the data on cancel
   },
 
-  @computed('formData.comment', 'formData.fileStatus')
-  isSaveButtonDisabled(comment, fileStatus) {
-    return isEmpty(comment) || isEmpty(fileStatus);
+  @computed('formData', 'formData.comment', 'formData.fileStatus')
+  isSaveButtonDisabled(formData, comment, fileStatus) {
+    if (_.isEqual(formData, this.get('data'))) {
+      return true; // IF data is not modified disable the save button
+    }
+    return (isEmpty(comment) || isEmpty(fileStatus));
   },
 
   @computed('formData.comment')
