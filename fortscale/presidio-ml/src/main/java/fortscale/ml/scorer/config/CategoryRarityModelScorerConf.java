@@ -14,6 +14,7 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
 
     public static final int NUM_RARE_EVENTS_FACTOR = 1;
     public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+    public static final double MIN_PROBABILITY = 0.7;
 
     @JsonProperty("minimum-number-of-distinct-values-to-influence")
     private int minNumOfDistinctValuesToInfluence;
@@ -25,6 +26,8 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     private Integer maxNumOfRarePartitions = null;
     @JsonProperty("x-with-value-half-factor")
     private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
+    @JsonProperty("min-probability")
+    private double minProbability = MIN_PROBABILITY;
 
     @JsonCreator
     public CategoryRarityModelScorerConf(@JsonProperty("name") String name,
@@ -73,6 +76,14 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
 
     public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
         this.xWithValueHalfFactor = xWithValueHalfFactor;
+    }
+
+    public double getMinProbability() {
+        return minProbability;
+    }
+
+    public void setMinProbability(double minProbability) {
+        this.minProbability = minProbability;
     }
 
     @Override

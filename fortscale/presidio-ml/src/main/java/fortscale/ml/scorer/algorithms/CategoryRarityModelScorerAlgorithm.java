@@ -19,14 +19,18 @@ public class CategoryRarityModelScorerAlgorithm {
     private int maxRareCount;
     private int maxNumOfRarePartitions;
     private double xWithValueHalfFactor;
+    private double minProbability;
 
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRarePartitions, double xWithValueHalfFactor) {
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRarePartitions,
+                                              double xWithValueHalfFactor, double minProbability) {
         assertMaxNumOfRarePartitionsValue(maxNumOfRarePartitions);
         assertMaxRareCountValue(maxRareCount);
+        Assert.isTrue(minProbability>=0 && minProbability < 1, String.format("minProbability should belong to the range [0,1). minProbability is %f", minProbability));
 
         this.maxRareCount = maxRareCount;
         this.maxNumOfRarePartitions = maxNumOfRarePartitions;
         this.xWithValueHalfFactor = xWithValueHalfFactor;
+        this.minProbability = minProbability;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {
@@ -64,7 +68,8 @@ public class CategoryRarityModelScorerAlgorithm {
             numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
         double commonEventProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
-        commonEventProbability = commonEventProbability < 0.7 ? 0.0 : (commonEventProbability - 0.7) / 0.3;
+        commonEventProbability = commonEventProbability < minProbability ?
+                0.0 : (commonEventProbability - minProbability) / (1 - minProbability);
         double numOfDistinctPartitionsContainingRareFeatureValueDiscount = calcCommonnessDiscounting(maxNumOfRarePartitions, numOfDistinctPartitionsContainingRareFeatureValue);
         double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
         double score = commonEventProbability * Math.min(featureCountDiscount,numOfDistinctPartitionsContainingRareFeatureValueDiscount);

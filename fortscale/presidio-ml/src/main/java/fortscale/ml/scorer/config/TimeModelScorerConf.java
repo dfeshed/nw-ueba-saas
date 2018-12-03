@@ -15,6 +15,7 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	public static final int DEFAULT_MAX_RARE_COUNT = 8;
 	public static final int DEFAULT_MAX_NUM_OF_RARE_PARTITIONS = 15;
 	public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+	public static final double MIN_PROBABILITY = 0.7;
 
 	/*
 	 * Inherited non mandatory fields:
@@ -29,6 +30,8 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	private int maxNumOfRarePartitions = DEFAULT_MAX_NUM_OF_RARE_PARTITIONS;
 	@JsonProperty("x-with-value-half-factor")
 	private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
+	@JsonProperty("min-probability")
+	private double minProbability = MIN_PROBABILITY;
 
 
 
@@ -70,5 +73,13 @@ public class TimeModelScorerConf extends ModelScorerConf {
 
 	public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
 		this.xWithValueHalfFactor = xWithValueHalfFactor;
+	}
+
+	public double getMinProbability() {
+		return minProbability;
+	}
+
+	public void setMinProbability(double minProbability) {
+		this.minProbability = minProbability;
 	}
 }

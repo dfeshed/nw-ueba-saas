@@ -29,6 +29,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
     private static final int MAX_NUM_OF_RARE_PARTITIONS = 15;
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+    private static final double MIN_PROBABILITY = 0.7;
 
 
     private Double calcScore(List<Long> times, long timeToScore) {
@@ -49,7 +50,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     private Double calcScore(TimeModel model, long timeToScore) {
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_COUNT, MAX_NUM_OF_RARE_PARTITIONS,X_WITH_VALUE_HALF_FACTOR);
+        TimeModelScorerAlgorithm scorerAlgorithm =
+                new TimeModelScorerAlgorithm(MAX_RARE_COUNT, MAX_NUM_OF_RARE_PARTITIONS,X_WITH_VALUE_HALF_FACTOR, MIN_PROBABILITY);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 

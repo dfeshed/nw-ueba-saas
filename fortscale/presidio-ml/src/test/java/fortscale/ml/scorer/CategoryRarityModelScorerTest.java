@@ -42,6 +42,7 @@ public class CategoryRarityModelScorerTest {
     EventModelsCacheService eventModelsCacheService;
 
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
+    private static final double MIN_PROBABILITY = 0.7;
 
     private void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
 
@@ -74,6 +75,7 @@ public class CategoryRarityModelScorerTest {
                 params.getMaxRareCount(),
                 params.getMaxNumOfRarePartitions(),
                 X_WITH_VALUE_HALF_FACTOR,
+                MIN_PROBABILITY,
                 eventModelsCacheService);
     }
 
