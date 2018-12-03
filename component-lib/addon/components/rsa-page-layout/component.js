@@ -5,10 +5,11 @@ export default Component.extend({
   layout,
   tagName: 'hbox',
   classNames: ['rsa-page-layout'],
-  classNameBindings: ['showLeftZone:show-left-zone', 'showRightZone:show-right-zone'],
+  classNameBindings: ['showLeftZone:show-left-zone', 'showRightZone:show-right-zone', 'isRightOverlay'],
   showLeftZone: true,
   showRightZone: true,
   onClose: null,
+  isRightOverlay: false,
 
   actions: {
     open(side) {

@@ -37,6 +37,13 @@ $rightZoneMinWidth: 400px;
     }
   }
 
+  &.show-right-zone.is-right-overlay {
+    .right-zone {
+      position: absolute;
+      right: 0;
+    }
+  }
+
   &.show-right-zone {
     .right-zone {
       max-width: $rightZoneMinWidth;
