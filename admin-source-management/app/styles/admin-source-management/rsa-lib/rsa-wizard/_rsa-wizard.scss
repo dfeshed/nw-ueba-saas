@@ -104,6 +104,11 @@
     border-top: 1px solid border-color(primary,light);
     padding-top: rsa-whitespace();
     padding-left: rsa-whitespace();
+
+    position: absolute;
+    bottom: rsa-whitespace(less);
+    background-color: background-color(primary, darkest);
+    width: 98%;
   }
 
   .rsa-wizard-loading-overlay {

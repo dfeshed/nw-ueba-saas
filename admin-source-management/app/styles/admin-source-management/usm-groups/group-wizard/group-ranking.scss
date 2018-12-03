@@ -1,4 +1,10 @@
-.group-ranking  {
+.group-ranking {
+  .n-sources-cell {
+    display: flex;
+    .table-cell-text {
+      align-items: flex-start;
+    }
+  }
   .source-type-top-text, .source-type-selector {
     margin-top: rsa-whitespace();
     margin-bottom: rsa-whitespace(more);
