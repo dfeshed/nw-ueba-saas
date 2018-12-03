@@ -67,8 +67,7 @@
           "name": "srcProcessFilePathMachineIdToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.srcProcessDirectory",
-              "context.srcProcessFileName",
+              "context.srcProcessFilePath",
               "context.machineId"
             ],
             "maximize": [
@@ -95,8 +94,7 @@
           "name": "srcProcessFilePathToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.srcProcessDirectory",
-              "context.srcProcessFileName",
+              "context.srcProcessFilePath",
               "context.dstProcessFileName",
               "context.machineId"
             ],
@@ -124,8 +122,7 @@
           "name": "srcProcessFilePathToHighestGlobalScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.srcProcessDirectory",
-              "context.srcProcessFileName",
+              "context.srcProcessFilePath",
               "context.dstProcessFileName",
               "context.machineId"
             ],
@@ -153,8 +150,7 @@
           "name": "dstProcessFilePathCreatedToHighestGlobalScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstProcessDirectory",
-              "context.dstProcessFileName",
+              "context.dstProcessFilePath",
               "context.srcProcessFileName",
               "context.machineId"
             ],
@@ -182,8 +178,7 @@
           "name": "dstProcessFilePathOpenedToHighestGlobalScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstProcessDirectory",
-              "context.dstProcessFileName",
+              "context.dstProcessFilePath",
               "context.srcProcessFileName",
               "context.machineId"
             ],
@@ -211,8 +206,7 @@
           "name": "srcProcessFilePathToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.srcProcessDirectory",
-              "context.srcProcessFileName",
+              "context.srcProcessFilePath",
               "context.dstProcessFileName",
               "context.machineId"
             ],
@@ -240,8 +234,7 @@
           "name": "dstProcessFilePathToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstProcessDirectory",
-              "context.dstProcessFileName",
+              "context.dstProcessFilePath",
               "context.srcProcessFileName",
               "context.machineId"
             ],
@@ -269,8 +262,7 @@
           "name": "dstProcessFilePathToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstProcessDirectory",
-              "context.dstProcessFileName",
+              "context.dstProcessFilePath",
               "context.srcProcessFileName",
               "context.machineId"
             ],
