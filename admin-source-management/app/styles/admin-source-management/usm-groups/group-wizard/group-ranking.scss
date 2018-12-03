@@ -32,27 +32,29 @@
     table {
       width: 900px;
       margin: rsa-whitespace();
-      tbody tr {
-        cursor: pointer;
-        &:hover {
-          background-color: background-color(primary, darker);
+      tbody {
+        tr {
+          border-bottom: 1px solid border-color(primary, dark);
+          cursor: pointer;
+          &:hover {
+            background-color: rgba(50, 50, 50, 0.3);
+          }
+          &.is-selected {
+            background-color: background-color(secondary, dark);
+          }
+          &.sortable-item.is-dragging {
+            transition-duration: 0s;
+            background: background-color(secondary, darker);
+            z-index: 10;
+          }
+          &.sortable-item.is-dropping {
+            transition-duration: .1s;
+            background: background-color(secondary, light);
+            z-index: 10;
+          }
         }
-        &.is-selected {
-          background-color: background-color(secondary, dark);
-        }
-        &.sortable-item.is-dragging {
-          transition-duration: 0s;
-          background: background-color(secondary, darker);
-          z-index: 10;
-        }
-        &.sortable-item.is-dropping {
-          transition-duration: .1s;
-          background: background-color(secondary, light);
-          z-index: 10;
-        }
-      }    
+      }
       th, td {
-        border-bottom: 1px solid border-color(primary, dark);
         .handle {
           display: inline-block;
           cursor: move;
