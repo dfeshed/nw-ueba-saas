@@ -1,13 +1,9 @@
 .alert-context {
   overflow-y: auto;
-  max-height: calc(100vh - 320px);
   margin-top: rsa-whitespace(less);
+  height: calc(100% - 110px);
   .is-selected {
     background-color: text-color(secondary, dark);
-  }
-
-  &__container {
-    cursor: pointer;
   }
 
   &__name {
@@ -25,4 +21,8 @@
       padding-right: 2rem;
     }
   }
+}
+
+.file-overview .alert-context {
+  height: calc(100% - 180px);
 }

@@ -17,6 +17,9 @@
 }
 .host-overview {
   height: 100%;
+  .host-detail-box {
+    height: 100%;
+  }
   .rsa-icon.is-small{
     padding-right: rsa-whitespace(least);
   }
@@ -37,21 +40,17 @@
     opacity: opacity-value(opaque);
   }
 
+  .alert-context__container {
+    cursor: pointer;
+  }
+
   .open-properties {
     button {
       float: right;
     }
   }
-
-  .host-detail-box {
-    height: calc(100vh - 140px);
-    .alert-context {
-      max-height: calc(100vh - 419px);
-    }
-  }
-
-  .events-list__scroller {
-    height: calc(100vh - 260px);
+  .events-list__table-view-body {
+    height: calc(100% - 45px);
   }
 }
 .user-info-content {
