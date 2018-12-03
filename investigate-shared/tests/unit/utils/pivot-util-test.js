@@ -36,4 +36,14 @@ module('Unit | Utils | pivot to investigate', function() {
     actionSpy.resetHistory();
     actionSpy.restore();
   });
+
+  test('navigateToInvestigateEventsAnalysis adds the additional filters passed', function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    navigateToInvestigateEventsAnalysis({ metaName: 'test', metaValue: 'test', additionalFilter: 'category="network event"' }, '12345', { unit: 'days', value: 2 }, 'UTC');
+    assert.ok(actionSpy.calledOnce);
+    assert.ok(actionSpy.args[0][0].includes('network%2520event'));
+    assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
 });

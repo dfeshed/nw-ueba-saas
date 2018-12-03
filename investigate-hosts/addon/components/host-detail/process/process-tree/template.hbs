@@ -1,57 +1,125 @@
-{{#rsa-data-table
-  items=visibleItems
-  selectedIndex=selectedRowIndex
-  lazy=true
-  onRowClick=(action "handleRowClickAction")
-  columnsConfig=columnsConfig}}
+<box>
+  {{#rsa-data-table
+    items=visibleItems
+    selectedIndex=selectedRowIndex
+    lazy=true
+    onRowClick=(action "handleRowClickAction")
+    columnsConfig=columnsConfig}}
 
-  {{#rsa-data-table/header as |column|}}
-    {{#if (eq column.dataType "checkbox")}}
-      <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
-        {{rsa-form-checkbox checked=areAllSelected change=(action 'toggleAllSelection')}}
-      </label>
-    {{else}}
-      <span class='js-move-handle'>
-        {{t column.title}}
-      </span>
-    {{/if}}
-  {{/rsa-data-table/header}}
-  {{#if isProcessTreeLoading}}
-    <centered>
-      {{rsa-loader size='medium'}}
-    </centered>
-  {{else}}
-    {{#rsa-data-table/body
-      noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
-    as |item index column|}}
-      {{#if column.componentClass}}
-        {{#if (eq column.dataType 'tree-column')}}
-          {{#rsa-data-table/body-cell item=item column=column}}
-            {{host-detail/process/process-tree/process-name
-              serviceList=serviceList
-              agentId=agentId
-              item=item
-              index=index
-              osType=osType
-              onToggleExpand=(action 'handleToggleExpand')}}
-          {{/rsa-data-table/body-cell}}
-        {{else}}
-          {{#rsa-data-table/body-cell item=item column=column}}
-            <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) 'checked'}}">
-              {{rsa-form-checkbox checked=false change=(action 'toggleProcessSelection' item)}}
-            </label>
-          {{/rsa-data-table/body-cell}}
-        {{/if}}
+    {{#rsa-data-table/header as |column|}}
+      {{#if (eq column.dataType "checkbox")}}
+        <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
+          {{rsa-form-checkbox checked=areAllSelected change=(action 'selectAllProcess')}}
+        </label>
       {{else}}
-        {{#if (eq column.format 'DOWNLOADSTATUS')}}
-          {{host-detail/utils/table-cell item=item column=column}}
-        {{else if (eq column.field 'score')}}
-          {{host-detail/utils/table-cell item=item column=column}}
-        {{else}}
-          {{rsa-data-table/body-cell item=item column=column}}
-        {{/if}}
+        <span class='js-move-handle'>
+          {{t column.title}}
+        </span>
       {{/if}}
-    {{/rsa-data-table/body}}
-  {{/if}}
-{{/rsa-data-table}}
+      {{#unless column.disableSort}}
+        {{rsa-icon
+          click=(action 'sort' column)
+          name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+          class="sort"}}
+      {{/unless}}
+    {{/rsa-data-table/header}}
+    {{#if isProcessTreeLoading}}
+      <centered>
+        {{rsa-loader size='medium'}}
+      </centered>
+    {{else}}
+      {{#rsa-data-table/body
+        rowComponentClass=(
+          component 'endpoint/file-custom-row'
+          serviceList=serviceList
+          selections=selectedProcessList
+          beforeContextMenuShow=(action 'beforeContextMenuShow')
+          editFileStatus=(action 'showEditFileStatus')
+          pivotToInvestigate=(action 'showServiceList')
+          isRemediationAllowed=isRemediationAllowed
+          restrictedFileList=restrictedFileList
+          fileDownloadButtonStatus=fileDownloadButtonStatus
+          downloadFiles=(action 'onDownloadFilesToServer')
+          saveLocalCopy=(action 'onSaveLocalCopy')
+          serviceId=serviceId
+          timeRange=timeRange
+          analyzeFile=(action 'onAnalyzeFile')
+          retrieveRemediationStatus=(action 'retrieveRemediationStatus' 'PROCESS')
+          onSaveFileStatus = (action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums)
+          resetRiskScore=(action 'showRiskScoreModal')
+        )
+        noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage') as |item index column|}}
+        {{#if column.componentClass}}
+          {{#if (eq column.dataType 'tree-column')}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              {{host-detail/process/process-tree/process-name
+                serviceList=serviceList
+                agentId=agentId
+                item=item
+                index=index
+                osType=osType
+                onToggleExpand=(action 'handleToggleExpand')}}
+            {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              <label class="rsa-form-checkbox-label {{if (is-selected selectedProcessList item) 'checked'}}">
+                {{rsa-form-checkbox checked=false change=(action 'toggleProcessSelection' item)}}
+              </label>
+            {{/rsa-data-table/body-cell}}
+          {{/if}}
+        {{else}}
 
+          {{#if (eq column.format 'DOWNLOADSTATUS')}}
+            {{host-detail/utils/table-cell item=item column=column}}
+          {{else if (eq column.field 'score')}}
+            {{host-detail/utils/table-cell item=item column=column}}
+          {{else if (eq column.field 'name')}}
+            {{#rsa-data-table/body-cell item=item column=column class='process-name'}}
+              {{#link-to 'hosts' (query-params tabName='PROCESS' subTabName='process-details' pid=item.pid ) bubbles=false}}
+                {{get item column.field}}
+              {{/link-to}}
+            {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{rsa-data-table/body-cell item=item column=column}}
+          {{/if}}
+        {{/if}}
+      {{/rsa-data-table/body}}
+    {{/if}}
+  {{/rsa-data-table}}
+</box>
+
+{{#if showServiceModal}}
+  {{endpoint/pivot-to-investigate/modal
+    serviceList=serviceList
+    metaName='checksumSha256'
+    itemList=itemList
+    serviceId=serviceId
+    timeRange=timeRange
+    closeModal=(action 'onCloseServiceModal')}}
+{{/if}}
+{{#if showFileStatusModal}}
+  {{endpoint/edit-file-status/modal
+    itemList=selectedProcessList
+    restrictedFileList=restrictedFileList
+    onSaveFileStatus=(action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums)
+    retrieveRemediationStatus=(action 'retrieveRemediationStatus' 'PROCESS')
+    data=fileStatus
+    isRemediationAllowed=isRemediationAllowed
+    closeModal=(action 'onCloseEditFileStatus')}}
+{{/if}}
+{{#if showResetScoreModal}}
+  {{#rsa-application-modal
+    autoOpen=true
+    label=(t 'investigateFiles.riskScore.label')
+    onClose=(action 'onResetScoreModalClose')}}
+    <div class='modal-content reset-risk-score'>
+      {{t 'investigateFiles.riskScore.confirmMessage'}}
+      <div class="confirmationButtons">
+        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style='primary' click=(action 'resetRiskScoreAction')}}
+          {{t 'investigateFiles.riskScore.reset'}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}

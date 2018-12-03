@@ -49,11 +49,16 @@ const _getQuery = (metaName, metaValue) => {
  * Opens the investigate page with events query
  * @private
  */
-const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId) => {
+const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, additionalFilter }, serviceId, timeRange, zoneId) => {
   const { value, unit } = timeRange;
   const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
 
-  const mf = _buildFilter(metaName, metaValue, itemList);
+  let mf = _buildFilter(metaName, metaValue, itemList);
+
+  if (additionalFilter) {
+    mf = `${mf} && ${additionalFilter}`;
+  }
+
   const queryParams = {
     sid: serviceId, // Service Id
     mf: encodeURI(encodeURIComponent(mf)), // Meta filter

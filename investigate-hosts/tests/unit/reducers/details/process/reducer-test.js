@@ -14,18 +14,18 @@ module('Unit | Reducers | process', function() {
   const initialState = Immutable.from({
     processList: null,
     // In list view, process view can be sorted based on processName, pid. By default, we fetch based on processName in ascending order.
-    sortField: 'name',
-    isDescOrder: false,
+    sortField: 'score',
+    isDescOrder: true,
 
     processTree: null,
     processDetails: null,
+
     processDetailsLoading: false,
     isProcessTreeLoading: false,
-    selectedRowIndex: null,
     selectedProcessList: [],
+    selectedRowIndex: null,
     selectedDllItem: null,
     selectedDllRowIndex: -1
-
   });
 
   test('should return the initial state', function(assert) {
@@ -161,7 +161,7 @@ module('Unit | Reducers | process', function() {
       previous,
       { type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process }
     );
-    assert.deepEqual(result.selectedProcessList, [{ checksumSha256: '46965656dffsdf664', name: 'p1', fileName: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 }]);
+    assert.deepEqual(result.selectedProcessList, [{ checksumSha256: '46965656dffsdf664', downloadInfo: {}, id: 1, name: 'p1', fileName: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 }]);
   });
 
   test('The SELECT_ALL_PROCESS sets the selectedProcesList', function(assert) {
@@ -198,6 +198,20 @@ module('Unit | Reducers | process', function() {
     );
     assert.deepEqual(result.selectedDllItem.id, 'test');
   });
+
+  test('The TOGGLE_PROCESS_VIEW sets the selectedRow', function(assert) {
+    const previous = Immutable.from({
+      selectedRowIndex: 1,
+      selectedProcessList: [{}]
+    });
+    const result = reducer(
+      previous,
+      { type: ACTION_TYPES.TOGGLE_PROCESS_VIEW }
+    );
+    assert.deepEqual(result.selectedRowIndex, -1);
+    assert.deepEqual(result.selectedProcessList.length, 0);
+  });
+
   test('The SET_PROCESS_DLL_ROW_ID sets the selectedRow', function(assert) {
     const previous = Immutable.from({
       selectedDllItem: null

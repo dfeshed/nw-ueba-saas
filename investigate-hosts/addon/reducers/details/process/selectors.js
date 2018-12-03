@@ -141,6 +141,9 @@ export const processList = createSelector(
   (processList, sortField, isDescOrder) => {
     if (processList && processList.list.length) {
       let data = processList.list.asMutable();
+      data = data.map((item) => {
+        return { ...item, id: item.pid };
+      });
       data = data.sortBy(sortField);
       if (isDescOrder) {
         data.reverse();

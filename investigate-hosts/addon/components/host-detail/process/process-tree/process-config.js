@@ -13,48 +13,57 @@ export default [
     dataType: 'tree-column',
     width: '18vw',
     title: 'investigateHosts.process.processName',
-    componentClass: 'host-detail/process/process-tree/tree-name'
+    componentClass: 'host-detail/process/process-tree/tree-name',
+    disableSort: true
   },
   {
     field: 'pid',
     width: '4vw',
-    title: 'investigateHosts.process.pid'
+    title: 'investigateHosts.process.pid',
+    disableSort: true
   },
   {
     field: 'score',
     width: '5vw',
-    title: 'investigateHosts.process.riskScore'
+    title: 'investigateHosts.process.riskScore',
+    disableSort: true
   },
   {
     field: 'fileStatus',
     width: '5vw',
-    title: 'investigateHosts.process.fileStatus'
+    title: 'investigateHosts.process.fileStatus',
+    disableSort: true
   },
   {
     field: 'reputationStatus',
     width: '8vw',
-    title: 'investigateHosts.process.reputationStatus'
+    title: 'investigateHosts.process.reputationStatus',
+    disableSort: true
   },
   {
     field: 'launchArguments',
     width: '10vw',
     title: 'investigateHosts.process.launchArguments',
-    isDescending: false
+    isDescending: false,
+    disableSort: true
   },
   {
     field: 'downloadInfo.status',
     width: '6vw',
     format: 'DOWNLOADSTATUS',
-    title: 'investigateHosts.process.downloaded'
+    title: 'investigateHosts.process.downloaded',
+    disableSort: true
   },
   {
     field: 'signature.features',
     width: '10vw',
-    title: 'investigateHosts.process.signature'
+    title: 'investigateHosts.process.signature',
+    disableSort: true
   },
   {
     field: 'path',
     width: '20vw',
-    title: 'investigateHosts.process.filePath'
+    title: 'investigateHosts.process.filePath',
+    disableSort: true
   }
 ];

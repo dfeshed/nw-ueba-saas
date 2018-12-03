@@ -3,11 +3,26 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import Immutable from 'seamless-immutable';
 
+
+const updateTreeData = (data, checksums, fileStatus) => {
+  return data.map((d) => {
+    if (checksums.includes(d.checksumSha256)) {
+      d = d.set('fileStatus', fileStatus);
+    }
+    if (d.childProcesses) {
+      const children = updateTreeData(d.childProcesses, checksums, fileStatus);
+      d = d.set('childProcesses', children);
+    }
+    return d;
+  });
+};
+
+
 const initialState = Immutable.from({
   processList: null,
   // In list view, process view can be sorted based on processName, pid. By default, we fetch based on processName in ascending order.
-  sortField: 'name',
-  isDescOrder: false,
+  sortField: 'score',
+  isDescOrder: true,
 
   processTree: null,
   processDetails: null,
@@ -66,22 +81,29 @@ const processReducer = handleActions({
 
   [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, action) => {
     const { selectedProcessList } = state;
-    const { checksumSha256, name, pid, parentPid, hasChild, vpid } = action.payload;
+    const { checksumSha256, name, pid, parentPid, hasChild, vpid, fileProperties = {} } = action.payload;
+    const { downloadInfo = {} } = fileProperties;
+
+
     let selectedList = [];
     if (selectedProcessList.some((process) => process.pid === pid)) {
       selectedList = selectedProcessList.filter((process) => process.pid !== pid);
     } else {
-      selectedList = [...selectedProcessList, { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid }];
+      selectedList = [...selectedProcessList, { downloadInfo, checksumSha256, name, fileName: name, pid, id: pid, parentPid, hasChild, vpid }];
     }
     return state.merge({ 'selectedProcessList': selectedList });
   },
 
   [ACTION_TYPES.SELECT_ALL_PROCESS]: (state) => {
-    const selectedList = Object.values(state.processList).map((process) => {
-      const { checksumSha256, name, pid, parentPid, hasChild, vpid } = process;
-      return { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid };
-    });
-    return state.set('selectedProcessList', selectedList);
+    const { selectedProcessList, processList } = state;
+    if (selectedProcessList.length < processList.length) {
+      return state.set('selectedProcessList', processList.map((process) => {
+        const { checksumSha256, name, pid, parentPid, hasChild, vpid } = process;
+        return { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid };
+      }));
+    } else {
+      return state.set('selectedProcessList', []);
+    }
   },
 
   [ACTION_TYPES.DESELECT_ALL_PROCESS]: (state) => state.set('selectedProcessList', []),
@@ -95,21 +117,25 @@ const processReducer = handleActions({
   [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s, action) => {
-        const { processList } = s;
-        const { payload: { request: { data } } } = action;
-        const { fileStatus, checksums } = data;
-        const newProcessList = processList.map((process) => {
-          const processClone = process.asMutable();
-          if (checksums.includes(processClone.checksumSha256)) {
-            processClone.fileStatus = fileStatus;
-          }
-          return processClone;
-        });
-        s = s.set(['processList'], newProcessList);
+        const { processList = [], processTree = [] } = s;
+        if (processList && processList.length) {
+          const { payload: { request: { data } } } = action;
+          const { fileStatus, checksums } = data;
+          const newProcessList = processList.map((process) => {
+            if (checksums.includes(process.checksumSha256)) {
+              process = process.set('fileStatus', fileStatus);
+            }
+            return process;
+          });
+          const treeData = updateTreeData(processTree, checksums, fileStatus);
+          return s.merge({ processList: newProcessList, processTree: treeData });
+        }
         return s;
       }
     });
-  }
+  },
+
+  [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.merge({ selectedRowIndex: -1, selectedProcessList: [] })
 
 }, initialState);
 

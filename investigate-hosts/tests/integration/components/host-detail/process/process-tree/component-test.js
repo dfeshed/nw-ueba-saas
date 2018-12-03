@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, find, findAll, click, waitUntil } from '@ember/test-helpers';
+import { render, settled, find, findAll, click, waitUntil, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import processData from '../../../../../integration/components/state/process-data';
@@ -9,9 +9,31 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
+import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
+import anaLyzeCreators from 'investigate-hosts/actions/data-creators/file-analysis';
+import sinon from 'sinon';
+
+const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
+const openAndFetchFileAnalyzerDataSpy = sinon.spy(anaLyzeCreators, 'openAndFetchFileAnalyzerData');
+
+const spys = [
+  downloadFilesToServerSpy
+];
 
 let setState;
 const transitions = [];
+const callback = () => {};
+const e = {
+  clientX: 20,
+  clientY: 20,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
 
 module('Integration | Component | host-detail/process/process-tree', function(hooks) {
   setupRenderingTest(hooks, {
@@ -20,6 +42,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       applyPatch(state);
     };
@@ -32,10 +55,26 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         transitions.push({ name, queryParams });
       }
     }));
+
+    // Right click setup
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
+
   });
 
   hooks.afterEach(function() {
     revertPatch();
+    spys.forEach((s) => s.resetHistory());
+    const wormholeElement = document.querySelector('#wormhole-context-menu');
+    if (wormholeElement) {
+      document.querySelector('#ember-testing').removeChild(wormholeElement);
+    }
+  });
+
+  hooks.after(function() {
+    spys.forEach((s) => s.restore());
   });
 
   test('Column Names appear in datatable header', async function(assert) {
@@ -72,6 +111,53 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
     });
   });
+
+  test('Check that sort action is performed & correct values are passed', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .sortField('name')
+      .agentId(1)
+      .isTreeView(false)
+      .scanTime(1234567890)
+      .isDescOrder(false).build();
+    await render(hbs`<style>
+        box, section {
+          min-height: 2000px
+        }
+    </style>
+    {{host-detail/process/process-tree}}`);
+    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
+    await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
+    });
+  });
+
+  test('It renders the list view', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .machineOSType('windows')
+      .isTreeView(false)
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}`);
+
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
+    });
+  });
+
+
   test('Check that row click action is handled', async function(assert) {
     assert.expect(5);
     new ReduxDataHelper(setState)
@@ -218,15 +304,22 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)
+      .isTreeView(false)
       .processList(processData.processList)
       .processTree(processData.processTree)
       .selectedTab(null)
-      .sortField('name')
+      .sortField('score')
       .isDescOrder(true)
       .build();
 
-    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
-
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}
+    `);
 
     assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is not selected before click');
     await click(findAll('.rsa-data-table-body-row')[2]);
@@ -237,22 +330,24 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     });
   });
   test('clicking on the process name get process-details view', async function(assert) {
-    this.set('openPanel', function() {
-      assert.ok(true, 'open panel is called');
-    });
-    this.set('closePanel', function() {
-      assert.ok(true, 'close panel is called');
-    });
-
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)
       .processList(processData.processList)
       .processTree(processData.processTree)
+      .isTreeView(true)
+      .sortField('score')
+      .isDescOrder(true)
       .selectedTab(null).build();
-
-    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
-    await click(find(findAll('.process-name a')[1]));
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/process/process-tree}}
+    `);
+    await click(findAll('.process-name a')[1]);
     return settled().then(async() => {
       const redux = this.owner.lookup('service:redux');
       await waitUntil(() => {
@@ -267,6 +362,411 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         }
       }]);
     });
+  });
+
+  test('it opens the service list modal', async function(assert) {
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/process/process-tree showServiceModal=true}}`);
+    assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1);
+  });
+
+
+  test('it opens edit status modal', async function(assert) {
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .selectedProcessList([])
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/process/process-tree showFileStatusModal=true}}`);
+    assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
+  });
+
+  test('it opens reset risk score modal', async function(assert) {
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processTree(processData.processTree)
+      .selectedTab(null).build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/process/process-tree showResetScoreModal=true}}`);
+    assert.equal(document.querySelectorAll('#modalDestination .reset-risk-score').length, 1);
+  });
+
+  test('It renders the context menu', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 5, 'Context menu not rendered');
+    });
+  });
+
+  test('It renders the context menu', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 8, 'Context menu rendered');
+    });
+  });
+
+  test('Edit file status modal is opened on clicking the menu button', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[0].id}`); // Edit file status
+      return settled().then(() => {
+        assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
+      });
+    });
+  });
+
+
+  test('Analyze file and save local copy disabled if file not downloaded', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedProcessList([
+        {
+          downloadInfo: {
+            status: ''
+          }
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item--disabled`);
+      assert.equal(menuItems.length, 2, 'Buttons are disabled');
+    });
+  });
+
+  test('Analyze file and save local copy enabled if files are downloaded', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item--disabled`);
+      assert.equal(menuItems.length, 1, 'Download to Server is disabled');
+    });
+  });
+
+  test('Right clicking on the row deselect the already selected rows', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 1,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        },
+        {
+          pid: 2,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        },
+        {
+          pid: 3,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedProcessList([{ pid: 2 }, { pid: 3 }])
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+    assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 2);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 1);
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await triggerEvent(`#${menuItems[1].id}`, 'mouseover');
+      const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
+      assert.equal(subItems.length, 4, 'Sub menu rendered');
+    });
+  });
+
+  test('Download to server action is getting called', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: ''
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[5].id}`); // Edit file status
+      return settled().then(() => {
+        assert.equal(downloadFilesToServerSpy.callCount, 1, 'The downloadFilesToServerSpy action creator was called once');
+      });
+    });
+
+  });
+
+  test('Analyze action is getting called', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[7].id}`); // Edit file status
+      return settled().then(() => {
+        assert.equal(openAndFetchFileAnalyzerDataSpy.callCount, 1, 'The openAndFetchFileAnalyzerData action creator was called once');
+      });
+    });
+
   });
 
 });

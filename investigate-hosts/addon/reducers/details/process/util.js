@@ -7,7 +7,7 @@ const _visitNode = function(node, hashMap, array) {
   }
 };
 const _extractData = function(node) {
-  return { ...node };
+  return { ...node, id: node.pid, serviceId: node.serviceId };
 };
 /**
  * Converts the tree json into flat list. Set the depth the tree node as the row level, level is used to
@@ -36,12 +36,13 @@ export const convertTreeToList = function(item) {
       data.expanded = true; // If node has child set expanded = true;
       data.visible = true; // Set all the child visible property
       data.hasChild = true;
+      data.id = node.pid;
       newList.push(data);
       // Iterate all the children
       const length = node.childProcesses.length - 1;
       for (let index = length; index >= 0; index--) {
         level.push(dpt);
-        stack.push({ ...node.childProcesses[index] });
+        stack.push({ ...node.childProcesses[index], serviceId: node.serviceId, id: node.pid });
       }
     }
   }

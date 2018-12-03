@@ -32,15 +32,9 @@
             isRemediationAllowed=isRemediationAllowed
             retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)}}
         </div>
-        {{#if isTreeView}}
-          {{host-detail/process/process-tree
-            openPropertyPanel=(action layout.open 'right')
-            closePropertyPanel=(action layout.close 'right')}}
-        {{else}}
-          {{host-detail/process/process-list
-            openPropertyPanel=(action layout.open 'right')
-            closePropertyPanel=(action layout.close 'right')}}
-        {{/if}}
+        {{host-detail/process/process-tree
+          openPropertyPanel=(action layout.open 'right')
+          closePropertyPanel=(action layout.close 'right')}}
       </box>
     {{/layout.center}}
     {{#layout.right as |right|}}

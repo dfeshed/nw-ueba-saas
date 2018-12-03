@@ -34,6 +34,7 @@ import {
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
+  agentId: state.endpoint.detailsInput.agentId,
   listOfFiles: listOfFiles(state, storeName),
   fileContextSelections: fileContextSelections(state, storeName),
   isAllSelected: isAllSelected(state, storeName),
@@ -133,16 +134,18 @@ const FileContextTable = Component.extend({
       }
     },
 
-    showServiceList(item) {
+    showServiceList(item, category) {
       const serviceId = this.get('serviceId');
       this.set('itemList', [item]);
       if (serviceId && serviceId !== '-1') {
         const {
-          timeRange
-        } = this.getProperties('timeRange');
+          timeRange,
+          agentId
+        } = this.getProperties('timeRange', 'agentId');
 
         const { zoneId } = this.get('timezone.selected');
-        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', metaValue: null, itemList: [item] }, serviceId, timeRange, zoneId);
+        const additionalFilter = `agent.id="${agentId}" && category="${category}"`;
+        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', metaValue: null, itemList: [item], additionalFilter }, serviceId, timeRange, zoneId);
       } else {
         this.set('showServiceModal', true);
       }

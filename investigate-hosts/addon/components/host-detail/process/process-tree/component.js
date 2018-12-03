@@ -1,39 +1,75 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { observer } from '@ember/object';
-import CONFIG from './process-config';
+import TREE_CONFIG from './process-config';
+import LIST_CONFIG from './process-list-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
-import { processTree, areAllSelected } from 'investigate-hosts/reducers/details/process/selectors';
+import { processTree, areAllSelected, selectedFileChecksums, processList } from 'investigate-hosts/reducers/details/process/selectors';
+import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
+import { inject as service } from '@ember/service';
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { openAndFetchFileAnalyzerData } from 'investigate-hosts/actions/data-creators/file-analysis';
+import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
+
 import {
   setRowIndex,
   getProcessDetails,
   toggleProcessSelection,
   selectAllProcess,
-  deSelectAllProcess } from 'investigate-hosts/actions/data-creators/process';
-import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
-import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+  sortBy,
+  deSelectAllProcess
+} from 'investigate-hosts/actions/data-creators/process';
+
+import {
+  getFileContextFileStatus,
+  setFileContextFileStatus,
+  retrieveRemediationStatus,
+  downloadFilesToServer
+} from 'investigate-hosts/actions/data-creators/file-context';
+
 
 const dispatchToActions = {
+  sortBy,
   getProcessDetails,
   toggleProcessSelection,
   selectAllProcess,
   deSelectAllProcess,
-  setRowIndex
+  setRowIndex,
+  getFileContextFileStatus,
+  setFileContextFileStatus,
+  retrieveRemediationStatus,
+  resetRiskScore,
+  openAndFetchFileAnalyzerData,
+  downloadFilesToServer
 };
 
+
 const stateToComputed = (state) => ({
-  serviceList: serviceList(state),
-  treeAsList: processTree(state),
+  isTreeView: state.endpoint.visuals.isTreeView,
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
   selectedRowIndex: state.endpoint.process.selectedRowIndex,
   agentId: state.endpoint.detailsInput.agentId,
   selectedProcessList: state.endpoint.process.selectedProcessList,
+  isProcessDetailsView: state.endpoint.process.isProcessDetailsView,
+  restrictedFileList: state.fileStatus.restrictedFileList,
+  processList: processList(state),
+  serviceList: serviceList(state),
+  treeAsList: processTree(state),
   osType: machineOsType(state),
   hostName: hostName(state),
   areAllSelected: areAllSelected(state),
-  isProcessDetailsView: state.endpoint.process.isProcessDetailsView
+  fileStatus: fileStatus(state, 'processes'),
+  serviceId: serviceId(state),
+  timeRange: timeRange(state),
+  isRemediationAllowed: isRemediationAllowed(state, 'processes'),
+  selectedFileChecksums: selectedFileChecksums(state)
 });
+
 
 const TreeComponent = Component.extend({
 
@@ -41,21 +77,57 @@ const TreeComponent = Component.extend({
 
   classNames: ['rsa-process-tree'],
 
-  /**
-   * Column configuration for the process list, displaying only process name and process ID
-   * @type [Object]
-   * @public
-   */
-  columnsConfig: CONFIG,
+  timezone: service(),
+
+  accessControl: service(),
+
+  showServiceModal: false,
+
+  showResetScoreModal: false,
+
+  showFileStatusModal: false,
+
+  contextItems: null,
+
+  @computed('isTreeView')
+  columnsConfig(isTreeView) {
+    if (isTreeView) {
+      return TREE_CONFIG;
+    } else {
+      return LIST_CONFIG;
+    }
+  },
+
+  @computed('selectedProcessList')
+  fileDownloadButtonStatus(fileContextSelections = []) {
+    // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
+    const selectedFilesLength = fileContextSelections.length;
+    const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => {
+      if (item.downloadInfo) {
+        return item.downloadInfo.status !== 'Downloaded';
+      }
+      return true;
+    });
+
+    return {
+      isDownloadToServerDisabled: ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer)), // and file's downloaded status is true
+      isSaveLocalAndFileAnalysisDisabled: ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer) // or file's downloaded status is true
+    };
+  },
+
 
   /**
    * Filtering the the items based on visible property, hiding the virtual child element based the parent expanded or not
    * @param items
    * @public
    */
-  @computed('treeAsList.@each.visible')
-  visibleItems() {
-    return this.get('treeAsList').filterBy('visible', true);
+  @computed('treeAsList.@each.visible', 'isTreeView', 'processList')
+  visibleItems(items, isTreeView, processList) {
+    if (isTreeView) {
+      return this.get('treeAsList').filterBy('visible', true);
+    } else {
+      return processList;
+    }
   },
 
   /**
@@ -71,19 +143,28 @@ const TreeComponent = Component.extend({
     }
   }),
 
+  _isAlreadySelected(selections, item) {
+    let selected = false;
+    if (selections && selections.length) {
+      selected = selections.findBy('pid', item.pid);
+    }
+    return selected;
+  },
+
+
   actions: {
+
+    sort(column) {
+      const { field: sortField, isDescending: isDescOrder } = column;
+      this.send('sortBy', sortField, !isDescOrder);
+      column.set('isDescending', !isDescOrder);
+    },
+
+
     handleToggleExpand(index, level, item) {
       const rows = this.get('treeAsList');
       const { pid, expanded } = item;
       updateRowVisibility(rows, pid, expanded);
-    },
-
-    toggleAllSelection() {
-      if (this.get('areAllSelected')) {
-        this.send('deSelectAllProcess');
-      } else {
-        this.send('selectAllProcess');
-      }
     },
 
     /**
@@ -106,6 +187,110 @@ const TreeComponent = Component.extend({
           this.closePropertyPanel();
         }
       }
+    },
+
+    beforeContextMenuShow(menu, event) {
+      const { contextSelection: item, contextItems } = menu;
+      if (!this.get('contextItems')) {
+        // Need to store this locally set it back again to menu object
+        this.set('contextItems', contextItems);
+      }
+      // For anchor tag hid the context menu and show browser default right click menu
+      if (event.target.tagName.toLowerCase() === 'a') {
+        menu.set('contextItems', []);
+      } else {
+        menu.set('contextItems', this.get('contextItems'));
+
+        this.set('itemList', [item]);
+        if (!this._isAlreadySelected(this.get('selections'), item)) {
+          this.send('deSelectAllProcess');
+          this.send('toggleProcessSelection', item);
+        }
+        const selections = this.get('selectedProcessList');
+        if (selections && selections.length === 1) {
+          this.send('getFileContextFileStatus', 'PROCESS', selections);
+        }
+      }
+    },
+
+    showServiceList(item, category) {
+      const serviceId = this.get('serviceId');
+      this.set('itemList', [item]);
+      if (serviceId && serviceId !== '-1') {
+        const {
+          timeRange,
+          agentId
+        } = this.getProperties('timeRange', 'agentId');
+
+        const { zoneId } = this.get('timezone.selected');
+        const additionalFilter = `agent.id="${agentId}" && category="${category}"`;
+        navigateToInvestigateEventsAnalysis(
+          { metaName: 'checksumSha256', metaValue: null, itemList: [item], additionalFilter },
+          serviceId,
+          timeRange,
+          zoneId);
+      } else {
+        this.set('showServiceModal', true);
+      }
+    },
+
+    onCloseServiceModal() {
+      this.set('showServiceModal', false);
+    },
+
+    showEditFileStatus(item) {
+      this.set('itemList', [item]);
+      if (this.get('accessControl.endpointCanManageFiles')) {
+        this.set('showFileStatusModal', true);
+      } else {
+        failure('investigateFiles.noManagePermissions');
+      }
+    },
+
+    onCloseEditFileStatus() {
+      this.set('showFileStatusModal', false);
+    },
+
+    showRiskScoreModal(fileList) {
+      this.set('selectedFiles', fileList);
+      this.set('showResetScoreModal', true);
+    },
+
+    resetRiskScoreAction() {
+      const callBackOptions = {
+        onSuccess: () => {
+          success('investigateFiles.riskScore.success');
+        },
+        onFailure: () => failure('investigateFiles.riskScore.error')
+      };
+      this.set('showResetScoreModal', false);
+      this.send('resetRiskScore', this.get('selectedFiles'), callBackOptions);
+      this.set('selectedFiles', null);
+    },
+
+    onResetScoreModalClose() {
+      this.set('showResetScoreModal', false);
+    },
+
+    onDownloadFilesToServer() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+        onFailure: (message) => failure(message)
+      };
+      const { agentId, selectedProcessList } = this.getProperties('agentId', 'selectedProcessList');
+
+      this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
+    },
+
+    onSaveLocalCopy() {
+      // Placeholder for the next PR.
+    },
+
+    onAnalyzeFile() {
+      // Open analyze file.
+      const selectedProcessList = this.get('selectedProcessList');
+      const { checksumSha256 } = selectedProcessList;
+      this.send('openAndFetchFileAnalyzerData', checksumSha256);
     }
   }
 });

@@ -1,4 +1,4 @@
-.host-detail__datatable {
+.host-detail-wrapper {
   .rsa-data-table {
     height: $tableHeight;
     .rsa-form-checkbox-label .rsa-form-checkbox {
@@ -15,5 +15,8 @@
   }
   .rsa-data-table-body-cell.score {
     padding: 0;
+  }
+  .rsa-data-table-body-row.is-row-checked {
+    background-color: background-color(primary, darker);
   }
 }

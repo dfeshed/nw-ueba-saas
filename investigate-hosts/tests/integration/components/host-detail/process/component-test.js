@@ -163,7 +163,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(document.querySelectorAll('.process-property-box:not([visible])').length, 1);
       state = this.owner.lookup('service:redux').getState();
       const { endpoint: { process: { selectedRowIndex } } } = state;
-      assert.equal(selectedRowIndex, null);
+      assert.equal(selectedRowIndex, -1);
     });
   });
 

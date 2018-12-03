@@ -157,11 +157,38 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         label: 'pivotToInvestigate',
         order: 2,
         prefix: 'investigateShared.endpoint.fileActions.',
+        subActions: [
+          {
+            label: 'networkEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Network Event');
+            }
+          },
+          {
+            label: 'fileEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'File Event');
+            }
+          },
+          {
+            label: 'processEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Process Event');
+            }
+          },
+          {
+            label: 'registryEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Registry Event');
+            }
+          }
+        ],
         disabled() {
           return (cntx.get('selections').length > 1);
-        },
-        action() {
-          cntx.pivotToInvestigate(cntx.get('item'));
         }
       };
       contextConf.push(pivot);

@@ -6,6 +6,7 @@ let mergedConfig;
 const hostsConfigGen = function(env) {
 
   const socketUrl = common.determineSocketUrl(env, '/endpoint/socket');
+  const contextSocketUrl = common.determineSocketUrl(env, '/contexthub/socket');
 
   return {
     'endpoint-server-ping': {
@@ -66,6 +67,23 @@ const hostsConfigGen = function(env) {
       restrictedList: {
         subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
         requestDestination: '/ws/endpoint/file/status/restricted'
+      }
+    },
+    'context-service': {
+      socketUrl: contextSocketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/contexthub/context/lookup',
+        requestDestination: '/ws/contexthub/context/lookup',
+        cancelDestination: '/ws/contexthub/context/cancel'
+      },
+      setFileStatus: {
+        subscriptionDestination: '/user/queue/contexthub/file/status/set',
+        requestDestination: '/ws/contexthub/file/status/set'
+      },
+      getFileStatus: {
+        subscriptionDestination: '/user/queue/contexthub/context/data-source/find',
+        requestDestination: '/ws/contexthub/context/data-source/find'
       }
     },
     filters: {
