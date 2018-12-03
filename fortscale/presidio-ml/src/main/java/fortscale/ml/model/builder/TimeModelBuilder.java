@@ -15,7 +15,7 @@ public class TimeModelBuilder implements IModelBuilder {
 
     private final int timeResolution;
     private final int bucketSize;
-    private final int maxRareTimestampCount;
+    private final int categoryRarityModelNumOfBuckets;
     private final CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
     private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer;
     private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer;
@@ -24,7 +24,7 @@ public class TimeModelBuilder implements IModelBuilder {
                             TimeModelBuilderPartitionsMetricsContainer partitionsMetricsContainer, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         timeResolution = config.getTimeResolution();
         bucketSize = config.getBucketSize();
-        maxRareTimestampCount = config.getMaxRareTimestampCount();
+        categoryRarityModelNumOfBuckets = config.getCategoryRarityModelNumOfBuckets();
         this.timeModelBuilderMetricsContainer = timeModelBuilderMetricsContainer;
         this.timeModelBuilderPartitionsMetricsContainer = partitionsMetricsContainer;
         this.categoryRarityModelBuilderMetricsContainer = categoryRarityModelBuilderMetricsContainer;
@@ -35,7 +35,7 @@ public class TimeModelBuilder implements IModelBuilder {
         TimeModel timeModel = new TimeModel();
         GenericHistogram genericHistogram = castModelBuilderData(modelBuilderData);
         timeModel.init(
-                timeResolution, bucketSize, maxRareTimestampCount,
+                timeResolution, bucketSize, categoryRarityModelNumOfBuckets,
                 genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions(), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
         return timeModel;
     }

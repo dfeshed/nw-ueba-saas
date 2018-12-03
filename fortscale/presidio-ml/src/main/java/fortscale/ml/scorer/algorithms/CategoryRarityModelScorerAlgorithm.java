@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 /**
- * For documentation and explanation of how this scoring algorithm works - refer to https://fortscale.atlassian.net/wiki/display/FSC/category+rarity+model
+ * For documentation and explanation of how this scoring algorithm works - refer to https://wiki.na.rsa.net/display/FSC/category+rarity+model
  */
 public class CategoryRarityModelScorerAlgorithm {
     private static final Logger logger = Logger.getLogger(CategoryRarityModelScorerAlgorithm.class);
@@ -54,9 +54,12 @@ public class CategoryRarityModelScorerAlgorithm {
     public double calculateScore(long featureCount, CategoryRarityModel model) {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
-        Assert.isTrue(maxRareCount  <= model.getBuckets().size() / 2,
-                String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().size() / 2, maxRareCount));
-        if (model.getNumOfPartitions() == 0 || featureCount > maxRareCount) {
+        Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getBuckets().size(),
+                String.format("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
+                                "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d",
+                        maxNumOfRarePartitions, maxRareCount, model.getBuckets().size()));
+
+        if (featureCount > maxRareCount || featureCount > maxNumOfRarePartitions) {
             return 0D;
         }
 
@@ -67,12 +70,12 @@ public class CategoryRarityModelScorerAlgorithm {
             double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
             numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
-        double commonEventProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
-        commonEventProbability = commonEventProbability < minProbability ?
-                0.0 : (commonEventProbability - minProbability) / (1 - minProbability);
+        double rareValueProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
+        rareValueProbability = rareValueProbability <= minProbability ?
+                0.0 : (rareValueProbability - minProbability) / (1 - minProbability);
         double numOfDistinctPartitionsContainingRareFeatureValueDiscount = calcCommonnessDiscounting(maxNumOfRarePartitions, numOfDistinctPartitionsContainingRareFeatureValue);
         double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
-        double score = commonEventProbability * Math.min(featureCountDiscount,numOfDistinctPartitionsContainingRareFeatureValueDiscount);
+        double score = rareValueProbability * Math.min(featureCountDiscount,numOfDistinctPartitionsContainingRareFeatureValueDiscount);
         return Math.floor(MAX_POSSIBLE_SCORE * score);
     }
 

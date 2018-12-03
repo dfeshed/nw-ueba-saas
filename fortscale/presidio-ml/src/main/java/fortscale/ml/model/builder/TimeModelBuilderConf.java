@@ -9,21 +9,21 @@ public class TimeModelBuilderConf implements IModelBuilderConf {
 
 	private int timeResolution;
 	private int bucketSize;
-	private int maxRareTimestampCount;
+	private int categoryRarityModelNumOfBuckets;
 
 	@JsonCreator
 	public TimeModelBuilderConf(
 			@JsonProperty("timeResolution") int timeResolution,
 			@JsonProperty("bucketSize") int bucketSize,
-			@JsonProperty("maxRareTimestampCount") int maxRareTimestampCount) {
+			@JsonProperty("categoryRarityModelNumOfBuckets") int categoryRarityModelNumOfBuckets) {
 
 		Assert.isTrue(timeResolution > 0);
 		Assert.isTrue(bucketSize > 0);
-		Assert.isTrue(maxRareTimestampCount > 0);
+		Assert.isTrue(categoryRarityModelNumOfBuckets > 0);
 
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
-		this.maxRareTimestampCount = maxRareTimestampCount;
+		this.categoryRarityModelNumOfBuckets = categoryRarityModelNumOfBuckets;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class TimeModelBuilderConf implements IModelBuilderConf {
 		return bucketSize;
 	}
 
-	public int getMaxRareTimestampCount() {
-		return maxRareTimestampCount;
+	public int getCategoryRarityModelNumOfBuckets() {
+		return categoryRarityModelNumOfBuckets;
 	}
 }

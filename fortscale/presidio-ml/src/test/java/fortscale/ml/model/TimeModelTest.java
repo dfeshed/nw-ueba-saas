@@ -25,7 +25,7 @@ public class TimeModelTest extends AbstractScorerTest {
 	private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 	private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
 
-	private TimeModel createModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Long... times) {
+	private TimeModel createModel(int timeResolution, int bucketSize, int categoryRarityModelNumOfBuckets, Long... times) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
 
 		for (int i=0; i< times.length;i++) {
@@ -33,7 +33,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		}
 
 		TimeModel timeModel = new TimeModel();
-		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
+		timeModel.init(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
 		return timeModel;
 	}
 
@@ -46,14 +46,14 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void modelWithOneTimestamp() {
 		int timeResolution = 86400;
 		int bucketSize = 1;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time = 1;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time);
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
 		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(20,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
+		Assert.assertEquals(categoryRarityModelNumOfBuckets,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
@@ -61,10 +61,10 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void modelWithTwoTimestampsInSameBucket() {
 		int timeResolution = 86400;
 		int bucketSize = 10;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time1 = 1;
 		long time2 = 2;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
@@ -77,10 +77,10 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void modelWithTwoTimestampsInDifferentBuckets() {
 		int timeResolution = 86400;
 		int bucketSize = 10*60;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time1 = 1;
 		long time2 = timeResolution+102+bucketSize;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
@@ -93,9 +93,9 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void testSmoothingWithOneTimestamp() {
 		int timeResolution = 86400;
 		int bucketSize = 1;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time = 1;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time);
 
 		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
 	}
@@ -104,9 +104,9 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void testSmoothingWithOneTimestampAndOnlyOneBucket() {
 		int timeResolution = 86400;
 		int bucketSize = timeResolution;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time = 1;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time);
 
 		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
 	}
@@ -115,9 +115,9 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void testSmoothingIsCyclic() {
 		int timeResolution = 86400;
 		int bucketSize = 1;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time = 1;
-		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
+		TimeModel model = createModel(timeResolution, bucketSize, categoryRarityModelNumOfBuckets, time);
 
 		Assert.assertEquals(model.getSmoothedTimeCounter(time), model.getSmoothedTimeCounter(time + timeResolution));
 	}
@@ -130,12 +130,12 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void testSmoothingSymmetricallyAcross10Buckets() {
 		int timeResolution = 86400;
 		int bucketSize = 432;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time = timeResolution / 2;
 		TimeModel model = createModel(
 				timeResolution,
 				bucketSize,
-				maxRareTimestampCount,
+				categoryRarityModelNumOfBuckets,
 				LongStream.range(0, 5).boxed().map(l -> time).collect(Collectors.toList()).toArray(new Long[0])
 		);
 
@@ -157,26 +157,26 @@ public class TimeModelTest extends AbstractScorerTest {
 	public void testSmoothingTwoBucketsAddsUp() {
 		int timeResolution = 86400;
 		int bucketSize = 5;
-		int maxRareTimestampCount = 10;
+		int categoryRarityModelNumOfBuckets = 20;
 		long time1 = 0;
 		long time2 = 6 * bucketSize;
 		int numOfSamplesInEachTimestamp = 500;
 		TimeModel modelWithTime1 = createModel(
 				timeResolution,
 				bucketSize,
-				maxRareTimestampCount,
+				categoryRarityModelNumOfBuckets,
 				LongStream.range(0, numOfSamplesInEachTimestamp).boxed().map(l -> time1).collect(Collectors.toList()).toArray(new Long[0])
 		);
 		TimeModel modelWithTime2 = createModel(
 				timeResolution,
 				bucketSize,
-				maxRareTimestampCount,
+				categoryRarityModelNumOfBuckets,
 				LongStream.range(0, numOfSamplesInEachTimestamp).boxed().map(l -> time2).collect(Collectors.toList()).toArray(new Long[0])
 		);
 		TimeModel modelWithTime1AndTime2 = createModel(
 				timeResolution,
 				bucketSize,
-				maxRareTimestampCount,
+				categoryRarityModelNumOfBuckets,
 				LongStream.range(0, numOfSamplesInEachTimestamp * 2).boxed().map(l -> l % 2 == 0 ? time1 : time2).collect(Collectors.toList()).toArray(new Long[0])
 		);
 

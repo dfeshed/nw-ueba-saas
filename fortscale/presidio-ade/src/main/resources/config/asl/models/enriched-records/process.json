@@ -18,7 +18,7 @@
         "type": "time_model_builder",
         "timeResolution": 86400,
         "bucketSize": 600,
-        "maxRareTimestampCount": 10
+        "categoryRarityModelNumOfBuckets": 30
       }
     },
     {

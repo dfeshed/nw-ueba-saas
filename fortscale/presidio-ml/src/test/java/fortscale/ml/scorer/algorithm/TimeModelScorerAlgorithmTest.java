@@ -57,7 +57,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private TimeModel getTimeModel(Map<Long, Double> timeToCounter){
         TimeModel model = new TimeModel();
-        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_COUNT+MAX_NUM_OF_RARE_PARTITIONS, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
 
         return model;
     }

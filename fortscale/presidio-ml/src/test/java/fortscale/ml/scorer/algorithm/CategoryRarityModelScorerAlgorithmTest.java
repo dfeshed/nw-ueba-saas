@@ -106,7 +106,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                              long featureCountToScore,
                              CategoricalFeatureValue categoricalFeatureValue) {
 
-        CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount * 2);
+        CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount + maxNumOfRarePartitions);
         config.setPartitionsResolutionInSeconds(86400);
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(categoricalFeatureValue);
         CategoryRarityModelScorerAlgorithm scorerAlgorithm =
@@ -167,14 +167,14 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenTooLargeMaxRareCountValue() {
+    public void shouldFailGivenTooLargeMaxRareCountPlusMaxNumOfPartitionsValue() {
         CategoryRarityModel model = new CategoryRarityModel();
         Map<Long, Integer> occurrencesToNumOfPartitions = new HashMap<>();
         occurrencesToNumOfPartitions.put(1L, 1);
         int numOfBuckets = 10;
         model.init(occurrencesToNumOfPartitions, numOfBuckets, 0, 1);
         CategoryRarityModelScorerAlgorithm algorithm =
-                new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1,
+                new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, numOfBuckets / 2 ,
                         X_WITH_VALUE_HALF_FACTOR, MIN_PROBABILITY);
         algorithm.calculateScore(1, model);
     }
@@ -262,11 +262,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
             }
             for (int i = 1; i < scores.size(); i++) {
                 double scoresDelta = scores.get(i) - scores.get(i - 1);
-                if (shouldIncrease == null) {
-                    Assert.assertTrue(scoresDelta == 0);
-                } else {
-                    Assert.assertTrue(scoresDelta * (shouldIncrease ? 1 : -1) >= 0);
-                }
+                Assert.assertTrue(scoresDelta * (shouldIncrease ? 1 : -1) >= 0);
             }
             hasStrongMonotonicity = hasStrongMonotonicity || Math.abs(scores.get(scores.size() - 1) - scores.get(0)) > 0.0001;
         }
@@ -324,7 +320,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void shouldScoreConstantlyWhenmaxNumOfRarePartitionsIncreasesButModelDataIsEmpty() {
-        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
     }
 
     @Test

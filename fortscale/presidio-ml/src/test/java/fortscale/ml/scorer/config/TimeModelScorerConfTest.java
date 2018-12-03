@@ -22,7 +22,7 @@ public class TimeModelScorerConfTest {
 	private static String getTimeModelScorerConfString(
 			String scorerType, String name, JSONObject modelInfoJsonObject,
 			Integer minNumOfSamplesToInfluence, Integer enoughNumOfSamplesToInfluence,
-			Boolean isUseCertaintyToCalculateScore, Integer maxRareTimestampCount, Integer maxNumOfRareTimestamps, Double xWithValueHalfFactor) {
+			Boolean isUseCertaintyToCalculateScore, Integer maxRareCount, Integer maxNumOfRarePartitions, Double xWithValueHalfFactor) {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("type", scorerType);
@@ -34,10 +34,10 @@ public class TimeModelScorerConfTest {
 			jsonObject.put("number-of-partitions-to-influence-enough", enoughNumOfSamplesToInfluence);
 		if (isUseCertaintyToCalculateScore != null)
 			jsonObject.put("use-certainty-to-calculate-score", isUseCertaintyToCalculateScore);
-		if (maxRareTimestampCount != null)
-			jsonObject.put("max-rare-count", maxRareTimestampCount);
-		if (maxNumOfRareTimestamps != null)
-			jsonObject.put("max-num-of-rare-partitions", maxNumOfRareTimestamps);
+		if (maxRareCount != null)
+			jsonObject.put("max-rare-count", maxRareCount);
+		if (maxNumOfRarePartitions != null)
+			jsonObject.put("max-num-of-rare-partitions", maxNumOfRarePartitions);
 		if (xWithValueHalfFactor != null)
 			jsonObject.put("x-with-value-half-factor", xWithValueHalfFactor);
 
