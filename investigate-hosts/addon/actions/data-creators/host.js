@@ -15,7 +15,7 @@ import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
-import { resetRiskContext, getRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 
 import { debug } from '@ember/debug';
@@ -238,6 +238,7 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
   return (dispatch) => {
     // On clicking the host name setting the machineId in the URL, on close removing the it from url
     if (machineId && !isEmpty(machineId)) {
+      dispatch(getRespondServerStatus());
       dispatch(initializeAgentDetails({ agentId: machineId }, true));
       dispatch(changeDetailTab(tabName));
       dispatch(resetHostDownloadLink());
@@ -329,6 +330,7 @@ const setHostListPropertyTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_HOST_LI
 
 const onHostSelection = (item) => {
   return (dispatch) => {
+    dispatch(getRespondServerStatus());
     dispatch(_setFocusedHost(item));
     dispatch(resetRiskContext());
     next(() => {

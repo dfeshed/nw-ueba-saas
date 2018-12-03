@@ -21,7 +21,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'distinctAlertCount': {
         'critical': 1,
         'high': 2,
-        'medium': 3
+        'medium': 3,
+        'low': 0
       },
       'categorizedAlerts': {
         'Critical': {
@@ -64,7 +65,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'distinctAlertCount': {
         'critical': 0,
         'high': 1,
-        'medium': 3
+        'medium': 3,
+        'low': 0
       },
       'categorizedAlerts': {
         'High': {
@@ -98,7 +100,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'distinctAlertCount': {
         'critical': 1,
         'high': 2,
-        'medium': 3
+        'medium': 3,
+        'low': 0
       },
       'categorizedAlerts': {
         'Critical': {
@@ -128,7 +131,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'distinctAlertCount': {
         'critical': 1,
         'high': 2,
-        'medium': 3
+        'medium': 3,
+        'low': 1
       },
       'categorizedAlerts': {
         'Critical': {
@@ -155,7 +159,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(findAll('.risk-properties .alert-count')[0].innerText, 1, 'Critical alert count is 1');
     assert.equal(findAll('.risk-properties .alert-count')[1].innerText, 2, 'High alert count is 2');
     assert.equal(findAll('.risk-properties .alert-count')[2].innerText, 3, 'Medium alert count is 3');
-    assert.equal(findAll('.risk-properties .alert-count')[3].innerText, 6, 'All alert count is 6');
+    assert.equal(findAll('.risk-properties .alert-count')[3].innerText, 7, 'All alert count is 7');
 
     assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
       'Display alert name and alert count for alert context');
@@ -197,7 +201,8 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         distinctAlertCount: {
           critical: 0,
           high: 0,
-          medium: 0
+          medium: 0,
+          low: 0
         }
       }
     });

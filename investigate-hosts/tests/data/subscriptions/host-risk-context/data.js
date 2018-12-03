@@ -3,7 +3,8 @@ export default {
   'distinctAlertCount': {
     'critical': 1,
     'high': 2,
-    'medium': 3
+    'medium': 3,
+    'low': 0
   },
   'categorizedAlerts': {
     'All': {

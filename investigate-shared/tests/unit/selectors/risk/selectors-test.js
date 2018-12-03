@@ -45,7 +45,8 @@ module('Unit | Selectors | risk', function(hooks) {
           distinctAlertCount: {
             critical: 1,
             high: 0,
-            medium: 0
+            medium: 0,
+            low: 0
           }
         }
       }
@@ -59,7 +60,8 @@ module('Unit | Selectors | risk', function(hooks) {
           distinctAlertCount: {
             critical: 0,
             high: 0,
-            medium: 0
+            medium: 0,
+            low: 0
           }
         }
       }

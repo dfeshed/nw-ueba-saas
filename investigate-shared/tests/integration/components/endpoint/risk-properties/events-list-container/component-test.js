@@ -9,7 +9,8 @@ const riskScoreContext = {
   distinctAlertCount: {
     critical: 1,
     high: 0,
-    medium: 0
+    medium: 0,
+    low: 0
   }
 };
 

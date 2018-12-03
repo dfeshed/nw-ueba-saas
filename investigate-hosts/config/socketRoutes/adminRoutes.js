@@ -8,6 +8,9 @@ module.exports = function(environment) {
   const respondSocketUrl = common.determineSocketUrl(environment, '/respond/socket');
 
   return {
+    'respond-server-ping': {
+      socketUrl: respondSocketUrl
+    },
     'context-service': {
       socketUrl,
       stream: {
