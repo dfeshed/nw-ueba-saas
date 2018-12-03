@@ -25,11 +25,16 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
 
 
   test('it should render the file-analysis-wrapper', async function(assert) {
-    const fileAnalysis = { isfileAnalysisView: true, fileData: { format: 'pe' } };
+    const fileAnalysis = {
+      'fileData': { test: '1' },
+      'filePropertiesData': { format: 'pe' },
+      'isFileAnalysisView': true
+    };
 
     new ReduxDataHelper(setState)
       .hostDetailsLoading(false)
       .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
       .fileAnalysis(fileAnalysis)
       .build();
 
@@ -39,6 +44,29 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     assert.equal(findAll('.file-analysis-header button').length, 1, 'File analysis back button rendered');
     assert.equal(findAll('.file-analysis-header .view-type').length, 1, 'view type title rendered');
     assert.equal(findAll('.string-view').length, 1, 'String view rendered');
+  });
+
+  test('It should not render the file-analysis-wrapper when filePropertiesData is null', async function(assert) {
+    const fileAnalysis = {
+      'fileData': null,
+      'filePropertiesData': null,
+      'isFileAnalysisView': true
+    };
+
+    new ReduxDataHelper(setState)
+      .hostDetailsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
+      .fileAnalysis(fileAnalysis)
+      .build();
+
+    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+
+    assert.equal(findAll('.file-analysis-header').length, 0, 'File analysis not rendered');
+    assert.equal(findAll('.file-analysis-header button').length, 0, 'File analysis back button not rendered');
+    assert.equal(findAll('.file-analysis-header .view-type').length, 0, 'view type title not rendered');
+    assert.equal(findAll('.string-view').length, 0, 'String view not rendered');
+    assert.equal(findAll('.text-view').length, 0, 'text view not rendered');
   });
 
 });

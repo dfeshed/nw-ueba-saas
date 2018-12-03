@@ -11,7 +11,7 @@ import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import { setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
-import { toggleFileAnalysisView } from 'investigate-hosts/actions/data-creators/file-analysis';
+import { toggleFileAnalysisView } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch, getState) => {

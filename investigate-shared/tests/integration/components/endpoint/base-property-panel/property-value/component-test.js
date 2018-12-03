@@ -61,4 +61,33 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
     await triggerEvent('.tooltip-text', 'mouseout');
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
+
+  test('it renders the tooltip-text ACCORDIONLIST content', async function(assert) {
+    const field = {
+      format: 'ACCORDIONLIST',
+      value: {
+        library06: [
+          '.interp01',
+          '.interp02'
+        ],
+        library07: [
+          '.interp01',
+          '.interp02'
+        ]
+      }
+    };
+    this.set('field', field);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
+    assert.equal(findAll('.properties__accordion__item').length, 3);
+  });
+
+  test('it renders the tooltip-text ACCORDION content', async function(assert) {
+    const field = {
+      format: 'ACCORDION',
+      value: [1, 2, 3]
+    };
+    this.set('field', field);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
+    assert.equal(findAll('.properties__accordion__item').length, 1);
+  });
 });

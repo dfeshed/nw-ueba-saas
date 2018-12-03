@@ -1,11 +1,13 @@
 import { createSelector } from 'reselect';
-import { componentSelectionForfileType } from 'investigate-shared/utils/file-analysis-view-util';
+import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
-export const _fileType = (state) => state.endpoint.fileAnalysis.fileData.format;
-
+const _fileType = (state) => {
+  const { filePropertiesData } = state.endpoint.fileAnalysis;
+  return filePropertiesData ? filePropertiesData.format : 'pe';
+};
 export const componentConfig = createSelector(
   [_fileType],
   (fileType) => {
-    return componentSelectionForfileType(fileType);
+    return componentSelectionForFileType(fileType);
   }
 );

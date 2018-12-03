@@ -1,10 +1,27 @@
-<div class='file-analysis-header'>
-  {{#rsa-form-button class='close-zone' defaultAction=(action 'toggleFileAnalysisView')}}
-    {{rsa-icon size="small" name="arrow-left-12"}}
-    <span>{{t 'investigateShared.endpoint.fileAnalysis.backButton' sourceTab=activeHostDetailTab}}</span>
-  {{/rsa-form-button}}
-  <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
-  <span class='view-type'>{{t componentConfig.title}}</span>
-</div>
+{{#if filePropertiesData}}
+  {{#rsa-page-layout showRightZone=true as |layout|}}
+    {{#layout.center}}
+      <div class='file-analysis-header'>
+        {{#rsa-form-button class='close-zone' defaultAction=(action 'toggleFileAnalysisView')}}
+          {{rsa-icon size="small" name="arrow-left-12"}}
+          <span class='backButton'>{{activeHostDetailTab}}</span>
+        {{/rsa-form-button}}
+        <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
+        <span class='view-type'>{{t componentConfig.title}}</span>
+      </div>
+      {{component componentConfig.component}}
+    {{/layout.center}}
+    {{#layout.right as |rightPanel|}}
+      {{#rightPanel.header  class="host-list-properties"}}
+        <h3 class='title'>
+          {{filePropertiesData.fileName}}
+        </h3>
 
-{{component componentConfig.component}}
+        {{#rsa-form-button class='close-zone' isIconOnly=true defaultAction=(action 'toggleFileAnalysisView') }}
+          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+        {{/rsa-form-button}}
+      {{/rightPanel.header}}
+      {{endpoint/file-analysis-properties filePropertiesData=filePropertiesData}}
+    {{/layout.right}}
+  {{/rsa-page-layout}}
+{{/if}}

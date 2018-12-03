@@ -1,27 +1,37 @@
 import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
+import { handle } from 'redux-pack';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
-import * as ACTION_TYPES from 'investigate-hosts/actions/types';
-
-const fileAnalyzerState = Immutable.from({
-  isFileAnalysisView: true,
-  fileData: {
-    format: 'pe'
-  }
+const initialState = Immutable.from({
+  isFileAnalysisView: false,
+  fileData: null,
+  filePropertiesData: null
 });
 
 const fileAnalyzerReducer = handleActions({
 
-  [ACTION_TYPES.TOGGLE_FILE_ANALYZER]: (state, { payload }) => {
+  [SHARED_ACTION_TYPES.TOGGLE_FILE_ANALYZER]: (state, { payload }) => {
     const isFileAnalysisView = (payload !== undefined) ? payload : !state.isFileAnalysisView;
-    return state.set('isFileAnalysisView', isFileAnalysisView);
+    return isFileAnalysisView ? state.set('isFileAnalysisView', isFileAnalysisView) : state.merge(initialState);
   },
 
-  [ACTION_TYPES.FETCH_FILE_ANALYZER_DATA]: (state, { payload }) => { // placeholder for data returned by api.
-    const { data } = payload;
-    return state.set('fileData', data);
+  [SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_DATA]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        return s.set('fileData', action.payload.data);
+      }
+    });
+  },
+
+  [SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        return s.set('filePropertiesData', action.payload.data);
+      }
+    });
   }
 
-}, fileAnalyzerState);
+}, initialState);
 
 export default fileAnalyzerReducer;

@@ -26,9 +26,8 @@ module('Unit | Selector | File Analysis', function() {
         },
         fileAnalysis: {
           isFileAnalysisView: true,
-          fileData: {
-            format: 'pe'
-          }
+          fileData: { name: 'test' },
+          filePropertiesData: { format: 'macho' }
         }
       }
     }), 'drivers');
@@ -47,9 +46,8 @@ module('Unit | Selector | File Analysis', function() {
         },
         fileAnalysis: {
           isFileAnalysisView: true,
-          fileData: {
-            format: 'xyz'
-          }
+          fileData: { name: 'test' },
+          filePropertiesData: { format: 'xyz' }
         }
       }
     }), 'drivers');

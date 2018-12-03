@@ -10,6 +10,9 @@
   .file-analysis-header {
     width: 60%;
     padding: 20px;
+    .backButton {
+      text-transform: capitalize;
+    }
     .file-analysis-title {
       border-left: 1px solid;
       border-right: 1px solid;
@@ -23,6 +26,12 @@
     .view-type {
       font-size: 1.2rem;
       border-bottom: 3px solid border-color(secondary);
+    }
+  }
+  .rsa-page-layout.show-right-zone .right-zone {
+    max-width: 550px;
+    h3.title {
+      margin: 0 auto;
     }
   }
 };

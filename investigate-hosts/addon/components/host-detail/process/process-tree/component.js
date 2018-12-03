@@ -11,7 +11,7 @@ import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-cr
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
-import { openAndFetchFileAnalyzerData } from 'investigate-hosts/actions/data-creators/file-analysis';
+import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
@@ -44,7 +44,7 @@ const dispatchToActions = {
   setFileContextFileStatus,
   retrieveRemediationStatus,
   resetRiskScore,
-  openAndFetchFileAnalyzerData,
+  getFileAnalysisData,
   downloadFilesToServer
 };
 
@@ -290,7 +290,7 @@ const TreeComponent = Component.extend({
       // Open analyze file.
       const selectedProcessList = this.get('selectedProcessList');
       const { checksumSha256 } = selectedProcessList;
-      this.send('openAndFetchFileAnalyzerData', checksumSha256);
+      this.send('getFileAnalysisData', checksumSha256);
     }
   }
 });

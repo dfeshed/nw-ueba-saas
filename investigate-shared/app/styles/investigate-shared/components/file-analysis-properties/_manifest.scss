@@ -1,0 +1,15 @@
+.properties__accordion__item {
+  h3 {
+    font-size: 1rem;
+    text-transform: capitalize;
+    color: text-color(secondary);
+    line-height: 1.3rem;
+    padding-top: 0;
+    padding-left: 0;
+  }
+  .content {
+    .value {
+      margin: 3px 9px;
+    }
+  }
+}

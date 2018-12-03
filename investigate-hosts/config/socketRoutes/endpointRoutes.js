@@ -67,6 +67,14 @@ const hostsConfigGen = function(env) {
       restrictedList: {
         subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
         requestDestination: '/ws/endpoint/file/status/restricted'
+      },
+      fileAnalysis: {
+        subscriptionDestination: '/user/queue/endpoint/file/analyze',
+        requestDestination: '/ws/endpoint/file/analyze'
+      },
+      fileAnalysisStringFormat: {
+        subscriptionDestination: '/user/queue/endpoint/file/get-strings',
+        requestDestination: '/ws/endpoint/file/get-strings'
       }
     },
     'context-service': {

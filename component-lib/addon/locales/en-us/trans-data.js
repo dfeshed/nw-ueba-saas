@@ -3501,10 +3501,54 @@ export default {
       },
       fileAnalysis: {
         title: 'File Analysis',
-        backButton: '{{sourceTab}}',
         stringsView: 'Strings View',
         textView: 'Text View',
-        fileDetails: '{{fileType}} FILE DETAILS'
+        checksumMd5: 'checksumMd5',
+        checksumSha1: 'checksumSha1',
+        checksumSha256: 'checksumSha256',
+        size: 'Size',
+        downloadedFileName: 'Downloaded FileName',
+        downloadedPath: 'Downloaded Path',
+        entropy: 'Entropy',
+        format: 'Format',
+        pe: {
+          architecture: 'Architecture',
+          characteristics: 'Characteristics',
+          compileTime: 'Compile Time',
+          entryPoint: 'Entry Point',
+          importedDlls: 'Imported DLLs',
+          sectionNames: 'Section Names',
+          subSystem: 'Subsystem',
+          entryPointValid: 'Entry Point Valid',
+          uncommonSectionFound: 'Uncommon Section Found',
+          packerSectionFound: 'Packer Section Found'
+        },
+        elf: {
+          neededLibraries: 'Needed Libraries',
+          architecture: 'Architecture',
+          entryPoint: 'Entry Point',
+          sectionNames: 'Section Names',
+          entryPointValid: 'Entry Point Valid',
+          uncommonSectionFound: 'Uncommon Section Found',
+          packerSectionFound: 'Packer Section Found',
+          fileType: 'File Type'
+        },
+        macho: {
+          architecture: 'Architecture',
+          entryPoint: 'Entry Point',
+          importedDlls: 'Imported DLLs',
+          segmentNames: 'Segment Names',
+          subSystem: 'Subsystem',
+          entryPointValid: 'Entry Point Valid',
+          uncommonSectionFound: 'Uncommon Section Found',
+          packerSectionFound: 'Packer Section Found',
+          uuid: 'UUID',
+          fileType: 'File Type'
+        },
+        importedDlls: {
+          parentTitle: 'Imported DLLs({{dllCount}}) and Functions({{functionCount}})',
+          childTitle: '{{importedDllName}} - {{functionCount}} Functions'
+        }
       }
     }
   },

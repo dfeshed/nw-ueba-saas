@@ -1,0 +1,21 @@
+{{#if importedDllInfoList.importedDlls.length}}
+  {{#rsa-content-accordion
+    isCollapsed=true
+    label=(t 'investigateShared.endpoint.fileAnalysis.importedDlls.parentTitle' dllCount=importedDllInfoList.importedDlls.length functionCount=importedDllInfoList.importedDlls.totalFunctionCount )
+    class="properties__accordion__item"}}
+
+    {{#each importedDllInfoList.importedDllAndFunctionCountList as |importedDllItem|}}
+      {{#rsa-content-accordion
+        isCollapsed=true
+        label=(t 'investigateShared.endpoint.fileAnalysis.importedDlls.childTitle' importedDllName=importedDllItem.importedDll  functionCount=importedDllItem.functionCount )
+        class="properties__accordion__item"}}
+
+        {{#each importedDllItem.functionList as |name|}}
+          <div class='value'>{{name}}</div>
+        {{/each}}
+
+      {{/rsa-content-accordion}}
+    {{/each}}
+
+  {{/rsa-content-accordion}}
+{{/if}}

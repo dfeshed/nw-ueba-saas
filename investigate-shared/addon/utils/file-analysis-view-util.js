@@ -11,6 +11,6 @@ const textView = {
   title: 'investigateShared.endpoint.fileAnalysis.textView'
 };
 
-export function componentSelectionForfileType(fileType) {
+export function componentSelectionForFileType(fileType) {
   return stringViewFileExtensionList.includes(fileType) ? stringView : textView;
 }

@@ -182,7 +182,11 @@ module('Integration | Component | host-detail', function(hooks) {
   });
 
   test('file analysis view hidden on load', async function(assert) {
-    const fileAnalysis = { isfileAnalysisView: true, fileData: { format: 'pe' } };
+    const fileAnalysis = {
+      'fileData': null,
+      'filePropertiesData': null,
+      'isFileAnalysisView': false
+    };
     new ReduxDataHelper(setState)
       .hostDetailsLoading(false)
       .isSnapshotsAvailable(true)
@@ -195,9 +199,19 @@ module('Integration | Component | host-detail', function(hooks) {
   });
 
   test('file analysis view visible when isFileAnalysisView is set to true', async function(assert) {
+    const fileAnalysis = {
+      'fileData': { test: '1' },
+      'filePropertiesData': { format: 'pe' },
+      'isFileAnalysisView': true
+    };
+    new ReduxDataHelper(setState)
+      .hostDetailsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
+      .fileAnalysis(fileAnalysis)
+      .build();
 
-    this.set('isFileAnalysisView', true);
-    await render(hbs`{{host-detail isFileAnalysisView=isFileAnalysisView}}`);
+    await render(hbs`{{host-detail}}`);
 
     assert.equal(findAll('.is-show-file-analysis').length, 1, 'File analysis is visible');
   });

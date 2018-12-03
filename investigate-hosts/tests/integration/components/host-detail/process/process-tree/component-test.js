@@ -10,11 +10,11 @@ import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
 import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
-import anaLyzeCreators from 'investigate-hosts/actions/data-creators/file-analysis';
+import analyzeCreators from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import sinon from 'sinon';
 
 const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
-const openAndFetchFileAnalyzerDataSpy = sinon.spy(anaLyzeCreators, 'openAndFetchFileAnalyzerData');
+const getFileAnalysisDataSpy = sinon.spy(analyzeCreators, 'getFileAnalysisData');
 
 const spys = [
   downloadFilesToServerSpy
@@ -769,7 +769,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       const menuItems = findAll(`${selector} > .context-menu__item`);
       await click(`#${menuItems[7].id}`); // Edit file status
       return settled().then(() => {
-        assert.equal(openAndFetchFileAnalyzerDataSpy.callCount, 1, 'The openAndFetchFileAnalyzerData action creator was called once');
+        assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
       });
     });
 
