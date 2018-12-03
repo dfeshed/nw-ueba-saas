@@ -284,8 +284,12 @@ page.investigate-files-engine {
 .license-banner.shown + .rsa-investigate-files {
   // When license banner is shown, the absolute top position has to be adjusted
   top: 86px;
+  .content-body {
+    height: calc(100vh - 296px);
+  }
 }
 
 .rsa-data-table-body-row.is-row-checked {
   background-color: background-color(primary, darker);
 }
+

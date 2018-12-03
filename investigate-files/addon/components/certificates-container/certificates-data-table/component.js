@@ -1,13 +1,15 @@
 import Component from '@ember/component';
 import { certificatesLoading, columns } from 'investigate-files/reducers/certificates/selectors';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
 import {
   getPageOfCertificates,
   toggleCertificateSelection,
   saveCertificateStatus,
   getSavedCertificateStatus
 } from 'investigate-files/actions/certificate-data-creators';
-
+import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 
 const stateToComputed = (state) => ({
   certificatesItems: state.certificate.list.certificatesList,
@@ -15,7 +17,9 @@ const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,
   areCertificatesLoading: certificatesLoading(state),
   isCertificateView: state.certificate.list.isCertificateView,
-  certificatesColumns: columns(state)
+  certificatesColumns: columns(state),
+  serviceId: serviceId(state),
+  timeRange: timeRange(state)
 });
 
 const dispatchToActions = {
@@ -33,6 +37,8 @@ const Certificates = Component.extend({
   isAllSelected: true,
 
   showModal: false,
+
+  timezone: service(),
 
   isAlreadySelected(selections, item) {
     let selected = false;
@@ -66,6 +72,12 @@ const Certificates = Component.extend({
       if (selections && selections.length === 1) {
         this.send('getSavedCertificateStatus', selections);
       }
+    },
+    pivotToInvestigate(item, category) {
+      const { timeRange, serviceId } = this.getProperties('timeRange', 'serviceId');
+      const { zoneId } = this.get('timezone.selected');
+      const additionalFilter = `category="${category}"`;
+      navigateToInvestigateEventsAnalysis({ metaName: 'thumbprint', itemList: [item], additionalFilter }, serviceId, timeRange, zoneId);
     }
 
   }

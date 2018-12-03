@@ -30,7 +30,6 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
   @computed('item')
   contextItems() {
-
     const cntx = this;
     const contextConf = [
       {
@@ -39,6 +38,40 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         action() {
           cntx.editCertificateStatus();
         }
+      },
+      {
+        label: 'pivotToInvestigate',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        subActions: [
+          {
+            label: 'networkEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Network Event');
+            }
+          },
+          {
+            label: 'fileEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'File Event');
+            }
+          },
+          {
+            label: 'processEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Process Event');
+            }
+          },
+          {
+            label: 'registryEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.pivotToInvestigate(cntx.get('item'), 'Registry Event');
+            }
+          }
+        ]
       }
     ];
     return contextConf;

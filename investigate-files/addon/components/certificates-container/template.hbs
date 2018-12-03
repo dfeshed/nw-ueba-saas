@@ -32,6 +32,15 @@
         {{t 'investigateFiles.certificatePageTitle'}}
       </label>
       {{certificates-container/certificate-status}}
+      {{endpoint/pivot-to-investigate
+        itemList=selections
+        serviceId=serviceId
+        timeRange=timeRange
+        metaName='thumbprint'
+        serviceList=serviceList
+        showOnlyIcons=false
+        getAllServices=getAllServices
+        disabled=pivotInvestigateDisabled}}
       {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
         {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
       {{/rsa-form-button}}

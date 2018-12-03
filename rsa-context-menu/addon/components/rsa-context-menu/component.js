@@ -6,8 +6,14 @@ export default Component.extend(contextMenuMixin, {
   tagName: 'span',
   classNames: ['content-context-menu'],
   contextualActions: service(),
+  eventBus: service(),
 
   contextMenu(e) {
+
+    if (document.querySelectorAll('.ember-tether').length > 1) {
+      // Need to call application click event to close dropdown menu
+      this.get('eventBus').trigger('rsa-application-click', event.target);
+    }
     // only attempt to use contextual actions when contextSelection is present
     if (this.get('contextSelection')) {
       /**

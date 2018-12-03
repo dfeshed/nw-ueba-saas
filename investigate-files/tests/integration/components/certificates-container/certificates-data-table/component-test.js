@@ -8,6 +8,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import sinon from 'sinon';
 
 let initState;
 const callback = () => {};
@@ -199,10 +200,38 @@ module('Integration | Component | certificates-container/certificates-data-table
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 1);
+      assert.equal(items.length, 2);
       click('.context-menu__item:nth-of-type(1)');
       return settled().then(() => {
         assert.equal(findAll('.file-status-radio').length, 3, 'Edit Certificate status model is rendered.');
+      });
+    });
+  });
+
+  test('right click on event analysis takes user to the event analysis page', async function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .build();
+    await render(hbs`{{certificates-container/certificates-data-table}}{{context-menu}}`);
+    this.timezone = this.owner.lookup('service:timezone');
+    this.get('timezone').set('selected', { zoneId: 'UTC' });
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await triggerEvent(`#${menuItems[1].id}`, 'mouseover');
+      const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
+      assert.equal(subItems.length, 4, 'Sub menu rendered');
+      click(`#${subItems[0].id}`);
+      return settled().then(() => {
+        assert.ok(actionSpy.calledOnce);
+        assert.ok(actionSpy.args[0][0].includes('cert.checksum'));
+        actionSpy.resetHistory();
+        actionSpy.restore();
       });
     });
   });

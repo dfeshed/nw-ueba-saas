@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, click, settled } from '@ember/test-helpers';
+import { findAll, render, click, settled, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../helpers/patch-reducer';
@@ -67,4 +67,24 @@ module('Integration | Component | certificates-container', function(hooks) {
       assert.equal(state.certificate.list.isCertificateView, false, 'Certificate view is closed');
     });
   });
+
+  test('event analysis button rendered and disabled', async function(assert) {
+    new ReduxDataHelper(initState)
+      .isCertificateView(true)
+      .build();
+    await render(hbs`{{certificates-container}}`);
+    assert.equal(findAll('.certificates-container .actionbar-pivot-to-investigate').length, 1, 'Event analysis button rendered');
+    assert.equal(find('.certificates-container .pivot-to-investigate-button').classList.contains('is-disabled'), true, 'Event analysis button disabled');
+  });
+
+  test('event analysis button enabled', async function(assert) {
+    new ReduxDataHelper(initState)
+      .isCertificateView(true)
+      .selectedCertificatesList(new Array(1))
+      .build();
+    await render(hbs`{{certificates-container}}`);
+    assert.equal(findAll('.certificates-container .actionbar-pivot-to-investigate').length, 1, 'Event analysis button rendered');
+    assert.equal(find('.certificates-container .pivot-to-investigate-button').classList.contains('is-disabled'), false, 'Event analysis button enabled');
+  });
+
 });
