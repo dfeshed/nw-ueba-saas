@@ -409,10 +409,9 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   selectNext(e) {
-    const { classList } = e.target;
-    const dropDownInView = classList.contains('rsa-form-button') || classList.contains('ember-power-select-trigger');
+    const { nodeName, classList } = e.target;
 
-    if (!dropDownInView) {
+    if (nodeName === 'BODY' || classList.contains('rsa-data-table')) {
       const fn = this.get('onRowClick');
 
       if ($.isFunction(fn)) {
@@ -442,10 +441,9 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   selectPrevious(e) {
-    const { classList } = e.target;
-    const dropDownInView = classList.contains('rsa-form-button') || classList.contains('ember-power-select-trigger');
+    const { nodeName, classList } = e.target;
 
-    if (!dropDownInView) {
+    if (nodeName === 'BODY' || classList.contains('rsa-data-table')) {
       const fn = this.get('onRowClick');
 
       if ($.isFunction(fn)) {
