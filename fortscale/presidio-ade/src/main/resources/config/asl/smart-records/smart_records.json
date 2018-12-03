@@ -32,7 +32,7 @@
         "numberOfFailedPrintsUserIdPrintHourly",
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
-        "sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
+        "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
         "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly",
         "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly"
       ],
