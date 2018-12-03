@@ -4011,6 +4011,7 @@ export default {
       // it is used in investigate hosts to display policy stettings
       policyStatus: 'Policy Status',
       evaluatedTime: 'Evaluated Time',
+      errorDescription: 'Error Description',
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
       sourceType: 'Source Type',

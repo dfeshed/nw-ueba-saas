@@ -14,6 +14,10 @@ export default [
         field: 'evaluatedTime',
         labelKey: 'evaluatedTime',
         format: 'DATE'
+      },
+      {
+        field: 'message',
+        labelKey: 'errorDescription'
       }
     ]
   },
