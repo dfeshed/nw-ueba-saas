@@ -122,7 +122,7 @@ test('row click on libraries selected row id should set', function(assert) {
     const { endpoint: { process: { selectedDllRowIndex } } } = this.get('redux').getState();
     assert.equal(selectedDllRowIndex, 0, 'selected row index updated in the state');
 
-    assert.equal(this.$('.file-info').text().trim(), 'Showing 1 of 1 dlls', 'Shows footer message');
+    assert.equal(this.$('.file-info').text().trim(), 'Showing 1 of 1 loaded libraries', 'Shows footer message');
   });
 });
 

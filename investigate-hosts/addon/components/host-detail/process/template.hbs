@@ -40,7 +40,14 @@
     {{#layout.right as |right|}}
       {{#right.header}}
         <hbox>
-          <h2 class="header-section__title">{{t 'investigateHosts.process.properties'}}</h2>
+          <box>
+            <div class='header-section__process-name'>{{selectedProcessName}}</div>
+            <div class='rsa-nav-tab-group'>
+              {{#rsa-nav-tab align='left' isActive=true}}
+                <div class="label">{{t 'investigateHosts.process.properties'}}</div>
+              {{/rsa-nav-tab}}
+            </div>
+          </box>
           {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
             {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
           {{/rsa-form-button}}

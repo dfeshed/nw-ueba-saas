@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, findAll } from '@ember/test-helpers';
+import { render, settled, click, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
@@ -151,11 +151,11 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .isDescOrder(true)
       .build();
     await render(hbs`{{host-detail/process}}`);
-
     return settled().then(async() => {
       assert.equal(findAll('.toggle-icon').length, 1, 'toggle icon');
-      await click(findAll('.rsa-data-table-body-row')[2]);
+      await click(findAll('.rsa-data-table-body-row')[0]);
       assert.equal(document.querySelectorAll('.process-property-box:not([hidden])').length, 1);
+      assert.equal(find('.header-section__process-name').textContent.trim().includes('systemd'), true, 'Selected pocess name on property panel');
       await click('.toggle-icon .rsa-icon');
       let state = this.owner.lookup('service:redux').getState();
       const { endpoint: { visuals: { isTreeView } } } = state;
@@ -164,6 +164,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       state = this.owner.lookup('service:redux').getState();
       const { endpoint: { process: { selectedRowIndex } } } = state;
       assert.equal(selectedRowIndex, -1);
+      assert.equal(find('.file-info').textContent.trim().includes('Showing 77 of 77 processes'), true, 'Shows footer message');
     });
   });
 

@@ -14,7 +14,8 @@ const dataItems = [
       'timeStamp': 1536093136877,
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
       'features': ['signed', 'valid'],
-      'signer': 'ABC'
+      'signer': 'ABC',
+      'name': 'TEST1'
     }
   },
   {
@@ -24,7 +25,8 @@ const dataItems = [
       'timeStamp': 1536093136877,
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
       'features': ['signed', 'valid'],
-      'signer': 'XYZ'
+      'signer': 'XYZ',
+      'name': 'TEST2'
     }
   }
 ];
@@ -218,5 +220,4 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
     const dateTime = findAll('.rsa-data-table-body-cell .rsa-content-datetime');
     assert.equal(dateTime.length, 2, 'Date and Time displayed');
   });
-
 });

@@ -5,11 +5,24 @@
         width: 100%;
     }
     .rsa-header {
+      @include border-bottom(1px, solid, primary);
       margin-bottom: 0px;
       border: none;
       z-index: 302;
-      height: 45px;
+      height: 99px;
       background-color: text-color(primary, darkest);
+      border-bottom-color: text-color(primary, lightest);
+      .label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 230px;
+        display: inline-block;
+      }
+      .rsa-nav-tab {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      
     }
     .open-properties {
         text-align: right;

@@ -28,12 +28,12 @@
   .process-list-actions {
     display: inline-block;
     padding-left: rsa-whitespace();
+    margin-right: -10px;
   }
   .file-actionbar {
     display: inline-flex;
   }
 }
-
 .rsa-data-table-header {
   background-color: background-color(primary, darker);
 }
@@ -63,13 +63,16 @@
     width: 100%;
     height: 100%;
     min-height: 100%;
-    .process-name {
+    .process-name a {
       color: text-color(secondary, light);
       text-decoration: underline;
       cursor: pointer;
       label {
         cursor: inherit;
       }
+    }
+    .file-pager {
+      background-color: text-color(primary, darker);
     }
   }
 
@@ -88,17 +91,30 @@
 
   .right-zone {
     min-height: 100%;
+    .rsa-header {
+      height: 99px;
+    }
+
+    .rsa-nav-tab {
+     padding: 1rem;
+     margin-bottom: 1rem;
+    }
   }
 }
-.header-section__title {
-  margin-left: rsa-whitespace();
+.header-section {
+  &__title {
+    margin-left: rsa-whitespace();
+  }
+  &__process-name {
+    text-align: center;
+    font-size: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
 }
 
 .process-content-box {
-  @include border(1px, solid, primary, dark);
   position: relative;
-  border-top: 0;
-  border-right: 0;
   overflow-y: auto;
   .process-content-box-wrapper {
     padding: rsa-whitespace() rsa-whitespace(more);
@@ -192,6 +208,12 @@
 }
 
 .rsa-process-tree {
+  .process-tree-table-box {
+    padding-bottom: 10px;
+  }
+  .process-tree-table-footer {
+    max-height: 0;
+  }
   .tree-expand-icon {
     cursor: pointer;
     font-size: 10px;

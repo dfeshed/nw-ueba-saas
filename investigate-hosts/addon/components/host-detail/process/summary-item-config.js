@@ -7,33 +7,12 @@ const defaultSummaryConfig = [
     field: 'fileName'
   },
   {
-    label: 'investigateHosts.process.pid',
-    field: 'process.pid'
-  },
-  {
     label: 'investigateHosts.process.parentId',
     field: 'process.parentPid'
   },
   {
-    label: 'investigateHosts.process.owner',
-    field: 'process.owner'
-  },
-  {
-    label: 'investigateHosts.process.signature',
-    field: 'fileProperties.signature.features',
-    format: 'SIGNATURE'
-  },
-  {
     label: 'investigateHosts.process.path',
     field: 'path'
-  },
-  {
-    label: 'investigateHosts.process.score',
-    field: 'fileProperties.score'
-  },
-  {
-    label: 'investigateHosts.process.reputationStatus',
-    field: 'fileProperties.reputationStatus'
   },
   {
     label: 'investigateHosts.process.launchArguments',
@@ -43,16 +22,8 @@ const defaultSummaryConfig = [
 ];
 
 const machineOsBasedSummaryConfig = {
-  mac: [{
-    label: 'investigateHosts.process.creationTime',
-    field: 'process.createUtcTime',
-    format: 'DATE'
-  }],
-  windows: [{
-    label: 'investigateHosts.process.creationTime',
-    field: 'process.createUtcTime',
-    format: 'DATE'
-  }],
+  mac: [],
+  windows: [],
   linux: []
 };
 

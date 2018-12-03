@@ -20,7 +20,8 @@ import {
   imageHooksData,
   suspiciousThreadsData,
   areAllSelected,
-  selectedFileChecksums
+  selectedFileChecksums,
+  selectedProcessName
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -1075,4 +1076,17 @@ test('selectedFileChecksums returns the empty array for the empty selected list 
     }
   }));
   assert.deepEqual(result, [], 'Returns empty array, for no selected processes');
+});
+test('selectedProcessName returns the processName', function(assert) {
+
+  const result = selectedProcessName(Immutable.from({
+    endpoint: {
+      process: {
+        processDetails: {
+          fileName: 'TEST'
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, 'TEST', 'Returns selected process name');
 });

@@ -293,7 +293,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('clicking on the row calls the external function', async function(assert) {
-    assert.expect(5);
+    assert.expect(8);
     this.set('openPanel', function() {
       assert.ok(true, 'open panel is called');
     });
@@ -323,10 +323,15 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is not selected before click');
     await click(findAll('.rsa-data-table-body-row')[2]);
+    await render(hbs`{{host-detail/process/process-tree openPropertyPanel=(action openPanel) closePropertyPanel=(action closePanel)}}`);
+
+    assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), false, '2nd row is not selected before click');
+    await click(findAll('.rsa-data-table-body-row')[0]);
     return settled().then(async() => {
-      assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), true, '2nd row is selected after click');
-      await click(findAll('.rsa-data-table-body-row')[2]); // clicking on same row deselect the row
-      assert.equal(find(findAll('.rsa-data-table-body-row')[2]).classList.contains('is-selected'), false, '2nd row is selected after click');
+      assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), true, '2nd row is selected after click');
+      await click(findAll('.rsa-data-table-body-row')[0]); // clicking on same row deselect the row
+      assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), false, '2nd row is selected after click');
+      assert.equal(find('.file-info').textContent.trim().includes('Showing 77 of 77 processes'), true, 'Shows footer message');
     });
   });
   test('clicking on the process name get process-details view', async function(assert) {
@@ -348,6 +353,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     {{host-detail/process/process-tree}}
     `);
     await click(findAll('.process-name a')[1]);
+
     return settled().then(async() => {
       const redux = this.owner.lookup('service:redux');
       await waitUntil(() => {

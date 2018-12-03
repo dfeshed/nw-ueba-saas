@@ -16,15 +16,15 @@ export default [
     isDescending: false
   },
   {
-    field: 'pid',
-    width: '4vw',
-    title: 'investigateHosts.process.pid',
-    isDescending: false
-  },
-  {
     field: 'score',
     width: '6vw',
     title: 'investigateHosts.process.riskScore',
+    isDescending: false
+  },
+  {
+    field: 'pid',
+    width: '4vw',
+    title: 'investigateHosts.process.pid',
     isDescending: false
   },
   {
@@ -46,10 +46,9 @@ export default [
     isDescending: false
   },
   {
-    field: 'downloadInfo.status',
-    width: '6vw',
-    format: 'DOWNLOADSTATUS',
-    title: 'investigateHosts.process.downloaded',
+    field: 'path',
+    width: '20vw',
+    title: 'investigateHosts.process.filePath',
     isDescending: false
   },
   {
@@ -59,9 +58,10 @@ export default [
     isDescending: false
   },
   {
-    field: 'path',
-    width: '20vw',
-    title: 'investigateHosts.process.filePath',
+    field: 'downloadInfo.status',
+    width: '6vw',
+    format: 'DOWNLOADSTATUS',
+    title: 'investigateHosts.process.downloaded',
     isDescending: false
   }
 ];

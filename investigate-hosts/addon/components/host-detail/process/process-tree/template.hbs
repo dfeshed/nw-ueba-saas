@@ -1,4 +1,4 @@
-<box>
+<box class='process-tree-table-box'>
   {{#rsa-data-table
     items=visibleItems
     selectedIndex=selectedRowIndex
@@ -68,7 +68,6 @@
             {{/rsa-data-table/body-cell}}
           {{/if}}
         {{else}}
-
           {{#if (eq column.format 'DOWNLOADSTATUS')}}
             {{host-detail/utils/table-cell item=item column=column}}
           {{else if (eq column.field 'score')}}
@@ -86,6 +85,9 @@
       {{/rsa-data-table/body}}
     {{/if}}
   {{/rsa-data-table}}
+</box>
+<box class='process-tree-table-footer'>
+  {{host-table-footer total=visibleItems.length index=visibleItems.length label='processes' selectedItems=selectedProcessList.length }}
 </box>
 
 {{#if showServiceModal}}

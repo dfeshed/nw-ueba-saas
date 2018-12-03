@@ -80,6 +80,15 @@ export const getProcessData = createSelector(
   }
 );
 
+export const selectedProcessName = createSelector(
+  [ _processData ],
+  (processData) => {
+    if (processData) {
+      return processData.fileName;
+    }
+    return null;
+  });
+
 const _getProcessList = createSelector(
   [_listData, _treeData, _selectedTab],
   (listData, treeData, selectedTab) => {

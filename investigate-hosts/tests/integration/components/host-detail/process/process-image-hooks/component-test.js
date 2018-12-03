@@ -53,7 +53,7 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Hooked FileName', 'Header text in third column, Hooked FileName');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
 
-    assert.equal(this.$('.file-info').text().trim(), 'Showing 5 of 5 image-hooks', 'Shows footer message');
+    assert.equal(this.$('.file-info').text().trim(), 'Showing 5 of 5 image hooks', 'Shows footer message');
   });
   test('row click of Image hooks table', async function(assert) {
     assert.expect(3);
