@@ -15,10 +15,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "startInstant"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]

@@ -13,8 +13,8 @@ import fortscale.common.util.GenericHistogram;
         @JsonSubTypes.Type(value = ContinuousValueAvgStdN.class, name = ContinuousValueAvgStdN.FEATURE_VALUE_TYPE),
         @JsonSubTypes.Type(value = FeatureNumericValue.class, name = FeatureNumericValue.FEATURE_VALUE_TYPE),
         @JsonSubTypes.Type(value = FeatureStringValue.class, name = FeatureStringValue.FEATURE_VALUE_TYPE),
-        @JsonSubTypes.Type(value = FeatureListValue.class, name = FeatureListValue.FEATURE_VALUE_TYPE)
-
+        @JsonSubTypes.Type(value = FeatureListValue.class, name = FeatureListValue.FEATURE_VALUE_TYPE),
+        @JsonSubTypes.Type(value = MultiKeyHistogram.class, name = MultiKeyHistogram.FEATURE_VALUE_TYPE)
 })
 
 public interface FeatureValue {
