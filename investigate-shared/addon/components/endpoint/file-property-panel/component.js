@@ -1,4 +1,4 @@
-import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
+import PropertyPanel from 'investigate-shared/components/endpoint/base-property-panel/component';
 import fileFormat from './file-format-config';
 
 /**

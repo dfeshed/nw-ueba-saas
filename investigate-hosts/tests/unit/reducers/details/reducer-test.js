@@ -13,7 +13,6 @@ const initialState = {
 
   snapShots: null,
   isOverviewPanelVisible: true,
-  showNonEmptyProperty: false,
   isDetailRightPanelVisible: true
 };
 test('should return the initial state', function(assert) {
@@ -41,14 +40,6 @@ test('The INITIALIZE_DATA will set the agentId and scan time', function(assert) 
   const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId: 111 } });
 
   assert.equal(result.agentId, 111, 'Expecting agentIe equals to 111');
-});
-
-test('The TOGGLE_SHOW_PROPERTY_WITH_VALUES will toggles isPropPanelshowNonEmptyProperty', function(assert) {
-  const previous = Immutable.from({
-    howNonEmptyProperty: false
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SHOW_PROPERTY_WITH_VALUES });
-  assert.equal(result.showNonEmptyProperty, true);
 });
 
 test('The TOGGLE_OVERVIEW_PANEL will toggles isOverviewPanelVisible', function(assert) {

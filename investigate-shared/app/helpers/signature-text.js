@@ -1,0 +1,1 @@
+export { default, signatureText } from 'investigate-shared/helpers/signature-text';

@@ -268,11 +268,6 @@ export default class DataHelper {
     return this;
   }
 
-  showNonEmptyProperty(flag) {
-    _set(this.state, 'detailsInput.showNonEmptyProperty', flag);
-    return this;
-  }
-
   totalHostItems(fileCount) {
     _set(this.state, 'machines.totalItems', fileCount);
     return this;

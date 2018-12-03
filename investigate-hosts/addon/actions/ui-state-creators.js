@@ -46,7 +46,6 @@ const selectAllHosts = () => ({ type: ACTION_TYPES.SELECT_ALL_HOSTS });
 const deSelectAllHosts = () => ({ type: ACTION_TYPES.DESELECT_ALL_HOSTS });
 const toggleDeleteHostsModal = () => ({ type: ACTION_TYPES.TOGGLE_DELETE_HOSTS_MODAL });
 const _resetInputData = () => ({ type: ACTION_TYPES.RESET_INPUT_DATA });
-const toggleShowOnlyWithValues = (isShowOnlyWithValues) => ({ type: ACTION_TYPES.TOGGLE_SHOW_PROPERTY_WITH_VALUES, payload: { isShowOnlyWithValues } });
 
 const resetDetailsInputAndContent = () => {
   return (dispatch) => {
@@ -73,7 +72,6 @@ export {
   toggleExploreSearchResults,
   selectAllHosts,
   deSelectAllHosts,
-  toggleShowOnlyWithValues,
   toggleDeleteHostsModal,
   resetDetailsInputAndContent,
   resetHostDownloadLink,

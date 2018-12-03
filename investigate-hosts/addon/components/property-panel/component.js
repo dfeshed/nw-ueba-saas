@@ -1,13 +1,13 @@
 import computed from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import config from './overview-property-config';
-import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
+import PropertyPanel from 'investigate-shared/components/endpoint/base-property-panel/component';
 import { get } from '@ember/object';
 import _ from 'lodash';
 import { inject as service } from '@ember/service';
 
 /**
- * Overide the the `host-detail/base-property-panel` to accommodate different json structure
+ * Overide the the `endpoint/base-property-panel` to accommodate different json structure
  * @public
  */
 export default PropertyPanel.extend({

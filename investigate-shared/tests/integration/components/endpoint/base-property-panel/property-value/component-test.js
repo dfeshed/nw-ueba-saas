@@ -2,13 +2,10 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, findAll, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-module('Integration | Component | host-detail/base-property-panel/property-value', function(hooks) {
-  setupRenderingTest(hooks, {
-    resolver: engineResolver('investigate-hosts')
-  });
+module('Integration | Component | endpoint/base-property-panel/property-value', function(hooks) {
+  setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
@@ -16,7 +13,7 @@ module('Integration | Component | host-detail/base-property-panel/property-value
   });
 
   test('it renders the tooltip-text', async function(assert) {
-    await render(hbs`{{host-detail/base-property-panel/property-value}}`);
+    await render(hbs`{{endpoint/base-property-panel/property-value}}`);
     assert.equal(findAll('.tooltip-text').length, 1, 'Expected to render the tooltip text content');
   });
 
@@ -26,7 +23,7 @@ module('Integration | Component | host-detail/base-property-panel/property-value
       value: '1024'
     };
     this.set('field', field);
-    await render(hbs`{{host-detail/base-property-panel/property-value property=field}}`);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
     assert.equal(find('.tooltip-text .units').textContent.trim(), 'KB');
   });
 
@@ -36,7 +33,7 @@ module('Integration | Component | host-detail/base-property-panel/property-value
       value: '16'
     };
     this.set('field', field);
-    await render(hbs`{{host-detail/base-property-panel/property-value property=field}}`);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
     assert.equal(find('.tooltip-text').textContent.trim(), '0x10');
   });
 
@@ -46,7 +43,7 @@ module('Integration | Component | host-detail/base-property-panel/property-value
       value: null
     };
     this.set('field', field);
-    await render(hbs`{{host-detail/base-property-panel/property-value property=field}}`);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
     assert.equal(find('.tooltip-text').textContent.trim(), 'unsigned');
   });
 
@@ -56,7 +53,7 @@ module('Integration | Component | host-detail/base-property-panel/property-value
       value: 'test value 123123 123123 123123 123123 123123'
     };
     this.set('field', field);
-    await render(hbs`{{host-detail/base-property-panel/property-value property=field}}`);
+    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
     document.querySelector('.tooltip-text').setAttribute('style', 'width:100px');
     await triggerEvent('.tooltip-text', 'mouseover');
     assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');

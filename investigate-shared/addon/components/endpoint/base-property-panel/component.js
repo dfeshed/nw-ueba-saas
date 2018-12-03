@@ -4,21 +4,11 @@ import computed from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 import { set, get } from '@ember/object';
-import { connect } from 'ember-redux';
-import { toggleShowOnlyWithValues } from 'investigate-hosts/actions/ui-state-creators';
 /**
  * Property panel to to display the key and value within given section
  * @public
  */
-const stateToComputed = ({ endpoint: { detailsInput: { showNonEmptyProperty } } }) => ({
-  showNonEmptyProperty
-});
-
-const dispatchToActions = {
-  toggleShowOnlyWithValues
-};
-
-const HostPropertyPanel = Component.extend({
+export default Component.extend({
   layout,
 
   tagName: 'vbox',
@@ -48,6 +38,8 @@ const HostPropertyPanel = Component.extend({
    * @private
    */
   _searchText: '',
+
+  showNonEmptyProperty: false,
 
   /**
    * Data to display
@@ -148,9 +140,7 @@ const HostPropertyPanel = Component.extend({
   },
   actions: {
     toggleIsIncludeEmptyValue() {
-      this.send('toggleShowOnlyWithValues', this.get('showNonEmptyProperty'));
+      this.toggleProperty('showNonEmptyProperty');
     }
   }
 });
-
-export default connect(stateToComputed, dispatchToActions)(HostPropertyPanel);
