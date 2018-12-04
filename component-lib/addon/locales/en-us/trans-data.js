@@ -3755,7 +3755,7 @@ export default {
       appliances: 'Hosts',
       services: 'Services',
       eventSources: 'Event Sources',
-      unifiedSources: 'Unified Sources', // USM
+      unifiedSources: 'Endpoint Sources', // USM
       healthWellness: 'Health & Wellness',
       system: 'System',
       security: 'Security'
@@ -3764,7 +3764,7 @@ export default {
   // end admin
   // begin admin-source-management (a.k.a USM)
   adminUsm: {
-    title: 'Unified Sources', // USM
+    title: 'Endpoint Sources', // USM
     button: {
       addNew: 'Add New',
       createNew: 'Create New',
