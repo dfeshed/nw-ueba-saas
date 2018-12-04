@@ -15,16 +15,8 @@ const getFileAnalysisData = (data) => {
       meta: {
         onSuccess: () => {
           dispatch({
-            type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
-            promise: api.getFileAnalysisStringFormatData(data),
-            meta: {
-              onSuccess: () => {
-                dispatch({
-                  type: ACTION_TYPES.TOGGLE_FILE_ANALYZER,
-                  payload: true
-                });
-              }
-            }
+            type: ACTION_TYPES.TOGGLE_FILE_ANALYZER,
+            payload: true
           });
         }
       }

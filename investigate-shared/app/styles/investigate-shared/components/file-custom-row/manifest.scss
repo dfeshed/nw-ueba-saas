@@ -6,13 +6,12 @@
   }
 }
 .context-menu {
-  padding: rsa-whitespace(least) 0;
+   padding: 0.15rem 0 0 0;
   .context-menu__item {
     margin-right: 30px;
     padding-left: rsa-whitespace();
   }
   .show-divider {
-    margin-top: 5px;
     @include border-top(1px, solid, primary, base, opaque);
   }
 }
