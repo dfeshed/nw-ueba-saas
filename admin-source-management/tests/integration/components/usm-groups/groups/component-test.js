@@ -155,4 +155,16 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
       'published and synced count is as expected');
     assert.ok(document.querySelectorAll('.tool-tip-value').length === 4, 'No tooltip expected for normal count');
   });
+
+  test('Show group with source type and policies applied', async function(assert) {
+    assert.expect(2);
+    setState('name', true);
+    const getItems = waitForReduxStateChange(redux, 'usm.groups.items');
+    await render(hbs`{{usm-groups/groups}}`);
+    await getItems;
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
+      'N/A', 'row3 source type value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
+      'N/A', 'row3 policies applied value is as expected');
+  });
 });

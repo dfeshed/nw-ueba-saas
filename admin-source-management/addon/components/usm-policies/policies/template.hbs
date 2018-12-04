@@ -44,6 +44,8 @@
         {{else if (eq column.field "associatedGroups")}}
           {{#each item.associatedGroups as |group index|}}
             {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+          {{else}}
+            <p class="status-noassociated-groups">{{t 'adminUsm.policies.list.noAssociatedGroups'}}</p>
           {{/each}}
         {{else if (eq column.field "numSources")}}
           <span>----</span>

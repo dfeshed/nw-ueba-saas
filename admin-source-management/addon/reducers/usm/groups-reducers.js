@@ -13,6 +13,7 @@ const localStorageKey = 'rsa::nw::usm::groups';
 const initialState = load(explorerInitialState, localStorageKey);
 
 initialState.sortField = 'name';
+initialState.isSortDescending = false;
 delete initialState.defaultDateRangeTypeName;
 delete initialState.defaultDateFilterField;
 delete initialState.hasCustomDateRestriction;

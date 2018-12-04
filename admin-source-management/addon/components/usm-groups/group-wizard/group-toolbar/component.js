@@ -143,6 +143,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     },
 
     save() {
+      this.send('updateCriteriaFromCache');
       if (this.hasGroupChanged && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
@@ -160,7 +161,6 @@ const GroupWizardToolbar = Component.extend(Notifications, {
             }
           }
         };
-        this.send('updateCriteriaFromCache');
         this.send('saveGroup', this.get('group'), saveCallbacks);
       } else {
         // validation issues found
@@ -176,6 +176,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     },
 
     publish() {
+      this.send('updateCriteriaFromCache');
       if ((this.hasGroupChanged || this.group.dirty) && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
@@ -193,7 +194,6 @@ const GroupWizardToolbar = Component.extend(Notifications, {
             }
           }
         };
-        this.send('updateCriteriaFromCache');
         this.send('savePublishGroup', this.get('group'), saveCallbacks);
       } else {
         // validation issues found

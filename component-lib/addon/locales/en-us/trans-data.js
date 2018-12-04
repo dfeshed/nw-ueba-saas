@@ -3790,7 +3790,8 @@ export default {
         sourceCountUnpublishedEditedGroupTooltip: 'Count represents group as previously published.',
         sourceCountPublishedNoEndpointTooltip: 'No Endpoint server found in the environment.',
         sourceCountPublishedNewGroupTooltip: 'No count available yet.',
-        sourceCountUnpublishedNewGroupTooltip: 'No count available for unpublished groups.'
+        sourceCountUnpublishedNewGroupTooltip: 'No count available for unpublished groups.',
+        noAssignedPolicies: 'N/A'
       },
       filter: {
         sourceType: 'Source Type',
@@ -3829,7 +3830,8 @@ export default {
         sourceType: 'Source Type',
         associatedGroups: 'Applied to Group(s)',
         description: 'Policy Description',
-        noResultsMessage: 'No Policies found.'
+        noResultsMessage: 'No Policies found.',
+        noAssociatedGroups: 'None'
       },
       filter: {
         sourceType: 'Source Type',

@@ -131,4 +131,16 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(8) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
       'Windows Log Policy # WL002', 'row8 description value is as expected');
   });
+
+  test('Show applied to group with sort=name descending', async function(assert) {
+    assert.expect(2);
+    setState('name', true);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
+      'None', 'row1 applied to group value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
+      'Group 01 , Group 02', 'row2 applied to group value is as expected');
+  });
 });

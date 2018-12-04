@@ -11,13 +11,12 @@
       margin-left: 15px;
       margin-right: 0px;
     }
-    .status-unpublished-edits {
+    .status-unpublished, .status-unpublished-edits, .status-noassociated-groups {
       color: text-color(accentThree, dark);
     }
-    .status-unpublished {
-      color: text-color(accentThree, dark);
+    .status-noassigned-policies {
+      color: text-color(primary);
     }
-  
     .usm-groups-toolbar, .usm-policies-toolbar {
       .action-control {
         padding: rsa-whitespace(least);
@@ -27,7 +26,16 @@
         padding-right: rsa-whitespace(more);
       }
     }
-
+    .inline-csv-list {
+      li {
+        display: inline;
+        margin: 0;
+        padding: 0;
+      }
+      li:not(:last-child):after {
+        content: ", ";
+      }      
+    }
     .table-cell-text {
       @include rsa-font(body, small);
     }    

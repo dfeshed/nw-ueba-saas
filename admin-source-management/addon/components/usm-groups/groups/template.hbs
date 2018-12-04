@@ -38,13 +38,21 @@
             {{/if}}
           {{/if}}
         {{else if (eq column.field "assignedPolicies")}}
-          {{#each-in item.assignedPolicies as |policy details|}}
-            {{ details.name }}
-          {{/each-in}}
+          <ul class='inline-csv-list'>
+            {{#each-in item.assignedPolicies as |policytype policy|}}
+              <li>{{policy.name}}</li>
+            {{else}}
+              <p class="status-noassigned-policies">{{t 'adminUsm.groups.list.noAssignedPolicies'}}</p>
+            {{/each-in}}
+          </ul>          
         {{else if (eq column.field "sourceType")}}
-          {{#each-in item.assignedPolicies as |policy|}}
-            {{t (concat 'adminUsm.policyTypes.' policy)}}
-          {{/each-in}}
+          <ul class='inline-csv-list'>
+            {{#each-in item.assignedPolicies as |policy|}}
+              <li>{{t (concat 'adminUsm.policyTypes.' policy)}}</li>
+            {{else}}
+              <p class="status-noassigned-policies">{{t 'adminUsm.groups.list.noAssignedPolicies'}}</p>
+            {{/each-in}}
+          </ul>          
         {{else if (eq column.field "sourceCount")}}
           {{#usm-groups/groups/source-count
             item=item}}            
