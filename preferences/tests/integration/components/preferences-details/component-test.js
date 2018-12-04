@@ -160,13 +160,13 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(findAll('.x-toggle-container-checked').length, 0, 'Found the Relative Time Window toggle disabled by default');
   });
 
-  test('checkbox to update relative time window should repond on click', async function(assert) {
+  test('checkbox to update time window should repond on click', async function(assert) {
     await renderApplicationContent(this, assert);
-    const [, checkboxForRelativeTimeWindow] = findAll('.rsa-form-checkbox-label');
-    assert.equal(checkboxForRelativeTimeWindow.textContent.trim(), 'Update relative time window automatically', 'Found the correct checkbox');
-    assert.equal(checkboxForRelativeTimeWindow.className.trim(), 'rsa-form-checkbox-label', 'The checkbox by default is unchecked');
-    await checkboxForRelativeTimeWindow.click();
-    // clicking on the Relative Time Window checkbox should mark it checked.
-    await waitUntil(() => checkboxForRelativeTimeWindow.className.trim() === 'rsa-form-checkbox-label checked', { timeout: 3000 });
+    const [, checkboxForTimeWindow] = findAll('.rsa-form-checkbox-label');
+    assert.equal(checkboxForTimeWindow.textContent.trim(), 'Update time window automatically', 'Found the correct checkbox');
+    assert.equal(checkboxForTimeWindow.className.trim(), 'rsa-form-checkbox-label', 'The checkbox by default is unchecked');
+    await checkboxForTimeWindow.click();
+    // clicking on the Time Window checkbox should mark it checked.
+    await waitUntil(() => checkboxForTimeWindow.className.trim() === 'rsa-form-checkbox-label checked', { timeout: 3000 });
   });
 });
