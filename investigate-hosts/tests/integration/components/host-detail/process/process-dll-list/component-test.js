@@ -94,7 +94,7 @@ test('row click on libraries not signed by microsoft', function(assert) {
   });
 });
 test('row click on libraries selected row id should set', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
   const dllData = [{
     fileName: 'ld-2.17.so',
     path: '/usr/lib64',
@@ -121,7 +121,7 @@ test('row click on libraries selected row id should set', function(assert) {
     this.$('.process-dll-list .rsa-data-table-body-row').trigger('click');
     const { endpoint: { process: { selectedDllRowIndex } } } = this.get('redux').getState();
     assert.equal(selectedDllRowIndex, 0, 'selected row index updated in the state');
-
+    assert.equal(this.$('.file-name-link').length, 1, 'link added to dll name');
     assert.equal(this.$('.file-info').text().trim(), 'Showing 1 of 1 loaded libraries', 'Shows footer message');
   });
 });

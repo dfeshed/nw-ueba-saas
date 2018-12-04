@@ -12,7 +12,8 @@ const dispatchToActions = {
 const stateToComputed = (state) => ({
   threadList: suspiciousThreadsData(state),
   columnsConfig: getColumnsConfig(state, columnsConfig),
-  selectedIndex: state.endpoint.process.selectedDllRowIndex
+  selectedIndex: state.endpoint.process.selectedDllRowIndex,
+  sid: state.endpointQuery.serverId
 });
 
 const suspiciousThreads = Component.extend({

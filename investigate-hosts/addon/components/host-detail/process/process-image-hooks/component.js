@@ -12,7 +12,8 @@ const dispatchToActions = {
 const stateToComputed = (state) => ({
   hookList: imageHooksData(state),
   columnsConfig: getColumnsConfig(state, columnsConfig),
-  selectedIndex: state.endpoint.process.selectedDllRowIndex
+  selectedIndex: state.endpoint.process.selectedDllRowIndex,
+  sid: state.endpointQuery.serverId
 });
 
 const imageHooksList = Component.extend({

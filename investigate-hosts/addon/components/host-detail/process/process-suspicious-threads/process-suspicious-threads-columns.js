@@ -5,7 +5,8 @@ export default {
     {
       field: 'dllFileName',
       title: 'investigateHosts.process.suspiciousThreads.dllFileName',
-      width: '20vw'
+      width: '20vw',
+      format: 'FILENAME'
     },
     {
       field: 'signature',

@@ -5,7 +5,8 @@ const defaultColumnsConfig = [
   {
     field: 'fileName',
     title: 'investigateHosts.process.dll.dllName',
-    width: '20vw'
+    width: '20vw',
+    format: 'FILENAME'
   },
   {
     field: 'signature',

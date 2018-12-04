@@ -13,7 +13,8 @@ const dispatchToActions = {
 const stateToComputed = (state) => ({
   dllList: enrichedDllData(state),
   columnsConfig: getColumnsConfig(state, columnsConfig),
-  selectedIndex: state.endpoint.process.selectedDllRowIndex
+  selectedIndex: state.endpoint.process.selectedDllRowIndex,
+  sid: state.endpointQuery.serverId
 });
 
 const dllList = Component.extend({

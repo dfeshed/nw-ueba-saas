@@ -1,4 +1,3 @@
-
 {{#rsa-data-table
   items=dllList
   selectedIndex=selectedIndex
@@ -9,7 +8,7 @@
     {{t column.title}}
   {{/rsa-data-table/header}}
   {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.process.dll.message.noResultsMessage') as |item index column|}}
-    {{host-detail/utils/table-cell item=item column=column}}
+    {{host-detail/utils/table-cell item=item column=column sid=sid}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
 <box>

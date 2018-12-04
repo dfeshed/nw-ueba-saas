@@ -2521,6 +2521,8 @@ export default {
       processDetails: 'Process Details',
       analyzeProcess: 'Analyze Process',
       toolTip: {
+        openProcessDetails: 'Open Process details',
+        openFileDetails: 'Open File details',
         treeView: 'Switch to Tree view',
         listView: 'Switch to Process view'
       },

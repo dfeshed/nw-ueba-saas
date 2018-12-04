@@ -52,8 +52,8 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Symbol', 'Header text in third column, Symbol');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Type', 'Header text in fourth column, Type');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Signature', 'Header text in fifth column, Signature');
-
-    assert.equal(this.$('.file-info').text().trim(), 'Showing 5 of 5 image hooks', 'Shows footer message');
+    assert.equal(findAll('.file-name-link').length, 5, 'link added to dll name');
+    assert.equal(find('.file-info').textContent.trim(), 'Showing 5 of 5 image hooks', 'Shows footer message');
   });
   test('row click of Image hooks table', async function(assert) {
     assert.expect(3);
