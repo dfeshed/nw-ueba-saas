@@ -84,7 +84,13 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     await render(hbs`{{host-detail/process/process-details}}`);
     assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 3, 'On render all accordions should collapsed');
     await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
+    assert.equal(findAll('.process-dll-list').length, 1, 'On click only one process-dll-list table should show');
+    await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
+    assert.equal(findAll('.process-image-hooks-list').length, 1, 'On click only one process-image-hooks-list table should show');
+    await click(findAll('.process-content-box__accordion-content .is-collapsed')[1]);
+    assert.equal(findAll('.process-suspicious-threads-list').length, 1, 'On click only one process-suspicious-threads-listtable should show');
     assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 2, 'On click only one accordion should expand');
+
   });
   test('Property panel on process-details', async function(assert) {
     new ReduxDataHelper(initState)
@@ -99,7 +105,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
-
+    await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
     await click(findAll('.rsa-data-table-body-row')[0]);
     assert.equal(findAll('.host-property-panel').length, 1, 'process property panel rendered');
     await click(findAll('.close-zone')[1]);

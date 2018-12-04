@@ -86,7 +86,7 @@ test('row click on libraries not signed by microsoft', function(assert) {
   this.set('openProperties', function() {
     assert.ok(true);
   });
-  this.render(hbs`{{host-detail/process/process-dll-list openProperties=openProperties}}`);
+  this.render(hbs`{{host-detail/process/process-dll-list openPropertyPanel=openProperties}}`);
   return wait().then(() => {
     this.$('.process-dll-list .rsa-data-table-body-row').trigger('click');
     const selectedDll = this.get('redux').getState().endpoint.process.selectedDllItem;
@@ -116,7 +116,7 @@ test('row click on libraries selected row id should set', function(assert) {
   this.set('openProperties', function() {
     assert.ok(true);
   });
-  this.render(hbs`{{host-detail/process/process-dll-list openProperties=openProperties}}`);
+  this.render(hbs`{{host-detail/process/process-dll-list openPropertyPanel=openProperties}}`);
   return wait().then(() => {
     this.$('.process-dll-list .rsa-data-table-body-row').trigger('click');
     const { endpoint: { process: { selectedDllRowIndex } } } = this.get('redux').getState();

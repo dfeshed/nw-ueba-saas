@@ -23,10 +23,17 @@ const dllList = Component.extend({
   classNames: ['process-dll-list'],
 
   actions: {
+    /**
+     * Handle for the row click action
+     * @param item
+     * @param index
+     * @param e
+     * @public
+     */
     toggleSelectedRow(item, index, e) {
       this.send('toggleSelectedProcessDllRow', item);
       this.send('setDllRowSelectedId', index);
-      this.openProperties();
+      this.openPropertyPanel();
       e.stopPropagation();
     }
   }

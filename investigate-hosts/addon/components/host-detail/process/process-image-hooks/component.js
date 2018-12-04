@@ -25,7 +25,7 @@ const imageHooksList = Component.extend({
     toggleSelectedRow(item, index, e) {
       this.send('toggleSelectedProcessDllRow', item);
       this.send('setDllRowSelectedId', index);
-      this.openProperties();
+      this.openPropertyPanel();
       e.stopPropagation();
     }
   }

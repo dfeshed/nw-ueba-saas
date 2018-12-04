@@ -4,20 +4,23 @@ import { generateColumns } from 'investigate-hosts/util/util';
 const defaultSummaryConfig = [
   {
     label: 'investigateHosts.process.processName',
-    field: 'fileName'
+    field: 'fileName',
+    cssClass: 'col-xs-2 col-md-2'
   },
   {
     label: 'investigateHosts.process.parentId',
-    field: 'process.parentPid'
+    field: 'process.parentPid',
+    cssClass: 'col-xs-1 col-md-1'
   },
   {
     label: 'investigateHosts.process.path',
-    field: 'path'
+    field: 'path',
+    cssClass: 'col-xs-4 col-md-4'
   },
   {
     label: 'investigateHosts.process.launchArguments',
     field: 'process.launchArguments',
-    cssClass: 'col-xs-6 col-md-6'
+    cssClass: 'col-xs-5 col-md-5'
   }
 ];
 

@@ -1,13 +1,18 @@
 import Component from '@ember/component';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { assert } from '@ember/debug';
 import _ from 'lodash';
 
+
+const stateToComputed = (state) => ({
+  sid: state.endpointQuery.serverId
+});
 /**
- * Component for displaying the overview items
+ * Component for displaying the Process Summary items
  * @public
  */
-export default Component.extend({
+const SummaryItemsComponent = Component.extend({
 
   classNames: ['header-data'],
 
@@ -29,10 +34,12 @@ export default Component.extend({
     if (data) {
       const items = config.map((item) => {
         const value = _.get(data, item.field) || '--';
-        return { ...item, value };
+        const checksum = _.get(data, 'fileProperties.checksumSha256') || null;
+        return { ...item, value, checksum };
       });
       return items;
     }
     return [];
   }
 });
+export default connect(stateToComputed)(SummaryItemsComponent);

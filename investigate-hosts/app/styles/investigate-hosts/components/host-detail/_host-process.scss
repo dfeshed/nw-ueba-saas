@@ -122,8 +122,13 @@
     padding-left: 1.5rem;
     position: absolute;
     max-width: 100%;
-    .value hbox{
+    .value hbox {
       max-width: 80%
+    }
+    .value a hbox {
+      .tooltip-text {
+        color: text-color(secondary, light);
+      }
     }
   }
 
@@ -142,6 +147,12 @@
   }
   .process-dll-note {
     padding: 0 0 rsa-whitespace() 0;
+    line-height: 1.2rem;
+    padding: 0.25rem 0 0.5rem 0.6rem;
+    color: text-color(primary, light);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    margin-top: -0.5rem;
   }
   .rsa-content-definition {
     span {
@@ -185,13 +196,19 @@
       background-color: text-color(primary, darker);
       margin-bottom: -32px;
     }
+    .content {
+      margin-bottom: 1rem;
+      .process-dll-list,.process-image-hooks-list,.process-suspicious-threads-list {
+        padding-left: 0.6rem;
+      }
+    }
   }
 }
 
 .header-data {
   background-color: background-color(primary, darkest, transparent);
   padding: 0 0;
-  margin-bottom: rsa-whitespace();
+  margin-bottom: 3rem;
   .tool-tip-value {
     padding: rsa-whitespace();
     width: 200px;

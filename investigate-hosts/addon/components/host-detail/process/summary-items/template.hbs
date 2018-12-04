@@ -7,7 +7,7 @@
 {{else}}
   <grid responsive>
     {{#each summaryData as |item|}}
-      {{component propertyComponent item=item}}
+      {{component propertyComponent item=item sid=sid}}
     {{/each}}
   </grid>
 {{/if}}

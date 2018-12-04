@@ -47,11 +47,11 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     await render(hbs`{{host-detail/process/process-image-hooks}}`);
 
     assert.equal(findAll('.process-image-hooks-list .rsa-data-table-header-row > div').length, 5, '5 column rendered');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'Type', 'Header text in first column, Type');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'Signature', 'Header text in second column, Signature');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'DLL Name', 'Header text in second column, DLL Name');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Hooked FileName', 'Header text in third column, Hooked FileName');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'DLL Name', 'Header text in first column, DLL Name');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'Hooked FileName', 'Header text in second column, Hooked FileName');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Symbol', 'Header text in third column, Symbol');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Type', 'Header text in fourth column, Type');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Signature', 'Header text in fifth column, Signature');
 
     assert.equal(this.$('.file-info').text().trim(), 'Showing 5 of 5 image hooks', 'Shows footer message');
   });
@@ -61,7 +61,7 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     this.set('openProperties', function() {
       assert.ok(true);
     });
-    await render(hbs`{{host-detail/process/process-image-hooks openProperties=openProperties}}`);
+    await render(hbs`{{host-detail/process/process-image-hooks openPropertyPanel=openProperties}}`);
     await click(findAll('.process-image-hooks-list .rsa-data-table-body-row')[0]);
     const state = this.owner.lookup('service:redux').getState();
     const { endpoint: { process: { selectedDllItem } } } = state;

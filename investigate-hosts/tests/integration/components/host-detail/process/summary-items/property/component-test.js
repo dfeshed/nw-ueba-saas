@@ -54,3 +54,17 @@ test('this is to test the custom class passed with item', function(assert) {
     assert.equal(this.$('.header-item').hasClass('custom-class'), true, 'has custom class passed with item');
   });
 });
+test('external link should add to the file name', function(assert) {
+  const newItem = {
+    field: 'fileName',
+    label: 'investigateHosts.process.fileName',
+    value: 'ntoskrnl.exe',
+    format: 'format1',
+    cssClass: 'custom-class'
+  };
+  this.set('item', newItem);
+  this.render(hbs`{{host-detail/process/summary-items/property item=item}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.value a').length, 1, 'link added to file name');
+  });
+});

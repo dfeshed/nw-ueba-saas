@@ -47,8 +47,8 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
 
     assert.equal(findAll('.process-suspicious-threads-list .rsa-data-table-header-row > div').length, 5, '5 column rendered');
 
-    assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'Signature', 'Header text in first column, Signature');
-    assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'DLL Name', 'Header text in second column, DLL Name');
+    assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'DLL Name', 'Header text in first column, DLL Name');
+    assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'Signature', 'Header text in second column, Signature');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Start Address', 'Header text in third column, Start Address');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Thread ID', 'Header text in forth column, Thread ID');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Thread Environment Block', 'Header text in fifth column, Thread Environment Block');
@@ -60,7 +60,7 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
     this.set('openProperties', function() {
       assert.ok(true);
     });
-    await render(hbs`{{host-detail/process/process-suspicious-threads openProperties=openProperties}}`);
+    await render(hbs`{{host-detail/process/process-suspicious-threads openPropertyPanel=openProperties}}`);
     await click(findAll('.process-suspicious-threads-list .rsa-data-table-body-row')[0]);
     const state = this.owner.lookup('service:redux').getState();
     const { endpoint: { process: { selectedDllItem } } } = state;

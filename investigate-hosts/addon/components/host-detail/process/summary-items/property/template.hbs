@@ -2,6 +2,12 @@
   {{yield item.label item.value}}
 {{else}}
   {{#rsa-content-definition label=(t item.label) value=item.value}}
-    {{endpoint/base-property-panel/property-value property=item }}
+    {{#if (eq item.field 'fileName')}}
+      <a class='file-name-link' href='/investigate/files/file?checksum={{item.checksum}}&sid={{sid}}' target='_blank' rel='noopener noreferrer'>
+        {{endpoint/base-property-panel/property-value property=item}}
+      </a>
+    {{else}}
+      {{endpoint/base-property-panel/property-value property=item }}
+    {{/if}}
   {{/rsa-content-definition}}
 {{/if}}

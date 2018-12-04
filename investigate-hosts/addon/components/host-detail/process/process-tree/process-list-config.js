@@ -22,12 +22,6 @@ export default [
     isDescending: false
   },
   {
-    field: 'pid',
-    width: '4vw',
-    title: 'investigateHosts.process.pid',
-    isDescending: false
-  },
-  {
     field: 'fileStatus',
     width: '5vw',
     title: 'investigateHosts.process.fileStatus',
@@ -37,18 +31,6 @@ export default [
     field: 'reputationStatus',
     width: '8vw',
     title: 'investigateHosts.process.reputationStatus',
-    isDescending: false
-  },
-  {
-    field: 'launchArguments',
-    width: '10vw',
-    title: 'investigateHosts.process.launchArguments',
-    isDescending: false
-  },
-  {
-    field: 'path',
-    width: '20vw',
-    title: 'investigateHosts.process.filePath',
     isDescending: false
   },
   {
@@ -62,6 +44,24 @@ export default [
     width: '6vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',
+    isDescending: false
+  },
+  {
+    field: 'path',
+    width: '20vw',
+    title: 'investigateHosts.process.filePath',
+    isDescending: false
+  },
+  {
+    field: 'launchArguments',
+    width: '10vw',
+    title: 'investigateHosts.process.launchArguments',
+    isDescending: false
+  },
+  {
+    field: 'pid',
+    width: '4vw',
+    title: 'investigateHosts.process.pid',
     isDescending: false
   }
 ];

@@ -2535,7 +2535,7 @@ export default {
           noResultsMessage: 'No loaded library information was found'
         },
         note: {
-          windows: ' Displays libraries that are not signed by Microsoft',
+          windows: ' Displays libraries that are not signed by Microsoft.',
           mac: ' Displays libraries that are not signed by Apple.'
         }
       },

@@ -39,6 +39,13 @@ test('this is to test the summary items present in the process tab', function(as
     assert.equal(this.$('.header-item').length, 8, 'Eight summary items loaded');
   });
 });
+test('this is to test fileName should have link', function(assert) {
+  this.setProperties({ config, data });
+  this.render(hbs`{{host-detail/process/summary-items data=data config=config}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.value a').length, 1, 'Link added to file name');
+  });
+});
 
 test('this is to test the hasBlock', function(assert) {
   this.setProperties({ config, data });
