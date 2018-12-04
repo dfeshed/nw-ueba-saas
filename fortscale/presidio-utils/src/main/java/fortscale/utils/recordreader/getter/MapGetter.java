@@ -7,13 +7,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class MapGetter extends Getter {
+    private static final Class<?> clazz = Map.class;
+
     private final Map map;
-    private final Class<?> clazz;
 
     public MapGetter(Map<String, Transformation<?>> transformations, Map map) {
         super(transformations);
         this.map = Objects.requireNonNull(map);
-        this.clazz = Map.class;
     }
 
     @Override
