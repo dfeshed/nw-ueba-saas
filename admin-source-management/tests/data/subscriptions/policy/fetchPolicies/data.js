@@ -385,7 +385,7 @@ export default [
     protocol: 'TCP',
     sendTestLog: false,
     primaryDestination: '10.10.10.10',
-    secondaryDestination: 'LD_02',
+    secondaryDestination: '10.10.10.12',
     channelFilters: [
       {
         eventId: '1234',
@@ -430,7 +430,7 @@ export default [
     protocol: 'UDP',
     sendTestLog: false,
     primaryDestination: '10.10.10.12',
-    secondaryDestination: 'LD_02',
+    secondaryDestination: '120.12.12.12',
     lastPublishedCopy: null,
     associatedGroups: []
   }

@@ -11,6 +11,8 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 const initializePolicies = () => {
   return (dispatch) => {
     dispatch(fetchPolicies());
+    dispatch(fetchEndpointServers());
+    dispatch(fetchLogServers());
   };
 };
 
@@ -133,6 +135,27 @@ const sortBy = (sortField, isSortDescending) => {
   };
 };
 
+// ===================================================
+// edrPolicy specific action creators
+// ===================================================
+const fetchEndpointServers = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS,
+    promise: policyAPI.fetchEndpointServers()
+  };
+};
+
+// ===================================================
+// windowsLogPolicy specific action creators
+// ===================================================
+const fetchLogServers = () => {
+  return {
+    type: ACTION_TYPES.FETCH_LOG_SERVERS,
+    promise: policyAPI.fetchLogServers()
+  };
+};
+
+
 const toggleFilterPanel = () => ({ type: ACTION_TYPES.POLICIES_TOGGLE_FILTER_PANEL });
 const toggleItemSelected = (item) => ({ type: ACTION_TYPES.POLICIES_TOGGLE_SELECTED, payload: item });
 const toggleFocusItem = (item) => ({ type: ACTION_TYPES.POLICIES_TOGGLE_FOCUS, payload: item });
@@ -151,5 +174,9 @@ export {
   toggleItemSelected,
   toggleFocusItem,
   clearFocusItem,
-  toggleSelectAll
+  toggleSelectAll,
+  // edrPolicy specific action creators
+  fetchEndpointServers,
+  // windowsLogPolicy specific action creators
+  fetchLogServers
 };

@@ -5,6 +5,7 @@ import { lookup } from 'ember-dependency-lookup';
 const { createSelector } = reselect;
 
 export const focusedPolicy = (state) => state.usm.policies.focusedItem;
+const _listOfLogServers = (state) => state.usm.policyWizard.listOfLogServers || [];
 
 /**
  * formats the policy in focus to return an array of sections
@@ -17,8 +18,8 @@ export const focusedPolicy = (state) => state.usm.policies.focusedItem;
  * @public
 */
 export const selectedWindowsLogPolicy = createSelector(
-  focusedPolicy,
-  (focusedPolicy) => {
+  focusedPolicy, _listOfLogServers,
+  (focusedPolicy, _listOfLogServers) => {
     const policyDetails = [];
     const channelFilters = [];
     const basicSettings = [];
@@ -30,7 +31,7 @@ export const selectedWindowsLogPolicy = createSelector(
         }
       } else {
         if (!isBlank(focusedPolicy[prop])) {
-          const basicSetting = _getBasicSetting(prop, focusedPolicy);
+          const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers);
           if (basicSetting) {
             basicSettings.push(basicSetting);
           }
@@ -53,7 +54,7 @@ export const selectedWindowsLogPolicy = createSelector(
   }
 );
 
-const _getBasicSetting = (prop, focusedPolicy) => {
+const _getBasicSetting = (prop, focusedPolicy, _listOfLogServers) => {
   const _i18n = lookup('service:i18n');
   let settingValue = _i18n.t('adminUsm.policies.detail.disabled');
   if (focusedPolicy[prop]) {
@@ -67,11 +68,11 @@ const _getBasicSetting = (prop, focusedPolicy) => {
     },
     primaryDestination: {
       name: 'adminUsm.policies.detail.primaryDestination',
-      value: focusedPolicy[prop]
+      value: _getDisplayName(prop, focusedPolicy[prop], _listOfLogServers)
     },
     secondaryDestination: {
       name: 'adminUsm.policies.detail.secondaryDestination',
-      value: focusedPolicy[prop]
+      value: _getDisplayName(prop, focusedPolicy[prop], _listOfLogServers)
     },
     protocol: {
       name: 'adminUsm.policies.detail.protocol',
@@ -90,4 +91,17 @@ const _getChannelFilterSetting = (chFilter) => {
     name: `${chFilter.channel} ${chFilter.filterType}`,
     value: chFilter.eventId
   };
+};
+
+const _getDisplayName = (prop, destAddress, listOfLogServers) => {
+  if (prop !== 'primaryDestination' && prop !== 'secondaryDestination') {
+    return null;
+  }
+  let focusedPolicyDestinationName = destAddress;
+
+  const logServer = listOfLogServers.filter((obj) => obj.host === destAddress);
+  if (logServer != null && logServer.length === 1) {
+    focusedPolicyDestinationName = logServer[0].displayName;
+  }
+  return focusedPolicyDestinationName;
 };

@@ -5,6 +5,7 @@ import { lookup } from 'ember-dependency-lookup';
 const { createSelector } = reselect;
 
 export const focusedPolicy = (state) => state.usm.policies.focusedItem;
+const _listOfEndpoints = (state) => state.usm.policyWizard.listOfEndpointServers || [];
 
 /**
  * formats the policy in focus to return an array of sections
@@ -17,8 +18,8 @@ export const focusedPolicy = (state) => state.usm.policies.focusedItem;
  * @public
 */
 export const selectedEdrPolicy = createSelector(
-  focusedPolicy,
-  (focusedPolicy) => {
+  focusedPolicy, _listOfEndpoints,
+  (focusedPolicy, _listOfEndpoints) => {
     const policyDetails = [];
     const scanScheduleSettings = [];
     const advancedScanSettings = [];
@@ -32,7 +33,7 @@ export const selectedEdrPolicy = createSelector(
         const scanSetting = _getScanSetting(prop, focusedPolicy);
         const advScanSetting = _getAdvancedScanSetting(prop, focusedPolicy);
         const invActionSetting = _getInvasiveActionsSetting(prop, focusedPolicy);
-        const endpointSetting = _getEndpointServerSetting(prop, focusedPolicy);
+        const endpointSetting = _getEndpointServerSetting(prop, focusedPolicy, _listOfEndpoints);
         const agentSetting = _getAgentSetting(prop, focusedPolicy);
         const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy);
 
@@ -187,17 +188,21 @@ const _getInvasiveActionsSetting = (prop, focusedPolicy) => {
   return invasiveActionSettings[prop];
 };
 
-const _getEndpointServerSetting = (prop, focusedPolicy) => {
+const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints) => {
   const _i18n = lookup('service:i18n');
-  let beaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_HOURS');
+  let htppsBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_HOURS');
+  let udpBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval_SECONDS');
   if (focusedPolicy.primaryHttpsBeaconIntervalUnit == 'MINUTES') {
-    beaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_MINUTES');
+    htppsBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_MINUTES');
+  }
+  if (focusedPolicy.primaryUdpBeaconIntervalUnit == 'MINUTES') {
+    udpBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval_MINUTES');
   }
 
   const endpointSettings = {
     primaryAddress: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryAddress',
-      value: focusedPolicy[prop]
+      value: _getDisplayName(prop, focusedPolicy[prop], listOfEndpoints)
     },
     primaryHttpsPort: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort',
@@ -205,7 +210,7 @@ const _getEndpointServerSetting = (prop, focusedPolicy) => {
     },
     primaryHttpsBeaconInterval: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval',
-      value: `${focusedPolicy[prop]} ${beaconIntervalUnitValue}`
+      value: `${focusedPolicy[prop]} ${htppsBeaconIntervalUnitValue}`
     },
     primaryUdpPort: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort',
@@ -213,7 +218,7 @@ const _getEndpointServerSetting = (prop, focusedPolicy) => {
     },
     primaryUdpBeaconInterval: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval',
-      value: `${focusedPolicy[prop]} ${beaconIntervalUnitValue}`
+      value: `${focusedPolicy[prop]} ${udpBeaconIntervalUnitValue}`
     }
   };
   return endpointSettings[prop];
@@ -243,4 +248,17 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy) => {
     }
   };
   return advancedConfigSettings[prop];
+};
+
+const _getDisplayName = (prop, primaryAddress, listOfEndpoints) => {
+  if (prop !== 'primaryAddress') {
+    return null;
+  }
+  let focusedPolicyPrimaryName = primaryAddress;
+
+  const endpointServer = listOfEndpoints.filter((obj) => obj.host === primaryAddress);
+  if (endpointServer != null && endpointServer.length === 1) {
+    focusedPolicyPrimaryName = endpointServer[0].displayName;
+  }
+  return focusedPolicyPrimaryName;
 };

@@ -8,6 +8,9 @@ export const policies = (state) => state.usm.policies.items;
 export const selectedPolicies = (state) => state.usm.policies.itemsSelected;
 export const focusedPolicy = (state) => state.usm.policies.focusedItem;
 
+export const listOfEndpoints = (state) => state.usm.policyWizard.listOfEndpointServers || [];
+export const listOfLogServers = (state) => state.usm.policyWizard.listOfLogServers || [];
+
 export const isPoliciesLoading = createSelector(
   _policiesState,
   (_policiesState) => _policiesState.itemsStatus === 'wait'
