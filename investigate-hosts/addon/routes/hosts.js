@@ -5,6 +5,7 @@ import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/dat
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
+import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import {
   getEndpointServers,
   isEndpointServerOffline,
@@ -71,6 +72,7 @@ export default Route.extend({
     const redux = this.get('redux');
     // get host list
     redux.dispatch(getEndpointServers(getAllSchemas));
+    redux.dispatch(getRestrictedFileList('MACHINE'));
   },
 
   model(params) {

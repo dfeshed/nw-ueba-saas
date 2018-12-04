@@ -9,7 +9,6 @@ import { fetchHostContext, getAllServices } from './host';
 import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
-import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import { setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { toggleFileAnalysisView } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
@@ -234,7 +233,6 @@ const initializeAgentDetails = (input, loadSnapshot) => {
     // If selected host/agentId is same as previously loaded then don't load the data as it already in the state
     if (dataState.agentId !== agentId || (scanTime && scanTime !== dataState.scanTime)) {
       dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: input });
-      dispatch(getRestrictedFileList('MACHINE'));
       if (loadSnapshot) {
         dispatch(_getAllSnapShots(agentId));
       } else {
