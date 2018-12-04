@@ -3,7 +3,7 @@ import contextMenuMixin from 'ember-context-menu';
 import { inject as service } from '@ember/service';
 
 export default Component.extend(contextMenuMixin, {
-  tagName: 'span',
+  tagName: 'div',
   classNames: ['content-context-menu'],
   contextualActions: service(),
   eventBus: service(),

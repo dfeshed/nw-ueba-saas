@@ -42,13 +42,13 @@
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}
       {{#if column.componentClass}}
-        {{#file-list/body-cell item=item column=column}}
+        {{#rsa-data-table/body-cell item=item column=column}}
           <label class="rsa-form-checkbox-label {{if (is-selected selections item) 'checked'}}">
             {{rsa-form-checkbox checked=(is-selected selections item) change=(action 'toggleItemSelection' item)}}
           </label>
-        {{/file-list/body-cell}}
+        {{/rsa-data-table/body-cell}}
       {{else}}
-        {{#file-list/body-cell column=column}}
+        {{#rsa-data-table/body-cell column=column}}
           {{#if (eq column.field 'firstFileName')}}
             <div class="file-name">
               {{#link-to 'file' (query-params sid=serverId checksum=(get item 'checksumSha256'))}}{{get item column.field}}{{/link-to}}
@@ -86,7 +86,7 @@
           {{else}}
             {{get item column.field}}
           {{/if}}
-        {{/file-list/body-cell}}
+        {{/rsa-data-table/body-cell}}
       {{/if}}
     {{/file-list/body}}
     {{endpoint/load-more

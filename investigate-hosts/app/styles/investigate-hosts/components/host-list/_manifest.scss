@@ -4,6 +4,12 @@
 $filter-panel-width: 250px;
 
 .host-container {
+  .content-context-menu {
+    display: inherit;
+  }
+  .rsa-data-table-body-cell.score {
+    padding: 3px 7px 0 7px;
+  }
    max-height: calc(100vw - 50px);
   .host-container-list {
     width: 100%;

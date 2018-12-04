@@ -22,7 +22,7 @@ module('Integration | Component | recon-event-header-item', function(hooks) {
     this.set('metaFormatMap', { sessionid: 'Text' });
 
     await this.render(hbs `{{recon-event-header-item name=name value=value key=key metaFormatMap=metaFormatMap}}`);
-    assert.equal(findAll('span.content-context-menu').length, 1, 'Context menu trigger should be rendered');
+    assert.equal(findAll('.content-context-menu').length, 1, 'Context menu trigger should be rendered');
   });
 
   test('Two separate context menu triggers render for IP and port', async function(assert) {
@@ -31,7 +31,7 @@ module('Integration | Component | recon-event-header-item', function(hooks) {
     this.set('key', 'ip.src : port.src');
 
     await this.render(hbs `{{recon-event-header-item name=name value=value key=key}}`);
-    assert.equal(findAll('span.content-context-menu').length, 2, 'Separate context menu triggers should be rendered for ip and port');
+    assert.equal(findAll('.content-context-menu').length, 2, 'Separate context menu triggers should be rendered for ip and port');
   });
 
   test('Context menu trigger does not render when key is null', async function(assert) {
@@ -39,7 +39,7 @@ module('Integration | Component | recon-event-header-item', function(hooks) {
     this.set('value', '123');
 
     await this.render(hbs `{{recon-event-header-item name=name value=value}}`);
-    assert.equal(findAll('span.content-context-menu').length, 0, 'Context menu trigger should not be rendered');
+    assert.equal(findAll('.content-context-menu').length, 0, 'Context menu trigger should not be rendered');
   });
 
   test('test entity attributes added for context integration', async function(assert) {

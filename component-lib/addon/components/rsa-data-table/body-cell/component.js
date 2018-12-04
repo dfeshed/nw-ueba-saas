@@ -4,5 +4,6 @@ import layout from './template';
 
 export default Component.extend(CellMixin, {
   layout,
-  classNames: 'rsa-data-table-body-cell'
+  classNames: 'rsa-data-table-body-cell',
+  classNameBindings: ['column.field']
 });
