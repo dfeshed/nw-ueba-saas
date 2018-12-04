@@ -41,8 +41,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.registryKey",
-              "context.processDirectory",
-              "context.processFileName",
+              "context.processFilePath",
               "context.machineId"
             ],
             "maximize": [
