@@ -14,6 +14,7 @@ module Fortscale.shared.interfaces {
         name:string;
         numOfEvents:number;
         retentionDate:number;
+        contexts: object;
         score:number;
         severity:string;
         startDate:number;

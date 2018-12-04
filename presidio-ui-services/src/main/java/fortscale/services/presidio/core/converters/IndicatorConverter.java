@@ -49,6 +49,7 @@ public class IndicatorConverter {
         evidence.setScore(intFromDouble(indicator.getScore()));
         evidence.setSeverity(Severity.Critical);
         evidence.setName(indicator.getName());
+        evidence.setContexts(indicator.getContexts());
         evidence.setNumOfEvents(indicator.getEventsNum());
         evidence.setEntityName(userName);
 
