@@ -2,7 +2,10 @@ import reselect from 'reselect';
 import { getValues } from 'investigate-hosts/reducers/details/selector-utils';
 
 const { createSelector } = reselect;
-const _registryDiscrepanciesData = (state) => state.endpoint.overview.hostDetails.machine.registryDiscrepancies;
+const _registryDiscrepanciesData = (state) => {
+  const { hostDetails } = state.endpoint.overview;
+  return hostDetails ? hostDetails.machine.registryDiscrepancies : [];
+};
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
 
