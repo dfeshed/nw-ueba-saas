@@ -18,13 +18,13 @@ const hostDetails = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_HOST_DETAILS]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.merge({ hostDetails: action.payload.data, loadingStatus: 'completed' })
+      success: (s) => s.set('hostDetails', action.payload.data)
     });
   },
 
   [ACTION_TYPES.FETCH_POLICY_DETAILS]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.merge({ policyDetails: action.payload.data, loadingStatus: 'completed' })
+      success: (s) => s.set('policyDetails', action.payload.data)
     });
   },
 

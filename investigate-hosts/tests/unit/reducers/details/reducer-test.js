@@ -13,7 +13,8 @@ const initialState = {
 
   snapShots: null,
   isOverviewPanelVisible: true,
-  isDetailRightPanelVisible: true
+  isDetailRightPanelVisible: true,
+  isSnapshotsLoading: false
 };
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
@@ -68,8 +69,16 @@ test('The SET_SCAN_TIME will sets the selected scan time to the state', function
 
 test('The FETCH_ALL_SNAP_SHOTS sets all the fetched snapshot to the state', function(assert) {
   const previous = Immutable.from({
-    snapShots: null
+    snapShots: null,
+    isSnapshotsLoading: false
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.FETCH_ALL_SNAP_SHOTS
+  });
+
+  const endState = reducer(previous, startAction);
+  assert.equal(endState.isSnapshotsLoading, true);
 
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_ALL_SNAP_SHOTS,
@@ -78,6 +87,7 @@ test('The FETCH_ALL_SNAP_SHOTS sets all the fetched snapshot to the state', func
   const newEndState = reducer(previous, newAction);
 
   assert.equal(newEndState.snapShots.length, 2);
+  assert.equal(newEndState.isSnapshotsLoading, false);
 });
 
 test('The TOGGLE_DETAIL_RIGHT_PANEL will toggles isDetailRightPanelVisible', function(assert) {

@@ -8,7 +8,7 @@ import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint
 const stateToComputed = (state) => ({
   selectedTabComponent: selectedTabComponent(state),
   isSnapshotsAvailable: isSnapshotsAvailable(state),
-  hostDetailsLoading: state.endpoint.visuals.hostDetailsLoading,
+  isSnapshotsLoading: state.endpoint.detailsInput.isSnapshotsLoading,
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   selectedServiceData: selectedServiceWithStatus(state),
   isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView

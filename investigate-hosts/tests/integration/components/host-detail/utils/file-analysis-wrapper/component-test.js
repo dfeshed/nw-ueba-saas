@@ -32,7 +32,7 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('FILES')
       .fileAnalysis(fileAnalysis)
@@ -54,7 +54,7 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('FILES')
       .fileAnalysis(fileAnalysis)

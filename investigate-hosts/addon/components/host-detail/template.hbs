@@ -5,7 +5,7 @@
     {{host-detail/utils/file-analysis-wrapper}}
     {{#if showSnapshotEmptyMessage}}
       {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
-    {{else if hostDetailsLoading}}
+    {{else if isSnapshotsLoading}}
       <centered>
         {{rsa-loader size='larger'}}
       </centered>

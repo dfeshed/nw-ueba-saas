@@ -13,7 +13,6 @@ test('should return the initial state', function(assert) {
     activeHostDetailTab: 'OVERVIEW',
     isTreeView: true,
     showDeleteHostsModal: false,
-    hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false
@@ -27,7 +26,6 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeHostDetailTab: 'FILES',
     isTreeView: true,
     showDeleteHostsModal: false,
-    hostDetailsLoading: true,
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'POLICIES',
     isProcessDetailsView: false
@@ -39,7 +37,6 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeHostDetailTab: 'OVERVIEW',
     isTreeView: true,
     showDeleteHostsModal: false,
-    hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
     activePropertyPanelTab: 'HOST_DETAILS',
     isProcessDetailsView: false

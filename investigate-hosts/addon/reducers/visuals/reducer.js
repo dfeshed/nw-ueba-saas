@@ -9,7 +9,6 @@ const visualsInitialState = Immutable.from({
   activePropertyPanelTab: 'HOST_DETAILS',
   isTreeView: true,
   showDeleteHostsModal: false,
-  hostDetailsLoading: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
   isProcessDetailsView: false
 });

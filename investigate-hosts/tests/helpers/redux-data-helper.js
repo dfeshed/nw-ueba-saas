@@ -155,8 +155,8 @@ export default class DataHelper {
     _set(this.state, 'detailsInput.snapShots', flag ? [0, 1] : []);
     return this;
   }
-  hostDetailsLoading(flag) {
-    _set(this.state, 'visuals.hostDetailsLoading', flag);
+  isSnapshotsLoading(flag) {
+    _set(this.state, 'detailsInput.isSnapshotsLoading', flag);
     return this;
   }
   dllList(dllData) {

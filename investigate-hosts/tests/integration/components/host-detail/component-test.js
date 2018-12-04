@@ -78,7 +78,7 @@ module('Integration | Component | host-detail', function(hooks) {
 
   test('it shows loading indicator while fetching the data', async function(assert) {
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(true)
+      .isSnapshotsLoading(true)
       .isSnapshotsAvailable(true).selectedTabComponent('PROCESS').build();
     await render(hbs`{{host-detail}}`);
     assert.equal(findAll('.rsa-loader').length, 1, 'loading indicator displayed');
@@ -86,7 +86,7 @@ module('Integration | Component | host-detail', function(hooks) {
 
   test('it renders the selected tab component', async function(assert) {
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('PROCESS').build();
     await render(hbs`{{host-detail}}`);
@@ -95,7 +95,7 @@ module('Integration | Component | host-detail', function(hooks) {
 
   test('it renders the no snapshot message', async function(assert) {
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('PROCESS')
       .build();
@@ -106,7 +106,7 @@ module('Integration | Component | host-detail', function(hooks) {
 
   test('no snapshot message for OVERVIEW and SYSTEM tab', async function(assert) {
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('OVERVIEW')
       .build();
@@ -130,7 +130,7 @@ module('Integration | Component | host-detail', function(hooks) {
     endpointServerClone.isSummaryRetrieveError = false;
 
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('OVERVIEW')
       .build();
@@ -146,7 +146,7 @@ module('Integration | Component | host-detail', function(hooks) {
     const endpointServerClone = { ...endpointServer };
     endpointServerClone.isSummaryRetrieveError = false;
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('OVERVIEW')
       .endpointServer(endpointServerClone)
@@ -167,7 +167,7 @@ module('Integration | Component | host-detail', function(hooks) {
     endpointServerClone.isSummaryRetrieveError = false;
 
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('PROCESS')
       .endpointServer(endpointServerClone)
@@ -188,7 +188,7 @@ module('Integration | Component | host-detail', function(hooks) {
       'isFileAnalysisView': false
     };
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('FILES')
       .fileAnalysis(fileAnalysis)
@@ -205,7 +205,7 @@ module('Integration | Component | host-detail', function(hooks) {
       'isFileAnalysisView': true
     };
     new ReduxDataHelper(setState)
-      .hostDetailsLoading(false)
+      .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('FILES')
       .fileAnalysis(fileAnalysis)
@@ -214,5 +214,24 @@ module('Integration | Component | host-detail', function(hooks) {
     await render(hbs`{{host-detail}}`);
 
     assert.equal(findAll('.is-show-file-analysis').length, 1, 'File analysis is visible');
+  });
+
+  test('it renders loader when isSnapshotsLoading is true', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isSnapshotsLoading(true)
+      .build();
+    await render(hbs`{{host-detail}}`);
+    assert.equal(findAll('.rsa-loader').length, 1, 'loader is visible');
+  });
+
+  test('it renders loader when isSnapshotsLoading is false', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isSnapshotsLoading(false)
+      .selectedTabComponent('OVERVIEW')
+      .host('XYZ')
+      .isDetailRightPanelVisible(true)
+      .build();
+    await render(hbs`{{host-detail}}`);
+    assert.equal(findAll('.host-detail-wrapper').length, 1, 'details rendered');
   });
 });

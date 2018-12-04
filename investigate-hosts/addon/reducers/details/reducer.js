@@ -11,8 +11,8 @@ const dataInitialState = Immutable.from({
 
   snapShots: null,
   isOverviewPanelVisible: true,
-  isDetailRightPanelVisible: true
-
+  isDetailRightPanelVisible: true,
+  isSnapshotsLoading: false
 });
 
 const data = handleActions({
@@ -26,7 +26,8 @@ const data = handleActions({
 
   [ACTION_TYPES.FETCH_ALL_SNAP_SHOTS]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.set('snapShots', action.payload.data)
+      start: (s) => s.set('isSnapshotsLoading', true),
+      success: (s) => s.merge({ snapShots: action.payload.data, isSnapshotsLoading: false })
     });
   },
 
