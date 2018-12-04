@@ -3,6 +3,8 @@ import { setupTest } from 'ember-qunit';
 import reducer from 'entity-details/reducers/indicators/reducer';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'entity-details/actions/types';
+import indicatorEvents from '../../../data/presidio/indicator-events';
+import indicatorCount from '../../../data/presidio/indicator-count';
 
 module('Unit | Reducers | Indicators Reducer', (hooks) => {
   setupTest(hooks);
@@ -31,6 +33,26 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
     });
 
     assert.equal(result.indicatorId, null);
+  });
+
+  test('test indicator events', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.GET_INDICATOR_EVENTS,
+      payload: indicatorEvents.data
+    });
+
+    assert.deepEqual(result.events, indicatorEvents.data);
+  });
+
+  test('test indicator historical', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.GET_INDICATOR_HISTORICAL_DATA,
+      payload: indicatorCount
+    });
+
+    assert.deepEqual(result.historicalData, indicatorCount);
   });
 
 });

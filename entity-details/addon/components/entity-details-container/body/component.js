@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { entityId, entityType } from 'entity-details/reducers/entity/selectors';
-import { alertId } from 'entity-details/reducers/alerts/selectors';
+import { selectedAlertId } from 'entity-details/reducers/alerts/selectors';
 import { indicatorId } from 'entity-details/reducers/indicators/selectors';
 import computed from 'ember-computed-decorators';
 
@@ -9,7 +9,7 @@ import computed from 'ember-computed-decorators';
 const stateToComputed = (state) => ({
   entityId: entityId(state),
   entityType: entityType(state),
-  alertId: alertId(state),
+  alertId: selectedAlertId(state),
   indicatorId: indicatorId(state)
 });
 

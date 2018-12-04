@@ -9,5 +9,16 @@ export const entityDetails = (state) => state.entity.entityDetails;
 export const alertsForEntity = createSelector(
   [entityDetails],
   (details) => {
-    return details.alerts;
+    if (details) {
+      return details.alerts;
+    }
+  });
+
+export const isFollowed = createSelector(
+  [entityDetails],
+  (details) => {
+    if (details) {
+      return details.followed;
+    }
+    return false;
   });

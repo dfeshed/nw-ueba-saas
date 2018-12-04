@@ -1,5 +1,8 @@
-import { INITIATE_ENTITY, INITIATE_ALERT, INITIATE_INDICATOR, GET_ENTITY_DETAILS } from './types';
+import { INITIATE_ENTITY, GET_ENTITY_DETAILS, UPDATE_FOLLOW } from './types';
 import { fetchData } from './fetch/data';
+import { initializeAlert } from './alert-details';
+import { initializeIndicator } from './indicator-details';
+import { entityId } from 'entity-details/reducers/entity/selectors';
 
 export const initializeEntityDetails = ({ entityId, entityType, alertId, indicatorId }) => {
   return (dispatch) => {
@@ -8,7 +11,7 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
       payload: { entityId, entityType }
     });
     if (alertId) {
-      dispatch(initializeALert(alertId));
+      dispatch(initializeAlert(alertId));
     }
     if (indicatorId) {
       dispatch(initializeIndicator(indicatorId));
@@ -21,27 +24,35 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
       });
       if (!alertId && userDetails) {
         if (userDetails.alerts && userDetails.alerts[0]) {
-          dispatch(initializeALert(userDetails.alerts[0].id));
+          dispatch(initializeAlert(userDetails.alerts[0].id));
         }
       }
     });
   };
 };
 
-export const initializeALert = (alertId) => {
-  return (dispatch) => {
-    dispatch({
-      type: INITIATE_ALERT,
-      payload: alertId
+export const followUser = () => {
+  return (dispatch, getState) => {
+    const entity = entityId(getState());
+    const postData = { userIds: [entity] };
+    fetchData('followUser', postData, 'POST').then(() => {
+      dispatch({
+        type: UPDATE_FOLLOW,
+        payload: true
+      });
     });
   };
 };
 
-export const initializeIndicator = (indicatorId) => {
-  return (dispatch) => {
-    dispatch({
-      type: INITIATE_INDICATOR,
-      payload: indicatorId
+export const unfollowUser = () => {
+  return (dispatch, getState) => {
+    const entity = entityId(getState());
+    const postData = { userIds: [entity] };
+    fetchData('unfollowUser', postData, 'POST').then(() => {
+      dispatch({
+        type: UPDATE_FOLLOW,
+        payload: false
+      });
     });
   };
 };

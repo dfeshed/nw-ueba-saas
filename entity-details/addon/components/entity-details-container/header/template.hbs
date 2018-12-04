@@ -11,7 +11,7 @@
 </div>
 <div class='entity-details-container-header_watch'>
   {{#rsa-form-button}}
-    {{#if (eq entityDetails.followed true)}}
+    {{#if (eq isFollowed true)}}
       {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
     {{else}}
       {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'entityDetails.entity.addWatch'}}

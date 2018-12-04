@@ -46,4 +46,28 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
 
     assert.deepEqual(result.entityDetails, entityDetails.data[0]);
   });
+
+  test('test update follow', (assert) => {
+
+    let result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.GET_ENTITY_DETAILS,
+      payload: entityDetails.data[0]
+    });
+
+    assert.deepEqual(result.entityDetails, entityDetails.data[0]);
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_FOLLOW,
+      payload: false
+    });
+
+    assert.deepEqual(result.entityDetails.followed, false);
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_FOLLOW,
+      payload: true
+    });
+
+    assert.deepEqual(result.entityDetails.followed, true);
+  });
 });

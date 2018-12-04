@@ -2,8 +2,32 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import entityDetails from '../../data/presidio/user_details';
 import { patchFetch } from '../../helpers/patch-fetch';
-import { initializeEntityDetails, initializeALert, initializeIndicator } from 'entity-details/actions/entity-creators';
+import { initializeEntityDetails, followUser, unfollowUser } from 'entity-details/actions/entity-creators';
 import dataIndex from '../../data/presidio';
+import userAlerts from '../../data/presidio/user_alerts';
+import indicatorEvents from '../../data/presidio/indicator-events';
+import indicatorCount from '../../data/presidio/indicator-count';
+
+const state = {
+  entity: {
+    entityId: 'user-1',
+    entityType: 'user'
+  },
+  alerts: {
+    alertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+    alerts: userAlerts.data
+  },
+  indicators: {
+    indicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
+    events: indicatorEvents.data,
+    historicalData: indicatorCount.data,
+    eventFilter: {
+      page: 1,
+      size: 100,
+      sort_direction: 'DESC'
+    }
+  }
+};
 
 module('Unit | Actions | Entity-creators Actions', (hooks) => {
   setupTest(hooks);
@@ -52,7 +76,8 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
         });
       }
     };
-    initializeEntityDetails({ entityId: '123' })(dispatch);
+    const getState = () => state;
+    initializeEntityDetails({ entityId: '123' })(dispatch, getState);
   });
 
   test('it can intialize entity and alert if alertId is given', (assert) => {
@@ -98,25 +123,27 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
     initializeEntityDetails({ entityId: '123', alertId: '234', indicatorId: 'inc-1' })(dispatch);
   });
 
-  test('it can intialize alert', (assert) => {
+  test('it can follow user', (assert) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
       if (type) {
-        assert.equal('ENTITY_DETAILS::INITIATE_ALERT', type);
-        assert.equal(payload.alertId, '123');
+        assert.equal('ENTITY_DETAILS::UPDATE_FOLLOW', type);
+        assert.equal(payload, true);
       }
     };
-    initializeALert({ alertId: '123' })(dispatch);
+    const getState = () => state;
+    followUser()(dispatch, getState);
   });
 
-  test('it can intialize indicator', (assert) => {
+  test('it can unfollow user', (assert) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
       if (type) {
-        assert.equal('ENTITY_DETAILS::INITIATE_INDICATOR', type);
-        assert.equal(payload.indicatorId, '123');
+        assert.equal('ENTITY_DETAILS::UPDATE_FOLLOW', type);
+        assert.equal(payload, false);
       }
     };
-    initializeIndicator({ indicatorId: '123' })(dispatch);
+    const getState = () => state;
+    unfollowUser()(dispatch, getState);
   });
 });

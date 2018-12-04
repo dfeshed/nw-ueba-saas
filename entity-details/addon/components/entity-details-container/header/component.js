@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { entityDetails, entityType } from 'entity-details/reducers/entity/selectors';
+import { entityDetails, isFollowed, entityType } from 'entity-details/reducers/entity/selectors';
 import computed from 'ember-computed-decorators';
 
 export const severityMap = {
@@ -12,6 +12,7 @@ export const severityMap = {
 
 const stateToComputed = (state) => ({
   entityDetails: entityDetails(state),
+  isFollowed: isFollowed(state),
   entityType: entityType(state)
 });
 
