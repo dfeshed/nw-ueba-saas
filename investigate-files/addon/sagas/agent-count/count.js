@@ -58,7 +58,7 @@ const getAPICalls = (serviceId, startTime, endTime, checksums) => {
         operator: '=',
         value: '\'nwendpoint\''
       },
-      { value: `(checksum = '${checksum}')` }
+      { value: `(checksum.all = '${checksum}')` }
     ];
     // call api response will stored as key and value
     result[checksum] = call(

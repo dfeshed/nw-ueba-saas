@@ -8,8 +8,8 @@ const INVESTIGATE_META_MAPPING = {
   'userName': ['username', 'user.dst', 'user.src'],
   'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
   'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6'],
-  'checksumSha256': 'checksum',
-  'checksumMd5': 'checksum',
+  'checksumSha256': 'checksum.all',
+  'checksumMd5': 'checksum.all',
   'firstFileName': 'filename',
   'thumbprint': 'cert.checksum'
 };
