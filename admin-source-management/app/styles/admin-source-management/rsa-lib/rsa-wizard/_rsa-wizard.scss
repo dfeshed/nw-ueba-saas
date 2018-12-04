@@ -105,7 +105,7 @@
     padding-top: rsa-whitespace();
     padding-left: rsa-whitespace();
 
-    position: absolute;
+    position: fixed;
     bottom: rsa-whitespace(less);
     background-color: background-color(primary, darkest);
     width: 98%;

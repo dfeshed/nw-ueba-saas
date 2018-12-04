@@ -1,8 +1,13 @@
-.rsa-explorer {
-  .usm-groups-column-sourceCount {
-    display: flex;
-    .table-cell-text {
-      align-items: flex-start;
+.usm-groups.rsa-explorer, .usm-policies.rsa-explorer {
+  .rsa-data-table-body-rows, .rsa-data-table-header {
+    .usm-groups-column-sourceCount {
+      display: flex;
+      .table-cell-text {
+        align-items: flex-start;
+      }
+    }
+    .rsa-form-checkbox-label {
+      padding: 20px;
     }
   }
 }
