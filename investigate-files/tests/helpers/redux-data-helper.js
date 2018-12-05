@@ -203,4 +203,8 @@ export default class DataHelper {
     _set(this.state, 'endpointServer', data);
     return this;
   }
+  selectedDetailFile(data) {
+    _set(this.state, 'files.fileList.selectedDetailFile', data);
+    return this;
+  }
 }

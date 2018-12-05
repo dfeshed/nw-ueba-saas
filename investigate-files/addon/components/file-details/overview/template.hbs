@@ -1,4 +1,4 @@
-{{#rsa-page-layout as |layout|}}
+{{#rsa-page-layout isRightOverlay=true as |layout|}}
   {{#layout.center}}
     <hbox class="file-detail-box">
       <box class="alerts">
@@ -15,4 +15,22 @@
       </box>
     </hbox>
   {{/layout.center}}
+  {{#layout.right as |right|}}
+    {{#right.header  class="investigate-file-tab"}}
+      {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+        <div class="label">{{t tab.label}}</div>
+      {{/title-bar}}
+      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+        {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+      {{/rsa-form-button}}
+    {{/right.header}}
+    {{#if (eq activeDataSourceTab 'HOSTS')}}
+      {{file-found-on-hosts}}
+    {{else}}
+      {{endpoint/file-property-panel
+        localeNameSpace='investigateHosts.property.file'
+        config=propertyConfig
+        data=fileProperty}}
+    {{/if}}
+  {{/layout.right}}
 {{/rsa-page-layout}}

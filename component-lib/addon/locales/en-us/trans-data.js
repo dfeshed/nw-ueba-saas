@@ -2494,7 +2494,8 @@ export default {
         },
         jumpTo: 'Jump To Address',
         jumpCount: 'Jump Count',
-        hookedProcess: 'Process Context'
+        hookedProcess: 'Process Context',
+        reputationStatus: 'Reputation Status'
       }
     },
     process: {
