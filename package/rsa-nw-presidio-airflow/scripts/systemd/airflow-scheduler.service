@@ -1,6 +1,6 @@
 [Unit]
 Description=Airflow scheduler daemon
-After=network.target postgresql.service mysql.service redis.service rabbitmq-server.service mongod.service elasticsearch.service
+After=network.target postgresql.service mysql.service redis.service rabbitmq-server.service mongod.service elasticsearch.service presidio-configserver.service
 Wants=postgresql.service mysql.service redis.service rabbitmq-server.service
 [Service]
 EnvironmentFile=/etc/sysconfig/airflow

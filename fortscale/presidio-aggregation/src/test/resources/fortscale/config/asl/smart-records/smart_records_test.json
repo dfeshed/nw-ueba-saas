@@ -50,14 +50,8 @@
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
       "excludedAggregationRecords": [
-        "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
-        "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
-        "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
-        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
-        "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
-        "numberOfFailedPrintsUserIdPrintHourly",
-        "numberOfDistinctSrcMachineIdUserIdPrintHourly",
-        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
+        "featureAggregationRecord3",
+        "scoreAggregationRecord3"
       ],
       "defaultWeight": 0.5,
       "trees": [

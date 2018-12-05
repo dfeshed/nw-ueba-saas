@@ -161,7 +161,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void weightModelWithSameScoreAndDescendingProbabilityTest() throws GeneratorException {
-        int numOfGroups = 6;
+        int numOfGroups = 7;
         int numOfSmarts = 50;
         double score = 60.0;
         int scoreInterval = 0;

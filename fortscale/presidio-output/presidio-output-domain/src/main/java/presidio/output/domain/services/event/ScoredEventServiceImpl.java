@@ -7,6 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
@@ -20,13 +21,16 @@ public class ScoredEventServiceImpl implements ScoredEventService {
 
     private AdeManagerSdk adeManagerSdk;
 
-    public ScoredEventServiceImpl(EventPersistencyService eventPersistencyService, AdeManagerSdk adeManagerSdk) {
+    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
+
+    public ScoredEventServiceImpl(EventPersistencyService eventPersistencyService, AdeManagerSdk adeManagerSdk, EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory) {
         this.eventPersistencyService = eventPersistencyService;
         this.adeManagerSdk = adeManagerSdk;
+        this.enrichedEventRecordReaderFactory = enrichedEventRecordReaderFactory;
     }
 
     @Override
-    public Collection<ScoredEnrichedEvent> findDistinctScoredEnrichedEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
+    public Collection<ScoredEnrichedEvent> findDistinctScoredEnrichedEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
 
         Map<Object, ScoredEnrichedEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedEvent>();
         int totalEvents = eventPersistencyService.countEvents(schema,  contextFieldAndValue.getSecond(), timeRange, featuresFilters).intValue();
@@ -47,12 +51,14 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                     continue;
                 }
 
-                Object feature = new ReflectionRecordReader(e).get(distinctFieldName);
-                if (scoredEnrichedEvent.containsKey(feature)) {// get distinct features
+                ReflectionRecordReader recordReader = enrichedEventRecordReaderFactory.getRecordReader(e);
+                Map features = Collections.unmodifiableMap(recordReader.get(distinctFieldNames));
+
+                if (scoredEnrichedEvent.containsKey(features)) {
                     continue;
                 }
 
-                scoredEnrichedEvent.put(feature, new ScoredEnrichedEvent(e, scoredEvents.get(e.getEventId())));
+                scoredEnrichedEvent.put(features, new ScoredEnrichedEvent(e, scoredEvents.get(e.getEventId())));
             }
         }
 

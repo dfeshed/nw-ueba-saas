@@ -47,6 +47,38 @@
           }
         }
       ]
+    },
+    {
+      "name": "reconnaissanceToolCounterUserIdDstProcessFileNameProcessHourly",
+      "contextFieldNames": [
+        "userId",
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "RECONNAISSANCE_TOOL"
+          ]
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "reconnaissanceToolCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
     }
   ]
 }

@@ -138,14 +138,14 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         int expectedAccumulatedRecordsSize = daysBackFrom - daysBackTo;
         int expectedAggregatedFeatureValuesSize = endHourOfDay - startHourOfDay;
         List<Double> expectedAggregatedFeatureValues = Arrays.asList(0d,6d);
-        List<Integer> optionalExpectedNumOfDifferentUsersInCollection = Arrays.asList(2, 4, 20);
+        Integer expectedNumOfDifferentUsersInCollection = 24;
         assert_each_aggr_feature_has_accumulation("FileHourly", startInstant, expectedAccumulatedRecordsSize,
-                expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValues, optionalExpectedNumOfDifferentUsersInCollection);
+                expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValues, expectedNumOfDifferentUsersInCollection);
     }
 
     private void assert_each_aggr_feature_has_accumulation(String schemaConfNameSuffix, Instant startInstant,
                                                            int expectedAccumulatedRecordsSize, int expectedAggregatedFeatureValuesSize,
-                                                           List<Double> expectedAggregatedFeatureValues, List<Integer> optionalExpectedNumOfDifferentUsersInCollection) {
+                                                           List<Double> expectedAggregatedFeatureValues, Integer expectedNumOfDifferentUsersInCollection) {
         List<String> accumulationCollectionNames = getAccumulationCollectionNames();
         List<String> fileHourlyConfNames = filterSchemaConfNames(schemaConfNameSuffix);
 
@@ -171,9 +171,9 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
                 contextRecordsList.add(record);
             }
 
-            if(!optionalExpectedNumOfDifferentUsersInCollection.contains(contextIdToAccumulatedRecords.size())){
+            if(expectedNumOfDifferentUsersInCollection != contextIdToAccumulatedRecords.size()){
                 Assert.fail(String.format("number of different users in collection %s is %s (%s), which is not one of the expected values (%s)",
-                        collectionName, contextIdToAccumulatedRecords.size(), contextIdToAccumulatedRecords.keySet(), optionalExpectedNumOfDifferentUsersInCollection));
+                        collectionName, contextIdToAccumulatedRecords.size(), contextIdToAccumulatedRecords.keySet(), expectedNumOfDifferentUsersInCollection));
             }
 
             for (List<AccumulatedAggregationFeatureRecord> userAccumulatedRecords: contextIdToAccumulatedRecords.values()) {

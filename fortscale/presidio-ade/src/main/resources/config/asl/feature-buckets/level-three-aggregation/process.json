@@ -1,0 +1,27 @@
+{
+  "BucketConfs": [
+    {
+      "name": "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "aggr_event.numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "numberOfReconnaissanceToolExecutedScoresSum",
+          "featureNamesMap": {
+            "sum": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -834,6 +834,8 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_injects_into_lsass
   adeEventType: scored_enriched.process.srcProcessFilePath.lsass.process.score
+  modelContextFields:
+    - dstProcessFileName
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: srcProcessFilePath
@@ -854,6 +856,8 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_injects_into_windows_process
   adeEventType: scored_enriched.process.srcProcessFilePath.windowsDstProcessFileName.process.score
+  modelContextFields:
+    - dstProcessFileName
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: srcProcessFilePath
@@ -866,6 +870,66 @@ indicators:
     type: count_aggregations
     featureBucketConfName: srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily
     featureName: srcProcessFilePathHistogram
+  classification: process_injection
+
+- id: sumOfHighestSrcProcessFilePathGlobalScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_executed_a_scripting_tool
+  adeEventType: scored_enriched.process.srcProcessFilePath.scriptingDstProcessFileName.process.score
+  modelContextFields:
+    - dstProcessFileName
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: srcProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
+      - fieldName: dstProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcProcessFilePathHistogramScriptingDstProcessFileNameProcessDaily
+    featureName: srcProcessFilePathHistogram
+  classification: powershell_scripting
+
+- id: sumOfHighestDstProcessFilePathCreatedGlobalScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_application_triggered_by_scripting_tool
+  adeEventType: scored_enriched.process.dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score
+  modelContextFields:
+    - srcProcessFileName
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
+      - fieldName: srcProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFilePathCreatedHistogramScriptingSrcProcessFileNameProcessDaily
+    featureName: dstProcessFilePathCreatedHistogram
+  classification: powershell_scripting
+
+- id: sumOfHighestDstProcessFilePathOpenedGlobalScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_opened_by_scripting_tool
+  adeEventType: scored_enriched.process.dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score
+  modelContextFields:
+    - srcProcessFileName
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: OPEN_PROCESS
+      - fieldName: srcProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFilePathOpenedHistogramScriptingSrcProcessFileNameProcessDaily
+    featureName: dstProcessFilePathOpenedHistogram
   classification: powershell_scripting
 #*********************************************************
 #*                   REGISTRY INDICATORS                  *
@@ -883,6 +947,26 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
+- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_modified_a_service_key_registry
+  schema: REGISTRY
+  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKey.registry.score
+  modelContextFields:
+    - registryKey
+  anomalyDescriptior:
+    anomalyField: processFilePath
+    anomalyFilters:
+    - fieldName: operationType
+      fieldValue: SET_VALUE
+    - fieldName: registryKeyGroup
+      fieldValue: SERVICES_IMAGE_PATH
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily
+    featureName: processFilePathHistogram
+  classification: registry_run_keys
+
 
 classificationPriority:
 
@@ -898,71 +982,74 @@ classificationPriority:
 - classificationName: registry_run_keys
   priority: 4
 
-- classificationName: mass_changes_to_critical_enterprise_groups
+- classificationName: process_injection
   priority: 5
 
-- classificationName: mass_changes_to_groups
+- classificationName: mass_changes_to_critical_enterprise_groups
   priority: 6
 
-- classificationName: elevated_privileges_granted
+- classificationName: mass_changes_to_groups
   priority: 7
 
-- classificationName: brute_force_authentication
+- classificationName: elevated_privileges_granted
   priority: 8
 
-- classificationName: user_logins_to_multiple_domains
+- classificationName: brute_force_authentication
   priority: 9
 
-- classificationName: user_login_to_abnormal_remote_host
+- classificationName: user_logins_to_multiple_domains
   priority: 10
 
-- classificationName: user_login_to_abnormal_host
+- classificationName: user_login_to_abnormal_remote_host
   priority: 11
 
-- classificationName: data_exfiltration
+- classificationName: user_login_to_abnormal_host
   priority: 12
 
-- classificationName: mass_file_rename
+- classificationName: data_exfiltration
   priority: 13
 
-- classificationName: snooping_user
+- classificationName: mass_file_rename
   priority: 14
 
-- classificationName: multiple_logons_by_user
+- classificationName: snooping_user
   priority: 15
 
-- classificationName: user_logged_into_multiple_hosts
+- classificationName: multiple_logons_by_user
   priority: 16
 
-- classificationName: admin_password_change
+- classificationName: user_logged_into_multiple_hosts
   priority: 17
 
-- classificationName: mass_permission_changes
+- classificationName: admin_password_change
   priority: 18
 
-- classificationName: abnormal_site_access
+- classificationName: mass_permission_changes
   priority: 19
 
-- classificationName: abnormal_ad_changes
+- classificationName: abnormal_site_access
   priority: 20
 
-- classificationName: abnormal_print_activity
+- classificationName: abnormal_ad_changes
   priority: 21
 
-- classificationName: sensitive_user_status_changes
+- classificationName: abnormal_print_activity
   priority: 22
 
-- classificationName: print_from_abnormal_host
+- classificationName: sensitive_user_status_changes
   priority: 23
 
-- classificationName: abnormal_file_access
+- classificationName: print_from_abnormal_host
   priority: 24
 
-- classificationName: print_to_abnormal_printer
+- classificationName: abnormal_file_access
   priority: 25
 
-- classificationName: non_standard_hours
+- classificationName: print_to_abnormal_printer
   priority: 26
 
-- classificationName: suspicious_user_activity
+- classificationName: non_standard_hours
   priority: 27
+
+- classificationName: suspicious_user_activity
+  priority: 28

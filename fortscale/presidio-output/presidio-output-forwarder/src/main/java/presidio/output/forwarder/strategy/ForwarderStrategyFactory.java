@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
@@ -18,7 +19,7 @@ public class ForwarderStrategyFactory implements ApplicationContextAware{
 
     Map<String, ForwarderStrategy> forwarderStrategiesMap;
 
-    public ForwarderStrategyFactory() {
+    public ForwarderStrategyFactory(List<String> strategyNames) {
 
         ServiceLoader<ForwarderStrategy> serviceLoader = ServiceLoader.load(ForwarderStrategy.class);
 
@@ -27,6 +28,11 @@ public class ForwarderStrategyFactory implements ApplicationContextAware{
 
             if (forwarderStrategiesMap.containsKey(strategy.getName())) {
                 logger.warn("{} strategy already loaded. skipping {}", strategy.getName(), strategy.getClass().getName());
+                continue;
+            }
+
+            if (!strategyNames.contains(strategy.getName())) {
+                logger.debug("{} strategy is not in use. skipping {}", strategy.getName(), strategy.getClass().getName());
                 continue;
             }
 

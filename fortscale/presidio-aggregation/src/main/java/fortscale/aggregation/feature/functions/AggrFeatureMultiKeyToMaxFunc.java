@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.feature.*;
@@ -34,9 +35,17 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
     public static final String GROUP_BY_FIELD_NAME = "groupBy";
     public static final String MAXIMIZE_FIELD_NAME = "maximize";
 
+    private Map<String, List<String>> groupByValues;
+
+    public AggrFeatureMultiKeyToMaxFunc(@JsonProperty("groupByValues") Map<String, List<String>> groupByValues) {
+        this.groupByValues = groupByValues;
+    }
+
     /**
      * Updates the mapping from feature value to max value within aggrFeature.
      * Uses the features as input for the function according to the configuration in the aggregatedFeatureConf.
+     *
+     * Each multiKeyFeature count number of events.
      *
      * @param aggregatedFeatureConf aggregated feature configuration
      * @param features              mapping of feature name to feature value
@@ -65,13 +74,15 @@ public class AggrFeatureMultiKeyToMaxFunc implements IAggrFeatureFunction {
         if (features != null) {
             List<String> groupByFeatureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
-            MultiKeyFeature multiKeyFeature = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames);
+            List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, groupByFeatureNames, groupByValues);
             Feature maximizeFeatureValue = features.get(maximizeFeatureName);
 
-            if (multiKeyFeature != null && maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
-                double potentialMax = ((FeatureNumericValue)maximizeFeatureValue.getValue()).getValue().doubleValue();
-                Double max = multiKeyHistogram.getCount(multiKeyFeature);
-                multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+            if (maximizeFeatureValue != null && maximizeFeatureValue.getValue() != null) {
+                multiKeyFeatures.forEach(multiKeyFeature -> {
+                    double potentialMax = ((FeatureNumericValue) maximizeFeatureValue.getValue()).getValue().doubleValue();
+                    Double max = multiKeyHistogram.getCount(multiKeyFeature);
+                    multiKeyHistogram.set(multiKeyFeature, max == null ? potentialMax : Math.max(max, potentialMax));
+                });
             }
         }
 

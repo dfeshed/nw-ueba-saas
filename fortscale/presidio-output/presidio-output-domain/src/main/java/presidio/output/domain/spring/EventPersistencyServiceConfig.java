@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.ade.domain.record.TransformationConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -18,18 +20,22 @@ import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 /**
- * Created by efratn on 02/08/2017.
+ * @author Efrat Noam
  */
 @Configuration
-@Import({MongoDbBulkOpUtilConfig.class,
-        AdeManagerSdkConfig.class})
+@Import({
+        MongoDbBulkOpUtilConfig.class,
+        AdeManagerSdkConfig.class,
+        TransformationConfig.class,
+        OutputRecordReaderFactoryServiceConfig.class
+})
 public class EventPersistencyServiceConfig {
-
     @Autowired
     private MongoTemplate mongoTemplate;
-
     @Autowired
     private AdeManagerSdk adeManagerSdk;
+    @Autowired
+    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
 
     @Bean
     public EventPersistencyService eventPersistencyService() {
@@ -38,7 +44,7 @@ public class EventPersistencyServiceConfig {
 
     @Bean
     public ScoredEventService scoredEventService() {
-        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk);
+        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk, enrichedEventRecordReaderFactory);
     }
 
     @Bean
@@ -55,5 +61,4 @@ public class EventPersistencyServiceConfig {
     public OutputToClassNameTranslator outputToClassNameTranslator() {
         return new OutputToClassNameTranslator();
     }
-
 }

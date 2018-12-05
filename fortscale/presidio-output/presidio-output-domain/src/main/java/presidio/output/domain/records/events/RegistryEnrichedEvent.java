@@ -13,6 +13,7 @@ public class RegistryEnrichedEvent extends EnrichedEvent {
     public static final String MACHINE_OWNER_FIELD_NAME = "machineOwner";
     public static final String PROCESS_DIRECTORY_FIELD_NAME = "processDirectory";
     public static final String PROCESS_FILE_NAME_FIELD_NAME = "processFileName";
+    public static final String PROCESS_FILE_PATH_FIELD_NAME = "processFilePath";
     public static final String PROCESS_DIRECTORY_GROUPS_FIELD_NAME = "processDirectoryGroups";
     public static final String PROCESS_CATEGORIES_FIELD_NAME = "processCategories";
     public static final String PROCESS_CERTIFICATE_ISSUER_FIELD_NAME = "processCertificateIssuer";
@@ -36,6 +37,9 @@ public class RegistryEnrichedEvent extends EnrichedEvent {
 
     @Field(PROCESS_FILE_NAME_FIELD_NAME)
     private String processFileName;
+
+    @Field(PROCESS_FILE_PATH_FIELD_NAME)
+    private String processFilePath;
 
     @Field(PROCESS_DIRECTORY_GROUPS_FIELD_NAME)
     private List<String> processDirectoryGroups;
@@ -190,5 +194,13 @@ public class RegistryEnrichedEvent extends EnrichedEvent {
 
     public void setOperationType(String operationType) {
         this.operationType = operationType;
+    }
+
+    public String getProcessFilePath() {
+        return processFilePath;
+    }
+
+    public void setProcessFilePath(String processFilePath) {
+        this.processFilePath = processFilePath;
     }
 }

@@ -24,10 +24,7 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class FeatureAggregationService extends FixedDurationStrategyExecutor {
-
-    private final MetricContainerFlusher metricContainerFlusher;
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
@@ -36,15 +33,22 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private AggregatedDataStore scoredFeatureAggregatedStore;
     private int pageSize;
     private int maxGroupSize;
+    private MetricContainerFlusher metricContainerFlusher;
+    private LevelThreeAggregationsService levelThreeAggregationsService;
 
-    public FeatureAggregationService(FixedDurationStrategy fixedDurationStrategy,
-                                     BucketConfigurationService bucketConfigurationService,
-                                     EnrichedDataStore enrichedDataStore,
-                                     InMemoryFeatureBucketAggregator featureBucketAggregator,
-                                     FeatureAggregationScoringService featureAggregationScoringService,
-                                     AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize,
-                                     MetricContainerFlusher metricContainerFlusher) {
+    public FeatureAggregationService(
+            FixedDurationStrategy fixedDurationStrategy,
+            BucketConfigurationService bucketConfigurationService,
+            EnrichedDataStore enrichedDataStore,
+            InMemoryFeatureBucketAggregator featureBucketAggregator,
+            FeatureAggregationScoringService featureAggregationScoringService,
+            AggregationRecordsCreator featureAggregationsCreator,
+            AggregatedDataStore scoredFeatureAggregatedStore,
+            int pageSize,
+            int maxGroupSize,
+            MetricContainerFlusher metricContainerFlusher,
+            LevelThreeAggregationsService levelThreeAggregationsService) {
+
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -55,30 +59,36 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.metricContainerFlusher = metricContainerFlusher;
+        this.levelThreeAggregationsService = levelThreeAggregationsService;
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, List<String> contextFieldNamesToExclude, StoreMetadataProperties storeMetadataProperties) {
+    protected void executeSingleTimeRange(
+            TimeRange timeRange,
+            String adeEventType,
+            String contextType,
+            List<String> contextFieldNamesToExclude,
+            StoreMetadataProperties storeMetadataProperties) {
 
-        //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
-        //Reset cache required in order to get newer models each partition and not use older models.
-        // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+        // Once a model is saved to the cache, the service will never update the cache again with a newer model.
+        // Resetting the cache is required in order to get newer models in each partition and not use older models.
+        // If this line is deleted, the model cache will need to have some efficient refresh mechanism.
         featureAggregationScoringService.resetModelCache();
 
-        //For now we don't have multiple contexts so we pass just list of size 1.
+        // For now we don't have multiple contexts, so we just pass a list of size 1.
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
-            List<FeatureBucket> featureBuckets =
-                    featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, contextFieldNamesToExclude, featureBucketStrategyData);
+            List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, adeEventType, contextType, contextFieldNamesToExclude, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
-            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords, timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, storeMetadataProperties);
+            levelThreeAggregationsService.consume(scoredFeatureAggregationRecords, contextType, contextFieldNamesToExclude, featureBucketStrategyData, storeMetadataProperties);
         }
 
-        //Flush stored metrics to elasticsearch
+        // Flush stored metrics to elasticsearch.
         metricContainerFlusher.flush();
     }
 
@@ -90,7 +100,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     @Override
     protected List<List<String>> getListsOfContextFieldNames(String adeEventType, FixedDurationStrategy strategy) {
         List<FeatureBucketConf> featureBucketConfList = bucketConfigurationService.getFeatureBucketConfs(adeEventType, strategy.toStrategyName());
-        return featureBucketConfList.stream().map(featureBucketConf -> featureBucketConf.getContextFieldNames()).collect(Collectors.toList());
+        return featureBucketConfList.stream().map(FeatureBucketConf::getContextFieldNames).collect(Collectors.toList());
     }
-
 }

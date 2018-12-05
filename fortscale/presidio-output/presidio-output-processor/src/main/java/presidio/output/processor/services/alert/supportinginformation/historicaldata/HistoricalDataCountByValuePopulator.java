@@ -25,13 +25,13 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         // map of feature value -> count for the entire timeRange
         Map<String, Double> histogramMap = new HashMap<String, Double>();
 
         // fetch daily histograms
-        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
 
         // iterate over days
         for (DailyHistogram<String, Number> dailyHistogram: dailyHistograms) {

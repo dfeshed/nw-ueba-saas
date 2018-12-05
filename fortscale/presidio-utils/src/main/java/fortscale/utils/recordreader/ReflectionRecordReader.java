@@ -1,15 +1,12 @@
 package fortscale.utils.recordreader;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.recordreader.exception.NoSuchFeatureException;
-import fortscale.utils.recordreader.exception.RequiredFieldNotFoundException;
+import fortscale.utils.recordreader.getter.MapGetter;
+import fortscale.utils.recordreader.getter.ObjectGetter;
 import fortscale.utils.recordreader.transformation.Transformation;
-import org.springframework.util.ReflectionUtils;
 
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Field;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -85,17 +82,9 @@ public class ReflectionRecordReader implements RecordReader {
 
 		for (String key : fieldPath.split(fieldPathDelimiter)) {
 			try {
-				if (value instanceof Map) {
-					value = ((Map)value).get(key);
-				} else {
-					// Find a field named "key" in the class, or in any of its superclasses up to Object
-					Field field = ReflectionUtils.findField(value.getClass(), key);
-					// If there is no such field, extract the value using one of the transformations
-					if (field == null) value = getFromTransformation(key, value);
-					// Else, extract the value from the field
-					else value = getFromField(field, value);
-				}
-			} catch (RequiredFieldNotFoundException | IllegalAccessException | NoSuchFeatureException e) {
+				if (value instanceof Map) value = new MapGetter(transformations, (Map)value).get(key);
+				else value = new ObjectGetter(transformations, value).get(key);
+			} catch (Exception e) {
 				String format = "Cannot extract the value of {} from {}. Record = {}, field path = {}.";
 				logger.error(format, key, value, record, fieldPath, e);
 				return null;
@@ -115,34 +104,5 @@ public class ReflectionRecordReader implements RecordReader {
 		}
 
 		return fieldClass.cast(value);
-	}
-
-	// Find a transformation to "featureName" and extract the value using the required fields from "object".
-	private Object getFromTransformation(String featureName, Object object)
-			throws RequiredFieldNotFoundException, IllegalAccessException, NoSuchFeatureException {
-
-		if (transformations.containsKey(featureName)) {
-			Transformation<?> transformation = transformations.get(featureName);
-			Map<String, Object> requiredFieldNameToValueMap = new HashMap<>();
-
-			for (String requiredFieldName : transformation.getRequiredFieldNames()) {
-				Field field = ReflectionUtils.findField(object.getClass(), requiredFieldName);
-				if (field == null) throw new RequiredFieldNotFoundException(requiredFieldName, object.getClass());
-				requiredFieldNameToValueMap.put(requiredFieldName, getFromField(field, object));
-			}
-
-			return transformation.transform(requiredFieldNameToValueMap);
-		} else {
-			throw new NoSuchFeatureException(featureName, object.getClass());
-		}
-	}
-
-	// Return the value of "field" from "object". Make sure "field" is accessible when extracting the value.
-	private static Object getFromField(Field field, Object object) throws IllegalAccessException {
-		boolean accessible = field.isAccessible();
-		field.setAccessible(true);
-		Object value = field.get(object);
-		field.setAccessible(accessible);
-		return value;
 	}
 }

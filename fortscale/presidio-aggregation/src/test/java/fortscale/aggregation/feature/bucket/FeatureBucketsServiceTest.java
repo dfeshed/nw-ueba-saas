@@ -53,6 +53,7 @@ public class FeatureBucketsServiceTest {
     private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test1###normalized_username_dlpfile_hourly";
     private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test2###normalized_username_dlpfile_hourly";
     private static final String BUCKET_ID3 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test3###source_path_to_highest_score_dlpfile_hourly";
+    private static final String BUCKET_ID4 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test4###srcPathHistogramDlpfileHourly";
 
     @Before
     public void initialize() {
@@ -135,12 +136,37 @@ public class FeatureBucketsServiceTest {
         AdeScoredDlpFileRecord adeRecord5 = new AdeScoredDlpFileRecord(Instant.now(), "source_path","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
         AdeScoredDlpFileRecord adeRecord6 = new AdeScoredDlpFileRecord(Instant.now(), "source_path","dlpfile", 90.0, new ArrayList<>(), enrichedDlpFileRecord);
 
+
+        enrichedDlpFileRecord.setUserId("normalized_username_test4");
+        enrichedDlpFileRecord.setSrcMachineId("pc1");
+        enrichedDlpFileRecord.setSourcePath("source_path_test1");
+        AdeScoredDlpFileRecord adeRecord7 = new AdeScoredDlpFileRecord(Instant.now(), "source_path.src_machine_id","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
+
+        enrichedDlpFileRecord.setUserId("normalized_username_test4");
+        enrichedDlpFileRecord.setSrcMachineId("pc1");
+        enrichedDlpFileRecord.setSourcePath("source_path_test2");
+        AdeScoredDlpFileRecord adeRecord8 = new AdeScoredDlpFileRecord(Instant.now(), "source_path.src_machine_id","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
+
+        enrichedDlpFileRecord.setUserId("normalized_username_test4");
+        enrichedDlpFileRecord.setSrcMachineId("pc2");
+        enrichedDlpFileRecord.setSourcePath("source_path_test3");
+        AdeScoredDlpFileRecord adeRecord9 = new AdeScoredDlpFileRecord(Instant.now(), "source_path.src_machine_id","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
+
+        enrichedDlpFileRecord.setUserId("normalized_username_test5");
+        enrichedDlpFileRecord.setSrcMachineId("pc2");
+        enrichedDlpFileRecord.setSourcePath("source_path_test3");
+        AdeScoredDlpFileRecord adeRecord10 = new AdeScoredDlpFileRecord(Instant.now(), "source_path.src_machine_id","dlpfile", 50.0, new ArrayList<>(), enrichedDlpFileRecord);
+
         adeScoredDlpFileRecords.add(adeRecord1);
         adeScoredDlpFileRecords.add(adeRecord2);
         adeScoredDlpFileRecords.add(adeRecord3);
         adeScoredDlpFileRecords.add(adeRecord4);
         adeScoredDlpFileRecords.add(adeRecord5);
         adeScoredDlpFileRecords.add(adeRecord6);
+        adeScoredDlpFileRecords.add(adeRecord7);
+        adeScoredDlpFileRecords.add(adeRecord8);
+        adeScoredDlpFileRecords.add(adeRecord9);
+        adeScoredDlpFileRecords.add(adeRecord10);
     }
 
     /**
@@ -220,9 +246,27 @@ public class FeatureBucketsServiceTest {
         aggregatedFeatures.put("srcpath_and_srcmachine_to_highest_score_map", feature);
         featureBucket3.setAggregatedFeatures(aggregatedFeatures);
 
+        FeatureBucket featureBucket4 = new FeatureBucket();
+        featureBucket4.setBucketId(BUCKET_ID4);
+        aggregatedFeatures = new HashMap<>();
+
+        multiKeyHistogram = new MultiKeyHistogram();
+        MultiKeyFeature multiKeyFeature1 = new MultiKeyFeature();
+        multiKeyFeature1.add("context.sourcePath","source_path_test1");
+        multiKeyHistogram.set(multiKeyFeature1,50.0);
+
+        MultiKeyFeature multiKeyFeature2 = new MultiKeyFeature();
+        multiKeyFeature2.add("context.sourcePath","source_path_test2");
+        multiKeyHistogram.set(multiKeyFeature2,50.0);
+
+        feature = new Feature("srcPathHistogram", multiKeyHistogram);
+        aggregatedFeatures.put("srcPathHistogram", feature);
+        featureBucket4.setAggregatedFeatures(aggregatedFeatures);
+
         featureBuckets.put(BUCKET_ID1, featureBucket1);
         featureBuckets.put(BUCKET_ID2, featureBucket2);
         featureBuckets.put(BUCKET_ID3, featureBucket3);
+        featureBuckets.put(BUCKET_ID4, featureBucket4);
         return featureBuckets;
     }
 

@@ -1,6 +1,8 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketService;
+import fortscale.aggregation.feature.bucket.FeatureBucketServiceImpl;
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
-import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceImpl;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
 /**
- * Created by YaronDL on 7/2/2017.
+ * @author YaronDL
+ * @author Lior Govrin
  */
 @Configuration
 @Import({
@@ -28,8 +30,12 @@ public class ScoreAggregationsBucketServiceConfiguration {
     private RecordReaderFactoryService recordReaderFactoryService;
     @Autowired
     private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
+
     @Bean
-    public ScoreAggregationsBucketService getScoreAggregationsBucketService() {
-        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
+    public FeatureBucketService<AdeScoredEnrichedRecord> scoreAggregationFeatureBucketService() {
+        return new FeatureBucketServiceImpl<>(
+                bucketConfigurationService,
+                recordReaderFactoryService,
+                featureBucketAggregatorMetricsContainer);
     }
 }
