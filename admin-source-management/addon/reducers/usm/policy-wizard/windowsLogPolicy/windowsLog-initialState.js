@@ -18,7 +18,8 @@ export default {
     sendTestLog: null, // true or false
     primaryDestination: null,
     secondaryDestination: null,
-    protocol: null // 'UDP' | 'TCP' | 'TLS'
+    protocol: null, // 'UDP' | 'TCP' | 'TLS'
+    channelFilters: []
   },
 
   // define-policy-step - available settings to render the left col
@@ -29,10 +30,9 @@ export default {
     { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] },
     { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
     { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
-    { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] }
-    // 6
+    { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
+    { index: 6, id: 'channelFilters', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFilters', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', defaults: [{ field: 'channelFilters', value: [{ channel: '', filter: 'Include', eventId: 'ALL' }] }] }
     // { index: 7, id: 'channelFiltersSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFiltersSettingsHeader', isHeader: true, isEnabled: true }
-    // 8 - channelFilters
   ]
 
 };

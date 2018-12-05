@@ -1,7 +1,7 @@
 // import { _policyWizardState, policy } from '../policy-wizard-selectors';
 import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
-import { ALL_RADIO_OPTIONS } from './windowsLog-settings';
+import { ALL_RADIO_OPTIONS, CHANNEL_CONFIG } from './windowsLog-settings';
 
 const { createSelector } = reselect;
 
@@ -141,11 +141,72 @@ export const selectedProtocol = createSelector(
   (policy) => policy.protocol
 );
 
+export const channels = createSelector(
+  policy,
+  (policy) => policy.channelFilters
+);
+
+export const channelConfig = () => CHANNEL_CONFIG;
+
+/**
+ * validates the channelFilters array.
+ * ChannelFilters is an array of objects
+ * [{ channel: 'Security', filter: 'Exclude', eventId: '4' },
+ *  { channel: '', filter: 'Include', eventId: 'ALL'}]
+ * @public
+ */
+export const channelFiltersValidator = (state) => {
+  const VALID_EVENT_PATTERN = /^[0-9-]+$/;
+  let error = false;
+  let message = '';
+  let invalidEntry = '';
+  const value = channels(state);
+
+  // channels is an array of objects, loop through each obj and validate
+  value.every((obj) => {
+    const { eventId, filter, channel } = obj;
+    const isEventIdString = typeof eventId === 'string';
+    let hasInvalidEventId = false;
+    // if the field is blank, show an error message
+    if (isBlank(channel) || isBlank(filter) || isBlank(eventId)) {
+      error = true;
+      invalidEntry = '';
+      message = 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter';
+      return false;
+    }
+    // If Event ID is a string, it should be 'ALL'
+    // any other string is treated as invalid
+    if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filter.toUpperCase() !== 'EXCLUDE')) {
+      return true;
+    }
+
+    // If multiple event ids are entered, make sure they dont have invalid characters
+    const arrayOfEvents = eventId.split(',');
+    hasInvalidEventId = arrayOfEvents.some((event) => {
+      return !VALID_EVENT_PATTERN.test(event.trim());
+    });
+
+    if (hasInvalidEventId) {
+      error = true;
+      message = 'adminUsm.policyWizard.windowsLogPolicy.invalidEventId';
+      invalidEntry = eventId;
+      return false;
+    }
+    return true;
+  });
+  return {
+    isError: error,
+    errorMessage: message,
+    invalidTableItem: invalidEntry
+  };
+};
+
 /**
  * Map to hold all Windows Log Policy validator functions for settings
  * @public
  */
 export const windowsLogPolicyValidatorFnMap = {
   'primaryDestination': windowsLogDestinationValidator,
-  'secondaryDestination': windowsLogDestinationValidator
+  'secondaryDestination': windowsLogDestinationValidator,
+  'channelFilters': channelFiltersValidator
 };

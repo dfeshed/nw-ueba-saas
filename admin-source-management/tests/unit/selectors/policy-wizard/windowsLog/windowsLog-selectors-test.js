@@ -11,7 +11,9 @@ import {
   secondaryLogServersList,
   selectedSecondaryLogServer,
   windowsLogDestinationValidator,
-  selectedProtocol
+  selectedProtocol,
+  channels,
+  channelFiltersValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
 import {
   ENABLED_CONFIG,
@@ -203,5 +205,161 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .build();
     const result = selectedProtocol(Immutable.from(fullState));
     assert.deepEqual(result, expectedValue, `should return protocol of ${expectedValue}`);
+  });
+
+  test('channels', function(assert) {
+    const expectedValue = [ { channel: 'System', filter: 'Include', eventId: 'ALL' } ];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(expectedValue)
+      .build();
+    const result = channels(Immutable.from(fullState));
+    assert.deepEqual(result, expectedValue, `should return channels with value ${expectedValue}`);
+  });
+
+  test('channelFiltersValidator selector with empty channel name', function(assert) {
+    let newFilters = [ { channel: '', filter: 'Include', eventId: 'ALL' }];
+    const visited = ['policy.channelFilters'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      invalidTableItem: '',
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter'
+    };
+    let validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+
+    // valid value
+    newFilters = [ { channel: 'System', filter: 'Include', eventId: 'ALL' }];
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: '', errorMessage: '' };
+    validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('channelFiltersValidator selector with empty event id', function(assert) {
+    let newFilters = [ { channel: 'System', filter: 'Include', eventId: '' }];
+    const visited = ['policy.channelFilters'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      invalidTableItem: '',
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter'
+    };
+    let validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+
+    // valid value
+    newFilters = [ { channel: 'System', filter: 'Include', eventId: '2' }];
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: '', errorMessage: '' };
+    validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('channelFiltersValidator selector with invalid event id', function(assert) {
+    let newFilters = [ { channel: 'System', filter: 'Include', eventId: 'foo$' }];
+    const visited = ['policy.channelFilters'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      invalidTableItem: 'foo$',
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.invalidEventId'
+    };
+    let validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+
+    // valid value
+    newFilters = [ { channel: 'System', filter: 'Include', eventId: '2' }];
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: '', errorMessage: '' };
+    validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('channelFiltersValidator selector with exclude filter and null event id', function(assert) {
+    let newFilters = [ { channel: 'System', filter: 'Exclude', eventId: '' }];
+    const visited = ['policy.channelFilters'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      invalidTableItem: '',
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter'
+    };
+    let validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+
+    // valid value
+    newFilters = [ { channel: 'System', filter: 'Include', eventId: '2' }];
+    fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: '', errorMessage: '' };
+    validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('channelFiltersValidator selector with multiple event ids', function(assert) {
+    const newFilters = [ { channel: 'System', filter: 'Exclude', eventId: '2,3,4' }];
+    const visited = ['policy.channelFilters'];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    const validExpected = {
+      isError: false,
+      invalidTableItem: '',
+      errorMessage: ''
+    };
+    const validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
+  });
+
+  test('channelFiltersValidator selector with multiple event ids and a special character', function(assert) {
+    const newFilters = [ { channel: 'System', filter: 'Exclude', eventId: '2,3,4%' }];
+    const visited = ['policy.channelFilters'];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(newFilters)
+      .policyWizVisited(visited)
+      .build();
+    const validExpected = {
+      isError: true,
+      invalidTableItem: '2,3,4%',
+      errorMessage: 'adminUsm.policyWizard.windowsLogPolicy.invalidEventId'
+    };
+    const validActual = channelFiltersValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
   });
 });

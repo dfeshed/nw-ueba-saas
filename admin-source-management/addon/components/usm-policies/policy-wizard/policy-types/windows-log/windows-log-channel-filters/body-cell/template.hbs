@@ -1,0 +1,50 @@
+{{#rsa-data-table/body-cell item=item index=index column=column delete=delete class='body-cell'}}
+  {{#if (eq column.displayType 'channelInput')}}
+    <div class="windows-log-channel-name">
+      {{#power-select
+        placeholder=(t 'packager.placeholder')
+        options=channelOptions
+        selected=item.channel
+        searchPlaceholder=(t 'packager.searchPlaceholder')
+        triggerClass=(if (eq (get item column.field) invalidTableItem) 'selector-error')
+        onchange=(action 'setSelected' column.field bubbles=false) as |option|
+      }}
+        <span title={{option}}>{{option}}</span>
+      {{/power-select}}
+      <div class="input-error">
+        {{#if (eq (get item column.field) invalidTableItem)}}
+          {{t errorMessage}}
+        {{/if}}
+      </div>
+    </div>
+
+  {{else if (eq column.displayType 'dropdown')}}
+    <div class="windows-log-channel-filter">
+      {{#power-select
+        placeholder=(t 'packager.placeholder')
+        options=filterOptions
+        selected=item.filter
+        searchPlaceholder=(t 'packager.searchPlaceholder')
+        searchEnabled=false
+        onchange=(action 'setSelected' column.field bubbles=false) as |option|}}
+        {{option}}
+      {{/power-select}}
+    </div>
+
+  {{else if (eq column.displayType 'EventInput') }}
+    <div class="event-id">
+
+      {{rsa-form-input
+        value=item.eventId
+        focusOut=channelUpdated
+        isError=(eq (get item column.field) invalidTableItem)
+        errorMessage=(t errorMessage)
+      }}
+    </div>
+
+  {{else if (eq column.displayType 'icon') }}
+    {{#rsa-form-button isIconOnly=true isDisabled=(eq index 0) defaultAction=(action delete index bubble=false)}}
+      {{rsa-icon name='bin-1' size='small' class='delete-button'}}
+    {{/rsa-form-button}}
+  {{/if}}
+{{/rsa-data-table/body-cell}}

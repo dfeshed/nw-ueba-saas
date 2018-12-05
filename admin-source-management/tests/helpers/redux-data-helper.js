@@ -284,6 +284,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizWinLogChannelFilters(channelFilters) {
+    _set(this.state, 'usm.policyWizard.policy.channelFilters', channelFilters);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   group(config) {
     _set(this.state, 'usm.group', config);

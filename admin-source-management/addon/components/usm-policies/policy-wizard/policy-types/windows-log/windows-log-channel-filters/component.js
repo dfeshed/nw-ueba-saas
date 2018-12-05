@@ -1,0 +1,60 @@
+import Component from '@ember/component';
+import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+import _ from 'lodash';
+import {
+  updatePolicyProperty,
+  removeFromSelectedSettings
+} from 'admin-source-management/actions/creators/policy-wizard-creators';
+import {
+  channels,
+  channelConfig,
+  channelFiltersValidator
+} from 'admin-source-management/reducers/usm/policy-wizard/windowsLogPolicy/windowsLog-selectors';
+
+const stateToComputed = (state) => ({
+  channelFilters: channels(state),
+  channelFiltersValidator: channelFiltersValidator(state),
+  columns: channelConfig()
+});
+
+const dispatchToActions = {
+  updatePolicyProperty,
+  removeFromSelectedSettings
+};
+
+const WindowsLogChannelFilters = Component.extend({
+  classNames: 'windows-log-channel-filters',
+
+  @computed()
+  panelId() {
+    return `winLogCollectionTooltip-${this.get('elementId')}`;
+  },
+  @computed('channelFilters')
+  channels(channelFilters) {
+    return _.cloneDeep(channelFilters);
+  },
+
+  _updateChannelFilters() {
+    this.send('updatePolicyProperty', 'channelFilters', this.get('channels'));
+  },
+
+  actions: {
+    // adding a row to the channel filters table
+    addRowFilter() {
+      this.get('channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
+      this._updateChannelFilters();
+    },
+    // pass the index of the row to delete the row in the channel filters
+    deleteRow(index) {
+      this.get('channels').removeAt(index);
+      this._updateChannelFilters();
+    },
+    // when the child component `body cell` modifies channels, this gets called
+    channelUpdated() {
+      this._updateChannelFilters();
+    }
+  }
+});
+
+export default connect(stateToComputed, dispatchToActions)(WindowsLogChannelFilters);

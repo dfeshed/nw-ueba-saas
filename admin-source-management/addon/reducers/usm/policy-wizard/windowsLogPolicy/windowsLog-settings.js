@@ -34,3 +34,10 @@ export const ALL_RADIO_OPTIONS = [
   { id: 'enabled', options: ENABLED_CONFIG },
   { id: 'sendTestLog', options: SEND_TEST_LOG_CONFIG }
 ];
+
+export const CHANNEL_CONFIG = [
+  { field: 'channel', title: 'adminUsm.policyWizard.windowsLogPolicy.channel.name', width: '10vw', displayType: 'channelInput' },
+  { field: 'filter', title: 'adminUsm.policyWizard.windowsLogPolicy.channel.filter', width: '6vw', displayType: 'dropdown' },
+  { field: 'eventId', title: 'adminUsm.policyWizard.windowsLogPolicy.channel.event', width: '7vw', displayType: 'EventInput' },
+  { field: 'delete', title: 'adminUsm.policyWizard.windowsLogPolicy.channel.empty', width: '35px', displayType: 'icon' }
+];

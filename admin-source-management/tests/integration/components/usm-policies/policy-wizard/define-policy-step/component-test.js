@@ -59,7 +59,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('When policy is Windows Log policy, All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 5, 'All windows log policy available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 6, 'All windows log policy available settings rendered on the UI');
   });
 
   test('When policy is Windows Log policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -175,5 +175,15 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     new ReduxDataHelper(setState).policyWiz('windowsLogPolicy').build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .primaryDestination').length, 1, 'Primary Destination component is shown in the available settings');
+  });
+
+  test('When policy is Windows Log policy, Windows log channel filters is shown in the available settings', async function(assert) {
+    const channelFilters = [ { channel: 'System', filter: 'Include', eventId: 'ALL' } ];
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(channelFilters)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .channelFilters').length, 1, 'Channel Filters component is shown in the available settings');
   });
 });

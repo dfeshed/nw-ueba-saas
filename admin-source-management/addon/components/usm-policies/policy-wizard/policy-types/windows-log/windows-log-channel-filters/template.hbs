@@ -1,0 +1,35 @@
+<h4 class='title'>
+  {{t 'adminUsm.policyWizard.windowsLogPolicy.channelFilters'}}
+  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'channelFilters'}}>
+    {{rsa-icon name="remove-circle-1" style="lined"}}
+  </span>
+</h4>
+<div class="channel-filter-container">
+  <div class="add-row">
+    {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'adminUsm.policyWizard.windowsLogPolicy.channel.add')}}
+      {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
+        {{rsa-icon name='add-1' size='small'}}
+      {{/rsa-form-button}}
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
+      <section>{{model}}</section>
+    {{/rsa-content-tethered-panel}}
+  </div>
+  <div class="channel-container">
+    {{#rsa-data-table lazy=true  items=channels columnsConfig=columns}}
+      {{#rsa-data-table/header as |column|}}
+        {{t column.title}}
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+          item=item
+          index=index
+          column=column
+          delete=(action "deleteRow")
+          invalidTableItem=channelFiltersValidator.invalidTableItem
+          errorMessage=channelFiltersValidator.errorMessage
+          channelUpdated=(action 'channelUpdated')}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+</div>

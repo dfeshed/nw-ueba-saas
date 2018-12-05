@@ -4186,6 +4186,16 @@ export default {
         secondaryDestination: 'Secondary Log Decoder / Log collector',
         windowsLogDestinationInvalidMsg: 'The log server host name should not be empty',
         protocol: 'Protocol',
+        channelFilters: 'Channel Filters',
+        channel: {
+          add: 'Add a new channel',
+          name: 'CHANNEL NAME *',
+          filter: 'FILTER *',
+          event: 'EVENT ID *',
+          empty: ''
+        },
+        invalidEventId: 'Event ID is invalid',
+        invalidChannelFilter: 'Field cannot be empty',
         channelFiltersSettingsHeader: 'Channel Filter Settings'
       }
     },
