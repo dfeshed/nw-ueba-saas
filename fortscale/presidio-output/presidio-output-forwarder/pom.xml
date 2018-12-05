@@ -28,10 +28,16 @@
 
     <dependencies>
 
-        <dependency>
+       <dependency>
             <groupId>com.rsa.asoc.respond</groupId>
             <artifactId>respond-api</artifactId>
             <version>${respond-api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
