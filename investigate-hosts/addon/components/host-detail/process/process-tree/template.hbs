@@ -103,7 +103,7 @@
   {{endpoint/edit-file-status/modal
     itemList=selectedProcessList
     restrictedFileList=restrictedFileList
-    onSaveFileStatus=(action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums)
+    onSaveFileStatus=(action 'setFileContextFileStatus' 'PROCESS' selectedFileChecksums selectedProcessList)
     retrieveRemediationStatus=(action 'retrieveRemediationStatus' 'PROCESS')
     data=fileStatus
     isRemediationAllowed=isRemediationAllowed
