@@ -151,10 +151,10 @@ const triggerFileActions = () => {
     return request.ping('endpoint-server-ping')
       .then(function() {
         dispatch(isEndpointServerOffline(false));
-        dispatch(getCertificates());
-        dispatch(getFirstPageOfFiles());
         dispatch(getServiceId('FILE'));
+        dispatch(getCertificates());
         dispatch(getAllServices());
+        dispatch(getFirstPageOfFiles());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));
@@ -347,7 +347,7 @@ const _fetchHostNameList = (checksum) => {
 
     // Get the size for mata value
     const { fileList: { agentCountMapping } } = getState().files;
-    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 20;
+    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 200;
     const input = {
       filter: { value: `(checksum.all = '${checksum}')` },
       queryNode,

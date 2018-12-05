@@ -108,8 +108,8 @@ const triggerMachineActions = () => {
     return request.ping('endpoint-server-ping')
       .then(() => {
         dispatch(isEndpointServerOffline(false));
-        dispatch(getPageOfMachines());
         dispatch(getServiceId('MACHINE'));
+        dispatch(getPageOfMachines());
       })
       .catch(function() {
         dispatch(isEndpointServerOffline(true));

@@ -16,6 +16,9 @@ const investigateReducer = handleActions({
 
   [ACTION_TYPES.SET_INVESTIGATE_PREFERENCE]: (state, action) => {
     return handle(state, action, {
+      start: (s) => {
+        return s.set('serviceId', '-1');
+      },
       success: (s) => {
         const { payload: { data } } = action;
         return s.set('serviceId', data);
