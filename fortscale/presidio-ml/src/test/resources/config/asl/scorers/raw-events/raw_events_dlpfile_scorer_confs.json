@@ -16,8 +16,8 @@
             },
             "number-of-partitions-to-influence-enough" : 30,
             "min-number-of-partitions-to-influence" : 1,
-            "max-rare-timestamp-count" : 5,
-            "max-num-of-rare-timestamps" : 5,
+            "max-rare-count" : 5,
+            "max-num-of-rare-partitions" : 5,
             "use-certainty-to-calculate-score" : true
           }, {
             "type" : "reduction-scorer",
@@ -30,7 +30,7 @@
               },
               "additional-models" : [ ],
               "max-rare-count" : 5,
-              "max-num-of-rare-features" : 15,
+              "max-num-of-rare-partitions" : 15,
               "number-of-partitions-to-influence-enough" : 30,
               "min-number-of-partitions-to-influence" : 1,
               "minimum-number-of-distinct-values-to-influence" : 0,
@@ -48,7 +48,7 @@
                 },
                 "additional-models" : [ ],
                 "max-rare-count" : 5,
-                "max-num-of-rare-features" : 15,
+                "max-num-of-rare-partitions" : 15,
                 "number-of-partitions-to-influence-enough" : 30,
                 "min-number-of-partitions-to-influence" : 1,
                 "minimum-number-of-distinct-values-to-influence" : 0,

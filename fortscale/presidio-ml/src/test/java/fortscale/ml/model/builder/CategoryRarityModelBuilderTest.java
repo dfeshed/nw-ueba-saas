@@ -55,7 +55,7 @@ public class CategoryRarityModelBuilderTest {
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		List<Double> buckets = model.getBuckets();
-		Assert.assertEquals(1, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(15, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
@@ -72,7 +72,7 @@ public class CategoryRarityModelBuilderTest {
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		List<Double> buckets = model.getBuckets();
-		Assert.assertEquals(1, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(15, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
@@ -156,9 +156,10 @@ public class CategoryRarityModelBuilderTest {
 		Map<Long, Integer> occurrencesToNumOfFeatures = categoryRarityModelBuilder.calcOccurrencesToNumOfDistinctPartitions(sequenceReducedData);
 		Map<Long, Integer> expectedMap = new HashMap<>();
 		expectedMap.put(1L,1);// number of distinct partitions with 1 occurrence.
-		expectedMap.put(2L,3);// number of distinct feature values with 2 occurrences.
-		expectedMap.put(3L,1);// number of distinct feature values with 3 occurrences.
-		expectedMap.put(5L,5);// number of distinct partitions with 5 occurrences.
+		expectedMap.put(2L,4);// number of distinct feature values with <=2 occurrences.
+		expectedMap.put(3L,5);// number of distinct feature values with <=3 occurrences.
+		expectedMap.put(4L,5);// number of distinct feature values with <=4 occurrences.
+		expectedMap.put(5L,5);// number of distinct partitions with <=5 occurrences.
 
 		Assert.assertEquals(expectedMap,occurrencesToNumOfFeatures);
 

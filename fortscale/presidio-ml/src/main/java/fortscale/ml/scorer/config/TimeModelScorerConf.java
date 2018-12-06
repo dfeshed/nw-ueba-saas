@@ -12,10 +12,10 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class TimeModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "time-model-scorer";
-	public static final int DEFAULT_MAX_RARE_TIMESTAMP_COUNT = 5;
-	public static final int DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS = 5;
+	public static final int DEFAULT_MAX_RARE_COUNT = 8;
+	public static final int DEFAULT_MAX_NUM_OF_RARE_PARTITIONS = 15;
 	public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
-	public static final int NUM_RARE_EVENTS_FACTOR = 1;
+	public static final double MIN_PROBABILITY = 0.7;
 
 	/*
 	 * Inherited non mandatory fields:
@@ -24,14 +24,16 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	 * use-certainty-to-calculate-score
 	 * min-number-of-partitions-to-influence
 	 */
-	@JsonProperty("max-rare-timestamp-count")
-	private int maxRareTimestampCount = DEFAULT_MAX_RARE_TIMESTAMP_COUNT;
-	@JsonProperty("max-num-of-rare-timestamps")
-	private int maxNumOfRareTimestamps = DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS;
+	@JsonProperty("max-rare-count")
+	private int maxRareCount = DEFAULT_MAX_RARE_COUNT;
+	@JsonProperty("max-num-of-rare-partitions")
+	private int maxNumOfRarePartitions = DEFAULT_MAX_NUM_OF_RARE_PARTITIONS;
 	@JsonProperty("x-with-value-half-factor")
 	private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
-	@JsonProperty("num-rare-events-factor")
-	private double numRareEventsFactor = NUM_RARE_EVENTS_FACTOR;
+	@JsonProperty("min-probability")
+	private double minProbability = MIN_PROBABILITY;
+
+
 
 	@JsonCreator
 	public TimeModelScorerConf(@JsonProperty("name") String name,
@@ -46,22 +48,22 @@ public class TimeModelScorerConf extends ModelScorerConf {
 		return SCORER_TYPE;
 	}
 
-	public int getMaxRareTimestampCount() {
-		return maxRareTimestampCount;
+	public int getMaxRareCount() {
+		return maxRareCount;
 	}
 
-	public void setMaxRareTimestampCount(int maxRareTimestampCount) {
-		Assert.isTrue(maxRareTimestampCount >= 0);
-		this.maxRareTimestampCount = maxRareTimestampCount;
+	public void setMaxRareCount(int maxRareCount) {
+		Assert.isTrue(maxRareCount >= 0);
+		this.maxRareCount = maxRareCount;
 	}
 
-	public int getMaxNumOfRareTimestamps() {
-		return maxNumOfRareTimestamps;
+	public int getMaxNumOfRarePartitions() {
+		return maxNumOfRarePartitions;
 	}
 
-	public void setMaxNumOfRareTimestamps(int maxNumOfRareTimestamps) {
-		Assert.isTrue(maxNumOfRareTimestamps >= 0);
-		this.maxNumOfRareTimestamps = maxNumOfRareTimestamps;
+	public void setMaxNumOfRarePartitions(int maxNumOfRarePartitions) {
+		Assert.isTrue(maxNumOfRarePartitions >= 0);
+		this.maxNumOfRarePartitions = maxNumOfRarePartitions;
 	}
 
 
@@ -73,11 +75,11 @@ public class TimeModelScorerConf extends ModelScorerConf {
 		this.xWithValueHalfFactor = xWithValueHalfFactor;
 	}
 
-	public double getNumRareEventsFactor() {
-		return numRareEventsFactor;
+	public double getMinProbability() {
+		return minProbability;
 	}
 
-	public void setNumRareEventsFactor(double numRareEventsFactor) {
-		this.numRareEventsFactor = numRareEventsFactor;
+	public void setMinProbability(double minProbability) {
+		this.minProbability = minProbability;
 	}
 }

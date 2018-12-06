@@ -42,6 +42,7 @@ public class CategoryRarityModelScorerTest {
     EventModelsCacheService eventModelsCacheService;
 
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
+    private static final double MIN_PROBABILITY = 0.7;
 
     private void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
 
@@ -50,7 +51,7 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals(params.getContextFieldNames(), scorer.getContextFieldNames());
         Assert.assertEquals(params.getFeatureName(), scorer.getFeatureName());
         Assert.assertEquals((long)params.getMaxRareCount(), scorer.getAlgorithm().getMaxRareCount());
-        Assert.assertEquals((long)params.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
+        Assert.assertEquals((long)params.getMaxNumOfRarePartitions(), scorer.getAlgorithm().getMaxNumOfRarePartitions());
         Assert.assertEquals(params.getMinimumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
         Assert.assertEquals((long)params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
         Assert.assertEquals((long)params.getNumberOfPartitionsToInfluenceEnough(), scorer.getEnoughNumOfPartitionsToInfluence());
@@ -72,10 +73,10 @@ public class CategoryRarityModelScorerTest {
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
-                params.getMaxNumOfRareFeatures(),
+                params.getMaxNumOfRarePartitions(),
                 X_WITH_VALUE_HALF_FACTOR,
-                eventModelsCacheService,
-                params.numRareEventsFactor);
+                MIN_PROBABILITY,
+                eventModelsCacheService);
     }
 
     //==================================================================================================================
@@ -120,8 +121,8 @@ public class CategoryRarityModelScorerTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructor_negative_maxNumOfRareFeatures_Test() throws IOException{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxNumOfRareFeatures(-1);
+    public void constructor_negative_maxNumOfRarePartitions_Test() throws IOException{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxNumOfRarePartitions(-1);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         assertScorer(scorer, params);
     }
@@ -266,31 +267,9 @@ public class CategoryRarityModelScorerTest {
     // CALCULATE SCORE SIMPLE TESTS (more advanced tests are at the CategoryRarityModelScorerAlgorithmTest)
     //==================================================================================================================
 
-    //test bug fix for negative scores which was caused by the new configuration parameter num-rare-events-factor
-    @Test
-    public void numRareEventsFactorDoesNotCauseNegetiveScoresTest(){
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5).setNumRareEventsFactor(1.0);
-        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-
-        long count = 4;
-        Map<String, Long> featureValueToCountMap = new HashMap<>();
-        String lastFeature = null;
-        for (long i = 0; i <= count; i++) {
-            lastFeature = String.format("test%d", i);
-            featureValueToCountMap.put(lastFeature, i);
-        }
-
-        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
-
-        calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100), categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-highest-count", lastFeature));
-        Assert.assertEquals(0.0, score, 0.0);
-    }
-
     @Test
     public void calculateScore_elementaryCheck_test() {
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         long count = 100;
@@ -308,13 +287,13 @@ public class CategoryRarityModelScorerTest {
         double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-count-100", featureWithCount100));
         Assert.assertEquals(0.0, score, 0.0);
         score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-zero-count", "feature-zero-count")); // The scorer should handle it as if count=1
-        Assert.assertEquals(100.0, score, 0.0);
+        Assert.assertEquals(96, score, 0.0);
 
     }
 
     @Test
-    public void calculateScore_elementaryCheck2_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+    public void calculateScore_elementaryCheck2_test(){
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         long count = 100;
@@ -327,12 +306,9 @@ public class CategoryRarityModelScorerTest {
         calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
 
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100), categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
-        model.setFeatureCount(featureWithCount100, count);
-        model.setNumOfPartitions(10);
 
-        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("test99").getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
@@ -341,7 +317,7 @@ public class CategoryRarityModelScorerTest {
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
-        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(96, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
@@ -363,7 +339,7 @@ public class CategoryRarityModelScorerTest {
 
     @Test
     public void calculateScore_testing_featureScore_name_with_model_and_no_certainty_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5)
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5)
                 .setUseCertaintyToCalculateScore(false);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
@@ -389,13 +365,13 @@ public class CategoryRarityModelScorerTest {
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
-        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(96, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
     @Test
     public void calculateScore_testing_featureScore_name_with_null_model_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-count-100").getAdeRecordReader();
@@ -406,7 +382,7 @@ public class CategoryRarityModelScorerTest {
 
     @Test
     public void calculateScore_no_model_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-zero-count").getAdeRecordReader();
@@ -417,7 +393,7 @@ public class CategoryRarityModelScorerTest {
 
     @Test
     public void calculateScore_no_feature_in_record_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         long count = 100;
@@ -440,7 +416,7 @@ public class CategoryRarityModelScorerTest {
 
     @Test
     public void calculateScore_null_context_test() throws Exception{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRarePartitions(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         long count = 100;
@@ -495,7 +471,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -516,7 +492,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -537,7 +513,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
     }
 
@@ -558,7 +534,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
     }
 
@@ -581,7 +557,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d / (enough - min + 1), score.getCertainty(), 0.0);
     }
 
@@ -604,7 +580,7 @@ public class CategoryRarityModelScorerTest {
         when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
-        Assert.assertEquals(100d, score.getScore(), 0.0);
+        Assert.assertEquals(96, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
     }
 
@@ -620,7 +596,7 @@ public class CategoryRarityModelScorerTest {
         String name = "Scorer1";
         String featureName = "sourceMachine";
         Integer maxRareCount = 10;
-        Integer maxNumOfRareFeatures = 6;
+        Integer maxNumOfRarePartitions = 6;
         Integer minimumNumberOfDistinctValuesToInfluence = 3;
         Integer enoughNumberOfDistinctValuesToInfluence = 10;
         Integer numberOfSamplesToInfluenceEnough = 10;
@@ -628,15 +604,9 @@ public class CategoryRarityModelScorerTest {
         Boolean useCertaintyToCalculateScore = true;
         String modelName = "model1";
         List<String> contextFieldNames = new ArrayList<>();
-        double numRareEventsFactor = 0.0;
 
         public CategoryRarityModelScorerParams() {
             contextFieldNames.add("username");
-        }
-
-        public CategoryRarityModelScorerParams setNumRareEventsFactor(double numRareEventsFactor) {
-            this.numRareEventsFactor = numRareEventsFactor;
-            return this;
         }
 
         public String getFeatureName() {
@@ -665,12 +635,12 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getMaxNumOfRareFeatures() {
-            return maxNumOfRareFeatures;
+        public Integer getMaxNumOfRarePartitions() {
+            return maxNumOfRarePartitions;
         }
 
-        public CategoryRarityModelScorerParams setMaxNumOfRareFeatures(Integer maxNumOfRareFeatures) {
-            this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        public CategoryRarityModelScorerParams setMaxNumOfRarePartitions(Integer maxNumOfRarePartitions) {
+            this.maxNumOfRarePartitions = maxNumOfRarePartitions;
             return this;
         }
 

@@ -65,17 +65,17 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                                      int minNumOfDistinctValuesToInfluence,
                                      int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
-                                     int maxNumOfRareFeatures,
+                                     int maxNumOfRarePartitions,
                                      double xWithValueHalfFactor,
-                                     EventModelsCacheService eventModelsCacheService,
-                                     double numRareEventsFactor) {
+                                     double minProbability,
+                                     EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
                 featureName, minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence,
                 isUseCertaintyToCalculateScore, eventModelsCacheService);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
-        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, xWithValueHalfFactor, numRareEventsFactor);
+        algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRarePartitions, xWithValueHalfFactor, minProbability);
     }
 
     @Override
@@ -123,8 +123,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         }
 
         Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
-        if (count == null) count = 1d; // The scorer should handle it as if count = 1
-        return algorithm.calculateScore((int)Math.round(count), (CategoryRarityModel)model);
+        if (count == null) count = 0d;
+        return algorithm.calculateScore((int)Math.round(count+1), (CategoryRarityModel)model);
     }
 
     public int getMinNumOfDistinctValuesToInfluence() {

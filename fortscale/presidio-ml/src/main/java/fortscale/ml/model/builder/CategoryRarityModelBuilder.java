@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
@@ -32,7 +31,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         CategoricalFeatureValue categoricalFeatureValue = getCategoricalFeatureValue(modelBuilderData);
-        Map<Pair<String, Long/*name,partitionId*/>, Double/*sum of occurrences*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
+        Map<Pair<String, Long/*name,partitionId*/>, Double/*1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
         Map<String, Long> featureValueToCountMap = castModelBuilderData(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
@@ -58,48 +57,51 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         for (Map.Entry<Pair<String, Instant>, Double> entry : categoricalFeatureValue.getHistogram().entrySet()) {
             long partitionEpochSecond = (entry.getKey().getValue().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
             Pair<String, Long> resultKey = new Pair(entry.getKey().getKey(), partitionEpochSecond);
-            result.put(resultKey, 1D);
+            result.put(resultKey, Math.min(entry.getValue(),1));
         }
 
         return result;
     }
 
     Map<Long, Integer> calcOccurrencesToNumOfDistinctPartitions(Map<Pair<String, Long>, Double> sequenceReducedData) {
-
-        Map<String, Set<Long>> nameToPartitionsSet = new HashMap<>();
-        for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
-            String name = entry.getKey();
-
-            //filter features (e.g: "N/A" features)
-            if(!filter.contains(name)) {
-                Set<Long> partitionsSet = nameToPartitionsSet.computeIfAbsent(name, k -> new HashSet<>());
-                partitionsSet.add(entry.getValue());
-            }
+        if(sequenceReducedData.isEmpty()){
+            return Collections.emptyMap();
         }
 
-        Map<Long, Set<Long>> occurrencesToPartitionSet = new HashMap<>();
-        Map<Long, Set<String>> occurrencesToNameSet = new HashMap<>();
-        for (Map.Entry<String, Set<Long>> nameToPartitionsEntry : nameToPartitionsSet.entrySet()) {
-            long numOfOccurrences = nameToPartitionsEntry.getValue().size();
+        Map<String, Map<Long, Double>> nameToPartitionsMap = new HashMap<>();
+        //filter features (e.g: "N/A" features)
+        sequenceReducedData.entrySet().forEach(entry -> {
+            String name = entry.getKey().getKey();
+            if (!filter.contains(name)) {
+                Map<Long, Double> partitionsMap = nameToPartitionsMap.computeIfAbsent(name, k -> new HashMap<>());
+                partitionsMap.put(entry.getKey().getValue(), entry.getValue());
+            }
+        });
+
+        Map<Integer, Map<Long, Double>> occurrencesToPartitionMap = new HashMap<>();
+        for (Map.Entry<String, Map<Long, Double>> nameToPartitionsEntry : nameToPartitionsMap.entrySet()) {
+            int numOfOccurrences = (int) Math.ceil(nameToPartitionsEntry.getValue().values().stream().mapToDouble(v->v).sum());
             // filling occurrencesToPartitionSet
-            Set<Long> occurrencesPartitionsSet = occurrencesToPartitionSet.get(numOfOccurrences);
-            if (occurrencesPartitionsSet == null) {
-                occurrencesPartitionsSet = new HashSet<>();
-                occurrencesToPartitionSet.put(numOfOccurrences,occurrencesPartitionsSet);
+            Map<Long, Double> occurrencesPartitionMap = occurrencesToPartitionMap.computeIfAbsent(numOfOccurrences, k -> new HashMap<>());
+            for (Map.Entry<Long, Double> entry: nameToPartitionsEntry.getValue().entrySet()){
+                occurrencesPartitionMap.compute(entry.getKey(), (k,v) -> v == null ? entry.getValue() : Math.min(v + entry.getValue(),1));
             }
-            occurrencesPartitionsSet.addAll(nameToPartitionsEntry.getValue());
-
-
-            //filling occurrencesToNameSet
-            Set<String> occurrencesNameSet = occurrencesToNameSet.get(numOfOccurrences);
-            if (occurrencesNameSet == null) {
-                occurrencesNameSet = new HashSet<>();
-                occurrencesToNameSet.put(numOfOccurrences,occurrencesNameSet);
-            }
-            occurrencesNameSet.add(nameToPartitionsEntry.getKey());
         }
 
-        Map<Long, Integer> ret = occurrencesToPartitionSet.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> Math.min(e.getValue().size(), occurrencesToNameSet.get(e.getKey()).size())));
+        int maxOccurrences = occurrencesToPartitionMap.keySet().stream().mapToInt(v->v).max().orElseThrow(NoSuchElementException::new);
+        Map<Long, Double> partitionMap = new HashMap<>();
+        Map<Long, Integer> ret = new HashMap<>();
+        for(int i = 1; i<=maxOccurrences; i++){
+            Map<Long, Double> occurrencePartitionMap = occurrencesToPartitionMap.get(i);
+            if(occurrencePartitionMap != null){
+                for (Map.Entry<Long, Double> entry: occurrencePartitionMap.entrySet()){
+                    partitionMap.compute(entry.getKey(), (k,v) -> v == null ? entry.getValue() : Math.min(v + entry.getValue(), 1));
+                }
+            }
+            double numOfDifferentPartitions = partitionMap.values().stream().mapToDouble(v->v).sum();
+            ret.put((long)i, (int) Math.ceil(numOfDifferentPartitions));
+        }
+
         return ret;
     }
 

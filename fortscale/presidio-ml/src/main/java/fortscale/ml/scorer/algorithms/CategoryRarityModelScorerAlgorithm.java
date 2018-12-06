@@ -8,82 +8,83 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 /**
- * For documentation and explanation of how this scoring algorithm works - refer to https://fortscale.atlassian.net/wiki/display/FSC/category+rarity+model
+ * For documentation and explanation of how this scoring algorithm works - refer to https://wiki.na.rsa.net/display/FSC/category+rarity+model
  */
 public class CategoryRarityModelScorerAlgorithm {
     private static final Logger logger = Logger.getLogger(CategoryRarityModelScorerAlgorithm.class);
 
     private static final double MIN_POSSIBLE_SCORE = 1;
     private static final double MAX_POSSIBLE_SCORE = 100;
-    private static final double RARITY_SUM_EXPONENT = 1.8;
 
     private int maxRareCount;
-    private int maxNumOfRareFeatures;
+    private int maxNumOfRarePartitions;
     private double xWithValueHalfFactor;
-    private double numRareEventsFactor;
+    private double minProbability;
 
-
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor, double numRareEventsFactor) {
-        assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRarePartitions,
+                                              double xWithValueHalfFactor, double minProbability) {
+        assertMaxNumOfRarePartitionsValue(maxNumOfRarePartitions);
         assertMaxRareCountValue(maxRareCount);
-        if(maxRareCount > 99) {
-            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
-            throw new RuntimeException();
-        }
-        if(maxNumOfRareFeatures > 99) {
-            logger.warn(String.format("maxNumOfRareFeatures is suspiciously big: %d", maxNumOfRareFeatures));
-            throw new RuntimeException();
-        }
+        Assert.isTrue(minProbability>=0 && minProbability < 1, String.format("minProbability should belong to the range [0,1). minProbability is %f", minProbability));
+
         this.maxRareCount = maxRareCount;
-        this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        this.maxNumOfRarePartitions = maxNumOfRarePartitions;
         this.xWithValueHalfFactor = xWithValueHalfFactor;
-        this.numRareEventsFactor = numRareEventsFactor;
+        this.minProbability = minProbability;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {
         Assert.notNull(maxRareCount, "maxRareCount must not be null");
         Assert.isTrue(maxRareCount >= 0, String.format("maxRareCount must be >= 0: %d", maxRareCount));
+        if(maxRareCount > 99) {
+            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
+            throw new RuntimeException();
+        }
     }
 
-    public static void assertMaxNumOfRareFeaturesValue(Integer maxNumOfRareFeatures) {
-        Assert.notNull(maxNumOfRareFeatures, "maxNumOfRareFeatures must not be null");
-        Assert.isTrue(maxNumOfRareFeatures >= 0, String.format("maxNumOfRareFeatures must be >= 0: %d", maxNumOfRareFeatures));
+    public static void assertMaxNumOfRarePartitionsValue(Integer maxNumOfRarePartitions) {
+        Assert.notNull(maxNumOfRarePartitions, "maxNumOfRarePartitions must not be null");
+        Assert.isTrue(maxNumOfRarePartitions >= 0, String.format("maxNumOfRarePartitions must be >= 0: %d", maxNumOfRarePartitions));
+        if(maxNumOfRarePartitions > 99) {
+            logger.warn(String.format("maxNumOfRarePartitions is suspiciously big: %d", maxNumOfRarePartitions));
+            throw new RuntimeException();
+        }
     }
 
     public double calculateScore(long featureCount, CategoryRarityModel model) {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
-        Assert.isTrue(maxRareCount  <= model.getBuckets().size() / 2,
-                String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().size() / 2, maxRareCount));
-        long totalEvents = model.getNumOfSamples();
-        if (totalEvents == 0 || featureCount > maxRareCount) {
+        Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getBuckets().size(),
+                String.format("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
+                                "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d",
+                        maxNumOfRarePartitions, maxRareCount, model.getBuckets().size()));
+
+        if (featureCount > maxRareCount || featureCount > maxNumOfRarePartitions) {
             return 0D;
         }
-        double numRareEvents = numRareEventsFactor;
-        double numDistinctRareFeatures = 0;
+
         List<Double> buckets = model.getBuckets();
-        for (int i = 0; i < featureCount; i++) {
-            numRareEvents += (i + 1) * buckets.get(i);
-            numDistinctRareFeatures += buckets.get(i);
-        }
+        double numOfDistinctPartitionsContainingRareFeatureValue = 1 + buckets.get((int) featureCount-1);
         for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
-            double commonnessDiscount = calcCommonnessDiscounting(i - featureCount + 2);
-            numRareEvents += (i + 1) * buckets.get(i) * commonnessDiscount;
-            numDistinctRareFeatures += buckets.get(i) * commonnessDiscount;
+            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
+            double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
+            numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
         }
-        numRareEvents = Math.min(numRareEvents,totalEvents);
-        double commonEventProbability = 1 - numRareEvents / totalEvents;
-        double numRareFeaturesDiscount = Math.pow(Math.max(0, (maxNumOfRareFeatures - numDistinctRareFeatures) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
-        double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
-         return Math.floor(MAX_POSSIBLE_SCORE * score);
+        double rareValueProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
+        rareValueProbability = rareValueProbability <= minProbability ?
+                0.0 : (rareValueProbability - minProbability) / (1 - minProbability);
+        double numOfDistinctPartitionsContainingRareFeatureValueDiscount = calcCommonnessDiscounting(maxNumOfRarePartitions, numOfDistinctPartitionsContainingRareFeatureValue);
+        double featureCountDiscount = calcCommonnessDiscounting(maxRareCount, featureCount);
+        double score = rareValueProbability * Math.min(featureCountDiscount,numOfDistinctPartitionsContainingRareFeatureValueDiscount);
+        return Math.floor(MAX_POSSIBLE_SCORE * score);
     }
 
-    private double calcCommonnessDiscounting(double occurrence) {
+    private double calcCommonnessDiscounting(int range, double occurrence) {
         // make sure getMaxRareCount() will be scored less than MIN_POSSIBLE_SCORE - so once we multiply
         // by MAX_POSSIBLE_SCORE (inside calculateScore function) we get a rounded score of 0
         return Sigmoid.calcLogisticFunc(
-                maxRareCount * xWithValueHalfFactor,
-                maxRareCount,
+                range * xWithValueHalfFactor,
+                range,
                 (MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) * 0.99999999,
                 occurrence - 1);
     }
@@ -92,7 +93,7 @@ public class CategoryRarityModelScorerAlgorithm {
         return maxRareCount;
     }
 
-    public int getMaxNumOfRareFeatures() {
-        return maxNumOfRareFeatures;
+    public int getMaxNumOfRarePartitions() {
+        return maxNumOfRarePartitions;
     }
 }

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
-	private static final double SMOOTH_BUCKET_MAX_VALUE = 1;
 
 	private Integer timeResolution;
 	private Integer bucketSize;
@@ -31,7 +30,7 @@ public class TimeModel implements PartitionedDataModel {
 	private CategoryRarityModel categoryRarityModel;
 	private Long numOfSamples;
 
-	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
+	public void init(int timeResolution, int bucketSize, int categoryRarityModelNumOfBuckets, Map<?, Double> timeToCounter, long numberOfPartitions,
 					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
 		Assert.isTrue(timeResolution % bucketSize == 0,"timeResolution must be multiplication of bucketSize");
 
@@ -41,18 +40,18 @@ public class TimeModel implements PartitionedDataModel {
 		Map<Long/*resolutionId*/, Map<Long/*time*/, Double /*counter*/>> resolutionTimeCounters = groupCountersByResolutionId(convertedTimeToCounter);
 		Map</*resolutionId*/Long,/*bucketHits*/ List<Double>> resolutionIdToBucketHits = createResolutionIdToBucketHitsMap(resolutionTimeCounters);
 		numOfSamples = getNumOfSamples(resolutionIdToBucketHits);
-		List<Double> bucketHits = mergeBuckets(resolutionIdToBucketHits);
+		List<Double> bucketHits = mergeBucketHits(resolutionIdToBucketHits);
 
 		// create smoothed buckets for each resolution id
-		Map<Long, List<Double>> resolutionIdToSmoothedBuckets = createResolutionIdToSmoothedBucketsMap(resolutionIdToBucketHits);
+		Map<Long, List<Double>> resolutionIdToSmoothedBuckets = createResolutionIdToSmoothedBucketsMap(resolutionIdToBucketHits, bucketHits);
 
 		// fill smooth buckets and smoothedBucketsThatWereHitToNubOfBuckets (category rarity model data)
 		smoothedBuckets = createInitializedBuckets();
-		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNubOfBuckets = new HashMap<>();
-		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNubOfBuckets,bucketHits);
+		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNumOfBuckets = new HashMap<>();
+		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNumOfBuckets,bucketHits);
 
 		// build categorical model
-		buildCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNubOfBuckets);
+		buildCategoryRarityModel(categoryRarityModelNumOfBuckets, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNumOfBuckets);
 
 		// fill metrics data
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
@@ -68,8 +67,8 @@ public class TimeModel implements PartitionedDataModel {
 
 	}
 
-	private void buildCategoryRarityModel(int maxRareTimestampCount, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets) {
-		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareTimestampCount * 2);
+	private void buildCategoryRarityModel(int categoryRarityModelNumOfBuckets, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets) {
+		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(categoryRarityModelNumOfBuckets);
 		categoryRarityModelBuilderConf.setPartitionsResolutionInSeconds(timeResolution);
 		categoryRarityModelBuilderConf.setEntriesToSaveInModel(getNumOfBuckets());
 
@@ -88,13 +87,13 @@ public class TimeModel implements PartitionedDataModel {
 				smoothedBuckets.set(i,smoothedBuckets.get(i) + resolutionIdBucketHit);
 				if( bucketHits.get(i)>0 && resolutionIdBucketHit >0)
 				{
-					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),SMOOTH_BUCKET_MAX_VALUE);
+					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),resolutionIdBucketHit);
 				}
 			}
 		}
 	}
 
-	private List<Double> mergeBuckets(Map<Long, List<Double>> resolutionIdToBucketHits) {
+	private List<Double> mergeBucketHits(Map<Long, List<Double>> resolutionIdToBucketHits) {
 		List<Double> result = createInitializedBuckets();
 		for (Map.Entry<Long, List<Double>> entry:resolutionIdToBucketHits.entrySet()){
 			List<Double> bucketHits = entry.getValue();
@@ -110,9 +109,9 @@ public class TimeModel implements PartitionedDataModel {
 		return timeToCounter.entrySet().stream().collect(Collectors.toMap(entry-> ConversionUtils.convertToLong(entry.getKey()), Map.Entry::getValue));
 	}
 
-	private Map<Long, List<Double>> createResolutionIdToSmoothedBucketsMap(Map<Long, List<Double>> resolutionIdToBucketHits) {
+	private Map<Long, List<Double>> createResolutionIdToSmoothedBucketsMap(Map<Long, List<Double>> resolutionIdToBucketHits, List<Double> bucketHits) {
 		return resolutionIdToBucketHits.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, e->calcSmoothedBuckets(e.getValue())));
+				.collect(Collectors.toMap(Map.Entry::getKey, e-> calcSmoothedBucketsForResolutionId(bucketHits, e.getValue())));
 	}
 
 	/**
@@ -153,9 +152,9 @@ public class TimeModel implements PartitionedDataModel {
 			Map<Long, Double> timeCounters = resoutlionTimeCounters.get(timeResolutionId);
 			if (timeCounters == null) {
 				timeCounters = new HashMap<>();
+				resoutlionTimeCounters.put(timeResolutionId, timeCounters);
 			}
 			timeCounters.put(entry.getKey(), entry.getValue());
-			resoutlionTimeCounters.put(timeResolutionId, timeCounters);
 		}
 		return resoutlionTimeCounters;
 	}
@@ -182,23 +181,25 @@ public class TimeModel implements PartitionedDataModel {
 		return bucketHits;
 	}
 
-	private List<Double> calcSmoothedBuckets(List<Double> bucketHits) {
+	private List<Double> calcSmoothedBucketsForResolutionId(List<Double> bucketHits, List<Double> resolutionIdBucketHits) {
+		int smoothingDistance = Math.min(SMOOTHING_DISTANCE, (bucketHits.size() - 1) / 2);
 		List<Double> smoothedBucketHits = createInitializedBuckets();
-		for (int bucketInd = 0; bucketInd < bucketHits.size(); bucketInd++) {
-			double hits = bucketHits.get(bucketInd);
+		for (int bucketInd = 0; bucketInd < resolutionIdBucketHits.size(); bucketInd++) {
+			double hits = resolutionIdBucketHits.get(bucketInd);
 			if (hits > 0) {
-				addSmoothedHits(smoothedBucketHits, bucketInd, hits, SMOOTHING_DISTANCE);
+				// The total number of hits in this bucket defines its influence over the neighbours buckets.
+				double totalHits = bucketHits.get(bucketInd);
+				addSmoothedHitsForResolutionId(smoothedBucketHits, bucketInd, totalHits, smoothingDistance);
 			}
 		}
 		return smoothedBucketHits;
 	}
 
-	private void addSmoothedHits(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
-		smoothingDistance = Math.min(smoothingDistance, (smoothedBucketHits.size() - 1) / 2);
-		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
+	private void addSmoothedHitsForResolutionId(List<Double> smoothedBucketHits, int bucketInd, double hits, int smoothingDistance) {
+		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, 1);
 		for (int distance = 1; distance <= smoothingDistance; distance++) {
-			double addVal = hits * Sigmoid.calcLogisticFunc(
-					smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
+			double addVal = Sigmoid.calcLogisticFunc(
+					smoothingDistance * 0.33, smoothingDistance, 0.1 / hits, distance);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
 		}
@@ -206,7 +207,7 @@ public class TimeModel implements PartitionedDataModel {
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {
 		index = (index + buckets.size()) % buckets.size();
-		buckets.set(index, Math.min(buckets.get(index) + add, SMOOTH_BUCKET_MAX_VALUE));
+		buckets.set(index, Math.max(buckets.get(index), add));
 	}
 
 	private int getBucketIndex(long epochSeconds) {

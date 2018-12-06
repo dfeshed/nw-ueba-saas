@@ -22,7 +22,7 @@ public class TimeModelScorerConfTest {
 	private static String getTimeModelScorerConfString(
 			String scorerType, String name, JSONObject modelInfoJsonObject,
 			Integer minNumOfSamplesToInfluence, Integer enoughNumOfSamplesToInfluence,
-			Boolean isUseCertaintyToCalculateScore, Integer maxRareTimestampCount, Integer maxNumOfRareTimestamps, Double xWithValueHalfFactor) {
+			Boolean isUseCertaintyToCalculateScore, Integer maxRareCount, Integer maxNumOfRarePartitions, Double xWithValueHalfFactor) {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("type", scorerType);
@@ -34,10 +34,10 @@ public class TimeModelScorerConfTest {
 			jsonObject.put("number-of-partitions-to-influence-enough", enoughNumOfSamplesToInfluence);
 		if (isUseCertaintyToCalculateScore != null)
 			jsonObject.put("use-certainty-to-calculate-score", isUseCertaintyToCalculateScore);
-		if (maxRareTimestampCount != null)
-			jsonObject.put("max-rare-timestamp-count", maxRareTimestampCount);
-		if (maxNumOfRareTimestamps != null)
-			jsonObject.put("max-num-of-rare-timestamps", maxNumOfRareTimestamps);
+		if (maxRareCount != null)
+			jsonObject.put("max-rare-count", maxRareCount);
+		if (maxNumOfRarePartitions != null)
+			jsonObject.put("max-num-of-rare-partitions", maxNumOfRarePartitions);
 		if (xWithValueHalfFactor != null)
 			jsonObject.put("x-with-value-half-factor", xWithValueHalfFactor);
 
@@ -64,8 +64,8 @@ public class TimeModelScorerConfTest {
 		Assert.assertEquals(50, conf.getMinNumOfSamplesToInfluence());
 		Assert.assertEquals(100, conf.getEnoughNumOfSamplesToInfluence());
 		Assert.assertEquals(true, conf.isUseCertaintyToCalculateScore());
-		Assert.assertEquals(36, conf.getMaxRareTimestampCount());
-		Assert.assertEquals(42, conf.getMaxNumOfRareTimestamps());
+		Assert.assertEquals(36, conf.getMaxRareCount());
+		Assert.assertEquals(42, conf.getMaxNumOfRarePartitions());
 		Assert.assertTrue(0.25 == conf.getXWithValueHalfFactor());
 	}
 
@@ -92,11 +92,11 @@ public class TimeModelScorerConfTest {
 				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE,
 				conf.isUseCertaintyToCalculateScore());
 		Assert.assertEquals(
-				TimeModelScorerConf.DEFAULT_MAX_RARE_TIMESTAMP_COUNT,
-				conf.getMaxRareTimestampCount());
+				TimeModelScorerConf.DEFAULT_MAX_RARE_COUNT,
+				conf.getMaxRareCount());
 		Assert.assertEquals(
-				TimeModelScorerConf.DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS,
-				conf.getMaxNumOfRareTimestamps());
+				TimeModelScorerConf.DEFAULT_MAX_NUM_OF_RARE_PARTITIONS,
+				conf.getMaxNumOfRarePartitions());
 		Assert.assertTrue(
 				TimeModelScorerConf.X_WITH_VALUE_HALF_FACTOR == conf.getXWithValueHalfFactor());
 	}

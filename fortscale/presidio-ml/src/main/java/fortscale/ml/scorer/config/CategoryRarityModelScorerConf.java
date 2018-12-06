@@ -14,6 +14,7 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
 
     public static final int NUM_RARE_EVENTS_FACTOR = 1;
     public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+    public static final double MIN_PROBABILITY = 0.7;
 
     @JsonProperty("minimum-number-of-distinct-values-to-influence")
     private int minNumOfDistinctValuesToInfluence;
@@ -21,24 +22,24 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     private int enoughNumOfDistinctValuesToInfluence;
     @JsonProperty("max-rare-count")
     private Integer maxRareCount = null;
-    @JsonProperty("max-num-of-rare-features")
-    private Integer maxNumOfRareFeatures = null;
+    @JsonProperty("max-num-of-rare-partitions")
+    private Integer maxNumOfRarePartitions = null;
     @JsonProperty("x-with-value-half-factor")
     private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
-    @JsonProperty("num-rare-events-factor")
-    private double numRareEventsFactor = NUM_RARE_EVENTS_FACTOR;
+    @JsonProperty("min-probability")
+    private double minProbability = MIN_PROBABILITY;
 
     @JsonCreator
     public CategoryRarityModelScorerConf(@JsonProperty("name") String name,
                                          @JsonProperty("model") ModelInfo modelInfo,
                                          @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
                                          @JsonProperty("max-rare-count")Integer maxRareCount,
-                                         @JsonProperty("max-num-of-rare-features") Integer maxNumOfRareFeatures) {
+                                         @JsonProperty("max-num-of-rare-partitions") Integer maxNumOfRarePartitions) {
         super(name, modelInfo, additionalModelInfos);
-        CategoryRarityModelScorerAlgorithm.assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
+        CategoryRarityModelScorerAlgorithm.assertMaxNumOfRarePartitionsValue(maxNumOfRarePartitions);
         CategoryRarityModelScorerAlgorithm.assertMaxRareCountValue(maxRareCount);
         this.maxRareCount = maxRareCount;
-        this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        this.maxNumOfRarePartitions = maxNumOfRarePartitions;
     }
 
     public CategoryRarityModelScorerConf setMinNumOfDistinctValuesToInfluence(Integer minNumOfDistinctValuesToInfluence) {
@@ -65,8 +66,8 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
         return maxRareCount;
     }
 
-    public int getMaxNumOfRareFeatures() {
-        return maxNumOfRareFeatures;
+    public int getMaxNumOfRarePartitions() {
+        return maxNumOfRarePartitions;
     }
 
     public double getXWithValueHalfFactor() {
@@ -77,12 +78,12 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
         this.xWithValueHalfFactor = xWithValueHalfFactor;
     }
 
-    public double getNumRareEventsFactor() {
-        return numRareEventsFactor;
+    public double getMinProbability() {
+        return minProbability;
     }
 
-    public void setNumRareEventsFactor(double numRareEventsFactor) {
-        this.numRareEventsFactor = numRareEventsFactor;
+    public void setMinProbability(double minProbability) {
+        this.minProbability = minProbability;
     }
 
     @Override
