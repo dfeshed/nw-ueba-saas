@@ -24,23 +24,35 @@ import { debug } from '@ember/debug';
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 /**
- * Action creator for notifying all agent status
- * @method notifyAgentStatus
+ * Action creator for polling all agent status
+ * @method pollAgentStatus
  * @private
  * @returns {Object}
  */
-const _notifyAgentStatus = () => {
+const pollAgentStatus = () => {
   return (dispatch, getState) => {
-    const { hostList, stopAgentStream } = getState().endpoint.machines;
-    if (stopAgentStream) {
-      stopAgentStream();
-    }
-    if (hostList.length <= 0) {
+    let { hostList } = getState().endpoint.machines;
+    const { hostDetails } = getState().endpoint.overview;
+    hostList = hostList || [];
+    if (hostList.length <= 0 && !hostDetails) {
       return;
     }
-    Machines.notifyAgentStatus({
-      onInit: (stopStreamFn) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED, payload: stopStreamFn }),
-      onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS, payload })
+    const machineAgentIds = hostList.map((host) => host.id);
+
+    if (hostDetails && !machineAgentIds.find((id) => id === hostDetails.id)) {
+      machineAgentIds.push(hostDetails.id);
+    }
+    dispatch({
+      type: ACTION_TYPES.FETCH_AGENT_STATUS,
+      promise: Machines.pollAgentStatus({ machineAgentIds }),
+      meta: {
+        onSuccess: (response) => {
+          debug(`ACTION_TYPES.FETCH_AGENT_STATUS ${_stringifyObject(response)}`);
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.FETCH_AGENT_STATUS, response);
+        }
+      }
     });
   };
 };
@@ -61,7 +73,7 @@ const getPageOfMachines = () => {
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
-          dispatch(_notifyAgentStatus());
+          dispatch(pollAgentStatus());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
@@ -133,7 +145,7 @@ const getNextMachines = () => {
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_NEXT_MACHINES ${_stringifyObject(response)}`);
-          dispatch(_notifyAgentStatus());
+          dispatch(pollAgentStatus());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_NEXT_MACHINES, response);
@@ -357,5 +369,6 @@ export {
   onHostSelection,
   setHostListPropertyTab,
   setFocusedHostIndex,
-  triggerMachineActions
+  triggerMachineActions,
+  pollAgentStatus
 };

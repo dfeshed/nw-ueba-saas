@@ -93,3 +93,24 @@ test('The CHANGE_ALERT_TAB sets new tab to state', function(assert) {
   const endState = reducer(previous, { type: ACTION_TYPES.CHANGE_ALERT_TAB, payload: { tabName: 'HIGH' } });
   assert.deepEqual(endState, expectedEndState);
 });
+
+test('FETCH_AGENT_STATUS', function(assert) {
+  const payload = { data: [{ agentId: '123', scanStatus: 'idle' }, { agentId: '134', scanStatus: 'scanPending' }] };
+  const previous1 = Immutable.from({ hostDetails: null });
+  const result1 = reducer(previous1,
+    { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload });
+
+  assert.deepEqual(result1.hostDetails, null, 'hostDetails is null');
+
+  const previous2 = Immutable.from({ hostDetails: { id: '123', agentStatus: { agentId: '123', scanStatus: 'scanning' } } });
+  const result2 = reducer(previous2,
+    { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload });
+
+  assert.equal(result2.hostDetails.agentStatus.scanStatus, 'idle', 'updated scanStatus is idle');
+
+  const previous3 = Immutable.from({ hostDetails: { id: '123', agentStatus: { agentId: '123', scanStatus: 'scanning' } } });
+  const result3 = reducer(previous3,
+    { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: null });
+
+  assert.equal(result3.hostDetails.agentStatus.scanStatus, 'scanning', 'scanStatus is not updated');
+});

@@ -21,10 +21,9 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/machine/remove',
         requestDestination: '/ws/endpoint/machine/remove'
       },
-      notify: {
-        subscriptionDestination: '/topic/agentstatus/notifications',
-        requestDestination: '/dummy/agentstatus/notifications',
-        cancelDestination: '/ws/endpoint/agent/cancel'
+      getAgentStatus: {
+        subscriptionDestination: '/user/queue/endpoint/machine/status',
+        requestDestination: '/ws/endpoint/machine/status'
       },
       downloadFileToServer: {
         subscriptionDestination: '/user/queue/endpoint/command/download-file',

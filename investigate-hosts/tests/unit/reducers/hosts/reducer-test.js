@@ -113,14 +113,6 @@ test('The TOGGLE_MACHINE_SELECTED action will toggles the machine selections', f
   assert.equal(removeResult.selectedHostList.length, 2, 'expected to remove the id from the list');
 });
 
-test('The FETCH_AGENT_STATUS action will update the agent status', function(assert) {
-  const previous = Immutable.from({
-    hostList: HOST_LIST
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: { 2: { agentId: 2, scanStatus: 'idle' } } });
-  assert.equal(result.hostList[1].agentStatus.scanStatus, 'idle');
-});
-
 test('The USER_LEFT_HOST_LIST_PAGE action reset the export link', function(assert) {
   const previous = Immutable.from({
     hostExportLinkId: '123'
@@ -333,4 +325,22 @@ test('The GET_LIST_OF_SERVICES will set all the service to state', function(asse
   });
   const newEndState = reducer(previous, successAction);
   assert.equal(newEndState.listOfServices.length, 2);
+});
+
+test('FETCH_AGENT_STATUS', function(assert) {
+  const payload = { data: [{ agentId: '123', scanStatus: 'idle' }, { agentId: '134', scanStatus: 'scanPending' }] };
+  const previous1 = Immutable.from({ hostList: [] });
+  const result1 = reducer(previous1, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload });
+
+  assert.equal(result1.hostList.length, 0, 'hostList is empty');
+
+  const previous2 = Immutable.from({ hostList: [{ id: '123', agentStatus: { agentId: '123', scanStatus: 'scanning' } }] });
+  const result2 = reducer(previous2, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload });
+
+  assert.equal(result2.hostList[0].agentStatus.scanStatus, 'idle');
+
+  const previous3 = Immutable.from({ hostList: [{ id: '123', agentStatus: { agentId: '123', scanStatus: 'scanning' } }] });
+  const result3 = reducer(previous3, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: null });
+
+  assert.equal(result3.hostList[0].agentStatus.scanStatus, 'scanning');
 });

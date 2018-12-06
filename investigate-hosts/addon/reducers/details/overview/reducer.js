@@ -12,6 +12,26 @@ const initialState = Immutable.from({
   activeAlertTab: 'critical'
 });
 
+/**
+ * Updating the agent status.
+ * @param state
+ * @param payload
+ * @private
+ */
+const _updateAgentStatus = (state, { payload }) => {
+  const { hostDetails } = state;
+  if (hostDetails) {
+    const agentStatus = payload ? payload.data.find((d) => d.agentId === hostDetails.id) : hostDetails.agentStatus;
+    return state.merge({
+      hostDetails: {
+        ...hostDetails,
+        agentStatus
+      }
+    });
+  }
+  return state;
+};
+
 const hostDetails = reduxActions.handleActions({
 
   [ACTION_TYPES.RESET_INPUT_DATA]: (s) => s.merge(initialState),
@@ -39,7 +59,9 @@ const hostDetails = reduxActions.handleActions({
 
   [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('downloadId', null),
 
-  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => state.set('activeAlertTab', tabName)
+  [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => state.set('activeAlertTab', tabName),
+
+  [ACTION_TYPES.FETCH_AGENT_STATUS]: (state, action) => _updateAgentStatus(state, action)
 
 }, initialState);
 

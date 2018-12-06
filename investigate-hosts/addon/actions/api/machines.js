@@ -1,9 +1,6 @@
 import { lookup } from 'ember-dependency-lookup';
 import { addFilter } from 'investigate-hosts/actions/utils/query-util';
 
-// NOOP function to replace Ember.K
-const NOOP = () => { };
-
 /**
  * Executes a websocket fetch call for all services and returns a Promise.
  *
@@ -181,23 +178,18 @@ const deleteHosts = (agentIds) => {
 };
 
 /**
- * Executes a websocket call to notify the agent scan status
+ * Executes a websocket call to poll the agent scan status
  *
- * @method notifyAgentStatus
+ * @method pollAgentStatus
  * @public
  * @returns {Promise}
  */
-const notifyAgentStatus = ({ onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) => {
+const pollAgentStatus = (data) => {
   const request = lookup('service:request');
-  return request.streamRequest({
-    method: 'notify',
+  return request.promiseRequest({
+    method: 'getAgentStatus',
     modelName: 'agent',
-    query: {},
-    streamOptions: { requireRequestId: false },
-    onInit,
-    onResponse,
-    onCompleted,
-    onError
+    query: { data }
   });
 };
 
@@ -224,6 +216,6 @@ export default {
   startScanRequest,
   stopScanRequest,
   deleteHosts,
-  notifyAgentStatus,
+  pollAgentStatus,
   getContext
 };

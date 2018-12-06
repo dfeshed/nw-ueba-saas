@@ -70,7 +70,7 @@ const _toggleMachineSelection = (state, payload) => {
   return state.set('selectedHostList', selected);
 };
 /**
- * Updating the agent status. Agent status is coming in as stream, so updating only matching agent id.
+ * Updating the agent status. updating only matching agent id.
  * @param state
  * @param payload
  * @returns {{hostList: *, agentStatus: *}}
@@ -78,19 +78,21 @@ const _toggleMachineSelection = (state, payload) => {
  */
 const _updateAgentStatus = (state, { payload }) => {
   const { hostList } = state;
-  const list = hostList.map((item) => {
-    const agentStatus = payload ? payload[item.id] : null;
-
-    if (agentStatus) {
-      return {
-        ...item,
-        agentStatus
-      };
-    } else {
-      return item;
-    }
-  });
-  return state.merge({ hostList: list });
+  if (hostList) {
+    const list = hostList.map((item) => {
+      const agentStatus = payload ? payload.data.find((d) => d.agentId === item.id) : item.agentStatus;
+      if (agentStatus) {
+        return {
+          ...item,
+          agentStatus
+        };
+      } else {
+        return item;
+      }
+    });
+    return state.merge({ hostList: list });
+  }
+  return state;
 };
 
 const _toggleIconVisibility = (state, { id, flag }) => {
@@ -144,8 +146,6 @@ const hosts = reduxActions.handleActions({
   [ACTION_TYPES.SET_FOCUSED_HOST]: (state, { payload }) => state.set('focusedHost', payload),
 
   [ACTION_TYPES.SET_FOCUSED_HOST_INDEX]: (state, action) => state.set('focusedHostIndex', action.payload),
-
-  [ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopAgentStream', payload),
 
   [ACTION_TYPES.SET_HOST_COLUMN_SORT]: (state, { payload }) => state.set('hostColumnSort', [ payload ]),
 
