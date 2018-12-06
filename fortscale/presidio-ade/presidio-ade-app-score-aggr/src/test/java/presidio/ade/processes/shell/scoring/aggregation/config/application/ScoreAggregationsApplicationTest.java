@@ -185,9 +185,9 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
         // score enriched and build score aggregation
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
         // each scored enrich should contain at least one document with score>0
-//        assertScoredEnrichedEventsCreated(0D, generatedData);
+        assertScoredEnrichedEventsCreated(0D, generatedData);
         // scored aggregations should contain records with values>0 sinces their are scored enriched events
-//        assertScoredAggregationCollectionsCreated(0D);
+        assertScoredAggregationCollectionsCreated(0D);
     }
 
     private void generateEnrichedRawModels() throws GeneratorException {

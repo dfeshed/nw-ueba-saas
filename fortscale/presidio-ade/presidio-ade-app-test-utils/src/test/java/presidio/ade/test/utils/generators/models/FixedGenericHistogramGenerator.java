@@ -2,6 +2,7 @@ package presidio.ade.test.utils.generators.models;
 
 import fortscale.common.util.GenericHistogram;
 import presidio.data.domain.event.OperationType;
+import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.generators.fileop.CyclicOperationTypeGenerator;
 
 /**
@@ -17,7 +18,11 @@ public class FixedGenericHistogramGenerator implements IGenericHistogramGenerato
         CyclicOperationTypeGenerator fileOperationTypeGenerator = new CyclicOperationTypeGenerator();
         for (OperationType  operationType :
                 fileOperationTypeGenerator.getValues()) {
-                this.genericHistogram.add(operationType.toString(),3D);
+            double count = 1D;
+            if(operationType.getName().equals(FILE_OPERATION_TYPE.FILE_CENTRAL_ACCESS_POLICY_CHANGED.value)){
+                count = 10D;
+            }
+            this.genericHistogram.add(operationType.toString(),count);
         }
         this.numOfPartitions = 30;
         this.genericHistogram.setNumberOfPartitions(numOfPartitions);
