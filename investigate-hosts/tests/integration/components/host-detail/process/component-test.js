@@ -5,6 +5,9 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import sinon from 'sinon';
+import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
+import analyzeCreators from 'investigate-shared/actions/data-creators/file-analysis-creators';
+
 import {
   processDetails,
   processList,
@@ -13,7 +16,19 @@ import {
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let setState;
+let setState, modifiedList, modifiedTree;
+const fileProperties = {
+  checksum256: 'test',
+  score: 11,
+  downloadInfo: { status: 'Downloaded' }
+};
+const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
+const getFileAnalysisDataSpy = sinon.spy(analyzeCreators, 'getFileAnalysisData');
+
+const spys = [
+  downloadFilesToServerSpy,
+  getFileAnalysisDataSpy
+];
 
 module('Integration | Component | endpoint host detail/process', function(hooks) {
   setupRenderingTest(hooks, {
@@ -27,10 +42,17 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     setState = (state) => {
       applyPatch(state);
     };
+    modifiedList = processList.map((data) => ({ ...data, fileProperties }));
+    modifiedTree = processTree.map((data) => ({ ...data, fileProperties }));
   });
 
   hooks.afterEach(function() {
     revertPatch();
+    spys.forEach((s) => s.resetHistory());
+  });
+
+  hooks.after(function() {
+    spys.forEach((s) => s.restore());
   });
 
   test('it renders data when isProcessDataEmpty is true', async function(assert) {
@@ -238,6 +260,155 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await click('.file-status-button .rsa-form-button');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination').length, 1, 'Edit file status modal has appeared.');
+    });
+  });
+
+  test('renders the tethered panel,on click of more button', async function(assert) {
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.more-action-button .rsa-form-button');
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list').length, 1, 'Edit file status modal has appeared.');
+    });
+  });
+
+  test('fileDownloadStatusButton when false, will show not download file options in more actions', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', false);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1,
+        downloadInfo: {
+          status: ''
+        }
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.more-action-button .rsa-form-button');
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li').length, 3, 'File download options are not present in more actions.');
+    });
+  });
+
+
+  test('fileDownloadStatusButton when true, will show download file options in more actions', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1,
+        downloadInfo: {
+          status: 'Downloaded'
+        }
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.more-action-button .rsa-form-button');
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3].textContent.trim(), 'Download to Server', 'File download option present in more actions.');
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[4].textContent.trim(), 'Save a Local Copy', 'Save a Local Copy option present in more actions.');
+    });
+  });
+
+  test('DownlodFilesToServer method being called when, Download to Server is clicked', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1,
+        downloadInfo: {
+          status: ''
+        }
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.more-action-button .rsa-form-button');
+    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3]);
+    return settled().then(() => {
+      assert.equal(downloadFilesToServerSpy.callCount, 1, 'The downloadFilesToServerSpy action creator was called once');
+    });
+  });
+
+  test('The getFileAnalysisData action called, when getFileAnalysisData is clicked from more actions', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .selectedProcessList([{
+        pid: 732,
+        name: 'agetty',
+        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+        parentPid: 1,
+        downloadInfo: {
+          status: 'Downloaded'
+        }
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    await click('.more-action-button .rsa-form-button');
+    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[5]);
+    return settled().then(() => {
+      assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
     });
   });
 });

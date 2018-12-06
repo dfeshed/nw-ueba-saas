@@ -22,9 +22,12 @@ import {
 import {
   setFileContextFileStatus,
   getFileContextFileStatus,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
@@ -53,7 +56,9 @@ const dispatchToActions = {
   setRowIndex,
   setFileContextFileStatus,
   getFileContextFileStatus,
-  retrieveRemediationStatus
+  retrieveRemediationStatus,
+  downloadFilesToServer,
+  getFileAnalysisData
 };
 
 const Container = Component.extend({
@@ -81,6 +86,23 @@ const Container = Component.extend({
     return selectedProcessList && selectedProcessList.length ? selectedProcessList.length : 0;
   },
 
+  @computed('selectedProcessList')
+  fileDownloadButtonStatus(fileContextSelections = []) {
+    // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
+    const selectedFilesLength = fileContextSelections.length;
+    const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => {
+      if (item.downloadInfo) {
+        return item.downloadInfo.status !== 'Downloaded';
+      }
+      return true;
+    });
+
+    return {
+      isDownloadToServerDisabled: ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer)), // and file's downloaded status is true
+      isSaveLocalAndFileAnalysisDisabled: ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer) // or file's downloaded status is true
+    };
+  },
+
   @computed('isTreeView')
   treeIconTooltip(isTreeView) {
     const toolTipLabel = isTreeView ? 'listView' : 'treeView';
@@ -100,6 +122,27 @@ const Container = Component.extend({
 
     resetRiskScoreAction() {
       // Placeholder for the next PR.
+    },
+
+    onDownloadFilesToServer() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+        onFailure: (message) => failure(message)
+      };
+      const { agentId, selectedProcessList } = this.getProperties('agentId', 'selectedProcessList');
+
+      this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
+    },
+
+    onSaveLocalCopy() {
+      // Placeholder for the next PR.
+    },
+
+    onAnalyzeFile() {
+      // Open analyze file.
+      const selectedProcessList = this.get('selectedProcessList');
+      const { checksumSha256 } = selectedProcessList;
+      this.send('getFileAnalysisData', checksumSha256);
     }
   }
 

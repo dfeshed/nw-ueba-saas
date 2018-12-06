@@ -40,6 +40,13 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     resolver: engineResolver('investigate-hosts')
   });
 
+  const fileProperties = {
+    checksum256: 'test',
+    score: 11,
+    downLoadInfo: {}
+  };
+  let modifiedList, modifiedTree;
+
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
@@ -61,7 +68,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
     document.addEventListener('contextmenu', callback);
-
+    modifiedList = processData.processList.map((data) => ({ ...data, fileProperties }));
+    modifiedTree = processData.processTree.map((data) => ({ ...data, fileProperties }));
   });
 
   hooks.afterEach(function() {
@@ -422,8 +430,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('It renders the context menu', async function(assert) {
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
       .machineOSType('windows')
       .selectedTab(null)
       .sortField('name')
@@ -449,8 +457,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
       .machineOSType('windows')
       .selectedTab(null)
       .sortField('name')
@@ -476,8 +484,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
       .machineOSType('windows')
       .selectedTab(null)
       .sortField('name')
@@ -507,8 +515,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
       .selectedProcessList([
         {
           downloadInfo: {

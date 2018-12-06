@@ -156,20 +156,93 @@ module('Unit | Reducers | process', function() {
     const previous = Immutable.from({
       selectedProcessList: []
     });
-    const process = { checksumSha256: '46965656dffsdf664', name: 'p1', fileName: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 };
+    const process = {
+      name: 'p1',
+      pid: 1,
+      parentPid: 0,
+      hasChild: true,
+      path: 'C:/',
+      vpid: 154354,
+      fileProperties: {
+        checksumSha256: '46965656dffsdf664',
+        checksumMd5: '89676969',
+        checksumSha1: '9798796986',
+        downloadInfo: { status: true },
+        signature: 'signed',
+        size: 1234,
+        firstFileName: 'p1',
+        fileStatus: 'Neutral',
+        score: 0
+      }
+    };
     const result = reducer(
       previous,
       { type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process }
     );
-    assert.deepEqual(result.selectedProcessList, [{ checksumSha256: '46965656dffsdf664', downloadInfo: {}, id: 1, name: 'p1', fileName: 'p1', pid: 1, parentPid: 0, hasChild: false, vpid: 154354 }]);
+    const expectedResult = [
+      {
+        checksumSha256: '46965656dffsdf664',
+        name: 'p1',
+        fileName: 'p1',
+        pid: 1,
+        parentPid: 0,
+        hasChild: true,
+        vpid: 154354,
+        checksumMd5: '89676969',
+        checksumSha1: '9798796986',
+        downloadInfo: { status: true },
+        id: 1,
+        path: 'C:/',
+        signature: 'signed',
+        size: 1234,
+        fileStatus: 'Neutral',
+        score: 0
+      }
+    ];
+    assert.deepEqual(result.selectedProcessList, expectedResult);
   });
 
   test('The SELECT_ALL_PROCESS sets the selectedProcesList', function(assert) {
     const previous = Immutable.from({
       selectedProcessList: [],
       processList: [
-        { checksumSha256: '46965656dffsdf664', name: 'p1', fileName: 'p1', pid: 1, parentPid: 0, hasChild: true, vpid: 154354 },
-        { checksumSha256: '89484fgfdgr546488', name: 'p2', fileName: 'p2', pid: 2, parentPid: 1, hasChild: false, vpid: 98765 }]
+        {
+          checksumSha256: '46965656dffsdf664',
+          name: 'p1',
+          fileName: 'p1',
+          pid: 1,
+          parentPid: 0,
+          hasChild: true,
+          vpid: 154354,
+          checksumMd5: '89676969',
+          checksumSha1: '9798796986',
+          downloadInfo: { status: true },
+          id: 1,
+          path: 'C:/',
+          signature: 'signed',
+          size: 1234,
+          fileStatus: 'Neutral',
+          score: 0
+        },
+
+        {
+          checksumSha256: '89484fgfdgr546488',
+          name: 'p2',
+          fileName: 'p2',
+          pid: 2,
+          parentPid: 1,
+          hasChild: false,
+          vpid: 98765,
+          checksumMd5: '6789676969',
+          checksumSha1: '789798796986',
+          downloadInfo: { status: true },
+          id: 2,
+          path: 'D:/',
+          signature: 'unsigned',
+          size: 9234,
+          fileStatus: 'Neutral',
+          score: 0
+        }]
     });
     const result = reducer(
       previous,
@@ -229,7 +302,6 @@ module('Unit | Reducers | process', function() {
         {
           checksumSha256: '7b7f8973702f72655ece594ec9179a2228c62912a1f37d1c77d243476088271d',
           createTime: '2018-11-08T10:03:06.835+0000',
-          fileStatus: 'Blacklist',
           launchArguments: '',
           name: 'winlogon.exe',
           parentPid: 456,
@@ -238,11 +310,14 @@ module('Unit | Reducers | process', function() {
           reputationStatus: 'Known Good',
           score: 0,
           serviceId: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
-          serviceName: 'EPS1-server - Endpoint Server' },
+          serviceName: 'EPS1-server - Endpoint Server',
+          fileProperties: {
+            fileStatus: 'Blacklist'
+          }
+        },
         {
           checksumSha256: '9179a2228c62912a1f37d1c77d243476088271d7b7f8973702f72655ece594ec',
           createTime: '2018-11-08T10:03:06.835+0000',
-          fileStatus: 'Blacklist',
           launchArguments: '',
           name: 'winlogon.exe',
           parentPid: 456,
@@ -251,7 +326,12 @@ module('Unit | Reducers | process', function() {
           reputationStatus: 'Known Good',
           score: 0,
           serviceId: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
-          serviceName: 'EPS1-server - Endpoint Server' }]
+          serviceName: 'EPS1-server - Endpoint Server',
+          fileProperties: {
+            fileStatus: 'Blacklist'
+          }
+        }
+      ]
     });
 
     const action = makePackAction(LIFECYCLE.SUCCESS, {
@@ -266,7 +346,7 @@ module('Unit | Reducers | process', function() {
       }
     });
     const endState = reducer(previous, action);
-    assert.deepEqual(endState.processList[0].fileStatus, 'Graylist', 'File status in processlist of corresponding file is updated.');
-    assert.deepEqual(endState.processList[1].fileStatus, 'Blacklist', 'File status for the file, whose status hasnot been changes, remains unaffected in the state.');
+    assert.deepEqual(endState.processList[0].fileProperties.fileStatus, 'Graylist', 'File status in processlist of corresponding file is updated.');
+    assert.deepEqual(endState.processList[1].fileProperties.fileStatus, 'Blacklist', 'File status for the file, whose status hasnot been changes, remains unaffected in the state.');
   });
 });

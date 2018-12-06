@@ -6,8 +6,8 @@ import Immutable from 'seamless-immutable';
 
 const updateTreeData = (data, checksums, fileStatus) => {
   return data.map((d) => {
-    if (checksums.includes(d.checksumSha256)) {
-      d = d.set('fileStatus', fileStatus);
+    if (checksums.includes(d.fileProperties.checksumSha256)) {
+      d = d.setIn(['fileProperties', 'fileStatus'], fileStatus);
     }
     if (d.childProcesses) {
       const children = updateTreeData(d.childProcesses, checksums, fileStatus);
@@ -81,15 +81,33 @@ const processReducer = handleActions({
 
   [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, action) => {
     const { selectedProcessList } = state;
-    const { checksumSha256, name, pid, parentPid, hasChild, vpid, fileProperties = {} } = action.payload;
-    const { downloadInfo = {} } = fileProperties;
-
+    const { pid, name, fileProperties, path, parentPid, vpid, hasChild } = action.payload;
+    const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
 
     let selectedList = [];
     if (selectedProcessList.some((process) => process.pid === pid)) {
       selectedList = selectedProcessList.filter((process) => process.pid !== pid);
     } else {
-      selectedList = [...selectedProcessList, { downloadInfo, checksumSha256, name, fileName: name, pid, id: pid, parentPid, hasChild, vpid }];
+      selectedList = [...selectedProcessList,
+        {
+          downloadInfo,
+          checksumSha256,
+          checksumSha1,
+          checksumMd5,
+          name,
+          fileName: name,
+          pid,
+          id: pid,
+          parentPid,
+          vpid,
+          path,
+          signature,
+          size,
+          hasChild,
+          score,
+          fileStatus
+        }
+      ];
     }
     return state.merge({ 'selectedProcessList': selectedList });
   },
@@ -98,8 +116,40 @@ const processReducer = handleActions({
     const { selectedProcessList, processList } = state;
     if (selectedProcessList.length < processList.length) {
       return state.set('selectedProcessList', processList.map((process) => {
-        const { checksumSha256, name, pid, parentPid, hasChild, vpid } = process;
-        return { checksumSha256, name, fileName: name, pid, parentPid, hasChild, vpid };
+        const {
+          downloadInfo,
+          checksumSha256,
+          checksumSha1,
+          checksumMd5,
+          name,
+          fileName,
+          pid,
+          id,
+          parentPid,
+          vpid,
+          path,
+          signature,
+          size,
+          hasChild,
+          score,
+          fileStatus } = process;
+        return {
+          downloadInfo,
+          checksumSha256,
+          checksumSha1,
+          checksumMd5,
+          name,
+          fileName,
+          pid,
+          id,
+          parentPid,
+          vpid,
+          path,
+          signature,
+          size,
+          hasChild,
+          score,
+          fileStatus };
       }));
     } else {
       return state.set('selectedProcessList', []);
@@ -123,7 +173,7 @@ const processReducer = handleActions({
           const { fileStatus, checksums } = data;
           const newProcessList = processList.map((process) => {
             if (checksums.includes(process.checksumSha256)) {
-              process = process.set('fileStatus', fileStatus);
+              process = process.setIn(['fileProperties', 'fileStatus'], fileStatus);
             }
             return process;
           });

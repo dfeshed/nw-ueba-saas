@@ -16,25 +16,25 @@ export default [
     isDescending: false
   },
   {
-    field: 'score',
+    field: 'fileProperties.score',
     width: '6vw',
     title: 'investigateHosts.process.riskScore',
     isDescending: false
   },
   {
-    field: 'fileStatus',
+    field: 'fileProperties.fileStatus',
     width: '5vw',
     title: 'investigateHosts.process.fileStatus',
     isDescending: false
   },
   {
-    field: 'reputationStatus',
+    field: 'fileProperties.reputationStatus',
     width: '8vw',
     title: 'investigateHosts.process.reputationStatus',
     isDescending: false
   },
   {
-    field: 'signature.features',
+    field: 'fileProperties.signature.features',
     width: '10vw',
     title: 'investigateHosts.process.signature',
     isDescending: false

@@ -30,7 +30,11 @@
             selectedFileCount=selectedFileCount
             restrictedFileList=restrictedFileList
             isRemediationAllowed=isRemediationAllowed
-            retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)}}
+            retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
+            fileDownloadButtonStatus=fileDownloadButtonStatus
+            downloadFiles=(action 'onDownloadFilesToServer')
+            saveLocalCopy=(action 'onSaveLocalCopy')
+            analyzeFile=(action 'onAnalyzeFile')}}
         </div>
         {{host-detail/process/process-tree
           openPropertyPanel=(action layout.open 'right')
