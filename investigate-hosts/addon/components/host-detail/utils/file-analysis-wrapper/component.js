@@ -7,7 +7,8 @@ import { componentConfig } from 'investigate-hosts/reducers/details/file-analysi
 const stateToComputed = (state) => ({
   componentConfig: componentConfig(state),
   activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab.toLowerCase(),
-  filePropertiesData: state.endpoint.fileAnalysis.filePropertiesData
+  filePropertiesData: state.endpoint.fileAnalysis.filePropertiesData,
+  fileData: state.endpoint.fileAnalysis.fileData
 });
 
 const dispatchToActions = {

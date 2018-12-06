@@ -200,7 +200,16 @@ module('Integration | Component | host-detail', function(hooks) {
 
   test('file analysis view visible when isFileAnalysisView is set to true', async function(assert) {
     const fileAnalysis = {
-      'fileData': { test: '1' },
+      'fileData': [{
+        text: 'OHE3',
+        offset: '0x00017d66',
+        unicode: false
+      },
+      {
+        text: 'E;uht',
+        offset: '0x00017a66',
+        unicode: false
+      }],
       'filePropertiesData': { format: 'pe' },
       'isFileAnalysisView': true
     };

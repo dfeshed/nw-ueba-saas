@@ -1,1 +1,25 @@
-{{t title}}
+{{#rsa-data-table
+  lazy=true
+  items=filteredDataWithLength
+  columnsConfig=stringFormatColumns}}
+
+  {{#rsa-data-table/header as |column|}}
+    {{column.title}}
+  {{/rsa-data-table/header}}
+
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell item=item column=column}}
+
+      {{#if (eq column.format 'UNICODE')}}
+        {{#if item.unicode}}
+          {{rsa-icon name='check-2'}}
+        {{else}}
+          <div class='unicode-false'>--</div>
+        {{/if}}
+      {{else}}
+        <div>{{get item column.field}}</div>
+      {{/if}}
+
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

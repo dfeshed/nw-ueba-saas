@@ -8,8 +8,13 @@
         {{/rsa-form-button}}
         <span class='file-analysis-title'>{{t 'investigateShared.endpoint.fileAnalysis.title'}}</span>
         <span class='view-type'>{{t componentConfig.title}}</span>
+        <span class='string-filter-wrapper'>
+          {{t 'investigateShared.endpoint.fileAnalysis.filter'}}
+          {{rsa-form-input value=searchText placeholder=(t 'investigateShared.endpoint.fileAnalysis.searchPlaceHolder')}}
+        </span>
+
       </div>
-      {{component componentConfig.component}}
+      {{component componentConfig.component fileData=fileData searchText=searchText}}
     {{/layout.center}}
     {{#layout.right as |rightPanel|}}
       {{#rightPanel.header  class="host-list-properties"}}

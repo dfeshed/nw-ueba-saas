@@ -26,7 +26,16 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
 
   test('it should render the file-analysis-wrapper', async function(assert) {
     const fileAnalysis = {
-      'fileData': { test: '1' },
+      'fileData': [{
+        text: 'OHE3',
+        offset: '0x00017d66',
+        unicode: false
+      },
+      {
+        text: 'E;uht',
+        offset: '0x00017a66',
+        unicode: false
+      }],
       'filePropertiesData': { format: 'pe' },
       'isFileAnalysisView': true
     };
@@ -44,6 +53,7 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     assert.equal(findAll('.file-analysis-header button').length, 1, 'File analysis back button rendered');
     assert.equal(findAll('.file-analysis-header .view-type').length, 1, 'view type title rendered');
     assert.equal(findAll('.string-view').length, 1, 'String view rendered');
+    assert.equal(findAll('.string-filter-wrapper .rsa-form-input').length, 1, 'String filter present');
   });
 
   test('It should not render the file-analysis-wrapper when filePropertiesData is null', async function(assert) {
@@ -67,6 +77,7 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     assert.equal(findAll('.file-analysis-header .view-type').length, 0, 'view type title not rendered');
     assert.equal(findAll('.string-view').length, 0, 'String view not rendered');
     assert.equal(findAll('.text-view').length, 0, 'text view not rendered');
+    assert.equal(findAll('.string-filter-wrapper .rsa-form-input').length, 0, 'String filter not rendered');
   });
 
 });

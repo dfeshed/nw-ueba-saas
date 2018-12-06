@@ -3515,6 +3515,8 @@ export default {
         downloadedPath: 'Downloaded Path',
         entropy: 'Entropy',
         format: 'Format',
+        searchPlaceHolder: 'Enter Value',
+        filter: 'Filter Strings',
         pe: {
           architecture: 'Architecture',
           characteristics: 'Characteristics',
@@ -3550,8 +3552,8 @@ export default {
           fileType: 'File Type'
         },
         importedDlls: {
-          parentTitle: 'Imported DLLs({{dllCount}}) and Functions({{functionCount}})',
-          childTitle: '{{importedDllName}} - {{functionCount}} Functions'
+          parentTitle: 'Imported DLLs ({{dllCount}}) and Functions ({{functionCount}})',
+          childTitle: '{{importedDllName}} - Functions ({{functionCount}})'
         }
       }
     }
