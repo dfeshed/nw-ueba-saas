@@ -389,6 +389,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restIndicator.setEventsNum(indicator.getEventsNum());
         restIndicator.setScoreContribution(indicator.getScoreContribution());
         restIndicator.setType(Indicator.TypeEnum.fromValue(indicator.getType().name()));
+        restIndicator.setContexts(indicator.getContexts());
         if (indicator.getHistoricalData() != null) {
             restIndicator.setHistoricalData(createRestHistorical(indicator.getHistoricalData()));
         }

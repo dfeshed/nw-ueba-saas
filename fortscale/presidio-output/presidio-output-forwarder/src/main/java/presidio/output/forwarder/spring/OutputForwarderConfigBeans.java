@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
+import java.util.Collections;
+
 @Configuration
 @Import(OutputForwarderPlugins.class)
 public class OutputForwarderConfigBeans {
@@ -22,6 +24,6 @@ public class OutputForwarderConfigBeans {
 
     @Bean
     public ForwarderStrategyFactory forwarderStrategyFactory(){
-        return new ForwarderStrategyFactory();
+        return new ForwarderStrategyFactory(Collections.singletonList(forwarderStrategyName));
     }
 }

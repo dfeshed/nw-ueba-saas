@@ -136,7 +136,7 @@
       }
     },
     {
-      "name": "sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
+      "name": "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
       "type": "P",
       "bucketConfName": "dstProcessFilePathOpenedToHighestScoreMapUserIdScriptingProcessHourly",
       "numberOfBuckets": 1,

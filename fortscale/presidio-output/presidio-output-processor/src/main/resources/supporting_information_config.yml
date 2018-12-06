@@ -916,7 +916,7 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_opened_by_scripting_tool
   adeEventType: scored_enriched.process.dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score
-  modelContextField:
+  modelContextFields:
     - srcProcessFileName
   schema: PROCESS
   anomalyDescriptior:

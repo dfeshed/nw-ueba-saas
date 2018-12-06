@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
+import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
@@ -30,11 +31,14 @@ import presidio.output.processor.services.alert.supportinginformation.transforme
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Supporting information (indicators, events and historical data) for SCORE_AGGREGATION events (AKA 'P')
  */
 public class SupportingInformationForScoreAggr implements SupportingInformationGenerator {
+    public static final String CONTEXT_PREFIX = "context.";
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -77,11 +81,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
         List<String> splitFieldNames = new ArrayList<>(indicatorConfig.getModelContextFields());
-        if (EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
-            splitFieldNames.add("startInstant");
-        } else {
-            splitFieldNames.add(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
-        }
+        splitFieldNames.add(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
+        splitFieldNames.replaceAll(field -> translateOutputToAdeName(field));
 
         ScoreAggregationRecordContributors scoreAggregationRecordContributors = adeManagerSdk.splitScoreAggregationRecordToContributors(adeAggregationRecord, splitFieldNames);
 
@@ -96,7 +97,12 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
             indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
-            Map<String, String> contexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+            Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+            Map<String, String> contexts = adeContexts.entrySet().stream()
+                                                .filter(entry -> entry.getValue() != null)
+                                                .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
+                                                                          entry -> translateAdeValueToOutput(entry.getKey(), entry.getValue())));
+            contexts.put(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
             String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
                     StringUtils.EMPTY:
                     contexts.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
@@ -106,7 +112,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         }
         return indicators;
     }
-
 
     @Override
     public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
@@ -164,7 +169,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String featureName = indicatorConfig.getHistoricalData().getFeatureName();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
 
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, indicator.getContexts(), schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
+                                            Function.identity(), field -> indicator.getContexts().get(field)));
+        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());
 
@@ -187,5 +194,24 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         // dynamic indicators -> the event value is taken from the indicator itself (e.g: abnormal_file_action_operation_type => FILE_OPENED, FILE_MOVED ...)
         return StringUtils.isNotEmpty(indicator.getAnomalyValue()) ? indicator.getAnomalyValue() : indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
     }
+
+    private String translateAdeNameToOutput(String adeName) {
+        return AdeRecord.START_INSTANT_FIELD.equals(adeName)?
+                EnrichedEvent.EVENT_DATE_FIELD_NAME:
+                adeName.replace(CONTEXT_PREFIX,"");
+    }
+
+    private String translateAdeValueToOutput(String adeName, String adeValue) {
+        return AdeRecord.START_INSTANT_FIELD.equals(adeName)?
+                Instant.ofEpochMilli(Long.valueOf(adeValue)).toString():
+                adeValue;
+    }
+
+    private String translateOutputToAdeName(String outputName) {
+        return EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(outputName)?
+                AdeRecord.START_INSTANT_FIELD:
+                CONTEXT_PREFIX + outputName;
+    }
+
 
 }
