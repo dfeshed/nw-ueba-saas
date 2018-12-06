@@ -21,7 +21,15 @@ export const setEndpointServer = (isDispatchedFromServiceSelector, server, callb
   return (dispatch, getState) => {
     const { serverId } = getState().endpointQuery;
     if (!isDispatchedFromServiceSelector) {
-      dispatch(_initializeEndpoint(serverId, callback));
+      // most probably coming from the getEndpointServers call
+      if (serverId) {
+        dispatch(_initializeEndpoint(serverId, callback));
+      } else {
+        const [defaultServer] = getState().endpointServer.serviceData || [{}];
+        // called when serverId is not present in the state
+        dispatch(setSelectedEndpointServer(defaultServer.id));
+        dispatch(_initializeEndpoint(defaultServer.id, callback));
+      }
     } else if (server && serverId !== server.id) {
       dispatch(setSelectedEndpointServer(server.id));
       dispatch(_initializeEndpoint(server.id, callback));
