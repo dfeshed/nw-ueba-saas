@@ -6,8 +6,26 @@ const setNewFileTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_FILE_DETAIL_TAB,
 
 const activeRiskSeverityTab = (tabName) => ({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName } });
 
+const createToggleActionCreator = (type) => {
+  return (setTo) => {
+    const returnVal = {
+      type
+    };
+    if (setTo !== undefined) {
+      returnVal.payload = {
+        setTo
+      };
+    }
+    return returnVal;
+  };
+};
+
+
+const toggleFilePropertyPanel = createToggleActionCreator(ACTION_TYPES.TOGGLE_FILE_PROPERTY_PANEL);
+
 export {
   setDataSourceTab,
   activeRiskSeverityTab,
-  setNewFileTab
+  setNewFileTab,
+  toggleFilePropertyPanel
 };

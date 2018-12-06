@@ -15,6 +15,14 @@
       }
     }
 
+    .rsa-form-button-wrapper {
+      &.is-active button {
+        border-bottom: 3px solid border-color(secondary);
+      }
+    }
+    .open-properties {
+      bottom: 4px;
+    }
   }
 
   .file-summary {

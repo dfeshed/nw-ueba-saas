@@ -9,6 +9,7 @@ $rightZoneMinWidth: 400px;
     .rsa-header {
       @include rsa-font(header, larger);
     }
+    background: text-color(primary, darkest);
     min-width: 0;
     max-width: 0;
     padding: 0;

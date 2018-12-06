@@ -2107,7 +2107,8 @@ export default {
       backToFiles: 'Files',
       closeCertificateView: 'Close certificate view',
       filters: 'Filters',
-      close: 'Close File Details'
+      close: 'Close File Details',
+      filePropertyPanel: 'Show/Hide File Property Panel'
     },
     message: {
       noResultsMessage: 'No matching files were found',

@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import CONFIG from '../base-property-config';
+import { toggleFilePropertyPanel } from 'investigate-files/actions/visual-creators';
 
 import {
   setSelectedAlert,
@@ -17,15 +18,16 @@ const stateToComputed = (state) => ({
   risk: riskState(state),
   getDataSourceTab: getDataSourceTab(state),
   activeDataSourceTab: state.files.visuals.activeDataSourceTab,
-  fileProperty: state.files.fileList.selectedDetailFile
-
+  fileProperty: state.files.fileList.selectedDetailFile,
+  isFilePropertyPanelVisible: state.files.visuals.isFilePropertyPanelVisible
 });
 
 const dispatchToActions = {
   getUpdatedRiskScoreContext,
   setSelectedAlert,
   expandEvent,
-  setDataSourceTab
+  setDataSourceTab,
+  toggleFilePropertyPanel
 };
 
 const Overview = Component.extend({

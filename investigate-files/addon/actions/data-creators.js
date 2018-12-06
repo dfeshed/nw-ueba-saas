@@ -62,6 +62,7 @@ const initializeFileDetails = (checksum) => {
     dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(checksum));
+    dispatch(_fetchHostNameList(checksum));
   };
 };
 /**

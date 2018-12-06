@@ -1,16 +1,18 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getFileDetailTabs } from 'investigate-files/reducers/visuals/selectors';
-import { setNewFileTab } from 'investigate-files/actions/visual-creators';
+import { setNewFileTab, toggleFilePropertyPanel } from 'investigate-files/actions/visual-creators';
 import { fileSummary } from 'investigate-files/reducers/file-detail/selectors';
 
 const stateToComputed = (state) => ({
   fileDetailTabs: getFileDetailTabs(state),
-  summary: fileSummary(state)
+  summary: fileSummary(state),
+  isFilePropertyPanelVisible: state.files.visuals.isFilePropertyPanelVisible
 });
 
 const dispatchToActions = {
-  setNewFileTab
+  setNewFileTab,
+  toggleFilePropertyPanel
 };
 
 const TitleBar = Component.extend({

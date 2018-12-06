@@ -9,7 +9,8 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeFileDetailTab: 'OVERVIEW',
-    activeDataSourceTab: 'FILE_DETAILS'
+    activeDataSourceTab: 'FILE_DETAILS',
+    isFilePropertyPanelVisible: true
   });
 });
 
@@ -33,4 +34,12 @@ test('The CHANGE_DATASOURCE_TAB action sets the newly selected tab to state', fu
   const expectedEndState = { activeDataSourceTab: 'INCIDENT' };
   const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName: 'INCIDENT' } });
   assert.deepEqual(result, expectedEndState);
+});
+
+test('The TOGGLE_FILE_PROPERTY_PANEL action sets the state', function(assert) {
+  const previous = Immutable.from({
+    isFilePropertyPanelVisible: true
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_PROPERTY_PANEL });
+  assert.deepEqual(result.isFilePropertyPanelVisible, false);
 });
