@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
 import { lookup } from 'ember-dependency-lookup';
+import _ from 'lodash';
 
 const { createSelector } = reselect;
 
@@ -244,7 +245,7 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy) => {
   const advancedConfigSettings = {
     customConfig: {
       name: 'adminUsm.policyWizard.edrPolicy.customConfigSetting',
-      value: focusedPolicy[prop]
+      value: _truncateCustomSetting(focusedPolicy[prop])
     }
   };
   return advancedConfigSettings[prop];
@@ -261,4 +262,11 @@ const _getDisplayName = (prop, primaryAddress, listOfEndpoints) => {
     focusedPolicyPrimaryName = endpointServer[0].displayName;
   }
   return focusedPolicyPrimaryName;
+};
+
+const _truncateCustomSetting = (customSetting) => {
+  return {
+    nonTruncated: customSetting,
+    truncatedWithEllipsis: customSetting ? _.truncate(customSetting, { length: 256, omission: '...' }) : null
+  };
 };

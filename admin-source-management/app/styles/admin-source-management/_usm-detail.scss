@@ -33,6 +33,17 @@
       display: block;
       padding-top: .4rem;
       color: text-color(primary, lightest);
+
+      .tooltip-text {        
+        margin-top: 0rem;
+      }
+      
+      .table-cell-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+      }
     }
 
     .count {

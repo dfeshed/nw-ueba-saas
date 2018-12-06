@@ -241,7 +241,7 @@ export default [
       primaryUdpBeaconInterval: 5,
       primaryUdpBeaconIntervalUnit: 'SECONDS',
       agentMode: 'FULL_MONITORING',
-      customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
+      customConfig: '"cpuMax" : 90,"cpuMaxVm" : 90,"downloadMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "FULL_MONITORING","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,'
     },
     associatedGroups: [],
     scanType: 'DISABLED',
@@ -266,7 +266,7 @@ export default [
     primaryUdpBeaconInterval: 5,
     primaryUdpBeaconIntervalUnit: 'SECONDS',
     agentMode: 'FULL_MONITORING',
-    customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
+    customConfig: '"cpuMax" : 90,"cpuMaxVm" : 90,"downloadMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "FULL_MONITORING","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,'
   },
   {
     id: 'policy_014',
@@ -338,7 +338,8 @@ export default [
     primaryUdpPort: 444,
     primaryUdpBeaconInterval: 3,
     primaryUdpBeaconIntervalUnit: 'MINUTES',
-    agentMode: 'FULL_MONITORING'
+    agentMode: 'FULL_MONITORING',
+    customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
   },
   {
     createdOn: 0,
