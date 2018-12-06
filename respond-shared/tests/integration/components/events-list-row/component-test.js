@@ -27,6 +27,9 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
 
+    const riskScore = find('[test-id=eventsAlertScore]');
+    assert.equal(riskScore.getAttribute('focusable'), 'false');
+
     generic.assertRowPresent(assert);
 
     generic.assertRowAlertDetails(assert, {
@@ -306,7 +309,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     // IE11 will focus on the svg without this attribute
     const riskScore = find('[test-id=eventsAlertScore]');
-    assert.equal(riskScore.getAttribute('focusable'), 'false');
+    assert.equal(riskScore, null, 'Alert score is unavailable as alerts data is not passed or does not match');
 
     const trigger = find(triggerSelector);
     const detailsId = `${guid}-row-details`;
@@ -363,6 +366,9 @@ module('Integration | Component | events-list-row', function(hooks) {
     this.set('alerts', getAllAlerts());
 
     await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    const riskScore = find('[test-id=eventsAlertScore]');
+    assert.equal(riskScore.getAttribute('focusable'), 'false');
 
     endpoint.assertRowPresent(assert);
 
