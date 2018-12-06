@@ -42,8 +42,7 @@ import java.util.Map;
         AdeDataServiceConfig.class,
         OutputDataServiceConfig.class,
         PresidioMonitoringConfiguration.class,
-        ElasticsearchConfig.class,
-        InputAdeManagerSdkConfig.class
+        ElasticsearchConfig.class
 })
 public class InputCoreConfiguration {
     private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);

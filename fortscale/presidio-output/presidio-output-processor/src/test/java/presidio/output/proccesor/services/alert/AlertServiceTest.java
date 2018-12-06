@@ -27,7 +27,6 @@ import presidio.ade.domain.record.enriched.authentication.AdeScoredAuthenticatio
 import presidio.ade.domain.record.enriched.authentication.EnrichedAuthenticationRecord;
 import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
-import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
@@ -76,8 +75,6 @@ public class AlertServiceTest {
     private MetricCollectingService metricCollectingService;
     @MockBean
     private MetricsExporter metricsExporter;
-    @MockBean
-    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 
     @Autowired
     private AlertServiceImpl alertService;

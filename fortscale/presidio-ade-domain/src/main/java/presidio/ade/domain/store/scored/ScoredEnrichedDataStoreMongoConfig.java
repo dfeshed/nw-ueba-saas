@@ -9,22 +9,31 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
- * Created by YaronDL on 6/13/2017.
+ * @author Yaron DL
+ * @author Lior Govrin
  */
-
 @Configuration
 @Import({
         AdeScoredEnrichedRecordToCollectionNameTranslatorConfig.class,
         MongoDbBulkOpUtilConfig.class
 })
 public class ScoredEnrichedDataStoreMongoConfig {
+    private final ScoredEnrichedDataStoreMongoImpl scoredEnrichedDataStoreMongoImpl;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private AdeScoredEnrichedRecordToCollectionNameTranslator translator;
-    @Autowired
-    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    public ScoredEnrichedDataStoreMongoConfig(
+            MongoTemplate mongoTemplate,
+            AdeScoredEnrichedRecordToCollectionNameTranslator adeScoredEnrichedRecordToCollectionNameTranslator,
+            MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+
+        scoredEnrichedDataStoreMongoImpl = new ScoredEnrichedDataStoreMongoImpl(
+                mongoTemplate,
+                adeScoredEnrichedRecordToCollectionNameTranslator,
+                mongoDbBulkOpUtil);
+    }
 
     @Bean
-    public ScoredEnrichedDataStore scoredDataStore() { return new ScoredEnrichedDataStoreMongoImpl(mongoTemplate, translator, mongoDbBulkOpUtil);}
+    public ScoredEnrichedDataStore scoredEnrichedDataStore() {
+        return scoredEnrichedDataStoreMongoImpl;
+    }
 }

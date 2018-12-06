@@ -16,7 +16,6 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
@@ -58,18 +57,15 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private SupportingInformationUtils supportingInfoUtils;
 
-    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
-
     private AdeManagerSdk adeManagerSdk;
 
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory, AdeManagerSdk adeManagerSdk) {
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, AdeManagerSdk adeManagerSdk) {
         this.config = supportingInformationConfig;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
-        this.enrichedEventRecordReaderFactory = enrichedEventRecordReaderFactory;
         this.adeManagerSdk = adeManagerSdk;
     }
 

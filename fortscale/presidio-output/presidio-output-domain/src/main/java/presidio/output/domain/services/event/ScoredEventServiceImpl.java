@@ -1,13 +1,13 @@
 package presidio.output.domain.services.event;
 
 import fortscale.common.general.Schema;
-import fortscale.utils.recordreader.ReflectionRecordReader;
+import fortscale.utils.recordreader.RecordReader;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.domain.records.EnrichedEventRecordReaderFactory;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
@@ -21,12 +21,12 @@ public class ScoredEventServiceImpl implements ScoredEventService {
 
     private AdeManagerSdk adeManagerSdk;
 
-    private EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory;
+    private RecordReaderFactoryService recordReaderFactoryService;
 
-    public ScoredEventServiceImpl(EventPersistencyService eventPersistencyService, AdeManagerSdk adeManagerSdk, EnrichedEventRecordReaderFactory enrichedEventRecordReaderFactory) {
+    public ScoredEventServiceImpl(EventPersistencyService eventPersistencyService, AdeManagerSdk adeManagerSdk, RecordReaderFactoryService recordReaderFactoryService) {
         this.eventPersistencyService = eventPersistencyService;
         this.adeManagerSdk = adeManagerSdk;
-        this.enrichedEventRecordReaderFactory = enrichedEventRecordReaderFactory;
+        this.recordReaderFactoryService = recordReaderFactoryService;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                     continue;
                 }
 
-                ReflectionRecordReader recordReader = enrichedEventRecordReaderFactory.getRecordReader(e);
+                RecordReader recordReader = recordReaderFactoryService.getRecordReader(e);
                 Map features = Collections.unmodifiableMap(recordReader.get(distinctFieldNames));
 
                 if (scoredEnrichedEvent.containsKey(features)) {
