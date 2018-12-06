@@ -1,16 +1,11 @@
 package presidio.output.proccesor.spring;
 
-import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
-import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.shell.BootShimConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
@@ -106,11 +101,4 @@ public class OutputProcessorTestConfiguration {
                 outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays,
                 retentionOutputDataDays);
     }
-
-    @MockBean
-    private RecordReaderFactoryService recordReaderFactoryService;
-    @MockBean
-    private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
-    @MockBean
-    private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
 }

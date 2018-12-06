@@ -1,8 +1,6 @@
 package presidio.ade.sdk.common;
 
-import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -163,10 +161,6 @@ public class AdeManagerSdkTest {
         private MetricsAllIndexesRepository metricsAllIndexesRepository;
         @MockBean
         private PresidioElasticsearchTemplate elasticsearchTemplate;
-        @MockBean
-        private RecordReaderFactoryService recordReaderFactoryService;
-        @MockBean
-        private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {

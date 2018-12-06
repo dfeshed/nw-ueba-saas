@@ -1,18 +1,26 @@
 package presidio.ade.sdk.aggregation_records.splitter;
 
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregatorConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.sdk.aggregation_records.splitter.ScoredRecordPageIteratorFactoryService.ClassToFactoryMap;
 
 @Configuration
+@Import({
+        RecordReaderFactoryServiceConfig.class,
+        InMemoryFeatureBucketAggregatorConfig.class,
+        ScoredDataReadersConfig.class
+})
 public class ScoreAggregationRecordSplitterConfig {
     private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private final RecordReaderFactoryService recordReaderFactoryService;
