@@ -63,7 +63,7 @@ public class TimeModel implements PartitionedDataModel {
 		}
 
 		long numOfSmoothedBuckets = smoothedBuckets.stream().filter(smooth -> smooth > 0).count();
-		timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getBuckets(), numDistinctFeatures, numOfSmoothedBuckets);
+		timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getOccurrencesToNumOfPartitionsList(), numDistinctFeatures, numOfSmoothedBuckets);
 
 	}
 

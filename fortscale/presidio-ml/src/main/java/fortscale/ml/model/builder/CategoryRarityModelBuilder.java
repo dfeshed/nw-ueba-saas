@@ -36,9 +36,10 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
         long numDistinctFeatures = featureValueToCountMap.size();
-        categoryRarityModel.init(calcOccurrencesToNumOfDistinctPartitions(sequenceReduction), numOfBuckets, numOfPartitions, numDistinctFeatures);
+        Map<Long, Integer> occurrencesToNumOfDistinctPartitions = calcOccurrencesToNumOfDistinctPartitions(sequenceReduction);
+        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, null, numOfBuckets, numOfPartitions, numDistinctFeatures);
         saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
-        categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToCountMap.size(), numOfPartitions, categoryRarityModel.getBuckets());
+        categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToCountMap.size(), numOfPartitions, categoryRarityModel.getOccurrencesToNumOfPartitionsList());
         return categoryRarityModel;
     }
 
