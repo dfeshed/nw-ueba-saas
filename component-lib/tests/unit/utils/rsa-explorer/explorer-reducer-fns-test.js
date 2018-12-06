@@ -57,6 +57,86 @@ test('The toggleFocusItem() reducer sets the item into focus and removes on alte
   assert.deepEqual(toggledEndState, toggledExpectedEndState);
 });
 
+test('The toggleSelectItem() reducer w/altRowSelection selects the item when not selected', function(assert) {
+  const focusedItem = {
+    id: 'item1',
+    test: 'test'
+  };
+  const initState = Immutable.from({
+    ...initialState,
+    altRowSelection: true,
+    focusedItem,
+    itemsSelected: [ 'item2', 'item3' ],
+    isSelectAll: false
+  });
+  const item = 'item1';
+  const expectedEndState = {
+    ...initState,
+    focusedItem: null,
+    itemsSelected: [ 'item2', 'item3', 'item1' ],
+    isSelectAll: false
+  };
+  // calling toggleSelectItem with a value will set it as the focusedItem
+  const endState = reducers.toggleSelectItem(initState, { payload: item });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The toggleSelectItem() reducer w/altRowSelection deselects the item when selected', function(assert) {
+  const focusedItem = {
+    id: 'item1',
+    test: 'test'
+  };
+  const initState = Immutable.from({
+    ...initialState,
+    altRowSelection: true,
+    focusedItem,
+    itemsSelected: [ 'item1', 'item2', 'item3' ],
+    isSelectAll: false
+  });
+  const item = 'item1';
+  const expectedEndState = {
+    ...initState,
+    focusedItem: null,
+    itemsSelected: [ 'item2', 'item3' ],
+    isSelectAll: false
+  };
+  // calling toggleSelectItem with a value will set it as the focusedItem
+  const endState = reducers.toggleSelectItem(initState, { payload: item });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The toggleFocusItem() reducer w/altRowSelection sets the item into focus and removes on alternate calls', function(assert) {
+  const initState = Immutable.from({
+    ...initialState,
+    altRowSelection: true,
+    itemsSelected: [ 'item1', 'item2', 'item3' ],
+    isSelectAll: true
+  });
+  const focusedItem = {
+    id: 'item1',
+    test: 'test'
+  };
+  const expectedEndState = {
+    ...initState,
+    focusedItem,
+    itemsSelected: [ 'item1' ],
+    isSelectAll: false
+  };
+  // calling toggleFocusItem with a value will set it as the focusedItem
+  const endState = reducers.toggleFocusItem(initState, { payload: focusedItem });
+  assert.deepEqual(endState, expectedEndState);
+
+  const toggledExpectedEndState = {
+    ...endState,
+    focusedItem: null,
+    itemsSelected: [],
+    isSelectAll: false
+  };
+  // calling toggleFocusItem again with the same value will set the focusedItem back to null/empty
+  const toggledEndState = reducers.toggleFocusItem(endState, { payload: endState.focusedItem });
+  assert.deepEqual(toggledEndState, toggledExpectedEndState);
+});
+
 test('The clearFocusItem() reducer updates removes any focusedItem', function(assert) {
   const initState = Immutable.from({
     ...initialState,
@@ -65,6 +145,26 @@ test('The clearFocusItem() reducer updates removes any focusedItem', function(as
   const expectedEndState = {
     ...initState,
     focusedItem: null
+  };
+  const endState = reducers.clearFocusItem(initState);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The clearFocusItem() reducer w/altRowSelection updates removes any focusedItem', function(assert) {
+  const initState = Immutable.from({
+    ...initialState,
+    altRowSelection: true,
+    itemsSelected: [ 'item1' ],
+    focusedItem: {
+      id: 'item1',
+      test: 'test'
+    }
+  });
+  const expectedEndState = {
+    ...initState,
+    focusedItem: null,
+    itemsSelected: [],
+    isSelectAll: false
   };
   const endState = reducers.clearFocusItem(initState);
   assert.deepEqual(endState, expectedEndState);

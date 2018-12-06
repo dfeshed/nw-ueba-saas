@@ -33,5 +33,8 @@ export default {
 
   defaultDateFilterField: 'created',
 
-  defaultDateRangeTypeName: 'ALL_TIME'
+  defaultDateRangeTypeName: 'ALL_TIME',
+
+  // enables gmail like row and item selection
+  altRowSelection: false
 };

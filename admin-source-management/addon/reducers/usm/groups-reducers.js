@@ -12,6 +12,7 @@ const localStorageKey = 'rsa::nw::usm::groups';
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
 
+initialState.altRowSelection = true;
 initialState.sortField = 'name';
 initialState.isSortDescending = false;
 delete initialState.defaultDateRangeTypeName;

@@ -173,15 +173,35 @@ const resetFilters = (state) => {
 };
 
 const toggleFocusItem = (state, { payload: item }) => {
-  return state.merge({
-    // if item toggled is currently focused, remove from focus, otherwise set new item to focus
-    focusedItem: state.focusedItem === item ? null : item
-  });
+  if (state.altRowSelection) {
+    return state.merge({
+      // Using Gmail like selection method,
+      // unselect all items when focusing on a row except for the focused item
+      focusedItem: state.focusedItem === item ? null : item,
+      itemsSelected: state.focusedItem === item ? [] : [ item.id ],
+      isSelectAll: false
+    });
+  } else {
+    return state.merge({
+      // if item toggled is currently focused, remove from focus, otherwise set new item to focus
+      focusedItem: state.focusedItem === item ? null : item
+    });
+  }
 };
 
 const clearFocusItem = (state) => {
-  // if item toggled is currently focused, remove from focus, otherwise set new item to focus
-  return state.set('focusedItem', null);
+  if (state.altRowSelection) {
+    return state.merge({
+      // Using Gmail like selection method,
+      // unselect all items including the focused item
+      focusedItem: null,
+      itemsSelected: [],
+      isSelectAll: false
+    });
+  } else {
+    // if item toggled is currently focused, remove from focus, otherwise set new item to focus
+    return state.set('focusedItem', null);
+  }
 };
 
 const toggleSelectItem = (state, { payload: item }) => {
@@ -200,18 +220,39 @@ const toggleSelectItem = (state, { payload: item }) => {
     itemsSelected.pushObject(item);
   }
 
-  return state.merge({
-    // if one item was deselected when in select all state, reset isSelectAll to false
-    isSelectAll: state.isSelectAll && itemDeselected ? false : state.isSelectAll,
-    itemsSelected
-  });
+  if (state.altRowSelection) {
+    return state.merge({
+      // Using Gmail like selection method,
+      // + unselect the focused item
+      focusedItem: null,
+      isSelectAll: state.isSelectAll && itemDeselected ? false : state.isSelectAll,
+      itemsSelected
+    });
+  } else {
+    return state.merge({
+      // if one item was deselected when in select all state, reset isSelectAll to false
+      isSelectAll: state.isSelectAll && itemDeselected ? false : state.isSelectAll,
+      itemsSelected
+    });
+  }
 };
 
 const toggleSelectAll = (state) => {
-  return state.merge({
-    isSelectAll: !state.isSelectAll,
-    itemsSelected: !state.isSelectAll ? state.items.map((item) => item.id) : []
-  });
+  if (state.altRowSelection) {
+    return state.merge({
+      // Using Gmail like selection method,
+      // + unselect the focused item
+      focusedItem: null,
+      isSelectAll: !state.isSelectAll,
+      itemsSelected: !state.isSelectAll ? state.items.map((item) => item.id) : []
+    });
+  } else {
+    return state.merge({
+      // if one item was deselected when in select all state, reset isSelectAll to false
+      isSelectAll: !state.isSelectAll,
+      itemsSelected: !state.isSelectAll ? state.items.map((item) => item.id) : []
+    });
+  }
 };
 
 const sortBy = (state, { payload: { sortField, isSortDescending } }) => {
