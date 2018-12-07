@@ -12,7 +12,8 @@ import {
   hostList,
   files,
   areFilesLoading,
-  isExportButtonDisabled
+  isExportButtonDisabled,
+  fileTotalLabel
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -245,4 +246,58 @@ test('isExportButtonDisabled', function(assert) {
   });
   const result3 = isExportButtonDisabled(state3);
   assert.equal(result3, false, 'export button is enabled');
+});
+
+test('fileTotalLabel', function(assert) {
+  const state1 = Immutable.from({
+    files: {
+      fileList: { totalItems: 1000 },
+      filter: {}
+    },
+    endpointServer: { serviceData: [{ id: '123', name: 'endpoint-broker-server' }] },
+    endpointQuery: { serverId: '123' }
+  });
+  const result1 = fileTotalLabel(state1);
+  assert.equal(result1, '1000+');
+
+  const state2 = Immutable.from({
+    files: {
+      fileList: { totalItems: 1278 },
+      filter: { expressionList: Array(1) }
+    },
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result2 = fileTotalLabel(state2);
+  assert.equal(result2, '1278');
+
+  const state3 = Immutable.from({
+    files: {
+      fileList: { totalItems: 1278, hasNext: true },
+      filter: { expressionList: Array(1) }
+    },
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result3 = fileTotalLabel(state3);
+  assert.equal(result3, '1000+');
+
+  const state4 = Immutable.from({
+    files: {
+      fileList: { totalItems: 1299 },
+      filter: {}
+    },
+    endpointServer: {},
+    endpointQuery: {}
+  });
+  const result4 = fileTotalLabel(state4);
+  assert.equal(result4, '1299');
 });

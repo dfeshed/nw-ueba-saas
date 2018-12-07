@@ -3,9 +3,9 @@ import Immutable from 'seamless-immutable';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
+import { selectedServiceWithStatus, isBrokerView } from 'investigate-shared/selectors/endpoint-server/selectors';
 
-module('Unit | Selectors | endpoint filters', function(hooks) {
+module('Unit | Selectors | endpoint server', function(hooks) {
 
   setupTest(hooks);
 
@@ -111,5 +111,38 @@ module('Unit | Selectors | endpoint filters', function(hooks) {
     });
     const data = selectedServiceWithStatus(state);
     assert.deepEqual(data, { name: '', isServiceOnline: true });
+  });
+
+  test('isBrokerView', function(assert) {
+    const state1 = Immutable.from({
+      endpointQuery: {
+        serverId: '123'
+      },
+      endpointServer: {
+        serviceData: [{ id: '123', name: 'endpoint-broker-server' }]
+      }
+    });
+    const data1 = isBrokerView(state1);
+    assert.equal(data1, true);
+
+    const state2 = Immutable.from({
+      endpointQuery: {
+        serverId: '123'
+      },
+      endpointServer: {
+        serviceData: [{ id: '123', name: 'endpoint-server' }]
+      }
+    });
+    const data2 = isBrokerView(state2);
+    assert.equal(data2, false);
+
+    const state3 = Immutable.from({
+      endpointQuery: {
+        serverId: '123'
+      },
+      endpointServer: {}
+    });
+    const data3 = isBrokerView(state3);
+    assert.equal(data3, false);
   });
 });

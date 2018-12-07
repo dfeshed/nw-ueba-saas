@@ -3,7 +3,7 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _serviceData = (state) => state.endpointServer.serviceData;
+const _serviceData = (state) => state.endpointServer.serviceData || [];
 const _isSummaryRetrieveError = (state) => state.endpointServer.isSummaryRetrieveError;
 const _getSelectedServiceId = (state) => state.endpointQuery.serverId;
 
@@ -15,7 +15,7 @@ const _selectedService = createSelector(
       const selectedService = services.find((e) => e.id === selectedServiceId);
       ret = selectedService ? selectedService : services[0];
     }
-    return ret;
+    return ret || {};
   }
 );
 
@@ -31,4 +31,9 @@ export const selectedServiceWithStatus = createSelector(
       isServiceOnline: !isSummaryRetrieveError
     };
   }
+);
+
+export const isBrokerView = createSelector(
+  [ _serviceData, _getSelectedServiceId ],
+  (servers, serverId) => servers.some((s) => s.id === serverId && s.name === 'endpoint-broker-server')
 );

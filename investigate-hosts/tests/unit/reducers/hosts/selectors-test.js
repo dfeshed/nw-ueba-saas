@@ -14,7 +14,8 @@ import {
   isScanStartButtonDisabled,
   extractAgentIds,
   isExportButtonDisabled,
-  hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
+  hostListPropertyTabs,
+  hostTotalLabel } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -495,3 +496,65 @@ test('hostListPropertyTabs', function(assert) {
 });
 
 
+test('hostTotalLabel', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      filter: {},
+      machines: {
+        totalItems: 1278
+      }
+    },
+    endpointServer: { serviceData: [{ id: '123', name: 'endpoint-broker-server' }] },
+    endpointQuery: { serverId: '123' }
+  });
+  const result1 = hostTotalLabel(state1);
+  assert.equal(result1, '1000+');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      filter: { expressionList: Array(1) },
+      machines: {
+        totalItems: 1278
+      }
+    },
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result2 = hostTotalLabel(state2);
+  assert.equal(result2, '1278');
+
+  const state3 = Immutable.from({
+    endpoint: {
+      filter: { expressionList: Array(1) },
+      machines: {
+        totalItems: 1278,
+        hasNext: true
+      }
+    },
+    endpointServer: {
+      serviceData: [{ id: '123', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: '123'
+    }
+  });
+  const result3 = hostTotalLabel(state3);
+  assert.equal(result3, '1000+');
+
+  const state4 = Immutable.from({
+    endpoint: {
+      filter: {},
+      machines: {
+        totalItems: 999
+      }
+    },
+    endpointServer: {},
+    endpointQuery: {}
+  });
+  const result4 = hostTotalLabel(state4);
+  assert.equal(result4, '999');
+});

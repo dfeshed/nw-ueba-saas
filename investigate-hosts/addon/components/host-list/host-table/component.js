@@ -5,7 +5,8 @@ import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection, 
   from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
-  serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+  serviceList,
+  hostTotalLabel } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
@@ -22,7 +23,7 @@ const stateToComputed = (state) => ({
   hostList: processedHostList(state),
   serviceList: serviceList(state),
   columns: getHostTableColumns(state),
-  hostTotal: state.endpoint.machines.totalItems, // Total number of hosts in search result
+  hostTotal: hostTotalLabel(state), // Total number of hosts in search result
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
   loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus,
   serverId: state.endpointQuery.serverId,

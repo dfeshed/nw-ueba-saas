@@ -1,6 +1,6 @@
 import reselect from 'reselect';
 import { getSelectedAgentIds } from 'investigate-hosts/util/util';
-
+import { isBrokerView } from 'investigate-shared/selectors/endpoint-server/selectors';
 const { createSelector } = reselect;
 
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
@@ -26,6 +26,9 @@ const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _servers = (state) => state.endpointServer.serviceData || [];
 const _activeHostListPropertyTab = (state) => state.endpoint.machines.activeHostListPropertyTab || 'HOST_DETAILS';
+const _hostTotal = (state) => state.endpoint.machines.totalItems || 0;
+const _expressionList = (state) => state.endpoint.filter.expressionList || [];
+const _hasNext = (state) => state.endpoint.machines.hasNext;
 
 const _allAreMigratedHosts = createSelector(
   _selectedHostList,
@@ -210,5 +213,17 @@ export const hostListPropertyTabs = createSelector(
   [_activeHostListPropertyTab],
   (activeHostListPropertyTab) => {
     return HOST_LIST_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostListPropertyTab }));
+  }
+);
+
+export const hostTotalLabel = createSelector(
+  [_hostTotal, _expressionList, _hasNext, isBrokerView],
+  (total, expressionList, hasNext, isBrokerView) => {
+    if (total >= 1000) {
+      if (isBrokerView || (expressionList && expressionList.length && hasNext)) {
+        return '1000+';
+      }
+    }
+    return `${total}`;
   }
 );
