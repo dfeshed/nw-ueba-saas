@@ -11,7 +11,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 let setState;
 
-const channelFilters = [ { channel: 'System', filter: 'Include', eventId: 'ALL' } ];
+const channelFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' } ];
 const column = {
   field: 'channel',
   title: 'packager.channel.name',
@@ -28,7 +28,7 @@ const channels = [
 const item = {
   channel: 'Application',
   eventId: 'ALL',
-  filter: 'Include'
+  filterType: 'Include'
 };
 
 const channelOptions = A(channels);
@@ -135,7 +135,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
       .build();
 
     const column = {
-      field: 'filter',
+      field: 'filterType',
       title: 'packager.channel.filter',
       width: '9vw',
       displayType: 'dropdown'

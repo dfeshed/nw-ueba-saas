@@ -151,8 +151,8 @@ export const channelConfig = () => CHANNEL_CONFIG;
 /**
  * validates the channelFilters array.
  * ChannelFilters is an array of objects
- * [{ channel: 'Security', filter: 'Exclude', eventId: '4' },
- *  { channel: '', filter: 'Include', eventId: 'ALL'}]
+ * [{ channel: 'Security', filterType: 'Exclude', eventId: '4' },
+ *  { channel: '', filterType: 'Include', eventId: 'ALL'}]
  * @public
  */
 export const channelFiltersValidator = (state) => {
@@ -164,11 +164,11 @@ export const channelFiltersValidator = (state) => {
 
   // channels is an array of objects, loop through each obj and validate
   value.every((obj) => {
-    const { eventId, filter, channel } = obj;
+    const { eventId, filterType, channel } = obj;
     const isEventIdString = typeof eventId === 'string';
     let hasInvalidEventId = false;
     // if the field is blank, show an error message
-    if (isBlank(channel) || isBlank(filter) || isBlank(eventId)) {
+    if (isBlank(channel) || isBlank(filterType) || isBlank(eventId)) {
       error = true;
       invalidEntry = '';
       message = 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter';
@@ -176,7 +176,7 @@ export const channelFiltersValidator = (state) => {
     }
     // If Event ID is a string, it should be 'ALL'
     // any other string is treated as invalid
-    if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filter.toUpperCase() !== 'EXCLUDE')) {
+    if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filterType.toUpperCase() !== 'EXCLUDE')) {
       return true;
     }
 

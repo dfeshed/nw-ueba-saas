@@ -14,7 +14,7 @@ export default DataTableBody.extend({
       this.set(`item.${column}`, value);
       // By default filter is Include and Event ID is ALL, if filter changes to Exclude -
       // clear out the Event ID.
-      if (value.toUpperCase() === 'EXCLUDE' && column.toUpperCase() === 'FILTER') {
+      if (value.toUpperCase() === 'EXCLUDE' && column.toUpperCase() === 'FILTERTYPE') {
         this.set('item.eventId', '');
       }
       this.get('channelUpdated')();

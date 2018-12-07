@@ -42,7 +42,7 @@ const WindowsLogChannelFilters = Component.extend({
   actions: {
     // adding a row to the channel filters table
     addRowFilter() {
-      this.get('channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
+      this.get('channels').pushObject({ channel: '', filterType: 'Include', eventId: 'ALL' });
       this._updateChannelFilters();
     },
     // pass the index of the row to delete the row in the channel filters

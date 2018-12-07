@@ -23,7 +23,7 @@
       {{#power-select
         placeholder=(t 'packager.placeholder')
         options=filterOptions
-        selected=item.filter
+        selected=item.filterType
         searchPlaceholder=(t 'packager.searchPlaceholder')
         searchEnabled=false
         onchange=(action 'setSelected' column.field bubbles=false) as |option|}}
