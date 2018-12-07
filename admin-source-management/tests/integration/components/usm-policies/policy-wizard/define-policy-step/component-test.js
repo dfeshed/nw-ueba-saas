@@ -178,7 +178,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   });
 
   test('When policy is Windows Log policy, Windows log channel filters is shown in the available settings', async function(assert) {
-    const channelFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' } ];
+    const channelFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' } ];
     new ReduxDataHelper(setState)
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(channelFilters)

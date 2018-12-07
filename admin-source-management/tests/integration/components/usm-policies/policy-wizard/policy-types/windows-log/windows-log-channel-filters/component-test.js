@@ -12,7 +12,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 let setState, updatePolicyPropertySpy;
 const spys = [];
-const channelFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' } ];
+const channelFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' } ];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', function(hooks) {
   setupRenderingTest(hooks, {
@@ -92,7 +92,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
   });
 
   test('It triggers the update policy action creator when a delete row is clicked', async function(assert) {
-    const newFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' }, { channel: 'Security', filterType: 'Include', eventId: 'ALL' }];
+    const newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' }, { channel: 'Security', filterType: 'INCLUDE', eventId: 'ALL' }];
     new ReduxDataHelper(setState)
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(newFilters)
@@ -104,7 +104,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
   });
 
   test('It shows correct error message when the channel name is blank', async function(assert) {
-    const newFilters = [ { channel: '', filterType: 'Include', eventId: 'ALL' }];
+    const newFilters = [ { channel: '', filterType: 'INCLUDE', eventId: 'ALL' }];
     const translation = this.owner.lookup('service:i18n');
     const visitedExpected = ['policy.channelFilters'];
     const expectedMessage = translation.t('adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter');
@@ -125,7 +125,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
   });
 
   test('It shows correct error message when the event id is invalid', async function(assert) {
-    const newFilters = [ { channel: 'System', filterType: 'Include', eventId: 'foo$' }];
+    const newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'foo$' }];
     const translation = this.owner.lookup('service:i18n');
     const visitedExpected = ['policy.channelFilters'];
     const expectedMessage = translation.t('adminUsm.policyWizard.windowsLogPolicy.invalidEventId');

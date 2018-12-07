@@ -6,7 +6,7 @@ import channels from './channels';
 export default DataTableBody.extend({
   layout,
   classNames: 'windows-log-channel-list',
-  filterOptions: ['Include', 'Exclude'],
+  filterOptions: ['INCLUDE', 'EXCLUDE'],
   channelOptions: A(channels),
 
   actions: {

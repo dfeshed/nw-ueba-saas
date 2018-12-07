@@ -208,7 +208,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channels', function(assert) {
-    const expectedValue = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' } ];
+    const expectedValue = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(expectedValue)
@@ -218,7 +218,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channelFiltersValidator selector with empty channel name', function(assert) {
-    let newFilters = [ { channel: '', filterType: 'Include', eventId: 'ALL' }];
+    let newFilters = [ { channel: '', filterType: 'INCLUDE', eventId: 'ALL' }];
     const visited = ['policy.channelFilters'];
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -234,7 +234,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
 
     // valid value
-    newFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' }];
+    newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' }];
     fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(newFilters)
@@ -246,7 +246,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channelFiltersValidator selector with empty event id', function(assert) {
-    let newFilters = [ { channel: 'System', filterType: 'Include', eventId: '' }];
+    let newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: '' }];
     const visited = ['policy.channelFilters'];
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -262,7 +262,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
 
     // valid value
-    newFilters = [ { channel: 'System', filterType: 'Include', eventId: '2' }];
+    newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: '2' }];
     fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(newFilters)
@@ -274,7 +274,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channelFiltersValidator selector with invalid event id', function(assert) {
-    let newFilters = [ { channel: 'System', filterType: 'Include', eventId: 'foo$' }];
+    let newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'foo$' }];
     const visited = ['policy.channelFilters'];
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -290,7 +290,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
 
     // valid value
-    newFilters = [ { channel: 'System', filterType: 'Include', eventId: '2' }];
+    newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: '2' }];
     fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(newFilters)
@@ -301,8 +301,8 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
   });
 
-  test('channelFiltersValidator selector with exclude filter and null event id', function(assert) {
-    let newFilters = [ { channel: 'System', filterType: 'Exclude', eventId: '' }];
+  test('channelFiltersValidator selector with EXCLUDE filter and null event id', function(assert) {
+    let newFilters = [ { channel: 'System', filterType: 'EXCLUDE', eventId: '' }];
     const visited = ['policy.channelFilters'];
     let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -318,7 +318,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     assert.deepEqual(validActual, validExpected, `${newFilters} value validated as expected`);
 
     // valid value
-    newFilters = [ { channel: 'System', filterType: 'Include', eventId: '2' }];
+    newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: '2' }];
     fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogChannelFilters(newFilters)
@@ -330,7 +330,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channelFiltersValidator selector with multiple event ids', function(assert) {
-    const newFilters = [ { channel: 'System', filterType: 'Exclude', eventId: '2,3,4' }];
+    const newFilters = [ { channel: 'System', filterType: 'EXCLUDE', eventId: '2,3,4' }];
     const visited = ['policy.channelFilters'];
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
@@ -347,7 +347,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('channelFiltersValidator selector with multiple event ids and a special character', function(assert) {
-    const newFilters = [ { channel: 'System', filterType: 'Exclude', eventId: '2,3,4%' }];
+    const newFilters = [ { channel: 'System', filterType: 'EXCLUDE', eventId: '2,3,4%' }];
     const visited = ['policy.channelFilters'];
     const fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')

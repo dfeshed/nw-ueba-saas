@@ -11,7 +11,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 let setState;
 
-const channelFilters = [ { channel: 'System', filterType: 'Include', eventId: 'ALL' } ];
+const channelFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'ALL' } ];
 const column = {
   field: 'channel',
   title: 'packager.channel.name',
@@ -28,7 +28,7 @@ const channels = [
 const item = {
   channel: 'Application',
   eventId: 'ALL',
-  filterType: 'Include'
+  filterType: 'INCLUDE'
 };
 
 const channelOptions = A(channels);
@@ -159,8 +159,8 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
       }}
     `);
 
-    await selectChoose('.windows-log-channel-filter', 'Exclude');
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Exclude', 'selected item matches Exclude');
+    await selectChoose('.windows-log-channel-filter', 'EXCLUDE');
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'EXCLUDE', 'selected item matches Exclude');
     assert.equal(this.get('item.eventId'), '', 'Changing to exclude clears out eventId correctly');
   });
 });

@@ -151,8 +151,8 @@ export const channelConfig = () => CHANNEL_CONFIG;
 /**
  * validates the channelFilters array.
  * ChannelFilters is an array of objects
- * [{ channel: 'Security', filterType: 'Exclude', eventId: '4' },
- *  { channel: '', filterType: 'Include', eventId: 'ALL'}]
+ * [{ channel: 'Security', filterType: 'EXCLUDE', eventId: '4' },
+ *  { channel: '', filterType: 'INCLUDE', eventId: 'ALL'}]
  * @public
  */
 export const channelFiltersValidator = (state) => {
