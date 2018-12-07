@@ -6,7 +6,6 @@ import {
   alertsError,
   selectedAlert,
   currentSeverityContext,
-  riskType,
   riskScoringServerError,
   isRiskScoreContextEmpty,
   isRespondServerOffline
@@ -46,8 +45,7 @@ export default Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {
-      risk: this.get('riskState'),
-      riskType: this.get('riskType')
+      risk: this.get('riskState')
     };
 
     this.setProperties({
@@ -57,7 +55,6 @@ export default Component.extend({
       alertsError: alertsError(state),
       selectedAlert: selectedAlert(state),
       contexts: currentSeverityContext(state),
-      riskType: riskType(state),
       riskScoringServerError: riskScoringServerError(state),
       isRiskScoreContextEmpty: isRiskScoreContextEmpty(state),
       isRespondServerOffline: isRespondServerOffline(state)

@@ -94,37 +94,6 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(find('.rsa-nav-tab.is-active .label').textContent.trim(), 'HIGH', 'high tab is selected');
   });
 
-  test('check files count', async function(assert) {
-    const riskScoreContext = {
-      'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
-      'distinctAlertCount': {
-        'critical': 1,
-        'high': 2,
-        'medium': 3,
-        'low': 0
-      },
-      'categorizedAlerts': {
-        'Critical': {
-          'test alert': {
-            'alertCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
-          }
-        }
-      }
-    };
-    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
-    await render(hbs`{{endpoint/risk-properties riskState=riskState}}`);
-    assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
-  });
-
-
   test('Display alert count for host', async function(assert) {
     const riskScoreContext = {
       'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
@@ -163,7 +132,6 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
 
     assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
       'Display alert name and alert count for alert context');
-    assert.equal(find('.alert-context__files').textContent.trim(), '0 file(s)', 'Display 10 events for alert context');
   });
 
   test('relevant error message is displayed when respond server mongo is down', async function(assert) {
