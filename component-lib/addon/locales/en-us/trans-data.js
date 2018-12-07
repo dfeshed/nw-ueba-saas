@@ -577,7 +577,7 @@ export default {
       oneOffline: '1 service is offline.',
       someOffline: '{{offline}} services are offline.',
       queried: 'Service queried:',
-      between: 'Time range:',
+      between: 'time=',
       progress: 'Progress:',
       complete: 'Complete',
       nestedElapsedTime: '({{time}}s)',

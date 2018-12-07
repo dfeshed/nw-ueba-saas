@@ -18,18 +18,6 @@ module('Integration | Component | console-panel', function(hooks) {
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
 
-    this.set('timeFormat', {
-      selected: {
-        format: 'hh:mma'
-      }
-    });
-
-    this.set('dateFormat', {
-      selected: {
-        format: 'MM/DD/YYYY'
-      }
-    });
-
     this.set('timezone', {
       selected: {
         zoneId: 'America/Los_Angeles'
@@ -53,8 +41,8 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(findAll('.console-panel .console-content').length, 1);
     assert.equal(findAll('.console-panel .console-content .service').length, 1);
     assert.equal(findAll('.console-panel .console-content .timerange').length, 1);
-    assert.equal(find('.console-panel .console-content .timerange .value .start').textContent.trim(), '11/11/49682 03:20pm');
-    assert.equal(find('.console-panel .console-content .timerange .value .end').textContent.trim(), '11/11/49682 03:20pm');
+    assert.equal(find('.console-panel .console-content .timerange .value .start').textContent.trim(), '"49682-11-11 15:20:00"');
+    assert.equal(find('.console-panel .console-content .timerange .value .end').textContent.trim(), '"49682-11-11 15:20:00"');
     assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'foo');
   });
 

@@ -28,7 +28,7 @@ module('Integration | Component | console-trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger .rsa-icon-notepad-2-lined').length, 1);
+    assert.equal(findAll('.console-trigger .rsa-icon-information-circle-lined').length, 1);
   });
 
   test('renders the correct dom hasWarning', async function(assert) {

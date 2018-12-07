@@ -29,8 +29,6 @@ const stateToComputed = (state) => ({
 });
 
 const ConsolePanel = Component.extend({
-  dateFormat: service(),
-  timeFormat: service(),
   timezone: service(),
 
   classNames: ['console-panel'],
@@ -42,13 +40,7 @@ const ConsolePanel = Component.extend({
   @computed('endTime') formattedEndDate: (endTime) => endTime * 1000,
   @computed('startTime') formattedStartDate: (startTime) => startTime * 1000,
 
-  @computed('dateFormat.selected.format', 'timeFormat.selected.format')
-  format: (dateFormat, timeFormat) => {
-    if (!dateFormat || !timeFormat) {
-      return;
-    }
-    return `${dateFormat} ${timeFormat.replace(/.SSS/, '')}`;
-  }
+  format: '"YYYY-MM-DD HH:mm:ss"'
 });
 
 export default connect(stateToComputed)(ConsolePanel);
