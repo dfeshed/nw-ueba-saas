@@ -2,50 +2,18 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findAll, render } from '@ember/test-helpers';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { snapShot } from '../../../../data/data';
-import Service from '@ember/service';
-
-let setState;
 
 module('Integration | Component | host detail header', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
 
-  hooks.beforeEach(function() {
-    initialize(this.owner);
-    this.owner.inject('component', 'i18n', 'service:i18n');
-    this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'host',
-      generateURL: () => {
-        return;
-      },
-      transitionTo: () => {
-      }
-    }));
-    setState = (state) => {
-      patchReducer(this, state);
-    };
-  });
-
-  test('Overview panel is not visible', async function(assert) {
-    new ReduxDataHelper(setState)
-      .snapShot(snapShot)
-      .isOverviewPanelVisible(false)
-      .build();
+  test('host header is rendered', async function(assert) {
     await render(hbs`{{host-detail/header}}`);
-    assert.equal(findAll('.showOverviewPanel').length, 0, 'Overview panel is not visible');
-  });
-
-  test('Overview panel is visible', async function(assert) {
-    new ReduxDataHelper((setState))
-      .isOverviewPanelVisible(true)
-      .build();
-    await render(hbs `{{host-detail/header}}`);
-    assert.equal(findAll('.showOverviewPanel').length, 1, 'Overview panel is visible');
+    assert.equal(findAll('.host-header').length, 1, 'Host header is visible');
+    assert.equal(findAll('.host-header .titlebar').length, 1, 'Host titlebar is visible');
+    assert.equal(findAll('.host-header .host-overview').length, 1, 'Host header overview is visible');
+    assert.equal(findAll('.host-header .actionbar').length, 1, 'Host actionbar is visible');
   });
 });

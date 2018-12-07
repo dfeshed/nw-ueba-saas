@@ -1,3 +1,8 @@
+{{#if hostDetails.score}}
+  {{rsa-risk-score score=hostDetails.score size='large'}}
+{{else}}
+  {{rsa-risk-score score='0' size='large'}}
+{{/if}}
 {{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machine.machineOsType') value=hostDetails.machine.machineOsType}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}
   {{host-scan-status agent=hostDetails}}

@@ -3441,7 +3441,7 @@ export default {
         },
         error: {
           'mongo.connection.failed': 'Database is not reachable. Retry after sometime.',
-          emptyContext: 'No Alerts are available which contribute for the risk score calculation of this file.',
+          emptyContext: 'Risk Score is 0. Reasons could be whitelisting/reset of the file or no alerts.',
           noEvents: 'No Events are available for this file.'
         },
         errorPage: {

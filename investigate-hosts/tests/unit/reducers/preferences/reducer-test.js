@@ -29,7 +29,7 @@ test('should return the initial state', function(assert) {
           'agentStatus.lastSeenTime',
           'agentStatus.scanStatus'
         ],
-        sortField: '{ "key": "machine.scanStartTime", "descending": true }'
+        sortField: '{ "key": "score", "descending": true }'
       }
     }
   });

@@ -16,7 +16,6 @@ import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
-import _ from 'lodash';
 import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
@@ -187,7 +186,7 @@ const exportFileAsCSV = () => {
 
 const _getVisibleColumnNames = (getState) => {
   const { preferences: { filePreference } } = getState().preferences;
-  return _.uniq(['firstFileName', 'score', ...filePreference.visibleColumns]);
+  return ['firstFileName', 'score', ...filePreference.visibleColumns];
 };
 
 

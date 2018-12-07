@@ -23,8 +23,6 @@ test('should return the initial state', function(assert) {
     preferences: {
       filePreference: {
         visibleColumns: [
-          'firstFileName',
-          'score',
           'reputationStatus',
           'firstSeenTime',
           'machineOsType',

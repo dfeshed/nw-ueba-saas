@@ -11,7 +11,7 @@ import {
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
-import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
+import { parseQueryString } from 'investigate-shared/utils/query-util';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';

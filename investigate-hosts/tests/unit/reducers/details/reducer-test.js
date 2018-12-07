@@ -12,7 +12,6 @@ const initialState = {
   animation: 'default',
 
   snapShots: null,
-  isOverviewPanelVisible: true,
   isDetailRightPanelVisible: true,
   isSnapshotsLoading: false
 };
@@ -41,14 +40,6 @@ test('The INITIALIZE_DATA will set the agentId and scan time', function(assert) 
   const result = reducer(previous, { type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId: 111 } });
 
   assert.equal(result.agentId, 111, 'Expecting agentIe equals to 111');
-});
-
-test('The TOGGLE_OVERVIEW_PANEL will toggles isOverviewPanelVisible', function(assert) {
-  const previous = Immutable.from({
-    isOverviewPanelVisible: true
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_OVERVIEW_PANEL });
-  assert.equal(result.isOverviewPanelVisible, false);
 });
 
 test('The SET_ANIMATION will sets the animation to the state', function(assert) {

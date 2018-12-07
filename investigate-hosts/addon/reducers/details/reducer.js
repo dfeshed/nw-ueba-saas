@@ -10,7 +10,6 @@ const dataInitialState = Immutable.from({
   animation: 'default',
 
   snapShots: null,
-  isOverviewPanelVisible: true,
   isDetailRightPanelVisible: true,
   isSnapshotsLoading: false
 });
@@ -34,10 +33,6 @@ const data = handleActions({
   [ACTION_TYPES.SET_SCAN_TIME]: (state, { payload }) => state.set('scanTime', payload),
 
   [ACTION_TYPES.SET_ANIMATION]: (state, { payload }) => state.set('animation', payload),
-
-  [ACTION_TYPES.TOGGLE_OVERVIEW_PANEL]: (state) => {
-    return state.set('isOverviewPanelVisible', !state.isOverviewPanelVisible);
-  },
 
   [ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL]: (state) => {
     return state.set('isDetailRightPanelVisible', !state.isDetailRightPanelVisible);

@@ -1,5 +1,5 @@
 import { lookup } from 'ember-dependency-lookup';
-import { addFilter } from 'investigate-hosts/actions/utils/query-util';
+import { addFilter } from 'investigate-shared/utils/query-util';
 
 /**
  * Executes a websocket fetch call for all services and returns a Promise.
@@ -47,7 +47,7 @@ const getPageOfMachines = (pageNumber, [{ key, descending } = {}], expressionLis
     sort: { keys: [key], descending }
   };
 
-  query = addFilter(query, expressionList);
+  query = addFilter(query, expressionList, 'host');
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'machines',

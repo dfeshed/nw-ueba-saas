@@ -2,7 +2,7 @@ import { lookup } from 'ember-dependency-lookup';
 import {
   addSortBy,
   addFilter
-} from 'investigate-files/actions/utils/query-util';
+} from 'investigate-shared/utils/query-util';
 
 const getCertificates = (pageNumber, sort, expressionList) => {
   let query = {

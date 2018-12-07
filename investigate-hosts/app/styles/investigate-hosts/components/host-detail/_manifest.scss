@@ -54,11 +54,10 @@
     padding-left: rsa-whitespace();
   }
   .host-action {
-    padding-top: 3px !important;
+    padding-top: 1rem;
     padding-right: rsa-whitespace(more);
     text-transform: uppercase;
-    height: 4rem;
-    padding-top: 3px;
+    height: 3rem;
     &.rsa-content-definition {
       .label {
         @include rsa-font(header, small);

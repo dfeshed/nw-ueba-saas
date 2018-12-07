@@ -5,8 +5,6 @@ import Immutable from 'seamless-immutable';
 const DEFAULT_FILE_PREFERENCES = {
   filePreference: {
     visibleColumns: [
-      'firstFileName',
-      'score',
       'reputationStatus',
       'firstSeenTime',
       'machineOsType',

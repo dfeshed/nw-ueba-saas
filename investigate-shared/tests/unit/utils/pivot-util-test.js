@@ -3,10 +3,21 @@ import sinon from 'sinon';
 
 import {
   navigateToInvestigateNavigate,
-  navigateToInvestigateEventsAnalysis
+  navigateToInvestigateEventsAnalysis,
+  serializeQueryParams
 } from 'investigate-shared/utils/pivot-util';
 
 module('Unit | Utils | pivot to investigate', function() {
+
+  const params = {
+    et: 0,
+    eid: 1,
+    mf: 'a%3D\'a/%3Db%3D/a\'',
+    mps: 'default',
+    rs: 'max',
+    sid: 2,
+    st: 3
+  };
 
   test('navigateToInvestigateEventsAnalysis', function(assert) {
     const actionSpy = sinon.spy(window, 'open');
@@ -45,5 +56,11 @@ module('Unit | Utils | pivot to investigate', function() {
     assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
     actionSpy.resetHistory();
     actionSpy.restore();
+  });
+
+  test('serializeQueryParams gives the correct URI string', function(assert) {
+    assert.expect(1);
+    const result = serializeQueryParams(params);
+    assert.equal(result, 'et=0&eid=1&mf=a%3D\'a/%3Db%3D/a\'&mps=default&rs=max&sid=2&st=3', 'serializeQueryParams gives the correct URL string');
   });
 });

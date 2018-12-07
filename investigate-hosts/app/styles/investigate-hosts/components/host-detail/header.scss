@@ -13,6 +13,7 @@
 .host-header {
   background-color: background-color(primary, darkest, nearly-opaque);
   @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+  padding-bottom: 1rem;
 
   .divider {
     @include border-left(1px, solid, primary);
@@ -20,16 +21,10 @@
     margin: rsa-whitespace(least);
     margin-left: rsa-whitespace();
   }
-
-  .showOverviewPanel {
-    display: flex;
-    max-height: 60px;
-    transition: max-height 0.25s ease-in;
-  }
 }
 
 .titlebar {
-  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(more);
+  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less);
   .rsa-nav-tab.is-left-aligned-primary {
     margin: 0 rsa-whitespace() 0;
     padding: rsa-whitespace(less) 0;
@@ -84,7 +79,7 @@
 }
 
 .actionbar {
-
+  padding-top: 1rem;
   .snapshot-select {
     width: 100px;
     font-size: inherit;
@@ -144,5 +139,3 @@
 
 
 }
-
-

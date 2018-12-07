@@ -10,7 +10,7 @@ import {
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
 import { uriEncodeMetaFilters } from 'investigate-events/actions/utils';
-import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
+import { serializeQueryParams } from 'investigate-shared/utils/pivot-util';
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
