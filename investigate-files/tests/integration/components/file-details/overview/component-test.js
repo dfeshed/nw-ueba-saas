@@ -61,6 +61,21 @@ const sampleData = [{
   }
 }];
 
+const hosts = [
+  {
+    value: 'Machine1'
+  },
+  {
+    value: 'Machine2'
+  },
+  {
+    value: 'Machine3'
+  },
+  {
+    value: 'Machine4'
+  }
+];
+
 let initState;
 
 module('Integration | Component | file-details/overview', function(hooks) {
@@ -105,5 +120,16 @@ module('Integration | Component | file-details/overview', function(hooks) {
     await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
     assert.equal(findAll('.investigate-file-tab').length, 0, 'file properties in right panel is rendered');
     assert.equal(findAll('.content-section__section-name').length, 0, 'No file properties section are present');
+  });
+
+  test('host details on right panel', async function(assert) {
+    new ReduxDataHelper(initState)
+      .activeDataSourceTab('HOSTS')
+      .isFilePropertyPanelVisible(true)
+      .hostNameList(hosts)
+      .build();
+    this.set('propertyConfig', config);
+    await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
+    assert.equal(findAll('.files-host-list').length, 1, 'Host is rendered in right panel');
   });
 });
