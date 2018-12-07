@@ -21,7 +21,7 @@ const updateTreeData = (data, checksums, fileStatus) => {
 const initialState = Immutable.from({
   processList: null,
   // In list view, process view can be sorted based on processName, pid. By default, we fetch based on processName in ascending order.
-  sortField: 'score',
+  sortField: 'fileProperties.score',
   isDescOrder: true,
 
   processTree: null,
