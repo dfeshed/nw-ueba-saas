@@ -124,7 +124,7 @@ public class CategoryRarityModelBuilderTest {
 		Assert.assertEquals(amountOfDays,sequenceReduceData.keySet().stream().map(Pair::getValue).distinct().count(),0);
 		Assert.assertEquals(amountOfFeatures,sequenceReduceData.keySet().stream().map(Pair::getKey).distinct().count());
 		sequenceReduceData.values().forEach(value -> Assert.assertEquals(1D,value,0));
-		Map<String, Long> featureValueToCountMap = categoryRarityModelBuilder.castModelBuilderData(sequenceReduceData);
+		Map<String, Integer> featureValueToCountMap = categoryRarityModelBuilder.getFeatureValueToNumOfOccurrences(sequenceReduceData);
 		for (int j = 0; j< amountOfFeatures; j++) {
 			Assert.assertEquals(amountOfDays,featureValueToCountMap.get(String.format("feature%d",j)),0);
 		}
