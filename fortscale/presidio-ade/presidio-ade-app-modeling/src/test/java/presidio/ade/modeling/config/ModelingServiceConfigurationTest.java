@@ -51,6 +51,8 @@ public class ModelingServiceConfigurationTest {
 
 		properties.put("enable.metrics.export", false);
 		properties.put("monitoring.fixed.rate","60000");
+		properties.put("model.pageIterator.pageSize", "200000");
+		properties.put("model.pageIterator.maxGroupSize", "1000");
 		return new TestPropertiesPlaceholderConfigurer(properties);
 	}
 }
