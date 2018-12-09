@@ -41,7 +41,9 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
         for (AdeAggregationRecord featureAdeAggrRecord : featureAdeAggrRecords) {
             AdeRecordReader adeRecordReader = (AdeAggregationReader) recordReaderFactoryService.getRecordReader(featureAdeAggrRecord);
             List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader, timeRange);
-            scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregationRecords, featureAdeAggrRecord, featureScoreList);
+            if(featureScoreList != null) {
+                scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregationRecords, featureAdeAggrRecord, featureScoreList);
+            }
         }
 
         return scoredFeatureAggregationRecords;
