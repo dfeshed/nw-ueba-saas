@@ -21,7 +21,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         return buildContinuousDataModel(histogram);
     }
 
-    protected ContinuousDataModel buildContinuousDataModel(Map<String, Double> histogram) {
+    public ContinuousDataModel buildContinuousDataModel(Map<String, Double> histogram) {
         double totalCount = 0;
         double sum = 0;
         double squaredSum = 0;
