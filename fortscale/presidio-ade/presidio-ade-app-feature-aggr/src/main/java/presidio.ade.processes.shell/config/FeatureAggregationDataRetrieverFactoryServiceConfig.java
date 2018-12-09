@@ -3,6 +3,7 @@ package presidio.ade.processes.shell.config;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
+import fortscale.ml.model.pagination.PriorModelPaginationServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
@@ -26,6 +27,7 @@ import java.util.Collection;
         AggregationEventsAccumulationDataReaderConfig.class,
         FeatureBucketReaderConfig.class,
         RetrieverMetricsContainerConfig.class,
+        PriorModelPaginationServiceConfig.class
 })
 @ComponentScan(value = "fortscale.ml.model.retriever.factories",
         excludeFilters = {

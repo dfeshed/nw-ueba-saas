@@ -10,6 +10,7 @@ import fortscale.ml.model.config.DataRetrieverFactoryServiceConfig;
 import fortscale.ml.model.config.ModelBuilderFactoryServiceConfig;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainerConfig;
+import fortscale.ml.model.pagination.PriorModelPaginationServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -43,6 +44,7 @@ import java.util.Collection;
 		StoreManagerConfig.class,
 		ModelingServiceMetricsContainerConfig.class,
 		MetricContainerFlusherConfig.class,
+		PriorModelPaginationServiceConfig.class
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")

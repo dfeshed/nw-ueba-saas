@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
+import fortscale.ml.model.pagination.PriorModelPaginationServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
@@ -29,7 +30,8 @@ import java.util.Collection;
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
-        RetrieverMetricsContainerConfig.class
+        RetrieverMetricsContainerConfig.class,
+        PriorModelPaginationServiceConfig.class
 })
 @ComponentScan(
         value = "fortscale.ml.model.retriever.factories",
