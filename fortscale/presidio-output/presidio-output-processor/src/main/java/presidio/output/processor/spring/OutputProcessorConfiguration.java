@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -21,9 +22,15 @@ import presidio.output.processor.services.user.UserService;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class, MongoConfig.class, OutputAdeManagerSdkConfig.class, AlertServiceElasticConfig.class, OutputMonitoringConfiguration.class, ElasticsearchConfig.class})
+@Import({
+        EventPersistencyServiceConfig.class,
+        MongoConfig.class,
+        AdeManagerSdkConfig.class,
+        AlertServiceElasticConfig.class,
+        OutputMonitoringConfiguration.class,
+        ElasticsearchConfig.class
+})
 public class OutputProcessorConfiguration {
-
     @Autowired
     private AdeManagerSdk adeManagerSdk;
 
@@ -44,7 +51,6 @@ public class OutputProcessorConfiguration {
 
     @Value("${smart.page.size}")
     private int smartPageSize;
-
 
     @Value("${alert.page.size}")
     private int alertPageSize;

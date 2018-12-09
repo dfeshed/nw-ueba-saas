@@ -1,7 +1,5 @@
 package presidio.ade.manager;
 
-import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
-import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
@@ -9,14 +7,11 @@ import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
-import presidio.ade.domain.store.ScoredDataReader;
 import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
@@ -72,12 +67,5 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
             AdeManagerApplicationCommands.class,
             EnrichedFileGeneratorConfig.class
     })
-    public static class AdeManagerApplicationTestConfig {
-        @MockBean
-        private RecordReaderFactoryService recordReaderFactoryService;
-        @MockBean
-        private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
-        @MockBean
-        private ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader;
-    }
+    public static class AdeManagerApplicationTestConfig {}
 }
