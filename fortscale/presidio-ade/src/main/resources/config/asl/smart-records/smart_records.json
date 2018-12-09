@@ -34,7 +34,8 @@
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
         "sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
         "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly",
-        "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly"
+        "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly",
+        "numberOfEventsUserIdProcessHourly"
       ],
       "defaultWeight": 0.5
     }
