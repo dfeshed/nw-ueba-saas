@@ -50,7 +50,7 @@ module('Unit | Utils | components/usm-shared/filters-wrapper/filters-wrapper-uti
     parsedResult = parseFilters(noValuesFilters);
     assert.equal(parsedResult.length, 0, 'filters with no values returns empty array as expected');
 
-    const expectedResult = [ { restrictionType: 'IN', propertyValues: [{ value: 'published' }, { value: 'unpublished' }, { value: 'unpublished_edits' }], propertyName: 'publishStatus' }];
+    const expectedResult = [ { restrictionType: 'IN', propertyValues: [{ type: 'STRING', value: 'published' }, { type: 'STRING', value: 'unpublished' }, { type: 'STRING', value: 'unpublished_edits' }], propertyName: 'publishStatus' }];
     const hasValuesFilters = [{ name: 'publishStatus', operator: 'IN', value: ['published', 'unpublished', 'unpublished_edits'] }];
     parsedResult = parseFilters(hasValuesFilters);
     assert.deepEqual(parsedResult, expectedResult, 'filters with values returns array of expressions as expected');

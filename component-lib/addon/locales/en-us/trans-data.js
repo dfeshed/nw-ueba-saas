@@ -4156,7 +4156,7 @@ export default {
         invasiveActions: 'Response Action Settings',
         blockingEnabled: 'Blocking',
         endpointServerSettings: 'Endpoint Server Settings',
-        primaryAddress: 'Hostname',
+        primaryAddress: 'Endpoint Server',
         primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
         primaryHttpsPort: 'HTTPS Port',
         primaryUdpPort: 'UDP Port',
