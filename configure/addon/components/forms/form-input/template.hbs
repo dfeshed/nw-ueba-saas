@@ -1,0 +1,17 @@
+{{#let (hash update=(action (mut (get props.changeset property)))) as |input|}}
+  {{#forms/form-wrapper property=property label=label labelHidden=labelHidden props=props as |wrapper|}}
+    {{yield
+      (hash
+        component=(
+          component "forms/input-wrapper"
+          id=wrapper.inputId
+          ariaDescribedBy=wrapper.descriptionId
+          update=input.update
+          value=(get props.changeset property)
+          focusIn=(action wrapper.focus)
+          focusOut=(action wrapper.blur)
+        )
+      )
+    }}
+  {{/forms/form-wrapper}}
+{{/let}}

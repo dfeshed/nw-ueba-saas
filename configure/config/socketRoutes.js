@@ -134,6 +134,17 @@ const configureConfigGen = function(environment) {
         requestDestination: '/ws/respond/notifications/update'
       }
     },
+    'risk-scoring-settings': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/risk/score/settings',
+        requestDestination: '/ws/respond/risk/score/settings'
+      },
+      updateRecord: {
+        subscriptionDestination: '/user/queue/risk/score/settings/update',
+        requestDestination: '/ws/respond/risk/score/settings/update'
+      }
+    },
     'endpoint-server': {
       socketUrl: socketUrlEndpoint,
       findAll: {

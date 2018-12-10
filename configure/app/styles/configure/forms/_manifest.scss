@@ -1,0 +1,53 @@
+.form-group {
+  width:100%;
+  display: table;
+  border-collapse:collapse;
+
+  label {
+    padding-top: rsa-whitespace();
+    padding-bottom: rsa-whitespace(less);
+    color: text-color(primary, lighter);
+    text-transform: uppercase;
+    display: block;
+  }
+
+  input, .ember-power-select-trigger {
+    font-size: 18px;
+    padding-top: rsa-whitespace(least);
+    color: text-color(primary, lightest);
+    line-height: 2rem;
+    @include border-bottom(1px, solid, primary, light);
+  }
+
+  ul, li {
+    padding-top: rsa-whitespace(less);
+    color: text-color(primary, lightest);
+  }
+
+}
+
+.form-validation {
+  display: table-row;
+}
+
+.form-validation.is-invalid .form-group {
+  label {
+    color: text-color(accentOne);
+  }
+  input {
+    background-color: background-color(accentOne, base, nearly-transparent);
+    border-color: border-color(accentOne);
+  }
+  .ember-power-select-trigger {
+    background-color: background-color(accentOne, base, nearly-transparent);
+    @include border-bottom(1px, solid, accentOne);
+  }
+}
+
+.form-save-controls {
+  padding-top: rsa-whitespace();
+  padding-bottom: rsa-whitespace(more);
+  button {
+    margin-right: rsa-whitespace();
+  }
+}

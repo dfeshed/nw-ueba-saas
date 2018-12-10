@@ -727,6 +727,30 @@ export default {
       assignee: {
         none: '(Unassigned)'
       },
+      riskScoring: {
+        labels: {
+          fileThreshold: 'File Alert Threshold',
+          fileTimeWindow: 'File Time Window',
+          fileTimeWindowUnit: 'File Time Window Unit (days or hours)',
+          hostThreshold: 'Host Alert Threshold',
+          hostTimeWindow: 'Host Time Window',
+          hostTimeWindowUnit: 'Host Time Window Unit (days or hours)'
+        },
+        validations: {
+          threshold: 'Threshold must be between 0 and 100',
+          timeWindow: 'Time Window must be between 1 and 24',
+          timeWindowUnit: 'Time Window must be in hours or days'
+        },
+        timeUnits: {
+          d: 'Day(s)',
+          h: 'Hour(s)'
+        },
+        actionMessages: {
+          fetchFailure: 'There was a problem loading the Respond Risk Scoring settings. The Respond Server may be offline or inaccessible.',
+          updateSuccess: 'You successfully updated the Respond Risk Scoring settings',
+          updateFailure: 'There was a problem updating the Respond Risk Scoring settings'
+        }
+      },
       priority: {
         LOW: 'Low',
         MEDIUM: 'Medium',

@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
 import { getRules } from 'configure/actions/creators/respond/incident-rule-creators';
+import { getRiskScoringSettings } from 'configure/actions/creators/respond/risk-scoring-creators';
 
 export default Route.extend({
   accessControl: inject(),
@@ -21,6 +22,7 @@ export default Route.extend({
   model() {
     const redux = this.get('redux');
     redux.dispatch(getRules());
+    redux.dispatch(getRiskScoringSettings());
   },
 
   activate() {

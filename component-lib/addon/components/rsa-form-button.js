@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { get } from '@ember/object';
 import { equal } from 'ember-computed';
 import { inject as service } from '@ember/service';
 import layout from '../templates/components/rsa-form-button';
@@ -49,7 +50,12 @@ export default Component.extend({
   actions: {
     defaultAction() {
       if (!this.get('isDisabled')) {
-        this.sendAction('defaultAction');
+        const defaultAction = get(this, 'defaultAction');
+        if (typeof defaultAction === 'function') {
+          defaultAction();
+        } else {
+          this.sendAction('defaultAction');
+        }
       }
     }
   }

@@ -3502,6 +3502,23 @@ ember-basic-dropdown@^1.0.0:
     ember-cli-htmlbars "^3.0.0"
     ember-maybe-in-element "^0.2.0"
 
+ember-changeset-validations@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/ember-changeset-validations/-/ember-changeset-validations-1.3.2.tgz#81a87ea3f7f47b2a5b9e9dd7a5288dc43ca22f62"
+  dependencies:
+    ember-changeset "1.5.0"
+    ember-cli-babel "^6.6.0"
+    ember-cli-htmlbars "^1.1.1"
+    ember-get-config "^0.2.4"
+    ember-validators "^1.2.0"
+
+ember-changeset@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/ember-changeset/-/ember-changeset-1.5.0.tgz#730d0ca3ac7a54a471322d159c77e734d0f42751"
+  dependencies:
+    ember-cli-babel "^6.8.2"
+    ember-deep-set "^0.1.4"
+
 ember-cli-app-version@3.2.0:
   version "3.2.0"
   resolved "https://registry.npmjs.org/ember-cli-app-version/-/ember-cli-app-version-3.2.0.tgz#7b9ad0e1b63ae0518648356ee24c703e922bc26e"
@@ -4072,6 +4089,12 @@ ember-d3@0.4.2:
     d3-selection-multi "^1.0.1"
     ember-cli-babel "^6.6.0"
 
+ember-deep-set@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/ember-deep-set/-/ember-deep-set-0.1.4.tgz#a9989969498d89685be155b72109b037af4d5645"
+  dependencies:
+    ember-cli-babel "^6.6.0"
+
 ember-dependency-lookup@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ember-dependency-lookup/-/ember-dependency-lookup-2.0.0.tgz#530a167127612fa35ea7af074517d742e18b6353"
@@ -4162,6 +4185,13 @@ ember-flatpickr@2.4.0:
 ember-get-config@0.2.3:
   version "0.2.3"
   resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.2.3.tgz#546e77c991792fffde2f6757a5edb0c5dd122c0e"
+  dependencies:
+    broccoli-file-creator "^1.1.1"
+    ember-cli-babel "^6.3.0"
+
+ember-get-config@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.2.4.tgz#118492a2a03d73e46004ed777928942021fe1ecd"
   dependencies:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
@@ -4341,6 +4371,12 @@ ember-redux@4.0.0:
   resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-4.0.0.tgz#e98b394b7ac18483a434184e160bff21f8061772"
   dependencies:
     ember-cli-babel "^6.8.2"
+
+ember-require-module@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/ember-require-module/-/ember-require-module-0.2.0.tgz#eafe436737ead4762220a9166b78364abf754274"
+  dependencies:
+    ember-cli-babel "^6.9.2"
 
 ember-resolver@4.3.0:
   version "4.3.0"
@@ -4530,6 +4566,13 @@ ember-user-activity@1.2.1:
   resolved "https://registry.npmjs.org/ember-user-activity/-/ember-user-activity-1.2.1.tgz#14e75deb7d0a06aad25a7812ed6a20aaf62b8ce1"
   dependencies:
     ember-cli-babel "^6.14.1"
+
+ember-validators@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/ember-validators/-/ember-validators-1.2.1.tgz#0acfd831afb3a2fd32d74ab5ac35df58bff2ce11"
+  dependencies:
+    ember-cli-babel "^6.9.2"
+    ember-require-module "^0.2.0"
 
 ember-weakmap@^3.0.0:
   version "3.3.1"

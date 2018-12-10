@@ -15,6 +15,11 @@ import {
   updateNotificationSettings
 } from './respond-notifications/notifications';
 
+import {
+  fetchRiskScoringSettings,
+  updateRiskScoringSettings
+} from './risk-scoring/settings';
+
 export default function* root() {
   yield[
     fork(fetchRules),
@@ -26,6 +31,8 @@ export default function* root() {
     fork(saveRule),
     fork(createRule),
     fork(fetchNotificationSettings),
-    fork(updateNotificationSettings)
+    fork(updateNotificationSettings),
+    fork(fetchRiskScoringSettings),
+    fork(updateRiskScoringSettings)
   ];
 }

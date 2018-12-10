@@ -6,11 +6,19 @@
 {{else}}
   {{#if isSubmit}}
     <button type={{type}} disabled={{isDisabled}} class="rsa-form-button">
-      {{yield}}
+      {{#if hasBlock}}
+        {{yield}}
+      {{else}}
+        {{text}}
+      {{/if}}
     </button>
   {{else}}
     <button disabled={{isDisabled}} class="rsa-form-button" {{action 'defaultAction' on='click'}}>
-      {{yield}}
+      {{#if hasBlock}}
+        {{yield}}
+      {{else}}
+        {{text}}
+      {{/if}}
     </button>
   {{/if}}
 {{/if}}

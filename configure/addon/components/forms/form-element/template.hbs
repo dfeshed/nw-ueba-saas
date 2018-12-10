@@ -1,0 +1,8 @@
+{{#let (hash submitted=submitted validateProperty=(action "validateProperty" changeset) changeset=changeset) as |props|}}
+  {{yield (hash
+    input=(component "forms/form-input" props=props)
+    select=(component "forms/power-select" props=props)
+    save=(component "rsa-form-button" text=buttonLabels.save style="primary" testId="saveButton" class="confirm-button" defaultAction=(action "save" changeset) isDisabled=(not (gt changeset.changes.length 0)))
+    reset=(component "rsa-form-button" text=buttonLabels.reset defaultAction=(action "reset" changeset) testId="resetButton" isDisabled=(not (gt changeset.changes.length 0)))
+  )}}
+{{/let}}

@@ -1,0 +1,18 @@
+{{#let (hash update=(action (mut (get props.changeset property)))) as |select|}}
+  {{#forms/form-wrapper property=property label=label labelHidden=labelHidden props=props as |wrapper|}}
+    {{yield
+      (hash
+        component=(
+          component "power-select"
+          triggerId=wrapper.inputId
+          ariaDescribedBy=wrapper.descriptionId
+          onchange=select.update
+          selected=(get props.changeset property)
+          onfocus=(action wrapper.focus)
+          onblur=(action wrapper.blur)
+          searchEnabled=false
+        )
+      )
+    }}
+  {{/forms/form-wrapper}}
+{{/let}}

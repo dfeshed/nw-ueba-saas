@@ -1,0 +1,12 @@
+.risk-scoring {
+  overflow: auto;
+  padding: 0 rsa-whitespace(more);
+
+  h1 {
+    font-size: 18px;
+    text-transform: uppercase;
+    padding-top: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace(less);
+    color: text-color(primary, lighter);
+  }
+}
