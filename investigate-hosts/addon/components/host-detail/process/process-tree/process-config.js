@@ -35,6 +35,19 @@ export default [
     disableSort: true
   },
   {
+    field: 'launchArguments',
+    width: '20vw',
+    title: 'investigateHosts.process.launchArguments',
+    isDescending: false,
+    disableSort: true
+  },
+  {
+    field: 'path',
+    width: '16vw',
+    title: 'investigateHosts.process.filePath',
+    disableSort: true
+  },
+  {
     field: 'fileProperties.signature.features',
     width: '8vw',
     title: 'investigateHosts.process.signature',
@@ -45,19 +58,6 @@ export default [
     width: '4vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',
-    disableSort: true
-  },
-  {
-    field: 'path',
-    width: '16vw',
-    title: 'investigateHosts.process.filePath',
-    disableSort: true
-  },
-  {
-    field: 'launchArguments',
-    width: '20vw',
-    title: 'investigateHosts.process.launchArguments',
-    isDescending: false,
     disableSort: true
   },
   {

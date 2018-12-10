@@ -1,4 +1,4 @@
-{{#rsa-page-layout showRightZone=false as |layout|}}
+{{#rsa-page-layout showRightZone=false onClose=(action 'onPropertyPanelClose') as |layout|}}
   {{#layout.center}}
     {{host-detail/process/process-details/process-details-action-bar}}
     {{#if isProcessLoading}}

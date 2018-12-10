@@ -110,6 +110,10 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     assert.equal(findAll('.host-property-panel').length, 1, 'process property panel rendered');
     await click(findAll('.close-zone')[1]);
     assert.equal(findAll('.show-right').length, 0, 'process property panel should close');
+
+    const redux = this.owner.lookup('service:redux');
+    const { endpoint: { process: { selectedDllRowIndex } } } = redux.getState();
+    assert.equal(selectedDllRowIndex, -1, 'Process row index should reset');
   });
 
   test('Back to process page on process-details', async function(assert) {

@@ -3070,7 +3070,7 @@ export default {
       properties: {
         title: 'Host Properties',
         filter: 'Type to filter list',
-        checkbox: 'Show properties with values only',
+        checkbox: 'Show details with values only',
         groups: 'Groups',
         scheduleConfig: {
           enabled: 'Enabled',

@@ -34,6 +34,18 @@ export default [
     isDescending: false
   },
   {
+    field: 'launchArguments',
+    width: '10vw',
+    title: 'investigateHosts.process.launchArguments',
+    isDescending: false
+  },
+  {
+    field: 'path',
+    width: '20vw',
+    title: 'investigateHosts.process.filePath',
+    isDescending: false
+  },
+  {
     field: 'fileProperties.signature.features',
     width: '10vw',
     title: 'investigateHosts.process.signature',
@@ -44,18 +56,6 @@ export default [
     width: '6vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',
-    isDescending: false
-  },
-  {
-    field: 'path',
-    width: '20vw',
-    title: 'investigateHosts.process.filePath',
-    isDescending: false
-  },
-  {
-    field: 'launchArguments',
-    width: '10vw',
-    title: 'investigateHosts.process.launchArguments',
     isDescending: false
   },
   {

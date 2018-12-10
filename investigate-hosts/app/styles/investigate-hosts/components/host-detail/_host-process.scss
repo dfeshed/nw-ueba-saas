@@ -166,6 +166,7 @@
     .rsa-data-table {
       min-height: 130px;
       height: auto;
+      overflow-x: auto;
       .rsa-data-table-body {
         overflow: hidden;
       }
@@ -229,7 +230,7 @@
     padding-bottom: 10px;
   }
   .process-tree-table-footer {
-    max-height: 0;
+    max-height: 19px;
   }
   .tree-expand-icon {
     cursor: pointer;

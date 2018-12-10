@@ -53,6 +53,9 @@ const ProcessDetails = Component.extend({
     selectAccordion(accordion) {
       this.set('selectedAccordion', accordion);
       this.send('setDllRowSelectedId', -1);
+    },
+    onPropertyPanelClose() {
+      this.send('setDllRowSelectedId', -1);
     }
   }
 });

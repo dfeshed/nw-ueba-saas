@@ -265,11 +265,13 @@ export const suspiciousThreadsData = createSelector(
         return filteredThread.map((threadObj) => {
           const { startAddress, tid, teb } = threadObj;
           return {
+            ...item,
             signature,
             dllFileName,
             startAddress,
             tid,
-            teb
+            teb,
+            fileProperties
           };
         });
       });
