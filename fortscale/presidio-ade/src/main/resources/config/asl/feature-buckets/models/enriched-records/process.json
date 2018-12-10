@@ -112,27 +112,6 @@
           "type": "regex",
           "fieldName": "operationType",
           "pattern": "CREATE_REMOTE_THREAD"
-        },
-        {
-          "type": "not",
-          "predicate":
-          {
-            "type": "and",
-            "predicates": [
-              {
-                "type": "contained-in-list",
-                "fieldName": "dstProcessDirectoryGroups",
-                "expectedValues": [
-                  "SYSTEM_32"
-                ]
-              },
-              {
-                "type": "regex",
-                "fieldName": "dstProcessFileName",
-                "pattern": "lsass\\.exe"
-              }
-            ]
-          }
         }
       ],
       "aggrFeatureConfs": [
@@ -170,6 +149,27 @@
           "type": "regex",
           "fieldName": "operationType",
           "pattern": "CREATE_REMOTE_THREAD"
+        },
+        {
+          "type": "not",
+          "predicate":
+          {
+            "type": "and",
+            "predicates": [
+              {
+                "type": "contained-in-list",
+                "fieldName": "dstProcessDirectoryGroups",
+                "expectedValues": [
+                  "SYSTEM_32"
+                ]
+              },
+              {
+                "type": "regex",
+                "fieldName": "dstProcessFileName",
+                "pattern": "lsass\\.exe"
+              }
+            ]
+          }
         }
       ],
       "aggrFeatureConfs": [
