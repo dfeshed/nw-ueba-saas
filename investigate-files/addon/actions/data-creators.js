@@ -57,11 +57,13 @@ const _fetchFiles = (type) => {
 
 const initializeFileDetails = (checksum) => {
   return (dispatch) => {
+    dispatch(getServiceId('FILE', () => {
+      dispatch(_fetchHostNameList(checksum));
+    }));
     dispatch(getRespondServerStatus());
     dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(checksum));
-    dispatch(_fetchHostNameList(checksum));
   };
 };
 /**
