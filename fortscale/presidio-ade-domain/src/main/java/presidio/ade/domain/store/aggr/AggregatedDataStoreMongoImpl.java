@@ -4,10 +4,10 @@ import com.mongodb.DBCollection;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
-import fortscale.utils.store.record.StoreMetadataProperties;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import fortscale.utils.store.record.StoreMetadataProperties;
+import fortscale.utils.time.TimeRange;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -187,34 +187,54 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     }
 
     @Override
-    public void remove(String collectionName, Instant start, Instant end){
-        Query query = new Query()
-                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+    public void remove(String collectionName, Instant start, Instant end) {
+        Query query = new Query(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 
     @Override
-    public long countScoredRecords(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String
-            adeEventType) {
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap);
+    public long countScoredRecords(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.count(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
     @Override
-    public List<ScoredFeatureAggregationRecord> readScoredRecords(TimeRange timeRange, MultiKeyFeature
-            contextFieldNameToValueMap, String adeEventType, int skip, int limit) {
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap).skip(skip).limit(limit);
+    public List<ScoredFeatureAggregationRecord> readScoredRecords(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
+            int skip, int limit) {
+
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
+                .skip(skip).limit(limit);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.find(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
-    private static Query buildAggregationRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap) {
+    @Override
+    public Instant readFirstStartInstant(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+
+        return timeRange.getStart();
+    }
+
+    @Override
+    public Instant readLastStartInstant(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+
+        return timeRange.getEnd();
+    }
+
+    private static Query buildAggregationRecordsQuery(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
+
         Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
         contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
             contextFieldName = String.format("context.%s", contextFieldName);
             query.addCriteria(where(contextFieldName).is(contextFieldValue));
         });
+        query.addCriteria(where(ScoredFeatureAggregationRecord.SCORE_FIELD_NAME).gt(scoreThreshold));
         return query;
     }
 
