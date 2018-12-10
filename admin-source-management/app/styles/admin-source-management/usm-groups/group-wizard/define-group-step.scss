@@ -2,6 +2,9 @@
   .define-group-step {
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
+    span.ember-power-select-placeholder {
+      color: text-color(primary, light);
+    }
     
     .maxTenCriteria {
       position: absolute;
@@ -68,10 +71,16 @@
           vertical-align: text-top;
         }
       }
+      .tooltip {
+        cursor: default;
+        position: absolute;
+        right: 24px;
+        top: 6px;
+      }
       .remove-criteria {
         cursor: pointer;
         position: absolute;
-        right: 0px;
+        right: -10px;
         top: 10px;
       }
       .between-text-input {

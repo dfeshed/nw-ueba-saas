@@ -1,5 +1,6 @@
 <div {{action "saveChanges" on="onDeactivate"}}>
   {{rsa-form-input class=(concat 'operator-input firstValueInput ' validation)
+    placeholder=(t 'adminUsm.groupCriteria.placeholders.beginning_IP')
     maxLength=1024
     value=firstValue
     isError=(or firstValueValidator.showError firstlockError)
@@ -13,6 +14,7 @@
     <br>
   {{/if}}
   {{rsa-form-input class=(concat 'operator-input secondValueInput ' validation)
+    placeholder=(t 'adminUsm.groupCriteria.placeholders.end_IP')
     maxLength=1024
     value=secondValue
     isError=(or secondValueValidator.showError secondlockError)
@@ -21,4 +23,12 @@
     focusOut=(action 'secondValueChange')
     spellcheck=false    
   }}
+</div>
+
+<div class="tooltip">
+  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation))
+    style="standard"
+    alwaysShow=true}}
+    {{rsa-icon size='large' name="information-circle" style='lined'}}
+  {{/rsa-text-with-tooltip}}
 </div>

@@ -4254,6 +4254,38 @@ export default {
         validIPv6: 'Invalid IPv6 address',
         validIPv6List: 'One or more of the the IPv6 addresses are invalid',
         validPolicyAssigned: 'Policy selection is required, or clear by selecting the \'X\''
+      },
+      tooltips: {
+        osType_notEmpty: 'Select one or more of the operating system types.',
+        osDescription_EQUAL: 'Enter OS Description value that is no longer than 255 characters. Only exact matches will be included.',
+        osDescriptione_CONTAINS: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value is found anywhere in the OS description.',
+        osDescription_STARTS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value begins the OS description.',
+        osDescription_ENDS_WITH: 'Enter a OS Description value that is no longer than 255 characters. Matches will be included if the value ends with the OS description.',
+        hostname_EQUAL: 'Enter one or more valid hostnames. Valid hostnames contain alphanumeric, dot, or underscore characters. First and last characters must be alphanumeric.',
+        hostname_CONTAINS: 'Enter a single valid hostname string containing alphanumeric, ., or _ characters. Matches included if the value is found anywhere in host name',
+        hostname_STARTS_WITH: 'Enter a single valid hostname string. Valid starts with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value begins the host name.',
+        hostname_ENDS_WITH: 'Enter a single valid hostname ending substring. Valid ends with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value ends the host name',
+        hostname_validHostnameList: 'Enter one or more valid hostnames.  Valid hostnames contain alphanumeric, ., or _ characters. First and last character must be alphanumeric. Multiple value can be separated by spaces, tabs, commas, or line feeds.',
+        ipv4_validIPv4: 'Enter a single valid IPv4 address value in each field.',
+        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses. Multiple value can be separated by spaces, tabs, commas, or line feeds.',
+        ipv6_validIPv6: 'Enter a single valid IPv6 address value in each field.',
+        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses. Multiple value can be separated by spaces, tabs, commas, or line feeds.'
+      },
+      placeholders: {
+        beginning_IP: 'Beginning IP address',
+        end_IP: 'End IP address',
+        osType_notEmpty: 'Select one or more operating systems',
+        osDescription_EQUAL: 'Enter valid OS Description',
+        osDescriptione_CONTAINS: 'Enter OS Description substring',
+        osDescription_STARTS_WITH: 'Enter starting substring',
+        osDescription_ENDS_WITH: 'Enter ending substring',
+        hostname_EQUAL: 'Enter valid hostnames',
+        hostname_CONTAINS: 'Enter hostname substring',
+        hostname_STARTS_WITH: 'Enter starting substring',
+        hostname_ENDS_WITH: 'Enter ending substring',
+        hostname_validHostnameList: 'Enter one or more valid hostnames',
+        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses',
+        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses'
       }
     },
     errorCodeResponse: {

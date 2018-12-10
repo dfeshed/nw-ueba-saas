@@ -1,4 +1,5 @@
 {{#power-select-multiple
+  placeholder=(t (concat 'adminUsm.groupCriteria.placeholders.' selectedAttribute '_' validation))
   searchEnabled=false
   options=osSelector
   selected=selectedValues
@@ -11,3 +12,11 @@
     {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
   </span>
 {{/if}}
+
+<div class="tooltip">
+  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation))
+    style="standard"
+    alwaysShow=true}}
+    {{rsa-icon size='large' name="information-circle" style='lined'}}
+  {{/rsa-text-with-tooltip}}
+</div>

@@ -1,5 +1,6 @@
 <vbox>
   {{rsa-form-textarea class='operator-input'
+    placeholder=(t (concat 'adminUsm.groupCriteria.placeholders.' selectedAttribute '_' validation))
     value=localValue
     isInline=true
     isError=(or validator.showError lockError)
@@ -7,11 +8,18 @@
     focusIn=(action 'handleFocusIn')
     focusOut=(action 'handleInputChange' value='target.value')
     spellcheck=false
-  }}
+  }} 
   {{#if (or validator.showError lockError)}}
     <span class="input-error">
       {{t (concat 'adminUsm.groupCriteria.inputValidations.' validation)}}
     </span>
   {{/if}}
 </vbox>
-  
+
+<div class="tooltip">
+  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation))
+    style="standard"
+    alwaysShow=true}}
+    {{rsa-icon size='large' name="information-circle" style='lined'}}
+  {{/rsa-text-with-tooltip}}
+</div>

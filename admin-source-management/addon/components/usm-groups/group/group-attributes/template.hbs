@@ -36,6 +36,8 @@
                 <span class="input-value">
                   {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
                   {{component (concat 'usm-groups/group/group-attributes/attribute-inputs/' operator.[1])               
+                    selectedAttribute=criteria.[0]
+                    selectedOperator=criteria.[1]
                     inputField=operator.[1]
                     value=criteria.[2]
                     validation=operator.[2]
