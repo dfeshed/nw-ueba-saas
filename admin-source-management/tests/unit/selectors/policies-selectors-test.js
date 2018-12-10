@@ -116,6 +116,41 @@ test('when single non-dirty item in selection', function(assert) {
   assert.equal(hasSelectedPublishItems(Immutable.from(state)), false, 'hasSelectedPublishItems should return false');
 });
 
+test('when single default policy item in selection', function(assert) {
+  const state = {
+    usm: {
+      policies: {
+        items: [
+          {
+            id: 'g1',
+            dirty: false,
+            defaultPolicy: true
+          },
+          {
+            id: 'g2',
+            dirty: true,
+            defaultPolicy: true
+          },
+          {
+            id: 'g3',
+            dirty: false,
+            defaultPolicy: true
+          }
+        ],
+        itemsSelected: ['g1']
+      }
+    }
+  };
+  assert.expect(6);
+  assert.deepEqual(selectedEditItem(Immutable.from(state)), 'none', 'selectedEditItem should have no items');
+  assert.equal(hasSelectedEditItem(Immutable.from(state)), false, 'hasSelectedEditItem should return false');
+  assert.deepEqual(selectedDeleteItems(Immutable.from(state)), [], 'selectedDeleteItems should have no items');
+  assert.equal(hasSelectedDeleteItems(Immutable.from(state)), false, 'hasSelectedDeleteItems should return false');
+  assert.deepEqual(selectedPublishItems(Immutable.from(state)), [], 'selectedPublishItems should have no items');
+  assert.equal(hasSelectedPublishItems(Immutable.from(state)), false, 'hasSelectedPublishItems should return false');
+});
+
+
 test('when multiple non-dirty items in selection', function(assert) {
   const state = {
     usm: {
