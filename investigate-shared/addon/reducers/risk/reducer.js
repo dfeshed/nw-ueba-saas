@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import fixNormalizedEvents from './util';
+import { transform } from 'investigate-shared/utils/meta-util';
 
 const riskScoreState = Immutable.from({
   isRiskScoreReset: true,
@@ -51,8 +52,22 @@ const riskScoreReducer = handleActions({
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
     return state.set('selectedAlert', payload.alertName);
   },
-  [ACTION_TYPES.GET_EVENTS]: (state, { payload }) => {
-    return state.set('eventsData', payload);
+  [ACTION_TYPES.GET_EVENTS]: (state, { payload: { indicatorId, events } }) => {
+    const { eventsData } = state;
+    const transformedEvents = events.map(transform);
+    transformedEvents.forEach((evt, index) => {
+      // Tag each retrieved event with its parent indicator id.
+      // This is useful downstream for mapping events back to their parent.
+      evt.indicatorId = indicatorId;
+      evt.eventIndex = index;
+
+      // Ensure each event has an id.
+      // This is useful for selecting individual events in the UI.
+      if (!evt.id) {
+        evt.id = `${indicatorId}:${index}`;
+      }
+    });
+    return state.set('eventsData', [ ...eventsData, ...transformedEvents ]);
   },
   [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, { payload: { indicatorId, events } }) => {
     const { eventsData } = state;

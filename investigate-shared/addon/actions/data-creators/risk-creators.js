@@ -121,7 +121,7 @@ const setSelectedAlert = (context) => {
                 });
             } else if (event.source === 'ESA') {
               // Medium alerts will be fetch from Decoder
-              dispatch(getAlertEvents(context));
+              await dispatch(getAlertEvents(event));
             }
           }
         }
@@ -131,12 +131,12 @@ const setSelectedAlert = (context) => {
   };
 };
 
-const getAlertEvents = (context) => {
+const getAlertEvents = (event) => {
   return (dispatch, getState) => {
     const handlers = {
       onResponse(response) {
         const { data } = response || {};
-        dispatch({ type: ACTION_TYPES.GET_EVENTS, payload: data, meta: { belongsTo: riskType(getState()) } });
+        dispatch({ type: ACTION_TYPES.GET_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
       },
       onError() {
         dispatch({ type: ACTION_TYPES.GET_EVENTS_ERROR, meta: { belongsTo: riskType(getState()) } });
@@ -145,7 +145,7 @@ const getAlertEvents = (context) => {
         dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED, meta: { belongsTo: riskType(getState()) } });
       }
     };
-    fetchStreamingAlertEvents(context.context, handlers);
+    fetchStreamingAlertEvents(event, handlers);
   };
 };
 

@@ -26,13 +26,25 @@ module('Unit | Reducers | risk', function(hooks) {
       });
   });
 
-  test('The GET_EVENTS action will reset the loading status', function(assert) {
+  test('The GET_EVENTS action will will append new events', function(assert) {
     const previous = Immutable.from({
-      eventsData: null,
-      eventsLoadingStatus: null
+      eventsData: [{ 'agent_id': '123-abc', 'device_type': 'nwendpoint' }]
     });
-    const result = reducer(previous, { type: ACTION_TYPES.GET_EVENTS, payload: [{}, {}, {}] });
-    assert.equal(result.eventsData.length, 3);
+    assert.equal(previous.eventsData.length, 1, 'Initial length is 1');
+    const newEndState = reducer(previous, {
+      type: ACTION_TYPES.GET_EVENTS,
+      payload: { indicatorId: '234-xyz', events: [
+        {
+          sessionId: 102921,
+          time: '2018-12-07T04:23:43.000+0000',
+          metas: [
+            ['time', '2018-12-07T05:19:22.000+0000']
+          ]
+        }]
+      }
+    });
+    assert.equal(newEndState.eventsData[1].id, '234-xyz:0', 'unique id is properly set for each event');
+    assert.equal(newEndState.eventsData.length, 2);
   });
 
   test('The GET_EVENTS_COMPLETED action will reset the loading status', function(assert) {

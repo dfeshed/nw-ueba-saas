@@ -2,39 +2,72 @@ import { module, test } from 'qunit';
 import { transform } from 'investigate-shared/utils/meta-util';
 
 module('Unit | Utils | Meta Utils');
-test('transform returns fields from map or camelizes', function(assert) {
+test('transform returns fields from map or specific object', function(assert) {
   const event = {
-    metas: [['action', 'createProcess'],
-      ['OS', 'windows'],
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['size', 41],
+      ['forward.ip', '10.40.14.108'],
+      ['ip.all', '10.40.14.108'],
       ['device.type', 'nwendpoint'],
-      ['alias.host', 'INENSANDRA'],
-      ['user.src', 'sandra'],
-      ['filename.src', 'REG.exe'],
-      ['filename.dst', 'dtf.exe'],
-      ['directory.src', 'C:\\Windows'],
-      ['directory.dst', 'C:\\'],
-      ['param.src', 'REG.exe ADD HKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\WDigest /V USELOGONCREDENTIAL /T REG_DWORD /D 1 /f'],
-      ['param.dst', 'dtf.exe -testcase:355,364,401,402,404,406,407,341 -dll:ioc.dll -log:ioc.log'],
-      ['checksum.src', 'e3dacf0b31841fa02064b4457d44b357'],
-      ['checksum.dst', '071a4c73e30f066962850d6b5d00553a'],
-      ['sessionid', '100'],
-      ['file.attributes', 'xyz']
+      ['checksum.src', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['checksum.all', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['filename.dst', 'POWERSHELL.EXE'],
+      ['filename.all', 'POWERSHELL.EXE'],
+      ['process.vid.src', '8760110666849825628'],
+      ['filename.src', 'dtf.exe'],
+      ['filename.all', 'dtf.exe'],
+      ['param.dst', "POWERSHELL.EXE add-content -path 'C:\\Users\\admin\\D…ient.DownloadString('http://myip.dnsomatic.com/')"],
+      ['action', 'createProcess'],
+      ['param.src', 'dtf.exe  -dll:ioc.dll -testcase:334'],
+      ['user.src', 'SUPERNOVAWIN4\\admin'],
+      ['user.all', 'SUPERNOVAWIN4\\admin'],
+      ['directory.dst', 'C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\'],
+      ['directory.all', 'C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\'],
+      ['checksum.dst', '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3'],
+      ['checksum.all', '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3'],
+      ['process.vid.dst', '-3646183813079877108'],
+      ['directory.src', 'C:\\Users\\admin\\Downloads\\archive\\archive\\amd64\\'],
+      ['directory.all', 'C:\\Users\\admin\\Downloads\\archive\\archive\\amd64\\'],
+      ['event.time', '2018-12-07T05:15:15.000+0000'],
+      ['checksum.src', '09a1afb374069223e1ec1d2609a42e87'],
+      ['checksum.all', '09a1afb374069223e1ec1d2609a42e87'],
+      ['checksum.dst', 'c031e215b8b08c752bf362f6d4c5d3ad'],
+      ['checksum.all', 'c031e215b8b08c752bf362f6d4c5d3ad'],
+      ['OS', 'windows'],
+      ['alias.ip', '10.40.14.97'],
+      ['ip.all', '10.40.14.97'],
+      ['agent.id', '4A608C20-F3F0-8166-4149-1DEF156C13F2'],
+      ['alias.host', 'SUPERNOVAWIN4'],
+      ['host.all', 'SUPERNOVAWIN4'],
+      ['category', 'Process Event'],
+      ['nwe.callback_id', 'nwe://12f0cd3e-40c8-42f2-90fa-85777897b2e9'],
+      ['msg.id', 'nwendpoint'],
+      ['device.disc', 30],
+      ['device.disc.type', 'nwendpoint']
     ] };
   const result = transform(event);
   const keys = Object.keys(result);
-  assert.equal(keys[0], 'action', 'action => action');
-  assert.equal(keys[1], 'operating_system', 'OS => operating_system');
-  assert.equal(keys[2], 'device_type', 'device.type => device_type');
-  assert.equal(keys[3], 'hostname', 'alias.host => hostname');
-  assert.equal(keys[4], 'user_account', 'user.src => user_account');
-  assert.equal(keys[5], 'source_filename', 'filename.src => source_filename');
-  assert.equal(keys[6], 'target_filename', 'filename.dst => target_filename');
-  assert.equal(keys[7], 'source_path', 'directory.src => source_path');
-  assert.equal(keys[8], 'target_path', 'directory.dst => target_path');
-  assert.equal(keys[9], 'launch_argument_src', 'param.src => launch_argument_src');
-  assert.equal(keys[10], 'launch_argument_dst', 'param.dst => launch_argument_dst');
-  assert.equal(keys[11], 'source_hash', 'checksum.src => source_hash');
-  assert.equal(keys[12], 'target_hash', 'checksum.dst => target_hash');
-  assert.equal(keys[13], 'id', 'sessionid => id');
-  assert.equal(keys[14], 'fileAttributes', 'file.attributes => fileAttirbutes');
+  assert.equal(keys[0], 'event_source_id', 'sessionid => event_source_id');
+  assert.equal(keys[1], 'timestamp', 'time => timestamp');
+  assert.equal(keys[2], 'size', 'size => size');
+  assert.equal(keys[3], 'IP', 'ip.all => IP');
+  assert.equal(keys[4], 'device_type', 'device.type => device_type');
+  assert.equal(keys[5], 'file_SHA256', 'checksum.src => file_SHA256');
+  assert.equal(keys[6], 'action', 'action => action');
+  assert.equal(keys[7], 'user', 'user.all => user');
+  assert.equal(keys[8], 'operating_system', 'OS => operating_system');
+  assert.equal(keys[9], 'agent_id', 'agent.id => agent_id');
+  assert.equal(keys[10], 'hostname', 'alias.host => hostname');
+  assert.equal(keys[11], 'category', 'category => category');
+  assert.equal(keys[12], 'type', 'type => type');
+  assert.equal(keys[14], 'event_source', 'event_source_id is present');
+  assert.equal(keys[15], 'source', 'source info is present');
+  assert.equal(keys[16], 'destination', 'destination info is present');
+  assert.equal(keys[17], 'detector', 'detector info is present');
+  assert.equal(keys[18], 'related_links', 'related_links info is present');
+
+  assert.equal(result.related_links.length, 2, '2 related links present');
+  assert.equal(result.source.hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Source Sha256 is set');
+  assert.equal(result.destination.hash, '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3', 'Destination hash is Sha256');
 });
