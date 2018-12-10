@@ -68,6 +68,26 @@ test('transform returns fields from map or specific object', function(assert) {
   assert.equal(keys[18], 'related_links', 'related_links info is present');
 
   assert.equal(result.related_links.length, 2, '2 related links present');
+  assert.equal(result.related_links[0].url, '/investigation/host/10.40.14.108:50005/navigate/event/AUTO/116414', 'Original event link is correct');
+  assert.equal(result.related_links[1].url,
+    '/investigation/10.40.14.108:50005/navigate/query/alias.host%3D\'SUPERNOVAWIN4\'%2Fdate%2F2018-12-07T05%3A10%3A00.999Z%2F2018-12-07T05%3A20%3A00.999Z',
+    'Destination domain link is correct');
   assert.equal(result.source.hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Source Sha256 is set');
   assert.equal(result.destination.hash, '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3', 'Destination hash is Sha256');
+});
+
+
+test('md5 is set for checksum when sha256 is not there', function(assert) {
+  const event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['checksum.dst', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['checksum.src', '09a1afb374069223e1ec1d2609a42e87'],
+      ['checksum.all', '09a1afb374069223e1ec1d2609a42e87'],
+      ['checksum.dst', 'c031e215b8b08c752bf362f6d4c5d3ad'],
+      ['checksum.all', 'c031e215b8b08c752bf362f6d4c5d3ad']
+    ] };
+  const result = transform(event);
+  assert.equal(result.source.hash, '09a1afb374069223e1ec1d2609a42e87', 'Source hash (md5) is set');
+  assert.equal(result.destination.hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Destination hash is Sha256');
 });

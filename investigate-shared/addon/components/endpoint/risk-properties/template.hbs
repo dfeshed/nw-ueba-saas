@@ -23,7 +23,7 @@
         <box class='alert-error-message'>
           {{rsa-panel-message message=(t 'investigateShared.endpoint.riskProperties.error.emptyContext')}}
         </box>
-      {{else}}
+      {{else if contexts}}
         {{#endpoint/risk-properties/alert-context
           contexts=contexts
           setAlertAction=setSelectedAlert
