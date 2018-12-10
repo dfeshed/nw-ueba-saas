@@ -3,6 +3,7 @@ import { inject as service } from '@ember/service';
 
 export default Route.extend({
   accessControl: service(),
+  contextualHelp: service(),
 
   beforeModel() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
@@ -27,5 +28,12 @@ export default Route.extend({
     redirectToUrl(relativeUrl) {
       window.location.href = relativeUrl;
     }
+  },
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.usmModule'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
   }
 });

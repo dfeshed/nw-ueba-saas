@@ -5,6 +5,7 @@ import { initializePolicy } from 'admin-source-management/actions/creators/polic
 
 export default Route.extend({
   redux: service(),
+  contextualHelp: service(),
 
   model({ policyId }) {
     run.next(() => {
@@ -19,5 +20,15 @@ export default Route.extend({
     transitionToPolicies() {
       this.transitionTo('policies');
     }
+  },
+
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.usmModule'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.usmPoliciesWizard'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
+    this.set('contextualHelp.topic', null);
   }
 });

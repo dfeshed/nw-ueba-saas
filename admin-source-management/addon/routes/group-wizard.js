@@ -5,6 +5,7 @@ import { initializeGroup } from 'admin-source-management/actions/creators/group-
 
 export default Route.extend({
   redux: service(),
+  contextualHelp: service(),
 
   model({ groupId }) {
     run.next(() => {
@@ -19,5 +20,15 @@ export default Route.extend({
     transitionToGroups() {
       this.transitionTo('groups');
     }
+  },
+
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.usmModule'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.usmGroupsWizard'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
+    this.set('contextualHelp.topic', null);
   }
 });

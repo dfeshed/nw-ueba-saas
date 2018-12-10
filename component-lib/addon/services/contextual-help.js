@@ -39,6 +39,13 @@ export default Service.extend({
   contentModule: 'configure',
   contentOverview: 'logDeviceParserRulePage',
 
+  usmModule: 'configure',
+  usmGroups: 'usmGroupsTab',
+  usmGroupsWizard: 'usmCreateEPGroups',
+  usmGroupsWizardRanking: 'usmEditRanking',
+  usmPolicies: 'usmPoliciesTab',
+  usmPoliciesWizard: 'usmCreateEPPolicies',
+
   module: null,
   topic: null,
 
