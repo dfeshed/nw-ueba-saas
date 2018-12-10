@@ -6,16 +6,18 @@
   defaultAction=(action "setHideVizAction" false)
 }}
   {{rsa-icon name="flow-chart-3" size="small"}}
+  <span class="nodal-graph-icon">Nodal Graph</span>
 {{/rsa-form-button}}
 
 {{#rsa-form-button
   class="datasheet js-test-hide-viz-true"
-  title=(t 'respond.incident.view.datasheet')
+  title=(t 'respond.incident.view.eventslist')
   isActive=hideViz
   isIconOnly=true
   defaultAction=(action "setHideVizAction" true)
 }}
   {{rsa-icon name="list-bullets-1" size="small"}}
+  <span class="events-list-icon">Events List</span>
 {{/rsa-form-button}}
 
 {{#rsa-form-button

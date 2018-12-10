@@ -7,5 +7,14 @@
     &.is-active button {
       border-bottom: 3px solid border-color(secondary);
     }
+
+    .rsa-form-button {
+      border-style: unset;
+
+      .nodal-graph-icon, .events-list-icon {
+        vertical-align: text-bottom;
+        padding-left: 2px;
+      }
+    }
   }
 }

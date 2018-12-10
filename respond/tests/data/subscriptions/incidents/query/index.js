@@ -37,6 +37,7 @@ const matchesFilter = (item, filters = []) => {
 };
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/incidents',
   requestDestination: '/ws/respond/incidents',
 

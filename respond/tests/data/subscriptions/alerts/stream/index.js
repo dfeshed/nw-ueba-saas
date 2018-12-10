@@ -25,6 +25,7 @@ function makeFilterFunction(filterArray) {
 }
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/alerts',
   requestDestination: '/ws/respond/alerts',
 

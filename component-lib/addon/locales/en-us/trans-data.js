@@ -1197,8 +1197,8 @@ export default {
       events: 'Events',
       loadingEvents: 'Loading events...',
       view: {
-        graph: 'View: Graph',
-        datasheet: 'View: Datasheet'
+        graph: 'Shows the relationship between incident entities such as IP address, user, host, domain, file name, or file hash in an interactive graph.',
+        eventslist: 'Lists incident events and displays overview information such as source and destination. Click the top of an event to view the event details.'
       },
       journalTasksRelated: 'Journal, Tasks, and Related',
       search: {

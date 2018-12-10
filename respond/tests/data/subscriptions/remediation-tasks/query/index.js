@@ -31,6 +31,7 @@ const matchesFilter = (item, filters) => {
 };
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/remediation/tasks',
   requestDestination: '/ws/respond/remediation/tasks',
 
