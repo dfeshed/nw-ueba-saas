@@ -16,7 +16,15 @@ const dispatchToActions = {
 };
 
 const FileAnalysisWrapper = Component.extend({
-  classNames: ['file-analysis-wrapper']
+  classNames: ['file-analysis-wrapper'],
+  searchText: '',
+
+  actions: {
+    closeFileAnalysis() {
+      this.set('searchText', '');
+      this.send('toggleFileAnalysisView');
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(FileAnalysisWrapper);

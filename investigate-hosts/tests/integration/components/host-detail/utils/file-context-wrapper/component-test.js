@@ -75,7 +75,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
-
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
     const fileContextSelections = [
       {
         id: 'drivers_13',
@@ -95,7 +99,27 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 274304,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Error' }
+        downloadInfo: { 'status': 'Error' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       },
       {
         id: 'drivers_73',
@@ -116,10 +140,30 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 338944,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Downloaded' }
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).build();
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     assert.expect(3);
@@ -154,6 +198,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
     const fileContextSelections = [
       {
         id: 'drivers_13',
@@ -173,7 +222,27 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 274304,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Error' }
+        downloadInfo: { 'status': 'Error' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       },
       {
         id: 'drivers_73',
@@ -194,10 +263,30 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 338944,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Downloaded' }
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).build();
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     await click('.more-action-button');
@@ -209,6 +298,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
     const fileContextSelections = [
       {
         id: 'drivers_13',
@@ -228,7 +322,27 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 274304,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Downloaded' }
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       },
       {
         id: 'drivers_73',
@@ -248,10 +362,30 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
           signer: 'Microsoft Windows'
         },
         size: 338944,
-        machineOsType: 'windows'
+        machineOsType: 'windows',
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).build();
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     await click('.more-action-button');
@@ -263,6 +397,11 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
     const fileContextSelections = [
       {
         id: 'drivers_73',
@@ -283,10 +422,30 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         },
         size: 338944,
         machineOsType: 'windows',
-        downloadInfo: { 'status': 'Downloaded' }
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).build();
+    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     await click('.more-action-button');

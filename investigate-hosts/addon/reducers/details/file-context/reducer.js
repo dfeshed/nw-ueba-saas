@@ -40,13 +40,14 @@ const _handleAppendFiles = (action) => {
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
   const { id, fileName, fileProperties, machineOsType, path } = payload;
-  const { signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
+  const { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } = fileProperties;
+  const features = pe ? pe.features : [];
   let selectedList = [];
   // Previously selected driver
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo }];
+    selectedList = [...fileContextSelections, { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo, features, format }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {}, isRemediationAllowed: true });
 
@@ -88,8 +89,9 @@ const fileContext = reduxActions.handleActions({
     const contexts = Object.values(fileContext);
     if (fileContextSelections.length < contexts.length) {
       return state.set('fileContextSelections', contexts.map((driver) => {
-        const { id, fileName, path, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } } = driver;
-        return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo };
+        const { id, fileName, path, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } } = driver;
+        const features = pe ? pe.features : [];
+        return { id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo, features, format };
       }));
     } else {
       return state.set('fileContextSelections', []);

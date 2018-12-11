@@ -9,7 +9,9 @@ import {
   fileContextSelections,
   fileStatus,
   selectedFileChecksums,
-  isRemediationAllowed
+  isRemediationAllowed,
+  isNotAdvanced,
+  isFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
@@ -35,7 +37,9 @@ const stateToComputed = (state, { storeName }) => ({
   agentId: state.endpoint.detailsInput.agentId,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  restrictedFileList: state.fileStatus.restrictedFileList
+  restrictedFileList: state.fileStatus.restrictedFileList,
+  isNotAdvanced: isNotAdvanced(state),
+  areAllSelectedFloatingOrMemoryDll: isFloatingOrMemoryDll(state, storeName)
 });
 
 const dispatchToActions = {
@@ -65,6 +69,9 @@ const ContextWrapper = Component.extend({
 
   @computed('fileContextSelections')
   fileDownloadButtonStatus(fileContextSelections) {
+    const isNotAdvanced = this.get('isNotAdvanced');
+    const areAllSelectedFloatingOrMemoryDll = this.get('areAllSelectedFloatingOrMemoryDll');
+
     // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
     const selectedFilesLength = fileContextSelections.length;
     const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => {
@@ -73,10 +80,13 @@ const ContextWrapper = Component.extend({
       }
       return true;
     });
-
+    // if agent is not advanced and file's downloaded status is true
+    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer));
+    // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
+    const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
     return {
-      isDownloadToServerDisabled: ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer)), // and file's downloaded status is true
-      isSaveLocalAndFileAnalysisDisabled: ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer) // or file's downloaded status is true
+      isDownloadToServerDisabled,
+      isSaveLocalAndFileAnalysisDisabled
     };
   },
 

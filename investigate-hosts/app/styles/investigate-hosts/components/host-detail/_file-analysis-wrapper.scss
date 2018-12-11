@@ -38,8 +38,16 @@
     width: 300px;
     display: inline-block;
     margin-left: 30px;
-    input {
-      padding-left: 0;
+    label {
+      display: inline-block;
+    }
+    .label {
+      display: inline-block;
+      margin-right: 5px;
+      color: $formSelectLabelColor;
+      margin-bottom: rsa-whitespace(less);
+      @include rsa-font(header, small);
+      text-transform: uppercase;
     }
   }
 };

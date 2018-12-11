@@ -197,6 +197,10 @@ export default class DataHelper {
     _set(this.state, 'overview.hostDetails.machine', value);
     return this;
   }
+  machineIdentity(value) {
+    _set(this.state, 'overview.hostDetails.machineIdentity', value);
+    return this;
+  }
   processTree(value) {
     _set(this.state, 'process.processTree', value);
     return this;

@@ -9,6 +9,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import anomaliesRegistryDiscrepancies from '../../../state/anomalies.registryDiscrepancies';
+import machineIdentity from '../../../state/anomalies.machineIdentity';
 
 let initState;
 
@@ -30,7 +31,7 @@ module('Integration | Component | Anomalies/Registry Discrepancies', function(ho
   });
 
   test('Registry Discrepancies column names', async function(assert) {
-    new ReduxDataHelper(initState).registryDiscrepancies(anomaliesRegistryDiscrepancies).build();
+    new ReduxDataHelper(initState).machineIdentity(machineIdentity).registryDiscrepancies(anomaliesRegistryDiscrepancies).build();
     await render(hbs`{{host-detail/anomalies}}`);
     await click('.rsa-nav-tab:nth-child(4)');
 

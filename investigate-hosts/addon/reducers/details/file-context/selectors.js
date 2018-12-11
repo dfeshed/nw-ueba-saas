@@ -14,6 +14,7 @@ const _fileContextSelections = (state, name) => state.endpoint[name].fileContext
 const _totalItems = (state, name) => state.endpoint[name].totalItems;
 const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
 const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
+const _hostDetails = (state) => state.endpoint.overview.hostDetails;
 
 export const fileStatus = createSelector(
   _fileStatus,
@@ -109,5 +110,24 @@ export const fileContextFileProperty = createSelector([selectedRowId, listOfFile
 export const isDataLoading = createSelector(
   [_contextLoadingStatus], (contextLoadingStatus) => {
     return ['wait', 'streaming'].includes(contextLoadingStatus);
+  }
+);
+
+export const isNotAdvanced = createSelector(
+  [_hostDetails], (hostDetails) => {
+    if (hostDetails) {
+      return hostDetails.machineIdentity.agentMode.toLowerCase() !== 'advanced';
+    }
+    return true;
+  }
+);
+
+export const isFloatingOrMemoryDll = createSelector(
+  [_fileContextSelections], (fileContextSelections) => {
+    if (fileContextSelections && fileContextSelections.length) {
+      const filteredList = fileContextSelections.filter((item) => (item.format === 'floating') || item.features.includes('file.memoryHash'));
+      return filteredList.length === fileContextSelections.length;
+    }
+    return true;
   }
 );
