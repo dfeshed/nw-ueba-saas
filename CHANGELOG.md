@@ -1,3 +1,15 @@
+# [10.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.2.0)
+## Features
+* [ASOC-60689](https://bedfordjira.na.rsa.net/browse/ASOC-60689):&emsp;Include Completion Details in Console
+* [ASOC-64146](https://bedfordjira.na.rsa.net/browse/ASOC-64146):&emsp;Allow notification settings to be stored on multiple responds
+* [ASOC-66860](https://bedfordjira.na.rsa.net/browse/ASOC-66860):&emsp;Incident View and nodal graph view of an Incidents with Alerts from RSS is broken
+* [ASOC-67569](https://bedfordjira.na.rsa.net/browse/ASOC-67569):&emsp;Normalize RSS host threshold alerts
+* [ASOC-67593](https://bedfordjira.na.rsa.net/browse/ASOC-67593):&emsp;Normalize UEBA events such that Nodal Graph can display those relationships
+* [ASOC-67655](https://bedfordjira.na.rsa.net/browse/ASOC-67655):&emsp;Update the alt text for each icon for incident details
+* [ASOC-67712](https://bedfordjira.na.rsa.net/browse/ASOC-67712):&emsp;Hide Download work done in 11.3
+* [ASOC-69231](https://bedfordjira.na.rsa.net/browse/ASOC-69231):&emsp;Risk Scoring Server - Respond Integration regression validations
+
+
 # [10.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.1.0)
 ## Features
 * [ASOC-60593](https://bedfordjira.na.rsa.net/browse/ASOC-60593):&emsp;Filtering on host page for risk score
