@@ -43,7 +43,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     hostList: null,
-    hostColumnSort: [{ key: 'machine.scanStartTime', descending: true }],
+    hostColumnSort: [{ key: 'score', descending: true }],
     selectedHostList: [],
     focusedHost: null,
     focusedHostIndex: null,

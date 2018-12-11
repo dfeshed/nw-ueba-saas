@@ -96,8 +96,8 @@ const getAllSchemas = () => {
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
+          dispatch({ type: ACTION_TYPES.RESET_HOSTS });
           dispatch(initializeHostsPreferences());
-          dispatch(getFilter(_initializeHostView, 'MACHINE'));
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);
@@ -116,7 +116,6 @@ const _initializeHostView = () => {
 const triggerMachineActions = () => {
   return (dispatch) => {
     const request = lookup('service:request');
-    dispatch({ type: ACTION_TYPES.RESET_HOSTS });
     return request.ping('endpoint-server-ping')
       .then(() => {
         dispatch(isEndpointServerOffline(false));
@@ -289,6 +288,7 @@ const initializeHostsPreferences = () => {
           });
         }
       }
+      dispatch(getFilter(_initializeHostView, 'MACHINE'));
     });
   };
 };

@@ -8,7 +8,7 @@ const initialState = Immutable.from({
   hostList: null,
 
   // Applied column sort on host list table
-  hostColumnSort: [{ key: 'machine.scanStartTime', descending: true }],
+  hostColumnSort: [{ key: 'score', descending: true }],
 
   selectedHostList: [],
 
@@ -186,4 +186,3 @@ const hosts = reduxActions.handleActions({
 }, initialState);
 
 export default hosts;
-
