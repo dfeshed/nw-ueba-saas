@@ -88,7 +88,7 @@ const Condition = Component.extend({
       this.send('updateCondition', { value });
     },
     handleDateChange(value) {
-      this.send('updateCondition', { value });
+      this.send('updateCondition', { value: value[0] });
     }
   }
 });

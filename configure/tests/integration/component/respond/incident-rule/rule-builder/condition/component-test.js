@@ -10,6 +10,7 @@ import ruleInfo from '../../../../../../data/subscriptions/incident-rules/queryR
 import fields from '../../../../../../data/subscriptions/incident-fields/findAll/data';
 import * as aggregationRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 import sinon from 'sinon';
+import { setFlatpickrDate } from 'ember-flatpickr/test-support/helpers';
 
 const initialState = {
   ruleInfo,
@@ -149,6 +150,23 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     await triggerEvent(inputSelector, 'blur');
     assert.deepEqual(actionSpy.args[0][1], { value: null },
       'An empty string results in a null value in the arguments');
+    actionSpy.restore();
+  });
+
+  test('Date picker returns the value as a string', async function(assert) {
+    const actionSpy = sinon.spy(aggregationRuleCreators, 'updateCondition');
+    const conditions = { '0': { id: 0, property: 'alert.timestamp', operator: '=', value: null } };
+    const inputSelector = '.condition-control.value input[type=text]';
+    setState({
+      ...initialState,
+      conditions
+    });
+    this.set('conditionInfo', conditions['0']);
+    await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo }}`);
+
+    const [ pickr ] = findAll(inputSelector);
+    setFlatpickrDate(pickr, new Date(), true);
+    assert.equal(Array.isArray(actionSpy.args[0][1].value), false, 'Date picker returns the value as a string');
     actionSpy.restore();
   });
 });
