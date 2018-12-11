@@ -136,3 +136,31 @@ test('denormalize will not explode when incoming settings are incomplete', funct
     }
   ]);
 });
+
+test('normalize will lowercase incoming configuration type', function(assert) {
+  assert.expect(1);
+
+  const result = normalizeRiskScoringSettings([
+    {
+      type: 'HOST',
+      threshold: '2'
+    },
+    {
+      type: 'FILE',
+      threshold: '3'
+    }
+  ]);
+
+  assert.deepEqual(result, {
+    host: {
+      threshold: '2',
+      timeWindow: '',
+      timeWindowUnit: ''
+    },
+    file: {
+      threshold: '3',
+      timeWindow: '',
+      timeWindowUnit: ''
+    }
+  });
+});

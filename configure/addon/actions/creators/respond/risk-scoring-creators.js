@@ -7,6 +7,12 @@ const getRiskScoringSettings = () => {
   };
 };
 
+const toggleRiskScoringExpanded = () => {
+  return {
+    type: ACTION_TYPES.TOGGLE_RISK_SCORING_EXPANDED
+  };
+};
+
 const updateRiskScoringSettings = (settings) => {
   return (dispatch) => {
     const riskScoringSettings = denormalizeRiskScoringSettings(settings);
@@ -19,5 +25,6 @@ const updateRiskScoringSettings = (settings) => {
 
 export {
   getRiskScoringSettings,
+  toggleRiskScoringExpanded,
   updateRiskScoringSettings
 };

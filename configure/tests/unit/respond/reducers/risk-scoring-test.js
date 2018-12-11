@@ -40,12 +40,14 @@ test('With FETCH_RISK_SCORING_SETTINGS, state is properly set', function(assert)
 
   const expected = {
     riskScoringStatus: 'completed',
+    riskScoringExpanded: false,
     isTransactionUnderway: false,
     riskScoringSettings
   };
 
   const state = {
     ...initialState,
+    riskScoringExpanded: false,
     riskScoringStatus: null,
     riskScoringSettings: {}
   };
@@ -71,6 +73,28 @@ test('With FETCH_RISK_SCORING_SETTINGS_FAILED, riskScoringStatus is properly set
   };
 
   assert.deepEqual(reducer(state, action), expected);
+});
+
+test('With TOGGLE_RISK_SCORING_EXPANDED, riskScoringExpanded is properly set', function(assert) {
+  assert.expect(2);
+
+  const action = {
+    type: ACTION_TYPES.TOGGLE_RISK_SCORING_EXPANDED
+  };
+
+  const expected = {
+    ...initialState,
+    riskScoringExpanded: true
+  };
+
+  const state = {
+    ...initialState,
+    riskScoringExpanded: false
+  };
+
+  assert.deepEqual(reducer(state, action), expected);
+
+  assert.deepEqual(reducer(expected, action), state);
 });
 
 test('initial state is frozen and will throw error when mutated', function(assert) {
@@ -99,12 +123,14 @@ test('With UPDATE_RISK_SCORING_SETTINGS, state is properly set', function(assert
 
   const expected = {
     riskScoringStatus: null,
+    riskScoringExpanded: false,
     isTransactionUnderway: false,
     riskScoringSettings
   };
 
   const state = {
     ...initialState,
+    riskScoringExpanded: false,
     isTransactionUnderway: true,
     riskScoringSettings: {}
   };

@@ -3,6 +3,7 @@ $dragPadColor: background-color(primary);
 $dragPadHighlightedColor: background-color(primary, lighter);
 
 .rsa-incident-rules {
+   margin-top: rsa-whitespace(more);
    height: calc(100vh - #{$navbarHeight});
 
   .incident-rule-list {

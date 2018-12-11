@@ -1,12 +1,26 @@
 .risk-scoring {
-  overflow: auto;
-  padding: 0 rsa-whitespace(more);
+  overflow: hidden;
+  padding: 0 rsa-whitespace();
 
   h1 {
     font-size: 18px;
     text-transform: uppercase;
-    padding-top: rsa-whitespace(more);
-    padding-bottom: rsa-whitespace(less);
+    padding-top: rsa-whitespace();
     color: text-color(primary, lighter);
+  }
+
+  form {
+    padding-left: rsa-whitespace();
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .form-save-controls {
+    padding-top: rsa-whitespace();
+    button {
+      margin-right: rsa-whitespace();
+    }
   }
 }

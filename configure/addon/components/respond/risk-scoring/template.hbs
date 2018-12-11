@@ -1,6 +1,6 @@
-<h1>Risk Scoring Settings</h1>
+<h1>{{rsa-icon size="small" name=toggleIcon click=(action "toggleRiskScoringExpanded") testId="toggleRiskScoring"}} {{t 'configure.incidentRules.riskScoring.header'}}</h1>
 
-{{#forms/form-element formModel=riskScoringSettings formSave=(action "updateRiskScoringSettings") formValidations=thresholdFormValidations as |form|}}
+{{#forms/form-element class=hideWhenExpanded formModel=riskScoringSettings formSave=(action "updateRiskScoringSettings") formValidations=thresholdFormValidations as |form|}}
 
   {{#form.input property="file.threshold" label=(t (concat labelPrefix 'fileThreshold')) as |input|}}
     {{input.component type="number" min="0" max="100"}}

@@ -43,11 +43,3 @@
     @include border-bottom(1px, solid, accentOne);
   }
 }
-
-.form-save-controls {
-  padding-top: rsa-whitespace();
-  padding-bottom: rsa-whitespace(more);
-  button {
-    margin-right: rsa-whitespace();
-  }
-}

@@ -728,6 +728,7 @@ export default {
         none: '(Unassigned)'
       },
       riskScoring: {
+        header: 'Risk Scoring Settings',
         labels: {
           fileThreshold: 'File Alert Threshold',
           fileTimeWindow: 'File Time Window',

@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { normalizedState } from './data';
+import { normalizedState, normalizedStateExpanded } from './data';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -21,7 +21,7 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    patchReducer(this, normalizedState);
+    patchReducer(this, normalizedStateExpanded);
     initialize(this.owner);
   });
 
@@ -137,5 +137,24 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
       assert.equal(find(selectors.saveButton).disabled, true);
       assert.equal(find(selectors.resetButton).disabled, true);
     });
+  });
+
+  test('onclick the icon will toggle form visibility', async function(assert) {
+    patchReducer(this, normalizedState);
+
+    assert.expect(6);
+
+    await render(hbs`{{respond/risk-scoring}}`);
+
+    const iconSelector = '[test-id=toggleRiskScoring]';
+    assert.equal(find(selectors.formElement).classList.contains('hidden'), true);
+    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), false);
+    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), true);
+
+    await click(iconSelector);
+
+    assert.equal(find(selectors.formElement).classList.contains('hidden'), false);
+    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), true);
+    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), false);
   });
 });

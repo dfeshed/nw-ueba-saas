@@ -5,11 +5,18 @@ import { normalizeRiskScoringSettings } from './normalize';
 
 export const initialState = Immutable.from({
   riskScoringStatus: null,
+  riskScoringExpanded: false,
   riskScoringSettings: {},
   isTransactionUnderway: false
 });
 
 export default reduxActions.handleActions({
+  [ACTION_TYPES.TOGGLE_RISK_SCORING_EXPANDED]: (state) => {
+    return {
+      ...state,
+      riskScoringExpanded: !state.riskScoringExpanded
+    };
+  },
   [ACTION_TYPES.FETCH_RISK_SCORING_SETTINGS_STARTED]: (state) => {
     return {
       ...state,

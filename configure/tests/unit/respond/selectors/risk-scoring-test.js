@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { normalizedState } from '../../../integration/component/respond/risk-scoring/data';
-import { getRiskScoringStatus, getRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/selectors';
+import { getRiskScoringExpanded, getRiskScoringStatus, getRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/selectors';
 
 const { configure: { respond: { riskScoring: { riskScoringSettings } } } } = normalizedState;
 
@@ -16,4 +16,10 @@ test('getRiskScoringStatus selector returns the risk scoring status', function(a
   assert.expect(1);
 
   assert.deepEqual(getRiskScoringStatus(normalizedState), 'wait');
+});
+
+test('getRiskScoringExpanded selector returns the risk scoring expanded', function(assert) {
+  assert.expect(1);
+
+  assert.deepEqual(getRiskScoringExpanded(normalizedState), false);
 });
