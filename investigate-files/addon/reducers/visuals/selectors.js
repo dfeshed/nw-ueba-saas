@@ -2,12 +2,12 @@ import { createSelector } from 'reselect';
 
 const DATASOURCE_TABS = [
   {
-    label: 'investigateFiles.tabs.riskProperties',
-    name: 'RISK_PROPERTIES'
-  },
-  {
     label: 'investigateFiles.tabs.fileDetails',
     name: 'FILE_DETAILS'
+  },
+  {
+    label: 'investigateFiles.tabs.riskProperties',
+    name: 'RISK_PROPERTIES'
   },
   {
     label: 'investigateFiles.tabs.hosts',
