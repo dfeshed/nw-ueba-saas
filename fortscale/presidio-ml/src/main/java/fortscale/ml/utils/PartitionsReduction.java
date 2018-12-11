@@ -57,31 +57,4 @@ public class PartitionsReduction {
         return instantToMaxValueMap.values().stream().collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
-    /**
-     *
-     * Reduce the featureValueToCount map by numOfMaxValuesSamples as a bound
-     * @param histogram featureValue to count map
-     * @param numOfMaxValuesSamples numOfMaxValuesSamples
-     * @return featureValueToCount map
-     */
-    public static Map<String, Double> getMaxValuesHistogram(Map<String, Double> histogram, int numOfMaxValuesSamples) {
-        Comparator<Map.Entry<String, Double>> histogramKeyComparator = Comparator.comparingDouble(e -> convertToDouble(e.getKey()));
-        Map<String, Double> sortedHistogram = histogram.entrySet().stream().sorted(histogramKeyComparator.reversed()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-        Map<String, Double> ret = new HashMap<>();
-        double totalNumOfSamples = 0;
-        for (Map.Entry<String, Double> entry : sortedHistogram.entrySet()) {
-            double count = entry.getValue();
-            if (totalNumOfSamples + count >= numOfMaxValuesSamples) {
-                ret.put(entry.getKey(), numOfMaxValuesSamples - totalNumOfSamples);
-                break;
-            } else {
-                totalNumOfSamples += count;
-                ret.put(entry.getKey(), count);
-            }
-        }
-
-        return ret;
-    }
-
 }

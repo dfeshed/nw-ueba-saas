@@ -206,8 +206,6 @@ public class ModelingServiceApplicationContinuousModelsTest {
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
             properties.put("presidio.model.store.query.pagination.size", "5");
-            properties.put("model.pageIterator.pageSize", "200000");
-            properties.put("model.pageIterator.maxGroupSize", "1000");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

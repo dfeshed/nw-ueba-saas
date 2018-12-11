@@ -1,9 +1,7 @@
 package fortscale.ml.scorer;
 
-import fortscale.domain.feature.score.CertaintyFeatureScore;
-import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.*;
-import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilder;
+import fortscale.ml.model.builder.gaussian.PartitionedContinuousHistogramModelBuilder;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.joiner.PartitionsDataModelJoiner;
 import fortscale.ml.utils.MaxValuesResult;
@@ -51,56 +49,18 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
     }
 
     @Override
-    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
-        Model model = getMainModel(adeRecordReader);
+    protected Model getMainModel(AdeRecordReader adeRecordReader) {
+        Model model = getModel(adeRecordReader, getModelName(), getContextFieldNames());
         Model secondaryModel = getModel(adeRecordReader, secondaryModelName, secondaryModelContextFieldNames);
 
         if (!(model instanceof PartitionsDataModel && secondaryModel instanceof PartitionsDataModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".joinModels expects to get models of type " + PartitionsDataModel.class.getSimpleName());
         }
-
-        MaxValuesResult maxValuesResult = partitionsDataModelJoiner.joinModels((PartitionsDataModel) model,(PartitionsDataModel) secondaryModel);
+        MaxValuesResult maxValuesResult = partitionsDataModelJoiner.joinModels((PartitionsDataModel) model, (PartitionsDataModel) secondaryModel);
         long numOfPartitions = maxValuesResult.getMaxValues().keySet().stream().map(x -> (x / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
-        Model joinedModel = new ContinuousHistogramModelBuilder().build(maxValuesResult.getMaxValues().values(), numOfMaxValuesSamples);
 
-        List<Model> additionalModels = getAdditionalModels(adeRecordReader);
-        FeatureScore featureScore = calculateScore(joinedModel, additionalModels, adeRecordReader);
-        if (featureScore == null) {
-            return new CertaintyFeatureScore(getName(), 0d, 0d);
-        }
-        double certainty = calculateCertainty(numOfPartitions);
-
-
-        if (isUseCertaintyToCalculateScore()) {
-            featureScore.setScore(featureScore.getScore() * certainty);
-        } else {
-            featureScore = new CertaintyFeatureScore(
-                    featureScore.getName(),
-                    featureScore.getScore(),
-                    featureScore.getFeatureScores(),
-                    certainty
-            );
-        }
-        return featureScore;
-    }
-
-    /**
-     * calculate certainty
-     * @param numOfPartitions numOfPartitions
-     * @return certainty
-     */
-    private double calculateCertainty(long numOfPartitions) {
-        if (getEnoughNumOfPartitionsToInfluence() <= 1) {
-            return 1;
-        }
-        double certainty = 0;
-        if (numOfPartitions >= getEnoughNumOfPartitionsToInfluence()) {
-            certainty = 1;
-        } else if (numOfPartitions >= getMinNumOfPartitionsToInfluence()) {
-            certainty = ((double) (numOfPartitions - getMinNumOfPartitionsToInfluence() + 1)) / (getEnoughNumOfPartitionsToInfluence() - getMinNumOfPartitionsToInfluence() + 1);
-        }
-        return certainty;
+        return new PartitionedContinuousHistogramModelBuilder().build(maxValuesResult.getMaxValues().values(), numOfMaxValuesSamples, numOfPartitions);
     }
 
 }

@@ -50,8 +50,6 @@ public class ScoreAggregationsApplicationConfigTest extends ScoreAggregationsApp
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("monitoring.fixed.rate","60000");
-        properties.put("model.pageIterator.pageSize", "200000");
-        properties.put("model.pageIterator.maxGroupSize", "1000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
