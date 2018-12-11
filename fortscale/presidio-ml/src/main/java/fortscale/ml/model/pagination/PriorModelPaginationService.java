@@ -10,11 +10,11 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-
+/**
+ * Used by "JoinPartitionsHistogramModelsRetriever" to retrieve pageIterators of latest endTime model for each contextId.
+ */
 public class PriorModelPaginationService extends BasePaginationService<ModelDAO> {
 
     private static final Logger logger = Logger.getLogger(PriorModelPaginationService.class);
@@ -57,12 +57,17 @@ public class PriorModelPaginationService extends BasePaginationService<ModelDAO>
 
 
     /**
+     * Get distinct contextIds and set 1 as num of items as a result that the
+     * JoinPartitionsHistogramModelsRetriever retrieve latest model for each contextId.
      * @param modelConf      modelConf
      * @param eventEpochTime eventEpochtime
      * @return List<ContextIdToNumOfItems>
      */
     private List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(ModelConf modelConf, Instant eventEpochTime) {
-        return this.reader.aggregateContextToNumOfEvents(modelConf, eventEpochTime);
+        List<String> contextIds = this.reader.getDistinctNumOfContextIds(modelConf, eventEpochTime);
+        List<ContextIdToNumOfItems> contextIdToNumOfItems = new ArrayList<>();
+        contextIds.forEach(contextId -> contextIdToNumOfItems.add(new ContextIdToNumOfItems(contextId, 1)));
+        return contextIdToNumOfItems;
     }
 
 

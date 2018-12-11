@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConf;
-import fortscale.ml.model.joiner.ContinuousModelJoiner;
+import fortscale.ml.model.joiner.PartitionsDataModelJoiner;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.JoinGaussianModelScorer;
@@ -48,9 +48,8 @@ public class JoinGaussianModelScorerFactory extends AbstractModelScorerFactory {
         AbstractDataRetriever secondaryModelDataRetriever = getDataRetriever(secondaryModelName);
         List<String> secondaryModelContextFieldNames = secondaryModelDataRetriever.getContextFieldNames();
 
-        ContinuousModelJoiner continuousModelJoiner = new ContinuousModelJoiner(scorerConf.getMinNumOfMaxValuesSamples(),
-                scorerConf.getPartitionsResolutionInSeconds(),
-                scorerConf.getResolutionStep(), scorerConf.getNumOfMaxValuesSamples());
+        PartitionsDataModelJoiner partitionsDataModelJoiner = new PartitionsDataModelJoiner(scorerConf.getMinNumOfMaxValuesSamples(),
+                scorerConf.getPartitionsResolutionInSeconds(), scorerConf.getResolutionStep());
 
         return new JoinGaussianModelScorer(
                 scorerConf.getName(),
@@ -67,7 +66,8 @@ public class JoinGaussianModelScorerFactory extends AbstractModelScorerFactory {
                 scorerConf.getGlobalInfluence(),
                 eventModelsCacheService,
                 scorerConf.getPartitionsResolutionInSeconds(),
-                continuousModelJoiner
+                partitionsDataModelJoiner,
+                scorerConf.getNumOfMaxValuesSamples()
         );
     }
 

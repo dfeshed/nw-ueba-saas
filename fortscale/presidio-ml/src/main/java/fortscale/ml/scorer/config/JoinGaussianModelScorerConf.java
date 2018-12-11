@@ -9,16 +9,15 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public class JoinGaussianModelScorerConf extends ModelScorerConf {
+public class JoinGaussianModelScorerConf extends GaussianModelScorerConf {
     public static final String SCORER_TYPE = "join-gaussian-model-scorer";
     public static final int NUM_OF_MAX_VALUES_SAMPLES = 90;
     public static final int MIN_NUM_OF_MAX_VALUES_SAMPLES = 20;
     public static final long DEFAULT_RESOLUTION = 86400;
     public static final int DEFAULT_RESOLUTION_STEP = 2;
 
-    @JsonProperty("global-influence")
-    private int globalInfluence;
-    @JsonProperty("secondary-modell")
+
+    @JsonProperty("secondary-model")
     private ModelInfo secondaryModelInfo;
     @JsonProperty("numOfMaxValuesSamples")
     private int numOfMaxValuesSamples = NUM_OF_MAX_VALUES_SAMPLES;
@@ -35,15 +34,10 @@ public class JoinGaussianModelScorerConf extends ModelScorerConf {
                                        @JsonProperty("secondary-model") ModelInfo secondaryModelInfo,
                                        @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
                                        @JsonProperty("global-influence") Integer globalInfluence) {
-        super(name, mainModelsInfo, additionalModelInfos);
+        super(name, mainModelsInfo, additionalModelInfos, globalInfluence);
         Assert.isTrue(additionalModelInfos.size() == 1, "one additional model info should be provided");
         SMARTValuesModelScorerAlgorithm.assertGlobalInfluence(globalInfluence);
-        this.globalInfluence = globalInfluence;
         this.secondaryModelInfo = secondaryModelInfo;
-    }
-
-    public int getGlobalInfluence() {
-        return globalInfluence;
     }
 
     public ModelInfo getSecondaryModelInfo() {

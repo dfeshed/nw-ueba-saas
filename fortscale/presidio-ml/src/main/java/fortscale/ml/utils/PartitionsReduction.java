@@ -44,7 +44,7 @@ public class PartitionsReduction {
      * @param resolutionInSeconds   resolutionInSeconds
      * @return map of instant and max feature value
      */
-    public static Map<Long, Double> getMaxValuesByResolution(Map<Long, Double> instantToFeatureValue, long resolutionInSeconds) {
+    private static Map<Long, Double> getMaxValuesByResolution(Map<Long, Double> instantToFeatureValue, long resolutionInSeconds) {
         Map<Integer, Pair<Long, Double>> instantToMaxValueMap = new HashMap<>();
 
         instantToFeatureValue.forEach((instant, featureValue) -> {

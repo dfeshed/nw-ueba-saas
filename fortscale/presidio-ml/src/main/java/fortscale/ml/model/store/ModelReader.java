@@ -8,8 +8,7 @@ import java.time.Instant;
 import java.util.*;
 
 
-public interface ModelReader extends StoreManagerAware {
-
+public interface ModelReader {
 
     Instant getLatestEndInstantLt(ModelConf modelConf, String sessionId, Instant instant);
 
@@ -20,24 +19,24 @@ public interface ModelReader extends StoreManagerAware {
     List<ModelDAO> getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(
             ModelConf modelConf, String contextId, Instant eventTime, Instant oldestAllowedModelTime, int limit);
 
-
     /**
-     * find contexts with lte eventEpochTime model and count 1 as num of events
+     * Get distinct num of contextIds
      * @param modelConf modelConf
-     * @param eventEpochTime eventEpochTime
-     * @return ContextIdToNumOfItems
+     * @param endInstant endInstant
+     * @return contextIds list
      */
-    List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(ModelConf modelConf, Instant eventEpochTime);
+    List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant);
 
     /**
      * Read records
-     * @param modelConf modelConf
-     * @param eventEpochTime eventEpochTime
-     * @param contextIds contextIds
+     *
+     * @param modelConf        modelConf
+     * @param eventEpochTime   eventEpochTime
+     * @param contextIds       contextIds
      * @param numOfItemsToSkip numOfItemsToSkip
      * @param numOfItemsToRead numOfItemsToRead
      * @return List<ModelDAO>
      */
-    List<ModelDAO> readRecords(ModelConf modelConf, Instant eventEpochTime, Set<String> contextIds,  int numOfItemsToSkip, int numOfItemsToRead);
+    List<ModelDAO> readRecords(ModelConf modelConf, Instant eventEpochTime, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead);
 
 }

@@ -3,8 +3,9 @@ package fortscale.ml.scorer;
 import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.*;
+import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilder;
 import fortscale.ml.model.cache.EventModelsCacheService;
-import fortscale.ml.model.joiner.ContinuousModelJoiner;
+import fortscale.ml.model.joiner.PartitionsDataModelJoiner;
 import fortscale.ml.utils.MaxValuesResult;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -15,10 +16,8 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
     private String secondaryModelName;
     private List<String> secondaryModelContextFieldNames;
     private long partitionsResolutionInSeconds;
-    private int minNumOfPartitionsToInfluence;
-    private int enoughNumOfPartitionsToInfluence;
-    private boolean isUseCertaintyToCalculateScore;
-    private ContinuousModelJoiner continuousModelJoiner;
+    private PartitionsDataModelJoiner partitionsDataModelJoiner;
+    private int numOfMaxValuesSamples;
 
     public JoinGaussianModelScorer(String scorerName,
                                    String modelName,
@@ -34,7 +33,8 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
                                    int globalInfluence,
                                    EventModelsCacheService eventModelsCacheService,
                                    long partitionsResolutionInSeconds,
-                                   ContinuousModelJoiner continuousModelJoiner) {
+                                   PartitionsDataModelJoiner partitionsDataModelJoiner,
+                                   int numOfMaxValuesSamples) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
                 minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, globalInfluence, eventModelsCacheService);
@@ -46,10 +46,8 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
         this.secondaryModelName = secondaryModelName;
         this.secondaryModelContextFieldNames = secondaryModelContextFieldNames;
         this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
-        this.minNumOfPartitionsToInfluence = minNumOfPartitionsToInfluence;
-        this.enoughNumOfPartitionsToInfluence = enoughNumOfPartitionsToInfluence;
-        this.isUseCertaintyToCalculateScore = isUseCertaintyToCalculateScore;
-        this.continuousModelJoiner = continuousModelJoiner;
+        this.partitionsDataModelJoiner = partitionsDataModelJoiner;
+        this.numOfMaxValuesSamples = numOfMaxValuesSamples;
     }
 
     @Override
@@ -57,9 +55,14 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
         Model model = getMainModel(adeRecordReader);
         Model secondaryModel = getModel(adeRecordReader, secondaryModelName, secondaryModelContextFieldNames);
 
-        MaxValuesResult maxValuesResult = continuousModelJoiner.joinModels(model, secondaryModel);
+        if (!(model instanceof PartitionsDataModel && secondaryModel instanceof PartitionsDataModel)) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() +
+                    ".joinModels expects to get models of type " + PartitionsDataModel.class.getSimpleName());
+        }
+
+        MaxValuesResult maxValuesResult = partitionsDataModelJoiner.joinModels((PartitionsDataModel) model,(PartitionsDataModel) secondaryModel);
         long numOfPartitions = maxValuesResult.getMaxValues().keySet().stream().map(x -> (x / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
-        Model joinedModel = continuousModelJoiner.createContinuousModel(maxValuesResult);
+        Model joinedModel = new ContinuousHistogramModelBuilder().build(maxValuesResult.getMaxValues().values(), numOfMaxValuesSamples);
 
         List<Model> additionalModels = getAdditionalModels(adeRecordReader);
         FeatureScore featureScore = calculateScore(joinedModel, additionalModels, adeRecordReader);
@@ -69,7 +72,7 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
         double certainty = calculateCertainty(numOfPartitions);
 
 
-        if (isUseCertaintyToCalculateScore) {
+        if (isUseCertaintyToCalculateScore()) {
             featureScore.setScore(featureScore.getScore() * certainty);
         } else {
             featureScore = new CertaintyFeatureScore(
@@ -88,14 +91,14 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
      * @return certainty
      */
     private double calculateCertainty(long numOfPartitions) {
-        if (enoughNumOfPartitionsToInfluence <= 1) {
+        if (getEnoughNumOfPartitionsToInfluence() <= 1) {
             return 1;
         }
         double certainty = 0;
-        if (numOfPartitions >= enoughNumOfPartitionsToInfluence) {
+        if (numOfPartitions >= getEnoughNumOfPartitionsToInfluence()) {
             certainty = 1;
-        } else if (numOfPartitions >= minNumOfPartitionsToInfluence) {
-            certainty = ((double) (numOfPartitions - minNumOfPartitionsToInfluence + 1)) / (enoughNumOfPartitionsToInfluence - minNumOfPartitionsToInfluence + 1);
+        } else if (numOfPartitions >= getMinNumOfPartitionsToInfluence()) {
+            certainty = ((double) (numOfPartitions - getMinNumOfPartitionsToInfluence() + 1)) / (getEnoughNumOfPartitionsToInfluence() - getMinNumOfPartitionsToInfluence() + 1);
         }
         return certainty;
     }

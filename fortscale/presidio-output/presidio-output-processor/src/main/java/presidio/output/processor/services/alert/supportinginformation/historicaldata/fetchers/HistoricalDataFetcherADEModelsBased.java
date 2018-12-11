@@ -121,7 +121,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     public List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
         // get historical data from models
         String contextId = //FeatureBucketUtils.buildContextId(getContextIdMap(contextField, contextValue));
-                AdeContextualAggregatedRecord.getAggregatedFeatureContextId(getContextIdMap(contextField, contextValue));
+                AdeContextualAggregatedRecord.buildContextId(getContextIdMap(contextField, contextValue));
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecordsFromModels = adeManagerSdk.getAccumulatedAggregatedFeatureEvents(featureName, contextId, timeRange);
 
         // complete historical data in memory

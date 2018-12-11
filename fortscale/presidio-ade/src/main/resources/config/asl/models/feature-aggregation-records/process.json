@@ -101,7 +101,7 @@
     {
       "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.prior.process.hourly",
       "retriever": {
-        "type": "join_model_retriever",
+        "type": "join_partitions_histogram_models_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "modelConfName": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly",

@@ -5,6 +5,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
@@ -25,7 +26,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class ModelStore implements ModelReader {
+public class ModelStore implements ModelReader, StoreManagerAware {
     private static final Logger logger = Logger.getLogger(ModelStore.class);
     private static final String COLLECTION_NAME_PREFIX = "model_";
     private static final String ModelDAO_FEILD_NAME = "ModelDAO";
@@ -66,6 +67,13 @@ public class ModelStore implements ModelReader {
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
         return mongoTemplate
                 .getCollection(getCollectionName(modelConf))
+                .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+    }
+
+    public List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant) {
+        Query query = new Query()
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
+        return mongoTemplate.getCollection(getCollectionName(modelConf))
                 .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
     }
 
@@ -207,21 +215,6 @@ public class ModelStore implements ModelReader {
                 mongoTemplate.remove(query, collectionName);
             }
         }
-    }
-
-
-    public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(ModelConf modelConf, Instant endDate) {
-        String collectionName = getCollectionName(modelConf);
-        Map<String,ContextIdToNumOfItems> result = new HashMap<>();
-        List<ModelDAO> queryResults;
-        Date latestEndDate = Date.from(endDate);
-        Query query = new Query()
-                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
-                .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD));
-        queryResults = mongoTemplate.find(query, ModelDAO.class, collectionName);
-
-        queryResults.forEach(value -> result.put(value.getContextId(), new ContextIdToNumOfItems(value.getContextId(), 1)));
-        return new ArrayList<>(result.values());
     }
 
 

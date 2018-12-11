@@ -108,7 +108,7 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
 
     @Override
     public String getContextId(Map<String, String> context) {
-        return AccumulatedSmartRecord.getAggregatedFeatureContextId(context);
+        return AccumulatedSmartRecord.buildContextId(context);
     }
 
 }
