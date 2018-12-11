@@ -65,10 +65,14 @@ $dragPadHighlightedColor: background-color(primary, lighter);
           font-size: 1.5rem;
         }
         &.select, &.order {
-          width: 50px;
+          width: 5%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
         &.enabled {
-          width: 65px;
+          width: 6%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
         &.name {
           width: 25%;
@@ -77,13 +81,19 @@ $dragPadHighlightedColor: background-color(primary, lighter);
           width: auto;
         }
         &.last-matched {
-          width: 175px;
+          width: 15%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
         &.alerts-matched {
-          width: 120px;
+          width: 12%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
         &.incidents-created {
-          width: 100px;
+          width: 10%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
     }
