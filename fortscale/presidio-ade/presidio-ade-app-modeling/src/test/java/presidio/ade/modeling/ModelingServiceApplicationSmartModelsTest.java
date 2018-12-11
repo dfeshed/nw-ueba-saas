@@ -387,8 +387,6 @@ public class ModelingServiceApplicationSmartModelsTest {
             properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff", "PT48H");
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
-            properties.put("model.pageIterator.pageSize", "200000");
-            properties.put("model.pageIterator.maxGroupSize", "1000");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
