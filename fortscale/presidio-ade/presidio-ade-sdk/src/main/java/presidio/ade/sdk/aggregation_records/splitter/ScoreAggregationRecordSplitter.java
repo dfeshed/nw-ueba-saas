@@ -51,6 +51,8 @@ public class ScoreAggregationRecordSplitter {
                 .calculateContributionRatios(scoreAggregationRecordDetails.getAggregatedFeatureEventConf(), featureBucket)
                 // Iterate the tuples and their contribution ratios (<tuple, contribution ratio> entries).
                 .getHistogram().entrySet().stream()
+                // Add the (common) feature bucket context to each tuple.
+                .peek(entry -> addFeatureBucketContext(scoreAggregationRecordDetails, entry.getKey()))
                 // Reduce the <tuple, contribution ratio> entries according to the split field names.
                 .collect(Collectors.toMap(
                         // Key mapper: Leave only the split field names and values.
@@ -67,6 +69,13 @@ public class ScoreAggregationRecordSplitter {
                 .collect(Collectors.toList());
 
         return new ScoreAggregationRecordContributors(scoredRecordClass, contributors);
+    }
+
+    private static void addFeatureBucketContext(
+            ScoreAggregationRecordDetails scoreAggregationRecordDetails,
+            MultiKeyFeature context) {
+
+        scoreAggregationRecordDetails.getContextFieldNameToValueMap().getFeatureNameToValue().forEach(context::add);
     }
 
     private static MultiKeyFeature reduceToSplitContext(List<String> splitFieldNames, MultiKeyFeature context) {
