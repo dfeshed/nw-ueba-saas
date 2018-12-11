@@ -12,13 +12,13 @@
   &.loading {
     background-color: $baseColorNoTransparency;
   }
-  .rsa-panel-message {
-    z-index: -1;
-  }
+
   .fatal-error-icons {
     display: flex;
     justify-content: flex-end;
+    z-index: 3;
   }
+
   .fatal-error-close-button, .fatal-error-toggle-button {
     padding: rsa-whitespace() rsa-whitespace() 0 0;
     margin: rsa-whitespace() rsa-whitespace() 0 0;
