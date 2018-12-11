@@ -285,6 +285,7 @@ const onFileSelection = (item) => {
     dispatch(resetRiskContext());
     next(() => {
       dispatch(getRiskScoreContext(item.checksumSha256, 'critical'));
+      dispatch(_getSelectedFileProperties(item.checksumSha256));
     });
     dispatch(_fetchHostNameList(item.checksumSha256));
   };

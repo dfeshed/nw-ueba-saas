@@ -56,6 +56,58 @@ const endpointQuery = {
   serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
 };
 
+const sampleData = [{
+  firstFileName: 'XXX Test',
+  entropy: 1,
+  size: 1024,
+  format: 'PE',
+  signature: {
+    features: 'XXX unsigned',
+    thumbprint: '',
+    signer: ''
+  }
+}];
+
+const config = [
+  {
+    sectionName: 'File.General',
+    fields: [
+      {
+        field: 'firstFileName'
+      },
+      {
+        field: 'entropy'
+      },
+      {
+        field: 'size',
+        format: 'SIZE'
+      },
+      {
+        field: 'format'
+      }
+    ]
+  },
+  {
+    sectionName: 'File.Signature',
+    fields: [
+      {
+        field: 'signature.features',
+        format: 'SIGNATURE'
+      },
+      {
+        field: 'signature.timeStamp',
+        format: 'DATE'
+      },
+      {
+        field: 'signature.thumbprint'
+      },
+      {
+        field: 'signature.signer'
+      }
+    ]
+  }
+];
+
 module('Integration | Component | Investigate-files-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -189,5 +241,17 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
         assert.equal(findAll('.show-right-zone .right-zone').length, 0, 'right zone is closed');
       });
     });
+  });
+  test('File details are shown in right panel', async function(assert) {
+    new ReduxDataHelper(initState)
+      .setSelectedFileList([])
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .build();
+    this.set('propertyConfig', config);
+    await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
+    assert.equal(findAll('.investigate-file-tab').length, 1, 'Right panel header is rendered');
+    assert.equal(findAll('.host-property-panel').length, 1, 'Propertoes panel is rendered');
+    assert.equal(findAll('.content-section .content-section__section-name').length, 2, 'total number of section should be 2');
   });
 });

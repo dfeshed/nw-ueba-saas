@@ -62,7 +62,10 @@
     {{else if (eq activeDataSourceTab 'HOSTS')}}
       {{file-found-on-hosts}}
     {{else}}
-      {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
+      {{endpoint/file-property-panel
+        localeNameSpace='investigateHosts.property.file'
+        config=propertyConfig
+        data=fileProperty}}
     {{/if}}
   {{/layout.right}}
 {{/rsa-page-layout}}

@@ -29,6 +29,8 @@ import { inject as service } from '@ember/service';
 
 import { FILTER_TYPES } from './filter-type';
 
+import CONFIG from '../file-details/base-property-config';
+
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
   hasFiles: hasFiles(state),
@@ -44,7 +46,8 @@ const stateToComputed = (state) => ({
   selectedFile: state.files.fileList.selectedFile,
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,
-  schemaLoading: state.files.schema.schemaLoading
+  schemaLoading: state.files.schema.schemaLoading,
+  fileProperty: state.files.fileList.selectedDetailFile
 });
 
 const dispatchToActions = {
@@ -73,6 +76,8 @@ const Files = Component.extend({
   features: service(),
 
   filterTypes: FILTER_TYPES,
+
+  propertyConfig: CONFIG,
 
   willDestroyElement() {
     this.send('resetDownloadId');
