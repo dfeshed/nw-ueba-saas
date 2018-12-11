@@ -21,12 +21,14 @@ public class PartitionsHistogramModelBuilder implements IModelBuilder {
     private int minNumOfMaxValuesSamples;
     private long partitionsResolutionInSeconds;
     private int resolutionStep;
+    private int minResolution;
 
     public PartitionsHistogramModelBuilder(PartitionsHistogramModelBuilderConf builderConf) {
         Assert.isTrue(builderConf.getMinNumOfMaxValuesSamples() > 0, "nimNumOfMaxValuesSamples should be bigger than zero");
         this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
         this.partitionsResolutionInSeconds = builderConf.getPartitionsResolutionInSeconds();
         this.resolutionStep = builderConf.getResolutionStep();
+        this.minResolution = builderConf.getMinResolution();
     }
 
 
@@ -38,7 +40,7 @@ public class PartitionsHistogramModelBuilder implements IModelBuilder {
         Duration instantStep = aggregatedFeatureValuesData.getInstantStep();
 
         Map<Long, Double> epochToFeatureValue = instantToFeatureValue.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getEpochSecond(), Map.Entry::getValue));
-        MaxValuesResult maxValuesResult = PartitionsReduction.reducePartitionsMapToMaxValues(epochToFeatureValue, instantStep, resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples);
+        MaxValuesResult maxValuesResult = PartitionsReduction.reducePartitionsMapToMaxValues(epochToFeatureValue, instantStep, resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples, minResolution);
         logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}", maxValuesResult, aggregatedFeatureValuesData);
         return new PartitionsDataModel(maxValuesResult.getMaxValues(), maxValuesResult.getResolutionInSeconds(), instantStep, numOfPartitions);
     }

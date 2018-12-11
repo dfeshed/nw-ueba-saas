@@ -24,12 +24,11 @@ public class PartitionsReduction {
      * @param minNumOfMaxValuesSamples minNumOfMaxValuesSamples
      * @return  map of instant to max feature value and final resolution
      */
-    public static MaxValuesResult reducePartitionsMapToMaxValues(Map<Long, Double> instantToFeatureValue, Duration instantStep, int resolutionStep,  long resolutionInSeconds, int minNumOfMaxValuesSamples) {
-
+    public static MaxValuesResult reducePartitionsMapToMaxValues(Map<Long, Double> instantToFeatureValue, Duration instantStep, int resolutionStep,  long resolutionInSeconds, int minNumOfMaxValuesSamples, int minResolution) {
         int resolution = (int) (resolutionInSeconds / instantStep.getSeconds());
         Map<Long, Double> maxValues = PartitionsReduction.getMaxValuesByResolution(instantToFeatureValue, resolutionInSeconds);
 
-        while (maxValues.size() < minNumOfMaxValuesSamples && resolution / resolutionStep > 0) {
+        while (maxValues.size() < minNumOfMaxValuesSamples && resolution / resolutionStep >= minResolution) {
             resolution = resolution / resolutionStep;
             resolutionInSeconds = resolution * instantStep.getSeconds();
             maxValues = PartitionsReduction.getMaxValuesByResolution(instantToFeatureValue, resolutionInSeconds);

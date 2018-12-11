@@ -15,7 +15,7 @@ public class JoinGaussianModelScorerConf extends GaussianModelScorerConf {
     public static final int MIN_NUM_OF_MAX_VALUES_SAMPLES = 20;
     public static final long DEFAULT_RESOLUTION = 86400;
     public static final int DEFAULT_RESOLUTION_STEP = 2;
-
+    public static final int DEFAULT_MIN_RESOLUTION = 1;
 
     @JsonProperty("secondary-model")
     private ModelInfo secondaryModelInfo;
@@ -27,6 +27,8 @@ public class JoinGaussianModelScorerConf extends GaussianModelScorerConf {
     private long partitionsResolutionInSeconds = DEFAULT_RESOLUTION;
     @JsonProperty("resolutionStep")
     private int resolutionStep = DEFAULT_RESOLUTION_STEP;
+    @JsonProperty("minResolution")
+    private int minResolution = DEFAULT_MIN_RESOLUTION;
 
     @JsonCreator
     public JoinGaussianModelScorerConf(@JsonProperty("name") String name,
@@ -74,6 +76,10 @@ public class JoinGaussianModelScorerConf extends GaussianModelScorerConf {
 
     public void setResolutionStep(int resolutionStep) {
         this.resolutionStep = resolutionStep;
+    }
+
+    public int getMinResolution() {
+        return minResolution;
     }
 
     @Override

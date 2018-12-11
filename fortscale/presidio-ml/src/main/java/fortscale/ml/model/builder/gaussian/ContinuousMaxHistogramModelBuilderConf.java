@@ -15,6 +15,7 @@ public class ContinuousMaxHistogramModelBuilderConf implements IModelBuilderConf
     public static final int MIN_NUM_OF_MAX_VALUES_SAMPLES = 20;
     public static final long DEFAULT_RESOLUTION = 86400;
     public static final int DEFAULT_RESOLUTION_STEP = 2;
+    public static final int DEFAULT_MIN_RESOLUTION = 1;
 
     @JsonProperty("numOfMaxValuesSamples")
     private int numOfMaxValuesSamples = NUM_OF_MAX_VALUES_SAMPLES;
@@ -27,6 +28,9 @@ public class ContinuousMaxHistogramModelBuilderConf implements IModelBuilderConf
 
     @JsonProperty("resolutionStep")
     private int resolutionStep = DEFAULT_RESOLUTION_STEP;
+
+    @JsonProperty("minResolution")
+    private int minResolution = DEFAULT_MIN_RESOLUTION;
 
     public ContinuousMaxHistogramModelBuilderConf(){}
 
@@ -56,6 +60,10 @@ public class ContinuousMaxHistogramModelBuilderConf implements IModelBuilderConf
 
     public void setPartitionsResolutionInSeconds(long partitionsResolutionInSeconds) {
         this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
+    }
+
+    public int getMinResolution() {
+        return minResolution;
     }
 
     @Override

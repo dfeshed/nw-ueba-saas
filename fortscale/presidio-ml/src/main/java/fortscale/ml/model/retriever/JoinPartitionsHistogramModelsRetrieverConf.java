@@ -13,6 +13,7 @@ public class JoinPartitionsHistogramModelsRetrieverConf extends AbstractDataRetr
 	public static final long DEFAULT_RESOLUTION = 86400;
 	public static final int DEFAULT_RESOLUTION_STEP = 2;
 	public static final int NUM_OF_MAX_VALUES_SAMPLES = 90;
+	public static final int DEFAULT_MIN_RESOLUTION = 1;
 	public static final int PRIOR_MODEL_PAGINATION_PAGE_SIZE = 200000;
 	public static final int PRIOR_MODEL_PAGINATION_MAX_GROUP_SIZE = 1000;
 
@@ -31,6 +32,8 @@ public class JoinPartitionsHistogramModelsRetrieverConf extends AbstractDataRetr
 	private int pageSize = PRIOR_MODEL_PAGINATION_PAGE_SIZE;
 	@JsonProperty("maxGroupSize")
 	private int maxGroupSize = PRIOR_MODEL_PAGINATION_MAX_GROUP_SIZE;
+	@JsonProperty("minResolution")
+	private int minResolution = DEFAULT_MIN_RESOLUTION;
 
 	@JsonCreator
 	public JoinPartitionsHistogramModelsRetrieverConf(
@@ -79,5 +82,9 @@ public class JoinPartitionsHistogramModelsRetrieverConf extends AbstractDataRetr
 
 	public int getMaxGroupSize() {
 		return maxGroupSize;
+	}
+
+	public int getMinResolution() {
+		return minResolution;
 	}
 }

@@ -49,7 +49,7 @@ public class JoinGaussianModelScorerFactory extends AbstractModelScorerFactory {
         List<String> secondaryModelContextFieldNames = secondaryModelDataRetriever.getContextFieldNames();
 
         PartitionsDataModelJoiner partitionsDataModelJoiner = new PartitionsDataModelJoiner(scorerConf.getMinNumOfMaxValuesSamples(),
-                scorerConf.getPartitionsResolutionInSeconds(), scorerConf.getResolutionStep());
+                scorerConf.getPartitionsResolutionInSeconds(), scorerConf.getResolutionStep(), scorerConf.getMinResolution());
 
         return new JoinGaussianModelScorer(
                 scorerConf.getName(),

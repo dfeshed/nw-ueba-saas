@@ -11,11 +11,13 @@ public class PartitionsDataModelJoiner {
     private int minNumOfMaxValuesSamples;
     private long partitionsResolutionInSeconds;
     private int resolutionStep;
+    private int minResolution;
 
-    public PartitionsDataModelJoiner(int minNumOfMaxValuesSamples, long partitionsResolutionInSeconds, int resolutionStep) {
+    public PartitionsDataModelJoiner(int minNumOfMaxValuesSamples, long partitionsResolutionInSeconds, int resolutionStep, int minResolution) {
         this.minNumOfMaxValuesSamples = minNumOfMaxValuesSamples;
         this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
         this.resolutionStep = resolutionStep;
+        this.minResolution = minResolution;
     }
 
     /**
@@ -35,6 +37,6 @@ public class PartitionsDataModelJoiner {
         for (Map.Entry<Long, Double> entry : secondaryModel.getInstantToValue().entrySet()) {
             instantToValueMap.putIfAbsent(entry.getKey(), 0D);
         }
-        return PartitionsReduction.reducePartitionsMapToMaxValues(instantToValueMap, model.getInstantStep(), resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples);
+        return PartitionsReduction.reducePartitionsMapToMaxValues(instantToValueMap, model.getInstantStep(), resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples, minResolution);
     }
 }

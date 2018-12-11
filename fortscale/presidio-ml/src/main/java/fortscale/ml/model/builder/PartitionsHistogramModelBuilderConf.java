@@ -11,7 +11,7 @@ public class PartitionsHistogramModelBuilderConf implements IModelBuilderConf {
     public static final int MIN_NUM_OF_MAX_VALUES_SAMPLES = 20;
     public static final long DEFAULT_RESOLUTION = 86400;
     public static final int DEFAULT_RESOLUTION_STEP = 2;
-
+    public static final int DEFAULT_MIN_RESOLUTION = 1;
 
     @JsonProperty("minNumOfMaxValuesSamples")
     private int minNumOfMaxValuesSamples = MIN_NUM_OF_MAX_VALUES_SAMPLES;
@@ -21,6 +21,9 @@ public class PartitionsHistogramModelBuilderConf implements IModelBuilderConf {
 
     @JsonProperty("resolutionStep")
     private int resolutionStep = DEFAULT_RESOLUTION_STEP;
+
+    @JsonProperty("minResolution")
+    private int minResolution = DEFAULT_MIN_RESOLUTION;
 
     public PartitionsHistogramModelBuilderConf(){}
 
@@ -42,6 +45,10 @@ public class PartitionsHistogramModelBuilderConf implements IModelBuilderConf {
 
     public int getResolutionStep() {
         return resolutionStep;
+    }
+
+    public int getMinResolution() {
+        return minResolution;
     }
 
     @Override

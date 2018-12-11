@@ -30,6 +30,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
     private int minNumOfMaxValuesSamples;
     private long partitionsResolutionInSeconds;
     private int resolutionStep;
+    private int minResolution;
     private MaxContinuousModelBuilderMetricsContainer maxContinuousModelBuilderMetricsContainer;
 
     public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf,
@@ -40,6 +41,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
         this.partitionsResolutionInSeconds = builderConf.getPartitionsResolutionInSeconds();
         this.resolutionStep = builderConf.getResolutionStep();
+        this.minResolution = builderConf.getMinResolution();
         this.maxContinuousModelBuilderMetricsContainer = maxContinuousModelBuilderMetricsContainer;
     }
 
@@ -59,7 +61,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
         //create ContinuousDataModel with max values
         Map<Long, Double> epochToFeatureValue = instantToFeatureValue.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getEpochSecond() , Map.Entry::getValue));
-        MaxValuesResult maxValuesResult = PartitionsReduction.reducePartitionsMapToMaxValues(epochToFeatureValue, instantStep, resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples);
+        MaxValuesResult maxValuesResult = PartitionsReduction.reducePartitionsMapToMaxValues(epochToFeatureValue, instantStep, resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples, minResolution);
         logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}",maxValuesResult,aggregatedFeatureValuesData);
         Collection<Double> maxValues = maxValuesResult.getMaxValues().values();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(PartitionsReduction.getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap(), numOfMaxValuesSamples));
