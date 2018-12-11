@@ -116,32 +116,17 @@ const processReducer = handleActions({
     const { selectedProcessList, processList } = state;
     if (selectedProcessList.length < processList.length) {
       return state.set('selectedProcessList', processList.map((process) => {
-        const {
-          downloadInfo,
-          checksumSha256,
-          checksumSha1,
-          checksumMd5,
-          name,
-          fileName,
-          pid,
-          id,
-          parentPid,
-          vpid,
-          path,
-          signature,
-          size,
-          hasChild,
-          score,
-          fileStatus } = process;
+        const { pid, name, fileProperties, path, parentPid, vpid, hasChild } = process;
+        const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
         return {
           downloadInfo,
           checksumSha256,
           checksumSha1,
           checksumMd5,
           name,
-          fileName,
+          fileName: name,
           pid,
-          id,
+          id: pid,
           parentPid,
           vpid,
           path,

@@ -207,48 +207,88 @@ module('Unit | Reducers | process', function() {
       selectedProcessList: [],
       processList: [
         {
-          checksumSha256: '46965656dffsdf664',
           name: 'p1',
-          fileName: 'p1',
+          fileProperties: {
+            signature: 'signed',
+            size: 1234,
+            fileStatus: 'Neutral',
+            score: 0,
+            checksumSha256: '46965656dffsdf664',
+            checksumMd5: '89676969',
+            checksumSha1: '9798796986',
+            downloadInfo: { status: true }
+          },
           pid: 1,
           parentPid: 0,
           hasChild: true,
           vpid: 154354,
-          checksumMd5: '89676969',
-          checksumSha1: '9798796986',
-          downloadInfo: { status: true },
           id: 1,
-          path: 'C:/',
-          signature: 'signed',
-          size: 1234,
-          fileStatus: 'Neutral',
-          score: 0
+          path: 'C:/'
         },
-
         {
-          checksumSha256: '89484fgfdgr546488',
           name: 'p2',
-          fileName: 'p2',
+          fileProperties: {
+            signature: 'unsigned',
+            size: 9234,
+            fileStatus: 'Neutral',
+            score: 0,
+            checksumSha256: '89484fgfdgr546488',
+            checksumMd5: '6789676969',
+            checksumSha1: '789798796986',
+            downloadInfo: { status: true }
+          },
           pid: 2,
           parentPid: 1,
           hasChild: false,
           vpid: 98765,
-          checksumMd5: '6789676969',
-          checksumSha1: '789798796986',
-          downloadInfo: { status: true },
           id: 2,
-          path: 'D:/',
-          signature: 'unsigned',
-          size: 9234,
-          fileStatus: 'Neutral',
-          score: 0
-        }]
+          path: 'D:/'
+        }
+      ]
     });
+    const expectedResult = [
+      {
+        checksumSha256: '46965656dffsdf664',
+        name: 'p1',
+        fileName: 'p1',
+        pid: 1,
+        parentPid: 0,
+        hasChild: true,
+        vpid: 154354,
+        checksumMd5: '89676969',
+        checksumSha1: '9798796986',
+        downloadInfo: { status: true },
+        id: 1,
+        path: 'C:/',
+        signature: 'signed',
+        size: 1234,
+        fileStatus: 'Neutral',
+        score: 0
+      },
+
+      {
+        checksumSha256: '89484fgfdgr546488',
+        name: 'p2',
+        fileName: 'p2',
+        pid: 2,
+        parentPid: 1,
+        hasChild: false,
+        vpid: 98765,
+        checksumMd5: '6789676969',
+        checksumSha1: '789798796986',
+        downloadInfo: { status: true },
+        id: 2,
+        path: 'D:/',
+        signature: 'unsigned',
+        size: 9234,
+        fileStatus: 'Neutral',
+        score: 0
+      }];
     const result = reducer(
       previous,
       { type: ACTION_TYPES.SELECT_ALL_PROCESS }
     );
-    assert.deepEqual(result.selectedProcessList, previous.processList);
+    assert.deepEqual(result.selectedProcessList, expectedResult);
   });
 
   test('The DESELECT_ALL_PROCESS sets the selectedProcesList', function(assert) {
