@@ -142,17 +142,7 @@
                     {
                         anomalyTypeFieldName: 'account_management_change_anomaly',
                         evidenceType: 'AnomalySingleEvent'
-                    },
-                    {
-                        anomalyTypeFieldName: 'high_number_of_distinct_reconnaissance_tools_executed'
-                    },
-                    {
-                        anomalyTypeFieldName: 'high_number_of_reconnaissance_tool_activities_executed'
-                    },
-                    {
-                        anomalyTypeFieldName: 'high_number_of_reconnaissance_tools_executed_process'
                     }
-
                 ],
                 templateUrl: 'app/layouts/user/components/user-indicator/components/indicator-templates/dualcolumn.html',
                 settings: _.merge({},dualColumnSettings.settings,{secondColumn:{hidden:true}}),
