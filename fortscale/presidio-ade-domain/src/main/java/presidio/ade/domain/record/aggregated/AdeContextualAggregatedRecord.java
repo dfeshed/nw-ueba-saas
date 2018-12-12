@@ -7,8 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,12 +41,26 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
      *
      * @return String
      */
-    public static String getAggregatedFeatureContextId(Map<String, String> context) {
+    public static String buildContextId(Map<String, String> context) {
         return context.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }
+
+    /**
+     * @param contextId contextId
+     * @return Map<String, String> context
+     */
+    public static Map<String, String> getContext(String contextId) {
+        Map<String, String> context = new HashMap<>();
+        Iterator<String> it = Arrays.stream(contextId.split(CONTEXT_ID_SEPARATOR)).iterator();
+        while (it.hasNext()) {
+            context.put(it.next(), it.next());
+        }
+        return context;
+    }
+
 
     /**
      * @return end Instant

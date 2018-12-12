@@ -25,7 +25,7 @@ import java.util.Collection;
 //        common application confs
         AggregationEventsAccumulationDataReaderConfig.class,
         FeatureBucketReaderConfig.class,
-        RetrieverMetricsContainerConfig.class,
+        RetrieverMetricsContainerConfig.class
 })
 @ComponentScan(value = "fortscale.ml.model.retriever.factories",
         excludeFilters = {
