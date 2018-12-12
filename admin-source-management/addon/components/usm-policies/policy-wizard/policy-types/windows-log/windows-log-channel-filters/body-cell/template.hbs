@@ -7,7 +7,8 @@
         selected=item.channel
         searchPlaceholder=(t 'packager.searchPlaceholder')
         triggerClass=(if (eq (get item column.field) invalidTableItem) 'selector-error')
-        onchange=(action 'setSelected' column.field bubbles=false) as |option|
+        onchange=(action 'setSelected' column.field bubbles=false)
+        onkeydown=(action 'setChannelOptions' bubbles=false) as |option|
       }}
         <span title={{option}}>{{option}}</span>
       {{/power-select}}

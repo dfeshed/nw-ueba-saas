@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, render } from '@ember/test-helpers';
-import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+import { find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { A } from '@ember/array';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
@@ -162,5 +162,38 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     await selectChoose('.windows-log-channel-filter', 'EXCLUDE');
     assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'EXCLUDE', 'selected item matches Exclude');
     assert.equal(this.get('item.eventId'), '', 'Changing to exclude clears out eventId correctly');
+  });
+
+  test('on entering channel name, channel options are increased', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(channelFilters)
+      .build();
+
+    const ENTER_KEY = 13;
+    this.setProperties({
+      column,
+      channelOptions,
+      item
+    });
+
+    this.set('channelUpdated', () => {
+      assert.ok(true, 'channelUpdated should be called when channel options are increased');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+        column=column
+        channelOptions=channelOptions
+        item=item
+        channelUpdated=channelUpdated
+      }}
+    `);
+
+    await clickTrigger('.windows-log-channel-name');
+    await typeInSearch('test');
+    await triggerKeyEvent('.ember-power-select-search-input', 'keydown', ENTER_KEY);
+
+    assert.equal(this.get('channelOptions').length, 6, 'Test is added as a option');
   });
 });
