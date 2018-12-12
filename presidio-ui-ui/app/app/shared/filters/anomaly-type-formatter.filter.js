@@ -140,6 +140,33 @@
                         },
                         {
                             anomalyTypeFieldName: "abnormal_object_change_operation"
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_account_enabled'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_account_disabled'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_account_unlocked'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_account_type_changed'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_account_locked'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_password_never_expires_option_changed'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_password_changed_by_non-owner'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_password_changed'
+                        },
+                        {
+                            anomalyTypeFieldName: 'user_password_reset'
                         }
                     ],
                     filter: pipeToCamelCaseRemoveUnderscore
