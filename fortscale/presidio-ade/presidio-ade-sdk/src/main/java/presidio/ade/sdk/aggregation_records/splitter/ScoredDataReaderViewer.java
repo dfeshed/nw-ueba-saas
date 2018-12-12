@@ -34,16 +34,30 @@ public class ScoredDataReaderViewer<T extends AdeRecord & AdeScoredRecord> {
     }
 
     public Instant getFirstStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String scoredRecordAdeEventType) {
+            TimeRange timeRange,
+            String scoredRecordAdeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap) {
 
         return scoredDataReader.readFirstStartInstant(
-                timeRange, contextFieldNameToValueMap, scoredRecordScoreThreshold, scoredRecordAdeEventType);
+                timeRange,
+                scoredRecordAdeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoredRecordScoreThreshold);
     }
 
     public Instant getLastStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String scoredRecordAdeEventType) {
+            TimeRange timeRange,
+            String scoredRecordAdeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap) {
 
         return scoredDataReader.readLastStartInstant(
-                timeRange, contextFieldNameToValueMap, scoredRecordScoreThreshold, scoredRecordAdeEventType);
+                timeRange,
+                scoredRecordAdeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoredRecordScoreThreshold);
     }
 }

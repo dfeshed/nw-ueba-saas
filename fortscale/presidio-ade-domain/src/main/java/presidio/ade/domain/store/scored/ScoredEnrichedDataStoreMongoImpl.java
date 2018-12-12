@@ -173,22 +173,53 @@ public class ScoredEnrichedDataStoreMongoImpl implements
 
     @Override
     public Instant readFirstStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
-                .with(new Sort(Direction.ASC, START_INSTANT_FIELD));
-        return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType))
-                .getStartInstant();
+        return readStartInstant(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.ASC);
     }
 
     @Override
     public Instant readLastStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
-                .with(new Sort(Direction.DESC, START_INSTANT_FIELD));
-        return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType))
-                .getStartInstant();
+        return readStartInstant(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.DESC);
+    }
+
+    private Instant readStartInstant(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold,
+            Direction direction) {
+
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        String collectionName = translator.toCollectionName(adeEventType);
+        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
+                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
+        query.with(new Sort(direction, START_INSTANT_FIELD));
+        AdeScoredEnrichedRecord record = mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
+        return record == null ? null : record.getStartInstant();
     }
 
     private static Query buildScoredEnrichedRecordsQuery(

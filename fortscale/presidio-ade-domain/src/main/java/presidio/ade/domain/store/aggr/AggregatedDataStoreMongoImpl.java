@@ -214,14 +214,22 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
 
     @Override
     public Instant readFirstStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
 
         return timeRange.getStart();
     }
 
     @Override
     public Instant readLastStartInstant(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
 
         return timeRange.getEnd();
     }

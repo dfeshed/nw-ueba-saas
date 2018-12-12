@@ -51,8 +51,6 @@ public class ScoreAggregationRecordSplitter {
                 .calculateContributionRatios(scoreAggregationRecordDetails.getAggregatedFeatureEventConf(), featureBucket)
                 // Iterate the tuples and their contribution ratios (<tuple, contribution ratio> entries).
                 .getHistogram().entrySet().stream()
-                // Add the (common) feature bucket context to each tuple.
-                .peek(entry -> addFeatureBucketContext(scoreAggregationRecordDetails, entry.getKey()))
                 // Reduce the <tuple, contribution ratio> entries according to the split field names.
                 .collect(Collectors.toMap(
                         // Key mapper: Leave only the split field names and values.
@@ -71,13 +69,6 @@ public class ScoreAggregationRecordSplitter {
         return new ScoreAggregationRecordContributors(scoredRecordClass, contributors);
     }
 
-    private static void addFeatureBucketContext(
-            ScoreAggregationRecordDetails scoreAggregationRecordDetails,
-            MultiKeyFeature context) {
-
-        scoreAggregationRecordDetails.getContextFieldNameToValueMap().getFeatureNameToValue().forEach(context::add);
-    }
-
     private static MultiKeyFeature reduceToSplitContext(List<String> splitFieldNames, MultiKeyFeature context) {
         MultiKeyFeature splitContext = new MultiKeyFeature();
         splitFieldNames.forEach(splitFieldName -> {
@@ -92,16 +83,17 @@ public class ScoreAggregationRecordSplitter {
             ScoreAggregationRecordDetails scoreAggregationRecordDetails,
             ScoredDataReaderViewer scoredDataReaderViewer) {
 
-        // Extract the context and its contribution ratio.
-        MultiKeyFeature context = entry.getKey();
+        // Extract the tuple and its contribution ratio.
+        MultiKeyFeature tuple = entry.getKey();
         double contributionRatio = entry.getValue();
-        // Calculate the exact time range of the underlying scored records with this context.
+        // Calculate the exact time range of the underlying scored records with this tuple.
         TimeRange superTimeRange = scoreAggregationRecordDetails.getTimeRange();
         String scoredRecordAdeEventType = scoreAggregationRecordDetails.getScoredRecordAdeEventType();
+        MultiKeyFeature context = scoreAggregationRecordDetails.getContextFieldNameToValueMap();
         TimeRange subTimeRange = new TimeRange(
-                scoredDataReaderViewer.getFirstStartInstant(superTimeRange, context, scoredRecordAdeEventType),
-                scoredDataReaderViewer.getLastStartInstant(superTimeRange, context, scoredRecordAdeEventType));
+                scoredDataReaderViewer.getFirstStartInstant(superTimeRange, scoredRecordAdeEventType, context, tuple),
+                scoredDataReaderViewer.getLastStartInstant(superTimeRange, scoredRecordAdeEventType, context, tuple));
         // Create a new Contributor instance.
-        return new Contributor(context, contributionRatio, subTimeRange);
+        return new Contributor(tuple, contributionRatio, subTimeRange);
     }
 }
