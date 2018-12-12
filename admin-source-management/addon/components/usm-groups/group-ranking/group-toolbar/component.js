@@ -67,6 +67,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
       this.send('saveGroupRanking', {
         onSuccess: () => {
           this.send('success', 'adminUsm.groupRankingWizard.rankingSavedSuccessful');
+          this.get('transitionToClose')();
         },
         onFailure: () => {
           this.send('failure', 'adminUsm.groupRankingWizard.rankingSavedFailed');

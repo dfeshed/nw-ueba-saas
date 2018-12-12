@@ -8,6 +8,9 @@
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     padding-left: rsa-whitespace();
+    .rsa-icon {
+      font-size: 16px;
+    }
     .apply-policy-step-inner {
       width: 50px;
     }
@@ -25,6 +28,9 @@
         padding-bottom: rsa-whitespace(more);
         table {
           width: 650px;
+          tr {
+            border-bottom: 1px solid border-color(primary, dark);
+          }
           .table-cell-text {
             text-overflow: ellipsis;
             overflow-wrap: break-word;
@@ -37,8 +43,9 @@
           }
           td {
             padding-top: rsa-whitespace();
-            padding-right: rsa-whitespace();
+            padding-right: rsa-whitespace(less);
             padding-left: rsa-whitespace();
+            padding-bottom: rsa-whitespace(less);
           }
         }
       }

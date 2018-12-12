@@ -1,11 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
+import { patchFlash } from '../../../../../helpers/patch-flash';
+// import { throwSocket } from '../../../../../helpers/patch-socket';
 
 let setState;
 
@@ -71,19 +73,32 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The publish-button button appears in the DOM and is enabled');
   });
 
-  test('Toolbar top ranking button test fron second atep and selected group', async function(assert) {
+  test('Toolbar top ranking button test fron second atep, selected group and publish', async function(assert) {
+    const done = assert.async();
     const state = new ReduxDataHelper(setState)
       .groupWiz()
       .groupRankingWithData()
       .selectGroupRanking('Zebra 001')
       .build();
     this.set('step', state.usm.groupWizard.rankingSteps[1]);
-    await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step}}`);
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+    });
+    await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step transitionToClose=(action transitionToClose)}}`);
+    await settled();
     assert.equal(findAll('.reset-ranking-button:not(.is-disabled)').length, 1, 'The reset-ranking-button button appears in the DOM and is enabled');
     assert.equal(findAll('.top-ranking-button:not(.is-disabled)').length, 1, 'The top-ranking-button button appears in the DOM and is enabled');
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The publish-button button appears in the DOM and is enabled');
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.groupRankingWizard.rankingSavedSuccessful');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+    const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
+    await click(savePublishBtnEl);
   });
-
 
 });
 
