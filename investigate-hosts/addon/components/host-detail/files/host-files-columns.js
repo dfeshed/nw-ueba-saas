@@ -99,7 +99,7 @@ const defaultColumns = [
     'field': 'fileProperties.size',
     'title': 'Size',
     'label': 'investigateHosts.files.fields.size',
-    'disableSort': true,
+    'disableSort': false,
     'format': 'SIZE',
     'width': 65
   },

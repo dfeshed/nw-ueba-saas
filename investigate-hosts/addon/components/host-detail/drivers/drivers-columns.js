@@ -27,7 +27,7 @@ const defaultColumns = [
     'field': 'fileProperties.fileStatus',
     'title': 'File Status',
     'label': 'investigateHosts.files.fields.fileStatus',
-    'disableSort': true
+    'disableSort': false
   },
   {
     field: 'signature',

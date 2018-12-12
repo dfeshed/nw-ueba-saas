@@ -280,8 +280,11 @@ page.investigate-files-engine {
       left: 0;
     }
   }
-  .right-zone .risk-properties {
-    height: calc(100% - 100px);
+  .right-zone {
+    height: 100%;
+    .risk-properties {
+      height: calc(100% - 100px);
+    }
   }
   .filter-wrapper .filter-controls .noUi-connects .noUi-connect{
     background-color: background-color(secondary, dark);
