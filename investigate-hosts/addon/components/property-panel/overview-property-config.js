@@ -85,7 +85,8 @@ export default [
       },
       {
         field: 'machineIdentity.hardware.totalPhysicalMemory',
-        labelKey: 'machineIdentity.hardware.totalPhysicalMemory'
+        labelKey: 'machineIdentity.hardware.totalPhysicalMemory',
+        format: 'SIZE'
       },
       {
         field: 'machineIdentity.hardware.manufacturer',

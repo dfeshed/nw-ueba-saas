@@ -172,7 +172,8 @@ module('Unit | Reducers | process', function() {
         size: 1234,
         firstFileName: 'p1',
         fileStatus: 'Neutral',
-        score: 0
+        score: 0,
+        machineOsType: 'windows'
       }
     };
     const result = reducer(
@@ -196,7 +197,8 @@ module('Unit | Reducers | process', function() {
         signature: 'signed',
         size: 1234,
         fileStatus: 'Neutral',
-        score: 0
+        score: 0,
+        machineOsType: 'windows'
       }
     ];
     assert.deepEqual(result.selectedProcessList, expectedResult);
@@ -216,7 +218,8 @@ module('Unit | Reducers | process', function() {
             checksumSha256: '46965656dffsdf664',
             checksumMd5: '89676969',
             checksumSha1: '9798796986',
-            downloadInfo: { status: true }
+            downloadInfo: { status: true },
+            machineOsType: 'windows'
           },
           pid: 1,
           parentPid: 0,
@@ -235,7 +238,8 @@ module('Unit | Reducers | process', function() {
             checksumSha256: '89484fgfdgr546488',
             checksumMd5: '6789676969',
             checksumSha1: '789798796986',
-            downloadInfo: { status: true }
+            downloadInfo: { status: true },
+            machineOsType: 'windows'
           },
           pid: 2,
           parentPid: 1,
@@ -263,7 +267,8 @@ module('Unit | Reducers | process', function() {
         signature: 'signed',
         size: 1234,
         fileStatus: 'Neutral',
-        score: 0
+        score: 0,
+        machineOsType: 'windows'
       },
 
       {
@@ -282,7 +287,8 @@ module('Unit | Reducers | process', function() {
         signature: 'unsigned',
         size: 9234,
         fileStatus: 'Neutral',
-        score: 0
+        score: 0,
+        machineOsType: 'windows'
       }];
     const result = reducer(
       previous,

@@ -82,7 +82,7 @@ const processReducer = handleActions({
   [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, action) => {
     const { selectedProcessList } = state;
     const { pid, name, fileProperties, path, parentPid, vpid, hasChild } = action.payload;
-    const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
+    const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {}, machineOsType } = fileProperties;
 
     let selectedList = [];
     if (selectedProcessList.some((process) => process.pid === pid)) {
@@ -90,6 +90,7 @@ const processReducer = handleActions({
     } else {
       selectedList = [...selectedProcessList,
         {
+          machineOsType,
           downloadInfo,
           checksumSha256,
           checksumSha1,
@@ -117,8 +118,9 @@ const processReducer = handleActions({
     if (selectedProcessList.length < processList.length) {
       return state.set('selectedProcessList', processList.map((process) => {
         const { pid, name, fileProperties, path, parentPid, vpid, hasChild } = process;
-        const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {} } = fileProperties;
+        const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {}, machineOsType } = fileProperties;
         return {
+          machineOsType,
           downloadInfo,
           checksumSha256,
           checksumSha1,
