@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeFileDetails, getAllServices } from 'investigate-files/actions/data-creators';
+import { initializeFileDetails, getAllServices, resetInputData } from 'investigate-files/actions/data-creators';
 import { next } from '@ember/runloop';
 import { lookup } from 'ember-dependency-lookup';
 
@@ -32,6 +32,7 @@ export default Route.extend({
     const request = lookup('service:request');
     next(() => {
       if (sid) {
+        redux.dispatch(resetInputData());
         request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(getAllServices());
         redux.dispatch(initializeFileDetails(checksum));

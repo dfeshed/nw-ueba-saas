@@ -43,3 +43,15 @@ test('The TOGGLE_FILE_PROPERTY_PANEL action sets the state', function(assert) {
   const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_PROPERTY_PANEL });
   assert.deepEqual(result.isFilePropertyPanelVisible, false);
 });
+
+test('The RESET_INPUT_DATA action will reset the state value', function(assert) {
+  const previous = Immutable.from({
+    activeFileDetailTab: 'ANALYSIS',
+    activeDataSourceTab: 'HOSTS',
+    isFilePropertyPanelVisible: false
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
+  assert.deepEqual(result.isFilePropertyPanelVisible, true);
+  assert.deepEqual(result.activeFileDetailTab, 'OVERVIEW');
+  assert.deepEqual(result.activeDataSourceTab, 'FILE_DETAILS');
+});

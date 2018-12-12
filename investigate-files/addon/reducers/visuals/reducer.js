@@ -10,6 +10,8 @@ const visualsInitialState = Immutable.from({
 });
 
 const visuals = handleActions({
+  [ACTION_TYPES.RESET_INPUT_DATA]: (state) => state.merge(visualsInitialState),
+
   [ACTION_TYPES.CHANGE_FILE_DETAIL_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeFileDetailTab', tabName);
   },

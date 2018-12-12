@@ -404,6 +404,8 @@ const _getSelectedFileProperties = (checksum) => {
 
 const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_INDEX, payload: index });
 
+const resetInputData = () => ({ type: ACTION_TYPES.RESET_INPUT_DATA });
+
 export {
   getPageOfFiles,
   sortBy,
@@ -427,5 +429,6 @@ export {
   setDataSourceTab,
   initializeFileDetails,
   setSelectedIndex,
-  triggerFileActions
+  triggerFileActions,
+  resetInputData
 };
