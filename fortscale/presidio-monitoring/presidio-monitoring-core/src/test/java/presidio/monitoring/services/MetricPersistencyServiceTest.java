@@ -97,7 +97,7 @@ public class MetricPersistencyServiceTest {
 
     }
 
-
+    @Ignore
     @Test
     public void testMetricsByNamesAndTime() {
         Instant theDayBefore = Instant.parse("2017-12-02T10:00:00.00Z");
