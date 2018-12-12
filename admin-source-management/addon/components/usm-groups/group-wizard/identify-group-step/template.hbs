@@ -2,6 +2,7 @@
   <hbox class="control">
     {{rsa-form-input 
       class='group-name'
+      tooltip=(t 'adminUsm.groupWizard.nameTooltip')
       tabIndex='1'
       label=(t 'adminUsm.groupWizard.name')
       placeholder=(t 'adminUsm.groupWizard.namePlaceholder')
@@ -16,6 +17,7 @@
     <hbox class="control-with-error">
       {{rsa-form-textarea 
         class='group-description'
+        tooltip=(t 'adminUsm.groupWizard.descTooltip')
         tabIndex='2'
         label=(t 'adminUsm.groupWizard.description')
         placeholder=(t 'adminUsm.groupWizard.descPlaceholder')

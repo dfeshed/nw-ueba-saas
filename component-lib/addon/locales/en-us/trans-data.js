@@ -4007,11 +4007,13 @@ export default {
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
+      nameTooltip: 'A group must have a name. The name must be unique and less than 257 characters',
       nameRequired: 'Group name is required',
       nameExists: 'Group name already exists',
       nameExceedsMaxLength: 'Group name is limited to 256 characters',
       description: 'Group Description',
       descPlaceholder: 'Enter a description',
+      descTooltip: 'Use the optional group description to add more detail about the group. The description can not exceed 8000 characters',
       descriptionExceedsMaxLength: 'Group description is limited to 8000 characters',
       // define-group-step
       defineGroup: 'Define Group',

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, triggerKeyEvent } from '@ember/test-helpers';
+import { render, find, findAll, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | rsa-form-input', function(hooks) {
@@ -80,6 +80,12 @@ module('Integration | Component | rsa-form-input', function(hooks) {
     await render(hbs `{{rsa-form-input placeholder='foo'}}`);
     const [input] = findAll('input');
     assert.equal(input.getAttribute('placeholder'), 'foo');
+  });
+
+  test('Pop tooltip', async function(assert) {
+    await render(hbs `{{rsa-form-input tooltip='foo'}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), 'foo', 'Tooltip form-input pops with correct text');
   });
 
   test('it can be disabled', async function(assert) {

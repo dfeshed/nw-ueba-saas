@@ -33,7 +33,8 @@ input:-webkit-autofill:active {
   position: relative;
 
   .rsa-form-label {
-    display: block;
+    display: flex;
+    align-items: flex-start;
     vertical-align: text-top;
     margin-bottom: rsa-whitespace(least);
     color: $formInputLabelColor;

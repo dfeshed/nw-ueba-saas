@@ -1,5 +1,13 @@
 <span class="rsa-form-label">
-  {{label}}
+  {{#if tooltip}}
+    {{#rsa-text-with-tooltip value=tooltip
+      style="standard"
+      alwaysShow=true}}
+      {{label}}
+    {{/rsa-text-with-tooltip}}
+  {{else}}
+    {{label}}
+  {{/if}}
 </span>
 
 {{input

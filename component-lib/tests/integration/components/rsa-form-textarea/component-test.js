@@ -31,7 +31,7 @@ test('sets the value', function(assert) {
 test('sets the label', function(assert) {
   this.render(hbs `{{rsa-form-textarea label='foo'}}`);
   const label = this.$().find('.rsa-form-label').first();
-  assert.equal(label.text(), 'foo');
+  assert.equal(label.text().trim(), 'foo');
 });
 
 test('it includes the proper classes when isDisabled is true', function(assert) {
@@ -62,6 +62,12 @@ test('it renders a placeholder', function(assert) {
   this.render(hbs `{{rsa-form-textarea placeholder='foo'}}`);
   const textarea = this.$().find('textarea').first();
   assert.equal(textarea.attr('placeholder'), 'foo');
+});
+
+test('it renders the tooltip', function(assert) {
+  this.render(hbs `{{rsa-form-textarea tooltip='foo'}}`);
+  const tooltip = this.$().find('div').first();
+  assert.ok(tooltip.hasClass('tooltip-text'));
 });
 
 test('it can be disabled', function(assert) {
