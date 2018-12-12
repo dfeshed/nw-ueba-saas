@@ -19,9 +19,10 @@ export function sourceCountTooltip(i18n, isDirty, sourceCount, lastPublishedOn) 
 export function getSourceCount(sourceCount) {
   switch (sourceCount) {
     case -1:
+      return 'Updating';
     case -2:
     case -3:
-      return '--';
+      return 'N/A';
     default:
       return sourceCount;
   }

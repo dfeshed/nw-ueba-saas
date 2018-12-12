@@ -116,7 +116,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     await getItems;
     let expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
-      '--',
+      'Updating',
       '-1 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
@@ -125,7 +125,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
-      '--',
+      'N/A',
       '-2 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(),
@@ -134,7 +134,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
-      '--',
+      'N/A',
       '-3 count is as expected');
     await triggerEvent('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[2].innerText.trim(),

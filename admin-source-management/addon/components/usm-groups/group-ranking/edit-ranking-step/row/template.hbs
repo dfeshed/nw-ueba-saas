@@ -15,15 +15,14 @@
   {{/each-in}}
 </td>
 <td class="n-sources-cell">
-  <div class="table-cell-text">
-    {{#if srcCountTooltip}}
-      {{#rsa-text-with-tooltip value=srcCountTooltip
-        style="standard"
-        alwaysShow=true}}
-        {{srcCount}}
-      {{/rsa-text-with-tooltip}}
-    {{else}}
-      {{srcCount}}
-    {{/if}}
-  </div>
+  {{#if srcCountTooltip}}
+    {{#rsa-text-with-tooltip value=srcCountTooltip
+      style="standard"
+      alwaysShow=true}}
+      <div class="status-nosource-count">{{srcCount}}</div>
+    {{/rsa-text-with-tooltip}}
+  {{else}}
+    <div class="table-cell-text">{{srcCount}}</div>
+  {{/if}}
+  
 </td>

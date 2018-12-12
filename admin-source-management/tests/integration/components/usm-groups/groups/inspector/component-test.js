@@ -125,7 +125,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
       'Sources included if\nany\nof the following criteria are met:',
       'expected ANY conjunction property');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .count')[0].textContent.trim(), '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].textContent.trim(), 'Updating', 'source count shows as expected');
     assert.equal(findAll('.usm-groups-inspector .count-desc')[0].textContent.trim(), `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 
@@ -211,7 +211,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .lastModifiedBy').length, 0, 'last updated by is missing as expected');
     assert.equal(findAll('.usm-groups-inspector .lastPublishedOn').length, 0, 'last published on is missing as expected');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 'N/A', 'source count shows as expected');
     assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 
@@ -256,7 +256,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
-    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, '--', 'source count shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .count')[0].innerText, 'N/A', 'source count shows as expected');
     assert.equal(findAll('.usm-groups-inspector .count-desc')[0].innerText, `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 

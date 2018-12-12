@@ -44,10 +44,11 @@ module('Unit | Utils | utils/groups-util', function(hooks) {
     assert.equal(actualCount, expectedCount, 'expected unpublished edit and published count');
 
     // published with endpoints
-    expectedCount = '--';
+    expectedCount = 'Updating';
     actualCount = getSourceCount(-1);
     assert.equal(actualCount, expectedCount, 'expected published with endpoints count');
 
+    expectedCount = 'N/A';
     // published with no endpoints
     actualCount = getSourceCount(-2);
     assert.equal(actualCount, expectedCount, 'expected published with no endpoints count');

@@ -17,6 +17,10 @@
     .status-noassigned-policies {
       color: text-color(primary);
     }
+    .status-nosource-count {
+      color: text-color(primary);
+      display: inline;
+    }
     .usm-groups-toolbar, .usm-policies-toolbar {
       .action-control {
         padding: rsa-whitespace(least);

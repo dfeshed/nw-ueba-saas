@@ -20,6 +20,10 @@
       margin-left: rsa-whitespace(more);
     }
   }
+  .status-nosource-count {
+    color: text-color(primary);
+    display: inline;
+  }
   .edit-ranking-step {
     .loading {
       width: 100%;
