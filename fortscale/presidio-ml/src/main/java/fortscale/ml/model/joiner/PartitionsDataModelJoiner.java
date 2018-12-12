@@ -4,6 +4,8 @@ import fortscale.ml.model.PartitionsDataModel;
 import fortscale.ml.utils.MaxValuesResult;
 import fortscale.ml.utils.PartitionsReduction;
 
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PartitionsDataModelJoiner {
@@ -23,20 +25,29 @@ public class PartitionsDataModelJoiner {
     /**
      * Merge models:
      * secondaryModel represent events that counted as zero-values if do not exist in main model.
-     *
+     * <p>
      * merge the models by adding secondaryModel instants as zero values to the main model, if do not exist.
      * Reduce merged model to max values.
      * (notice: we do not lose max values as a result that the resolution decreased by 2 in modelBuilder step util we get enough values.)
      *
-     * @param model        main model
+     * @param model          main model
      * @param secondaryModel secondary model
      * @return maxValuesResult
      */
     public MaxValuesResult joinModels(PartitionsDataModel model, PartitionsDataModel secondaryModel) {
-        Map<Long, Double> instantToValueMap = model.getInstantToValue();
+        Map<Long, Double> instantToValueMap = new HashMap<>();
+        Duration instantStep;
+        if (model != null) {
+            instantToValueMap = model.getInstantToValue();
+            instantStep = model.getInstantStep();
+        } else {
+            instantStep = secondaryModel.getInstantStep();
+        }
+
         for (Map.Entry<Long, Double> entry : secondaryModel.getInstantToValue().entrySet()) {
             instantToValueMap.putIfAbsent(entry.getKey(), 0D);
         }
-        return PartitionsReduction.reducePartitionsMapToMaxValues(instantToValueMap, model.getInstantStep(), resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples, minResolution);
+
+        return PartitionsReduction.reducePartitionsMapToMaxValues(instantToValueMap, instantStep, resolutionStep, partitionsResolutionInSeconds, minNumOfMaxValuesSamples, minResolution);
     }
 }

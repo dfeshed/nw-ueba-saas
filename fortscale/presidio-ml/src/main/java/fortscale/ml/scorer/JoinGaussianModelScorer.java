@@ -53,7 +53,7 @@ public class JoinGaussianModelScorer extends GaussianModelScorer {
         Model model = getModel(adeRecordReader, getModelName(), getContextFieldNames());
         Model secondaryModel = getModel(adeRecordReader, secondaryModelName, secondaryModelContextFieldNames);
 
-        if (!(model instanceof PartitionsDataModel && secondaryModel instanceof PartitionsDataModel)) {
+        if ((model != null && !(model instanceof PartitionsDataModel)) && !(secondaryModel instanceof PartitionsDataModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".joinModels expects to get models of type " + PartitionsDataModel.class.getSimpleName());
         }
