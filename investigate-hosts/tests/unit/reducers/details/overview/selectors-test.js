@@ -305,6 +305,7 @@ test('getPoliciesPropertyData', function(assert) {
         },
         policyDetails: {
           evaluatedTime: '2018-11-19T09:16:35.969+0000',
+          message: 'error message',
           policy: {
             'edrPolicy': {
               'agentMode': 'FULL_MONITORING',
@@ -342,6 +343,7 @@ test('getPoliciesPropertyData', function(assert) {
 
   assert.equal(result1.policyStatus, 'Updated');
   assert.equal(result1.evaluatedTime, '2018-11-19T09:16:35.969+0000');
+  assert.equal(result1.message, 'error message');
   assert.deepEqual(result1.edrPolicy, {
     'agentMode': 'FULL_MONITORING',
     'transportConfig': {
