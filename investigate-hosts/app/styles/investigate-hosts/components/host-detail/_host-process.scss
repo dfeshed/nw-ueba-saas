@@ -32,6 +32,9 @@
   }
   .file-actionbar {
     display: inline-flex;
+    .rsa-form-button i {
+      margin-right: 0;
+    }
   }
 }
 .rsa-data-table-header {
@@ -93,6 +96,9 @@
     min-height: 100%;
     .rsa-header {
       height: 99px;
+      .close-zone {
+        padding-top: 1.5rem;
+      }
     }
 
     .rsa-nav-tab {

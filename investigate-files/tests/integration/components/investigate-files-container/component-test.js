@@ -148,7 +148,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.files-body').length, 0, 'file list is not rendered');
-    assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');
+    assert.equal(findAll('.error-page').length, 2, 'endpoint server is offline');
   });
 
   test('it renders file list when endpointserver is online', async function(assert) {
@@ -198,12 +198,13 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   });
   test('it shows the loading indicator certificate loading', async function(assert) {
     new ReduxDataHelper(initState)
-      .isSchemaLoading(true)
+      .certificatesLoadingStatus('wait')
+      .isSchemaLoading(false)
       .endpointServer(endpointServer)
       .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
-    assert.equal(find('.rsa-loader').classList.contains('is-small'), true, 'certificate rsa loader displayed');
+    assert.equal(findAll('.rsa-loader')[1].classList.contains('is-small'), true, 'certificate rsa loader displayed');
   });
   test('Certificate view hide and show', async function(assert) {
     new ReduxDataHelper(initState)
@@ -212,9 +213,9 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
-    assert.equal(findAll('.certificates-container').length, 0, 'certificate view hidden');
     await click('.view-certificate-button');
-    assert.equal(findAll('.certificates-container').length, 1, 'certificate view hidden');
+    const state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.certificate.list.isCertificateView, true, 'Certificate view is closed');
   });
   test('it closes the right panel on changing the service', async function(assert) {
     const { files: { schema: { schema } } } = files;

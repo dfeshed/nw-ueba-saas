@@ -1,7 +1,5 @@
 <div class='certificate-view {{if isCertificateView 'is-show-certificate'}}'>
-  {{#if isCertificateView}}
-    {{certificates-container}}
-  {{/if}}
+  {{certificates-container}}
 </div>
 {{#rsa-page-layout showRightZone=false onClose=(action 'onPanelClose') as |layout|}}
   {{#layout.left as |leftPanel|}}

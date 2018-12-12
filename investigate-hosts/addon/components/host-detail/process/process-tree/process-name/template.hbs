@@ -4,7 +4,7 @@
       {{rsa-icon name="arrow-down-12"}}
     </span>
   {{/if}}
-  <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
+  <span title="{{t 'investigateHosts.process.toolTip.openProcessDetails'}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
     {{#link-to 'hosts' (query-params tabName='PROCESS' subTabName='process-details' pid=item.pid ) bubbles=false}}
       <label >{{item.name}}</label>
     {{/link-to}}

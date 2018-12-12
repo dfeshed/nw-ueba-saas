@@ -1,8 +1,18 @@
 import * as ACTION_TYPES from './types';
 import { Certificates } from './fetch';
 import { debug } from '@ember/debug';
+import { resetFilters } from 'investigate-shared/actions/data-creators/filter-creators';
 
-const toggleCertificateView = () => ({ type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
+const toggleCertificateView = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
+    const { isCertificateView } = getState().certificate.list;
+    if (isCertificateView) {
+      dispatch(resetFilters('CERTIFICATE'));
+      dispatch(getFirstPageOfCertificates());
+    }
+  };
+};
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const getCertificates = () => {

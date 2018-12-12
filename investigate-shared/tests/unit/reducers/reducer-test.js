@@ -76,6 +76,7 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     const result = reducer(previous, { type: ACTION_TYPES.RESET_FILTER });
     assert.equal(result.selectedFilter.id, 1);
     assert.equal(result.selectedFilter.criteria.expressionList.length, 0);
+    assert.equal(result.expressionList.length, 0);
   });
 });
 
