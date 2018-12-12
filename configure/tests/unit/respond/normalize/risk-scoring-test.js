@@ -1,5 +1,4 @@
 import { module, test } from 'qunit';
-import riskScoring from '../../../data/subscriptions/risk/score/settings/findAll/data';
 import { denormalizeRiskScoringSettings, normalizeRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/normalize';
 
 module('Unit | Utility | Respond Risk Scoring Normalize');
@@ -93,7 +92,20 @@ test('denormalize will transform settings to array of key values', function(asse
     }
   });
 
-  assert.deepEqual(result, riskScoring);
+  const expected = [
+    {
+      type: 'HOST',
+      threshold: 75,
+      timeWindow: '1d'
+    },
+    {
+      type: 'FILE',
+      threshold: 80,
+      timeWindow: '24h'
+    }
+  ];
+
+  assert.deepEqual(result, expected);
 });
 
 test('denormalize will not explode when incoming settings are empty or undefined', function(assert) {
@@ -125,12 +137,12 @@ test('denormalize will not explode when incoming settings are incomplete', funct
 
   assert.deepEqual(result, [
     {
-      type: 'undefined',
+      type: 'UNDEFINED',
       threshold: 0,
       timeWindow: ''
     },
     {
-      type: 'file',
+      type: 'FILE',
       threshold: 0,
       timeWindow: ''
     }

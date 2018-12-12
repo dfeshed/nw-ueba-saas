@@ -75,11 +75,11 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
       assert.equal(modelName, 'risk-scoring-settings');
       assert.deepEqual(query, {
         data: [{
-          type: 'host',
+          type: 'HOST',
           threshold: 75,
           timeWindow: '1h'
         }, {
-          type: 'file',
+          type: 'FILE',
           threshold: 80,
           timeWindow: '24h'
         }]

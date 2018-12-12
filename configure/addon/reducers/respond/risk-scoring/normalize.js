@@ -2,8 +2,8 @@ export const normalizeRiskScoringSettings = (data) => {
   return data && data.reduce((result, { type, threshold, timeWindow }) => {
     const [ , timeWindowValue, timeWindowUnit ] = timeWindow && timeWindow.match && timeWindow.match(/(\d+)(.*)/) || ['', '', ''];
     const thresholdValue = threshold ? `${threshold}` : '';
-    const typeValue = type && type.toLowerCase();
-    result[typeValue] = {
+    const typeLower = type && type.toLowerCase();
+    result[typeLower] = {
       threshold: thresholdValue,
       timeWindow: timeWindowValue,
       timeWindowUnit
@@ -19,8 +19,9 @@ export const denormalizeRiskScoringSettings = (data) => {
     const value = data[type].timeWindow;
     const unit = data[type].timeWindowUnit;
     const timeWindow = value && unit && `${value}${unit}` || '';
+    const typeUpper = type && type.toUpperCase();
     return {
-      type,
+      'type': typeUpper,
       threshold,
       timeWindow
     };
