@@ -26,8 +26,12 @@
         padding: rsa-whitespace(least);
         display: inline-block;
       }
-      .groups-create-new-button, .policies-create-new-button {
-        padding-right: rsa-whitespace(more);
+      .divider {
+        @include border-right(1px, solid, primary);
+        height: 2rem;
+        margin-top: rsa-whitespace(least);
+        margin-left: rsa-whitespace() - rsa-whitespace(least);
+        margin-right: rsa-whitespace() - rsa-whitespace(least);
       }
     }
     .inline-csv-list {

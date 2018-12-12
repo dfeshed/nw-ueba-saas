@@ -95,15 +95,15 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     assert.equal(findAll('.rsa-data-table-header-cell').length, 7, 'Returned expected header rows of the datatable');
     assert.equal(findAll('.rsa-data-table-body-row').length, 14, 'Returned expected number of rows of the datatable');
 
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
       'Awesome! 012 of group group_012', 'row1 description value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
       'Basketball 011 of group group_011', 'row2 description value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
       'Cat Woman 010 of group group_010', 'row3 description value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(10) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(10) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
       'Volleyball 005 of group group_005', 'row10 description value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(12) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(12) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
       'Xylaphone 003 of group group_003', 'row12 description value is as expected');
   });
 
@@ -115,42 +115,42 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     await render(hbs`{{usm-groups/groups}}`);
     await getItems;
     let expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       'Updating',
       '-1 count is as expected');
-    await triggerEvent('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(1) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
       expectedSrcCount.string,
       '-1 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       'N/A',
       '-2 count is as expected');
-    await triggerEvent('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(),
       expectedSrcCount.string,
       '-2 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       'N/A',
       '-3 count is as expected');
-    await triggerEvent('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(13) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[2].innerText.trim(),
       expectedSrcCount.string,
       '-3 count tooltip is as expected');
 
     expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       30,
       'unpublished edit count is as expected');
-    await triggerEvent('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(7) .tooltip-text', 'mouseover');
+    await triggerEvent('.rsa-data-table-body-row:nth-of-type(14) .rsa-data-table-body-cell:nth-of-type(3) .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(),
       expectedSrcCount.string,
       'unpublished edit count tooltip is as expected');
 
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(7)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       10,
       'published and synced count is as expected');
     assert.ok(document.querySelectorAll('.tool-tip-value').length === 4, 'No tooltip expected for normal count');
@@ -162,9 +162,9 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     const getItems = waitForReduxStateChange(redux, 'usm.groups.items');
     await render(hbs`{{usm-groups/groups}}`);
     await getItems;
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(6)')[0].innerText.trim(),
       'N/A', 'row3 source type value is as expected');
-    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(5)')[0].innerText.trim(),
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(3) .rsa-data-table-body-cell:nth-of-type(4)')[0].innerText.trim(),
       'N/A', 'row3 policies applied value is as expected');
   });
 });

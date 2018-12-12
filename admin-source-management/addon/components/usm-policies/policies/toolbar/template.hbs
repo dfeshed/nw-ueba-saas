@@ -7,6 +7,7 @@
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
+  <span class="divider"></span>
   <div class="action-control policies-publish-button">
     {{#rsa-button-with-confirmation 
       title=(t 'adminUsm.policies.modals.publishPolicies.title')
@@ -17,6 +18,14 @@
       onConfirm=(action 'handlePublishPolicies')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
     {{/rsa-button-with-confirmation}}
+  </div>
+  <div class="action-control policies-edit-button">
+    {{#link-to 'policy-wizard' selectedEditItem}}
+      {{#rsa-form-button
+        isDisabled=cannotEditPolicies}}
+        {{t 'adminUsm.button.edit'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
   </div>
   <div class="action-control policies-delete-button">
     {{#rsa-button-with-confirmation
@@ -29,13 +38,5 @@
       onConfirm=(action 'handleDeletePolicies')}}
       {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
-  </div>
-  <div class="action-control policies-edit-button">
-    {{#link-to 'policy-wizard' selectedEditItem}}
-      {{#rsa-form-button
-        isDisabled=cannotEditPolicies}}
-        {{t 'adminUsm.button.edit'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
   </div>
 </hbox>

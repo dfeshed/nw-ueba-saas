@@ -7,6 +7,14 @@
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
+  <div class="action-control groups-editRanking-button">
+    {{#link-to 'group-ranking'}}
+      {{#rsa-form-button}}
+        {{t 'adminUsm.button.editRanking'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
+  </div>
+  <span class="divider"></span>
   <div class="action-control groups-publish-button">
     {{#rsa-button-with-confirmation 
       title=(t 'adminUsm.groups.modals.publishGroups.title')
@@ -17,6 +25,14 @@
       onConfirm=(action 'handlePublishGroups')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
     {{/rsa-button-with-confirmation}}
+  </div>
+  <div class="action-control groups-edit-button">
+    {{#link-to 'group-wizard' selectedEditItem}}
+      {{#rsa-form-button
+        isDisabled=cannotEditGroups}}
+        {{t 'adminUsm.button.edit'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
   </div>
   <div class="action-control groups-delete-button">
     {{#rsa-button-with-confirmation
@@ -30,21 +46,4 @@
       {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
   </div>
-  <div class="action-control groups-edit-button">
-    {{#link-to 'group-wizard' selectedEditItem}}
-      {{#rsa-form-button
-        isDisabled=cannotEditGroups}}
-        {{t 'adminUsm.button.edit'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
-  </div>
-  <div class="action-control groups-editRanking-button">
-    {{#link-to 'group-ranking'}}
-      {{#rsa-form-button}}
-        {{t 'adminUsm.button.editRanking'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
-  </div>
-
-
 </hbox>

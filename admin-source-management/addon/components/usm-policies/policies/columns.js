@@ -9,24 +9,10 @@ export default [
     disableSort: true
   },
   {
-    field: 'sourceType',
-    title: 'adminUsm.policies.list.sourceType',
-    width: '15%',
-    dataType: 'text',
-    visible: true
-  },
-  {
     field: 'name',
     title: 'adminUsm.policies.list.name',
     width: '15%',
     dataType: 'text',
-    visible: true
-  },
-  {
-    field: 'publishStatus',
-    title: 'adminUsm.policies.list.publishStatus',
-    width: '15%',
-    dataType: 'icon',
     visible: true
   },
   {
@@ -41,6 +27,20 @@ export default [
     title: 'adminUsm.policies.list.description',
     width: '20%',
     dataType: 'text',
+    visible: true
+  },
+  {
+    field: 'sourceType',
+    title: 'adminUsm.policies.list.sourceType',
+    width: '15%',
+    dataType: 'text',
+    visible: true
+  },
+  {
+    field: 'publishStatus',
+    title: 'adminUsm.policies.list.publishStatus',
+    width: '15%',
+    dataType: 'icon',
     visible: true
   }
 ];
