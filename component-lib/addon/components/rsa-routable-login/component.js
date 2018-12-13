@@ -167,12 +167,12 @@ export default Component.extend({
     });
 
     const session = this.get('session');
-
     if (session) {
       // Calls the custom sa-authenticator app/authenticators/sa-authenticator
       const config = getOwner(this).resolveRegistration('config:environment');
       const auth = config['ember-simple-auth'].authenticate;
 
+      localStorage.removeItem('rsa-x-csrf-token');
       session.authenticate(auth, this.get('username'), this.get('password')).then(
         // Auth succeeded
         () => {

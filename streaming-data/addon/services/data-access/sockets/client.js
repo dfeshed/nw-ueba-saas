@@ -7,6 +7,7 @@
 /* global SockJS */
 /* global Stomp */
 import { run } from '@ember/runloop';
+import { lookup } from 'ember-dependency-lookup';
 
 import EmberObject, { computed } from '@ember/object';
 import RSVP from 'rsvp';
@@ -298,6 +299,8 @@ export default EmberObject.extend({
    */
   init() {
     this._super(...arguments);
+
+    this.headers = {};
     const subscriptions = this.get('subscriptions');
 
     const url = this.get('url');
@@ -305,13 +308,20 @@ export default EmberObject.extend({
       throw ('Invalid socket URL for STOMP client connection.');
     }
 
+    const session = lookup('service:session');
     const csrfToken = localStorage.getItem('rsa-x-csrf-token');
 
     if (!isEmpty(csrfToken)) {
-      this.headers = {
-        'X-CSRF-TOKEN': csrfToken
-      };
+      this.headers['X-CSRF-TOKEN'] = csrfToken;
     }
+
+    if (session) {
+      const accessToken = session.get('persistedAccessToken');
+      if (!isEmpty(accessToken)) {
+        this.headers.authorization = `Bearer ${accessToken}`;
+      }
+    }
+
     const stompClient = Stomp.over(
       new SockJS(url, {}, { transports: ['websocket'] })
     );

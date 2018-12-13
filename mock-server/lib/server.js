@@ -9,6 +9,7 @@ import WebSocket from 'ws';
 import eWs from 'express-ws';
 import chalk from 'chalk';
 import clone from 'clone';
+import cookieParser from 'cookie-parser';
 import contextualActions from '../shared/contextual-actions';
 
 import {
@@ -29,6 +30,8 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
   discoverSubscriptions(subscriptionLocations);
 
   const app = express();
+  app.use(cookieParser());
+
   eWs(app);
 
   // SockJS v1.1.1 sets "withCredentials" XHR attribute to "true" for Cross Origin Resources (XHRCorsObject).
@@ -87,6 +90,9 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
 
     // any combo of the above common usernames/passwords will return successful authentication token
     if (validUserNames.includes(req.body.username) && validPasswords.includes(req.body.password)) {
+      res.cookie('access_token', mockAuthResponse.access_token, {
+        httpOnly: true
+      });
       res.json(mockAuthResponse);
     } else {
       res.status(400);
@@ -96,7 +102,19 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
   app.use('/oauth/token', authRoute);
 
   app.use('/oauth/check', function(req, res) {
-    res.json({});
+    res.cookie('access_token', mockAuthResponse.access_token, {
+      httpOnly: true
+    });
+
+    const cookies = req.cookies;
+    const authCookieString = cookies.access_token;
+
+    if (!authCookieString) {
+      // undefined authCookieString is expected during initial authentication
+      res.send();
+    } else {
+      res.send(mockAuthResponse.access_token);
+    }
   });
 
   _processConfiguredRoutes(routes, app);

@@ -153,16 +153,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   // Resolves the user's roles/authorities from the token
   getRoles() {
-    const authConfig = config['ember-simple-auth'];
-
-    if (authConfig) {
-      const tokenKey = authConfig.accessTokenKey;
-      const token = localStorage.getItem(tokenKey);
-
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        return decodedToken.authorities;
-      }
+    const token = this.get('session.persistedAccessToken');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.authorities;
     }
   },
 
@@ -181,7 +175,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   model({ iframedIntoClassic }) {
-
     // If packager route is from the classic SA then hide the application navigation as this route is mounted in iframe
     if (iframedIntoClassic) {
       $('body').addClass('iframed-into-classic');
@@ -199,6 +192,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     // Resolve the user's roles/authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app
     // no real permissions exist, only user roles.
+
     const roles = this.getRoles();
     this.set('accessControl.authorities', roles);
 

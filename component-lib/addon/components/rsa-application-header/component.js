@@ -2,10 +2,11 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import layout from './template';
 import ContextualHelp from '../../mixins/contextual-help';
-import getOwner from 'ember-owner/get';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 
 export default Component.extend(ContextualHelp, {
+
+  session: service(),
 
   eventBus: service(),
 
@@ -28,17 +29,10 @@ export default Component.extend(ContextualHelp, {
   didInsertElement() {
     this._super(...arguments);
 
-    const config = getOwner(this).resolveRegistration('config:environment');
-    const authConfig = config['ember-simple-auth'];
-
-    if (authConfig && authConfig.accessTokenKey) {
-      const tokenKey = authConfig.accessTokenKey;
-      const token = localStorage.getItem(tokenKey);
-
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        this.set('username', decodedToken.user_name);
-      }
+    const token = this.get('session.persistedAccessToken');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      this.set('username', decodedToken.user_name);
     }
   },
 

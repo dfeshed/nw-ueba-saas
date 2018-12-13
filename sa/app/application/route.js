@@ -44,7 +44,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
       localStorage.setItem('rsa-post-auth-redirect', window.location.href);
     }
     this._setupUserTimeout();
-    this._super(...arguments);
   },
 
   getLocales() {
@@ -90,7 +89,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
           'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
         },
         data: {
-          access_token: this.get('session').get('data.authenticated.access_token')
+          access_token: this.get('session.persistedAccessToken')
         }
       }).always(() => {
         localStorage.removeItem(csrfKey);

@@ -11,17 +11,15 @@ import fetch from 'component-lib/services/fetch';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import RSVP from 'rsvp';
-import { assign } from '@ember/polyfills';
 import { makeArray } from '@ember/array';
 import OAuth2PasswordGrant from 'ember-simple-auth/authenticators/oauth2-password-grant';
 import csrfToken from '../mixins/csrf-token';
-import oauthToken from '../mixins/oauth-token';
 import moment from 'moment';
 import config from 'ember-get-config';
 
 const { useMockServer, mockServerUrl } = config;
 
-export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
+export default OAuth2PasswordGrant.extend(csrfToken, {
 
   serverTokenEndpoint: '/oauth/token',
 
@@ -34,43 +32,6 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   flashMessages: service(),
 
   i18n: service(),
-
-  _addListeners: function() {
-    const session = this.get('session');
-
-    // when the session invalidates aka 'logout', clean up
-    session.on('invalidationSucceeded', () => {
-      // no longer need to observe changes
-      session.get('session').removeObserver('content.authenticated', this, this._updateTokens);
-
-      const accessTokenKey = this.get('accessTokenKey');
-      const refreshTokenKey = this.get('refreshTokenKey');
-
-      localStorage.removeItem(accessTokenKey);
-      localStorage.removeItem(refreshTokenKey);
-    });
-
-    // make sure the tokens are up to date when refresh occurs
-    session.get('session').addObserver('content.authenticated', this, this._updateTokens);
-
-  }.on('init'),
-
-  _updateTokens() {
-    const { accessTokenKey, refreshTokenKey, session } =
-      this.getProperties('accessTokenKey', 'refreshTokenKey', 'session');
-
-    const authentication = session.get('session.content').authenticated;
-
-    if (authentication) {
-      localStorage.setItem(accessTokenKey, authentication.access_token);
-
-      if (authentication.refresh_token) {
-        localStorage.setItem(refreshTokenKey, authentication.refresh_token);
-      }
-    } else {
-      session.invalidate();
-    }
-  },
 
   _scheduleAccessTokenRefresh(expiresIn, expiresAt) {
     const now = moment.now();
@@ -90,19 +51,23 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   _logoutAndInvalidate() {
     const csrfKey = this.get('csrfLocalstorageKey');
 
-    fetch('/oauth/logout', {
-      credentials: 'same-origin',
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
-      },
-      body: {
-        access_token: this.get('session').get('data.authenticated.access_token')
-      }
-    }).finally(() => {
+    if (csrfKey) {
       localStorage.removeItem(csrfKey);
-      this.get('session').invalidate();
-    });
+
+      fetch('/oauth/logout', {
+        credentials: 'same-origin',
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+        },
+        body: {
+          access_token: this.get('session.persistedAccessToken')
+        }
+      }).finally(() => {
+        this.set('session.persistedAccessToken', null);
+        this.get('session').invalidate();
+      });
+    }
   },
 
   authenticate(identification, password, scope = []) {
@@ -115,7 +80,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       }
       this.makeRequest(serverTokenEndpoint, data).then((response) => {
         run(() => {
-          let { responseJSON } = response;
+          const { responseJSON } = response;
           const { headers } = response;
           const csrfKey = this.get('csrfLocalstorageKey');
 
@@ -145,11 +110,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
             });
           }
 
-          const expiresAt = this._absolutizeExpirationTime(responseJSON.expires_in);
-          this._scheduleAccessTokenRefresh(responseJSON.expires_in, expiresAt, responseJSON.refresh_token);
-          if (!isEmpty(expiresAt)) {
-            responseJSON = assign(responseJSON, { 'expires_at': expiresAt });
-          }
+          this.set('session.persistedAccessToken', responseJSON.access_token);
           resolve(responseJSON);
         });
       }, (xhr) => {
@@ -159,31 +120,22 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   },
 
   restore(data) {
-    return new RSVP.Promise((resolve, reject) => {
-
-      fetch(this.get('checkTokenEndpoint'), { credentials: 'same-origin' }).then((response) => {
-        // Http Status code 401/500 is 'successful'. See https://github.com/github/fetch#caveats
-        if (response.status >= 300) {
-          reject();
-        }
-
-        const now = (new Date()).getTime();
-        const refreshAccessTokens = this.get('refreshAccessTokens');
-        if (!isEmpty(data.expires_at) && data.expires_at < now) {
-          if (refreshAccessTokens) {
-            this._refreshAccessToken(data.expires_in, data.refresh_token).then(resolve, reject);
-          } else {
-            reject();
-          }
-        } else {
-          if (!this._validate(data)) {
+    const csrfKey = this.get('csrfLocalstorageKey');
+    if (csrfKey) {
+      return new RSVP.Promise((resolve, reject) => {
+        fetch(this.get('checkTokenEndpoint'), { credentials: 'include', method: 'GET' }).then((response) => {
+          // Http Status code 401/500 is 'successful'. See https://github.com/github/fetch#caveats
+          if (!this._validate(data) || response.status >= 300) {
             reject();
           } else {
-            resolve(data);
+            response.text().then((token) => {
+              this.set('session.persistedAccessToken', token);
+              resolve(data);
+            });
           }
-        }
-      }).catch(reject);
-    });
+        }).catch(reject);
+      });
+    }
   },
 
   _validate(data) {
