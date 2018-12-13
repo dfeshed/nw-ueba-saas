@@ -2,8 +2,8 @@
   {{#each (get (get changeset.error property) "validation") as |message|}}
     <li test-id="formGroupValidationMessage">{{message}}</li>
   {{else}}
-    <li test-id="formGroupValidationMessage"></li>
+    <li class="blank" test-id="formGroupValidationMessage"></li>
   {{/each}}
 {{else}}
-  <li test-id="formGroupValidationMessage"></li>
+  <li class="blank" test-id="formGroupValidationMessage"></li>
 {{/if}}

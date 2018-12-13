@@ -1,33 +1,51 @@
 .form-group {
-  width:100%;
-  display: table;
-  border-collapse:collapse;
 
   label {
-    padding-top: rsa-whitespace();
     padding-bottom: rsa-whitespace(less);
-    color: text-color(primary, lighter);
+    padding-top: rsa-whitespace();
+    color: text-color(primary, light);
     text-transform: uppercase;
     display: block;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 1px;
+    font-size: .7rem;
+    font-style: normal;
   }
 
   input, .ember-power-select-trigger {
-    font-size: 18px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.45;
+    font-style: normal;
+    padding: 0.5rem;
+    box-sizing: border-box;
     padding-top: rsa-whitespace(least);
     color: text-color(primary, lightest);
-    line-height: 2rem;
     @include border-bottom(1px, solid, primary, light);
   }
 
-  ul, li {
+  ul {
     padding-top: rsa-whitespace(less);
     color: text-color(primary, lightest);
+  }
+
+  li {
+    font-size: .85rem;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5rem;
+    padding-left: 0.5rem;
+
+    &:not(.blank) {
+      padding-bottom: rsa-whitespace(less);
+    }
   }
 
 }
 
 .form-validation {
-  display: table-row;
+
 }
 
 .form-validation.is-invalid .form-group {

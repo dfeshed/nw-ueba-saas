@@ -6,29 +6,33 @@
     {{input.component type="number" min="0" max="100"}}
   {{/form.input}}
 
-  {{#form.input property="file.timeWindow" label=(t (concat labelPrefix 'fileTimeWindow')) as |input|}}
-    {{input.component type="number" min="1" max="24"}}
-  {{/form.input}}
+  <div class="time-window">
+    {{#form.input property="file.timeWindow" label=(t (concat labelPrefix 'fileTimeWindow')) as |input|}}
+      {{input.component type="number" min="1" max="24"}}
+    {{/form.input}}
 
-  {{#form.select property="file.timeWindowUnit" label=(t (concat labelPrefix 'fileTimeWindowUnit')) labelHidden=true as |select|}}
-    {{#select.component options=timeWindowOptions as |unit|}}
-      {{t (concat unitPrefix 'timeUnits.' unit)}}
-    {{/select.component}}
-  {{/form.select}}
+    {{#form.select property="file.timeWindowUnit" label=(t (concat labelPrefix 'fileTimeWindowUnit')) labelHidden=true as |select|}}
+      {{#select.component options=timeWindowOptions as |unit|}}
+        {{t (concat unitPrefix 'timeUnits.' unit)}}
+      {{/select.component}}
+    {{/form.select}}
+  </div>
 
   {{#form.input property="host.threshold" label=(t (concat labelPrefix 'hostThreshold')) as |input|}}
     {{input.component type="number" min="0" max="100"}}
   {{/form.input}}
 
-  {{#form.input property="host.timeWindow" label=(t (concat labelPrefix 'hostTimeWindow')) as |input|}}
-    {{input.component type="number" min="1" max="24"}}
-  {{/form.input}}
+  <div class="time-window">
+    {{#form.input property="host.timeWindow" label=(t (concat labelPrefix 'hostTimeWindow')) as |input|}}
+      {{input.component type="number" min="1" max="24"}}
+    {{/form.input}}
 
-  {{#form.select property="host.timeWindowUnit" label=(t (concat labelPrefix 'hostTimeWindowUnit')) labelHidden=true as |select|}}
-    {{#select.component options=timeWindowOptions as |unit|}}
-      {{t (concat unitPrefix 'timeUnits.' unit)}}
-    {{/select.component}}
-  {{/form.select}}
+    {{#form.select property="host.timeWindowUnit" label=(t (concat labelPrefix 'hostTimeWindowUnit')) labelHidden=true as |select|}}
+      {{#select.component options=timeWindowOptions as |unit|}}
+        {{t (concat unitPrefix 'timeUnits.' unit)}}
+      {{/select.component}}
+    {{/form.select}}
+  </div>
 
   <hbox class="form-save-controls">
     {{form.save}}
