@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
+import policyAPI from 'admin-source-management/actions/api/policy-api';
 import { handleError } from './utils-creators';
 import {
   selectedDeleteItems,
@@ -11,6 +12,16 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 const initializeGroups = () => {
   return (dispatch) => {
     dispatch(fetchGroups());
+
+    // init policy list
+    dispatch(fetchPolicyList());
+  };
+};
+
+const fetchPolicyList = () => {
+  return {
+    type: ACTION_TYPES.FETCH_POLICY_LIST,
+    promise: policyAPI.fetchPolicyList()
   };
 };
 
@@ -23,10 +34,9 @@ const initializeGroups = () => {
 const fetchGroups = (callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const pageNumber = 0;
-    const expressionList = [];
     const { /* itemsFilters, */ sortField, isSortDescending } = getState().usm.groups;
-    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
-    // const { expressionList } = getState().files.filter;
+    // const { systemFilter, sortField, isSortDescending, pageNumber } = getState().usm.groupsFilter;
+    const { expressionList } = getState().usm.groupsFilter;
     dispatch({
       type: ACTION_TYPES.FETCH_GROUPS,
       promise: groupsAPI.fetchGroups(pageNumber, { sortField, isSortDescending }, expressionList),

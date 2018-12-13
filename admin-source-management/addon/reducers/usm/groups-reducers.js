@@ -18,6 +18,9 @@ initialState.isSortDescending = false;
 delete initialState.defaultDateRangeTypeName;
 delete initialState.defaultDateFilterField;
 delete initialState.hasCustomDateRestriction;
+// the summary list of policies objects to build the source type filter
+initialState.policyList = [];
+initialState.policyListStatus = null; // wait, complete, error
 
 // Mechanism to persist some of the state to local storage
 // This function will curry a given reducer (function), enabling it to persist its resulting state to a given
@@ -67,6 +70,26 @@ export default reduxActions.handleActions({
           itemsTotal: action.payload.data.totalItems,
           itemsStatus: 'complete',
           itemsRequest: action.payload.request
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.FETCH_POLICY_LIST]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          policyList: [],
+          policyListStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('policyListStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policyList: action.payload.data,
+          policyListStatus: 'complete'
         });
       }
     })

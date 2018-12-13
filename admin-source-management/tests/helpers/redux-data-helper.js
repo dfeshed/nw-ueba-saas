@@ -433,6 +433,16 @@ export default class DataHelper {
     return this;
   }
 
+  groupsPolicyList(policyList) {
+    _set(this.state, 'usm.groups.policyList', policyList);
+    return this;
+  }
+
+  groupsPolicyListStatus(status) {
+    _set(this.state, 'usm.groups.policyListStatus', status);
+    return this;
+  }
+
   fetchPolicies() {
     _set(this.state, 'usm.policies.items', policies);
     return this;

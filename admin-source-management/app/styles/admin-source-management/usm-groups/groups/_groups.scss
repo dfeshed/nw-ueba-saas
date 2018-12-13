@@ -1,0 +1,22 @@
+/*
+  We are stuffing rsa-data-filters into the rsa-explorer filters panel,
+  so we need to override width & padding of '.explorer-filters .body {'
+  from 'component-lib/app/styles/component-lib/base/content/rsa-explorer/_filters.scss'
+*/
+/* $footer-height: 25px; */
+/* $footer-bottom: 10px; */
+/* $header-height: 40px; */
+
+.usm-groups {
+  
+    .explorer-filters {
+      
+      .body {
+        /* height: calc(100% - #{$footer-height} - #{$footer-bottom} - #{$header-height} - #{rsa-whitespace(less)}); */
+        height: calc(100% - 40px);
+        padding: 0;
+      }
+  
+    }
+  }
+  

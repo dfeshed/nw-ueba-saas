@@ -15,6 +15,7 @@ const reducerPredicate = (type) => {
 
 export default combineReducers({
   groups,
+  groupsFilter: createFilteredReducer(filters, reducerPredicate('GROUPS')),
   policies,
   policiesFilter: createFilteredReducer(filters, reducerPredicate('POLICIES')),
   policy,

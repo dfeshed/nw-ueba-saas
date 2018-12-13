@@ -92,7 +92,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
       .fetchGroups()
       .selectedGroups(['group_001', 'group_003'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
     const expectedMessage = translation.t('adminUsm.groups.modals.deleteGroups.confirm', { numItems: '2' });
@@ -123,7 +123,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
       .fetchGroups()
       .selectedGroups(['group_001', 'group_003'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
     throwSocket();
@@ -144,7 +144,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
       .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
     const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.confirm', { numItems: '1' });
@@ -175,7 +175,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
       .fetchGroups()
       .selectedGroups(['group_001', 'group_002'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
     throwSocket();

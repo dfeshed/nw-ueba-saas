@@ -114,7 +114,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_003'])
       .build();
-    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
     const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.confirm', { numItems: '2' });
@@ -145,7 +145,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_003'])
       .build();
-    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
     throwSocket();
@@ -166,7 +166,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_002'])
       .build();
-    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
     const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.confirm', { numItems: '2' });
@@ -197,7 +197,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       .fetchPolicies()
       .selectedPolicies(['policy_001', 'policy_002'])
       .build();
-    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
     throwSocket();

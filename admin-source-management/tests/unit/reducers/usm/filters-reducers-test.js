@@ -14,20 +14,22 @@ module('Unit | Reducers | Filters Reducers', function() {
     assert.deepEqual(endState, expectedEndState);
   });
 
-  test('on APPLY_FILTER for POLICIES, expressionList is properly set', function(assert) {
+  test('on APPLY_FILTER for POLICIES, expressionList & selectedFilter are properly set', function(assert) {
+    const expectedExpressionList = [
+      {
+        restrictionType: 'IN',
+        propertyValues: [
+          {
+            value: 'published'
+          }
+        ],
+        propertyName: 'publishStatus'
+      }
+    ];
     const expectedEndState = new ReduxDataHelper()
       .policiesFilter()
-      .policiesFilterExpressionList([
-        {
-          restrictionType: 'IN',
-          propertyValues: [
-            {
-              value: 'published'
-            }
-          ],
-          propertyName: 'publishStatus'
-        }
-      ])
+      .policiesFilterExpressionList(expectedExpressionList)
+      .policiesFilterSelectedFilter({ id: 1, criteria: { expressionList: expectedExpressionList } })
       .build().usm.policiesFilter;
     const action = {
       type: ACTION_TYPES.APPLY_FILTER,

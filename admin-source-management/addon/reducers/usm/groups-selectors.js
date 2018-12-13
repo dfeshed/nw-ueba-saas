@@ -77,3 +77,51 @@ export const hasSelectedPublishItems = createSelector(
     }
   }
 );
+
+// ==================================
+//   filters
+// ==================================
+
+// the summary list of policies objects to build the source type filter
+const availablePolicySourceTypes = createSelector(
+  _groupsState,
+  (_groupsState) => {
+    const { policyList } = _groupsState;
+    const list = [];
+    for (let index = 0; index < policyList.length; index++) {
+      const sourceType = policyList[index].policyType;
+      if (!list.includes(sourceType)) {
+        list.push(sourceType);
+      }
+    }
+    return list;
+  }
+);
+
+const sourceTypeFilterConfig = createSelector(
+  availablePolicySourceTypes,
+  (sourceTypes) => {
+    const config = {
+      name: 'sourceType',
+      label: 'adminUsm.groups.filter.sourceType',
+      listOptions: [],
+      type: 'list'
+    };
+    for (let i = 0; i < sourceTypes.length; i++) {
+      const sourceType = sourceTypes[i];
+      config.listOptions.push({
+        name: sourceType,
+        label: `adminUsm.policyTypes.${sourceType}`
+      });
+    }
+    return config;
+  }
+);
+
+export const filterTypesConfig = createSelector(
+  sourceTypeFilterConfig,
+  (sourceTypeConfig) => {
+    const configs = [sourceTypeConfig];
+    return configs;
+  }
+);

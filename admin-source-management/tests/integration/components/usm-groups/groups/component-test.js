@@ -34,6 +34,33 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body').length, 1, 'The component appears in the DOM');
   });
 
+  test('Groups filter panel and data-filters rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.groups.items');
+    await render(hbs`{{usm-groups/groups}}`);
+    await getItems;
+    assert.equal(findAll('.usm-groups-filter').length, 1, 'Groups filter panel rendered');
+    assert.equal(findAll('.usm-groups-filter .rsa-data-filters').length, 1, 'data-filters rendered within groups filter panel');
+  });
+
+  test('Source Type filter rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.groups.items');
+    const fetchPolicyList = waitForReduxStateChange(redux, 'usm.groups.policyList');
+    await render(hbs`{{usm-groups/groups}}`);
+    await getItems;
+    await fetchPolicyList;
+    const translation = this.owner.lookup('service:i18n');
+    const expectedFilterText = translation.t('adminUsm.groups.filter.sourceType');
+    const exOptLen = 2;
+    // source type will be the first list-filter
+    const [el] = findAll('.filter-controls .list-filter');
+    assert.equal(el.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
+    assert.equal(el.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
+  });
+
   test('Show group list', async function(assert) {
     assert.expect(2);
     setState('name', false);
