@@ -4,10 +4,11 @@ import com.mongodb.*;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
-import fortscale.utils.store.StoreManagerAware;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,9 +26,10 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class ModelStore implements StoreManagerAware {
+public class ModelStore implements ModelReader, StoreManagerAware {
     private static final Logger logger = Logger.getLogger(ModelStore.class);
     private static final String COLLECTION_NAME_PREFIX = "model_";
+    private static final String ModelDAO_FEILD_NAME = "ModelDAO";
 
     private MongoTemplate mongoTemplate;
     private StoreManager storeManager;
@@ -65,6 +67,13 @@ public class ModelStore implements StoreManagerAware {
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
         return mongoTemplate
                 .getCollection(getCollectionName(modelConf))
+                .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+    }
+
+    public List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant) {
+        Query query = new Query()
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
+        return mongoTemplate.getCollection(getCollectionName(modelConf))
                 .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
     }
 
@@ -208,6 +217,26 @@ public class ModelStore implements StoreManagerAware {
         }
     }
 
+
+    public List<ModelDAO> readRecords(ModelConf modelConf, Instant eventEpochTime, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead) {
+        String collectionName = getCollectionName(modelConf);
+        Date latestEndDate = Date.from(eventEpochTime);
+
+        Aggregation agg = newAggregation(
+                match(where(ModelDAO.END_TIME_FIELD).lte(latestEndDate)),
+                match(where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds)),
+                Aggregation.sort(Direction.ASC, ModelDAO.END_TIME_FIELD),
+                Aggregation.skip((long)numOfItemsToSkip),
+                Aggregation.limit((long)numOfItemsToRead),
+                Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).last("$$ROOT").as(ModelDAO_FEILD_NAME),
+                Aggregation.project(ModelDAO_FEILD_NAME).andExclude("_id")
+        );
+
+        AggregationResults<DBObject> result = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+        return result.getMappedResults().stream()
+                .map(e -> mongoTemplate.getConverter().read(ModelDAO.class,(BasicDBObject) e.get(ModelDAO_FEILD_NAME)) )
+                .collect(Collectors.toList());
+    }
 
     /**
      * Remove models that older than ttlOldestAllowedModel

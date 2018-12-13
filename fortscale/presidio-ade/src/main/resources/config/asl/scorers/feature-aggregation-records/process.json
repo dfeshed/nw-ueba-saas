@@ -94,10 +94,13 @@
               "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
-              "type": "gaussian-model-scorer",
+              "type": "join-gaussian-model-scorer",
               "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly.gaussian",
               "model": {
                 "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly"
+              },
+              "secondary-model": {
+                "name": "numberOfEvents.userId.process.hourly"
               },
               "additional-models": [
                 {

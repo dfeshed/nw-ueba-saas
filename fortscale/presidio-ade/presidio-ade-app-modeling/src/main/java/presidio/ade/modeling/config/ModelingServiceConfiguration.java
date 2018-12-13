@@ -42,7 +42,7 @@ import java.util.Collection;
 		ModelingServiceCommands.class,
 		StoreManagerConfig.class,
 		ModelingServiceMetricsContainerConfig.class,
-		MetricContainerFlusherConfig.class,
+		MetricContainerFlusherConfig.class
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")

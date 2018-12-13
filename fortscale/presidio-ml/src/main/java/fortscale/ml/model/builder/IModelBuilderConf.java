@@ -22,7 +22,8 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = IndicatorScoreMappingModelBuilderConf.class, name = IndicatorScoreMappingModelBuilderConf.INDICATOR_SCORE_MAPPING_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = GaussianPriorModelBuilderConf.class, name = GaussianPriorModelBuilderConf.GAUSSIAN_PRIOR_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = PersonalThresholdModelBuilderConf.class, name = PersonalThresholdModelBuilderConf.PERSONAL_THRESHOLD_MODEL_BUILDER),
-		@JsonSubTypes.Type(value = WeightsModelBuilderConf.class,name = WeightsModelBuilderConf.WEIGHTS_MODEL_BUILDER)
+		@JsonSubTypes.Type(value = WeightsModelBuilderConf.class,name = WeightsModelBuilderConf.WEIGHTS_MODEL_BUILDER),
+		@JsonSubTypes.Type(value = PartitionsHistogramModelBuilderConf.class,name = PartitionsHistogramModelBuilderConf.INSTANT_TO_VALUE_HISTOGRAM_MODEL_BUILDER)
 })
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public interface IModelBuilderConf extends FactoryConfig {}

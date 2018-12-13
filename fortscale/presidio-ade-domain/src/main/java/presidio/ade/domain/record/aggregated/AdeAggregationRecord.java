@@ -36,7 +36,7 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
 
     public AdeAggregationRecord(Instant startInstant, Instant endInstant, String featureName, Double featureValue,
                                 String featureBucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
-        super(startInstant, endInstant, getAggregatedFeatureContextId(context));
+        super(startInstant, endInstant, buildContextId(context));
         this.featureValue = featureValue;
         this.featureBucketConfName = featureBucketConfName;
         this.context = context;
