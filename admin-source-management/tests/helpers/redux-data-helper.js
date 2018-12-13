@@ -82,6 +82,16 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizDefaultPolicy(defaultPolicy) {
+    _set(this.state, 'usm.policyWizard.policy.defaultPolicy', defaultPolicy);
+    return this;
+  }
+
+  policyWizCreatedOn(createdOn) {
+    _set(this.state, 'usm.policyWizard.policy.createdOn', createdOn);
+    return this;
+  }
+
   policyWizName(name) {
     _set(this.state, 'usm.policyWizard.policy.name', name);
     return this;

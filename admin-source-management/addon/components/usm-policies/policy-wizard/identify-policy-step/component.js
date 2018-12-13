@@ -20,6 +20,8 @@ const stateToComputed = (state) => ({
   selectedSourceType: selectedSourceType(state),
   policyName: policy(state).name,
   policyDescription: policy(state).description,
+  createdOn: policy(state).createdOn,
+  defaultPolicy: policy(state).defaultPolicy,
   nameValidator: nameValidator(state),
   descriptionValidator: descriptionValidator(state)
 });
@@ -47,6 +49,18 @@ const IdentifyPolicyStep = Component.extend({
   description(policyDescription) {
     if (policyDescription) {
       return policyDescription;
+    }
+  },
+
+  @computed('defaultPolicy', 'createdOn')
+  cannotEditSourceType(defaultPolicy, createdOn) {
+    return defaultPolicy || (createdOn > 0);
+  },
+
+  @computed('defaultPolicy')
+  cannotEditPolicyIdentity(defaultPolicy) {
+    if (defaultPolicy) {
+      return defaultPolicy;
     }
   },
 

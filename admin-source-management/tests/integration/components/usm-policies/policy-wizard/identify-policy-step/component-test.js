@@ -38,6 +38,57 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     assert.equal(findAll('.control-with-error .policy-description textarea').length, 1, 'Policy Description input control appears in the DOM');
   });
 
+  test('The policy-name, policy-description, and source-type components are enabled correctly for default policy item', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .policyWizName('test name')
+      .policyWizDescription('test desc')
+      .policyWizDefaultPolicy(true)
+      .policyWizCreatedOn(0)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    assert.equal(findAll('.identify-policy-step').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.source-type .ember-power-select-trigger[aria-disabled=true]').length, 1, 'Source Type power-select control appears in the DOM and is disabled');
+    assert.equal(findAll('.policy-name')[0].classList.contains('is-disabled'), true, 'Policy Name input control appears in the DOM and is disabled');
+    assert.equal(findAll('.policy-description')[0].classList.contains('is-disabled'), true, 'Policy Description input control appears in the DOM and is disabled');
+  });
+
+  test('The policy-name, policy-description, and source-type components are are enabled correctly for non default new policy item', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .policyWizName('test name')
+      .policyWizDescription('test desc')
+      .policyWizDefaultPolicy(false)
+      .policyWizCreatedOn(0)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    assert.equal(findAll('.identify-policy-step').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.source-type .ember-power-select-trigger[aria-disabled=true]').length, 0, 'Source Type power-select control appears in the DOM and is enabled');
+    assert.equal(findAll('.policy-name')[0].classList.contains('is-disabled'), false, 'Policy Name input control appears in the DOM and is enabled');
+    assert.equal(findAll('.policy-description')[0].classList.contains('is-disabled'), false, 'Policy Description input control appears in the DOM and is enabled');
+  });
+
+  test('The policy-name, policy-description, and source-type components are enabled correctly for non default existing policy', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .policyWizName('test name')
+      .policyWizDescription('test desc')
+      .policyWizDefaultPolicy(false)
+      .policyWizCreatedOn(2)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    assert.equal(findAll('.identify-policy-step').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.source-type .ember-power-select-trigger[aria-disabled=true]').length, 1, 'Source Type power-select control appears in the DOM and is disabled');
+    assert.equal(findAll('.policy-name')[0].classList.contains('is-disabled'), false, 'Policy Name input control appears in the DOM and is enabled');
+    assert.equal(findAll('.policy-description')[0].classList.contains('is-disabled'), false, 'Policy Description input control appears in the DOM and is enabled');
+  });
+
   test('The component appears in the DOM with correct values', async function(assert) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');

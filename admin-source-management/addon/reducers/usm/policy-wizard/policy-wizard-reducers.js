@@ -22,7 +22,9 @@ const INITIAL_STATES = {
       description: '',
       dirty: true,
       lastPublishedCopy: null,
-      lastPublishedOn: 0
+      lastPublishedOn: 0,
+      defaultPolicy: false,
+      createdOn: 0
       // policy type specific props will be merged in each time we run:
       // - NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
     },

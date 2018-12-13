@@ -17,9 +17,9 @@ export const isPoliciesLoading = createSelector(
 );
 
 export const selectedEditItem = createSelector(
-  selectedPolicies, policies,
-  (items, all) => {
-    if (isPresent(items) && items.length == 1 && !all.findBy('id', items[0]).defaultPolicy) {
+  selectedPolicies,
+  (items) => {
+    if (isPresent(items) && items.length == 1) {
       const [item] = items;
       return item;
     } else {

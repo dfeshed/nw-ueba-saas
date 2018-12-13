@@ -11,6 +11,7 @@
         options=sourceTypes
         selected=selectedSourceType
         searchField='label'
+        disabled=cannotEditSourceType
         onchange=(action 'handleSourceTypeChange') as |option|
       }}
         {{t option.label}}
@@ -27,6 +28,7 @@
       maxLength=256
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
+      isDisabled=cannotEditPolicyIdentity
       focusOut=(action 'handleNameChange')
       }}
   </hbox>
@@ -40,6 +42,7 @@
         value=description
         maxLength=8000
         isError=descriptionValidator.showError
+        isDisabled=cannotEditPolicyIdentity
         focusOut=(action 'handleDescriptionChange' value='target.value')
       }}
     </hbox>
