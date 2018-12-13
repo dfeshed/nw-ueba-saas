@@ -4,7 +4,7 @@ export default {
   queryFormatToggleLinks: '.query-bar-select-actions a',
   queryFormatFreeFormToggle: '.query-bar-select-actions .freeForm-link',
   queryFormatGuidedToggle: '.query-bar-select-actions .guided-link',
-  queryButton: '.execute-query-button',
+  queryButton: '.execute-query-button button',
 
   // Free Form Selectors
   freeFormQueryBar: '.query-bar-selection.freeForm',

@@ -1,12 +1,17 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import sinon from 'sinon';
+import hbs from 'htmlbars-inline-precompile';
 import { click, find, findAll, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../helpers/vnext-patch';
-
 import PILL_SELECTORS from '../pill-selectors';
+import interactionCreators from 'investigate-events/actions/interaction-creators';
+
+const cancelQuerySpy = sinon.spy(interactionCreators, 'cancelQuery');
+const spys = [ cancelQuerySpy ];
 
 let setState;
 
@@ -16,15 +21,26 @@ module('Integration | Component | query-button', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
+    initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    spys.forEach((s) => s.resetHistory());
+  });
+
+  hooks.after(function() {
+    spys.forEach((s) => s.restore());
   });
 
   test('Button is disabled when the query is not ready', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(false)
+      .isQueryRunning(false)
       .pillsDataEmpty()
       .build();
 
@@ -39,12 +55,48 @@ module('Integration | Component | query-button', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryButtonDisabled).length, 1, 'button should be disabled');
   });
 
+  test('Shows a textual label if query is NOT running', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .hasRequiredValuesToQuery(true)
+      .isQueryRunning(false)
+      .build();
+
+    await render(hbs`{{query-container/query-button}}`);
+    assert.equal(find(PILL_SELECTORS.queryButton).textContent.trim(), 'Query Events', 'displays "query" label');
+  });
+
+  test('Shows a spinner if pills are validating while a query is running', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .hasRequiredValuesToQuery(true)
+      .pillsDataPopulated()
+      .markValidationInProgress(['2'])
+      .isQueryRunning(true)
+      .build();
+
+    await render(hbs`{{query-container/query-button}}`);
+    assert.equal(findAll(PILL_SELECTORS.loadingQueryButton).length, 1, 'displays loading button');
+  });
+
+  test('Shows a textual label if a query can be canceled', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .hasRequiredValuesToQuery(true)
+      .isQueryRunning(true)
+      .build();
+
+    await render(hbs`{{query-container/query-button}}`);
+    assert.equal(find(PILL_SELECTORS.queryButton).textContent.trim(), 'Cancel Query', 'displays "cancel" label');
+  });
+
   test('Calls function to execute query', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)
       .pillsDataEmpty()
+      .isQueryRunning(false)
       .build();
 
     this.set('executeQuery', () => {
@@ -57,30 +109,19 @@ module('Integration | Component | query-button', function(hooks) {
         executeQuery=executeQuery
       }}
     `);
-
     await click(PILL_SELECTORS.queryButton);
   });
 
-  test('Shows a textual label if query is NOT running', async function(assert) {
+  test('Calls action to cancel query', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)
-      .isQueryRunning(false)
+      .pillsDataEmpty()
+      .isQueryRunning(true)
       .build();
 
     await render(hbs`{{query-container/query-button}}`);
-    assert.equal(find(PILL_SELECTORS.queryButton).textContent.trim(), 'Query Events', 'displays textual label');
-  });
-
-  test('Shows a spinner if query is running', async function(assert) {
-    new ReduxDataHelper(setState)
-      .language()
-      .hasRequiredValuesToQuery(true)
-      .isQueryRunning(true)
-      .build()
-      .investigate;
-
-    await render(hbs`{{query-container/query-button}}`);
-    assert.equal(findAll(PILL_SELECTORS.loadingQueryButton).length, 1, 'displays loading button');
+    await click(PILL_SELECTORS.queryButton);
+    assert.equal(cancelQuerySpy.callCount, 1, 'The cancel query action creator was called once');
   });
 });

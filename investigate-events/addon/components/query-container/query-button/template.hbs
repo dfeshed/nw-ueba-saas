@@ -1,12 +1,13 @@
-{{#if isQueryRunning}}
+{{#if showSpinner}}
   <div class="execute-query-button">
     {{rsa-loader size="small"}}
   </div>
 {{else}}
   {{#rsa-form-button
     class='execute-query-button'
-    isDisabled=(not requiredValuesToQuery)
+    defaultAction=(action 'cancelOrExecuteAction')
+    isDisabled=isDisabled
     style='primary'}}
-    {{t 'queryBuilder.queryEvents'}}
+    {{label}}
   {{/rsa-form-button}}
 {{/if}}

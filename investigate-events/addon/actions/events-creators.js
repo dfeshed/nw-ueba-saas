@@ -10,6 +10,8 @@ import { createFilename } from 'investigate-shared/actions/api/events/utils';
 
 import _ from 'lodash';
 
+let _stopStreaming;
+
 // Common functions.
 const commonHandlers = function(dispatch) {
   return {
@@ -35,6 +37,16 @@ const commonHandlers = function(dispatch) {
       dispatch({ type: ACTION_TYPES.QUERY_IS_RUNNING, payload: false });
     }
   };
+};
+
+/**
+ * Cancel a currently executing streaming request for events.
+ * @public
+ */
+export const cancelEventsStream = () => {
+  if (typeof(_stopStreaming) === 'function') {
+    _stopStreaming();
+  }
 };
 
 /**

@@ -4,6 +4,9 @@ const contextConfigGen = require('../../context').socketRouteGenerator;
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const licenseConfigGen = require('../../license').socketRouteGenerator;
 const common = require('../../common');
+
+const cancelDestination = '/ws/investigate/cancel';
+
 let mergedConfig;
 
 const investigateConfigGen = function(env) {
@@ -21,14 +24,16 @@ const investigateConfigGen = function(env) {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events',
-        requestDestination: '/ws/investigate/events/stream'
+        requestDestination: '/ws/investigate/events/stream',
+        cancelDestination
       }
     },
     'core-event-count': {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events/count',
-        requestDestination: '/ws/investigate/events/count'
+        requestDestination: '/ws/investigate/events/count',
+        cancelDestination
       }
     },
     'core-event-log': {
@@ -71,7 +76,7 @@ const investigateConfigGen = function(env) {
       stream: {
         subscriptionDestination: '/user/queue/investigate/meta/values',
         requestDestination: '/ws/investigate/meta/values/stream',
-        cancelDestination: '/ws/investigate/cancel'
+        cancelDestination
       }
     },
     'core-query-validate': {

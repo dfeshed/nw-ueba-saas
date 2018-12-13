@@ -1,6 +1,19 @@
 import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
+
+let _stopStreaming;
+
+/**
+ * Cancel a currently executing streaming request for events.
+ * @public
+ */
+export const cancelEventCountStream = () => {
+  if (typeof(_stopStreaming) === 'function') {
+    _stopStreaming();
+  }
+};
+
 /**
  * Creates a thunk to retrieve the count of events for a given query.
  * @public
@@ -13,7 +26,10 @@ export default function getEventCount() {
     const { threshold } = state.eventCount;
     const handlers = {
       onInit(stopStream) {
-        this.stopStreaming = stopStream;
+        if (_stopStreaming) {
+          _stopStreaming();
+        }
+        _stopStreaming = stopStream;
         dispatch({
           type: ACTION_TYPES.START_GET_EVENT_COUNT
         });
@@ -32,7 +48,8 @@ export default function getEventCount() {
 
         // devices and message (fatal error) represent a completed stream
         if (response.meta.message || response.meta.devices) {
-          this.stopStreaming();
+          _stopStreaming();
+          _stopStreaming = undefined;
         }
       },
       onResponse(response) {
@@ -55,8 +72,14 @@ export default function getEventCount() {
 
         // devices and message (fatal error) represent a completed stream
         if (response.meta.message || response.meta.devices) {
-          this.stopStreaming();
+          _stopStreaming();
+          _stopStreaming = undefined;
         }
+      },
+      onComplete() {
+        // Typically, the onRequest will handle the termination of this stream.
+        // Adding this just in case.
+        _stopStreaming = undefined;
       }
     };
 

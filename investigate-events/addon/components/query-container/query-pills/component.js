@@ -11,6 +11,7 @@ import {
   canQueryGuided,
   enrichedPillsData,
   hasInvalidSelectedPill,
+  isPillValidationInProgress,
   selectedPills,
   deselectedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
@@ -37,9 +38,10 @@ const { log } = console;// eslint-disable-line no-unused-vars
 const stateToComputed = (state) => ({
   canQueryGuided: canQueryGuided(state),
   deselectedPills: deselectedPills(state),
-  pillsData: enrichedPillsData(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
+  isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
+  pillsData: enrichedPillsData(state),
   selectedPills: selectedPills(state)
 });
 
@@ -49,14 +51,14 @@ const dispatchToActions = {
   addGuidedPillFocus,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
-  editGuidedPill,
-  selectGuidedPills,
-  deselectGuidedPills,
   deselectAllGuidedPills,
+  deselectGuidedPills,
+  editGuidedPill,
   openGuidedPillForEdit,
   removeGuidedPillFocus,
   resetGuidedPill,
-  selectAllPillsTowardsDirection
+  selectAllPillsTowardsDirection,
+  selectGuidedPills
 };
 
 const isEventFiredFromQueryPill = (event) => {
@@ -431,8 +433,13 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _submitQuery() {
-    if (this.get('canQueryGuided')) {
-      this.get('executeQuery')();
+    const {
+      canQueryGuided,
+      executeQuery,
+      isPillValidationInProgress
+    } = this.getProperties('canQueryGuided', 'executeQuery', 'isPillValidationInProgress');
+    if (canQueryGuided && !isPillValidationInProgress) {
+      executeQuery();
     }
   },
 

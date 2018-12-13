@@ -2,6 +2,8 @@ import * as ACTION_TYPES from './types';
 import moment from 'moment';
 import { getServiceSummary } from './data-creators';
 import { getDictionaries } from './initialization-creators';
+import { cancelEventCountStream } from './event-count-creators';
+import { cancelEventsStream } from './events-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
 import {
@@ -11,6 +13,13 @@ import {
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { lookup } from 'ember-dependency-lookup';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
+
+export const cancelQuery = () => {
+  return (dispatch) => {
+    dispatch(cancelEventCountStream());
+    dispatch(cancelEventsStream());
+  };
+};
 
 export const setMetaPanelSize = (size) => {
   if (size) {
