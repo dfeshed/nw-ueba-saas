@@ -19,6 +19,7 @@ import java.util.List;
         "name",
         "adeEventType",
         "modelContextFields",
+        "splitFields",
         "schema",
         "anomalyDescriptior",
         "historicalData",
@@ -45,6 +46,9 @@ public class IndicatorConfig {
 
     @JsonProperty("modelContextFields")
     private List<String> modelContextFields;
+
+    @JsonProperty("splitFields")
+    private List<String> splitFields;
 
     @JsonProperty("schema")
     private Schema schema;
@@ -158,5 +162,15 @@ public class IndicatorConfig {
     @JsonProperty("modelContextFields")
     public void setModelContextFields(List<String> modelContextFields) {
         this.modelContextFields = modelContextFields;
+    }
+
+    @JsonProperty("splitFields")
+    public List<String> getSplitFields() {
+        return splitFields;
+    }
+
+    @JsonProperty("splitFields")
+    public void setSplitFields(List<String> splitFields) {
+        this.splitFields = splitFields;
     }
 }
