@@ -4100,6 +4100,7 @@ export default {
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
       namePlaceholder: 'Enter a unique policy name',
+      dropdownPlaceholder: 'Type in or Pick from list',
       nameRequired: 'Policy name is required',
       nameExists: 'Policy name already exists',
       nameExceedsMaxLength: 'Policy name is limited to 256 characters',
