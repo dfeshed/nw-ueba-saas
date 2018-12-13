@@ -119,12 +119,12 @@ export const AGENT_MODE_CONFIG = {
   type: 'radioGroup',
   items: [
     {
-      name: 'NO_MONITORING',
-      label: 'adminUsm.policyWizard.edrPolicy.noMonitoring'
+      name: 'INSIGHTS',
+      label: 'adminUsm.policyWizard.edrPolicy.insights'
     },
     {
-      name: 'FULL_MONITORING',
-      label: 'adminUsm.policyWizard.edrPolicy.fullMonitoring'
+      name: 'ADVANCED',
+      label: 'adminUsm.policyWizard.edrPolicy.advanced'
     }
   ]
 };

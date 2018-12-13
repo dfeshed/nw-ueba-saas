@@ -73,7 +73,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       }).build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
@@ -125,7 +125,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       }).build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
@@ -178,7 +178,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       }).build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);

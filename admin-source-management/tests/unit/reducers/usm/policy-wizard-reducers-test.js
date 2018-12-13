@@ -465,7 +465,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
     const endState = reducers(Immutable.from(initialStateCopy), action);
     assert.deepEqual(_.sortBy(endState.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since blocking component exists on the right, the header for blocking is correctly moved to the right');
-    assert.deepEqual(endState.availableSettings[10].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
+    assert.deepEqual(endState.availableSettings[12].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
   });
 
   test('UPDATE_HEADERS_FOR_ALL_SETTINGS moves the header to the right and also keeps it on the left', function(assert) {

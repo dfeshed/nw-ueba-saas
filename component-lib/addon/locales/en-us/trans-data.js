@@ -4198,10 +4198,10 @@ export default {
         primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
         primaryUdpBeaconInterval_SECONDS: 'Seconds',
         primaryUdpBeaconInterval_MINUTES: 'Minutes',
-        agentSettings: 'Agent Settings',
+        agentSettings: 'Agent Mode',
         agentMode: 'Monitoring Mode',
-        noMonitoring: 'No Monitoring',
-        fullMonitoring: 'Full Monitoring',
+        insights: 'Insights',
+        advanced: 'Advanced',
         advancedConfig: 'Advanced Configuration',
         customConfigSetting: 'Setting',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'

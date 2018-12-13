@@ -59,6 +59,12 @@ export const selectedEdrPolicy = createSelector(
         props: scanScheduleSettings
       });
     }
+    if (agentSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.edrPolicy.agentSettings',
+        props: agentSettings
+      });
+    }
     if (advancedScanSettings.length > 0) {
       policyDetails.push({
         header: 'adminUsm.policyWizard.edrPolicy.advScanSettings',
@@ -75,12 +81,6 @@ export const selectedEdrPolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings',
         props: endpointServersSettings
-      });
-    }
-    if (agentSettings.length > 0) {
-      policyDetails.push({
-        header: 'adminUsm.policyWizard.edrPolicy.agentSettings',
-        props: agentSettings
       });
     }
     if (advancedConfigSettings.length > 0) {
@@ -227,9 +227,9 @@ const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints) => {
 
 const _getAgentSetting = (prop, focusedPolicy) => {
   const _i18n = lookup('service:i18n');
-  let agentSettingValue = _i18n.t('adminUsm.policyWizard.edrPolicy.noMonitoring');
-  if (focusedPolicy[prop] === 'FULL_MONITORING') {
-    agentSettingValue = _i18n.t('adminUsm.policyWizard.edrPolicy.fullMonitoring');
+  let agentSettingValue = _i18n.t('adminUsm.policyWizard.edrPolicy.insights');
+  if (focusedPolicy[prop] === 'ADVANCED') {
+    agentSettingValue = _i18n.t('adminUsm.policyWizard.edrPolicy.advanced');
   }
 
   const agentSettings = {

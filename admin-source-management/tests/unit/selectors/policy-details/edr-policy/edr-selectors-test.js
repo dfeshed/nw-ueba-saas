@@ -54,7 +54,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(12);
@@ -64,14 +64,14 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[0].header, 'adminUsm.policyWizard.edrPolicy.scanSchedule', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 4, 'first section has 4 properties');
     assert.equal(policyDetails[0].props[1].value, 'Every 1 week(s) on WEDNESDAY,THURSDAY', `Scan Frequency property has ${policyDetails[0].props[1].value} value`);
-    assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'second section  is as expected');
-    assert.equal(policyDetails[1].props.length, 2, 'second section has 2 properties');
-    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.invasiveActions', 'third section  is as expected');
-    assert.equal(policyDetails[2].props.length, 1, 'third section has 1 property');
-    assert.equal(policyDetails[3].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fourth section  is as expected');
-    assert.equal(policyDetails[3].props.length, 5, 'fourth section has 5 properties');
-    assert.equal(policyDetails[4].header, 'adminUsm.policyWizard.edrPolicy.agentSettings', 'fifth section  is as expected');
-    assert.equal(policyDetails[4].props.length, 1, 'fifth section has 1 property');
+    assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.edrPolicy.agentSettings', 'second section  is as expected');
+    assert.equal(policyDetails[1].props.length, 1, 'second section has 1 property');
+    assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'third section  is as expected');
+    assert.equal(policyDetails[2].props.length, 2, 'third section has 2 properties');
+    assert.equal(policyDetails[3].header, 'adminUsm.policyWizard.edrPolicy.invasiveActions', 'fourth section  is as expected');
+    assert.equal(policyDetails[3].props.length, 1, 'fourth section has 1 property');
+    assert.equal(policyDetails[4].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fifth section  is as expected');
+    assert.equal(policyDetails[4].props.length, 5, 'fifth section has 5 properties');
   });
 
   test('selectedEdrPolicy, ignore blank properties', function(assert) {
@@ -112,7 +112,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(8);
@@ -129,9 +129,9 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
       name: 'adminUsm.policyWizard.edrPolicy.startTime',
       value: ''
     }), false, 'scanStart time is ignored since it does not have a value');
-    assert.equal(policyDetails[3].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fourth section is as expected');
-    assert.equal(policyDetails[3].props.length, 4, 'fourth section has 4 properties');
-    assert.equal(policyDetails[3].props.includes({
+    assert.equal(policyDetails[4].header, 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', 'fourth section is as expected');
+    assert.equal(policyDetails[4].props.length, 4, 'fifth section has 4 properties');
+    assert.equal(policyDetails[4].props.includes({
       name: 'adminUsm.policyWizard.edrPolicy.primaryAddress',
       value: ''
     }), false, 'primary address is ignored since it does not have a value');
@@ -167,7 +167,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(2);
@@ -214,7 +214,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(2);
@@ -264,7 +264,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(2);
@@ -307,7 +307,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
-        agentMode: 'FULL_MONITORING'
+        agentMode: 'ADVANCED'
       })
       .build();
     assert.expect(2);
@@ -410,7 +410,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
         primaryUdpPort: 444,
         primaryUdpBeaconInterval: 5,
         primaryUdpBeaconIntervalUnit: 'SECONDS',
-        agentMode: 'FULL_MONITORING',
+        agentMode: 'ADVANCED',
         customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
       })
       .build();
@@ -422,7 +422,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[5].props[0].value.nonTruncated,
       '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}',
       'custom setting value returned as expected');
-    assert.equal(policyDetails[3].props[2].value, '5 Minutes', 'https beacon interval unit is as expected');
-    assert.equal(policyDetails[3].props[4].value, '5 Seconds', 'udp beacon interval unit is as expected');
+    assert.equal(policyDetails[4].props[2].value, '5 Minutes', 'https beacon interval unit is as expected');
+    assert.equal(policyDetails[4].props[4].value, '5 Seconds', 'udp beacon interval unit is as expected');
   });
 });
