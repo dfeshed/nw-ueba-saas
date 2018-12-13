@@ -32,9 +32,6 @@
         "numberOfFailedPrintsUserIdPrintHourly",
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
-        "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly",
-        "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly",
-        "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly",
         "numberOfEventsUserIdProcessHourly"
       ],
       "defaultWeight": 0.5

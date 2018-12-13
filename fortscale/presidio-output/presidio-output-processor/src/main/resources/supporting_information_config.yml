@@ -1041,6 +1041,78 @@ indicators:
     featureName: processFilePathHistogram
   classification: registry_run_keys
 
+- id: sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: user_abnormal_process_executed_a_scripting_tool
+  schema: PROCESS
+  adeEventType: scored_enriched.process.srcProcessFilePath.userIdDstProcessFileName.process.score
+  modelContextFields:
+    - userId
+      dstProcessFileName
+  anomalyDescriptior:
+    anomalyField: srcProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
+      - fieldName: dstProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - srcProcessFilePath
+      dstProcessFileName
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily
+    featureName: srcProcessFilePathHistogram
+  classification: powershell_scripting
+
+- id: sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: user_abnormal_application_triggered_by_scripting_tool
+  adeEventType: scored_enriched.process.dstProcessFilePathCreated.userIdSrcProcessFileName.process.score
+  modelContextFields:
+    - userId
+      srcProcessFileName
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
+      - fieldName: srcProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - dstProcessFilePath
+      srcProcessFileName
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily
+    featureName: dstProcessFilePathHistogram
+  classification: powershell_scripting
+
+- id: sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly
+  type: SCORE_AGGREGATION
+  name: user_abnormal_process_opened_by_scripting_tool
+  adeEventType: scored_enriched.process.dstProcessFilePathOpened.userIdDstProcessFileName.process.score
+  modelContextFields:
+    - userId
+      srcProcessFileName
+  schema: PROCESS
+  anomalyDescriptior:
+    anomalyField: dstProcessFilePath
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: OPEN_PROCESS
+      - fieldName: srcProcessCategories
+        fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - dstProcessFilePath
+      srcProcessFileName
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily
+    featureName: dstProcessFilePathHistogram
+  classification: powershell_scripting
+
 
 classificationPriority:
 
