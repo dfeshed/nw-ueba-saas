@@ -197,4 +197,54 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(document.querySelector('.edit-ranking-step table').rows[5].cells[4].innerText.trim(), 10, 'published and synced source count as expected');
     assert.ok(document.querySelectorAll('.tooltip-text').length === 4, 'no tooltip rendered for normal count');
   });
+  test('Show edrPolicy policy applied', async function(assert) {
+    const rankingData =
+    {
+      'id': 'gggg_001',
+      'name': 'Zebra 001',
+      'description': 'Zebra 001 of group group_001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'policy_002',
+          'name': 'policy_edr'
+        },
+        'windowsLogPolicy': {
+          'referenceId': 'policy_WL001',
+          'name': 'policy_wind'
+        }
+      }
+    };
+    new ReduxDataHelper(setState).groupRankingWithData(rankingData).build();
+    const selectedSourceType = 'edrPolicy';
+    this.set('selectedSourceType', selectedSourceType);
+    const item = rankingData;
+    this.set('item', item);
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row selectedSourceType=selectedSourceType item=item}}`);
+    assert.equal(document.querySelectorAll('.policy-cell')[0].innerText.trim(), 'policy_edr', 'edrPolicy shows as expected');
+  });
+  test('Show windowsLogPolicy policy applied', async function(assert) {
+    const rankingData =
+    {
+      'id': 'gggg_001',
+      'name': 'Zebra 001',
+      'description': 'Zebra 001 of group group_001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'policy_002',
+          'name': 'policy_edr'
+        },
+        'windowsLogPolicy': {
+          'referenceId': 'policy_WL001',
+          'name': 'policy_wind'
+        }
+      }
+    };
+    new ReduxDataHelper(setState).groupRankingWithData(rankingData).build();
+    const selectedSourceType = 'windowsLogPolicy';
+    this.set('selectedSourceType', selectedSourceType);
+    const item = rankingData;
+    this.set('item', item);
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row selectedSourceType=selectedSourceType item=item}}`);
+    assert.equal(document.querySelectorAll('.policy-cell')[0].innerText.trim(), 'policy_wind', 'windowsLogPolicy shows as expected');
+  });
 });

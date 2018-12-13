@@ -4286,7 +4286,7 @@ export default {
       tooltips: {
         osType_notEmpty: 'Select one or more of the operating system types.',
         osDescription_EQUAL: 'Enter OS Description value that is no longer than 255 characters. Only exact matches will be included.',
-        osDescriptione_CONTAINS: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value is found anywhere in the OS description.',
+        osDescription_CONTAINS: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value is found anywhere in the OS description.',
         osDescription_STARTS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value begins the OS description.',
         osDescription_ENDS_WITH: 'Enter a OS Description value that is no longer than 255 characters. Matches will be included if the value ends with the OS description.',
         hostname_EQUAL: 'Enter one or more valid hostnames. Valid hostnames contain alphanumeric, dot, or underscore characters. First and last characters must be alphanumeric.',
@@ -4304,7 +4304,7 @@ export default {
         end_IP: 'End IP address',
         osType_notEmpty: 'Select one or more operating systems',
         osDescription_EQUAL: 'Enter valid OS Description',
-        osDescriptione_CONTAINS: 'Enter OS Description substring',
+        osDescription_CONTAINS: 'Enter OS Description substring',
         osDescription_STARTS_WITH: 'Enter starting substring',
         osDescription_ENDS_WITH: 'Enter ending substring',
         hostname_EQUAL: 'Enter valid hostnames',
