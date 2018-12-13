@@ -1,7 +1,6 @@
 package presidio.ade.sdk.aggregation_records.splitter;
 
 import fortscale.common.feature.MultiKeyFeature;
-import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeScoredRecord;
 
 import java.util.List;
@@ -35,7 +34,8 @@ public class ScoreAggregationRecordContributors {
     public static final class Contributor {
         private final MultiKeyFeature contextFieldNameToValueMap;
         private final double contributionRatio;
-        private final TimeRange timeRange;
+        private final AdeScoredRecord firstScoredRecord;
+        private final AdeScoredRecord lastScoredRecord;
 
         /**
          * C'tor.
@@ -43,16 +43,19 @@ public class ScoreAggregationRecordContributors {
          * @param contextFieldNameToValueMap The context of the contributor (e.g. userId = Bob, machineId = BOB-PC1).
          * @param contributionRatio          The ratio between the contributor's contribution and
          *                                   the full score aggregation record contribution.
-         * @param timeRange                  The time range of the underlying scored records of the contributor.
+         * @param firstScoredRecord          The first underlying scored record of the contributor, chronologically.
+         * @param lastScoredRecord           The last underlying scored record of the contributor, chronologically.
          */
         public Contributor(
                 MultiKeyFeature contextFieldNameToValueMap,
                 double contributionRatio,
-                TimeRange timeRange) {
+                AdeScoredRecord firstScoredRecord,
+                AdeScoredRecord lastScoredRecord) {
 
             this.contextFieldNameToValueMap = contextFieldNameToValueMap;
             this.contributionRatio = contributionRatio;
-            this.timeRange = timeRange;
+            this.firstScoredRecord = firstScoredRecord;
+            this.lastScoredRecord = lastScoredRecord;
         }
 
         public MultiKeyFeature getContextFieldNameToValueMap() {
@@ -63,8 +66,12 @@ public class ScoreAggregationRecordContributors {
             return contributionRatio;
         }
 
-        public TimeRange getTimeRange() {
-            return timeRange;
+        public AdeScoredRecord getFirstScoredRecord() {
+            return firstScoredRecord;
+        }
+
+        public AdeScoredRecord getLastScoredRecord() {
+            return lastScoredRecord;
         }
     }
 }

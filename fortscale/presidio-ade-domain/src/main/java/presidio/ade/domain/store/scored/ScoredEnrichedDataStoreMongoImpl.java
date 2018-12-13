@@ -8,10 +8,13 @@ import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
+import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ScoredDataReader;
@@ -153,35 +156,81 @@ public class ScoredEnrichedDataStoreMongoImpl implements
 
     @Override
     public long countScoredRecords(
-            TimeRange timeRange,
-            MultiKeyFeature contextFieldNameToValueMap,
-            String adeEventType) {
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap);
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         return mongoTemplate.count(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
     }
 
     @Override
     public List<AdeScoredEnrichedRecord> readScoredRecords(
-            TimeRange timeRange,
-            MultiKeyFeature contextFieldNameToValueMap,
-            String adeEventType,
-            int skip,
-            int limit) {
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
+            int skip, int limit) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap).skip(skip).limit(limit);
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
+                .skip(skip).limit(limit);
         return mongoTemplate.find(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
     }
 
-    private static Query buildScoredEnrichedRecordsQuery(
+    @Override
+    public AdeScoredRecord readFirstScoredRecord(
             TimeRange timeRange,
-            MultiKeyFeature contextFieldNameToValueMap) {
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
+
+        return readScoredRecord(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.ASC);
+    }
+
+    @Override
+    public AdeScoredRecord readLastScoredRecord(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
+
+        return readScoredRecord(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.DESC);
+    }
+
+    private AdeScoredRecord readScoredRecord(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold,
+            Direction direction) {
+
+        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        String collectionName = translator.toCollectionName(adeEventType);
+        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
+                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
+        query.with(new Sort(direction, START_INSTANT_FIELD));
+        return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
+    }
+
+    private static Query buildScoredEnrichedRecordsQuery(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
 
         Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
         contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
             contextFieldName = String.format("%s.%s", CONTEXT_FIELD_NAME, contextFieldName);
             query.addCriteria(where(contextFieldName).is(contextFieldValue));
         });
+        query.addCriteria(where(SCORE_FIELD_NAME).gt(scoreThreshold));
         return query;
     }
 }

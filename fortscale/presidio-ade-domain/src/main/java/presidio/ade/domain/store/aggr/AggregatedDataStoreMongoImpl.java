@@ -4,10 +4,12 @@ import com.mongodb.DBCollection;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
-import fortscale.utils.store.record.StoreMetadataProperties;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import fortscale.utils.store.record.StoreMetadataProperties;
+import fortscale.utils.time.TimeRange;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -15,6 +17,7 @@ import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedRecordPaginationService;
 import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
@@ -187,34 +190,90 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     }
 
     @Override
-    public void remove(String collectionName, Instant start, Instant end){
-        Query query = new Query()
-                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+    public void remove(String collectionName, Instant start, Instant end) {
+        Query query = new Query(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 
     @Override
-    public long countScoredRecords(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, String
-            adeEventType) {
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap);
+    public long countScoredRecords(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
+
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.count(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
     @Override
-    public List<ScoredFeatureAggregationRecord> readScoredRecords(TimeRange timeRange, MultiKeyFeature
-            contextFieldNameToValueMap, String adeEventType, int skip, int limit) {
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap).skip(skip).limit(limit);
+    public List<ScoredFeatureAggregationRecord> readScoredRecords(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
+            int skip, int limit) {
+
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
+                .skip(skip).limit(limit);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.find(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
-    private static Query buildAggregationRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap) {
+    @Override
+    public AdeScoredRecord readFirstScoredRecord(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
+
+        return readScoredRecord(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.ASC);
+    }
+
+    @Override
+    public AdeScoredRecord readLastScoredRecord(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold) {
+
+        return readScoredRecord(
+                timeRange,
+                adeEventType,
+                contextFieldNameToValueMap,
+                additionalFieldNameToValueMap,
+                scoreThreshold,
+                Direction.DESC);
+    }
+
+    private AdeScoredRecord readScoredRecord(
+            TimeRange timeRange,
+            String adeEventType,
+            MultiKeyFeature contextFieldNameToValueMap,
+            MultiKeyFeature additionalFieldNameToValueMap,
+            int scoreThreshold,
+            Direction direction) {
+
+        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        String collectionName = translator.toCollectionName(buildAggregationRecordsMetadata(adeEventType));
+        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
+                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
+        query.with(new Sort(direction, START_INSTANT_FIELD));
+        return mongoTemplate.findOne(query, ScoredFeatureAggregationRecord.class, collectionName);
+    }
+
+    private static Query buildAggregationRecordsQuery(
+            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
+
         Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
         contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
             contextFieldName = String.format("context.%s", contextFieldName);
             query.addCriteria(where(contextFieldName).is(contextFieldValue));
         });
+        query.addCriteria(where(ScoredFeatureAggregationRecord.SCORE_FIELD_NAME).gt(scoreThreshold));
         return query;
     }
 
