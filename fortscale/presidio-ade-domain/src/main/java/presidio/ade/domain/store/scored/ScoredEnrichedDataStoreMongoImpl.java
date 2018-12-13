@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
+import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ScoredDataReader;
@@ -172,14 +173,14 @@ public class ScoredEnrichedDataStoreMongoImpl implements
     }
 
     @Override
-    public Instant readFirstStartInstant(
+    public AdeScoredRecord readFirstScoredRecord(
             TimeRange timeRange,
             String adeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
             MultiKeyFeature additionalFieldNameToValueMap,
             int scoreThreshold) {
 
-        return readStartInstant(
+        return readScoredRecord(
                 timeRange,
                 adeEventType,
                 contextFieldNameToValueMap,
@@ -189,14 +190,14 @@ public class ScoredEnrichedDataStoreMongoImpl implements
     }
 
     @Override
-    public Instant readLastStartInstant(
+    public AdeScoredRecord readLastScoredRecord(
             TimeRange timeRange,
             String adeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
             MultiKeyFeature additionalFieldNameToValueMap,
             int scoreThreshold) {
 
-        return readStartInstant(
+        return readScoredRecord(
                 timeRange,
                 adeEventType,
                 contextFieldNameToValueMap,
@@ -205,7 +206,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements
                 Direction.DESC);
     }
 
-    private Instant readStartInstant(
+    private AdeScoredRecord readScoredRecord(
             TimeRange timeRange,
             String adeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
@@ -218,8 +219,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements
         additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
                 query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
         query.with(new Sort(direction, START_INSTANT_FIELD));
-        AdeScoredEnrichedRecord record = mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
-        return record == null ? null : record.getStartInstant();
+        return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
     }
 
     private static Query buildScoredEnrichedRecordsQuery(

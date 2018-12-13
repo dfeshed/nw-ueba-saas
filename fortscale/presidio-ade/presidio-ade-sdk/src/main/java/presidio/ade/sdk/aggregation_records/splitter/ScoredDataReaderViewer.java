@@ -8,8 +8,6 @@ import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.store.ScoredDataReader;
 
-import java.time.Instant;
-
 public class ScoredDataReaderViewer<T extends AdeRecord & AdeScoredRecord> {
     private final ScoredDataReader<T> scoredDataReader;
     private final int scoredRecordScoreThreshold;
@@ -33,13 +31,13 @@ public class ScoredDataReaderViewer<T extends AdeRecord & AdeScoredRecord> {
                 scoredRecordPageSize);
     }
 
-    public Instant getFirstStartInstant(
+    public AdeScoredRecord getFirstScoredRecord(
             TimeRange timeRange,
             String scoredRecordAdeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
             MultiKeyFeature additionalFieldNameToValueMap) {
 
-        return scoredDataReader.readFirstStartInstant(
+        return scoredDataReader.readFirstScoredRecord(
                 timeRange,
                 scoredRecordAdeEventType,
                 contextFieldNameToValueMap,
@@ -47,13 +45,13 @@ public class ScoredDataReaderViewer<T extends AdeRecord & AdeScoredRecord> {
                 scoredRecordScoreThreshold);
     }
 
-    public Instant getLastStartInstant(
+    public AdeScoredRecord getLastScoredRecord(
             TimeRange timeRange,
             String scoredRecordAdeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
             MultiKeyFeature additionalFieldNameToValueMap) {
 
-        return scoredDataReader.readLastStartInstant(
+        return scoredDataReader.readLastScoredRecord(
                 timeRange,
                 scoredRecordAdeEventType,
                 contextFieldNameToValueMap,

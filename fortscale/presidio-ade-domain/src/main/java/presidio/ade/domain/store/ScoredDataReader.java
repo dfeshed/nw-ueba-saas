@@ -5,7 +5,6 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeScoredRecord;
 
-import java.time.Instant;
 import java.util.List;
 
 /**
@@ -52,8 +51,7 @@ public interface ScoredDataReader<T extends AdeRecord & AdeScoredRecord> {
             int limit);
 
     /**
-     * Read the start instant of the first record from the given time range,
-     * with the given context and of the given ADE event type.
+     * Read the first record from the given time range, of the given ADE event type and with the given context.
      *
      * @param timeRange                     The time range to query.
      * @param adeEventType                  The specific type of T to query (e.g. scored source machine ID,
@@ -61,9 +59,9 @@ public interface ScoredDataReader<T extends AdeRecord & AdeScoredRecord> {
      * @param contextFieldNameToValueMap    The context to query (e.g. userId = Bob, machineId = BOB-PC1).
      * @param additionalFieldNameToValueMap Additional fields to query (e.g. operationType = FILE_OPENED).
      * @param scoreThreshold                Include only records with a score greater than this threshold.
-     * @return The start instant of the first record that answers the query.
+     * @return The first scored record that answers the query.
      */
-    Instant readFirstStartInstant(
+    AdeScoredRecord readFirstScoredRecord(
             TimeRange timeRange,
             String adeEventType,
             MultiKeyFeature contextFieldNameToValueMap,
@@ -71,8 +69,7 @@ public interface ScoredDataReader<T extends AdeRecord & AdeScoredRecord> {
             int scoreThreshold);
 
     /**
-     * Read the start instant of the last record from the given time range,
-     * with the given context and of the given ADE event type.
+     * Read the last record from the given time range, of the given ADE event type and with the given context.
      *
      * @param timeRange                     The time range to query.
      * @param adeEventType                  The specific type of T to query (e.g. scored source machine ID,
@@ -80,9 +77,9 @@ public interface ScoredDataReader<T extends AdeRecord & AdeScoredRecord> {
      * @param contextFieldNameToValueMap    The context to query (e.g. userId = Bob, machineId = BOB-PC1).
      * @param additionalFieldNameToValueMap Additional fields to query (e.g. operationType = FILE_OPENED).
      * @param scoreThreshold                Include only records with a score greater than this threshold.
-     * @return The start instant of the last record that answers the query.
+     * @return The last scored record that answers the query.
      */
-    Instant readLastStartInstant(
+    AdeScoredRecord readLastScoredRecord(
             TimeRange timeRange,
             String adeEventType,
             MultiKeyFeature contextFieldNameToValueMap,

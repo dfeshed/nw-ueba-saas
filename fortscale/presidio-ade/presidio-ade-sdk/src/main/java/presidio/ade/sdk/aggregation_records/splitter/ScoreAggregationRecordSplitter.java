@@ -86,14 +86,15 @@ public class ScoreAggregationRecordSplitter {
         // Extract the tuple and its contribution ratio.
         MultiKeyFeature tuple = entry.getKey();
         double contributionRatio = entry.getValue();
-        // Calculate the exact time range of the underlying scored records with this tuple.
-        TimeRange superTimeRange = scoreAggregationRecordDetails.getTimeRange();
+        // Get the first and the last underlying scored records with this tuple.
+        TimeRange timeRange = scoreAggregationRecordDetails.getTimeRange();
         String scoredRecordAdeEventType = scoreAggregationRecordDetails.getScoredRecordAdeEventType();
         MultiKeyFeature context = scoreAggregationRecordDetails.getContextFieldNameToValueMap();
-        TimeRange subTimeRange = new TimeRange(
-                scoredDataReaderViewer.getFirstStartInstant(superTimeRange, scoredRecordAdeEventType, context, tuple),
-                scoredDataReaderViewer.getLastStartInstant(superTimeRange, scoredRecordAdeEventType, context, tuple));
+        AdeScoredRecord firstScoredRecord = scoredDataReaderViewer.getFirstScoredRecord(
+                timeRange, scoredRecordAdeEventType, context, tuple);
+        AdeScoredRecord lastScoredRecord = scoredDataReaderViewer.getLastScoredRecord(
+                timeRange, scoredRecordAdeEventType, context, tuple);
         // Create a new Contributor instance.
-        return new Contributor(tuple, contributionRatio, subTimeRange);
+        return new Contributor(tuple, contributionRatio, firstScoredRecord, lastScoredRecord);
     }
 }
