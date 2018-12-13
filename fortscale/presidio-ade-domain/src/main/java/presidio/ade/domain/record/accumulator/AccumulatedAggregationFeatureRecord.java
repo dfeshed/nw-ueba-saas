@@ -31,7 +31,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     }
 
     public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, Map<String,String> context, String featureName) {
-        super(startInstant, endInstant, getAggregatedFeatureContextId(context));
+        super(startInstant, endInstant, buildContextId(context));
         this.featureName = featureName;
         this.aggregatedFeatureValues = new HashMap<>();
         this.context = context;
@@ -93,6 +93,6 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
 
     public void setContext(Map<String, String> context) {
         this.context = context;
-        setContextId(getAggregatedFeatureContextId(context));
+        setContextId(buildContextId(context));
     }
 }

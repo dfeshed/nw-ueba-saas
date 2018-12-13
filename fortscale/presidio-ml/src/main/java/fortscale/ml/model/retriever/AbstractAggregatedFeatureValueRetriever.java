@@ -59,7 +59,7 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
     public String getContextId(Map<String, String> context) {
         //TODO: metrics.getContextId++;
         Assert.notEmpty(context);
-        return AdeContextualAggregatedRecord.getAggregatedFeatureContextId(context);
+        return AdeContextualAggregatedRecord.buildContextId(context);
     }
 
     @Override

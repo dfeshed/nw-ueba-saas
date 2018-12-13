@@ -77,17 +77,35 @@
         "aggregatedFeatureEventConfName": "numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder",
+        "type": "partitions_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfEvents.userId.process.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfEventsUserIdProcessHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfEventsUserIdProcessHourly"
+      },
+      "builder": {
+        "type": "partitions_histogram_model_builder",
         "partitionsResolutionInSeconds": 86400
       }
     },
     {
       "name": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.prior.process.hourly",
       "retriever": {
-        "type": "model_retriever",
+        "type": "join_partitions_histogram_models_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly"
+        "modelConfName": "numberOfReconnaissanceToolExecuted.userIdDstProcessFileName.process.hourly",
+        "secondaryModelConfName": "numberOfEvents.userId.process.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",

@@ -26,7 +26,7 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
                 new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
-        Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc().calculateAggrFeature(
+        Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc(null).calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, pickFeatureName),
                 listOfMaps);
 
@@ -49,9 +49,10 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
                 new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2), max2)));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
-        Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc().calculateAggrFeature(
+        Feature res = new AggrFeatureEventMultiKeyValuesMaxSumFunc(null).calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, "not_existing_feature"),
                 listOfMaps);
+
         Assert.assertNotNull(res);
         Assert.assertEquals(0D,  ((AggrFeatureValue) res.getValue()).getValue());
     }
@@ -82,13 +83,8 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
                 new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
-        Set<Map<String, String>> keys = new HashSet<>();
-        Map<String, String> featureNameToValue = new HashMap<>();
-        featureNameToValue.put("operationType","open");
-        keys.add(featureNameToValue);
-
-        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc();
-        func.setKeys(keys);
+        List<Map<String, String>> contextsToFilterIn = Collections.singletonList(Collections.singletonMap("operationType", "open"));
+        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc(contextsToFilterIn);
 
         Feature res = func.calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, pickFeatureName),
@@ -123,20 +119,14 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
                 new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
-        Set<Map<String, String>> keys = new HashSet<>();
-        Map<String, String> key1 = new HashMap<>();
-        key1.put("operationType","open");
-        key1.put("machine","host_456");
-
-        Map<String, String> key2 = new HashMap<>();
-        key2.put("operationType","close");
-        key2.put("machine","host_456");
-
-        keys.add(key1);
-        keys.add(key2);
-
-        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc();
-        func.setKeys(keys);
+        Map<String, String> firstContextToFilterIn = new HashMap<>();
+        firstContextToFilterIn.put("operationType", "open");
+        firstContextToFilterIn.put("machine", "host_456");
+        Map<String, String> secondContextToFilterIn = new HashMap<>();
+        secondContextToFilterIn.put("operationType", "close");
+        secondContextToFilterIn.put("machine", "host_456");
+        List<Map<String, String>> contextsToFilterIn = Arrays.asList(firstContextToFilterIn, secondContextToFilterIn);
+        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc(contextsToFilterIn);
 
         Feature res = func.calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, pickFeatureName),
@@ -174,13 +164,8 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFuncTest {
                 new ImmutablePair<>(AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue3), max3.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
-        Set<Map<String, String>> keys = new HashSet<>();
-        Map<String, String> featureNameToValue = new HashMap<>();
-        featureNameToValue.put("operationType","noValue");
-        keys.add(featureNameToValue);
-
-        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc();
-        func.setKeys(keys);
+        List<Map<String, String>> contextsToFilterIn = Collections.singletonList(Collections.singletonMap("operationType", "noValue"));
+        AggrFeatureEventMultiKeyValuesMaxSumFunc func = new AggrFeatureEventMultiKeyValuesMaxSumFunc(contextsToFilterIn);
 
         Feature res = func.calculateAggrFeature(
                 AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggregatedFeatureEventConf(aggregatedFeatureName, pickFeatureName),

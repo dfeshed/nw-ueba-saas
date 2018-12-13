@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -9,73 +10,62 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
-import fortscale.utils.AggrFeatureFunctionUtils;
+import org.springframework.util.Assert;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
- * Such a mapping (of type MultiKeyHistogram) is created by AggrFeatureMultiKeyToMaxFunc.
- * First {@link AbstractAggrFeatureEventFeatureToMaxFunc} is used in order to aggregate multiple buckets (refer to its
- * documentation to learn more).
- * Then, all of the values or filtered values by keys are summed up in order to create a new aggregated feature.
+ * Aggregate one or more buckets containing a feature that is a mapping from a group (a context) to a max value.
+ * Such a mapping (of type {@link MultiKeyHistogram}) is created by {@link AggrFeatureMultiKeyToMaxFunc}.
+ * First, {@link AbstractAggrFeatureEventFeatureToMaxFunc} is used in order to aggregate multiple feature buckets
+ * (refer to its documentation to learn more). Then, all the max values (or max values that are filtered in according
+ * to their groups) are summed up in order to create a new aggregated feature event.
  *
- * Example:
- * Suppose a user accesses several machines many times, and each machine access gets some score.
- * This class can be used in order to know the sum of the maximal score each machine got.
+ * For example: Suppose a user accesses several machines many times, and each machine access gets a score.
+ * This function can be used in order to calculate the sum of all the maximal scores (maximal score per machine).
  *
- * Parameters this class gets from the ASL:
- * 1. pick: refer to {@link AbstractAggrFeatureEventFeatureToMaxFunc}'s documentation to learn more.
+ * Parameters this function gets from the ASL:
+ * 1. pick: Refer to {@link AbstractAggrFeatureEventFeatureToMaxFunc}'s documentation to learn more.
  */
 @JsonTypeName(AggrFeatureEventMultiKeyValuesMaxSumFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(
-        fieldVisibility = Visibility.ANY,
+        creatorVisibility = Visibility.ANY,
+        fieldVisibility = Visibility.NONE,
         getterVisibility = Visibility.NONE,
         isGetterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE
 )
 public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatureEventFeatureToMaxFunc {
     public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_values_max_sum_func";
-    public static final String KEY_FIELD_NAME = "keys";
 
-    private Set<MultiKeyFeature> keys;
+    private final List<MultiKeyFeature> contextsToFilterIn;
 
-    public AggrFeatureEventMultiKeyValuesMaxSumFunc() {
-        this.keys = new HashSet<>();
-    }
+    @JsonCreator
+    public AggrFeatureEventMultiKeyValuesMaxSumFunc(
+            @JsonProperty("contextsToFilterIn") List<Map<String, String>> contextsToFilterIn) {
 
-    @JsonProperty(KEY_FIELD_NAME)
-    public void setKeys(Set<Map<String, String>> keys) {
-        keys.forEach(features -> {
-            MultiKeyFeature featureNamesAndValues = AggrFeatureFunctionUtils.buildMultiKeyFeature(features);
-            this.keys.add(featureNamesAndValues);
-        });
+        this.contextsToFilterIn = contextsToFilterIn == null ? Collections.emptyList() : contextsToFilterIn.stream()
+                .map(contextFieldNameToValueMap -> {
+                    Assert.notEmpty(contextFieldNameToValueMap, "contextsToFilterIn cannot contain empty maps.");
+                    MultiKeyFeature contextToFilterIn = new MultiKeyFeature();
+                    contextFieldNameToValueMap.forEach((contextFieldName, contextFieldValue) -> {
+                        Assert.hasText(contextFieldName, "contextsToFilterIn cannot contain maps with blank keys.");
+                        Assert.hasText(contextFieldValue, "contextsToFilterIn cannot contain maps with blank values.");
+                        contextToFilterIn.add(contextFieldName, contextFieldValue);
+                    });
+                    return contextToFilterIn;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    protected AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram multiKeyHistogram) {
-        double sum = 0;
-        Map<MultiKeyFeature, Double> histogram = multiKeyHistogram.getHistogram();
-
-        if (keys.isEmpty()) {
-            // Sum all if no keys were defined.
-            sum = histogram.values().stream().mapToDouble(Double::doubleValue).sum();
-        } else {
-            // Sum all max values of histogram, that contain one of the keys (e.g. operationType = FILE_OPENED).
-            for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
-                for (MultiKeyFeature key : keys) {
-                    if (multiKeyRecordEntry.getKey().contains(key)) {
-                        Double max = multiKeyRecordEntry.getValue();
-                        sum += max;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return new AggrFeatureValue(sum);
+    protected AggrFeatureValue calculateFeaturesGroupToMaxValue(MultiKeyHistogram contextToMaxValueMap) {
+        contextToMaxValueMap = filterOutIrrelevantContexts(contextToMaxValueMap);
+        double maxValuesSum = sumMaxValues(contextToMaxValueMap);
+        return new AggrFeatureValue(maxValuesSum);
     }
 
     @Override
@@ -86,14 +76,31 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
         String aggregatedFeatureName = getNameOfAggregatedFeatureToPick(aggregatedFeatureEventConf);
         MultiKeyHistogram contextToMaxValueMap = (MultiKeyHistogram)featureBucket
                 .getAggregatedFeatures().get(aggregatedFeatureName).getValue();
-        // Calculate the sum of the max values.
-        double sum = (double)calculateFeaturesGroupToMaxValue(contextToMaxValueMap).getValue();
-        // Calculate the contribution ratio of each max value.
+        contextToMaxValueMap = filterOutIrrelevantContexts(contextToMaxValueMap);
+        double maxValuesSum = sumMaxValues(contextToMaxValueMap);
         MultiKeyHistogram contextToContributionRatioMap = new MultiKeyHistogram();
         contextToMaxValueMap.getHistogram().forEach((context, maxValue) -> {
-            double contributionRatio = sum == 0 ? 0 : maxValue / sum;
+            double contributionRatio = maxValuesSum == 0 ? 0 : maxValue / maxValuesSum;
             contextToContributionRatioMap.set(context, contributionRatio);
         });
         return contextToContributionRatioMap;
+    }
+
+    private MultiKeyHistogram filterOutIrrelevantContexts(MultiKeyHistogram oldContextToMaxValueMap) {
+        if (contextsToFilterIn.isEmpty()) return oldContextToMaxValueMap;
+        MultiKeyHistogram newContextToMaxValueMap = new MultiKeyHistogram();
+        oldContextToMaxValueMap.getHistogram().forEach((context, maxValue) -> {
+            for (MultiKeyFeature contextToFilterIn : contextsToFilterIn) {
+                if (context.contains(contextToFilterIn)) {
+                    newContextToMaxValueMap.set(context, maxValue);
+                    break;
+                }
+            }
+        });
+        return newContextToMaxValueMap;
+    }
+
+    private double sumMaxValues(MultiKeyHistogram contextToMaxValueMap) {
+        return contextToMaxValueMap.getHistogram().values().stream().mapToDouble(Double::doubleValue).sum();
     }
 }

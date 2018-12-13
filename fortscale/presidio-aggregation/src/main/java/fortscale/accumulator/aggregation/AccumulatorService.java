@@ -31,7 +31,7 @@ public class AccumulatorService implements Accumulator {
     public void accumulate(List<AdeAggregationRecord> adeAggregationRecords) {
 
         for (AdeAggregationRecord adeAggregationRecord : adeAggregationRecords) {
-            String context = AdeContextualAggregatedRecord.getAggregatedFeatureContextId(adeAggregationRecord.getContext());
+            String context = AdeContextualAggregatedRecord.buildContextId(adeAggregationRecord.getContext());
             String featureName = adeAggregationRecord.getFeatureName();
 
             AccumulatedAggregationFeatureRecord accumulatedRecord = accumulationsInMemory.getAccumulatedRecord(featureName, context);

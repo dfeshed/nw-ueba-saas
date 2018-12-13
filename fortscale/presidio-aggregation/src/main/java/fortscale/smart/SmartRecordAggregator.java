@@ -119,7 +119,7 @@ public class SmartRecordAggregator {
 			}
 		}
 
-		String contextId = AdeContextualAggregatedRecord.getAggregatedFeatureContextId(smartRecordContext);
+		String contextId = AdeContextualAggregatedRecord.buildContextId(smartRecordContext);
 		return contextIdToSmartRecordMap.computeIfAbsent(contextId, key ->
 				new SmartRecord(timeRange, key, smartRecordConf.getName(), fixedDurationStrategy, smartRecordContext));
 	}

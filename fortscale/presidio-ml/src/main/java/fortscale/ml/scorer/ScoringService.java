@@ -52,7 +52,7 @@ public class ScoringService {
 		modelCacheMetricsContainer.setLogicalStartTime(startInstant);
 		if (adeEventTypeScorers == null || adeEventTypeScorers.isEmpty()) {
 			//todo: dataSourceMetrics.dataSourceScorerNotFound++;
-			logger.error("No defined scorers for ade event type {}. ADE record reader: {}.", adeEventType, adeRecordReader);
+			logger.debug("No defined scorers for ade event type {}. ADE record reader: {}.", adeEventType, adeRecordReader);
 			return null;
 		}
 

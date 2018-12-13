@@ -11,6 +11,8 @@ indicators:
   schema: FILE
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdFileDaily
@@ -27,6 +29,8 @@ indicators:
     anomalyFilters:
       - fieldName: operationTypeCategories
         fieldValue: FILE_PERMISSION_CHANGE
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -40,6 +44,8 @@ indicators:
   adeEventType: scored_enriched.file.operationType.userIdFileAction.file.score
   anomalyDescriptior:
     anomalyField: operationType
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -236,6 +242,8 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
@@ -252,6 +260,8 @@ indicators:
     anomalyFilters:
       - fieldName: operationTypeCategories
         fieldValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -268,6 +278,8 @@ indicators:
     anomalyFilters:
       - fieldName: operationTypeCategories
         fieldValue: OBJECT_MANAGEMENT
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily
@@ -349,6 +361,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_ENABLED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -364,6 +378,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_DISABLED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -378,6 +394,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: USER_ACCOUNT_UNLOCKED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -392,6 +410,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_TYPE_CHANGED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -406,6 +426,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_LOCKED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -420,6 +442,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -434,6 +458,8 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_PASSWORD_RESET
+  splitFields:
+    - operationType
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -452,6 +478,8 @@ indicators:
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily
@@ -465,6 +493,8 @@ indicators:
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: srcMachineNameRegexCluster
+  splitFields:
+    - srcMachineNameRegexCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
@@ -479,6 +509,8 @@ indicators:
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: dstMachineNameRegexCluster
+  splitFields:
+    - dstMachineNameRegexCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily
@@ -492,6 +524,8 @@ indicators:
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: site
+  splitFields:
+    - site
   historicalData:
       type: count_aggregations
       featureBucketConfName: siteHistogramUserIdAuthenticationDaily
@@ -599,6 +633,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdPrintDaily
@@ -612,6 +648,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: srcMachineCluster
+  splitFields:
+    - srcMachineCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -625,6 +663,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: printerId
+  splitFields:
+    - printerId
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineIdHistogramUserIdPrintDaily
@@ -638,6 +678,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: printerCluster
+  splitFields:
+    - printerCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -654,6 +696,8 @@ indicators:
     anomalyFilters:
       - fieldName: isSrcDriveShared
         fieldValue: true
+  splitFields:
+    - srcFolderPath
   historicalData:
     type: count_aggregations
     featureBucketConfName: absoluteSharedFolderPathHistogramUserIdPrintDaily
@@ -667,6 +711,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: srcFileExtension
+  splitFields:
+    - srcFileExtension
   historicalData:
     type: count_aggregations
     featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
@@ -680,6 +726,8 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: numOfPages
+  splitFields:
+    - numOfPages
   historicalData:
     type: hourly_scored_aggregations
     featureBucketConfName: startInstantToHighestNumOfPagesMapUserIdPrintDaily
@@ -769,6 +817,7 @@ indicators:
 #*********************************************************
 #*                   PROCESS INDICATORS                  *
 #*********************************************************
+
 - id: highestStartInstantScoreUserIdProcessHourly
   type: SCORE_AGGREGATION
   name: abnormal_event_day_time
@@ -776,26 +825,13 @@ indicators:
   schema: PROCESS
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdProcessDaily
     featureName: startInstantHistogram
   classification: non_standard_hours
-
-- id: numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly
-  type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_reconnaissance_tools_executed
-  schema: PROCESS
-  adeEventType: process
-  anomalyDescriptior:
-    anomalyField: dstProcessCategories
-    anomalyValue: RECONNAISSANCE_TOOL
-    anomalyFilters:
-      - fieldName: operationType
-        fieldValue: CREATE_PROCESS
-  historicalData:
-    type: hourly_aggregations
-  classification: discovery_reconnaissance
 
 - id: numberOfReconnaissanceToolExecutedUserIdProcessHourly
   type: FEATURE_AGGREGATION
@@ -824,6 +860,8 @@ indicators:
         fieldValue: CREATE_PROCESS
       - fieldName: dstProcessCategories
         fieldValue: RECONNAISSANCE_TOOL
+  splitFields:
+    - dstProcessFileName
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFileNameHistogramUserIdProcessDaily
@@ -846,6 +884,8 @@ indicators:
         fieldValue: lsass.exe
       - fieldName: operationType
         fieldValue: CREATE_REMOTE_THREAD
+  splitFields:
+    - srcProcessFilePath
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcProcessFilePathHistogramLsassProcessDaily
@@ -866,6 +906,9 @@ indicators:
         fieldValue: CREATE_REMOTE_THREAD
       - fieldName: dstProcessCategories
         fieldValue: IMPORTANT_WINDOWS_PROCESS
+  splitFields:
+    - srcProcessFilePath
+      dstProcessFileName
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcProcessFilePathHistogramWindowsDstProcessFileNameProcessDaily
@@ -886,6 +929,9 @@ indicators:
         fieldValue: CREATE_PROCESS
       - fieldName: dstProcessCategories
         fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - srcProcessFilePath
+      dstProcessFileName
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcProcessFilePathHistogramScriptingDstProcessFileNameProcessDaily
@@ -906,6 +952,9 @@ indicators:
         fieldValue: CREATE_PROCESS
       - fieldName: srcProcessCategories
         fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - dstProcessFilePath
+      srcProcessFileName
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFilePathCreatedHistogramScriptingSrcProcessFileNameProcessDaily
@@ -926,14 +975,34 @@ indicators:
         fieldValue: OPEN_PROCESS
       - fieldName: srcProcessCategories
         fieldValue: SCRIPTING_ENGINE
+  splitFields:
+    - dstProcessFilePath
+      srcProcessFileName
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstProcessFilePathOpenedHistogramScriptingSrcProcessFileNameProcessDaily
     featureName: dstProcessFilePathOpenedHistogram
   classification: powershell_scripting
+
+- id: numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_reconnaissance_tools_executed
+  schema: PROCESS
+  adeEventType: process
+  anomalyDescriptior:
+    anomalyField: dstProcessCategories
+    anomalyValue: RECONNAISSANCE_TOOL
+    anomalyFilters:
+      - fieldName: operationType
+        fieldValue: CREATE_PROCESS
+  historicalData:
+    type: hourly_aggregations
+  classification: discovery_reconnaissance
+
 #*********************************************************
-#*                   REGISTRY INDICATORS                  *
+#*                   REGISTRY INDICATORS                 *
 #*********************************************************
+
 - id: highestStartInstantScoreUserIdRegistryHourly
   type: SCORE_AGGREGATION
   name: abnormal_event_day_time
@@ -941,6 +1010,8 @@ indicators:
   schema: REGISTRY
   anomalyDescriptior:
     anomalyField: eventDate
+  splitFields:
+    - eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdRegistryDaily
@@ -961,6 +1032,9 @@ indicators:
       fieldValue: SET_VALUE
     - fieldName: registryKeyGroup
       fieldValue: SERVICES_IMAGE_PATH
+  splitFields:
+    - processFilePath
+      registryKey
   historicalData:
     type: count_aggregations
     featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily

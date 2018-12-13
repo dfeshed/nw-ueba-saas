@@ -76,8 +76,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
-        List<String> splitFieldNames = new ArrayList<>(indicatorConfig.getModelContextFields());
-        splitFieldNames.add(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
+        List<String> splitFieldNames = new ArrayList<>(indicatorConfig.getSplitFields());
         splitFieldNames.replaceAll(field -> translateOutputToAdeName(field));
 
         ScoreAggregationRecordContributors scoreAggregationRecordContributors = adeManagerSdk.splitScoreAggregationRecordToContributors(adeAggregationRecord, splitFieldNames);
@@ -94,11 +93,15 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
             indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
             Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+            // add split fields
             Map<String, String> contexts = adeContexts.entrySet().stream()
                                                 .filter(entry -> entry.getValue() != null)
                                                 .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
                                                                           entry -> translateAdeValueToOutput(entry.getKey(), entry.getValue())));
+            // add indicator context
             contexts.put(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
+            // add model context
+
             String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
                     StringUtils.EMPTY:
                     contexts.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
