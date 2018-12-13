@@ -33,7 +33,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         CategoricalFeatureValue categoricalFeatureValue = getCategoricalFeatureValue(modelBuilderData);
-        Map<Pair<String, Long/*name,partitionId*/>, Double/*1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
+        Map<Pair<String, Long/*name,partitionId*/>, Double/*at most 1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
         Map<String, Integer> featureValueToNumOfOccurrences = getFeatureValueToNumOfOccurrences(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
@@ -118,18 +118,22 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return ret;
     }
 
-    Map<String, Integer> getFeatureValueToNumOfOccurrences(Map<Pair<String, Long>, Double> modelBuilderData) {
-        Map<String, Integer> map = new HashMap<>();
-        modelBuilderData.forEach((key, value) -> {
+    Map<String, Integer> getFeatureValueToNumOfOccurrences(Map<Pair<String, Long/*name,partitionId*/>, Double/*at most 1*/> sequenceReduction) {
+        Map<String, Double> map = new HashMap<>();
+        sequenceReduction.forEach((key, value) -> {
                     String name = key.getKey();
                     if (map.get(name) != null) {
-                        map.put(name, map.get(name) + 1);
+                        map.put(name, map.get(name) + value);
                     } else {
-                        map.put(name, 1);
+                        map.put(name, 1D);
                     }
                 }
         );
-        return map;
+
+        Map<String, Integer> ret = new HashMap<>();
+        map.forEach((key, value)-> ret.put(key, value.intValue()));
+
+        return ret;
     }
 
     private CategoricalFeatureValue getCategoricalFeatureValue(Object modelBuilderData) {
