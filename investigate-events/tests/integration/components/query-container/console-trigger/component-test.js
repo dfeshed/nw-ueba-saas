@@ -119,6 +119,15 @@ module('Integration | Component | console-trigger', function(hooks) {
     assert.equal(findAll('.console-trigger.is-open').length, 1);
   });
 
+  test('renders the correct title when completed', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'Click to open or close the query console.');
+  });
+
   test('renders the correct title when disabled', async function(assert) {
     new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().build();
     await render(hbs`

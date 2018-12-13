@@ -6,7 +6,8 @@ import computed from 'ember-computed-decorators';
 import {
   isConsoleEmpty,
   hasError,
-  hasWarning
+  hasWarning,
+  isComplete
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 const dispatchToActions = {
@@ -18,7 +19,8 @@ const stateToComputed = (state) => ({
   isDisabled: isConsoleEmpty(state),
   isOpen: state.investigate.queryStats.isConsoleOpen,
   hasError: hasError(state),
-  hasWarning: hasWarning(state)
+  hasWarning: hasWarning(state),
+  isComplete: isComplete(state)
 });
 
 const ConsoleTrigger = Component.extend({
@@ -30,8 +32,8 @@ const ConsoleTrigger = Component.extend({
     'hasWarning'
   ],
 
-  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'i18n')
-  label: (description, isDisabled, isOpen, hasError, hasWarning, i18n) => {
+  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isComplete', 'i18n')
+  label: (description, isDisabled, isOpen, hasError, hasWarning, isComplete, i18n) => {
     let label;
     if (isDisabled) {
       label = i18n.t('investigate.queryStats.disabledLabel');
@@ -39,7 +41,7 @@ const ConsoleTrigger = Component.extend({
       label = i18n.t('investigate.queryStats.hasError');
     } else if (hasWarning) {
       label = i18n.t('investigate.queryStats.hasWarning');
-    } else if (description && isOpen) {
+    } else if (description && isOpen && !isComplete) {
       label = description;
     } else {
       label = i18n.t('investigate.queryStats.openCloseLabel');
