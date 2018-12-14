@@ -21,11 +21,10 @@ const getFileAnalysisData = (data) => {
         }
       }
     });
-    // Needs to be uncommented once backend changes are merged.
-    // dispatch({
-    //   type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
-    //   promise: api.getFileAnalysisStringFormatData(data)
-    // });
+    dispatch({
+      type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
+      promise: api.getFileAnalysisStringFormatData(data)
+    });
   };
 };
 
