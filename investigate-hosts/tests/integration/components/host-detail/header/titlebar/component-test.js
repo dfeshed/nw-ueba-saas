@@ -38,7 +38,7 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
     this.$('.rsa-nav-tab')[3].click();
     await waitUntil(() => {
       return redux.getState().endpoint.visuals.activeHostDetailTab === 'FILES';
-    });
+    }, { timeout: 6000 });
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
   });
   test('Show right panel button is present when Details tab is selected', async function(assert) {

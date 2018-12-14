@@ -69,7 +69,7 @@ test('it should show success message', function(assert) {
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
-    return waitUntil(() => counter === 1); // Wait for success message
+    return waitUntil(() => counter === 1, { timeout: 6000 }); // Wait for success message
   });
 });
 

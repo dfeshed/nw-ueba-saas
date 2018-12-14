@@ -2,7 +2,7 @@ import { module, test, setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, find, render } from '@ember/test-helpers';
+import { click, findAll, find, render, waitUntil } from '@ember/test-helpers';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
@@ -131,6 +131,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 3, 'Returned the number of rows/length of the table');
 
   });
@@ -171,7 +172,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-body-row:nth-child(1).is-selected').length, 1, 'First row is selected by default');
     await click('.rsa-data-table-body-row:nth-child(2)');
     assert.equal(findAll('.rsa-data-table-body-row:nth-child(2).is-selected').length, 1, 'Second row is selected');
@@ -195,6 +196,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7-filled').length, 1, 'rsa arrow-up icon before sorting');
     await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
     assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7-filled').length, 1, 'rsa arrow-down icon after sorting');
@@ -237,12 +239,12 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     await click(document.querySelector('.rsa-data-table-body-row .rsa-form-checkbox-label'));
     assert.equal(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label.checked').length, 1, 'checkbox is selected');
     await click(document.querySelector('.rsa-data-table-body-row .rsa-form-checkbox-label'));
     assert.equal(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label.checked').length, 0, 'checkbox is selected');
   });
-
 
   test('footer is displayed with count', async function(assert) {
     initState({
@@ -262,6 +264,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.ok(find('.file-info').textContent.trim().includes('3 of 3'));
   });
 

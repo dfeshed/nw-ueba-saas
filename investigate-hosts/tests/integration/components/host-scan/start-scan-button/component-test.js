@@ -71,7 +71,7 @@ test('it should show success message start scan is success', function(assert) {
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
     assert.equal($('#modalDestination .info-message').length, 0, 'Scan modal is closed');
-    return waitUntil(() => counter === 1); // Wait for success message
+    return waitUntil(() => counter === 1, { timeout: 6000 }); // Wait for success message
   });
 });
 

@@ -1,4 +1,3 @@
-import contextMenuMixin from 'ember-context-menu';
 import computed from 'ember-computed-decorators';
 import layout from './template';
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
@@ -6,7 +5,7 @@ import { inject as service } from '@ember/service';
 import { externalLookup } from 'investigate-shared/utils/file-external-lookup';
 
 
-export default DataTableBodyRow.extend(contextMenuMixin, {
+export default DataTableBodyRow.extend({
   layout,
 
   classNameBindings: ['isRowChecked'],
@@ -31,16 +30,15 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
   @computed('item')
   contextItems() {
-    const cntx = this;
-    const canManageFiles = cntx.get('accessControl.endpointCanManageFiles');
+    const canManageFiles = this.get('accessControl.endpointCanManageFiles');
 
     const contextConf = [
       {
         label: 'editFileStatus',
         prefix: 'investigateShared.endpoint.fileActions.',
-        action() {
-          cntx.retrieveRemediationStatus(cntx.get('selections'));
-          cntx.editFileStatus(cntx.get('item'));
+        action(selection, context) {
+          context.retrieveRemediationStatus(context.get('selections'));
+          context.editFileStatus(context.get('item'));
         },
         order: 1
       },
@@ -51,26 +49,26 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         subActions: [
           { label: 'fileName',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'fileName', type: 'google' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'fileName', type: 'google' }, context.get('selections'));
             }
           },
           { label: 'md5',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'md5', type: 'google' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'md5', type: 'google' }, context.get('selections'));
             }
           },
           { label: 'sha1',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'sha1', type: 'google' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'sha1', type: 'google' }, context.get('selections'));
             }
           },
           { label: 'sha256',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'sha256', type: 'google' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'sha256', type: 'google' }, context.get('selections'));
             }
           }
         ]
@@ -82,20 +80,20 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         subActions: [
           { label: 'md5',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'md5', type: 'VirusTotal' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'md5', type: 'VirusTotal' }, context.get('selections'));
             }
           },
           { label: 'sha1',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'sha1', type: 'VirusTotal' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'sha1', type: 'VirusTotal' }, context.get('selections'));
             }
           },
           { label: 'sha256',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              externalLookup({ name: 'sha256', type: 'VirusTotal' }, cntx.get('selections'));
+            action(selection, context) {
+              externalLookup({ name: 'sha256', type: 'VirusTotal' }, context.get('selections'));
             }
           }
         ]
@@ -105,13 +103,13 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         order: 5,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
-        action() {
-          cntx.resetRiskScore(cntx.get('selections'));
+        action(selection, context) {
+          context.resetRiskScore(context.get('selections'));
         }
       }
     ];
 
-    if (cntx.get('fileDownloadButtonStatus') && canManageFiles) {
+    if (this.get('fileDownloadButtonStatus') && canManageFiles) {
 
       const fileDownloadButtons = [
         {
@@ -119,40 +117,40 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
           order: 6,
           prefix: 'investigateShared.endpoint.fileActions.',
           showDivider: true,
-          disabled() {
-            return cntx.get('fileDownloadButtonStatus').isDownloadToServerDisabled;
+          disabled(selection, context) {
+            return context.get('fileDownloadButtonStatus').isDownloadToServerDisabled;
           },
-          action() {
-            cntx.downloadFiles();
+          action(selection, context) {
+            context.downloadFiles();
           }
         },
         {
           label: 'saveLocalCopy',
           order: 7,
           prefix: 'investigateShared.endpoint.fileActions.',
-          disabled() {
-            return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
+          disabled(selection, context) {
+            return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
           },
-          action() {
-            cntx.saveLocalCopy();
+          action(selection, context) {
+            context.saveLocalCopy();
           }
         },
         {
           label: 'analyzeFile',
           order: 8,
           prefix: 'investigateShared.endpoint.fileActions.',
-          disabled() {
-            return cntx.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
+          disabled(selection, context) {
+            return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
           },
-          action() {
-            cntx.analyzeFile();
+          action(selection, context) {
+            context.analyzeFile();
           }
         }
       ];
       contextConf.push(...fileDownloadButtons);
     }
 
-    if (cntx.get('showPivotToInvestigate') != false) {
+    if (this.get('showPivotToInvestigate') !== false) {
       const pivot = {
         label: 'pivotToInvestigate',
         order: 2,
@@ -161,34 +159,34 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
           {
             label: 'networkEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Network Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Network Event');
             }
           },
           {
             label: 'fileEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'File Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'File Event');
             }
           },
           {
             label: 'processEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Process Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Process Event');
             }
           },
           {
             label: 'registryEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Registry Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Registry Event');
             }
           }
         ],
-        disabled() {
-          return (cntx.get('selections').length > 1);
+        disabled(selection, context) {
+          return (context.get('selections').length > 1);
         }
       };
       contextConf.push(pivot);

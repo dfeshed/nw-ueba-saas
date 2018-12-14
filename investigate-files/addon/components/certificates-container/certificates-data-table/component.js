@@ -14,7 +14,7 @@ import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pi
 const stateToComputed = (state) => ({
   certificatesItems: state.certificate.list.certificatesList,
   loadMoreStatus: state.certificate.list.loadMoreStatus,
-  selections: state.certificate.list.selectedCertificateList,
+  selections: state.certificate.list.selectedCertificateList || [],
   areCertificatesLoading: certificatesLoading(state),
   isCertificateView: state.certificate.list.isCertificateView,
   certificatesColumns: columns(state),
