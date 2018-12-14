@@ -54,7 +54,44 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
   hooks.after(function() {
     spys.forEach((s) => s.restore());
   });
+  test('it should not render process page if isProcessDetailsView is true', async function(assert) {
 
+    new ReduxDataHelper(setState)
+      .processList([])
+      .processTree([])
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .isProcessDetailsView(true)
+      .build();
+    // set height to get all lazy rendered items on the page
+    await render(hbs`
+      {{host-detail/process}}
+    `);
+
+    return settled().then(() => {
+      assert.deepEqual(findAll('.process-property-box').length, 0, 'process property box is not present');
+    });
+  });
+  test('it should render process page if isProcessDetailsView is false', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .processList([])
+      .processTree([])
+      .machineOSType('windows')
+      .sortField('name')
+      .isDescOrder(true)
+      .isProcessDetailsView(false)
+      .build();
+    // set height to get all lazy rendered items on the page
+    await render(hbs`
+      {{host-detail/process}}
+    `);
+
+    return settled().then(() => {
+      assert.deepEqual(findAll('.process-property-box').length, 0, 'process property box is present');
+    });
+  });
   test('it renders data when isProcessDataEmpty is true', async function(assert) {
 
     new ReduxDataHelper(setState)

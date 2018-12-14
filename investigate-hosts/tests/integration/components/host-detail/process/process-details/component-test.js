@@ -50,6 +50,22 @@ module('Integration | Component | endpoint host-detail/process/process-details',
   hooks.afterEach(function() {
     revertPatch();
   });
+  test('process-details component should not rendered if isProcessDetailsView is false', async function(assert) {
+    new ReduxDataHelper(initState)
+      .agentId(1)
+      .dllList(dllListData)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .machineOSType('windows')
+      .processDetails(data)
+      .isProcessDetailsView(false)
+      .build();
+
+    await render(hbs`{{host-detail/process/process-details}}`);
+    assert.equal(findAll('.host-process-details .rsa-page-layout').length, 0, 'process details page should not rendered');
+  });
 
   test('process-details component rendered', async function(assert) {
     new ReduxDataHelper(initState)
@@ -61,6 +77,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .selectedTab(null)
       .machineOSType('windows')
       .processDetails(data)
+      .isProcessDetailsView(true)
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
@@ -77,6 +94,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .processList(processData.processList)
       .processTree(processData.processTree)
       .selectedTab(null)
+      .isProcessDetailsView(true)
       .machineOSType('windows')
       .processDetails(data)
       .build();
@@ -100,6 +118,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .processList(processData.processList)
       .processTree(processData.processTree)
       .processDetails(data)
+      .isProcessDetailsView(true)
       .selectedTab(null)
       .machineOSType('windows')
       .build();
@@ -125,6 +144,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .processTree(processData.processTree)
       .processDetails(data)
       .selectedTab(null)
+      .isProcessDetailsView(true)
       .machineOSType('windows')
       .build();
 
@@ -137,8 +157,5 @@ module('Integration | Component | endpoint host-detail/process/process-details',
         subTabName: null
       }
     }]);
-    const redux = this.owner.lookup('service:redux');
-    const { endpoint: { visuals: { isProcessDetailsView } } } = redux.getState();
-    assert.equal(isProcessDetailsView, false, 'process property panel should close');
   });
 });

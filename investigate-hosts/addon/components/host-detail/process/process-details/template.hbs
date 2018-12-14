@@ -1,66 +1,68 @@
-{{#rsa-page-layout showRightZone=false onClose=(action 'onPropertyPanelClose') as |layout|}}
-  {{#layout.center}}
-    {{host-detail/process/process-details/process-details-action-bar}}
-    {{#if isProcessLoading}}
-      <centered>
-        {{rsa-loader size='large'}}
-      </centered>
-    {{else}}
-      {{#if (not isProcessDataEmpty)}}
-        <vbox class="process-content-box panel-shadow">
-          <vbox class='process-content-box-wrapper'>
-            {{host-detail/process/summary-items config=summaryConfig data=process}}
-            <box class="process-content-box__accordion-content">
-              {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'dll') click=(action 'selectAccordion' 'dll') class='accordion-content-title' label=(t 'investigateHosts.process.dll.title' count=dllList.length)}}
-                <div class="process-dll-note">{{loadedDLLNote}}</div>
-                {{#if (eq selectedAccordion 'dll')}}
-                  {{host-detail/process/process-dll-list openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
-                {{/if}}  
-              {{/rsa-content-accordion}}
-            </box>
-            {{#if isMachineWindows}}
+{{#if isProcessDetailsView}}
+  {{#rsa-page-layout showRightZone=false onClose=(action 'onPropertyPanelClose') as |layout|}}
+    {{#layout.center}}
+      {{host-detail/process/process-details/process-details-action-bar}}
+      {{#if isProcessLoading}}
+        <centered>
+          {{rsa-loader size='large'}}
+        </centered>
+      {{else}}
+        {{#if (not isProcessDataEmpty)}}
+          <vbox class="process-content-box panel-shadow">
+            <vbox class='process-content-box-wrapper'>
+              {{host-detail/process/summary-items config=summaryConfig data=process}}
               <box class="process-content-box__accordion-content">
-                {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'image-hooks') click=(action 'selectAccordion' 'image-hooks') class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title' count=hookList.length)}}
-                  {{#if (eq selectedAccordion 'image-hooks') }}
-                    {{host-detail/process/process-image-hooks openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
-                  {{/if}}
+                {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'dll') click=(action 'selectAccordion' 'dll') class='accordion-content-title' label=(t 'investigateHosts.process.dll.title' count=dllList.length)}}
+                  <div class="process-dll-note">{{loadedDLLNote}}</div>
+                  {{#if (eq selectedAccordion 'dll')}}
+                    {{host-detail/process/process-dll-list openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
+                  {{/if}}  
                 {{/rsa-content-accordion}}
               </box>
-              <box class="process-content-box__accordion-content">
-                {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'threads') click=(action 'selectAccordion' 'threads') class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title' count=threadList.length)}}
-                  {{#if (eq selectedAccordion 'threads')}}
-                    {{host-detail/process/process-suspicious-threads openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
-                  {{/if}}
-                {{/rsa-content-accordion}}
-              </box>
-            {{/if}}
+              {{#if isMachineWindows}}
+                <box class="process-content-box__accordion-content">
+                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'image-hooks') click=(action 'selectAccordion' 'image-hooks') class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title' count=hookList.length)}}
+                    {{#if (eq selectedAccordion 'image-hooks') }}
+                      {{host-detail/process/process-image-hooks openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
+                    {{/if}}
+                  {{/rsa-content-accordion}}
+                </box>
+                <box class="process-content-box__accordion-content">
+                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'threads') click=(action 'selectAccordion' 'threads') class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title' count=threadList.length)}}
+                    {{#if (eq selectedAccordion 'threads')}}
+                      {{host-detail/process/process-suspicious-threads openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
+                    {{/if}}
+                  {{/rsa-content-accordion}}
+                </box>
+              {{/if}}
+            </vbox>
           </vbox>
-        </vbox>
+        {{/if}}
       {{/if}}
-    {{/if}}
-  {{/layout.center}}
-  {{#layout.right as |right|}}
-    {{#right.header}}
-      <box>
-        <div class='header-section__process-name'>
-          <div class='label' title="{{selectedDll.fileName}}">{{selectedDll.fileName}}</div>
-        </div>
-        
-        <div class='rsa-nav-tab-group'>
-          {{#rsa-nav-tab align='left' isActive=true}}
-            <div class='label'>{{t 'investigateHosts.process.properties'}}</div>
-          {{/rsa-nav-tab}}
-        </div>
-      </box>
-      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
-        {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-      {{/rsa-form-button}}
-    {{/right.header}}
-    <vbox class="process-property-box">
-      {{endpoint/file-property-panel
-        config=propertyConfig
-        localeNameSpace='investigateHosts.property.file'
-        data=selectedDll}}
-    </vbox>
-  {{/layout.right}}
-{{/rsa-page-layout}}
+    {{/layout.center}}
+    {{#layout.right as |right|}}
+      {{#right.header}}
+        <box>
+          <div class='header-section__process-name'>
+            <div class='label' title="{{selectedDll.fileName}}">{{selectedDll.fileName}}</div>
+          </div>
+          
+          <div class='rsa-nav-tab-group'>
+            {{#rsa-nav-tab align='left' isActive=true}}
+              <div class='label'>{{t 'investigateHosts.process.properties'}}</div>
+            {{/rsa-nav-tab}}
+          </div>
+        </box>
+        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+        {{/rsa-form-button}}
+      {{/right.header}}
+      <vbox class="process-property-box">
+        {{endpoint/file-property-panel
+          config=propertyConfig
+          localeNameSpace='investigateHosts.property.file'
+          data=selectedDll}}
+      </vbox>
+    {{/layout.right}}
+  {{/rsa-page-layout}}
+{{/if}}  

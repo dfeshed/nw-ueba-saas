@@ -48,7 +48,8 @@ const stateToComputed = (state) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView
 });
 
 const dispatchToActions = {

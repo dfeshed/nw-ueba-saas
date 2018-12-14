@@ -9,11 +9,13 @@
       <centered>
         {{rsa-loader size='larger'}}
       </centered>
-    {{else if isProcessDetailsView}}
-      {{host-detail/process/process-details}}
     {{else}}
+      <box class="process-details-panel {{if isProcessDetailsView 'is-show-process-details'}}">
+        {{host-detail/process/process-details}}
+      </box>
       {{component selectedTabComponent}}
     {{/if}}
+  
 
   </box>
 {{else}}

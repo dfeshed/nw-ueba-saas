@@ -1,70 +1,71 @@
-{{#unless isProcessDataEmpty}}
-  {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
-    {{#layout.center}}
-      <box class="process-list-box scroll-box">
-        <div class="process-list-header">
-          {{#if (not isNavigatedFromExplore)}}
-            <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-              {{rsa-icon active=isTreeView title= treeIconTooltip class="tree-icon" name='flow-chart-3' is-filled=true}}
-            </span>
-          {{/if}}
-          <div class="process-list-actions analyze-process-button">
-            {{host-detail/process/pivot-to-process-analysis
-              item=selectedProcessList
-              serviceList=serviceList
-              agentId=agentId
-              osType=osType
-              hostName=hostName}}
-          </div>
-
-          {{endpoint/file-actionbar
-            onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
-            getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
-            resetRiskScore = (action 'resetRiskScoreAction')
-            serviceList=serviceList
-            metaName='checksumSha256'
-            itemList=selectedProcessList
-            serviceId=serviceId
-            timeRange=timeRange
-            fileStatusData=fileStatus
-            selectedFileCount=selectedFileCount
-            restrictedFileList=restrictedFileList
-            isRemediationAllowed=isRemediationAllowed
-            retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-            fileDownloadButtonStatus=fileDownloadButtonStatus
-            downloadFiles=(action 'onDownloadFilesToServer')
-            saveLocalCopy=(action 'onSaveLocalCopy')
-            analyzeFile=(action 'onAnalyzeFile')}}
-        </div>
-        {{host-detail/process/process-tree
-          openPropertyPanel=(action layout.open 'right')
-          closePropertyPanel=(action layout.close 'right')}}
-      </box>
-    {{/layout.center}}
-    {{#layout.right as |right|}}
-      {{#right.header}}
-        <hbox>
-          <box>
-            <div class='header-section__process-name'>{{selectedProcessName}}</div>
-            <div class='rsa-nav-tab-group'>
-              {{#rsa-nav-tab align='left' isActive=true}}
-                <div class="label">{{t 'investigateHosts.process.properties'}}</div>
-              {{/rsa-nav-tab}}
+{{#unless isProcessDetailsView}}  
+  {{#unless isProcessDataEmpty}}
+    {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+      {{#layout.center}}
+        <box class="process-list-box scroll-box">
+          <div class="process-list-header">
+            {{#if (not isNavigatedFromExplore)}}
+              <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
+                {{rsa-icon active=isTreeView title= treeIconTooltip class="tree-icon" name='flow-chart-3' is-filled=true}}
+              </span>
+            {{/if}}
+            <div class="process-list-actions analyze-process-button">
+              {{host-detail/process/pivot-to-process-analysis
+                item=selectedProcessList
+                serviceList=serviceList
+                agentId=agentId
+                osType=osType
+                hostName=hostName}}
             </div>
-          </box>
-          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
-            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-          {{/rsa-form-button}}
-        </hbox>
-      {{/right.header}}
-      <box class="process-property-box scroll-box">
-        {{endpoint/file-property-panel
-          config=propertyConfig
-          localeNameSpace='investigateHosts.property.file'
-          data=process}}
-      </box>
-    {{/layout.right}}
-  {{/rsa-page-layout}}
-{{/unless}}
 
+            {{endpoint/file-actionbar
+              onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
+              getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+              resetRiskScore = (action 'resetRiskScoreAction')
+              serviceList=serviceList
+              metaName='checksumSha256'
+              itemList=selectedProcessList
+              serviceId=serviceId
+              timeRange=timeRange
+              fileStatusData=fileStatus
+              selectedFileCount=selectedFileCount
+              restrictedFileList=restrictedFileList
+              isRemediationAllowed=isRemediationAllowed
+              retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
+              fileDownloadButtonStatus=fileDownloadButtonStatus
+              downloadFiles=(action 'onDownloadFilesToServer')
+              saveLocalCopy=(action 'onSaveLocalCopy')
+              analyzeFile=(action 'onAnalyzeFile')}}
+          </div>
+          {{host-detail/process/process-tree
+            openPropertyPanel=(action layout.open 'right')
+            closePropertyPanel=(action layout.close 'right')}}
+        </box>
+      {{/layout.center}}
+      {{#layout.right as |right|}}
+        {{#right.header}}
+          <hbox>
+            <box>
+              <div class='header-section__process-name'>{{selectedProcessName}}</div>
+              <div class='rsa-nav-tab-group'>
+                {{#rsa-nav-tab align='left' isActive=true}}
+                  <div class="label">{{t 'investigateHosts.process.properties'}}</div>
+                {{/rsa-nav-tab}}
+              </div>
+            </box>
+            {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+              {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+            {{/rsa-form-button}}
+          </hbox>
+        {{/right.header}}
+        <box class="process-property-box scroll-box">
+          {{endpoint/file-property-panel
+            config=propertyConfig
+            localeNameSpace='investigateHosts.property.file'
+            data=process}}
+        </box>
+      {{/layout.right}}
+    {{/rsa-page-layout}}
+  {{/unless}}
+{{/unless}}
 

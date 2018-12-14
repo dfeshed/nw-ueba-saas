@@ -145,14 +145,23 @@ module('Integration | Component | host-detail', function(hooks) {
     setState({ activePropertyPanelTab: 'HOST_DETAILS' });
     const endpointServerClone = { ...endpointServer };
     endpointServerClone.isSummaryRetrieveError = false;
+    const host = {
+      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+      'machine': {
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        'agentVersion': '11.1'
+      }
+    };
     new ReduxDataHelper(setState)
       .isSnapshotsLoading(false)
       .isSnapshotsAvailable(false)
       .selectedTabComponent('OVERVIEW')
       .endpointServer(endpointServerClone)
       .endpointQuery(endpointQuery)
-      .host('XYZ')
+      .host(host)
       .isDetailRightPanelVisible(true)
+      .isProcessDetailsView(false)
+      .machineOSType('windows')
       .build();
     await render(hbs`{{host-detail}}`);
     assert.equal(findAll('.host-header').length, 1, 'header rendered');
@@ -226,18 +235,41 @@ module('Integration | Component | host-detail', function(hooks) {
   });
 
   test('it renders loader when isSnapshotsLoading is true', async function(assert) {
+    const host = {
+      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+      'machine': {
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        'agentVersion': '11.1'
+      },
+      machineIdentity: {
+        'agentMode': 'testMode'
+      }
+    };
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(true)
+      .isSnapshotsLoading(false)
+      .isSnapshotsAvailable(true)
+      .isProcessDetailsView(true)
+      .selectedTabComponent('FILES')
+      .machineOSType('windows')
+      .host(host)
       .build();
     await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.rsa-loader').length, 1, 'loader is visible');
+    assert.equal(findAll('.rsa-loader').length, 2, 'loader is visible');
   });
 
   test('it renders loader when isSnapshotsLoading is false', async function(assert) {
+    const host = {
+      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+      'machine': {
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        'agentVersion': '11.1'
+      }
+    };
     new ReduxDataHelper(setState)
       .isSnapshotsLoading(false)
       .selectedTabComponent('OVERVIEW')
-      .host('XYZ')
+      .machineOSType('windows')
+      .host(host)
       .isDetailRightPanelVisible(true)
       .build();
     await render(hbs`{{host-detail}}`);
