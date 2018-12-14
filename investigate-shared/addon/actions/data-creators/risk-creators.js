@@ -45,22 +45,25 @@ const resetRiskContext = () => {
   };
 };
 
-const getRiskScoreContext = (id, severity = 'Critical', timeStamp = 0) => {
+const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => {
   const alertCategory = _.upperFirst(severity);
 
   const data = {
     id,
     alertCategory,
-    timeStamp
+    timeStamp: 0
   };
-
-  return (dispatch, getState) => {
-    const type = riskType(getState());
-    if (type === 'FILE') {
+  return (dispatch) => {
+    if (!belongsTo) {
+      // belongsTo decides the reducer state. If it is not explicitly specified, it is same as riskType
+      // This is different only for host files.
+      belongsTo = riskType;
+    }
+    if (riskType === 'FILE') {
       dispatch({
         type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
         meta: {
-          belongsTo: type
+          belongsTo
         },
         promise: api.getRiskScoreContext(data)
       });
@@ -68,7 +71,7 @@ const getRiskScoreContext = (id, severity = 'Critical', timeStamp = 0) => {
       dispatch({
         type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
         meta: {
-          belongsTo: type
+          belongsTo
         },
         promise: api.getHostRiskScoreContext(data)
       });
@@ -77,10 +80,10 @@ const getRiskScoreContext = (id, severity = 'Critical', timeStamp = 0) => {
   };
 };
 
-const getUpdatedRiskScoreContext = (id, tabName, timeStamp) => {
+const getUpdatedRiskScoreContext = (id, riskType, belongsTo, tabName) => {
   return (dispatch) => {
     dispatch(activeRiskSeverityTab(tabName));
-    dispatch(getRiskScoreContext(id, tabName, timeStamp));
+    dispatch(getRiskScoreContext(id, riskType, belongsTo, tabName));
   };
 };
 

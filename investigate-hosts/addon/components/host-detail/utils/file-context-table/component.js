@@ -23,7 +23,7 @@ import {
   setFileContextSort,
   toggleRowSelection,
   toggleAllSelection,
-  setRowSelection,
+  onHostFileSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
   getPaginatedFileContext,
@@ -56,7 +56,7 @@ const dispatchToActions = {
   setFileContextSort,
   toggleRowSelection,
   toggleAllSelection,
-  setRowSelection,
+  onHostFileSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
   getPaginatedFileContext,
@@ -113,10 +113,10 @@ const FileContextTable = Component.extend({
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         if (this.get('selectedRowId') !== index) {
           table.set('selectedIndex', index);
-          this.send('setRowSelection', this.get('tabName'), item);
+          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item);
         } else {
           table.set('selectedIndex', -1);
-          this.send('setRowSelection', this.get('tabName'), { id: null });
+          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), { id: null });
         }
       }
     },

@@ -254,7 +254,7 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
       dispatch(changeDetailTab(tabName));
       dispatch(resetHostDownloadLink());
       dispatch(resetRiskContext());
-      dispatch(getRiskScoreContext(machineId, 'critical', '0'));
+      dispatch(getRiskScoreContext(machineId, 'HOST'));
     } else {
       // Resetting the details data and input data
       dispatch(resetDetailsInputAndContent());
@@ -346,7 +346,7 @@ const onHostSelection = (item) => {
     dispatch(_setFocusedHost(item));
     dispatch(resetRiskContext());
     next(() => {
-      dispatch(getRiskScoreContext(item.id, 'critical'));
+      dispatch(getRiskScoreContext(item.id, 'HOST'));
     });
   };
 };

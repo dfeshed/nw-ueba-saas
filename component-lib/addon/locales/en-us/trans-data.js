@@ -2673,7 +2673,8 @@ export default {
       registryDiscrepancies: 'Registry Discrepancies',
       hostDetails: 'Host Details',
       policyDetails: 'Policy Details',
-      riskDetails: 'Risk Details'
+      riskDetails: 'Risk Details',
+      fileDetails: 'File Details'
     },
     context: {
       score: 'Score',

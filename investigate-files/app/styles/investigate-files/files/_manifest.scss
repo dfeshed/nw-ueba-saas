@@ -13,6 +13,9 @@ page.investigate-files-engine {
   .content-context-menu {
     display: inherit;
   }
+  .reset-risk-score {
+    display: none;
+  }
 
   .rsa-data-table-body-cell.score {
     padding: 3px 7px 0 7px;

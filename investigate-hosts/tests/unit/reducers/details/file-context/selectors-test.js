@@ -14,11 +14,13 @@ import {
   isRemediationAllowed,
   fileStatus,
   isNotAdvanced,
-  isFloatingOrMemoryDll
+  isFloatingOrMemoryDll,
+  focusedRowChecksum,
+  hostDetailPropertyTabs
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 
-module('Unit | Reducers | File Context', function() {
+module('Unit | Selectors | File Context', function() {
 
   test('totalItems is set', function(assert) {
     const result = totalItems(Immutable.from({
@@ -96,6 +98,64 @@ module('Unit | Reducers | File Context', function() {
       }
     }), 'drivers');
     assert.equal(result, 1);
+  });
+
+  test('focusedRowChecksum when rowId is available', function(assert) {
+    const result = focusedRowChecksum(Immutable.from({
+      endpoint: {
+        drivers: {
+          fileContext: {
+            1: {
+              id: 1,
+              fileName: 'C',
+              checksumSha256: 'C1'
+            },
+            2: {
+              id: 2,
+              fileName: 'Z',
+              checksumSha256: 'Z2'
+            },
+            3: {
+              id: 3,
+              fileName: 'A',
+              checksumSha256: 'A3'
+            }
+          },
+          selectedRowId: '3'
+        }
+      }
+    }), 'drivers');
+    assert.equal(result, 'A3', 'Checksum of third item is returned');
+  });
+
+  test('focusedRowChecksum is undefined when rowId is not available', function(assert) {
+    const result = focusedRowChecksum(Immutable.from({
+      endpoint: {
+        drivers: {
+          fileContext: {
+            1: {
+              id: 1,
+              fileName: 'C',
+              checksumSha256: 'C1'
+            }
+          },
+          selectedRowId: null
+        }
+      }
+    }), 'drivers');
+    assert.equal(result, undefined, 'Checksum is not set');
+  });
+
+  test('hostDetailPropertyTabs', function(assert) {
+    const result = hostDetailPropertyTabs(Immutable.from({
+      endpoint: {
+        drivers: {
+          activeHostDetailPropertyTab: 'RISK'
+        }
+      }
+    }), 'drivers');
+
+    assert.equal(result.findBy('name', 'RISK').selected, true, 'RISK Tab should be selected');
   });
 
   test('fileContextSelections is set', function(assert) {

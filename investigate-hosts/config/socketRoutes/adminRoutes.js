@@ -29,6 +29,10 @@ module.exports = function(environment) {
       getHostContext: {
         subscriptionDestination: '/user/queue/risk/context/host',
         requestDestination: '/ws/respond/risk/context/host'
+      },
+      getFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/file',
+        requestDestination: '/ws/respond/risk/context/file'
       }
     }
   };

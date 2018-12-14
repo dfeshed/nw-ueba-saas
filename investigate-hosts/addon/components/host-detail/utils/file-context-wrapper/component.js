@@ -11,24 +11,30 @@ import {
   selectedFileChecksums,
   isRemediationAllowed,
   isNotAdvanced,
-  isFloatingOrMemoryDll
+  isFloatingOrMemoryDll,
+  hostDetailPropertyTabs,
+  focusedRowChecksum
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
-  downloadFilesToServer
+  downloadFilesToServer,
+  setHostDetailPropertyTab
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
-import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
   fileProperty: fileContextFileProperty(state, storeName),
+  hostDetailPropertyTabs: hostDetailPropertyTabs(state, storeName),
+  focusedRowChecksum: focusedRowChecksum(state, storeName),
   fileContextSelections: fileContextSelections(state, storeName),
   serviceList: serviceList(state, storeName),
   fileStatus: fileStatus(state, storeName),
@@ -39,7 +45,9 @@ const stateToComputed = (state, { storeName }) => ({
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
   isNotAdvanced: isNotAdvanced(state),
-  areAllSelectedFloatingOrMemoryDll: isFloatingOrMemoryDll(state, storeName)
+  areAllSelectedFloatingOrMemoryDll: isFloatingOrMemoryDll(state, storeName),
+  activeHostDetailPropertyTab: state.endpoint[storeName].activeHostDetailPropertyTab,
+  risk: riskState(state)
 });
 
 const dispatchToActions = {
@@ -48,7 +56,9 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   downloadFilesToServer,
   getFileAnalysisData,
-  resetRiskScore
+  resetRiskScore,
+  setHostDetailPropertyTab,
+  getUpdatedRiskScoreContext
 };
 
 

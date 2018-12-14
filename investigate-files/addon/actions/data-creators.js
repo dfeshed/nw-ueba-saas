@@ -63,7 +63,7 @@ const initializeFileDetails = (checksum) => {
     dispatch(getRespondServerStatus());
     dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
-    dispatch(getRiskScoreContext(checksum));
+    dispatch(getRiskScoreContext(checksum, 'FILE'));
   };
 };
 /**
@@ -284,7 +284,7 @@ const onFileSelection = (item) => {
     dispatch(_setSelectedFile(item));
     dispatch(resetRiskContext());
     next(() => {
-      dispatch(getRiskScoreContext(item.checksumSha256, 'critical'));
+      dispatch(getRiskScoreContext(item.checksumSha256, 'FILE'));
       dispatch(_getSelectedFileProperties(item.checksumSha256));
     });
     dispatch(_fetchHostNameList(item.checksumSha256));

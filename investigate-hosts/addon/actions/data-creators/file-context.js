@@ -4,6 +4,8 @@ import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import HostFiles from '../api/files';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { focusedRowChecksum } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -34,13 +36,24 @@ const getFileContext = (belongsTo, categories) => {
   };
 };
 
-const setRowSelection = (belongsTo, { id }) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id }, meta: { belongsTo } });
+const _setRowSelection = (belongsTo, id) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id }, meta: { belongsTo } });
+
+const onHostFileSelection = (belongsTo, storeName, { id }) => {
+  return (dispatch, getState) => {
+    dispatch(_setRowSelection(belongsTo, id));
+    dispatch(getRespondServerStatus());
+    dispatch(resetRiskContext());
+    dispatch(getRiskScoreContext(focusedRowChecksum(getState(), storeName), 'FILE', 'HOST'));
+  };
+};
 
 const toggleRowSelection = (belongsTo, item) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: item, meta: { belongsTo } });
 
 const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
 
 const resetSelection = (belongsTo) => ({ type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo } });
+
+const setHostDetailPropertyTab = (belongsTo, tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName }, meta: { belongsTo } });
 
 const setFileContextFileStatus = (belongsTo, checksums, selectedList, data, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
@@ -142,7 +155,8 @@ const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
 
 export {
   getFileContext,
-  setRowSelection,
+  onHostFileSelection,
+  setHostDetailPropertyTab,
   toggleRowSelection,
   toggleAllSelection,
   setFileContextFileStatus,

@@ -9,7 +9,11 @@
         <h1 class="alert-heading">{{t 'investigateShared.endpoint.riskProperties.alerts.heading'}}</h1>
       </box>
       <box class="rsa-nav-tab-group">
-        {{#endpoint/risk-properties/alert-tab tabs=tabs defaultAction=defaultAction as |tab|}}
+        {{#endpoint/risk-properties/alert-tab
+          tabs=tabs
+          defaultAction=defaultAction
+          riskType=riskType
+          belongsTo=belongsTo as |tab|}}
           <div class="alert-count">{{tab.count}}</div>
           <div class="label">
             {{#if tab.color}}

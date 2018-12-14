@@ -19,7 +19,8 @@ const initialState = {
   totalItems: null,
   pageNumber: -1,
   hasNext: false,
-  isRemediationAllowed: true
+  isRemediationAllowed: true,
+  activeHostDetailPropertyTab: 'FILE_DETAILS'
 };
 
 module('Unit | Reducers | File Context', function() {
@@ -256,13 +257,22 @@ module('Unit | Reducers | File Context', function() {
     assert.equal(result.pageNumber, 1);
   });
 
+  test('The SET_HOST_DETAIL_PROPERTY_TAB will set the state of active tab', function(assert) {
+    const previous = Immutable.from({
+      activeHostDetailPropertyTab: 'FILE_DETAILS'
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName: 'RISK' } });
+    assert.equal(result.activeHostDetailPropertyTab, 'RISK', 'Risk tab is selected');
+  });
+
   test('The FETCH_FILE_CONTEXT_PAGINATED sets normalized server response to state', function(assert) {
     const previous = Immutable.from({
       fileContext: {},
       selectedFileId: null,
       pageNumber: -1,
       totalItems: 0,
-      contextLoadMoreStatus: null
+      contextLoadMoreStatus: null,
+      selectedRowId: null
     });
 
     const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { belongsTo: 'FILE' } });
@@ -277,6 +287,7 @@ module('Unit | Reducers | File Context', function() {
     const endState = reducer(previous, action);
 
     assert.equal(endState.pageNumber, 10);
+    assert.equal(endState.selectedRowId, 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33', 'First row checksum is set');
 
     const data = { ...filesData, hasNext: false };
 

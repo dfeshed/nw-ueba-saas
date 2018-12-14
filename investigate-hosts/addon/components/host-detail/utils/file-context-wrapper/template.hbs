@@ -27,11 +27,30 @@
     analyzeFile=(action 'onAnalyzeFile')}}
 </box>
 {{#if propertyConfig}}
-  <box xs='3'>
-    {{endpoint/file-property-panel
-      title='Property'
-      localeNameSpace='investigateHosts.property.file'
-      config=propertyConfig
-      data=fileProperty}}
+  <box xs='3' class='host-detail-property'>
+    <hbox class="flexi-fit">
+      {{#each hostDetailPropertyTabs as |tab|}}
+        {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostDetailPropertyTab' tabName tab.name)}}
+          <div class="label">{{t tab.label}}</div>
+        {{/rsa-nav-tab}}
+      {{/each}}
+    </hbox>
+    {{#if (eq activeHostDetailPropertyTab 'RISK')}}
+      {{endpoint/risk-properties
+        defaultAction=(action 'getUpdatedRiskScoreContext')
+        riskState=risk
+        riskType='FILE'
+        belongsTo='HOST'
+      }}
+    {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
+      <vbox class="host-properties-box">
+        <box class='scroll-box'>
+          {{endpoint/file-property-panel
+            localeNameSpace='investigateHosts.property.file'
+            config=propertyConfig
+            data=fileProperty}}
+        </box>
+      </vbox>
+    {{/if}}
   </box>
 {{/if}}
