@@ -59,6 +59,7 @@
     "ember-redux-saga-shim": "2.0.2",
     "ember-qunit": "^3.4.1",
     "ember-resolver": "4.3.0",
+    "ember-sinon": "2.2.0",
     "ember-source": "3.5.1",
     "ember-symbol-observable": "1.0.2",
     "eslint-plugin-ember-suave": "^1.0.0",

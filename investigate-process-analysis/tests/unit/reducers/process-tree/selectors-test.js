@@ -140,7 +140,7 @@ module('Unit | Selectors | process-tree', function() {
   });
   test('eventsTableConfig', function(assert) {
     const result = eventsTableConfig();
-    assert.equal(result.length, 11);
+    assert.equal(result.length, 12);
   });
   test('eventsSortField', function(assert) {
     const state = Immutable.from({

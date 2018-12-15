@@ -61,7 +61,7 @@ const _processIdFilter = (pid, isParentAndChild) => {
  * @returns {{agentId: *, endTime: *, startTime: *, queryTimeFormat: string, serviceId: *, metaFilter: {conditions}}}
  * @public
  */
-export const getQueryNode = function(input, selectedVid, type, filters) {
+export const getQueryNode = function(input = {}, selectedVid, type, filters) {
   const { et, st, sid, aid: agentId, vid } = input;
 
   let processId = vid;

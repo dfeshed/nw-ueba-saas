@@ -1,8 +1,19 @@
-<span class='label'>{{t 'investigateProcessAnalysis.filter.title'}}</span> 
-<span class='resetFilter' {{action 'resetFilterValue' selectedProcessId}}>{{t 'investigateProcessAnalysis.filter.filterReset'}}</span>
-
+<hbox class="rsa-header" fit>
+  <h3 class='title'>
+    {{rsa-icon name='filter-2'}}
+    {{t 'investigateFiles.filter.filter'}}
+  </h3>
+  {{#rsa-form-button class="close-zone" isIconOnly=true defaultAction=toggleFilterPanel}}
+    {{rsa-icon name='close'}}
+  {{/rsa-form-button}}
+</hbox>
 {{#each filterConfig as |filter|}}
   {{#if filter.options.length}}
     {{process-details/events-filter-panel/meta-filter filter=filter}}
   {{/if}}
 {{/each}}
+<div class='filter-footer'>
+  {{#rsa-form-button class="reset-button" click=(action 'resetFilterValue' selectedProcessId)}}
+    {{t 'dataFilters.reset'}}
+  {{/rsa-form-button}}
+</div>

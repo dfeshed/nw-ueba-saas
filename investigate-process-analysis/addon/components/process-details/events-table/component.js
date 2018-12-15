@@ -14,6 +14,17 @@ const stateToComputed = (state) => ({
 const EventsTableComponent = Component.extend({
   layout,
   tagName: 'hbox',
-  classNames: ['process-events-details']
+
+  classNames: ['process-events-details'],
+
+  classNameBindings: ['isShowFilter'],
+
+  isShowFilter: false,
+
+  actions: {
+    toggleFilterPanel() {
+      this.toggleProperty('isShowFilter');
+    }
+  }
 });
 export default connect(stateToComputed)(EventsTableComponent);

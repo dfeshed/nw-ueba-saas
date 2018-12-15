@@ -1,4 +1,10 @@
-<hbox fit>
+<hbox class="table-header-box" fit>
+  <h2 class="title-header">
+    {{#rsa-form-button class='filter-button' click=toggleFilterPanel }}
+      {{rsa-icon name='filter-2' size='small'}}
+      <span>{{t 'investigateFiles.filter.filter'}}</span>
+    {{/rsa-form-button}}
+  </h2>
   <vbox fit class="events-count">
     <label class="label">{{t 'investigateProcessAnalysis.tabs.events' count=eventsFilteredCount}}</label>
   </vbox>
@@ -6,8 +12,9 @@
 {{#rsa-data-table
   items=eventsData
   columnsConfig=config
+
   lazy=true}}
-  {{#rsa-data-table/header as |column|}}
+  {{#rsa-data-table/header enableColumnSelector=true as |column|}}
     {{column.title}} 
     {{#if column.enableSort}}
       {{rsa-icon

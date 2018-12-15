@@ -1,9 +1,8 @@
-import contextMenuMixin from 'ember-context-menu';
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
-export default DataTableBodyRow.extend(contextMenuMixin, {
+export default DataTableBodyRow.extend({
 
   classNameBindings: ['isRowChecked'],
 
@@ -30,13 +29,12 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
 
   @computed('item')
   contextItems() {
-    const cntx = this;
     const contextConf = [
       {
         label: 'editCertificateStatus',
         prefix: 'investigateFiles.certificate.contextMenu.actions.',
-        action() {
-          cntx.editCertificateStatus();
+        action(selection, context) {
+          context.editCertificateStatus();
         }
       },
       {
@@ -46,29 +44,29 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
           {
             label: 'networkEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Network Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Network Event');
             }
           },
           {
             label: 'fileEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'File Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'File Event');
             }
           },
           {
             label: 'processEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Process Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Process Event');
             }
           },
           {
             label: 'registryEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
-            action() {
-              cntx.pivotToInvestigate(cntx.get('item'), 'Registry Event');
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Registry Event');
             }
           }
         ]

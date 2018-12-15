@@ -507,7 +507,7 @@ const TreeComponent = Component.extend({
 
     // Calculating the height of the tree
     nodes.forEach((d) => {
-      d.y = d.depth * 220;
+      d.y = d.depth * 160;
     });
 
     // Creating the links with enter, update and exit functionality

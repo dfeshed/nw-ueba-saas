@@ -1,4 +1,4 @@
-{{#rsa-context-menu contextItems=contextItems contextSelection=item beforeContextMenuShow=beforeContextMenuShow}}
+{{#rsa-context-menu contextItems=contextItems contextDetails=this contextSelection=item beforeContextMenuShow=beforeContextMenuShow}}
   {{#if table.columnsDefinedDeclaratively}}
     {{!assume the consumer provided a block that includes an individual table cell for each column; no need to iterate}}
     {{yield item index null}}

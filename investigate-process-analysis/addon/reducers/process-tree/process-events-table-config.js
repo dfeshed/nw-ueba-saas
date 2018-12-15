@@ -45,5 +45,9 @@ export default [
   {
     field: 'ipDst',
     title: 'Target IP'
+  },
+  {
+    field: 'domainDst',
+    title: 'Domain Name'
   }
 ];

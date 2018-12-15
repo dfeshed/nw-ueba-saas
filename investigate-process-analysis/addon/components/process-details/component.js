@@ -18,14 +18,14 @@ const dispatchToActions = {
 // Investigate TABS, order is important
 const TABS = [
   {
-    label: 'investigateProcessAnalysis.tabs.properties',
-    name: 'Properties',
-    component: 'process-details/property-container'
-  },
-  {
     label: 'investigateProcessAnalysis.tabs.events',
     name: 'Events',
     component: 'process-details/events-table'
+  },
+  {
+    label: 'investigateProcessAnalysis.tabs.properties',
+    name: 'Properties',
+    component: 'process-details/property-container'
   }
 ];
 
@@ -33,14 +33,14 @@ const processDetails = Component.extend({
 
   tagName: '',
 
-  activeTab: 'Properties',
+  activeTab: 'Events',
 
-  tabComponent: 'process-details/property-container',
+  tabComponent: 'process-details/events-table',
 
-  isReconExpanded: true,
+  isEventExpanded: false,
 
-  @computed('isReconExpanded')
-  toggleEventsClass: (isReconExpanded) => isReconExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+  @computed('isEventExpanded')
+  toggleEventsClass: (isEventExpanded) => isEventExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
 
   @computed('activeTab')
   tabs(activeTab) {
@@ -59,7 +59,7 @@ const processDetails = Component.extend({
     },
 
     toggleDetailsExpanded() {
-      this.toggleProperty('isReconExpanded');
+      this.toggleProperty('isEventExpanded');
       this.send('toggleEventPanelExpanded');
     },
 

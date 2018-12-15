@@ -4,7 +4,7 @@ import reducer from 'investigate-process-analysis/reducers/process-visuals/reduc
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 
 const initialState = Immutable.from({
-  detailsTabSelected: 'Properties',
+  detailsTabSelected: 'Events',
   isEventPanelExpanded: true,
   isProcessDetailsVisible: true
 });

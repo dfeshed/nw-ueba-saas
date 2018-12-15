@@ -4,7 +4,7 @@ import { resetFilterValue } from 'investigate-process-analysis/actions/creators/
 
 const stateToComputed = (state) => ({
   filterConfig: state.processAnalysis.processFilter.schema,
-  selectedProcessId: state.processAnalysis.processTree.selectedProcess.processId
+  selectedProcessId: state.processAnalysis.processTree.selectedProcess ? state.processAnalysis.processTree.selectedProcess.processId : null
 });
 
 const dispatchToActions = {
@@ -13,7 +13,8 @@ const dispatchToActions = {
 
 const eventsFilterPanel = Component.extend({
 
-  classNames: ['eventsFilterPanel']
+  classNames: ['eventsFilterPanel'],
+  tagName: 'vbox'
 
 });
 

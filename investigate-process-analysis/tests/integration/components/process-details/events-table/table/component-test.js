@@ -57,4 +57,68 @@ module('Integration | Component | process-details/events-table/table', function(
     await click('.sort');
     assert.equal(findAll('.rsa-icon-arrow-up-7-filled').length, 1, 'Expected up arrow icon');
   });
+
+  test('it renders the header', async function(assert) {
+    const eventsData = [
+      {
+        sessionId: 45328,
+        time: 1525950159000,
+        id: 'event_3'
+      },
+      {
+        sessionId: 45337,
+        time: 1525950159000,
+        id: 'event_4'
+      }];
+
+    new ReduxDataHelper(setState)
+      .eventsData(eventsData)
+      .eventsFilteredCount(2)
+      .build();
+    const timezone = this.owner.lookup('service:timezone');
+    const timeFormat = this.owner.lookup('service:timeFormat');
+    const dateFormat = this.owner.lookup('service:dateFormat');
+
+    timezone.set('_selected', { zoneId: 'UTC' });
+    timeFormat.set('_selected', { format: 'hh:mm:ss' });
+    dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
+
+    await render(hbs`{{process-details/events-table/table}}`);
+    assert.equal(findAll('.title-header').length, 1, 'Header section exists');
+  });
+
+  test('clicking the header button will call the external action', async function(assert) {
+    assert.expect(1);
+    this.set('toggleFilterPanel ', () => {
+      assert.ok(true);
+    });
+    const eventsData = [
+      {
+        sessionId: 45328,
+        time: 1525950159000,
+        id: 'event_3'
+      },
+      {
+        sessionId: 45337,
+        time: 1525950159000,
+        id: 'event_4'
+      }];
+
+    new ReduxDataHelper(setState)
+      .eventsData(eventsData)
+      .eventsFilteredCount(2)
+      .build();
+    const timezone = this.owner.lookup('service:timezone');
+    const timeFormat = this.owner.lookup('service:timeFormat');
+    const dateFormat = this.owner.lookup('service:dateFormat');
+
+    timezone.set('_selected', { zoneId: 'UTC' });
+    timeFormat.set('_selected', { format: 'hh:mm:ss' });
+    dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
+
+    await render(hbs`{{process-details/events-table/table}}`);
+    assert.equal(findAll('.title-header').length, 1, 'Header section exists');
+    await click('.filter-button button');
+  });
+
 });

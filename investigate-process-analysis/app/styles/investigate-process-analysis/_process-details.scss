@@ -6,18 +6,35 @@
     letter-spacing: 0.05rem;
   }
   .events-count {
-    padding: 10px;
+    padding: rsa-whitespace(less);
   }
   .rsa-data-table {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 158px);
   }
 }
 .process-events-details {
+
+  .title-header {
+    height: 30px;
+  }
+  .table-header-box {
+    padding: rsa-whitespace(less) 0 rsa-whitespace(less) 0;
+  }
   .events-table-panel {
     transition: max-width .3s;
   }
   .filter-panel {
-    max-width: 365px;
+    max-width: 0;
+    opacity: opacity-value(transparent);
+    @include rsa-vendor-prefix(transition-property, max-width, opacity);
+    @include rsa-vendor-prefix(transition-duration, 0.4s, 0.1s);
+    @include border-right(1px, solid, primary, dark);
+  }
+  &.is-show-filter {
+    .filter-panel {
+      opacity: opacity-value(opaque);
+      max-width: 200px;
+    }
   }
 }
 

@@ -3,7 +3,6 @@
   overflow-y: auto;
   overflow-x: hidden;
   color: text-color(primary, lighter);
-  padding: 1rem;
   .label {
     text-align: left;
     color: text-color(primary, lighter);
@@ -16,7 +15,7 @@
     cursor: pointer;
   }
   .meta-filter {
-    margin: 8px 5px 8px 0;
+    padding: rsa-whitespace();
     .filterName {
       margin: 8px 0;
       text-transform: capitalize;
@@ -28,6 +27,9 @@
       padding: 2px 5px;
       margin: 5px;
       cursor: pointer;
+      max-width: 160px;
+      text-overflow: ellipsis;
+      overflow: hidden;
       &.is-selected {
         background-color: border-color(secondary);
         border: 1px solid border-color(secondary);
@@ -36,5 +38,14 @@
   }
   hr {
     border-color: text-color(primary, light);
+  }
+}
+
+.reset-button {
+  @include border-top(1px, solid, primary, dark, opaque);
+  padding: rsa-whitespace(less);
+  width: 100%;
+  button {
+    width: 100%;
   }
 }
