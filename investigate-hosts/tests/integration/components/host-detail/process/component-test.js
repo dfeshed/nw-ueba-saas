@@ -214,12 +214,20 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(findAll('.toggle-icon').length, 1, 'toggle icon');
       await click(findAll('.rsa-data-table-body-row')[0]);
       assert.equal(document.querySelectorAll('.process-property-box:not([hidden])').length, 1);
-      assert.equal(find('.header-section__process-name').textContent.trim().includes('systemd'), true, 'Selected pocess name on property panel');
+
+      assert.equal(find('.rsa-header .entity-title').textContent.trim().includes('systemd'), true, 'Selected process name on property panel');
+      assert.equal(findAll('.rsa-header .rsa-nav-tab').length, 2, '2 tabs are rendered in detail property');
+      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
+      assert.equal(findAll('.host-property-panel').length, 1, 'Property panel is rendered');
+      await click(findAll('.rsa-header .rsa-nav-tab')[1]);
+      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Risk Details', 'Risk details tab is selected');
+      assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
+
       await click('.toggle-icon .rsa-icon');
       let state = this.owner.lookup('service:redux').getState();
       const { endpoint: { visuals: { isTreeView } } } = state;
       assert.equal(isTreeView, false, 'It should toggle to list view');
-      assert.equal(document.querySelectorAll('.process-property-box:not([visible])').length, 1);
+      assert.equal(document.querySelectorAll('.risk-properties').length, 1);
       state = this.owner.lookup('service:redux').getState();
       const { endpoint: { process: { selectedRowIndex } } } = state;
       assert.equal(selectedRowIndex, -1);

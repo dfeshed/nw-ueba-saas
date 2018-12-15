@@ -13,7 +13,8 @@ const initialState = {
 
   snapShots: null,
   isDetailRightPanelVisible: true,
-  isSnapshotsLoading: false
+  isSnapshotsLoading: false,
+  activeHostDetailPropertyTab: 'FILE_DETAILS'
 };
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
@@ -49,6 +50,15 @@ test('The SET_ANIMATION will sets the animation to the state', function(assert) 
   const result = reducer(previous, { type: ACTION_TYPES.SET_ANIMATION, payload: 'toDown' });
   assert.equal(result.animation, 'toDown');
 });
+
+test('The SET_HOST_DETAIL_PROPERTY_TAB will set the state of active tab', function(assert) {
+  const previous = Immutable.from({
+    activeHostDetailPropertyTab: 'FILE_DETAILS'
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName: 'RISK' } });
+  assert.equal(result.activeHostDetailPropertyTab, 'RISK', 'Risk tab is selected');
+});
+
 
 test('The SET_SCAN_TIME will sets the selected scan time to the state', function(assert) {
   const previous = Immutable.from({

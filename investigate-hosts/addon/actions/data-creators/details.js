@@ -262,6 +262,7 @@ const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload
 
 const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB, payload: { tabName } });
 
+const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
 
 export {
   initializeAgentDetails,
@@ -277,5 +278,6 @@ export {
   setAnomaliesTabView,
   setHostDetailsDataTableSortConfig,
   setAlertTab,
-  setPropertyPanelTabView
+  setPropertyPanelTabView,
+  setHostDetailPropertyTab
 };

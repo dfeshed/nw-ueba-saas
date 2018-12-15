@@ -4,7 +4,8 @@ import Immutable from 'seamless-immutable';
 
 import {
   hasScanTime,
-  getColumnsConfig
+  getColumnsConfig,
+  hostDetailPropertyTabs
 } from 'investigate-hosts/reducers/details/selectors';
 
 module('Unit | selectors | details');
@@ -51,4 +52,16 @@ test('Get OS specific column config', function(assert) {
   const state = { endpoint: { overview: { hostDetails } } };
 
   assert.equal(getColumnsConfig(state, columnConfig), linuxConfig, 'Should return OS specific config (linux)');
+});
+
+test('hostDetailPropertyTabs', function(assert) {
+  const result = hostDetailPropertyTabs(Immutable.from({
+    endpoint: {
+      detailsInput: {
+        activeHostDetailPropertyTab: 'RISK'
+      }
+    }
+  }));
+
+  assert.equal(result.findBy('name', 'RISK').selected, true, 'RISK Tab should be selected');
 });

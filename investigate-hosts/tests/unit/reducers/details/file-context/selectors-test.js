@@ -15,8 +15,7 @@ import {
   fileStatus,
   isNotAdvanced,
   isFloatingOrMemoryDll,
-  focusedRowChecksum,
-  hostDetailPropertyTabs
+  focusedRowChecksum
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 
@@ -144,18 +143,6 @@ module('Unit | Selectors | File Context', function() {
       }
     }), 'drivers');
     assert.equal(result, undefined, 'Checksum is not set');
-  });
-
-  test('hostDetailPropertyTabs', function(assert) {
-    const result = hostDetailPropertyTabs(Immutable.from({
-      endpoint: {
-        drivers: {
-          activeHostDetailPropertyTab: 'RISK'
-        }
-      }
-    }), 'drivers');
-
-    assert.equal(result.findBy('name', 'RISK').selected, true, 'RISK Tab should be selected');
   });
 
   test('fileContextSelections is set', function(assert) {

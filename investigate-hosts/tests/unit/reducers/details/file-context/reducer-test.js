@@ -19,8 +19,7 @@ const initialState = {
   totalItems: null,
   pageNumber: -1,
   hasNext: false,
-  isRemediationAllowed: true,
-  activeHostDetailPropertyTab: 'FILE_DETAILS'
+  isRemediationAllowed: true
 };
 
 module('Unit | Reducers | File Context', function() {
@@ -80,6 +79,29 @@ module('Unit | Reducers | File Context', function() {
     assert.deepEqual(_.values(endState.fileContext).length, 4);
     assert.deepEqual(endState.totalItems, 4);
   });
+
+  test('The FETCH_FILE_CONTEXT with empty data', function(assert) {
+    const previous = Immutable.from({
+      fileContext: {},
+      contextLoadingStatus: 'completed'
+    });
+
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT });
+    const startEndState = reducer(previous, startAction);
+    assert.deepEqual(startEndState.contextLoadingStatus, 'wait');
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT,
+      payload: { data: {} },
+      meta: {
+        belongsTo: 'DRIVER'
+      }
+    });
+    const endState = reducer(previous, action);
+    assert.deepEqual(_.values(endState.fileContext).length, 0);
+    assert.deepEqual(endState.totalItems, 0);
+  });
+
   test('The HOST_DETAILS_DATATABLE_SORT_CONFIG resets the selected row id', function(assert) {
     const previous = Immutable.from({
       selectedRowId: '123'
@@ -257,14 +279,6 @@ module('Unit | Reducers | File Context', function() {
     assert.equal(result.pageNumber, 1);
   });
 
-  test('The SET_HOST_DETAIL_PROPERTY_TAB will set the state of active tab', function(assert) {
-    const previous = Immutable.from({
-      activeHostDetailPropertyTab: 'FILE_DETAILS'
-    });
-    const result = reducer(previous, { type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName: 'RISK' } });
-    assert.equal(result.activeHostDetailPropertyTab, 'RISK', 'Risk tab is selected');
-  });
-
   test('The FETCH_FILE_CONTEXT_PAGINATED sets normalized server response to state', function(assert) {
     const previous = Immutable.from({
       fileContext: {},
@@ -300,6 +314,32 @@ module('Unit | Reducers | File Context', function() {
     const newEndState = reducer(previous, newAction);
     assert.equal(newEndState.contextLoadMoreStatus, 'completed');
   });
+
+  test('The FETCH_FILE_CONTEXT_PAGINATED with no data', function(assert) {
+    const previous = Immutable.from({
+      fileContext: {},
+      selectedFileId: null,
+      pageNumber: -1,
+      totalItems: 0,
+      contextLoadMoreStatus: null,
+      selectedRowId: null
+    });
+
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { belongsTo: 'FILE' } });
+    const startEndState = reducer(previous, startAction);
+    assert.deepEqual(startEndState.contextLoadMoreStatus, 'streaming');
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
+      payload: { data: { items: [] }, hasNext: false },
+      meta: { belongsTo: 'FILE' }
+    });
+    const endState = reducer(previous, action);
+
+    assert.equal(endState.selectedRowId, null, 'First row checksum is null');
+    assert.equal(endState.contextLoadMoreStatus, 'completed');
+  });
+
   test('FILE_CONTEXT_RESET_SELECTION should selected all drivers', function(assert) {
     const driver = {
       id: 0,

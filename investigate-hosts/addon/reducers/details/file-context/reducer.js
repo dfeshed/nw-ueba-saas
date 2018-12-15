@@ -17,8 +17,7 @@ const initialState = Immutable.from({
   totalItems: null, // Total number of file context items
   pageNumber: -1,
   hasNext: false,
-  isRemediationAllowed: true,
-  activeHostDetailPropertyTab: 'FILE_DETAILS'
+  isRemediationAllowed: true
 });
 
 
@@ -28,7 +27,7 @@ const _handleAppendFiles = (action) => {
     const { fileContext } = state;
     const normalizedData = normalize(action.payload.data.items, [getSchema(belongsTo)]);
     const newData = normalizedData.entities[belongsTo];
-    const firstRowId = !state.selectedRowId ? Object.keys(newData)[0] : state.selectedRowId;
+    const firstRowId = !state.selectedRowId && newData ? Object.keys(newData)[0] : state.selectedRowId;
     return state.merge({
       fileContext: { ...fileContext, ...newData },
       selectedRowId: firstRowId,
@@ -79,7 +78,7 @@ const fileContext = reduxActions.handleActions({
           totalItems,
           fileContext,
           contextLoadingStatus: 'completed',
-          selectedRowId: Object.keys(fileContext)[0]
+          selectedRowId: fileContext ? Object.keys(fileContext)[0] : null
         });
       }
     });
@@ -158,10 +157,7 @@ const fileContext = reduxActions.handleActions({
         return s.set('isRemediationAllowed', action.payload.data);
       }
     });
-  },
-
-  [ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB]: (state, { payload: { tabName } }) => state.set('activeHostDetailPropertyTab', tabName)
-
+  }
 }, initialState);
 
 export default fileContext;

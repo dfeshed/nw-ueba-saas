@@ -19,6 +19,7 @@ import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/det
 import {
   setRowIndex,
   getProcessDetails,
+  onProcessSelection,
   toggleProcessSelection,
   selectAllProcess,
   sortBy,
@@ -36,6 +37,7 @@ import {
 const dispatchToActions = {
   sortBy,
   getProcessDetails,
+  onProcessSelection,
   toggleProcessSelection,
   selectAllProcess,
   deSelectAllProcess,
@@ -174,13 +176,13 @@ const TreeComponent = Component.extend({
      * @public
      */
     handleRowClickAction(item, index) {
-      const { pid } = item;
+      const { pid, checksumSha256 } = item;
       if (this.get('selectedRowIndex') !== index) {
         this.send('setRowIndex', index);
         if (this.openPropertyPanel) {
           this.openPropertyPanel();
         }
-        this.send('getProcessDetails', pid);
+        this.send('onProcessSelection', pid, checksumSha256);
       } else {
         this.send('setRowIndex', null);
         if (this.closePropertyPanel) {

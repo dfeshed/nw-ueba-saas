@@ -1,6 +1,7 @@
 import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
 import { handleError } from '../creator-utils';
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const toggleProcessView = () => {
   return (dispatch, getState) => {
@@ -8,9 +9,9 @@ const toggleProcessView = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
     const { process: { processTree, processList }, visuals: { isTreeView } } = getState().endpoint;
     if (isTreeView) {
-      dispatch(getProcessDetails(processTree[0].pid));
+      dispatch(_getProcessDetails(processTree[0].pid));
     } else {
-      dispatch(getProcessDetails(processList[0].pid));
+      dispatch(_getProcessDetails(processList[0].pid));
     }
   };
 };
@@ -20,7 +21,7 @@ const toggleProcessDetailsView = (item, isOpen = false) => {
     dispatch(deSelectAllProcess());
     if (item) {
       const { pid } = item;
-      dispatch(getProcessDetails(pid));
+      dispatch(_getProcessDetails(pid));
     }
     dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen } });
   };
@@ -40,7 +41,7 @@ const _getList = () => {
       meta: {
         onSuccess: (response) => {
           if (!isTreeView && response.data.length) {
-            dispatch(getProcessDetails(response.data[0].pid));
+            dispatch(_getProcessDetails(response.data[0].pid));
           }
         },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_LIST, response)
@@ -58,7 +59,7 @@ const _getTree = () => {
       meta: {
         onSuccess: (response) => {
           if (isTreeView && response.data.length) {
-            dispatch(getProcessDetails(response.data[0].pid));
+            dispatch(_getProcessDetails(response.data[0].pid));
           }
         },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
@@ -85,7 +86,7 @@ const getAllProcess = () => {
   };
 };
 
-const getProcessDetails = (processId) => {
+const _getProcessDetails = (processId) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
     dispatch({
@@ -98,6 +99,15 @@ const getProcessDetails = (processId) => {
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS, response)
       }
     });
+  };
+};
+
+const onProcessSelection = (processId, checksumSha256) => {
+  return (dispatch) => {
+    dispatch(getRespondServerStatus());
+    dispatch(resetRiskContext());
+    dispatch(_getProcessDetails(processId));
+    dispatch(getRiskScoreContext(checksumSha256, 'FILE', 'HOST'));
   };
 };
 
@@ -128,7 +138,7 @@ const setRowIndex = (index) => ({ type: ACTION_TYPES.SET_ROW_INDEX, payload: ind
 export {
   sortBy,
   toggleProcessView,
-  getProcessDetails,
+  onProcessSelection,
   getAllProcess,
   toggleProcessSelection,
   selectAllProcess,

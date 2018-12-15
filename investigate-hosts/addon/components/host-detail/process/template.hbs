@@ -1,4 +1,4 @@
-{{#unless isProcessDetailsView}}  
+{{#unless isProcessDetailsView}}
   {{#unless isProcessDataEmpty}}
     {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
       {{#layout.center}}
@@ -17,7 +17,6 @@
                 osType=osType
                 hostName=hostName}}
             </div>
-
             {{endpoint/file-actionbar
               onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
               getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
@@ -38,34 +37,37 @@
               analyzeFile=(action 'onAnalyzeFile')}}
           </div>
           {{host-detail/process/process-tree
-            openPropertyPanel=(action layout.open 'right')
-            closePropertyPanel=(action layout.close 'right')}}
+          openPropertyPanel=(action layout.open 'right')
+          closePropertyPanel=(action layout.close 'right')}}
         </box>
       {{/layout.center}}
       {{#layout.right as |right|}}
         {{#right.header}}
-          <hbox>
-            <box>
-              <div class='header-section__process-name'>{{selectedProcessName}}</div>
-              <div class='rsa-nav-tab-group'>
-                {{#rsa-nav-tab align='left' isActive=true}}
-                  <div class="label">{{t 'investigateHosts.process.properties'}}</div>
-                {{/rsa-nav-tab}}
-              </div>
-            </box>
-            {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
-              {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-            {{/rsa-form-button}}
-          </hbox>
+          {{endpoint/entity-details
+            title=selectedProcessName
+            tabs= hostDetailPropertyTabs
+            setTabAction=(action 'setHostDetailPropertyTab' )
+            closeAction=(action layout.close 'right')
+          }}
         {{/right.header}}
-        <box class="process-property-box scroll-box">
-          {{endpoint/file-property-panel
+        {{#if (eq activeHostDetailPropertyTab 'RISK')}}
+          {{endpoint/risk-properties
+            defaultAction=(action 'getUpdatedRiskScoreContext')
+            riskState=risk
+            riskType='FILE'
+            belongsTo='HOST'
+          }}
+        {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
+          <box class="process-property-box scroll-box">
+            {{endpoint/file-property-panel
             config=propertyConfig
             localeNameSpace='investigateHosts.property.file'
             data=process}}
-        </box>
+          </box>
+        {{/if}}
       {{/layout.right}}
     {{/rsa-page-layout}}
   {{/unless}}
 {{/unless}}
+
 

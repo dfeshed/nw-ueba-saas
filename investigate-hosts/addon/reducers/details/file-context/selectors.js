@@ -2,17 +2,6 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 import _ from 'lodash';
 
-const HOST_DETAIL_PROPERTY_TABS = [
-  {
-    label: 'investigateHosts.tabs.fileDetails',
-    name: 'FILE_DETAILS'
-  },
-  {
-    label: 'investigateHosts.tabs.riskDetails',
-    name: 'RISK'
-  }
-];
-
 const _fileContext = (state, name) => state.endpoint[name].fileContext;
 const _sortConfig = (state, name) => state.endpoint[name].sortConfig;
 const _contextLoadingStatus = (state, name) => state.endpoint[name].contextLoadingStatus;
@@ -26,7 +15,6 @@ const _totalItems = (state, name) => state.endpoint[name].totalItems;
 const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
 const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails;
-const _activeHostDetailPropertyTab = (state, name) => state.endpoint[name].activeHostDetailPropertyTab || 'FILE_DETAILS';
 
 export const fileStatus = createSelector(
   _fileStatus,
@@ -149,12 +137,5 @@ export const isFloatingOrMemoryDll = createSelector(
       return filteredList.length === fileContextSelections.length;
     }
     return true;
-  }
-);
-
-export const hostDetailPropertyTabs = createSelector(
-  [_activeHostDetailPropertyTab],
-  (activeHostDetailPropertyTab) => {
-    return HOST_DETAIL_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostDetailPropertyTab }));
   }
 );

@@ -10,7 +10,10 @@ import {
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
-import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
+import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { getColumnsConfig, hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 import summaryItems from './summary-item-config';
 import { machineOsType, hostName, isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -31,6 +34,8 @@ import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/fi
 
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
+  hostDetailPropertyTabs: hostDetailPropertyTabs(state),
+  activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   agentId: state.endpoint.detailsInput.agentId,
   process: getProcessData(state),
   isNavigatedFromExplore: isNavigatedFromExplore(state),
@@ -49,7 +54,8 @@ const stateToComputed = (state) => ({
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView
+  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
+  risk: riskState(state)
 });
 
 const dispatchToActions = {
@@ -59,7 +65,9 @@ const dispatchToActions = {
   getFileContextFileStatus,
   retrieveRemediationStatus,
   downloadFilesToServer,
-  getFileAnalysisData
+  getFileAnalysisData,
+  setHostDetailPropertyTab,
+  getUpdatedRiskScoreContext
 };
 
 const Container = Component.extend({

@@ -12,16 +12,16 @@ import {
   isRemediationAllowed,
   isNotAdvanced,
   isFloatingOrMemoryDll,
-  hostDetailPropertyTabs,
   focusedRowChecksum
 } from 'investigate-hosts/reducers/details/file-context/selectors';
+import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
 import {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
-  downloadFilesToServer,
-  setHostDetailPropertyTab
+  downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
@@ -46,7 +46,7 @@ const stateToComputed = (state, { storeName }) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   isNotAdvanced: isNotAdvanced(state),
   areAllSelectedFloatingOrMemoryDll: isFloatingOrMemoryDll(state, storeName),
-  activeHostDetailPropertyTab: state.endpoint[storeName].activeHostDetailPropertyTab,
+  activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   risk: riskState(state)
 });
 

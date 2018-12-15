@@ -103,7 +103,8 @@ export default Component.extend({
     if (nextLandingTab !== activeRiskSeverityTab) {
       next(() => {
         if (this.get('defaultAction')) {
-          this.get('defaultAction')(id, nextLandingTab, '0');
+          const { riskType, belongsTo } = this.getProperties('riskType', 'belongsTo');
+          this.get('defaultAction')(id, riskType, belongsTo, nextLandingTab);
         }
       });
     }

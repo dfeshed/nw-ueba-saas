@@ -1,0 +1,11 @@
+<h3 class='entity-title' title={{title}}>
+  {{title}}
+</h3>
+{{#each tabs as |tab|}}
+  {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setTab' tab.name)}}
+    <div class="label">{{t tab.label}}</div>
+  {{/rsa-nav-tab}}
+{{/each}}
+{{#rsa-form-button class='close-zone' isIconOnly=true click=closeAction }}
+  {{rsa-icon class='close-icon' name='close'}}
+{{/rsa-form-button}}

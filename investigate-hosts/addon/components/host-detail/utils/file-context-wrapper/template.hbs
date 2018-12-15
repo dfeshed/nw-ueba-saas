@@ -30,7 +30,7 @@
   <box xs='3' class='host-detail-property'>
     <hbox class="flexi-fit">
       {{#each hostDetailPropertyTabs as |tab|}}
-        {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostDetailPropertyTab' tabName tab.name)}}
+        {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostDetailPropertyTab' tab.name)}}
           <div class="label">{{t tab.label}}</div>
         {{/rsa-nav-tab}}
       {{/each}}

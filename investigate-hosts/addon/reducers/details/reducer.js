@@ -11,7 +11,8 @@ const dataInitialState = Immutable.from({
 
   snapShots: null,
   isDetailRightPanelVisible: true,
-  isSnapshotsLoading: false
+  isSnapshotsLoading: false,
+  activeHostDetailPropertyTab: 'FILE_DETAILS'
 });
 
 const data = handleActions({
@@ -36,7 +37,8 @@ const data = handleActions({
 
   [ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL]: (state) => {
     return state.set('isDetailRightPanelVisible', !state.isDetailRightPanelVisible);
-  }
+  },
+  [ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB]: (state, { payload: { tabName } }) => state.set('activeHostDetailPropertyTab', tabName)
 
 }, dataInitialState);
 

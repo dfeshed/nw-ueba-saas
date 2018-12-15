@@ -1,0 +1,10 @@
+.rsa-header {
+  h3.entity-title {
+    text-align: center;
+    width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: rsa-whitespace() 5rem;
+    font-size: 1rem;
+  }
+}
