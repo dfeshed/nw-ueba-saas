@@ -2229,6 +2229,11 @@ export default {
         Suspicious: 'Suspicious',
         Malicious: 'Malicious',
         Known_Good: 'Known Good'
+      },
+      fileDownloadStatus: {
+        Downloaded: 'Downloaded',
+        Error: 'Error',
+        NotDownloaded: 'Not Downloaded'
       }
     },
     fields: {

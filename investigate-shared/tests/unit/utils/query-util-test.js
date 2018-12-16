@@ -44,6 +44,38 @@ module('Unit | Utils | Query Util', function() {
     assert.equal(result.criteria.criteriaList[0].expressionList.length, 2);
   });
 
+  test('adds IS_NULL expression when notDownloaded is selected', function(assert) {
+    const originalExpressionList = [
+      {
+        propertyName: 'downloadInfo.status',
+        propertyValues: [{ value: 'Error' }, { value: 'NotDownloaded' }],
+        restrictionType: 'IN'
+      }
+    ];
+    const result = addFilter({}, originalExpressionList);
+    assert.equal(result.criteria.criteriaList.length, 1);
+    const [{ expressionList }] = result.criteria.criteriaList;
+    assert.equal(expressionList.length, 2);
+    assert.equal(expressionList[0].restrictionType, 'IN', 'restriction type is IN');
+    assert.equal(expressionList[0].propertyValues.length, 2, 'Contains Error and NotDownloaded');
+    assert.equal(expressionList[1].restrictionType, 'IS_NULL', 'is null restriction type is added for NotDownloaded');
+  });
+
+  test('adds IS_NULL expression is not added when notDownloaded is not selected', function(assert) {
+    const originalExpressionList = [
+      {
+        propertyName: 'downloadInfo.status',
+        propertyValues: [{ value: 'error' }, { value: 'downloaded' }],
+        restrictionType: 'IN'
+      }
+    ];
+    const result = addFilter({}, originalExpressionList);
+    assert.equal(result.criteria.criteriaList.length, 1);
+    const [{ expressionList }] = result.criteria.criteriaList;
+    assert.equal(expressionList.length, 1);
+    assert.equal(expressionList[0].propertyValues.length, 2, 'Contains only error and downloaded');
+  });
+
   test('addFilter returns others if no file hash', function(assert) {
 
     const expressionList = [

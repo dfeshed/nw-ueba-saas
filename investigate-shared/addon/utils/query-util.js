@@ -109,6 +109,32 @@ const _modifiedRiskScoreExpression = (expressions) => {
 };
 
 /**
+ * For download status, possible options are Error, Downloaded and NotDownloaded
+ * For NotDownloaded, filter by NotDownloaded and downloadInfo.status field not present
+ * @param expressions
+ * @returns {*}
+ * @private
+ */
+const _modifiedDownloadStatusExpression = ((expressions) => {
+  const [expression] = expressions.filterBy('propertyName', 'downloadInfo.status');
+  const expressionList = [];
+  if (expression) {
+    expressionList.push({
+      restrictionType: 'IN',
+      propertyValues: expression.propertyValues,
+      propertyName: expression.propertyName
+    });
+    if (expression.propertyValues.filter((propertyValue) => propertyValue.value === 'NotDownloaded').length) {
+      expressionList.push({
+        restrictionType: 'IS_NULL',
+        propertyName: expression.propertyName
+      });
+    }
+  }
+  return expressionList;
+});
+
+/**
  * Prepares the criteria list for the filter. If file hash is present then split the hash and if risk score is present then modify
  * existing expression such that null risk score is already included in risk score filter
  * After that add file hash/risk score as a another
@@ -120,8 +146,9 @@ const _modifiedRiskScoreExpression = (expressions) => {
 const _getCriteriaList = (list, type) => {
   const result = [];
   const scores = _modifiedRiskScoreExpression(list);
+  const fileDownloadStatus = _modifiedDownloadStatusExpression(list);
   const newList = list.filter((property) => {
-    return property.propertyName !== 'fileHash' && property.propertyName !== 'score';
+    return property.propertyName !== 'fileHash' && property.propertyName !== 'score' && property.propertyName !== 'downloadInfo.status';
   });
   if (newList.length) {
     result.push({
@@ -145,6 +172,12 @@ const _getCriteriaList = (list, type) => {
   if (scores.length) {
     result.push({
       expressionList: scores,
+      predicateType: 'OR'
+    });
+  }
+  if (fileDownloadStatus.length) {
+    result.push({
+      expressionList: fileDownloadStatus,
       predicateType: 'OR'
     });
   }

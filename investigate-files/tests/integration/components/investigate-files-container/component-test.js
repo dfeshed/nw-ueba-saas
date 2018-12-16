@@ -255,4 +255,10 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     assert.equal(findAll('.host-property-panel').length, 1, 'Propertoes panel is rendered');
     assert.equal(findAll('.content-section .content-section__section-name').length, 2, 'total number of section should be 2');
   });
+
+  test('filter controls are displayed', async function(assert) {
+    this.set('propertyConfig', config);
+    await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
+    assert.equal(findAll('.files-container .rsa-data-filters .filter-controls').length, 12, 'all filter controls are rendered');
+  });
 });

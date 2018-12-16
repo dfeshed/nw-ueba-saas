@@ -131,6 +131,16 @@ const FILTER_TYPES = [
         message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
       }
     }
+  },
+  {
+    name: 'downloadInfo.status',
+    label: 'investigateFiles.fields.downloadInfo.status',
+    type: 'list',
+    listOptions: [
+      { name: 'Downloaded', label: 'investigateFiles.filter.fileDownloadStatus.Downloaded' },
+      { name: 'Error', label: 'investigateFiles.filter.fileDownloadStatus.Error' },
+      { name: 'NotDownloaded', label: 'investigateFiles.filter.fileDownloadStatus.NotDownloaded' }
+    ]
   }
 ];
 
