@@ -34,7 +34,30 @@
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
         "numberOfEventsUserIdProcessHourly"
       ],
-      "defaultWeight": 0.5
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+        {
+          "name": "sumOfHighestSrcProcessFilePathScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestSrcProcessFilePathGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstProcessFilePathCreatedScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestDstProcessFilePathCreatedGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstProcessFilePathOpenedScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestDstProcessFilePathOpenedGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly"
+          ]
+        }
+      ]
     }
   ]
 }
