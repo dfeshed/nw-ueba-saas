@@ -24,20 +24,15 @@
       ]
     },
     {
-      "name": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily",
+      "name": "processFilePathHistogramSetServiceRegistryKeyGroupRegistryDaily",
       "contextFieldNames": [
-        "registryKey"
+        "registryKeyGroup"
       ],
       "adeEventTypes": [
         "registry"
       ],
       "strategyName": "fixed_duration_daily",
       "predicates": [
-        {
-          "type": "regex",
-          "fieldName": "registryKeyGroup",
-          "pattern": "SERVICES_IMAGE_PATH"
-        },
         {
           "type": "regex",
           "fieldName": "operationType",

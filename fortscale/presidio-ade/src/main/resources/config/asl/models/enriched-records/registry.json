@@ -22,16 +22,16 @@
       }
     },
     {
-      "name": "processFilePath.setServiceRegistryKey.registry",
+      "name": "processFilePath.setServiceRegistryKeyGroup.registry",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily"
+        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyGroupRegistryDaily"
       },
       "retriever": {
         "type": "categorical_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyRegistryDaily",
+        "featureBucketConfName": "processFilePathHistogramSetServiceRegistryKeyGroupRegistryDaily",
         "featureName": "processFilePathHistogram"
       },
       "builder": {

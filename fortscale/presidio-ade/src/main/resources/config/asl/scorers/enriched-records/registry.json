@@ -23,13 +23,8 @@
             },
             {
               "type": "conditional",
-              "name": "processFilePath.setServiceRegistryKey.registry.score",
+              "name": "processFilePath.setServiceRegistryKeyGroup.registry.score",
               "predicates": [
-                {
-                  "type": "regex",
-                  "fieldName": "registryKeyGroup",
-                  "pattern": "SERVICES_IMAGE_PATH"
-                },
                 {
                   "type": "regex",
                   "fieldName": "operationType",
@@ -38,9 +33,9 @@
               ],
               "scorerConf": {
                 "type": "category-rarity-model-scorer",
-                "name": "processFilePath.setServiceRegistryKey.registry.score",
+                "name": "processFilePath.setServiceRegistryKeyGroup.registry.score",
                 "model": {
-                  "name": "processFilePath.setServiceRegistryKey.registry"
+                  "name": "processFilePath.setServiceRegistryKeyGroup.registry"
                 },
                 "max-rare-count": 8,
                 "max-num-of-rare-partitions": 15,

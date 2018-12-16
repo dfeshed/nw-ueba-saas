@@ -18,7 +18,7 @@
     {
       "name": "sumOfHighestProcessFilePathScoresUserIdRegistryHourly",
       "type": "P",
-      "bucketConfName": "processFilePathToHighestScoreMapSetServiceRegistryKeyRegistryHourly",
+      "bucketConfName": "processFilePathToHighestScoreMapSetServiceRegistryKeyGroupRegistryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
