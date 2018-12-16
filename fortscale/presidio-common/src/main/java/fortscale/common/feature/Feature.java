@@ -64,7 +64,7 @@ public class Feature implements Serializable {
             // noinspection unchecked
             featureValue = new FeatureListValue((List) object);
         } else if (object instanceof Instant) {
-            featureValue = new FeatureNumericValue(((Instant) object).toEpochMilli());
+            featureValue = new FeatureStringValue(object.toString());
         }
 
         return new Feature(name, featureValue);

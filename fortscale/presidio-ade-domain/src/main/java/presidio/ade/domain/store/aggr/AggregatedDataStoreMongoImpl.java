@@ -29,8 +29,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
+import static presidio.ade.domain.store.ScoredDataReaderMongoUtils.*;
 
 /**
  * @author Barak Schuster
@@ -199,7 +199,10 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     public long countScoredRecords(
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
+        addContextFieldCriteria(query, "context.", contextFieldNameToValueMap);
+        addScoreThresholdCriterion(query, ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.count(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
@@ -209,9 +212,12 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
             int skip, int limit) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
-                .skip(skip).limit(limit);
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
+        addContextFieldCriteria(query, "context.", contextFieldNameToValueMap);
+        addScoreThresholdCriterion(query, ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
+        query.skip(skip).limit(limit);
         return mongoTemplate.find(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
@@ -257,24 +263,14 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             int scoreThreshold,
             Direction direction) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange, additionalFieldNameToValueMap);
         String collectionName = translator.toCollectionName(buildAggregationRecordsMetadata(adeEventType));
-        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
-                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
+        addContextFieldCriteria(query, "context.", contextFieldNameToValueMap);
+        addFieldCriteria(query, START_INSTANT_FIELD, additionalFieldNameToValueMap);
+        addScoreThresholdCriterion(query, ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
         query.with(new Sort(direction, START_INSTANT_FIELD));
         return mongoTemplate.findOne(query, ScoredFeatureAggregationRecord.class, collectionName);
-    }
-
-    private static Query buildAggregationRecordsQuery(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
-
-        Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
-        contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
-            contextFieldName = String.format("context.%s", contextFieldName);
-            query.addCriteria(where(contextFieldName).is(contextFieldValue));
-        });
-        query.addCriteria(where(ScoredFeatureAggregationRecord.SCORE_FIELD_NAME).gt(scoreThreshold));
-        return query;
     }
 
     private static AggrRecordsMetadata buildAggregationRecordsMetadata(String adeEventType) {

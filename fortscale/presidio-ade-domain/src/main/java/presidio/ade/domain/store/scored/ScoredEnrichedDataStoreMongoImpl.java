@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.*;
 import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
+import static presidio.ade.domain.store.ScoredDataReaderMongoUtils.*;
 
 /**
  * @author Yaron DL
@@ -158,8 +158,12 @@ public class ScoredEnrichedDataStoreMongoImpl implements
     public long countScoredRecords(
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
-        return mongoTemplate.count(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
+        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
+        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
+        String collectionName = translator.toCollectionName(adeEventType);
+        return mongoTemplate.count(query, AdeScoredEnrichedRecord.class, collectionName);
     }
 
     @Override
@@ -167,9 +171,13 @@ public class ScoredEnrichedDataStoreMongoImpl implements
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
             int skip, int limit) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
-                .skip(skip).limit(limit);
-        return mongoTemplate.find(query, AdeScoredEnrichedRecord.class, translator.toCollectionName(adeEventType));
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
+        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
+        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
+        String collectionName = translator.toCollectionName(adeEventType);
+        query.skip(skip).limit(limit);
+        return mongoTemplate.find(query, AdeScoredEnrichedRecord.class, collectionName);
     }
 
     @Override
@@ -214,23 +222,13 @@ public class ScoredEnrichedDataStoreMongoImpl implements
             int scoreThreshold,
             Direction direction) {
 
-        Query query = buildScoredEnrichedRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        Query query = new Query();
+        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange, additionalFieldNameToValueMap);
         String collectionName = translator.toCollectionName(adeEventType);
-        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
-                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
+        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
+        addFieldCriteria(query, START_INSTANT_FIELD, additionalFieldNameToValueMap);
+        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
         query.with(new Sort(direction, START_INSTANT_FIELD));
         return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
-    }
-
-    private static Query buildScoredEnrichedRecordsQuery(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
-
-        Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
-        contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
-            contextFieldName = String.format("%s.%s", CONTEXT_FIELD_NAME, contextFieldName);
-            query.addCriteria(where(contextFieldName).is(contextFieldValue));
-        });
-        query.addCriteria(where(SCORE_FIELD_NAME).gt(scoreThreshold));
-        return query;
     }
 }
