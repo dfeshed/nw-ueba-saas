@@ -1095,22 +1095,20 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_process_modified_a_service_key_registry
   schema: REGISTRY
-  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKey.registry.score
+  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKeyGroup.registry.score
   modelContextFields:
-    - registryKey
+    - registryKeyGroup
   anomalyDescriptior:
     anomalyField: processFilePath
     anomalyFilters:
     - fieldName: operationType
       fieldValue: SET_VALUE
-    - fieldName: registryKeyGroup
-      fieldValue: SERVICES_IMAGE_PATH
   splitFields:
     - processFilePath
-      registryKey
+      registryKeyGroup
   historicalData:
     type: count_aggregations
-    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily
+    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyGroupRegistryDaily
     featureName: processFilePathHistogram
   classification: registry_run_keys
 
