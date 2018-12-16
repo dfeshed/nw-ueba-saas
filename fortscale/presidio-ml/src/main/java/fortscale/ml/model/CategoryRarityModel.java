@@ -2,6 +2,9 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.*;
 
@@ -13,10 +16,12 @@ import java.util.*;
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements PartitionedDataModel {
-	private List<Double> buckets;
+	private List<Double> occurrencesToNumOfPartitionsList;
+	private List<Double> occurrencesToNumOfDistinctFeatureValuesList;
 	private Long numOfSamples;
 	private Long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
+
 	// number of partitions we found data on. can be used for certainty calculation.
 	private Long numOfPartitions;
 
@@ -28,45 +33,53 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	// building this model.
 	private int numberOfEntriesToSaveInModel;
 
-	public void init(Map<Long, Integer> occurrencesToNumOfPartitions, int numOfBuckets, long numOfPartitions, long numDistinctFeatures) {
+	public void init(Map<Long, Integer> occurrencesToNumOfPartitions,
+					 Map<Long, Integer> occurrencesToNumOfDistinctFeatureValues,
+					 int numOfBuckets, long numOfPartitions, long numDistinctFeatures) {
 		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
 		this.numOfPartitions = numOfPartitions;
 		this.numOfSamples = numOfPartitions;
-		buckets = new ArrayList<>(Collections.nCopies(numOfBuckets,0.0));
+		this.occurrencesToNumOfPartitionsList = createListOutOfAccumulativeHistogram(occurrencesToNumOfPartitions, numOfBuckets);
 
-		int occurrencesNumOfPartitionsMax = 0;
-		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
+		this.occurrencesToNumOfDistinctFeatureValuesList = createListOutOfAccumulativeHistogram(occurrencesToNumOfDistinctFeatureValues, numOfBuckets);
+	}
+
+	private List<Double> createListOutOfAccumulativeHistogram(Map<Long, Integer> occurrencesToValueMap, int numOfBuckets){
+		if(occurrencesToValueMap == null){
+			return null;
+		}
+		List<Double> ret = new ArrayList<>(Collections.nCopies(numOfBuckets,0.0));
+		int maxValue = 0;
+		for (Map.Entry<Long, Integer> entry : occurrencesToValueMap.entrySet()) {
 			long occurrences = entry.getKey();
-			if (occurrences <= buckets.size()) {
-				int occurrencesNumOfPartitions = entry.getValue();
-				occurrencesNumOfPartitionsMax = Math.max(occurrencesNumOfPartitionsMax, occurrencesNumOfPartitions);
-				buckets.set((int)(occurrences - 1), (double) occurrencesNumOfPartitions);
+			if (occurrences <= numOfBuckets) {
+				int value = entry.getValue();
+				maxValue = Math.max(maxValue, value);
+				ret.set((int)(occurrences - 1), (double) value);
 			}
 		}
 
-		if(occurrencesNumOfPartitionsMax>0) {
-			for (int i = numOfBuckets-1; i > 0 && buckets.get(i)==0; i--) {
-				if (buckets.get(i) == 0) {
-					buckets.set(i, (double) occurrencesNumOfPartitionsMax);
-				}
+		if(maxValue>0) {
+			for (int i = numOfBuckets-1; i > 0 && ret.get(i)==0; i--) {
+				ret.set(i, (double) maxValue);
 			}
 		}
+
+		return ret;
 	}
 
 	@Override
 	public String toString() {
-		String featureOccurencessStr="null";
-		if(featureOccurrences!=null)
-		{
-			featureOccurencessStr = featureOccurrences.toString();
-		}
-		return String.format("<CategoryRarityModel: buckets=%s, numOfSamples=%d, numDistinctFeatures=%d, featureOccurrences=%s>", buckets.toString(),numOfSamples,numDistinctFeatures, featureOccurencessStr);
-
+		return ToStringBuilder.reflectionToString(this);
 	}
 
-	public List<Double> getBuckets() {
-		return buckets;
+	public List<Double> getOccurrencesToNumOfPartitionsList() {
+		return occurrencesToNumOfPartitionsList;
+	}
+
+	public List<Double> getOccurrencesToNumOfDistinctFeatureValuesList() {
+		return occurrencesToNumOfDistinctFeatureValuesList;
 	}
 
 	@Override
@@ -128,24 +141,17 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		if (this == o) return true;
 		if (!(o instanceof CategoryRarityModel)) return false;
 		CategoryRarityModel that = (CategoryRarityModel)o;
-		if (!numOfSamples.equals(that.numOfSamples)) return false;
-		if (!numDistinctFeatures.equals(that.numDistinctFeatures)) return false;
-		if (!numOfPartitions.equals(that.numOfPartitions)) return false;
-		if (numberOfEntriesToSaveInModel != that.numberOfEntriesToSaveInModel) return false;
-		if (buckets == null && that.buckets != null) return false;
-		if (buckets != null && that.buckets == null) return false;
-		if (buckets != that.buckets && !buckets.equals(that.buckets)) return false;
-		return featureOccurrences.equals(that.featureOccurrences);
+		return new EqualsBuilder().append(that.numOfSamples, numOfSamples).append(that.numDistinctFeatures, numDistinctFeatures)
+				.append(that.numOfPartitions, numOfPartitions).append(that.numberOfEntriesToSaveInModel, numberOfEntriesToSaveInModel)
+				.append(that.occurrencesToNumOfPartitionsList, occurrencesToNumOfPartitionsList)
+				.append(that.occurrencesToNumOfDistinctFeatureValuesList, occurrencesToNumOfDistinctFeatureValuesList)
+				.append(that.featureOccurrences, featureOccurrences).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		int result =  buckets.hashCode();
-		result = 31 * result + (int)(numOfSamples ^ (numOfSamples >>> 32));
-		result = 31 * result + (int)(numDistinctFeatures ^ (numDistinctFeatures >>> 32));
-		result = 31 * result + featureOccurrences.hashCode();
-		result = 31 * result + (int)(numOfPartitions ^ (numOfPartitions >>> 32));
-		result = 31 * result + numberOfEntriesToSaveInModel;
-		return result;
+		return new HashCodeBuilder().append(numOfSamples).append(numDistinctFeatures)
+				.append(occurrencesToNumOfPartitionsList).append(occurrencesToNumOfDistinctFeatureValuesList)
+				.append(numOfPartitions).append(numberOfEntriesToSaveInModel).hashCode();
 	}
 }

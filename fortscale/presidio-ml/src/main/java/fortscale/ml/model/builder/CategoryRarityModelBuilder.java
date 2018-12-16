@@ -9,6 +9,8 @@ import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
@@ -31,14 +33,16 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         CategoricalFeatureValue categoricalFeatureValue = getCategoricalFeatureValue(modelBuilderData);
-        Map<Pair<String, Long/*name,partitionId*/>, Double/*1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
-        Map<String, Long> featureValueToCountMap = castModelBuilderData(sequenceReduction);
+        Map<Pair<String, Long/*name,partitionId*/>, Double/*at most 1*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
+        Map<String, Integer> featureValueToNumOfOccurrences = getFeatureValueToNumOfOccurrences(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
-        long numDistinctFeatures = featureValueToCountMap.size();
-        categoryRarityModel.init(calcOccurrencesToNumOfDistinctPartitions(sequenceReduction), numOfBuckets, numOfPartitions, numDistinctFeatures);
-        saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
-        categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToCountMap.size(), numOfPartitions, categoryRarityModel.getBuckets());
+        long numDistinctFeatures = featureValueToNumOfOccurrences.size();
+        Map<Long, Integer> occurrencesToNumOfDistinctPartitions = calcOccurrencesToNumOfDistinctPartitions(sequenceReduction);
+        Map<Long, Integer> occurrencesToNumOfDistinctFeatureValues = calcOccurrencesToNumOfDistinctFeatureValues(featureValueToNumOfOccurrences);
+        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, occurrencesToNumOfDistinctFeatureValues, numOfBuckets, numOfPartitions, numDistinctFeatures);
+        saveTopEntriesInModel(featureValueToNumOfOccurrences, categoryRarityModel);
+        categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToNumOfOccurrences.size(), numOfPartitions, categoryRarityModel.getOccurrencesToNumOfPartitionsList());
         return categoryRarityModel;
     }
 
@@ -61,6 +65,15 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         }
 
         return result;
+    }
+
+    private Map<Long, Integer> calcOccurrencesToNumOfDistinctFeatureValues(Map<String, Integer> featureValueToNumOfOccurrences){
+        Map<Long, Integer> ret = new HashMap<>();
+        for(Integer occurrence: featureValueToNumOfOccurrences.values()){
+            ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v++);
+        }
+
+        return ret;
     }
 
     Map<Long, Integer> calcOccurrencesToNumOfDistinctPartitions(Map<Pair<String, Long>, Double> sequenceReducedData) {
@@ -105,18 +118,22 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return ret;
     }
 
-    Map<String, Long> castModelBuilderData(Map<Pair<String, Long>, Double> modelBuilderData) {
-        Map<String, Long> map = new HashMap<>();
-        modelBuilderData.forEach((key, value) -> {
+    Map<String, Integer> getFeatureValueToNumOfOccurrences(Map<Pair<String, Long/*name,partitionId*/>, Double/*at most 1*/> sequenceReduction) {
+        Map<String, Double> map = new HashMap<>();
+        sequenceReduction.forEach((key, value) -> {
                     String name = key.getKey();
                     if (map.get(name) != null) {
-                        map.put(name, map.get(name) + value.longValue());
+                        map.put(name, map.get(name) + value);
                     } else {
-                        map.put(name, value.longValue());
+                        map.put(name, 1D);
                     }
                 }
         );
-        return map;
+
+        Map<String, Integer> ret = new HashMap<>();
+        map.forEach((key, value)-> ret.put(key, value.intValue()));
+
+        return ret;
     }
 
     private CategoricalFeatureValue getCategoricalFeatureValue(Object modelBuilderData) {
@@ -124,7 +141,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return (CategoricalFeatureValue) modelBuilderData;
     }
 
-    private void saveTopEntriesInModel(Map<String, Long> countMap, CategoryRarityModel model) {
+    private void saveTopEntriesInModel(Map<String, Integer> countMap, CategoryRarityModel model) {
         countMap.entrySet().stream()
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
                 .limit(entriesToSaveInModel)

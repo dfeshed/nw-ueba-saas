@@ -172,7 +172,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         Map<Long, Integer> occurrencesToNumOfPartitions = new HashMap<>();
         occurrencesToNumOfPartitions.put(1L, 1);
         int numOfBuckets = 10;
-        model.init(occurrencesToNumOfPartitions, numOfBuckets, 0, 1);
+        model.init(occurrencesToNumOfPartitions, null, numOfBuckets, 0, 1);
         CategoryRarityModelScorerAlgorithm algorithm =
                 new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, numOfBuckets / 2 ,
                         X_WITH_VALUE_HALF_FACTOR, MIN_PROBABILITY);

@@ -41,7 +41,7 @@ public class CategoryRarityModelBuilderTest {
 	public void shouldBuildWithTheSpecifiedNumOfBuckets() {
 		Map<String, Long> featureValueToCountMap = new HashMap<>();
 		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
-		Assert.assertEquals(MAX_RARE_COUNT, model.getBuckets().size());
+		Assert.assertEquals(MAX_RARE_COUNT, model.getOccurrencesToNumOfPartitionsList().size());
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
-		List<Double> buckets = model.getBuckets();
+		List<Double> buckets = model.getOccurrencesToNumOfPartitionsList();
 		Assert.assertEquals(15, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
@@ -71,7 +71,7 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
-		List<Double> buckets = model.getBuckets();
+		List<Double> buckets = model.getOccurrencesToNumOfPartitionsList();
 		Assert.assertEquals(15, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
 		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
@@ -124,7 +124,7 @@ public class CategoryRarityModelBuilderTest {
 		Assert.assertEquals(amountOfDays,sequenceReduceData.keySet().stream().map(Pair::getValue).distinct().count(),0);
 		Assert.assertEquals(amountOfFeatures,sequenceReduceData.keySet().stream().map(Pair::getKey).distinct().count());
 		sequenceReduceData.values().forEach(value -> Assert.assertEquals(1D,value,0));
-		Map<String, Long> featureValueToCountMap = categoryRarityModelBuilder.castModelBuilderData(sequenceReduceData);
+		Map<String, Integer> featureValueToCountMap = categoryRarityModelBuilder.getFeatureValueToNumOfOccurrences(sequenceReduceData);
 		for (int j = 0; j< amountOfFeatures; j++) {
 			Assert.assertEquals(amountOfDays,featureValueToCountMap.get(String.format("feature%d",j)),0);
 		}

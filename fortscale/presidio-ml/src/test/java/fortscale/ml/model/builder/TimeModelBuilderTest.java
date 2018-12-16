@@ -30,7 +30,7 @@ public class TimeModelBuilderTest {
 		TimeModel model = (TimeModel) builder.build(new GenericHistogram());
 		Assert.assertEquals(timeResolution, Whitebox.getInternalState(model, "timeResolution"));
 		Assert.assertEquals(bucketSize, Whitebox.getInternalState(model, "bucketSize"));
-		Assert.assertEquals((int)categoryRarityModelNumOfBuckets, model.getCategoryRarityModel().getBuckets().size());
+		Assert.assertEquals((int)categoryRarityModelNumOfBuckets, model.getCategoryRarityModel().getOccurrencesToNumOfPartitionsList().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
