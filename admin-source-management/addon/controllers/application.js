@@ -20,6 +20,28 @@ export default Controller.extend({
     return path === 'index' ? paths.pop() || '' : path;
   },
 
+  @computed('routing.currentRouteName')
+  isGroupsActive() {
+    const { router } = this.get('routing');
+    let isActive = false;
+    if (router.isActive('admin-source-management.groups') ||
+        router.isActive('admin-source-management.group-wizard')) {
+      isActive = true;
+    }
+    return isActive;
+  },
+
+  @computed('routing.currentRouteName')
+  isPoliciesActive() {
+    const { router } = this.get('routing');
+    let isActive = false;
+    if (router.isActive('admin-source-management.policies') ||
+        router.isActive('admin-source-management.policy-wizard')) {
+      isActive = true;
+    }
+    return isActive;
+  },
+
   actions: {
     // let router handle this
     controllerNavigateToRoute(routeName) {
