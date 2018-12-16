@@ -999,47 +999,6 @@ indicators:
     type: hourly_aggregations
   classification: discovery_reconnaissance
 
-#*********************************************************
-#*                   REGISTRY INDICATORS                 *
-#*********************************************************
-
-- id: highestStartInstantScoreUserIdRegistryHourly
-  type: SCORE_AGGREGATION
-  name: abnormal_event_day_time
-  adeEventType: scored_enriched.registry.startInstant.userId.registry.score
-  schema: REGISTRY
-  anomalyDescriptior:
-    anomalyField: eventDate
-  splitFields:
-    - eventDate
-  historicalData:
-    type: weekday_aggregations
-    featureBucketConfName: startInstantHistogramUserIdRegistryDaily
-    featureName: startInstantHistogram
-  classification: non_standard_hours
-
-- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
-  type: SCORE_AGGREGATION
-  name: abnormal_process_modified_a_service_key_registry
-  schema: REGISTRY
-  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKey.registry.score
-  modelContextFields:
-    - registryKey
-  anomalyDescriptior:
-    anomalyField: processFilePath
-    anomalyFilters:
-    - fieldName: operationType
-      fieldValue: SET_VALUE
-    - fieldName: registryKeyGroup
-      fieldValue: SERVICES_IMAGE_PATH
-  splitFields:
-    - processFilePath
-      registryKey
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily
-    featureName: processFilePathHistogram
-  classification: registry_run_keys
 
 - id: sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
@@ -1089,7 +1048,7 @@ indicators:
     featureName: dstProcessFilePathHistogram
   classification: powershell_scripting
 
-- id: sumOfHighestdstProcessFilePathOpenedScoresUserIdScriptingProcessHourly
+- id: sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
   name: user_abnormal_process_opened_by_scripting_tool
   adeEventType: scored_enriched.process.dstProcessFilePathOpened.userIdDstProcessFileName.process.score
@@ -1113,6 +1072,47 @@ indicators:
     featureName: dstProcessFilePathHistogram
   classification: powershell_scripting
 
+#*********************************************************
+#*                   REGISTRY INDICATORS                 *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdRegistryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_event_day_time
+  adeEventType: scored_enriched.registry.startInstant.userId.registry.score
+  schema: REGISTRY
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdRegistryDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_process_modified_a_service_key_registry
+  schema: REGISTRY
+  adeEventType: scored_enriched.registry.processFilePath.setServiceRegistryKey.registry.score
+  modelContextFields:
+    - registryKey
+  anomalyDescriptior:
+    anomalyField: processFilePath
+    anomalyFilters:
+    - fieldName: operationType
+      fieldValue: SET_VALUE
+    - fieldName: registryKeyGroup
+      fieldValue: SERVICES_IMAGE_PATH
+  splitFields:
+    - processFilePath
+      registryKey
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: processFilePathHistogramSetServiceRegistryKeyRegistryDaily
+    featureName: processFilePathHistogram
+  classification: registry_run_keys
 
 classificationPriority:
 
