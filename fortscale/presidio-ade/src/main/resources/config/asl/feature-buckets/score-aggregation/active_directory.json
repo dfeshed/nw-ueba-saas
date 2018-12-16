@@ -93,10 +93,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -116,10 +119,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -139,10 +145,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -162,10 +171,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -185,10 +197,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -208,10 +223,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
@@ -231,10 +249,13 @@
           "featureNamesMap": {
             "maximize": [
               "score"
+            ],
+            "context": [
+              "operationType"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_multi_keys_to_max_func"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
