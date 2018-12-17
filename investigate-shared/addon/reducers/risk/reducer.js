@@ -28,7 +28,7 @@ const riskScoreReducer = handleActions({
     });
   },
   [ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB]: (state, { payload: { tabName } }) => {
-    return state.merge({ activeRiskSeverityTab: tabName, selectedAlert: null });
+    return state.merge({ activeRiskSeverityTab: tabName, selectedAlert: null, expandedEventId: null });
   },
 
   [ACTION_TYPES.GET_RISK_SCORE_CONTEXT]: (state, action) => {
@@ -50,7 +50,7 @@ const riskScoreReducer = handleActions({
     });
   },
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
-    return state.set('selectedAlert', payload.alertName);
+    return state.merge({ selectedAlert: payload.alertName, expandedEventId: null });
   },
   [ACTION_TYPES.GET_EVENTS]: (state, { payload: { indicatorId, events } }) => {
     const { eventsData } = state;

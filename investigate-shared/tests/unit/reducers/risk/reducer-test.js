@@ -107,19 +107,23 @@ module('Unit | Reducers | risk', function(hooks) {
 
   test('The ACTIVE_RISK_SEVERITY_TAB action will reset the selected alert', function(assert) {
     const previous = Immutable.from({
-      selectedAlert: 'some alert'
+      selectedAlert: 'some alert',
+      expandedEventId: '123'
     });
     const result = reducer(previous, { type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName: 'high' } });
     assert.equal(result.selectedAlert, null);
+    assert.equal(result.expandedEventId, null);
   });
 
 
   test('The SET_SELECTED_ALERT action will set the selected alert', function(assert) {
     const previous = Immutable.from({
-      alertName: 'Old Alert'
+      alertName: 'Old Alert',
+      expandedEventId: '123'
     });
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_ALERT, payload: { alertName: 'New Alert' } });
     assert.equal(result.selectedAlert, 'New Alert');
+    assert.equal(result.expandedEventId, null);
   });
 
   test('The EXPANDED_EVENT action will set expanded event id', function(assert) {
