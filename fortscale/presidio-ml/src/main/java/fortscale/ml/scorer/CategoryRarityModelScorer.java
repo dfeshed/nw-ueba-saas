@@ -4,6 +4,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.TimeModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
@@ -20,6 +21,10 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             "%s.calculateScore expects to get a feature value of type %s",
             CategoryRarityModelScorer.class.getSimpleName(),
             FeatureStringValue.class.getSimpleName());
+    private static final String ADDITIONAL_MODELS_ERROR_MSG = String.format(
+            "%s.calculateScore expects to get at most one additional model of type %s",
+            CategoryRarityModelScorer.class.getSimpleName(),
+            TimeModel.class.getSimpleName());
 
     private int minNumOfDistinctValuesToInfluence;
     private int enoughNumOfDistinctValuesToInfluence;
@@ -108,9 +113,16 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
     public double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
         Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
         CategoryRarityModel categoryRarityModel = (CategoryRarityModel)model;
+        TimeModel timeModel;
 
-        if (additionalModels.size() > 1) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get at most one additional model");
+        if (additionalModels.isEmpty()) {
+            timeModel = null;
+        } else if (additionalModels.size() == 1) {
+            Model additionalModel = additionalModels.get(0);
+            Assert.isInstanceOf(TimeModel.class, additionalModel, ADDITIONAL_MODELS_ERROR_MSG);
+            timeModel = (TimeModel)additionalModel;
+        } else {
+            throw new IllegalArgumentException(ADDITIONAL_MODELS_ERROR_MSG);
         }
 
         Assert.notNull(feature, "Feature cannot be null");
@@ -125,10 +137,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
 
         Double count = categoryRarityModel.getFeatureCount(feature.getValue().toString());
         if (count == null) count = 0d;
-        if(additionalModels.size()== 1){
-            CategoryRarityModel additionalModel = (CategoryRarityModel)additionalModels.get(0);
-            categoryRarityModel.setNumOfPartitions(additionalModel.getNumOfPartitions());
-        }
+        if (timeModel != null) categoryRarityModel.setNumOfPartitions(timeModel.getNumOfPartitions());
         return algorithm.calculateScore((int)Math.round(count+1), categoryRarityModel);
     }
 
