@@ -8,8 +8,8 @@ public class FeatureCorrelation {
     private String name;
     private Double score;
     private Double correlationFactor;
-    private String TreeName;
-    private String FullCorrelationName;
+    private String treeName;
+    private String fullCorrelationName;
 
 
     public FeatureCorrelation(String name, Double score) {
@@ -34,18 +34,18 @@ public class FeatureCorrelation {
     }
 
     public String getTreeName() {
-        return TreeName;
+        return treeName;
     }
 
     public void setTreeName(String treeName) {
-        TreeName = treeName;
+        this.treeName = treeName;
     }
 
     public String getFullCorrelationName() {
-        return FullCorrelationName;
+        return fullCorrelationName;
     }
 
     public void setFullCorrelationName(String fullCorrelationName) {
-        FullCorrelationName = fullCorrelationName;
+        this.fullCorrelationName = fullCorrelationName;
     }
 }

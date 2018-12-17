@@ -182,7 +182,7 @@
       }
     },
     {
-      "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process",
+      "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"

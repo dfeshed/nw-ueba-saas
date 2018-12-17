@@ -254,7 +254,7 @@
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.process.dstProcessFilePathOpened.userIdDstProcessFileName.process.score"
+        "scored_enriched.process.dstProcessFilePathOpened.userIdSrcProcessFileName.process.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
