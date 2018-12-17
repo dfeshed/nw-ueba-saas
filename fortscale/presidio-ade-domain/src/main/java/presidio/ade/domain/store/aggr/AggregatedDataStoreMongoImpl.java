@@ -8,7 +8,6 @@ import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,13 +22,13 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ScoredDataReader;
+import presidio.ade.domain.store.ScoredDataReaderMongoUtils;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
@@ -199,7 +198,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     public long countScoredRecords(
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        Query query = buildScoredRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
         return mongoTemplate.count(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
@@ -209,9 +208,9 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
             int skip, int limit) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold)
-                .skip(skip).limit(limit);
+        Query query = buildScoredRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         AggrRecordsMetadata metadata = buildAggregationRecordsMetadata(adeEventType);
+        query = query.skip(skip).limit(limit);
         return mongoTemplate.find(query, ScoredFeatureAggregationRecord.class, translator.toCollectionName(metadata));
     }
 
@@ -249,32 +248,28 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
                 Direction.DESC);
     }
 
+    private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
+        return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
+                START_INSTANT_FIELD, timeRange,
+                "context.", contextFields,
+                ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
+    }
+
     private AdeScoredRecord readScoredRecord(
             TimeRange timeRange,
             String adeEventType,
-            MultiKeyFeature contextFieldNameToValueMap,
-            MultiKeyFeature additionalFieldNameToValueMap,
+            MultiKeyFeature contextFields,
+            MultiKeyFeature fields,
             int scoreThreshold,
             Direction direction) {
 
-        Query query = buildAggregationRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
+        Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
+                fields, START_INSTANT_FIELD, timeRange,
+                "context.", contextFields,
+                ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold,
+                direction);
         String collectionName = translator.toCollectionName(buildAggregationRecordsMetadata(adeEventType));
-        additionalFieldNameToValueMap.getFeatureNameToValue().forEach((additionalFieldName, additionalFieldValue) ->
-                query.addCriteria(where(additionalFieldName).is(additionalFieldValue)));
-        query.with(new Sort(direction, START_INSTANT_FIELD));
         return mongoTemplate.findOne(query, ScoredFeatureAggregationRecord.class, collectionName);
-    }
-
-    private static Query buildAggregationRecordsQuery(
-            TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold) {
-
-        Query query = query(where(START_INSTANT_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
-        contextFieldNameToValueMap.getFeatureNameToValue().forEach((contextFieldName, contextFieldValue) -> {
-            contextFieldName = String.format("context.%s", contextFieldName);
-            query.addCriteria(where(contextFieldName).is(contextFieldValue));
-        });
-        query.addCriteria(where(ScoredFeatureAggregationRecord.SCORE_FIELD_NAME).gt(scoreThreshold));
-        return query;
     }
 
     private static AggrRecordsMetadata buildAggregationRecordsMetadata(String adeEventType) {
