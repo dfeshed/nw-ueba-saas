@@ -2,14 +2,23 @@ import * as ACTION_TYPES from './types';
 import { Certificates } from './fetch';
 import { debug } from '@ember/debug';
 import { resetFilters } from 'investigate-shared/actions/data-creators/filter-creators';
+import { run } from '@ember/runloop';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
 const toggleCertificateView = () => {
   return (dispatch, getState) => {
+    const { files: { filter } } = getState();
+    //  To fix the filter reload issue we need to set the applied filter as a saved filter
+    if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
+      const savedFilter = { id: -1, criteria: { expressionList: filter.expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
+    }
     dispatch({ type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
     const { isCertificateView } = getState().certificate.list;
     if (isCertificateView) {
-      dispatch(resetFilters('CERTIFICATE'));
-      dispatch(getFirstPageOfCertificates());
+      run.next(() => {
+        dispatch(resetFilters('CERTIFICATE'));
+      });
     }
   };
 };

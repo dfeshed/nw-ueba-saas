@@ -98,7 +98,14 @@ module('Integration | Component | certificates-container/certificates-data-table
       .selectedCertificatesList([])
       .certificateStatusData({})
       .build();
-    await render(hbs`{{certificates-container/certificates-data-table}}`);
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{certificates-container/certificates-data-table}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 1, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table').length, 1, 'table has rendered.');
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, '2 rows rendered');
   });

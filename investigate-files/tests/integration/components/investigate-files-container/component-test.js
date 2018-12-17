@@ -148,7 +148,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.files-body').length, 0, 'file list is not rendered');
-    assert.equal(findAll('.error-page').length, 2, 'endpoint server is offline');
+    assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');
   });
 
   test('it renders file list when endpointserver is online', async function(assert) {
@@ -204,7 +204,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
-    assert.equal(findAll('.rsa-loader')[1].classList.contains('is-small'), true, 'certificate rsa loader displayed');
+    assert.equal(findAll('.rsa-loader')[1].classList.contains('is-larger'), true, 'certificate rsa loader displayed');
   });
   test('Certificate view hide and show', async function(assert) {
     new ReduxDataHelper(initState)
@@ -259,6 +259,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   test('filter controls are displayed', async function(assert) {
     this.set('propertyConfig', config);
     await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
-    assert.equal(findAll('.files-container .rsa-data-filters .filter-controls').length, 12, 'all filter controls are rendered');
+    assert.equal(findAll('.files-content .rsa-data-filters .filter-controls').length, 12, 'all filter controls are rendered');
   });
 });

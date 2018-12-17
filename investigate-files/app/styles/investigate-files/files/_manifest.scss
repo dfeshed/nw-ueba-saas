@@ -10,6 +10,18 @@ page.investigate-files-engine {
 }
 
 .rsa-investigate-files {
+
+  .certificates-container, .files-content {
+    width: 100%;
+  }
+
+  .liquid-container,
+  .liquid-child {
+    height: 100%;
+    width: 100%;
+    display: flex;
+  }
+
   .content-context-menu {
     display: inherit;
   }
@@ -268,19 +280,6 @@ page.investigate-files-engine {
     }
     .loader_icon {
       height: 70vh;
-    }
-  }
-  .certificate-view {
-    z-index: 200;
-    .certificates-container {
-      @include rsa-vendor-prefix(transition-property, left);
-      @include rsa-vendor-prefix(transition-duration, 0.4s);
-      left: 100%;
-    }
-  }
-  .is-show-certificate {
-    .certificates-container {
-      left: 0;
     }
   }
   .right-zone {
