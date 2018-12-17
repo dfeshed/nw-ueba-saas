@@ -203,6 +203,7 @@ export default Component.extend({
           // empty search to restore all the options in the dropdown.
           this._createFreeFormPill();
           powerSelectAPI.actions.search('');
+          this.set('_highlightedAfterOption', null);
         }
       } else if (isBackspace(event) && event.target.value === '') {
         next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
