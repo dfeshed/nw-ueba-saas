@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeScoredEnrichedRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
@@ -59,14 +61,17 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private AdeManagerSdk adeManagerSdk;
 
+    private RecordReaderFactoryService recordReaderFactoryService;
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, AdeManagerSdk adeManagerSdk) {
+
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils, AdeManagerSdk adeManagerSdk, RecordReaderFactoryService recordReaderFactoryService) {
         this.config = supportingInformationConfig;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
         this.supportingInfoUtils = supportingInfoUtils;
         this.adeManagerSdk = adeManagerSdk;
+        this.recordReaderFactoryService = recordReaderFactoryService;
     }
 
 
@@ -85,22 +90,29 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
             Indicator indicator = new Indicator(alert.getId());
             indicator.setName(indicatorConfig.getName());
-//            indicator.setStartDate(Date.from(scoreAggregationRecordContributor.getTimeRange().getStart()));
-//            indicator.setEndDate(Date.from(scoreAggregationRecordContributor.getTimeRange().getEnd()));
-            indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
-            indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
+            AdeScoredEnrichedRecordReader firstRecordReader = (AdeScoredEnrichedRecordReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getFirstScoredRecord());
+            AdeScoredEnrichedRecordReader lastRecordReader = (AdeScoredEnrichedRecordReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getLastScoredRecord());
+            indicator.setStartDate(Date.from(firstRecordReader.getDate_time()));
+            indicator.setEndDate(Date.from(lastRecordReader.getDate_time()));
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
             indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
             Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+
             // add split fields
             Map<String, String> contexts = adeContexts.entrySet().stream()
                                                 .filter(entry -> entry.getValue() != null)
                                                 .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
-                                                                          entry -> translateAdeValueToOutput(entry.getKey(), entry.getValue())));
+                                                                          entry -> entry.getValue()));
             // add indicator context
             contexts.put(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
+
             // add model context
+            indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));
+
+            // add anomaly field
+            contexts.put(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
+                         firstRecordReader.get(translateOutputToAdeName(indicatorConfig.getAnomalyDescriptior().getAnomalyField())).toString());
 
             String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
                     StringUtils.EMPTY:
@@ -198,12 +210,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         return AdeRecord.START_INSTANT_FIELD.equals(adeName)?
                 EnrichedEvent.EVENT_DATE_FIELD_NAME:
                 adeName.replace(CONTEXT_PREFIX,"");
-    }
-
-    private String translateAdeValueToOutput(String adeName, String adeValue) {
-        return AdeRecord.START_INSTANT_FIELD.equals(adeName)?
-                Instant.ofEpochMilli(Long.valueOf(adeValue)).toString():
-                adeValue;
     }
 
     private String translateOutputToAdeName(String outputName) {

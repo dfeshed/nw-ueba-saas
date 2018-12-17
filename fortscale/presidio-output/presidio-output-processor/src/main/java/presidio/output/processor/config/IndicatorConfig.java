@@ -29,7 +29,7 @@ import java.util.List;
 public class IndicatorConfig {
 
     public IndicatorConfig() {
-        this.modelContextFields = Arrays.asList(CommonStrings.CONTEXT_USERID);
+        this.modelContextFields = new ArrayList(Arrays.asList(CommonStrings.CONTEXT_USERID));
     }
 
     @JsonProperty("id")

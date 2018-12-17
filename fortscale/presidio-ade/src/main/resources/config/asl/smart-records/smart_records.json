@@ -32,7 +32,8 @@
         "numberOfFailedPrintsUserIdPrintHourly",
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
-        "numberOfEventsUserIdProcessHourly"
+        "numberOfEventsUserIdProcessHourly",
+        "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [

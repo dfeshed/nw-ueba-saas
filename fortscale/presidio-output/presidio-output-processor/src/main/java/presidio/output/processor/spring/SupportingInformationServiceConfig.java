@@ -13,6 +13,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
@@ -56,6 +57,9 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     private final EventPersistencyService eventPersistencyService;
     private final SupportingInformationUtils supportingInformationUtils;
     private final ScoredEventService scoredEventService;
+
+    @Autowired
+    private RecordReaderFactoryService recordReaderFactoryService;
 
     @Autowired
     public SupportingInformationServiceConfig(
@@ -112,7 +116,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
 
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
-        return new SupportingInformationForScoreAggr(supportingInformationConfig, historicalDataPopulatorFactory(), scoredEventService, supportingInformationUtils, adeManagerSdk);
+        return new SupportingInformationForScoreAggr(supportingInformationConfig, historicalDataPopulatorFactory(), scoredEventService, supportingInformationUtils, adeManagerSdk, recordReaderFactoryService);
     }
 
     @Bean

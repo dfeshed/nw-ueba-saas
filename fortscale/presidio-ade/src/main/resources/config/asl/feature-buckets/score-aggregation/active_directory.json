@@ -95,7 +95,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -121,7 +121,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -147,7 +147,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -173,7 +173,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -199,7 +199,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -225,7 +225,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -251,7 +251,7 @@
               "score"
             ],
             "context": [
-              "operationType"
+              "context.operationType"
             ]
           },
           "aggrFeatureFuncJson": {
