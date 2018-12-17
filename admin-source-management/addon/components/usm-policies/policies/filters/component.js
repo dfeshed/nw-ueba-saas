@@ -9,12 +9,12 @@ import {
   applyFilters,
   resetFilters
 } from 'admin-source-management/actions/creators/filters-creators';
-import { FILTER_TYPES } from './filter-types';
+import { filterTypesConfig } from 'admin-source-management/reducers/usm/policies-selectors';
 
 const stateToComputed = (state) => ({
   filterState: state.usm.policiesFilter,
   // TODO move to a selector next sprint when filtersTypes need to be dynamic
-  filterTypes: FILTER_TYPES
+  filterTypes: filterTypesConfig(state)
 });
 
 const dispatchToActions = {

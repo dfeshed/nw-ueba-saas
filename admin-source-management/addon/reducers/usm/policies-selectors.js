@@ -70,3 +70,71 @@ export const hasSelectedPublishItems = createSelector(
     }
   }
 );
+
+// ==================================
+//   filters
+// ==================================
+
+// the summary list of policies objects to build the source type filter
+const availablePolicySourceTypes = createSelector(
+  _policiesState,
+  (_policiesState) => {
+    const policyList = _policiesState.items;
+    const list = [];
+    for (let index = 0; index < policyList.length; index++) {
+      const sourceType = policyList[index].policyType;
+      if (!list.includes(sourceType)) {
+        list.push(sourceType);
+      }
+    }
+    return list;
+  }
+);
+
+const sourceTypeFilterConfig = createSelector(
+  availablePolicySourceTypes,
+  (sourceTypes) => {
+    const config = {
+      name: 'sourceType',
+      label: 'adminUsm.policies.list.sourceType',
+      listOptions: [],
+      type: 'list'
+    };
+    for (let i = 0; i < sourceTypes.length; i++) {
+      const sourceType = sourceTypes[i];
+      config.listOptions.push({
+        name: sourceType,
+        label: `adminUsm.policyTypes.${sourceType}`
+      });
+    }
+    return config;
+  }
+);
+
+const publishStatusFilterConfig = {
+  'name': 'publishStatus',
+  'label': 'adminUsm.policies.list.publishStatus',
+  'listOptions': [
+    // policy.lastPublishedOn > 0 ???
+    { name: 'published', label: 'adminUsm.publishStatus.published' },
+    // policy.lastPublishedOn === 0
+    { name: 'unpublished', label: 'adminUsm.publishStatus.unpublished' },
+    // policy.dirty === true
+    { name: 'unpublished_edits', label: 'adminUsm.publishStatus.unpublishedEdits' }
+  ],
+  type: 'list'
+};
+
+let sourceTypeConfigCache = null;
+export const filterTypesConfig = createSelector(
+  sourceTypeFilterConfig,
+  (sourceTypeConfig) => {
+    // set the sourceTypeConfigCache no matter what the first time through,
+    // only set it the first time since the types are built from the filtered policies the next time around
+    if (!sourceTypeConfigCache || sourceTypeConfigCache.listOptions.length === 0) {
+      sourceTypeConfigCache = sourceTypeConfig;
+    }
+    const configs = [publishStatusFilterConfig, sourceTypeConfigCache];
+    return configs;
+  }
+);

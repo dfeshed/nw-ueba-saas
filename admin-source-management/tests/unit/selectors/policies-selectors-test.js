@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
+import ReduxDataHelper from '../../helpers/redux-data-helper';
 
 import {
   isPoliciesLoading,
@@ -9,7 +10,8 @@ import {
   selectedDeleteItems,
   hasSelectedDeleteItems,
   selectedPublishItems,
-  hasSelectedPublishItems
+  hasSelectedPublishItems,
+  filterTypesConfig
 } from 'admin-source-management/reducers/usm/policies-selectors';
 
 module('Unit | Selectors | Policies Selectors');
@@ -245,4 +247,34 @@ test('when multiple items in selection including a default Policy item', functio
   assert.equal(hasSelectedDeleteItems(Immutable.from(state)), true, 'hasSelectedDeleteItems should return true');
   assert.deepEqual(selectedPublishItems(Immutable.from(state)), ['g2'], 'selectedPublishItems should have no items');
   assert.equal(hasSelectedPublishItems(Immutable.from(state)), true, 'hasSelectedPublishItems should return true');
+});
+
+test('filterTypesConfig selector', function(assert) {
+  const expectedConfig = [
+    {
+      'name': 'publishStatus',
+      'label': 'adminUsm.policies.list.publishStatus',
+      'listOptions': [
+        { name: 'published', label: 'adminUsm.publishStatus.published' },
+        { name: 'unpublished', label: 'adminUsm.publishStatus.unpublished' },
+        { name: 'unpublished_edits', label: 'adminUsm.publishStatus.unpublishedEdits' }
+      ],
+      type: 'list'
+    },
+    {
+      name: 'sourceType',
+      label: 'adminUsm.policies.list.sourceType',
+      listOptions: [
+        { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
+        { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
+      ],
+      type: 'list'
+    }
+  ];
+  const fullState = new ReduxDataHelper()
+    .fetchPolicies()
+    .build();
+  const config = filterTypesConfig(Immutable.from(fullState));
+  assert.equal(config.length, 2, '2 filters as expected');
+  assert.deepEqual(config, expectedConfig, 'filter config(s) generated as expected');
 });

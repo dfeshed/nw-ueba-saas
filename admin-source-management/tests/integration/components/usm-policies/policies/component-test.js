@@ -59,6 +59,21 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     assert.equal(el.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
   });
 
+  test('Policy Type filter rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    const translation = this.owner.lookup('service:i18n');
+    const expectedFilterText = translation.t('adminUsm.policies.list.sourceType');
+    const exOptLen = 2;
+    // policy type filter is second list-filter
+    const [, el2] = findAll('.filter-controls .list-filter');
+    assert.equal(el2.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
+    assert.equal(el2.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
+  });
+
   test('Show policy list', async function(assert) {
     assert.expect(2);
     setState('name', false);

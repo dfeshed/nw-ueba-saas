@@ -53,12 +53,6 @@ export default class DataHelper {
     return this;
   }
 
-  /* TODO is this deprecated? Should this be deleted when policy wizard is done ??? */
-  fetchPolicyStatus(status) {
-    _set(this.state, 'usm.policy.itemsStatus', status);
-    return this;
-  }
-
   policyWiz(policyType = 'edrPolicy') {
     _set(this.state, 'usm.policyWizard', _.cloneDeep(policyWizInitialState(Immutable.from({}), policyType)));
     return this;
@@ -440,6 +434,11 @@ export default class DataHelper {
 
   groupsPolicyListStatus(status) {
     _set(this.state, 'usm.groups.policyListStatus', status);
+    return this;
+  }
+
+  fetchPolicyStatus(status) {
+    _set(this.state, 'usm.policies.itemsStatus', status);
     return this;
   }
 
