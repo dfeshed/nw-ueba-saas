@@ -24,7 +24,7 @@
       ]
     },
     {
-      "name": "processFilePathHistogramSetServiceRegistryKeyGroupRegistryDaily",
+      "name": "processFilePathHistogramRegistryKeyGroupRegistryDaily",
       "contextFieldNames": [
         "registryKeyGroup"
       ],

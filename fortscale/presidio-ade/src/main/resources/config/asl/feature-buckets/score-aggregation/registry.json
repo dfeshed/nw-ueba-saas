@@ -27,12 +27,12 @@
       ]
     },
     {
-      "name": "processFilePathToHighestScoreMapSetServiceRegistryKeyGroupRegistryHourly",
+      "name": "processFilePathToHighestScoreMapRegistryKeyGroupRegistryHourly",
       "contextFieldNames": [
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.registry.processFilePath.setServiceRegistryKeyGroup.registry.score"
+        "scored_enriched.registry.processFilePath.registryKeyGroup.registry.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
