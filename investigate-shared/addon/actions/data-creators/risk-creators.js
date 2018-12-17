@@ -17,6 +17,7 @@ const STATE_MAP = {
   FILE: 'files',
   HOST: 'endpoint'
 };
+const alertIdArray = [];
 
 const resetRiskScore = (selecedItems, callbacks = callbacksDefault) => {
   const selectedList = selecedItems.map((item) => item.checksumSha256 || item.id);
@@ -115,7 +116,12 @@ const setSelectedAlert = (context) => {
                 });
             } else if (event.source === 'ESA') {
               // Medium alerts will be fetch from Decoder
-              await dispatch(getAlertEvents(event));
+              alertIdArray.push(event);
+              if (alertIdArray.length === 100 || i === (context.context.length - 1)) {
+                // For every 100 events or on last event, make an api call
+                await dispatch(getAlertEvents(alertIdArray));
+                alertIdArray.length = 0;
+              }
             }
           }
         }
