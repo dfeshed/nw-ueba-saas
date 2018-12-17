@@ -3910,7 +3910,7 @@ export default {
       modals: {
         deletePolicies: {
           title: 'Delete Policy(ies)',
-          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so.',
+          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
           ok: 'Delete Policy(ies)',
           success: 'Successfully deleted selected Policy(ies)',
           failure: 'There was an unexpected problem deleting selected Policy(ies)'
