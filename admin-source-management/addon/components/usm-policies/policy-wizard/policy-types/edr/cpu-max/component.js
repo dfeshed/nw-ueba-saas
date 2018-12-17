@@ -19,6 +19,7 @@ const dispatchToActions = {
 const CpuMax = Component.extend({
   tagName: 'box',
   classNames: 'cpu-max',
+  isDefaultPolicy: null,
   format: {
     to(value) {
       return Math.round(value);

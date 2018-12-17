@@ -26,7 +26,9 @@ const UsmRadios = Component.extend({
 
   classNameBindings: ['selectedSettingId'],
 
-  selectedSettingId: null
+  selectedSettingId: null,
+
+  isDefaultPolicy: null
 
 });
 

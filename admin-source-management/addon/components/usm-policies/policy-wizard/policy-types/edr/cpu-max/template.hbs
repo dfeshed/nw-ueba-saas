@@ -1,6 +1,7 @@
 <h4 class='title'>
   {{t 'adminUsm.policyWizard.edrPolicy.cpuMax'}}
-  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'cpuMax'}}>
+  <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
+  {{action 'removeFromSelectedSettings' 'cpuMax'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>

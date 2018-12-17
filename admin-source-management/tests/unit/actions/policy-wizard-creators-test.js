@@ -63,6 +63,50 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     thunk(dispatch);
   });
 
+  test('initializePolicyType action creator returns proper type(s) and payload(s) when isDefaultPolicy is true', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.FETCH_ENDPOINT_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_ENDPOINT_SERVERS, 'action has the correct type');
+          break;
+        case ACTION_TYPES.EDR_DEFAULT_POLICY:
+          assert.equal(action.type, ACTION_TYPES.EDR_DEFAULT_POLICY, 'action has the correct type');
+          break;
+        default:
+          assert.equal(true, false, 'action has the correct type');
+      }
+    };
+    const isDefaultPolicy = true;
+    policyWizardCreators.initializePolicyType('edrPolicy', dispatch, isDefaultPolicy);
+  });
+
+  test('initializePolicyType action creator returns proper type(s) and payload(s) when isDefaultPolicy is false', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.FETCH_ENDPOINT_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_ENDPOINT_SERVERS, 'action has the correct type');
+          break;
+        default:
+          assert.equal(true, false, 'action has the correct type');
+      }
+    };
+    const isDefaultPolicy = false;
+    policyWizardCreators.initializePolicyType('edrPolicy', dispatch, isDefaultPolicy);
+  });
+
+  test('initializePolicyType action creator returns proper type(s) and payload(s) when policy is windowsLogPolicy', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.FETCH_LOG_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_LOG_SERVERS, 'action has the correct type');
+          break;
+        default:
+          assert.equal(true, false, 'action has the correct type');
+      }
+    };
+    policyWizardCreators.initializePolicyType('windowsLogPolicy', dispatch);
+  });
+
   test('updatePolicyType action creator returns proper type(s), payload(s), and/or promise(s) when policyType is edrPolicy', function(assert) {
     const dispatch = (action) => {
       switch (action.type) {

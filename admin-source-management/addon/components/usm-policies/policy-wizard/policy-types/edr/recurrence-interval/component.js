@@ -29,6 +29,8 @@ const RecInterval = Component.extend({
 
   classNames: 'recurrence-interval',
 
+  isDefaultPolicy: null,
+
   actions: {
     selectWeek(index) {
       this.send('updatePolicyProperty', 'runOnDaysOfWeek', [index]);

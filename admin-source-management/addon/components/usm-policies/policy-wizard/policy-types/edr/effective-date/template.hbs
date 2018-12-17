@@ -1,13 +1,14 @@
 <h4 class='title'>
   {{t 'adminUsm.policyWizard.edrPolicy.effectiveDate'}}
-  <span class="remove-setting"{{action 'removeFromSelectedSettings' 'scanStartDate'}}>
+  <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
+  {{action 'removeFromSelectedSettings' 'scanStartDate'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>
 <hbox class="date-time">
   {{rsa-form-datetime
     enableTime=false
-    value=(readonly startDate)        
+    value=(readonly startDate)
     isError=startDateValidator.showError
     errorMessage=(t startDateValidator.errorMessage)
     onChange=(action 'onDateChange')

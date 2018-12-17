@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 
 import {
   enabledAvailableSettings,
-  sortedSelectedSettings
+  sortedSelectedSettings,
+  policy
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 import {
@@ -13,7 +14,8 @@ import {
 
 const stateToComputed = (state) => ({
   enabledAvailableSettings: enabledAvailableSettings(state),
-  sortedSelectedSettings: sortedSelectedSettings(state)
+  sortedSelectedSettings: sortedSelectedSettings(state),
+  defaultPolicy: policy(state).defaultPolicy
 });
 
 const dispatchToActions = {

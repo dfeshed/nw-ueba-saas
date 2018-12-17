@@ -43,6 +43,12 @@
         @include rsa-font();
         padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
       }
+      .selected-settings {
+        .is-greyed-out {
+          color: text-color(primary);
+          pointer-events: none;
+        }        
+      }
       .selected-settings, .available-settings {
         max-height: calc(90vh - #{$wizardStepMaxHeight});
         overflow-y: auto;

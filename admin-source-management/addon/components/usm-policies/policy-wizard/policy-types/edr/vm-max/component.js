@@ -19,6 +19,7 @@ const dispatchToActions = {
 const VmMax = Component.extend({
   tagName: 'box',
   classNames: 'vm-max',
+  isDefaultPolicy: null,
   format: {
     to(value) {
       return Math.round(value);

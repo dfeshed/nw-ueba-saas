@@ -369,6 +369,89 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(endState.availableSettings[2].isGreyedOut, false, 'Effective date component lights up correctly when ENABLED is selected');
   });
 
+  test('For a default EDR policy, EDR_DEFAULT_POLICY sets default values to properties when they are null', function(assert) {
+    const currentState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('ENABLED')
+      .policyWizDefaultPolicy('true')
+      .policyWizScanStartDate(null)
+      .policyWizScanStartTime(null)
+      .policyWizRecurrenceInterval(null)
+      .policyWizRecurrenceUnit(null)
+      .policyWizCpuMax(null)
+      .policyWizCpuMaxVm(null)
+      .policyWizDownloadMbr(null)
+      .policyWizAgentMode(null)
+      .policyWizRequestScanOnRegistration(null)
+      .policyWizBlockingEnabled(null)
+      .build().usm.policyWizard;
+
+    const action = { type: ACTION_TYPES.EDR_DEFAULT_POLICY };
+    const endState = reducers(Immutable.from(_.cloneDeep(currentState)), action);
+    assert.deepEqual(endState.policy.scanStartDate, moment().format('YYYY-MM-DD'), 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to scanStartDate correctly');
+    assert.deepEqual(endState.policy.scanStartTime, '09:00', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to scanStartTime correctly');
+    assert.deepEqual(endState.policy.recurrenceInterval, 1, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to recurrenceInterval correctly');
+    assert.deepEqual(endState.policy.recurrenceUnit, 'DAYS', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to recurrenceUnit correctly');
+    assert.deepEqual(endState.policy.cpuMax, 90, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to cpuMax correctly');
+    assert.deepEqual(endState.policy.cpuMaxVm, 90, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to cpuMaxVm correctly');
+    assert.deepEqual(endState.policy.agentMode, 'ADVANCED', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to agentMode correctly');
+    assert.deepEqual(endState.policy.blockingEnabled, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to blockingEnabled correctly');
+    assert.deepEqual(endState.policy.downloadMbr, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to downloadMbr correctly');
+    assert.deepEqual(endState.policy.requestScanOnRegistration, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to requestScanOnRegistration correctly');
+  });
+
+  test('For a default EDR policy, EDR_DEFAULT_POLICY does not set default values when they are already set', function(assert) {
+    const currentState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('ENABLED')
+      .policyWizDefaultPolicy('true')
+      .policyWizScanStartDate('2018-09-13')
+      .policyWizAgentMode('INSIGHTS')
+      .build().usm.policyWizard;
+
+    const action = { type: ACTION_TYPES.EDR_DEFAULT_POLICY };
+    const endState = reducers(Immutable.from(_.cloneDeep(currentState)), action);
+    assert.deepEqual(endState.policy.scanStartDate, '2018-09-13', 'for a default EDR policy, EDR_DEFAULT_POLICY honors the value of scanStartDate if it is already set');
+    assert.deepEqual(endState.policy.agentMode, 'INSIGHTS', 'for a default EDR policy, EDR_DEFAULT_POLICY honors the value of agentMode if it is already set');
+  });
+
+  test('For a default EDR policy, EDR_DEFAULT_POLICY moves all settings to selected settings except the settings in Endpoint and Advanced', function(assert) {
+    const initialStateCopy = _.cloneDeep(initialStateEdr);
+    const action = { type: ACTION_TYPES.EDR_DEFAULT_POLICY };
+    const endState = reducers(Immutable.from(_.cloneDeep(initialStateCopy)), action);
+    assert.deepEqual(endState.selectedSettings.length, 14, 'for a default EDR policy, EDR_DEFAULT_POLICY moves all settings to right except Endpoint and Advanced');
+  });
+
+  test('For a default EDR policy, TOGGLE_SCAN_TYPE just changes the scan type without having effect on any other fields', function(assert) {
+    const currentState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('ENABLED')
+      .policyWizDefaultPolicy('true')
+      .policyWizScanStartDate('2018-09-13')
+      .policyWizScanStartTime('10:00')
+      .policyWizRecurrenceInterval(1)
+      .policyWizRecurrenceUnit('DAYS')
+      .policyWizCpuMax(75)
+      .policyWizCpuMaxVm(85)
+      .build().usm.policyWizard;
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizScanType('DISABLED')
+      .policyWizDefaultPolicy('true')
+      .policyWizScanStartDate('2018-09-13')
+      .policyWizScanStartTime('10:00')
+      .policyWizRecurrenceInterval(1)
+      .policyWizRecurrenceUnit('DAYS')
+      .policyWizCpuMax(75)
+      .policyWizCpuMaxVm(85)
+      .build().usm.policyWizard;
+
+    const payload = 'DISABLED';
+    const action = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+    const endState = reducers(Immutable.from(_.cloneDeep(currentState)), action);
+    assert.deepEqual(endState, expectedEndState, 'for a default EDR policy, changing scan type changes only scan type without affecting other settings');
+  });
+
   test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', function(assert) {
     const payload = 'scanType';
     const action = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };

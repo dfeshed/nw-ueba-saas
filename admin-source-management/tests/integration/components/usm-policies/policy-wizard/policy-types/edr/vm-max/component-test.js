@@ -47,6 +47,17 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/vm
     assert.equal(findAll('.vm-max').length, 1, 'expected to have root element in DOM');
   });
 
+  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCpuMaxVm(75)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max isDefaultPolicy=true}}`);
+    assert.equal(findAll('.title .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/vm-max isDefaultPolicy=false}}`);
+    assert.equal(findAll('.title .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
+  });
+
   test('should trigger the updatePolicyProperty ac on slider change', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()

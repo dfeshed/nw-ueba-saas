@@ -39,6 +39,13 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     assert.equal(findAll('.radio-option').length, 2, 'expected to have two radio buttons in dom');
   });
 
+  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode' isDefaultPolicy=true}}`);
+    assert.equal(findAll('.rsa-form-radio-group-label .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode' isDefaultPolicy=false}}`);
+    assert.equal(findAll('.rsa-form-radio-group-label .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
+  });
+
   // works locally but is flaky on Jenkins
   skip('It triggers the update policy action creator when the radio button is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode'}}`);

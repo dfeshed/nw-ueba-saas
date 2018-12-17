@@ -29,6 +29,8 @@ const EffectiveDate = Component.extend({
 
   selectedSettingId: null,
 
+  isDefaultPolicy: null,
+
   actions: {
     onDateChange(selectedDates) {
       const value = isEmpty(selectedDates[0]) ? '' : moment(selectedDates[0]).format('YYYY-MM-DD');

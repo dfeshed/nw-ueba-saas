@@ -25,7 +25,11 @@ const initializePolicy = (policyId) => {
     // init policy list, which is used to validate policy name uniqueness
     dispatch(fetchPolicyList());
     // init type specific actions
-    _initializePolicyType(getState().usm.policyWizard.policy.policyType, dispatch);
+    // isDefaultPolicy is a boolean - for a default policy this will be set to true.
+    const { defaultPolicy: isDefaultPolicy } = getState().usm.policyWizard.policy;
+    initializePolicyType(getState().usm.policyWizard.policy.policyType, dispatch, isDefaultPolicy);
+
+
   };
 };
 
@@ -45,12 +49,16 @@ const _initializeFetchPolicy = (policyId, dispatch, getState) => {
  * - NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
  * @private
  */
-const _initializePolicyType = (policyType, dispatch) => {
+const initializePolicyType = (policyType, dispatch, isDefaultPolicy = false) => {
   // init type specific actions
   switch (policyType) {
     // edrPolicy picked from the dropdown
     case 'edrPolicy':
       dispatch(fetchEndpointServers());
+      // if the policy is a defaultPolicy, also dispatch it's specific action creator.
+      if (isDefaultPolicy) {
+        dispatch(edrDefaultPolicy());
+      }
       break;
     // windowsLogPolicy picked from the dropdown
     case 'windowsLogPolicy':
@@ -212,7 +220,7 @@ const updatePolicyType = (policyType) => {
       payload: policyType
     });
     // init type specific actions
-    _initializePolicyType(policyType, dispatch);
+    initializePolicyType(policyType, dispatch);
   };
 };
 
@@ -286,6 +294,12 @@ const fetchEndpointServers = () => {
   };
 };
 
+const edrDefaultPolicy = () => {
+  return {
+    type: ACTION_TYPES.EDR_DEFAULT_POLICY
+  };
+};
+
 // ===================================================
 // windowsLogPolicy specific action creators
 // ===================================================
@@ -303,6 +317,7 @@ export {
   updatePolicyStep,
   savePolicy,
   savePublishPolicy,
+  initializePolicyType,
   addToSelectedSettings,
   removeFromSelectedSettings,
   updatePolicyType,

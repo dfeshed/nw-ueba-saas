@@ -24,6 +24,8 @@ const StartTime = Component.extend({
 
   classNames: 'start-time',
 
+  isDefaultPolicy: null,
+
   actions: {
     onTimeChange(selectedDates, dateString, flatpikr) {
       const selectedTime = flatpikr.element.value;

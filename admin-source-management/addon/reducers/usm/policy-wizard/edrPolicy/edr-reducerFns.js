@@ -1,4 +1,5 @@
 import { handle } from 'redux-pack';
+import _ from 'lodash';
 
 const scanScheduleId = 'scanType';
 
@@ -15,52 +16,114 @@ const fetchEndpointServers = (state, action) => (
 );
 
 // define-policy-step -
+// ACTION_TYPES.EDR_DEFAULT_POLICY
+const edrDefaultPolicy = (state) => {
+  const { availableSettings, selectedSettings, policy } = state;
+  const policyValues = {};
+  const newAvailableSettings = [];
+  const newSelectedSettings = [];
+  for (let i = 0; i < availableSettings.length; i++) {
+    const setting = availableSettings[i];
+    switch (setting.id) {
+      // For a default policy, all the below settings should be on the right with default values except the settings in Endpoint and Advanced Configuration headers.
+      case 'scanScheduleHeader':
+      case 'scanType':
+      case 'scanStartDate':
+      case 'recurrenceInterval':
+      case 'scanStartTime':
+      case 'cpuMax':
+      case 'cpuMaxVm':
+      case 'agentSettingsHeader':
+      case 'agentMode':
+      case 'advScanSettingsHeader':
+      case 'downloadMbr':
+      case 'requestScanOnRegistration':
+      case 'invActionsHeader':
+      case 'blockingEnabled': {
+        newAvailableSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
+        newSelectedSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
+
+        const elDefaults = setting.defaults || [];
+        for (let i = 0; i < elDefaults.length; i++) {
+          // set default values only for fields that are null
+          if (policy[elDefaults[i].field] === null) {
+            policyValues[elDefaults[i].field] = elDefaults[i].value;
+          }
+        }
+        break; // switch
+      }
+      default:
+        newAvailableSettings.push({ ...setting });
+        break;
+    }
+  }
+  return state.merge({
+    policy: {
+      ...policyValues
+    },
+    availableSettings: newAvailableSettings,
+    selectedSettings: _.uniqBy([ ...selectedSettings, ...newSelectedSettings ], 'id')
+  }, { deep: true }); // deep merge so we don't reset everything
+};
+
+// define-policy-step -
 // ACTION_TYPES.TOGGLE_SCAN_TYPE
 const toggleScanType = (state, { payload }) => {
-  const { availableSettings, selectedSettings } = state;
-  if (payload === 'ENABLED') {
-    const newAvailableSettings = availableSettings.map((el) => {
-      // if any of the objects in the array is the child of scanSchedule they should be lit up
-      if (el.parentId === scanScheduleId) {
-        return {
-          ...el,
-          isGreyedOut: false
-        };
-      }
-      return el;
-    });
+  const { defaultPolicy: isDefaultPolicy } = state.policy;
+
+  // For a default policy, update just the scanType property in state with the payload without affecting other settings.
+  if (isDefaultPolicy) {
     return state.merge({
       policy: {
         scanType: payload
-      },
-      availableSettings: newAvailableSettings
-    }, { deep: true }); // deep merge so we don't reset everything
-  } else { // 'DISABLED'
-    const newAvailableSettings = availableSettings.map((el) => {
-      // if any of the objects in the array is the child of scanSchedule they should be greyed out
-      if (el.parentId === scanScheduleId) {
-        return {
-          ...el,
-          isGreyedOut: true,
-          isEnabled: true
-        };
       }
-      return el;
-    });
-    return state.merge({
-      policy: {
-        scanType: payload,
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: null,
-        recurrenceUnit: null,
-        runOnDaysOfWeek: null,
-        cpuMax: null,
-        cpuMaxVm: null
-      },
-      availableSettings: newAvailableSettings,
-      selectedSettings: selectedSettings.filter((el) => el.parentId !== scanScheduleId)
     }, { deep: true }); // deep merge so we don't reset everything
+  } else { // For a non-default policy, available settings for children of scanScheduleId will be lit/greyed out
+    const { availableSettings, selectedSettings } = state;
+    if (payload === 'ENABLED') {
+      const newAvailableSettings = availableSettings.map((el) => {
+        // if any of the objects in the array is the child of scanSchedule they should be lit up
+        if (el.parentId === scanScheduleId) {
+          return {
+            ...el,
+            isGreyedOut: false
+          };
+        }
+        return el;
+      });
+      return state.merge({
+        policy: {
+          scanType: payload
+        },
+        availableSettings: newAvailableSettings
+      }, { deep: true }); // deep merge so we don't reset everything
+    } else { // 'DISABLED'
+      const newAvailableSettings = availableSettings.map((el) => {
+        // if any of the objects in the array is the child of scanSchedule they should be greyed out
+        if (el.parentId === scanScheduleId) {
+          return {
+            ...el,
+            isGreyedOut: true,
+            isEnabled: true
+          };
+        }
+        return el;
+      });
+      return state.merge({
+        policy: {
+          scanType: payload,
+          scanStartDate: null,
+          scanStartTime: null,
+          recurrenceInterval: null,
+          recurrenceUnit: null,
+          runOnDaysOfWeek: null,
+          cpuMax: null,
+          cpuMaxVm: null
+        },
+        availableSettings: newAvailableSettings,
+        selectedSettings: selectedSettings.filter((el) => el.parentId !== scanScheduleId)
+      }, { deep: true }); // deep merge so we don't reset everything
+    }
   }
 };
 
@@ -116,6 +179,7 @@ const resetScanScheduleToDefaults = (state) => {
 
 export default {
   fetchEndpointServers,
+  edrDefaultPolicy,
   toggleScanType,
   resetScanScheduleToDefaults
 };

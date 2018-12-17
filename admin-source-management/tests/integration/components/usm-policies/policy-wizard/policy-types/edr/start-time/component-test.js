@@ -45,6 +45,14 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/st
     assert.equal(findAll('.start-time').length, 1, 'expected to have root element in DOM');
   });
 
+  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz().build();
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time isDefaultPolicy=true}}`);
+    assert.equal(findAll('.title .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time isDefaultPolicy=false}}`);
+    assert.equal(findAll('.title .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
+  });
+
   test('should trigger the updatePolicyProperty action creator on time change', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time}}`);

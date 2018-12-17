@@ -397,6 +397,8 @@ export default reduxActions.handleActions({
   // edrPolicy actions
   [ACTION_TYPES.FETCH_ENDPOINT_SERVERS]: edrPolicyReducers.fetchEndpointServers,
 
+  [ACTION_TYPES.EDR_DEFAULT_POLICY]: edrPolicyReducers.edrDefaultPolicy,
+
   // windowsLogPolicy actions
   [ACTION_TYPES.FETCH_LOG_SERVERS]: windowsLogPolicyReducers.fetchLogServers,
 

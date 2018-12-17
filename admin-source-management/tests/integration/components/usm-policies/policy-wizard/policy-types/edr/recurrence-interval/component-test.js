@@ -49,6 +49,13 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     assert.equal(findAll('.recurrence-type').length, 2, 'expected to have two radio button in dom');
   });
 
+  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval isDefaultPolicy=true}}`);
+    assert.equal(findAll('.rsa-form-radio-group-label .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval isDefaultPolicy=false}}`);
+    assert.equal(findAll('.rsa-form-radio-group-label .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
+  });
+
   test('should display Daily recurrence fields on clicking the Daily radio button', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz()
