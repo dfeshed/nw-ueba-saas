@@ -18,13 +18,15 @@ const STATE_MAP = {
   HOST: 'endpoint'
 };
 
-const resetRiskScore = (selectedFiles, callbacks = callbacksDefault) => {
-  const fileList = selectedFiles.map((file) => file.checksumSha256);
-  return (dispatch) => {
+const resetRiskScore = (selecedItems, callbacks = callbacksDefault) => {
+  const selectedList = selecedItems.map((item) => item.checksumSha256 || item.id);
+  return (dispatch, getState) => {
+    const type = riskType(getState());
     dispatch({
       type: ACTION_TYPES.RESET_RISK_SCORE,
-      promise: api.sendDataToResetRiskScore(fileList),
+      promise: type === 'FILE' ? api.sendDataToResetRiskScore(selectedList) : api.sendHostDataToResetRiskScore(selectedList),
       meta: {
+        belongsTo: type,
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },
@@ -59,24 +61,13 @@ const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => 
       // This is different only for host files.
       belongsTo = riskType;
     }
-    if (riskType === 'FILE') {
-      dispatch({
-        type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
-        meta: {
-          belongsTo
-        },
-        promise: api.getRiskScoreContext(data)
-      });
-    } else {
-      dispatch({
-        type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
-        meta: {
-          belongsTo
-        },
-        promise: api.getHostRiskScoreContext(data)
-      });
-    }
-
+    dispatch({
+      type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+      meta: {
+        belongsTo
+      },
+      promise: riskType === 'FILE' ? api.getRiskScoreContext(data) : api.getHostRiskScoreContext(data)
+    });
   };
 };
 

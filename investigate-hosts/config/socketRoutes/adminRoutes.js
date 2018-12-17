@@ -30,6 +30,10 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/risk/context/host',
         requestDestination: '/ws/respond/risk/context/host'
       },
+      resetHostRiskScore: {
+        subscriptionDestination: '/user/queue/risk/context/host/reset',
+        requestDestination: '/ws/respond/risk/context/host/reset'
+      },
       getFileContext: {
         subscriptionDestination: '/user/queue/risk/context/file',
         requestDestination: '/ws/respond/risk/context/file'

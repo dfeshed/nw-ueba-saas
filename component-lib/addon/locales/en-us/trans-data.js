@@ -2762,7 +2762,8 @@ export default {
         shrink: 'Contract View',
         update: 'Update',
         reset: 'Reset',
-        rightPanel: 'Show/Hide Detail Right Panel'
+        rightPanel: 'Show/Hide Detail Right Panel',
+        resetRiskScore: 'Reset Risk Score'
       },
       autoruns: {
         services: {
@@ -3307,6 +3308,14 @@ export default {
         },
         success: 'Host(s) are deleted successfully',
         error: 'Host(s) deletion failed'
+      },
+      resetHosts: {
+        modal: {
+          title: 'Reset Risk Score',
+          message: 'Are you sure you want to reset the Risk Score for the selected host(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0. Click Help for more information.'
+        },
+        success: 'The Risk Score has been successfully reset.',
+        error: ' The Risk Score cannot be reset.'
       },
       moreActions: {
         openIn: 'Pivot to Endpoint Thick Client',

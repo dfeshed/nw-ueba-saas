@@ -28,6 +28,10 @@ module.exports = function(environment) {
       downloadFileToServer: {
         subscriptionDestination: '/user/queue/endpoint/command/download-file',
         requestDestination: '/ws/endpoint/command/download-file'
+      },
+      resetHostRiskScore: {
+        subscriptionDestination: '/user/queue/endpoint/machine/remove',
+        requestDestination: '/ws/endpoint/machine/remove'
       }
     }
   };

@@ -17,6 +17,21 @@ const sendDataToResetRiskScore = (data) => {
 };
 
 /**
+ * Executes the web socket call for sending the agent id of selected host to reset risk score
+ * @param data
+ * @returns {*}
+ * @public
+ */
+const sendHostDataToResetRiskScore = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'resetHostRiskScore',
+    modelName: 'respond-server',
+    query: { data }
+  });
+};
+
+/**
  * Executes a websocket fetch call for host context and returns a Promise.
  *
  * @method getRiskScoreContext
@@ -75,5 +90,6 @@ export default {
   sendDataToResetRiskScore,
   getRiskScoreContext,
   getHostRiskScoreContext,
-  getAlertEvents
+  getAlertEvents,
+  sendHostDataToResetRiskScore
 };

@@ -127,6 +127,19 @@ module('Integration | Component | host table action bar', function(hooks) {
     await click('.service-selector-panel li');
   });
 
+  test('it renders action bar reset risk score button', async function(assert) {
+    await render(hbs`{{host-list/host-table/action-bar}}`);
+    assert.equal(document.querySelector('.host-table__toolbar .reset-risk-score').textContent.trim(), 'Reset Risk Score', 'action bar reset risk score label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .reset-risk-score .is-disabled').length, 1, 'Reset risk score button is disabled');
+  });
+
+  test('it renders action bar reset risk score button when some hosts are selected', async function(assert) {
+    new ReduxDataHelper(setState).scanCount(2).build();
+    await render(hbs`{{host-list/host-table/action-bar}}`);
+    assert.equal(document.querySelector('.host-table__toolbar .reset-risk-score').textContent.trim(), 'Reset Risk Score', 'action bar reset risk score label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .reset-risk-score .is-disabled').length, 0, 'Reset risk score button is enabled');
+  });
+
   skip('it renders flash message when pivot to endpoint is clicked with not 4.4 host selected', function(assert) {
     assert.expect(2);
     const host = {

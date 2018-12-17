@@ -9,6 +9,7 @@ import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creat
 import { deleteHosts, getPageOfMachines, triggerMachineActions } from 'investigate-hosts/actions/data-creators/host';
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
+import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const stateToComputed = (state) => ({
   totalItems: state.endpoint.machines.totalItems,
@@ -26,7 +27,8 @@ const dispatchToActions = {
   toggleDeleteHostsModal,
   deleteHosts,
   setEndpointServer,
-  getPageOfMachines
+  getPageOfMachines,
+  resetRiskScore
 };
 
 const ActionBar = Component.extend({
@@ -55,6 +57,16 @@ const ActionBar = Component.extend({
       if (this.closeProperties) {
         this.closeProperties();
       }
+    },
+
+    handleResetHostsRiskScore(selectedHostList) {
+      const callBackOptions = {
+        onSuccess: () => {
+          this.get('flashMessage').showFlashMessage('investigateHosts.hosts.resetHosts.success');
+        },
+        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+      };
+      this.send('resetRiskScore', selectedHostList, callBackOptions);
     }
   }
 });
