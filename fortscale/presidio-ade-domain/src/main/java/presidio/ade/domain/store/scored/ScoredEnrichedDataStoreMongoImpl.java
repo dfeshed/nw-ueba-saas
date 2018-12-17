@@ -8,7 +8,6 @@ import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,6 +17,7 @@ import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ScoredDataReader;
+import presidio.ade.domain.store.ScoredDataReaderMongoUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,7 +28,6 @@ import java.util.Map;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.*;
 import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
-import static presidio.ade.domain.store.ScoredDataReaderMongoUtils.*;
 
 /**
  * @author Yaron DL
@@ -158,10 +157,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements
     public long countScoredRecords(
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType) {
 
-        Query query = new Query();
-        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
-        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
-        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
+        Query query = buildScoredRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         String collectionName = translator.toCollectionName(adeEventType);
         return mongoTemplate.count(query, AdeScoredEnrichedRecord.class, collectionName);
     }
@@ -171,12 +167,9 @@ public class ScoredEnrichedDataStoreMongoImpl implements
             TimeRange timeRange, MultiKeyFeature contextFieldNameToValueMap, int scoreThreshold, String adeEventType,
             int skip, int limit) {
 
-        Query query = new Query();
-        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange);
-        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
-        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
+        Query query = buildScoredRecordsQuery(timeRange, contextFieldNameToValueMap, scoreThreshold);
         String collectionName = translator.toCollectionName(adeEventType);
-        query.skip(skip).limit(limit);
+        query = query.skip(skip).limit(limit);
         return mongoTemplate.find(query, AdeScoredEnrichedRecord.class, collectionName);
     }
 
@@ -214,21 +207,27 @@ public class ScoredEnrichedDataStoreMongoImpl implements
                 Direction.DESC);
     }
 
+    private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
+        return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
+                START_INSTANT_FIELD, timeRange,
+                CONTEXT_FIELD_NAME + ".", contextFields,
+                SCORE_FIELD_NAME, scoreThreshold);
+    }
+
     private AdeScoredRecord readScoredRecord(
             TimeRange timeRange,
             String adeEventType,
-            MultiKeyFeature contextFieldNameToValueMap,
-            MultiKeyFeature additionalFieldNameToValueMap,
+            MultiKeyFeature contextFields,
+            MultiKeyFeature fields,
             int scoreThreshold,
             Direction direction) {
 
-        Query query = new Query();
-        addTimeRangeCriterion(query, START_INSTANT_FIELD, timeRange, additionalFieldNameToValueMap);
+        Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
+                fields, START_INSTANT_FIELD, timeRange,
+                CONTEXT_FIELD_NAME + ".", contextFields,
+                SCORE_FIELD_NAME, scoreThreshold,
+                direction);
         String collectionName = translator.toCollectionName(adeEventType);
-        addContextFieldCriteria(query, CONTEXT_FIELD_NAME + ".", contextFieldNameToValueMap);
-        addFieldCriteria(query, START_INSTANT_FIELD, additionalFieldNameToValueMap);
-        addScoreThresholdCriterion(query, SCORE_FIELD_NAME, scoreThreshold);
-        query.with(new Sort(direction, START_INSTANT_FIELD));
         return mongoTemplate.findOne(query, AdeScoredEnrichedRecord.class, collectionName);
     }
 }
