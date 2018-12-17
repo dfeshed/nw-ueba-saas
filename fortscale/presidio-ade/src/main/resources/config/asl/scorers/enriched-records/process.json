@@ -359,7 +359,7 @@
             },
             {
               "type": "conditional",
-              "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+              "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
               "predicates": [
                 {
                   "type": "contained-in-list",
@@ -376,12 +376,12 @@
               ],
               "scorerConf": {
                 "type": "reduction-scorer",
-                "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+                "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process.score",
+                  "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
                   "model": {
-                    "name": "dstProcessFilePathOpened.userIdDstProcessFileName.process"
+                    "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process"
                   },
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
