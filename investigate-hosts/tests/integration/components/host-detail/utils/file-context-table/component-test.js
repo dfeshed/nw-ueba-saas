@@ -131,9 +131,9 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.rsa-data-table-body-row').length, 3, 'Returned the number of rows/length of the table');
-
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
+      assert.equal(findAll('.rsa-data-table-body-row').length, 3, 'Returned the number of rows/length of the table');
+    });
   });
 
 
@@ -153,6 +153,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body').length > 0, { timeout: 6000 });
     assert.equal(find('.rsa-data-table-body').textContent.trim(), 'No Results Found.', 'No results message rendered for no data items');
   });
 
@@ -196,10 +197,12 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7-filled').length, 1, 'rsa arrow-up icon before sorting');
-    await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
-    assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7-filled').length, 1, 'rsa arrow-down icon after sorting');
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
+      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-up-7-filled').length, 1, 'rsa arrow-up icon before sorting');
+      await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
+      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(2) i.rsa-icon-arrow-down-7-filled').length, 1, 'rsa arrow-down icon after sorting');
+    });
+
   });
 
   test('Load More is shown for paged items', async function(assert) {
@@ -219,6 +222,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.rsa-data-table-load-more').length, 1, 'Load more button is present');
   });
 
@@ -285,6 +289,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table showServiceModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1);
   });
 
@@ -306,6 +311,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
   });
 
@@ -326,7 +332,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
-
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('a.file-name-link').length, 3);
     assert.equal(find('a.file-name-link').href.search('/investigate/files/file'), 21);
   });
@@ -348,6 +354,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
   });
 
@@ -368,6 +375,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');

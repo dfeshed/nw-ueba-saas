@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, waitUntil, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
@@ -51,6 +51,7 @@ module('Integration | Component | endpoint host-detail/process/summary-items/pro
     };
     this.set('item', newItem);
     await render(hbs`{{host-detail/process/summary-items/property item=item}}`);
+    await waitUntil(() => findAll('.header-item').length > 0, { timeout: 6000 });
     return settled().then(() => {
       assert.equal(document.querySelector('.header-item').classList.contains('custom-class'), true, 'has custom class passed with item');
     });

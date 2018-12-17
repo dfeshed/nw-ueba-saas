@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, render, click, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
@@ -81,6 +81,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
+    await waitUntil(() => findAll('.process-content-box').length > 0, { timeout: 6000 });
     assert.equal(findAll('.host-process-details').length, 1, 'process details page rendered');
     assert.equal(findAll('.host-process-details-action-bar').length, 1, 'process details action bar should rendered');
     assert.equal(findAll('.process-content-box').length, 1, 'summary panel should rendered');
@@ -100,6 +101,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
+    await waitUntil(() => findAll('.process-content-box').length > 0, { timeout: 6000 });
     assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 3, 'On render all accordions should collapsed');
     await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
     assert.equal(findAll('.process-dll-list').length, 1, 'On click only one process-dll-list table should show');
@@ -124,6 +126,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
       .build();
 
     await render(hbs`{{host-detail/process/process-details}}`);
+    await waitUntil(() => findAll('.process-content-box').length > 0, { timeout: 6000 });
     await click(findAll('.process-content-box__accordion-content .is-collapsed')[0]);
     await click(findAll('.rsa-data-table-body-row')[0]);
     assert.equal(findAll('.host-property-panel').length, 1, 'process property panel rendered');
