@@ -47,6 +47,11 @@
                   "model": {
                     "name": "dstProcessFileName.userId.process"
                   },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
@@ -268,6 +273,11 @@
                   "model": {
                     "name": "srcProcessFilePath.userIdDstProcessFileName.process"
                   },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
@@ -318,6 +328,11 @@
                   "model": {
                     "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process"
                   },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
                   "use-certainty-to-calculate-score": true,
@@ -382,6 +397,11 @@
                     "model": {
                       "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
                     },
+                    "additional-models": [
+                      {
+                        "name": "startInstant.userId.process"
+                      }
+                    ],
                     "max-rare-count": 8,
                     "number-of-partitions-to-influence-enough": 10,
                     "min-number-of-partitions-to-influence": 10,

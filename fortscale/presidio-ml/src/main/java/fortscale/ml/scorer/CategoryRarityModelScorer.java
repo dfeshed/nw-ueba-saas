@@ -107,9 +107,10 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
     @Override
     public double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
         Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
+        CategoryRarityModel categoryRarityModel = (CategoryRarityModel)model;
 
-        if (additionalModels.size() > 0) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + " doesn't expect to get additional models");
+        if (additionalModels.size() > 1) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get at most one additional model");
         }
 
         Assert.notNull(feature, "Feature cannot be null");
@@ -122,9 +123,13 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             return 0.0;
         }
 
-        Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
+        Double count = categoryRarityModel.getFeatureCount(feature.getValue().toString());
         if (count == null) count = 0d;
-        return algorithm.calculateScore((int)Math.round(count+1), (CategoryRarityModel)model);
+        if(additionalModels.size()== 1){
+            CategoryRarityModel additionalModel = (CategoryRarityModel)additionalModels.get(0);
+            categoryRarityModel.setNumOfPartitions(additionalModel.getNumOfPartitions());
+        }
+        return algorithm.calculateScore((int)Math.round(count+1), categoryRarityModel);
     }
 
     public int getMinNumOfDistinctValuesToInfluence() {
