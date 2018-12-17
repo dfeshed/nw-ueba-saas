@@ -18,8 +18,7 @@ public interface HistoricalDataPopulator {
      * Populates the historical behaviour of the context (i.e. user) during the specified time period
      *
      * @param timeRange
-     * @param contextField the context id (i.e userId)
-     * @param contextValue the context value (i.e the user name)
+     * @param contexts map of contexts (context id (i.e userId) to context value (i.e the user name))
      * @param schema the schema for which to populate historical behavior
      * @param featureName the feature for which to populate historical behavior (e.g: login time)
      * @param anomalyValue the anomaly value

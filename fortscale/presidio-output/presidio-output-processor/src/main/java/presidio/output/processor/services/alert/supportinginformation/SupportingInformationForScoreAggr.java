@@ -181,7 +181,10 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
 
         Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
-                                            Function.identity(), field -> indicator.getContexts().get(field)));
+                                            Function.identity(),
+                                            field -> indicator.getContexts().get(field),
+                                            (oldValue, newValue) -> oldValue,
+                                            LinkedHashMap::new));
         HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());

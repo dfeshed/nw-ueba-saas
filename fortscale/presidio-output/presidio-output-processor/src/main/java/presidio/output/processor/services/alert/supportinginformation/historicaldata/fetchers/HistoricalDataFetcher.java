@@ -18,7 +18,7 @@ public interface HistoricalDataFetcher {
      * Fetches the historical feature usage of the context (i.e. user) during the specified time period grouped by day
      *
      * @param timeRange
-     * @param contexts Map of contexts (context id (i.e userId) to context value (i.e the user name))
+     * @param contexts map of contexts (context id (i.e userId) to context value (i.e the user name))
      * @param schema the schema for which to populate historical behavior
      * @param featureName the feature for which to populate historical behavior (e.g: login time)
      *
@@ -34,8 +34,7 @@ public interface HistoricalDataFetcher {
      * Fetches the historical aggregated feature usage of the context (i.e. user) during the specified time period grouped by day
      *
      * @param timeRange
-     * @param contextField the context id (i.e userId)
-     * @param contextValue the context value (i.e the user name)
+     * @param contexts map of contexts (context id (i.e userId) to context value (i.e the user name))
      * @param schema the schema for which to populate historical behavior
      * @param featureName the feature for which to populate historical behavior (e.g: login time)
      *
@@ -44,5 +43,5 @@ public interface HistoricalDataFetcher {
      *                Aggregated Feature: numberOfFailedAuthentications, Date: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
      *
      */
-    List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig);
+    List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig);
 }
