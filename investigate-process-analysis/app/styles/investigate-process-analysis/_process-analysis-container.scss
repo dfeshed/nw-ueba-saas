@@ -34,6 +34,7 @@
   display: block;
   transition: width .5s;
   width: 0;
+  opacity: 0;
 }
 .processTreeBox {
   display: block;
@@ -49,6 +50,7 @@
   .processDetailsBox {
     display: block;
     transition: width .5s;
+    opacity: 1;
     &.collapse {
       width: 700px;
     }

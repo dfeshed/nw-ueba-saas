@@ -70,19 +70,11 @@ $circle-border-color: #D8D8D8;
     fill: transparent;
     stroke: $circle-border-color;
     stroke-width: 1.5px;
-    &.selected {
-      fill: background-color(neutral, base);
-      stroke: none;
-    }
   }
 
   .process-icon {
     pointer-events: none;
     fill: text-color(primary);
-
-    &.selected {
-      fill: #000;
-    }
   }
   .process {
     cursor: pointer;
@@ -114,6 +106,21 @@ section {
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+
+.show-process-details {
+  circle {
+    &.selected {
+      fill: background-color(neutral, base);
+      stroke: none;
+    }
+  }
+  .process-icon {
+    &.selected {
+      fill: #000;
+    }
+  }
 }
 
 

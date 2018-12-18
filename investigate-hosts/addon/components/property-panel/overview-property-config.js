@@ -161,10 +161,6 @@ export default [
     prefix: 'machineIdentity.locale',
     fields: [
       {
-        field: 'machineIdentity.locale.defaultLanguage',
-        labelKey: 'machineIdentity.locale.defaultLanguage'
-      },
-      {
         field: 'machineIdentity.locale.isoCountryCode',
         labelKey: 'machineIdentity.locale.isoCountryCode'
       },
