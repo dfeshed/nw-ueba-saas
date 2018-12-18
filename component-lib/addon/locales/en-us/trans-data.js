@@ -2369,7 +2369,7 @@ export default {
       contexthubServerOffline: 'An error has occurred. The Contexthub server may be offline or inaccessible. '
     },
     tabs: {
-      riskProperties: 'Risk Properties',
+      riskDetails: 'Risk Details',
       fileDetails: 'File Details',
       hosts: 'HOSTS',
       overview: 'Details',

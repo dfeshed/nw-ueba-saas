@@ -6,7 +6,7 @@ const DATASOURCE_TABS = [
     name: 'FILE_DETAILS'
   },
   {
-    label: 'investigateFiles.tabs.riskProperties',
+    label: 'investigateFiles.tabs.riskDetails',
     name: 'RISK_PROPERTIES'
   },
   {
