@@ -2,13 +2,15 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList, hostList } from 'investigate-files/reducers/file-list/selectors';
 import { getAllServices, fetchAgentId } from 'investigate-files/actions/data-creators';
+import { serviceId } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   itemList: state.files.fileList.selectedFileList,
   items: hostList(state),
   serverId: state.endpointQuery.serverId,
-  isHostListLoading: state.files.fileList.fetchMetaValueLoading
+  isHostListLoading: state.files.fileList.fetchMetaValueLoading,
+  serviceId: serviceId(state)
 });
 
 const dispatchToActions = {

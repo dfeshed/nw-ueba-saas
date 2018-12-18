@@ -21,7 +21,7 @@ export default Component.extend({
   getAllServices: null,
 
   timeRange: {
-    value: 2,
+    value: 7,
     unit: 'days'
   },
 
