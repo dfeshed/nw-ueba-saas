@@ -3,6 +3,7 @@ from tempfile import gettempdir, NamedTemporaryFile
 
 import os
 import functools
+from datetime import timedelta
 
 from airflow import LoggingMixin
 from airflow.exceptions import AirflowException
@@ -14,7 +15,8 @@ from airflow.models import Variable
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.string_service import is_blank
-from datetime import timedelta
+from presidio.factories.presidio_dag_factory import PresidioDagFactory
+
 
 RETRY_ARGS_CONF_KEY = "retry_args"
 
@@ -70,6 +72,7 @@ class SpringBootJarOperator(BashOperator):
         self.merged_args = self.merge_args()
         self.command = command
         bash_command = self.get_bash_command()
+        pool_name = PresidioDagFactory.get_spring_boot_jar_pool_name_for_dag()
 
         # add retry callback
         retry_args = self._calc_retry_args()
@@ -92,6 +95,7 @@ class SpringBootJarOperator(BashOperator):
                                                     max_retry_delay=timedelta(
                                                         seconds=int(retry_args['max_retry_delay'])),
                                                     bash_command=bash_command, on_retry_callback=retry_callback,
+                                                    pool=pool_name,
                                                     *args, **kwargs)
 
     def get_retry_callback(self, retry_fn):
