@@ -20,25 +20,6 @@ const initialState = Immutable.from({
   isRemediationAllowed: true
 });
 
-
-const _handleAppendFiles = (action) => {
-  return (state) => {
-    const { payload: { data }, meta: { belongsTo } } = action;
-    const { fileContext } = state;
-    const normalizedData = normalize(action.payload.data.items, [getSchema(belongsTo)]);
-    const newData = normalizedData.entities[belongsTo];
-    const firstRowId = !state.selectedRowId && newData ? Object.keys(newData)[0] : state.selectedRowId;
-    return state.merge({
-      fileContext: { ...fileContext, ...newData },
-      selectedRowId: firstRowId,
-      totalItems: data.totalItems,
-      pageNumber: data.pageNumber,
-      contextLoadMoreStatus: data.hasNext ? 'stopped' : 'completed',
-      hasNext: data.hasNext
-    });
-  };
-};
-
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
   const { id, fileName, fileProperties, machineOsType, path } = payload;
@@ -137,15 +118,6 @@ const fileContext = reduxActions.handleActions({
         }
         return s;
       }
-    });
-  },
-
-  [ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => s.merge({ contextLoadMoreStatus: 'streaming' }),
-      finish: (s) => s.set('contextLoadingStatus', 'completed'),
-      failure: (s) => s.merge({ contextLoadingStatus: 'error' }),
-      success: _handleAppendFiles(action)
     });
   },
 

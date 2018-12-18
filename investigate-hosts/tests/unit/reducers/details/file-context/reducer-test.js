@@ -4,7 +4,7 @@ import reducer from 'investigate-hosts/reducers/details/file-context/reducer';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../../helpers/make-pack-action';
-import { driversData, filesData } from '../../../state/state';
+import { driversData } from '../../../state/state';
 import { libraryTestData } from './test-data';
 import _ from 'lodash';
 
@@ -277,67 +277,6 @@ module('Unit | Reducers | File Context', function() {
     });
     const result = reducer(previous, { type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
     assert.equal(result.pageNumber, 1);
-  });
-
-  test('The FETCH_FILE_CONTEXT_PAGINATED sets normalized server response to state', function(assert) {
-    const previous = Immutable.from({
-      fileContext: {},
-      selectedFileId: null,
-      pageNumber: -1,
-      totalItems: 0,
-      contextLoadMoreStatus: null,
-      selectedRowId: null
-    });
-
-    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { belongsTo: 'FILE' } });
-    const startEndState = reducer(previous, startAction);
-    assert.deepEqual(startEndState.contextLoadMoreStatus, 'streaming');
-
-    const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
-      payload: { data: filesData },
-      meta: { belongsTo: 'FILE' }
-    });
-    const endState = reducer(previous, action);
-
-    assert.equal(endState.pageNumber, 10);
-    assert.equal(endState.selectedRowId, 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33', 'First row checksum is set');
-
-    const data = { ...filesData, hasNext: false };
-
-    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
-      payload: { data },
-      meta: { belongsTo: 'FILE' }
-    });
-
-    const newEndState = reducer(previous, newAction);
-    assert.equal(newEndState.contextLoadMoreStatus, 'completed');
-  });
-
-  test('The FETCH_FILE_CONTEXT_PAGINATED with no data', function(assert) {
-    const previous = Immutable.from({
-      fileContext: {},
-      selectedFileId: null,
-      pageNumber: -1,
-      totalItems: 0,
-      contextLoadMoreStatus: null,
-      selectedRowId: null
-    });
-
-    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, meta: { belongsTo: 'FILE' } });
-    const startEndState = reducer(previous, startAction);
-    assert.deepEqual(startEndState.contextLoadMoreStatus, 'streaming');
-
-    const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
-      payload: { data: { items: [] }, hasNext: false },
-      meta: { belongsTo: 'FILE' }
-    });
-    const endState = reducer(previous, action);
-
-    assert.equal(endState.selectedRowId, null, 'First row checksum is null');
-    assert.equal(endState.contextLoadMoreStatus, 'completed');
   });
 
   test('FILE_CONTEXT_RESET_SELECTION should selected all drivers', function(assert) {

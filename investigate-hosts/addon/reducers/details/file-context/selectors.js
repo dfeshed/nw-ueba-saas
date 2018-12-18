@@ -6,7 +6,6 @@ const _fileContext = (state, name) => state.endpoint[name].fileContext;
 const _sortConfig = (state, name) => state.endpoint[name].sortConfig;
 const _contextLoadingStatus = (state, name) => state.endpoint[name].contextLoadingStatus;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
-const _tabName = (state, name) => name;
 
 const _fileStatus = (state, name) => state.endpoint[name].fileStatus;
 const _selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
@@ -84,10 +83,10 @@ export const focusedRowChecksum = createSelector(
 
 
 export const listOfFiles = createSelector(
-  [ _fileContext, _sortConfig, _selectedTab, _tabName],
-  (fileContext, sortConfig, selectedTab, tabName) => {
+  [ _fileContext, _sortConfig, _selectedTab],
+  (fileContext, sortConfig, selectedTab) => {
     let data = _.values(fileContext);
-    if (selectedTab && selectedTab.tabName === tabName.toUpperCase()) {
+    if (selectedTab) {
       data = data.filter((val) => (selectedTab.checksum === val.checksumSha256));
     }
 

@@ -4,7 +4,7 @@ import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
-import { getFileContext, getPaginatedFileContext } from './file-context';
+import { getFileContext } from './file-context';
 import { fetchHostContext, getAllServices } from './host';
 import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
@@ -117,8 +117,7 @@ const _fetchDataForSelectedTab = () => {
         }
         break;
       case 'FILES':
-        dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo: 'FILE' } });
-        dispatch(getPaginatedFileContext());
+        dispatch(getFileContext('FILE'));
         break;
       case 'DRIVERS':
         if (!drivers.driver) {

@@ -26,7 +26,6 @@ import {
   onHostFileSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
-  getPaginatedFileContext,
   retrieveRemediationStatus,
   resetSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
@@ -59,7 +58,6 @@ const dispatchToActions = {
   onHostFileSelection,
   getFileContextFileStatus,
   setFileContextFileStatus,
-  getPaginatedFileContext,
   retrieveRemediationStatus,
   resetSelection,
   resetRiskScore

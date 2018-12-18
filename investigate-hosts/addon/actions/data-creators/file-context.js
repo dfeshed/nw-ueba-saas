@@ -2,7 +2,6 @@ import { HostDetails } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
-import HostFiles from '../api/files';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { focusedRowChecksum } from 'investigate-hosts/reducers/details/file-context/selectors';
@@ -92,34 +91,6 @@ const getFileContextFileStatus = (belongsTo, selections) => ({
 
 const setFileContextSort = (belongsTo, config) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_COLUMN_SORT, payload: config, meta: { belongsTo } });
 
-
-const getPaginatedFileContext = () => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER, meta: { belongsTo: 'FILE' } });
-    dispatch(_fetchHostFiles());
-  };
-};
-
-const _fetchHostFiles = () => {
-  return (dispatch, getState) => {
-    const { agentId, scanTime } = getState().endpoint.detailsInput;
-    const { selectedTab } = getState().endpoint.explore;
-    let checksumSha256 = null;
-    if (selectedTab && selectedTab.tabName === 'FILES') {
-      checksumSha256 = selectedTab.checksum;
-    }
-    const { sortField: key = 'fileName', isDescOrder: descending = false, pageNumber } = getState().endpoint.hostFiles;
-    dispatch({
-      type: ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED,
-      promise: HostFiles.getHostFiles(pageNumber, agentId, scanTime, checksumSha256, key, descending),
-      meta: {
-        belongsTo: 'FILE',
-        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_PAGINATED, response)
-      }
-    });
-  };
-};
-
 const retrieveRemediationStatus = (belongsTo, selections) => {
   const thumbprints = selections.mapBy('signature.thumbprint').compact();
   if (thumbprints && thumbprints.length) {
@@ -162,7 +133,6 @@ export {
   setFileContextFileStatus,
   getFileContextFileStatus,
   setFileContextSort,
-  getPaginatedFileContext,
   retrieveRemediationStatus,
   resetSelection,
   downloadFilesToServer
