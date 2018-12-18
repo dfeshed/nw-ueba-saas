@@ -147,9 +147,9 @@ export const processAnalysisQueryString = createSelector(
       const startDate = now.subtract(7, 'days').unix();
       timeStr = `st=${startDate}&et=${endDate}`;
     }
-
     return [
       `checksum=${checksumSha256}`,
+      `serverId=${serviceId}`,
       `sid=${serviceId}`,
       `aid=${agentId}`,
       `hn=${hostName}`,

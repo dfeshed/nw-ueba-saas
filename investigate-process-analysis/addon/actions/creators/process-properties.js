@@ -8,11 +8,11 @@ import { debug } from '@ember/debug';
  * @public
  * @returns {Object}
  */
-const fetchProcessDetails = (data) => {
+const fetchProcessDetails = (data, serverId) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.FETCH_PROCESS_PROPERTIES,
-      promise: getProcessDetails(data),
+      promise: getProcessDetails(data, serverId),
       meta: {
         onSuccess: (response) => {
           return debug(`${ACTION_TYPES.FETCH_PROCESS_PROPERTIES} ${JSON.stringify(response)}`);

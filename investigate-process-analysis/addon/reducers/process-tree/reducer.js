@@ -41,6 +41,13 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.SET_EVENTS]: (state, { payload = [] }) => {
     return state.set('rawData', payload);
   },
+  [ACTION_TYPES.SET_SERVER_ID]: (state, { payload }) => {
+    let serverId = null;
+    if (payload) {
+      serverId = payload.split('nwe://')[1];
+    }
+    return state.set('selectedServerId', serverId);
+  },
   [ACTION_TYPES.SET_SELECTED_EVENTS]: (state, { payload = [] }) => {
     const stateObj = { eventsData: payload, eventsFilteredCount: payload.length };
     if (!state.filterApplied) {

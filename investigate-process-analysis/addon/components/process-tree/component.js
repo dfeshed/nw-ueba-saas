@@ -37,7 +37,8 @@ const stateToComputed = (state) => ({
   path: selectedProcessPath(state),
   selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : '',
   isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible,
-  processName: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.pn : ''
+  processName: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.pn : '',
+  selectedServerId: state.processAnalysis.processTree.selectedServerId
 });
 
 const dispatchToActions = {
@@ -479,11 +480,10 @@ const TreeComponent = Component.extend({
         document.title = this._documentTitle(pn);
         this.send('selectedProcessEvents', this.get('selectedProcessId'), {});
         this._initializeChart();
+        const hashes = [checksum];
+        this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
-
-      const hashes = [checksum];
-      this.send('fetchProcessDetails', { hashes });
     }
   },
 
@@ -570,7 +570,7 @@ const TreeComponent = Component.extend({
   processProperties(d) {
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
-    this.send('fetchProcessDetails', { hashes });
+    this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
     this.send('setSelectedProcess', _.omit(d.data, 'children'));
     if (!this.get('isProcessDetailsVisible')) {
       this.send('toggleProcessDetailsVisibility');

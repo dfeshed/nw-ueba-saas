@@ -145,4 +145,13 @@ module('Unit | Reducers | process-tree', function() {
     const result = reducer(previous, { type: ACTION_TYPES.SET_SORT_FIELD, payload: sortField });
     assert.equal(result.eventsSortField.label, 'Event Time');
   });
+  test('SET_SERVER_ID will sets server id', function(assert) {
+    const previous = Immutable.from({
+      eventsData: []
+    });
+    let result = reducer(previous, { type: ACTION_TYPES.SET_SERVER_ID });
+    assert.equal(result.selectedServerId, null);
+    result = reducer(previous, { type: ACTION_TYPES.SET_SERVER_ID, payload: 'nwe://abc-test-server' });
+    assert.equal(result.selectedServerId, 'abc-test-server');
+  });
 });

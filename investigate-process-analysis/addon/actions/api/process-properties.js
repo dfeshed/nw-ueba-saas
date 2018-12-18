@@ -5,17 +5,21 @@ import { lookup } from 'ember-dependency-lookup';
  *
  * @method getProcessProperties
  * @param model
+ * @param serverId
  * @public
  * @returns {Promise}
  */
 
-const getProcessDetails = (model) => {
+const getProcessDetails = (model, serverId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getProcessAnalysisDetails',
     modelName: 'endpoint',
     query: {
       data: model
+    },
+    streamOptions: {
+      socketUrlPostfix: serverId
     }
   });
 };

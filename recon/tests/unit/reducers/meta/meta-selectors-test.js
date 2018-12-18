@@ -248,7 +248,7 @@ test('processAnalysisQueryString test', function(assert) {
     }
   };
   const result = processAnalysisQueryString(Immutable.from(data));
-  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&st=10&et=12', 'should return valid queryString');
+  assert.equal(result, 'checksum=test-checksum&serverId=123456&sid=123456&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&st=10&et=12', 'should return valid queryString');
 });
 
 test('processAnalysisQueryString test as if Respond opened Recon', function(assert) {
@@ -278,7 +278,7 @@ test('processAnalysisQueryString test as if Respond opened Recon', function(asse
   const startDate = now.subtract(7, 'days').unix();
   const timeStr = `st=${startDate}&et=${endDate}`;
   const result = processAnalysisQueryString(Immutable.from(data));
-  assert.equal(result, `checksum=test-checksum&sid=666&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&${timeStr}`, 'should return valid queryString');
+  assert.equal(result, `checksum=test-checksum&serverId=666&sid=666&aid=abcd&hn=TestHostName&pn=testfile&osType=windows&vid=1&${timeStr}`, 'should return valid queryString');
 });
 
 test('isProcessAnalysisDisabled test', function(assert) {
