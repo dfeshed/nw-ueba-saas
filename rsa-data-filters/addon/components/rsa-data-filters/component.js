@@ -101,6 +101,9 @@ export default Component.extend({
       if (onFilterChange) {
         onFilterChange(newFilters);
       }
+      if (this.closeEntityDetails) {
+        this.closeEntityDetails();
+      }
       this.set('updatedFilters', newFilters);
       this.set('disableSaveFilterButton', newFilters.length === 0);
     },

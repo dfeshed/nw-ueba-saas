@@ -14,6 +14,18 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.equal(findAll('.list-filter').length, 1, 'Expected render list filter');
   });
 
+  test('it should call the closeEntityDetails after changing the filter', async function(assert) {
+    assert.expect(1);
+    this.set('config', [{ type: 'text', name: 'filterName', filterOnBlur: true }]);
+    this.set('closeEntityDetails', () => {
+      assert.ok(true);
+    });
+
+    await render(hbs`{{rsa-data-filters closeEntityDetails=closeEntityDetails config=config}}`);
+    await fillIn('.file-name-input  input', 'malware.exe');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+  });
+
   test('it should call the onFilterChange after changing the filter', async function(assert) {
     assert.expect(3);
     this.set('config', [{ type: 'text', name: 'filterName', filterOnBlur: true }]);

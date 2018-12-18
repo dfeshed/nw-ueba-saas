@@ -18,7 +18,8 @@
           applyFilters=(action 'applyFilters' (action 'getPageOfMachines'))
           applySavedFilters=(action 'applySavedFilters' (action 'getPageOfMachines'))
           deleteFilter=(action 'deleteFilter')
-          createCustomSearch=(action 'createCustomSearch')}}
+          createCustomSearch=(action 'createCustomSearch')
+          closeEntityDetails=(action layout.close 'right')}}
       {{/layout.left}}
       {{#layout.center}}
         {{host-list
