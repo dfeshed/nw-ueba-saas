@@ -223,22 +223,31 @@ module('Unit | Selectors | File Context', function() {
     assert.equal(result.length, 1);
   });
 
-  test('context sort by file name', function(assert) {
+  test('context sort by risk score', function(assert) {
     const result = listOfFiles(Immutable.from({
       endpoint: {
         drivers: {
           fileContext: {
             1: {
               id: 1,
-              fileName: 'C'
+              fileName: 'C',
+              fileProperties: {
+                score: 20
+              }
             },
             2: {
               id: 2,
-              fileName: 'Z'
+              fileName: 'Z',
+              fileProperties: {
+                score: 100
+              }
             },
             3: {
               id: 3,
-              fileName: 'A'
+              fileName: 'A',
+              fileProperties: {
+                score: 45
+              }
             }
           }
         },
@@ -249,7 +258,7 @@ module('Unit | Selectors | File Context', function() {
         }
       }
     }), 'drivers');
-    assert.equal(result[0].fileName, 'A');
+    assert.equal(result[0].fileName, 'Z');
   });
 
   test('isDataLoading is set to true when contextLoadingStatus is wait', function(assert) {
@@ -289,15 +298,24 @@ module('Unit | Selectors | File Context', function() {
           fileContext: {
             1: {
               id: 1,
-              fileName: 'C'
+              fileName: 'C',
+              fileProperties: {
+                score: 20
+              }
             },
             2: {
               id: 2,
-              fileName: 'Z'
+              fileName: 'Z',
+              fileProperties: {
+                score: 100
+              }
             },
             3: {
               id: 3,
-              fileName: 'A'
+              fileName: 'A',
+              fileProperties: {
+                score: 45
+              }
             }
           },
           selectedRowId: null
@@ -308,7 +326,7 @@ module('Unit | Selectors | File Context', function() {
         }
       }
     }), 'drivers');
-    assert.equal(result.fileName, 'A', 'file name ');
+    assert.equal(result.fileName, 'Z', 'file name ');
   });
 
   test('isAllSelected if all drivers selected', function(assert) {

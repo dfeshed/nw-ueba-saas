@@ -39,7 +39,11 @@ export default Component.extend({
    */
   _searchText: '',
 
-  showNonEmptyProperty: false,
+  /**
+   * By default show only nonEmptyProperty
+   * @public
+   */
+  showNonEmptyProperty: true,
 
   /**
    * Data to display

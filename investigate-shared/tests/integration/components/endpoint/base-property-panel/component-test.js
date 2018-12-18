@@ -110,12 +110,12 @@ module('Integration | Component | endpoint/base-property-panel', function(hooks)
     this.set('config', sampleConfig);
     this.set('data', sampleData);
     await render(hbs`{{endpoint/base-property-panel config=config data=data title=title}}`);
-    assert.equal(findAll('.content-section__property').length, 8, 'All the properties');
-
-    await click('.header-section__check-box input');
     assert.equal(findAll('.content-section__property').length, 5, 'Properties with non empty values');
 
     await click('.header-section__check-box input');
     assert.equal(findAll('.content-section__property').length, 8, 'All the properties');
+
+    await click('.header-section__check-box input');
+    assert.equal(findAll('.content-section__property').length, 5, 'Properties with non empty values');
   });
 });

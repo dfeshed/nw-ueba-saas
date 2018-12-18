@@ -98,7 +98,10 @@ export const listOfFiles = createSelector(
       }
       return data;
     } else {
-      return data.sortBy('fileName');
+      // default sorting by risk score, higher risk first
+      data = data.sortBy('fileProperties.score');
+      data.reverse();
+      return data;
     }
   }
 );

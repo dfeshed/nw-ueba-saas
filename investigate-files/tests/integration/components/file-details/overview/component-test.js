@@ -107,7 +107,7 @@ module('Integration | Component | file-details/overview', function(hooks) {
     this.set('propertyConfig', config);
     await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
     assert.equal(findAll('.investigate-file-tab').length, 1, 'file properties in right panel is rendered');
-    assert.equal(findAll('.content-section__section-name').length, 2, '2 file properties section are present');
+    assert.equal(findAll('.content-section__section-name').length, 1, '1 file properties section are present');
   });
 
   test('file properties on right panel is not present', async function(assert) {

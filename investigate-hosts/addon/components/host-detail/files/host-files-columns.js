@@ -70,15 +70,13 @@ const defaultColumns = [
     'field': 'fileProperties.score',
     'title': 'Risk Score',
     'label': 'investigateHosts.files.fields.score',
-    'width': 100,
-    'disableSort': true
+    'width': 100
   },
   {
     'field': 'fileProperties.reputationStatus',
     'title': 'Reputation Status',
     'label': 'investigateHosts.files.fields.reputationStatus',
-    'width': 100,
-    'disableSort': true
+    'width': 100
   },
   {
     'field': 'fileProperties.entropy',

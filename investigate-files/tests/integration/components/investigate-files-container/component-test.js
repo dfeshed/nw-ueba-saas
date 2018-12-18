@@ -264,7 +264,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
     assert.equal(findAll('.investigate-file-tab').length, 1, 'Right panel header is rendered');
     assert.equal(findAll('.host-property-panel').length, 1, 'Propertoes panel is rendered');
-    assert.equal(findAll('.content-section .content-section__section-name').length, 2, 'total number of section should be 2');
+    assert.equal(findAll('.content-section .content-section__section-name').length, 1, 'total number of section should be 1');
   });
 
   test('filter controls are displayed', async function(assert) {
