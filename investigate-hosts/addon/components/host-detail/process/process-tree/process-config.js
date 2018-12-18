@@ -54,7 +54,7 @@ export default [
     disableSort: true
   },
   {
-    field: 'downloadInfo.status',
+    field: 'fileProperties.downloadInfo',
     width: '4vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',

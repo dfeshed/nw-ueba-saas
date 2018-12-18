@@ -108,7 +108,13 @@ const ContextWrapper = Component.extend({
         onSuccess: () => this.get('flashMessage').showFlashMessage('investigateHosts.flash.fileDownloadRequestSent'),
         onFailure: (message) => this.get('flashMessage').showErrorMessage(message)
       };
-      const { agentId, fileContextSelections } = this.getProperties('agentId', 'fileContextSelections');
+
+      const agentId = this.get('agentId');
+      let fileContextSelections = this.get('fileContextSelections');
+
+      if (fileContextSelections.length > 100) {
+        fileContextSelections = fileContextSelections.slice(0, 100);
+      }
 
       this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
     },

@@ -10,11 +10,9 @@ import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
 import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
-import analyzeCreators from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import sinon from 'sinon';
 
 const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
-const getFileAnalysisDataSpy = sinon.spy(analyzeCreators, 'getFileAnalysisData');
 
 const spys = [
   downloadFilesToServerSpy
@@ -464,13 +462,20 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('analyzeFile', function() {
+      assert.ok('AnalyzeFiles Called');
+    });
+    this.set('downloadFiles', function() {
+      assert.ok('downloadFiles Called');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -529,13 +534,21 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('analyzeFile', function() {
+      assert.ok('AnalyzeFiles Called');
+    });
+    this.set('downloadFiles', function() {
+      assert.ok('downloadFiles Called');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -576,13 +589,20 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('analyzeFile', function() {
+      assert.ok('AnalyzeFiles Called');
+    });
+    this.set('downloadFiles', function() {
+      assert.ok('downloadFiles Called');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -682,6 +702,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Download to server action is getting called', async function(assert) {
+    assert.expect(1);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
@@ -712,27 +733,32 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('analyzeFile', function() {
+      assert.ok('AnalyzeFiles Called');
+    });
+    this.set('downloadFiles', function() {
+      assert.ok('downloadFiles Called');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
       await click(`#${menuItems[5].id}`); // Edit file status
-      return settled().then(() => {
-        assert.equal(downloadFilesToServerSpy.callCount, 1, 'The downloadFilesToServerSpy action creator was called once');
-      });
     });
 
   });
 
   test('Analyze action is getting called', async function(assert) {
+    assert.expect(1);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
@@ -763,22 +789,26 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('analyzeFile', function() {
+      assert.ok('AnalyzeFiles Called');
+    });
+    this.set('downloadFiles', function() {
+      assert.ok('downloadFiles Called');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
       await click(`#${menuItems[7].id}`); // Edit file status
-      return settled().then(() => {
-        assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
-      });
     });
 
   });

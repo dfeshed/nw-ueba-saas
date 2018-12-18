@@ -138,7 +138,12 @@ const Container = Component.extend({
         onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
         onFailure: (message) => failure(message)
       };
-      const { agentId, selectedProcessList } = this.getProperties('agentId', 'selectedProcessList');
+      const agentId = this.get('agentId');
+      let selectedProcessList = this.get('selectedProcessList');
+
+      if (selectedProcessList.length > 100) {
+        selectedProcessList = selectedProcessList.slice(0, 100);
+      }
 
       this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
     },
@@ -150,7 +155,7 @@ const Container = Component.extend({
     onAnalyzeFile() {
       // Open analyze file.
       const selectedProcessList = this.get('selectedProcessList');
-      const { checksumSha256 } = selectedProcessList;
+      const [{ checksumSha256 }] = selectedProcessList;
       this.send('getFileAnalysisData', checksumSha256);
     }
   }

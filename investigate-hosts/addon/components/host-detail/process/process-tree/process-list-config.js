@@ -52,7 +52,7 @@ export default [
     isDescending: false
   },
   {
-    field: 'downloadInfo.status',
+    field: 'fileProperties.downloadInfo',
     width: '6vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',

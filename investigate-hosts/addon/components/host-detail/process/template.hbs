@@ -38,7 +38,11 @@
           </div>
           {{host-detail/process/process-tree
           openPropertyPanel=(action layout.open 'right')
-          closePropertyPanel=(action layout.close 'right')}}
+          closePropertyPanel=(action layout.close 'right')
+          fileDownloadButtonStatus=fileDownloadButtonStatus
+          downloadFiles=(action 'onDownloadFilesToServer')
+          saveLocalCopy=(action 'onSaveLocalCopy')
+          analyzeFile=(action 'onAnalyzeFile')}}
         </box>
       {{/layout.center}}
       {{#layout.right as |right|}}

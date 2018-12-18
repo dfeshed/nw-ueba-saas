@@ -124,6 +124,9 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       }
     });
+    this.set('storeName', 'drivers');
+    this.set('tabName', 'DRIVER');
+    this.set('columnConfig', config);
     await render(hbs`
       <style>
         box, section {
