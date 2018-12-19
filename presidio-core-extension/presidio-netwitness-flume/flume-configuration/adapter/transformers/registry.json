@@ -193,12 +193,49 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "copy-registry-key",
+      "type": "regex_captor_and_formatter",
+      "name": "create-registry-key",
       "sourceKey": "registry_key",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "registryKey"
+      "destinationKey": "registryKey",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "(.+\\\\)@[^\\\\]+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "create-registry-value-name",
+      "sourceKey": "registry_key",
+      "destinationKey": "registryValueName",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": ".+\\\\@([^\\\\]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
       ]
     },
     {
