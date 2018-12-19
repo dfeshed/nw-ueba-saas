@@ -2301,7 +2301,7 @@ export default {
       },
       downloadInfo: {
         fileName: 'Download Filename',
-        status: 'Download Status',
+        status: 'Downloaded',
         path: 'Download Path'
       },
       path: 'Path',

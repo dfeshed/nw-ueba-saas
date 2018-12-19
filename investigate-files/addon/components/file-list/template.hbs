@@ -83,6 +83,8 @@
                 {{rsa-risk-score score='0' size='small'}}
               {{/if}}
             </centered>
+          {{else if (eq column.field 'downloadInfo.status')}}
+            {{endpoint/download-status downloadInfo=(get item 'downloadInfo') checksum=item.checksumSha256}}
           {{else}}
             {{get item column.field}}
           {{/if}}

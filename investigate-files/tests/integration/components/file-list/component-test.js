@@ -43,7 +43,10 @@ const dataItems = {
       'signer': 'ABC'
     },
     'id': '1',
-    'checksumsha256': 'abc'
+    'checksumsha256': 'abc',
+    'downloadInfo': {
+      'status': 'Downloaded'
+    }
   },
   def: {
     'firstFileName': 'vmwgfx.ko',
@@ -576,6 +579,32 @@ module('Integration | Component | file list', function(hooks) {
     });
   });
 
+  test('it renders the download status', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files({ a: { downloadInfo: { status: 'Downloaded' } } })
+      .schema([{
+        name: 'downloadInfo.status',
+        description: 'Download Status',
+        dataType: 'STRING',
+        searchable: false,
+        wrapperType: 'STRING'
+      }])
+      .preferences({ filePreference: {
+        visibleColumns: ['downloadInfo.status'],
+        sortField: '{ "sortField": "downloadInfo.status", "isSortDescending": false }'
+      } })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{file-list}}`);
+    return settled().then(() => {
+      assert.equal(findAll('.download-status').length, 1, 'Download status is rendered');
+    });
+  });
 
   test('it renders the context menu', async function(assert) {
     new ReduxDataHelper(initState)
