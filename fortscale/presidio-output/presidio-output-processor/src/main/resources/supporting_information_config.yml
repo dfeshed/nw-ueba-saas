@@ -6,7 +6,7 @@ indicators:
 
 - id: highestStartInstantScoreUserIdFileHourly
   type: SCORE_AGGREGATION
-  name: abnormal_event_day_time
+  name: abnormal_file_day_time
   adeEventType: scored_enriched.file.startInstant.userId.file.score
   schema: FILE
   anomalyDescriptior:
