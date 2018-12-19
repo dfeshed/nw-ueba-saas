@@ -371,7 +371,7 @@
                 {
                   "type": "regex",
                   "fieldName": "operationType",
-                  "pattern": "CREATE_PROCESS"
+                  "pattern": "OPEN_PROCESS"
                 }
               ],
               "scorerConf": {
