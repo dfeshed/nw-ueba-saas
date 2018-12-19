@@ -33,8 +33,6 @@
               "max-num-of-rare-partitions" : 15,
               "number-of-partitions-to-influence-enough" : 30,
               "min-number-of-partitions-to-influence" : 1,
-              "minimum-number-of-distinct-values-to-influence" : 0,
-              "enough-number-of-distinct-values-to-influence" : 0,
               "use-certainty-to-calculate-score" : true
             },
             "reduction-scorer" : {
@@ -51,8 +49,6 @@
                 "max-num-of-rare-partitions" : 15,
                 "number-of-partitions-to-influence-enough" : 30,
                 "min-number-of-partitions-to-influence" : 1,
-                "minimum-number-of-distinct-values-to-influence" : 0,
-                "enough-number-of-distinct-values-to-influence" : 0,
                 "use-certainty-to-calculate-score" : true
               }
             },

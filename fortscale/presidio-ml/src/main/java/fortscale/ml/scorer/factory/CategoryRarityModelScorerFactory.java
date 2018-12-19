@@ -56,8 +56,6 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
-                scorerConf.getMinNumOfDistinctValuesToInfluence(),
-                scorerConf.getEnoughNumOfDistinctValuesToInfluence(),
                 scorerConf.getMaxRareCount(),
                 scorerConf.getMaxNumOfRarePartitions(),
                 scorerConf.getXWithValueHalfFactor(),

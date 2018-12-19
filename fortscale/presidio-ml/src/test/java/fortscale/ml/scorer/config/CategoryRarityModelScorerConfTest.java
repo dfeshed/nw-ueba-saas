@@ -15,14 +15,11 @@ public class CategoryRarityModelScorerConfTest {
 
     static String buildCategoryRarityModelScorerConfJsonString(CategoryRarityModelScorerConfParams params) {
         return buildCategoryRarityModelScorerConfJsonString(params.getName(),
-                params.getMaxRareCount(), params.getMaxNumOfRarePartitions(), params.getMinumumNumberOfDistinctValuesToInfluence(),
-                params.getEnoughtNumberOfDistinctValuesToInfluence(), params.getNumberOfSamplesToInfluenceEnough(), params.getMinNumOfSamplesToInfluence(),
+                params.getMaxRareCount(), params.getMaxNumOfRarePartitions(), params.getNumberOfSamplesToInfluenceEnough(), params.getMinNumOfSamplesToInfluence(),
                 params.getUseCertaintyToCalculateScore(), params.getModelName(), params.getAdditionalModelNames());
     }
 
     static String buildCategoryRarityModelScorerConfJsonString(String name, Integer maxRareCount, Integer maxNumOfRarePartitions,
-                                                               Integer minimumNumberOfDistinctValuesToInfluence,
-                                                               Integer enoughNumberOfDistinctValuesToInfluence,
                                                                Integer numberOfSamplesToInfluenceEnough,
                                                                Integer minNumberOfSamplesToInfluence,
                                                                Boolean useCertaintyToCalculateScore,
@@ -33,8 +30,6 @@ public class CategoryRarityModelScorerConfTest {
         String jType = "\"type\":\"category-rarity-model-scorer\"";
         String jMaxRareCount = maxRareCount==null ? null : String.format(" \"max-rare-count\":%d", maxRareCount);
         String jmaxNumOfRarePartitions = maxNumOfRarePartitions==null ? null : String.format("\"max-num-of-rare-partitions\":%d", maxNumOfRarePartitions);
-        String jMinumumNumberOfDistinctValuesToInfluence = minimumNumberOfDistinctValuesToInfluence==null ? null : String.format("\"minimum-number-of-distinct-values-to-influence\":%d", minimumNumberOfDistinctValuesToInfluence);
-        String jEnoughtNumberOfDistinctValuesToInfluence = enoughNumberOfDistinctValuesToInfluence==null ? null : String.format("\"enough-number-of-distinct-values-to-influence\":%d", enoughNumberOfDistinctValuesToInfluence);
         String jNumberOfSamplesToInfluenceEnough = numberOfSamplesToInfluenceEnough==null ? null : String.format(" \"number-of-partitions-to-influence-enough\":%d", numberOfSamplesToInfluenceEnough);
         String jMinNumberOfSamplesToInfluence = minNumberOfSamplesToInfluence == null ? null : String.format("\"min-number-of-partitions-to-influence\":%d", minNumberOfSamplesToInfluence);
         String jUseCertaintyToCalculateScore = useCertaintyToCalculateScore==null ? null : String.format("\"use-certainty-to-calculate-score\":%s", useCertaintyToCalculateScore);
@@ -51,8 +46,6 @@ public class CategoryRarityModelScorerConfTest {
         s = jUseCertaintyToCalculateScore!=null ? (s!=null?jUseCertaintyToCalculateScore+", "+s:jUseCertaintyToCalculateScore) : s;
         s = jMinNumberOfSamplesToInfluence!=null ? (s!=null?jMinNumberOfSamplesToInfluence+", "+s:jMinNumberOfSamplesToInfluence) : s;
         s = jNumberOfSamplesToInfluenceEnough!=null ? (s!=null?jNumberOfSamplesToInfluenceEnough+", "+s:jNumberOfSamplesToInfluenceEnough) : s;
-        s = jEnoughtNumberOfDistinctValuesToInfluence!=null ? (s!=null?jEnoughtNumberOfDistinctValuesToInfluence+", "+s:jEnoughtNumberOfDistinctValuesToInfluence) : s;
-        s = jMinumumNumberOfDistinctValuesToInfluence!=null ? (s!=null?jMinumumNumberOfDistinctValuesToInfluence+", "+s:jMinumumNumberOfDistinctValuesToInfluence) : s;
         s = jmaxNumOfRarePartitions!=null ? (s!=null?jmaxNumOfRarePartitions+", "+s:jmaxNumOfRarePartitions) : s;
         s = jMaxRareCount!=null ? (s!=null?jMaxRareCount+", "+s:jMaxRareCount) : s;
         s = jType!=null ? (s!=null?jType+", "+s:jType) : s;
@@ -68,8 +61,6 @@ public class CategoryRarityModelScorerConfTest {
                 params.getName(),
                 params.getMaxRareCount(),
                 params.getMaxNumOfRarePartitions(),
-                params.getMinumumNumberOfDistinctValuesToInfluence(),
-                params.getEnoughtNumberOfDistinctValuesToInfluence(),
                 params.getNumberOfSamplesToInfluenceEnough(),
                 params.getMinNumOfSamplesToInfluence(),
                 params.getUseCertaintyToCalculateScore(),
@@ -79,8 +70,6 @@ public class CategoryRarityModelScorerConfTest {
 
     static void assertConf(CategoryRarityModelScorerConf conf,
                             String name, Integer maxRareCount, Integer maxNumOfRarePartitions,
-                            Integer minumumNumberOfDistinctValuesToInfluence,
-                            Integer enoughtNumberOfDistinctValuesToInfluence,
                             Integer numberOfSamplesToInfluenceEnough,
                             Integer minNumberOfSamplesToInfluence,
                             Boolean useCertaintyToCalculateScore,
@@ -90,17 +79,6 @@ public class CategoryRarityModelScorerConfTest {
         Assert.assertEquals(name, conf.getName());
         Assert.assertEquals((long)maxRareCount, conf.getMaxRareCount());
         Assert.assertEquals((long)maxNumOfRarePartitions, conf.getMaxNumOfRarePartitions());
-
-        if(minumumNumberOfDistinctValuesToInfluence==null) {
-            Assert.assertEquals(0L, conf.getMinNumOfDistinctValuesToInfluence());
-        } else {
-            Assert.assertEquals((long) minumumNumberOfDistinctValuesToInfluence, conf.getMinNumOfDistinctValuesToInfluence());
-        }
-        if(enoughtNumberOfDistinctValuesToInfluence==null) {
-            Assert.assertEquals(0L, conf.getEnoughNumOfDistinctValuesToInfluence());
-        } else {
-            Assert.assertEquals((long) enoughtNumberOfDistinctValuesToInfluence, conf.getEnoughNumOfDistinctValuesToInfluence());
-        }
 
         if(numberOfSamplesToInfluenceEnough==null) {
             Assert.assertEquals(ModelScorerConf.ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE, conf.getEnoughNumOfSamplesToInfluence());
@@ -181,30 +159,6 @@ public class CategoryRarityModelScorerConfTest {
     }
 
     @Test
-    public void jsonDeserializatio_Null_minumumNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(null);
-        doDeserialization(params, true);
-    }
-
-    @Test(expected = JsonMappingException.class)
-    public void jsonDeserializatio_negative_minumumNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(-1);
-        doDeserialization(params, false);
-    }
-
-    @Test
-    public void jsonDeserializatio_Null_enoughtNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setEnoughtNumberOfDistinctValuesToInfluence(null);
-        doDeserialization(params, true);
-    }
-
-    @Test(expected = JsonMappingException.class)
-    public void jsonDeserializatio_negative_enoughtNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setEnoughtNumberOfDistinctValuesToInfluence(-1);
-        doDeserialization(params, false);
-    }
-
-    @Test
     public void jsonDeserialization_Null_numberOfSamplesToInfluenceEnough_Test() throws IOException{
         CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setNumberOfSamplesToInfluenceEnough(null);
         doDeserialization(params, true);
@@ -216,11 +170,7 @@ public class CategoryRarityModelScorerConfTest {
         doDeserialization(params, false);
     }
 
-    @Test
-    public void jsonDeserialization_Null_minNumOfSamplesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setMinumumNumberOfDistinctValuesToInfluence(null);
-        doDeserialization(params, true);
-    }
+
 
     @Test(expected = JsonMappingException.class)
     public void jsonDeserialization_zero_minNumOfSamplesToInfluence_Test() throws IOException{
@@ -279,8 +229,6 @@ public class CategoryRarityModelScorerConfTest {
         String name = "Scorer1";
         Integer maxRareCount = 10;
         Integer maxNumOfRarePartitions = 6;
-        Integer minumumNumberOfDistinctValuesToInfluence = 3;
-        Integer enoughtNumberOfDistinctValuesToInfluence = 10;
         Integer numberOfSamplesToInfluenceEnough = 10;
         Integer minNumOfSamplesToInfluence = 2;
         Boolean useCertaintyToCalculateScore = true;
@@ -312,24 +260,6 @@ public class CategoryRarityModelScorerConfTest {
 
         public CategoryRarityModelScorerConfParams setMaxNumOfRarePartitions(Integer maxNumOfRarePartitions) {
             this.maxNumOfRarePartitions = maxNumOfRarePartitions;
-            return this;
-        }
-
-        public Integer getMinumumNumberOfDistinctValuesToInfluence() {
-            return minumumNumberOfDistinctValuesToInfluence;
-        }
-
-        public CategoryRarityModelScorerConfParams setMinumumNumberOfDistinctValuesToInfluence(Integer minumumNumberOfDistinctValuesToInfluence) {
-            this.minumumNumberOfDistinctValuesToInfluence = minumumNumberOfDistinctValuesToInfluence;
-            return this;
-        }
-
-        public Integer getEnoughtNumberOfDistinctValuesToInfluence() {
-            return enoughtNumberOfDistinctValuesToInfluence;
-        }
-
-        public CategoryRarityModelScorerConfParams setEnoughtNumberOfDistinctValuesToInfluence(Integer enoughtNumberOfDistinctValuesToInfluence) {
-            this.enoughtNumberOfDistinctValuesToInfluence = enoughtNumberOfDistinctValuesToInfluence;
             return this;
         }
 

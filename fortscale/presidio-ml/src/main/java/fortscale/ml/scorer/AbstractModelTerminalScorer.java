@@ -50,11 +50,19 @@ public abstract class AbstractModelTerminalScorer extends AbstractModelScorer {
                                                 List<Model> additionalModels,
                                                 AdeRecordReader adeRecordReader) {
         Feature feature = getFeature(adeRecordReader);
-        if (model == null || additionalModels.contains(null) || feature == null || feature.getValue() == null) {
+        if (!canScore(model, additionalModels, feature)) {
             //todo: add metrics.
             return null;
         }
         return new FeatureScore(getName(), calculateScore(model, additionalModels, feature));
+    }
+
+    protected boolean canScore(Model mainModel, List<Model> additionalModels, Feature feature){
+        if (mainModel == null || additionalModels.contains(null) || feature == null || feature.getValue() == null) {
+            //todo: add metrics.
+            return false;
+        }
+        return true;
     }
 
     abstract protected double calculateScore(Model model, List<Model> additionalModels, Feature feature);
