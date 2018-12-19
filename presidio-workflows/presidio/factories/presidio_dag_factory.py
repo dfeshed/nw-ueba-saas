@@ -65,9 +65,8 @@ class PresidioDagFactory(AbstractDagFactory):
     @staticmethod
     def create_spring_boot_jar_pool_for_dag():
         pool_name = PresidioDagFactory.get_spring_boot_jar_pool_name_for_dag()
-        is_pool_exist = len([p for p in pool.get_pools() if p.pool == pool_name]) == 1
 
-        if not is_pool_exist:
+        if not any(p.pool == pool_name for p in pool.get_pools()):
             pool.create_pool(name=pool_name,
                              slots=SPRING_BOOT_JAR_POOL_NUM_OF_SLOTS,
                              description=SPRING_BOOT_JAR_POOL_DESCRIPTION)
