@@ -233,11 +233,6 @@ module Fortscale.layouts.user {
                         template: '{{dataItem.username}}',
                         sortable: false
                     },
-                    dest_machine: {
-                        field: 'dest_machine',
-                        template: '{{dataItem.dstMachineNameRegexCluster}}',
-                        sortable: false
-                    },
                     user_sid: {
                         field: 'user_sid',
 
