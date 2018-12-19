@@ -91,6 +91,11 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
             }
         });
 
+        //due to the filter the map might be empty.
+        if(nameToPartitionsMap.isEmpty()){
+            return Collections.emptyMap();
+        }
+
         Map<Integer, Map<Long, Double>> occurrencesToPartitionMap = new HashMap<>();
         for (Map.Entry<String, Map<Long, Double>> nameToPartitionsEntry : nameToPartitionsMap.entrySet()) {
             int numOfOccurrences = (int) Math.ceil(nameToPartitionsEntry.getValue().values().stream().mapToDouble(v->v).sum());
