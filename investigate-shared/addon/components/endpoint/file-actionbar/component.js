@@ -108,6 +108,11 @@ export default Component.extend({
     });
   },
 
+  @computed('itemList')
+  isMaxResetRiskScoreLimit(itemList) {
+    return itemList.length > 100;
+  },
+
   actions: {
     onFileAction(action) {
       const selectedList = this.get('itemList');
@@ -139,7 +144,7 @@ export default Component.extend({
 
     resetRiskScoreAction() {
       const selectedList = this.get('itemList');
-      this.resetRiskScore(selectedList);
+      this.resetRiskScore(selectedList.slice(0, 100));
       this.set('showResetScoreModal', false);
     }
   }

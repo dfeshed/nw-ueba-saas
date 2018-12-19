@@ -149,6 +149,11 @@ const FileList = Component.extend({
     return { ...fileStatusData };
   },
 
+  @computed('selectedFiles')
+  isMaxResetRiskScoreLimit(selectedFiles) {
+    return selectedFiles.length > 100;
+  },
+
   _sortList(columnList) {
     const i18n = this.get('i18n');
     const sortList = _.sortBy(columnList, [(column) => {
@@ -207,7 +212,8 @@ const FileList = Component.extend({
         onFailure: () => failure('investigateFiles.riskScore.error')
       };
       this.set('showResetScoreModal', false);
-      this.send('resetRiskScore', this.get('selectedFiles'), callBackOptions);
+      const limitedFiles = this.get('selectedFiles').slice(0, 100);
+      this.send('resetRiskScore', limitedFiles, callBackOptions);
       this.set('selectedFiles', null);
     },
 

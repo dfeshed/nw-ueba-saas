@@ -46,6 +46,9 @@
   }
 }
 
+.filter-wrapper {
+  height: calc(100% - 95px);
+}
 
 .ember-power-select-option {
   &[aria-current="true"] {
@@ -94,16 +97,34 @@
 
 .reset-risk-score {
   padding: rsa-whitespace();
-  width: 400px;
+  width: 420px;
   @include rsa-font(paragraph);
   .confirmationButtons {
-    padding-top: rsa-whitespace();
+    padding-top: rsa-whitespace(more);
     float: right;
+    padding-bottom: rsa-whitespace();
+  }
+
+  .max-limit-info {
+    i {
+      color: text-color(secondary);
+      float: left;
+      padding-top: 3px;
+    }
+    p {
+      color: text-color(primary, light);
+      font-size: 14px;
+      height: 30px;
+      float: left;
+      width: 380px;
+      padding-left: 10px;
+      padding-bottom: rsa-whitespace();
+    }
   }
 }
 
 .modal-content.reset-risk-score {
-  height: 100px;
+  height: 110px;
 }
 
 .saved-filter-name {

@@ -2158,7 +2158,8 @@ export default {
       cancel: 'Cancel',
       reset: 'Reset',
       success: 'The Risk Score has been successfully reset.',
-      error: ' The Risk Score cannot be reset.'
+      error: ' The Risk Score cannot be reset.',
+      limitInfo: 'Risk Score of only top 100 files can be reset at a time.'
     },
     filter: {
       allFiles: 'All',
@@ -3315,7 +3316,8 @@ export default {
           message: 'Are you sure you want to reset the Risk Score for the selected host(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0. Click Help for more information.'
         },
         success: 'The Risk Score has been successfully reset.',
-        error: ' The Risk Score cannot be reset.'
+        error: ' The Risk Score cannot be reset.',
+        limitInfo: 'Risk Score of only top 100 hosts can be reset at a time.'
       },
       moreActions: {
         openIn: 'Pivot to Endpoint Thick Client',

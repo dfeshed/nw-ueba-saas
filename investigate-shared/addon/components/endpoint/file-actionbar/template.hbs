@@ -96,6 +96,14 @@
     label=(t 'investigateFiles.riskScore.label')
     onClose=(action 'onResetScoreModalClose')}}
     <div class='modal-content reset-risk-score'>
+      {{#if isMaxResetRiskScoreLimit}}
+        <span class='max-limit-info'>
+          {{rsa-icon class='rsa-icon-information-circle-filled'}}
+          <p>
+            {{t 'investigateFiles.riskScore.limitInfo'}}
+          </p>
+        </span>
+      {{/if}}
       {{t 'investigateFiles.riskScore.confirmMessage'}}
       <div class="confirmationButtons">
         {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateFiles.riskScore.cancel'}}{{/rsa-form-button}}
