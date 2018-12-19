@@ -25,6 +25,11 @@ export default {
     title: 'score'
   },
   {
+    field: 'machineCount',
+    title: 'machineCount',
+    width: '15%'
+  },
+  {
     field: 'fileProperties.reputationStatus',
     title: 'reputationStatus'
   },

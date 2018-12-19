@@ -33,6 +33,97 @@ const e = {
 };
 const wormhole = 'wormhole-context-menu';
 
+const listData = [
+  {
+    pid: 732,
+    name: 'agetty',
+    checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+    parentPid: 1
+  },
+  {
+    pid: 733,
+    name: 'agetty',
+    checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
+    parentPid: 1
+  },
+  {
+    pid: 664,
+    name: 'auditd',
+    checksumSha256: '3f9f060332b8062c66591df85a1baa19a99235590f1b23b91d075d27f88d055e',
+    parentPid: 1
+  },
+  {
+    pid: 8282,
+    name: 'bash',
+    checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
+    parentPid: 1
+  },
+  {
+    pid: 10110,
+    name: 'bash',
+    checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
+    parentPid: 10106
+  },
+  {
+    pid: 11061,
+    name: 'bash',
+    checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
+    parentPid: 1
+  },
+  {
+    pid: 13871,
+    name: 'bash',
+    checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
+    parentPid: 1
+  }
+];
+
+
+const testTree = [
+  {
+    pid: 1,
+    name: 'systemd',
+    checksumSha256: '20302a641da611ff5',
+    parentPid: 0,
+    childProcesses: [
+      {
+        pid: 517,
+        name: 'systemd-udevd',
+        checksumSha256: '35a41bad1ca1ba',
+        parentPid: 1
+      },
+      {
+        pid: 29332,
+        name: 'rsyslogd',
+        checksumSha256: '2a523ef7464b3f',
+        parentPid: 1,
+        childProcesses: [
+          {
+            pid: 29680,
+            name: 'rsa_audit_onramp',
+            checksumSha256: '4a63263a98b8a67951',
+            parentPid: 29332
+          }
+        ]
+      },
+      {
+        pid: 14102,
+        name: 'bash',
+        checksumSha256: 'f7a24de16d613d35937aea465',
+        parentPid: 1,
+        childProcesses: [
+          {
+            pid: 14134,
+            name: 'java',
+            checksumSha256: 'db598d68d4c6c25e18f94',
+            parentPid: 14102
+          }
+        ]
+      }
+    ]
+  }
+];
+
 module('Integration | Component | host-detail/process/process-tree', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -91,7 +182,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     await render(hbs`{{host-detail/process/process-tree}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 10, '10 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Risk Score', 'Second column is Risk Score');
   });
@@ -99,7 +190,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Get the length of visible items in datatable', async function(assert) {
     new ReduxDataHelper(setState)
       .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processTree(testTree)
       .machineOSType('windows')
       .selectedTab(null)
       .sortField('name')
@@ -114,7 +205,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree}}`);
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
+      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 6, '6 visible items in datatable');
     });
   });
 
@@ -142,7 +233,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('It renders the list view', async function(assert) {
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
+      .processList(listData)
       .processTree(processData.processTree)
       .machineOSType('windows')
       .isTreeView(false)
@@ -159,7 +250,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree}}`);
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
+      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 7, '77 visible items in datatable');
     });
   });
 
@@ -225,7 +316,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.expect(3);
     new ReduxDataHelper(setState)
       .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processTree(testTree)
       .selectedTab(null)
       .machineOSType('windows')
       .sortField('name')
@@ -240,10 +331,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree}}`);
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-process-tree .process-name').length, 77, '77 process names present');
-      assert.equal(findAll('.rsa-process-tree .process-name.is-leaf').length, 54, '54 last child process (leaf nodes)');
+      assert.equal(findAll('.rsa-process-tree .process-name').length, 6, '6 process names present');
+      assert.equal(findAll('.rsa-process-tree .process-name.is-leaf').length, 3, '3 last child process (leaf nodes)');
       const nonLeafItems = findAll('.rsa-process-tree .process-name').length - findAll('.rsa-process-tree .process-name.is-leaf').length;
-      assert.equal(nonLeafItems, 23, '23 length of non-leaf process');
+      assert.equal(nonLeafItems, 3, '3 length of non-leaf process');
     });
   });
 

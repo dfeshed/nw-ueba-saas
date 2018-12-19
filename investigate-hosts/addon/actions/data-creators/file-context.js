@@ -124,6 +124,14 @@ const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
     });
 };
 
+const fetchMachineCount = (checksums, tabName) => ({
+  type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA,
+  payload: checksums,
+  meta: {
+    belongsTo: tabName
+  }
+});
+
 export {
   getFileContext,
   onHostFileSelection,
@@ -135,5 +143,6 @@ export {
   setFileContextSort,
   retrieveRemediationStatus,
   resetSelection,
-  downloadFilesToServer
+  downloadFilesToServer,
+  fetchMachineCount
 };

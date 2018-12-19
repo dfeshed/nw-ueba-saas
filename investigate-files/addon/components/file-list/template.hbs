@@ -56,7 +56,7 @@
           {{else if (eq column.field 'size')}}
             {{rsa-content-memsize size=(get item column.field)}}
           {{else if (eq column.field 'machineCount')}}
-            {{file-list/machine-count item=item machineCountMapping=agentCountMapping}}
+            {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
           {{else if (eq column.field 'pe.imageSize')}}
             {{rsa-content-memsize size=(get item column.field)}}
           {{else if (eq column.field 'signature.features')}}

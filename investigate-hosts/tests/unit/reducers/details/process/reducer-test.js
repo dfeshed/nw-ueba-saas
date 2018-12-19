@@ -25,7 +25,8 @@ module('Unit | Reducers | process', function() {
     selectedProcessList: [],
     selectedRowIndex: null,
     selectedDllItem: null,
-    selectedDllRowIndex: -1
+    selectedDllRowIndex: -1,
+    agentCountMapping: {}
   });
 
   test('should return the initial state', function(assert) {
@@ -431,4 +432,23 @@ module('Unit | Reducers | process', function() {
     assert.deepEqual(endState.processList[0].fileProperties.fileStatus, 'Graylist', 'File status in processlist of corresponding file is updated.');
     assert.deepEqual(endState.processList[1].fileProperties.fileStatus, 'Blacklist', 'File status for the file, whose status hasnot been changes, remains unaffected in the state.');
   });
+
+  test('AGENT_COUNT_INIT set the status to loading', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: {}
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.AGENT_COUNT_INIT, payload: ['123456', '34567'] });
+    assert.equal(result.agentCountMapping['123456'], 'loading');
+  });
+
+  test('SET_AGENT_COUNT set the status to loading', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: {
+        1211212: 'loading'
+      }
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_AGENT_COUNT, payload: [{ 1211212: 12 }] });
+    assert.equal(result.agentCountMapping[0][1211212], 12);
+  });
+
 });

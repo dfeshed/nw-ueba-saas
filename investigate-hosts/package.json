@@ -64,7 +64,9 @@
     "loader.js": "^4.2.3",
     "normalizr": "3.3.0",
     "qunit-dom": "^0.8.0",
-    "seamless-immutable": "7.1.2"
+    "seamless-immutable": "7.1.2",
+    "redux-saga": "0.16.0",
+    "ember-redux-saga-shim": "2.0.2"
   },
   "engines": {
     "node": "10.13.0"

@@ -3,6 +3,8 @@
     lazy=true
     items=listOfFiles
     columnsConfig=columnsConfig
+    agentCountMapping=agentCountMapping
+    tabName=tabName
     selectedIndex=selectedIndex
     onRowClick=(action 'onRowClick')}}
     {{#rsa-data-table/header as |column|}}
@@ -27,7 +29,7 @@
         {{rsa-loader size="larger"}}
       </centered>
     {{else}}
-      {{#rsa-data-table/body
+      {{#host-detail/utils/file-context-table-body
         rowComponentClass=(
           component 'endpoint/file-custom-row'
           serviceList=serviceList
@@ -55,9 +57,15 @@
             </label>
           {{/rsa-data-table/body-cell}}
         {{else}}
-          {{host-detail/utils/table-cell item=item column=column sid=sid}}
+          {{#if (eq column.field 'machineCount')}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
+            {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{host-detail/utils/table-cell item=item column=column sid=sid}}
+          {{/if}}
         {{/if}}
-      {{/rsa-data-table/body}}
+      {{/host-detail/utils/file-context-table-body}}
       {{#if isPaginated}}
         {{rsa-data-table/load-more status=contextLoadMoreStatus}}
       {{/if}}

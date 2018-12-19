@@ -19,7 +19,8 @@ const initialState = {
   totalItems: null,
   pageNumber: -1,
   hasNext: false,
-  isRemediationAllowed: true
+  isRemediationAllowed: true,
+  agentCountMapping: {}
 };
 
 module('Unit | Reducers | File Context', function() {
@@ -310,6 +311,24 @@ module('Unit | Reducers | File Context', function() {
     });
     const newEndState = reducer(previous, successAction);
     assert.equal(newEndState.isRemediationAllowed, false);
+  });
+
+  test('AGENT_COUNT_INIT set the status to loading', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: {}
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.AGENT_COUNT_INIT, payload: ['123456', '34567'], meta: { belongsTo: 'DRIVER' } });
+    assert.equal(result.agentCountMapping['123456'], 'loading');
+  });
+
+  test('SET_AGENT_COUNT set the status to loading', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: {
+        1211212: 'loading'
+      }
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_AGENT_COUNT, payload: [{ '1211212': 12 }] });
+    assert.equal(result.agentCountMapping[0][1211212], 12);
   });
 
 });

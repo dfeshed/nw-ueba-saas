@@ -18,6 +18,11 @@ const defaultColumns = [
     title: 'Risk Score'
   },
   {
+    field: 'machineCount',
+    title: 'Machine Count',
+    width: '15%'
+  },
+  {
     field: 'fileProperties.reputationStatus',
     title: 'Reputation Status'
   },

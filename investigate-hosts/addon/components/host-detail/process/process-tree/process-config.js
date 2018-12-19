@@ -23,6 +23,11 @@ export default [
     disableSort: true
   },
   {
+    field: 'machineCount',
+    title: 'investigateHosts.process.machineCount',
+    width: '15%'
+  },
+  {
     field: 'fileProperties.fileStatus',
     width: '4vw',
     title: 'investigateHosts.process.fileStatus',

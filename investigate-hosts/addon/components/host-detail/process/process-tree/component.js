@@ -69,7 +69,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
-  selectedFileChecksums: selectedFileChecksums(state)
+  selectedFileChecksums: selectedFileChecksums(state),
+  agentCountMapping: state.endpoint.process.agentCountMapping
 });
 
 

@@ -81,6 +81,11 @@ const config = [
     field: 'signature.features',
     title: 'Signature',
     format: 'SIGNATURE'
+  },
+  {
+    field: 'machineCount',
+    title: 'Machine Count',
+    format: 'MACHINECOUNT'
   }
 ];
 
@@ -382,5 +387,26 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
+  });
+
+  test('Machine count component is loaded for host-count column', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
+      assert.equal(findAll('.machine-count').length, 3, 'Machine count is displayed, the three items in the table');
+    });
   });
 });

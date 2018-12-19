@@ -1,6 +1,8 @@
 <box class='process-tree-table-box'>
   {{#rsa-data-table
     items=visibleItems
+    tabName='PROCESS'
+    agentCountMapping=agentCountMapping
     selectedIndex=selectedRowIndex
     lazy=true
     onRowClick=(action "handleRowClickAction")
@@ -28,7 +30,7 @@
         {{rsa-loader size='medium'}}
       </centered>
     {{else}}
-      {{#rsa-data-table/body
+      {{#host-detail/utils/file-context-table-body
         rowComponentClass=(
           component 'endpoint/file-custom-row'
           serviceList=serviceList
@@ -78,11 +80,15 @@
                 {{get item column.field}}
               {{/link-to}}
             {{/rsa-data-table/body-cell}}
+          {{else if (eq column.field 'machineCount')}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
+            {{/rsa-data-table/body-cell}}
           {{else}}
             {{host-detail/utils/table-cell item=item column=column}}
           {{/if}}
         {{/if}}
-      {{/rsa-data-table/body}}
+      {{/host-detail/utils/file-context-table-body}}
     {{/if}}
   {{/rsa-data-table}}
 </box>

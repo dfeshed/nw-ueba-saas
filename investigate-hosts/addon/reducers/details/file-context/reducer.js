@@ -17,8 +17,11 @@ const initialState = Immutable.from({
   totalItems: null, // Total number of file context items
   pageNumber: -1,
   hasNext: false,
-  isRemediationAllowed: true
+  isRemediationAllowed: true,
+  agentCountMapping: {}
 });
+
+const LOADING_STATUS = 'loading';
 
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
@@ -129,6 +132,18 @@ const fileContext = reduxActions.handleActions({
         return s.set('isRemediationAllowed', action.payload.data);
       }
     });
+  },
+
+  [ACTION_TYPES.AGENT_COUNT_INIT]: (state, { payload }) => {
+    const data = {};
+    payload.forEach((checksum) => {
+      data[checksum] = LOADING_STATUS;
+    });
+    return state.set('agentCountMapping', { ...state.agentCountMapping, ...data });
+  },
+
+  [ACTION_TYPES.SET_AGENT_COUNT]: (state, { payload }) => {
+    return state.set('agentCountMapping', { ...state.agentCountMapping, ...payload });
   }
 }, initialState);
 

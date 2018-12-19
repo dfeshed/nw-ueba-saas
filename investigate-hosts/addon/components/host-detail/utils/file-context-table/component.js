@@ -48,7 +48,8 @@ const stateToComputed = (state, { storeName }) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
-  sid: state.endpointQuery.serverId
+  sid: state.endpointQuery.serverId,
+  agentCountMapping: state.endpoint[storeName].agentCountMapping
 });
 
 const dispatchToActions = {

@@ -2554,6 +2554,7 @@ export default {
       backToProcesses: 'Processes',
       processDetails: 'Process Details',
       analyzeProcess: 'Analyze Process',
+      machineCount: 'Machine Count',
       toolTip: {
         openProcessDetails: 'Open Process details',
         openFileDetails: 'Open File details',
@@ -2612,7 +2613,8 @@ export default {
         downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Image Hooks information was found'
-        }
+        },
+        machineCount: 'Machine Count'
       },
       suspiciousThreads: {
         signature: 'Signature',
@@ -2626,7 +2628,8 @@ export default {
         downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Suspicious Threads information was found'
-        }
+        },
+        machineCount: 'Machine Count'
       },
       kernelHooks: {
         type: 'Type',
@@ -2640,7 +2643,8 @@ export default {
         downloaded: 'Downloaded',
         message: {
           noResultsMessage: 'No Kernel Hooks information was found'
-        }
+        },
+        machineCount: 'Machine Count'
       },
       registryDiscrepancies: {
         hive: 'Hive',

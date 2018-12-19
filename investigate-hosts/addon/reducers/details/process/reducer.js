@@ -32,8 +32,10 @@ const initialState = Immutable.from({
   selectedProcessList: [],
   selectedRowIndex: null,
   selectedDllItem: null,
-  selectedDllRowIndex: -1
+  selectedDllRowIndex: -1,
+  agentCountMapping: {}
 });
+const LOADING_STATUS = 'loading';
 
 const processReducer = handleActions({
 
@@ -179,7 +181,19 @@ const processReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.merge({ selectedRowIndex: -1, selectedProcessList: [] })
+  [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.merge({ selectedRowIndex: -1, selectedProcessList: [] }),
+
+  [ACTION_TYPES.AGENT_COUNT_INIT]: (state, { payload }) => {
+    const data = {};
+    payload.forEach((checksum) => {
+      data[checksum] = LOADING_STATUS;
+    });
+    return state.set('agentCountMapping', { ...state.agentCountMapping, ...data });
+  },
+
+  [ACTION_TYPES.SET_AGENT_COUNT]: (state, { payload }) => {
+    return state.set('agentCountMapping', { ...state.agentCountMapping, ...payload });
+  }
 
 }, initialState);
 

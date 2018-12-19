@@ -22,6 +22,11 @@ export default [
     isDescending: false
   },
   {
+    field: 'machineCount',
+    title: 'investigateHosts.process.machineCount',
+    width: '15%'
+  },
+  {
     field: 'fileProperties.fileStatus',
     width: '5vw',
     title: 'investigateHosts.process.fileStatus',

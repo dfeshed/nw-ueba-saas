@@ -73,6 +73,11 @@ const defaultColumns = [
     'width': 100
   },
   {
+    'field': 'machineCount',
+    'title': 'Machine Count',
+    'width': '15%'
+  },
+  {
     'field': 'fileProperties.reputationStatus',
     'title': 'Reputation Status',
     'label': 'investigateHosts.files.fields.reputationStatus',
