@@ -20,7 +20,8 @@ import { machineOsType, hostName, isMachineWindows } from 'investigate-hosts/red
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import {
   fileStatus,
-  isRemediationAllowed
+  isRemediationAllowed,
+  fileDownloadButtonStatus
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import {
   setFileContextFileStatus,
@@ -55,7 +56,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
-  risk: riskState(state)
+  risk: riskState(state),
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process')
 });
 
 const dispatchToActions = {
@@ -93,23 +95,6 @@ const Container = Component.extend({
   @computed('selectedProcessList')
   selectedFileCount(selectedProcessList) {
     return selectedProcessList && selectedProcessList.length ? selectedProcessList.length : 0;
-  },
-
-  @computed('selectedProcessList')
-  fileDownloadButtonStatus(fileContextSelections = []) {
-    // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
-    const selectedFilesLength = fileContextSelections.length;
-    const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => {
-      if (item.downloadInfo) {
-        return item.downloadInfo.status !== 'Downloaded';
-      }
-      return true;
-    });
-
-    return {
-      isDownloadToServerDisabled: ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer)), // and file's downloaded status is true
-      isSaveLocalAndFileAnalysisDisabled: ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer) // or file's downloaded status is true
-    };
   },
 
   @computed('isTreeView')

@@ -173,7 +173,14 @@ module('Unit | Reducers | process', function() {
         firstFileName: 'p1',
         fileStatus: 'Neutral',
         score: 0,
-        machineOsType: 'windows'
+        machineOsType: 'windows',
+        pe: {
+          features: [
+            'file.dll',
+            'file.arch64'
+          ]
+        },
+        format: 'pe'
       }
     };
     const result = reducer(
@@ -198,7 +205,12 @@ module('Unit | Reducers | process', function() {
         size: 1234,
         fileStatus: 'Neutral',
         score: 0,
-        machineOsType: 'windows'
+        machineOsType: 'windows',
+        features: [
+          'file.dll',
+          'file.arch64'
+        ],
+        format: 'pe'
       }
     ];
     assert.deepEqual(result.selectedProcessList, expectedResult);
@@ -219,7 +231,14 @@ module('Unit | Reducers | process', function() {
             checksumMd5: '89676969',
             checksumSha1: '9798796986',
             downloadInfo: { status: true },
-            machineOsType: 'windows'
+            machineOsType: 'windows',
+            pe: {
+              features: [
+                'file.dll',
+                'file.arch64'
+              ]
+            },
+            format: 'pe'
           },
           pid: 1,
           parentPid: 0,
@@ -239,7 +258,14 @@ module('Unit | Reducers | process', function() {
             checksumMd5: '6789676969',
             checksumSha1: '789798796986',
             downloadInfo: { status: true },
-            machineOsType: 'windows'
+            machineOsType: 'windows',
+            pe: {
+              features: [
+                'file.dll',
+                'file.arch64'
+              ]
+            },
+            format: 'pe'
           },
           pid: 2,
           parentPid: 1,
@@ -268,7 +294,12 @@ module('Unit | Reducers | process', function() {
         size: 1234,
         fileStatus: 'Neutral',
         score: 0,
-        machineOsType: 'windows'
+        machineOsType: 'windows',
+        features: [
+          'file.dll',
+          'file.arch64'
+        ],
+        format: 'pe'
       },
 
       {
@@ -288,7 +319,12 @@ module('Unit | Reducers | process', function() {
         size: 9234,
         fileStatus: 'Neutral',
         score: 0,
-        machineOsType: 'windows'
+        machineOsType: 'windows',
+        features: [
+          'file.dll',
+          'file.arch64'
+        ],
+        format: 'pe'
       }];
     const result = reducer(
       previous,

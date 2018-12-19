@@ -179,6 +179,7 @@ module('Integration | Component | host-detail', function(hooks) {
       .isSnapshotsLoading(false)
       .isSnapshotsAvailable(true)
       .selectedTabComponent('PROCESS')
+      .machineIdentity({ agentMode: 'Advanced' })
       .endpointServer(endpointServerClone)
       .isProcessDetailsView(true)
       .endpointQuery(endpointQuery)

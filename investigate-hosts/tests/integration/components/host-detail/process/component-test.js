@@ -16,6 +16,8 @@ import {
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
+import { selectedProcessItemInfo, machineIdentity } from '../../state/fileContextData';
+
 let setState, modifiedList, modifiedTree;
 const fileProperties = {
   checksum256: 'test',
@@ -60,6 +62,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList([])
       .processTree([])
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .isProcessDetailsView(true)
@@ -79,6 +82,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList([])
       .processTree([])
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .isProcessDetailsView(false)
@@ -98,6 +102,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList([])
       .processTree([])
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -118,6 +123,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processTree(processTree)
       .processDetails(processDetails)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -136,6 +142,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     new ReduxDataHelper(setState)
       .selectedTab({ tabName: 'PROCESS' })
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -155,6 +162,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -206,6 +214,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -242,6 +251,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -259,15 +269,13 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(processList)
       .processTree(processTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1,
+        ...selectedProcessItemInfo,
         vpid: 123123
       }])
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -290,14 +298,12 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(processList)
       .processTree(processTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1
+        ...selectedProcessItemInfo
       }])
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -315,14 +321,12 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(processList)
       .processTree(processTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1
+        ...selectedProcessItemInfo
       }])
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -342,10 +346,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(modifiedList)
       .processTree(modifiedTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1,
+        ...selectedProcessItemInfo,
         downloadInfo: {
           status: ''
         }
@@ -353,6 +354,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -373,10 +375,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(modifiedList)
       .processTree(modifiedTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1,
+        ...selectedProcessItemInfo,
         downloadInfo: {
           status: 'Downloaded'
         }
@@ -384,6 +383,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -404,10 +404,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(modifiedList)
       .processTree(modifiedTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1,
+        ...selectedProcessItemInfo,
         downloadInfo: {
           status: ''
         }
@@ -415,6 +412,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -435,10 +433,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processList(modifiedList)
       .processTree(modifiedTree)
       .selectedProcessList([{
-        pid: 732,
-        name: 'agetty',
-        checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-        parentPid: 1,
+        ...selectedProcessItemInfo,
         downloadInfo: {
           status: 'Downloaded'
         }
@@ -446,6 +441,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')
+      .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
       .build();

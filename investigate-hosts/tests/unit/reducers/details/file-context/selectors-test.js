@@ -13,10 +13,11 @@ import {
   contextLoadMoreStatus,
   isRemediationAllowed,
   fileStatus,
-  isNotAdvanced,
-  isFloatingOrMemoryDll,
+  fileDownloadButtonStatus,
   focusedRowChecksum
 } from 'investigate-hosts/reducers/details/file-context/selectors';
+
+import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
 
 
 module('Unit | Selectors | File Context', function() {
@@ -359,8 +360,8 @@ module('Unit | Selectors | File Context', function() {
     assert.equal(result, true, 'isAllSelected should true ');
   });
 
-  test('isNotAdvanced if agent mode is not Advanced', function(assert) {
-    const result = isNotAdvanced(Immutable.from({
+  test('fileDownloadButtonStatus if agent mode is not Advanced', function(assert) {
+    const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
         overview: {
           hostDetails: {
@@ -368,29 +369,17 @@ module('Unit | Selectors | File Context', function() {
               agentMode: 'full'
             }
           }
+        },
+        drivers: {
+          fileContextSelections: [...fileContextSelectionsData]
         }
       }
-    }));
-    assert.equal(result, true, 'isNotAdvanced should return true ');
+    }), 'drivers');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
   });
 
-  test('isNotAdvanced if agent mode is Advanced', function(assert) {
-    const result = isNotAdvanced(Immutable.from({
-      endpoint: {
-        overview: {
-          hostDetails: {
-            machineIdentity: {
-              agentMode: 'Advanced'
-            }
-          }
-        }
-      }
-    }));
-    assert.equal(result, false, 'isNotAdvanced should return false');
-  });
-
-  test('isFloatingOrMemoryDll if not all selected files are memorydlls or floating code', function(assert) {
-    const result = isFloatingOrMemoryDll(Immutable.from({
+  test('fileDownloadButtonStatus if agent mode is Advanced', function(assert) {
+    const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
         overview: {
           hostDetails: {
@@ -400,54 +389,33 @@ module('Unit | Selectors | File Context', function() {
           }
         },
         drivers: {
-          fileContextSelections: [
-            {
-              id: 'imageHooks_1',
-              fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]',
-              checksumSha1: '77e2e1facd878903daacfb5a561456225c05a445',
-              checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
-              checksumMd5: '054f182db0fd4afbe92b311874c721c8',
-              size: 65536,
-              machineOsType: 'windows',
-              path: '',
-              downloadInfo: {},
-              features: [],
-              format: 'floating'
-            },
-            {
-              id: 'imageHooks_12',
-              fileName: 'HookTest_DLL64_0c30.dll',
-              checksumSha1: '5c6ff89eef54b7d5fba72889c2250ee09b04bcab',
-              checksumSha256: '5469da9747d23abd3a1ccffa2bccfe6256938a416f707ed2160d3eda3867c30d',
-              checksumMd5: 'a91f3390e2fadbbcb2a347ba685cb22a',
-              signature: {
-                features: [
-                  'unsigned'
-                ]
-              },
-              size: 150528,
-              machineOsType: 'windows',
-              path: 'C:\\Users\\kslp\\AppData\\Local\\Temp\\',
-              downloadInfo: {},
-              features: [
-                'file.dll',
-                'file.arch64',
-                'file.resourceDirectoryPresent',
-                'file.relocationDirectoryPresent',
-                'file.debugDirectoryPresent',
-                'file.richSignaturePresent'
-              ],
-              format: 'pe'
-            }
-          ]
+          fileContextSelections: [...fileContextSelectionsData]
         }
       }
     }), 'drivers');
-    assert.equal(result, false, 'isFloatingOrMemoryDll should return false ');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': false, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
   });
 
-  test('isFloatingOrMemoryDll if all selected files are memorydlls or floating code', function(assert) {
-    const result = isFloatingOrMemoryDll(Immutable.from({
+  test('fileDownloadButtonStatus if not all selected files are memorydlls or floating code', function(assert) {
+    const result = fileDownloadButtonStatus(Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            machineIdentity: {
+              agentMode: 'Advanced'
+            }
+          }
+        },
+        drivers: {
+          fileContextSelections: [...fileContextSelectionsData]
+        }
+      }
+    }), 'drivers');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': false, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
+  });
+
+  test('fileDownloadButtonStatus if all selected files are memorydlls or floating code', function(assert) {
+    const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
         overview: {
           hostDetails: {
@@ -491,21 +459,7 @@ module('Unit | Selectors | File Context', function() {
                 'file.arch64',
                 'file.memoryHash',
                 'file.iconPresent',
-                'file.versionInfoPresent',
-                'file.resourceDirectoryPresent',
-                'file.relocationDirectoryPresent',
-                'file.debugDirectoryPresent',
-                'file.boundImportDirectoryPresent',
-                'file.richSignaturePresent',
-                'file.companyNameContainsText',
-                'file.descriptionContainsText',
-                'file.versionContainsText',
-                'file.internalNameContainsText',
-                'file.legalCopyrightContainsText',
-                'file.originalFilenameContainsText',
-                'file.productNameContainsText',
-                'file.productVersionContainsText',
-                'file.standardVersionMetaPresent'
+                'file.versionInfoPresent'
               ],
               format: 'pe'
             }
@@ -513,7 +467,7 @@ module('Unit | Selectors | File Context', function() {
         }
       }
     }), 'drivers');
-    assert.equal(result, true, 'isFloatingOrMemoryDll should return true ');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
   });
 });
 

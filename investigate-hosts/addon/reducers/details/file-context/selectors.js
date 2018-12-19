@@ -9,7 +9,12 @@ const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 
 const _fileStatus = (state, name) => state.endpoint[name].fileStatus;
 const _selectedRowId = (state, name) => state.endpoint[name].selectedRowId;
-const _fileContextSelections = (state, name) => state.endpoint[name].fileContextSelections || [];
+const _fileContextSelections = (state, name) => {
+  if (name === 'process') {
+    return state.endpoint.process.selectedProcessList || [];
+  }
+  return state.endpoint[name].fileContextSelections || [];
+};
 const _totalItems = (state, name) => state.endpoint[name].totalItems;
 const _contextLoadMoreStatus = (state, name) => state.endpoint[name].contextLoadMoreStatus;
 const _isRemediationAllowed = (state, name) => state.endpoint[name].isRemediationAllowed;
@@ -118,13 +123,15 @@ export const isAllSelected = createSelector(
 export const fileContextFileProperty = createSelector([selectedRowId, listOfFiles, _fileContext], _getProperties);
 
 export const isDataLoading = createSelector(
-  [_contextLoadingStatus], (contextLoadingStatus) => {
+  _contextLoadingStatus,
+  (contextLoadingStatus) => {
     return ['wait', 'streaming'].includes(contextLoadingStatus);
   }
 );
 
-export const isNotAdvanced = createSelector(
-  [_hostDetails], (hostDetails) => {
+const _isNotAdvanced = createSelector(
+  _hostDetails,
+  (hostDetails) => {
     if (hostDetails) {
       return hostDetails.machineIdentity.agentMode.toLowerCase() !== 'advanced';
     }
@@ -132,12 +139,43 @@ export const isNotAdvanced = createSelector(
   }
 );
 
-export const isFloatingOrMemoryDll = createSelector(
-  [_fileContextSelections], (fileContextSelections) => {
+const _isFloatingOrMemoryDll = createSelector(
+  fileContextSelections,
+  (fileContextSelections) => {
     if (fileContextSelections && fileContextSelections.length) {
       const filteredList = fileContextSelections.filter((item) => (item.format === 'floating') || item.features.includes('file.memoryHash'));
       return filteredList.length === fileContextSelections.length;
     }
     return true;
+  }
+);
+
+const _areAllFilesNotDownloadedToServer = createSelector(
+  fileContextSelections,
+  (fileContextSelections) => {
+    if (fileContextSelections && fileContextSelections.length) {
+      return fileContextSelections.some((item) => {
+        if (item.downloadInfo) {
+          return item.downloadInfo.status !== 'Downloaded';
+        }
+        return true;
+      });
+    }
+    return true;
+  }
+);
+
+export const fileDownloadButtonStatus = createSelector(
+  [_isNotAdvanced, _isFloatingOrMemoryDll, _areAllFilesNotDownloadedToServer, fileContextSelections],
+  (isNotAdvanced, areAllSelectedFloatingOrMemoryDll, areAllFilesNotDownloadedToServer, fileContextSelections) => {
+    const selectedFilesLength = fileContextSelections.length;
+    // if agent is not advanced and file's downloaded status is true
+    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer));
+    // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
+    const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
+    return {
+      isDownloadToServerDisabled,
+      isSaveLocalAndFileAnalysisDisabled
+    };
   }
 );

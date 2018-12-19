@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
 
 import {
   fileContextFileProperty,
@@ -10,8 +9,7 @@ import {
   fileStatus,
   selectedFileChecksums,
   isRemediationAllowed,
-  isNotAdvanced,
-  isFloatingOrMemoryDll,
+  fileDownloadButtonStatus,
   focusedRowChecksum
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
@@ -44,8 +42,7 @@ const stateToComputed = (state, { storeName }) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
-  isNotAdvanced: isNotAdvanced(state),
-  areAllSelectedFloatingOrMemoryDll: isFloatingOrMemoryDll(state, storeName),
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state, storeName),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   risk: riskState(state)
 });
@@ -76,29 +73,6 @@ const ContextWrapper = Component.extend({
   propertyConfig: null,
 
   tabName: '',
-
-  @computed('fileContextSelections')
-  fileDownloadButtonStatus(fileContextSelections) {
-    const isNotAdvanced = this.get('isNotAdvanced');
-    const areAllSelectedFloatingOrMemoryDll = this.get('areAllSelectedFloatingOrMemoryDll');
-
-    // if selectedFilesLength be more than 1 and file download status be true then isDownloadToServerDisabled should return true
-    const selectedFilesLength = fileContextSelections.length;
-    const areAllFilesNotDownloadedToServer = fileContextSelections.some((item) => {
-      if (item.downloadInfo) {
-        return item.downloadInfo.status !== 'Downloaded';
-      }
-      return true;
-    });
-    // if agent is not advanced and file's downloaded status is true
-    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer));
-    // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
-    const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
-    return {
-      isDownloadToServerDisabled,
-      isSaveLocalAndFileAnalysisDisabled
-    };
-  },
 
   flashMessage: service(),
 
