@@ -2,6 +2,7 @@ package fortscale.utils.transform;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
 import org.json.JSONObject;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -19,7 +20,7 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = JoinTransformer.class, name = JoinTransformer.TYPE)
 })
 public interface IJsonObjectTransformer {
-
     JSONObject transform(JSONObject jsonObject);
+
     String getName();
 }

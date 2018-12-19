@@ -2,9 +2,12 @@ package fortscale.utils.transform.regexcaptureandformat;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
+import fortscale.utils.json.IJsonValueExtractor;
+import fortscale.utils.json.JsonPointerValueExtractor;
+import fortscale.utils.transform.AbstractJsonObjectTransformer;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -14,55 +17,52 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * Takes from a given {@link JsonObject} the string associated with {@link #sourceKey} and looks for the first
+ * Takes from a given {@link JSONObject} the string associated with {@link #sourceKey} and looks for the first
  * {@link CaptureAndFormatConfiguration} x, such that the string matches x's pattern (the configurations are traversed
- * in order). If a match is found, the {@link JsonRegexCaptorAndFormatter} creates a formatted string using x's format
+ * in order). If a match is found, the {@link RegexCaptorAndFormatter} creates a formatted string using x's format
  * and the arguments configured by x's {@link CaptureAndFormatConfiguration#capturingGroupConfigurations}. Then it puts
- * the key-value pair {@link #destinationKey}-{newly created formatted string} in the given {@link JsonObject}. If a
+ * the key-value pair {@link #destinationKey}-{newly created formatted string} in the given {@link JSONObject}. If a
  * match isn't found, the {@link #destinationKey} is associated with null.
  *
  * @author Lior Govrin.
  */
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
-        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class JsonRegexCaptorAndFormatter {
+public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
+    public static final String TYPE = "regex_captor_and_formatter";
+
     private String sourceKey;
     private String destinationKey;
     private List<CaptureAndFormatConfiguration> captureAndFormatConfigurations;
 
+    @JsonIgnore
+    private IJsonValueExtractor jsonValueExtractor;
+
     @JsonCreator
-    public JsonRegexCaptorAndFormatter(
+    public RegexCaptorAndFormatter(
+            @JsonProperty("name") String name,
             @JsonProperty("sourceKey") String sourceKey,
             @JsonProperty("destinationKey") String destinationKey,
             @JsonProperty("captureAndFormatConfigurations") List<CaptureAndFormatConfiguration> captureAndFormatConfigurations) {
 
-        notBlank(sourceKey, "sourceKey cannot be blank, empty or null.");
-        notBlank(destinationKey, "destinationKey cannot be blank, empty or null.");
-        notEmpty(captureAndFormatConfigurations, "captureAndFormatConfigurations cannot be empty or null.");
-
-        this.sourceKey = sourceKey;
-        this.destinationKey = destinationKey;
-        this.captureAndFormatConfigurations = captureAndFormatConfigurations;
+        super(name);
+        this.sourceKey = notBlank(sourceKey, "sourceKey cannot be blank, empty or null.");
+        this.destinationKey = notBlank(destinationKey, "destinationKey cannot be blank, empty or null.");
+        this.captureAndFormatConfigurations = notEmpty(captureAndFormatConfigurations, "captureAndFormatConfigurations cannot be empty or null.");
+        this.jsonValueExtractor = new JsonPointerValueExtractor(sourceKey);
     }
 
-    public JsonObject captureAndFormat(JsonObject jsonObject) {
-        // destinationKey should be consistent with sourceKey:
-        // If sourceKey is not present, destinationKey should not be present.
-        // If sourceKey is null, destinationKey should be null.
-        if (!jsonObject.has(sourceKey)) {
-            return jsonObject;
-        } else if (jsonObject.get(sourceKey).isJsonNull()) {
-            jsonObject.add(destinationKey, JsonNull.INSTANCE);
-            return jsonObject;
-        }
-
-        String sourceValue = jsonObject.get(sourceKey).getAsString();
-        String destinationValue = null;
+    @Override
+    public JSONObject transform(JSONObject jsonObject) {
+        Object sourceObj = jsonValueExtractor.getValue(jsonObject);
+        if (sourceObj == null || JSONObject.NULL.equals(sourceObj)) return jsonObject;
+        String sourceValue = sourceObj.toString();
+        Object destinationValue = JSONObject.NULL;
 
         for (CaptureAndFormatConfiguration captureAndFormatConfiguration : captureAndFormatConfigurations) {
             Matcher matcher = captureAndFormatConfiguration.getPattern().matcher(sourceValue);
@@ -74,7 +74,7 @@ public class JsonRegexCaptorAndFormatter {
             }
         }
 
-        jsonObject.addProperty(destinationKey, destinationValue);
+        jsonObject.put(destinationKey, destinationValue);
         return jsonObject;
     }
 

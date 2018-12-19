@@ -6,6 +6,7 @@ import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
+import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
