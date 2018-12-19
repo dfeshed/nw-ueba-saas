@@ -6,7 +6,7 @@ indicators:
 
 - id: highestStartInstantScoreUserIdFileHourly
   type: SCORE_AGGREGATION
-  name: abnormal_event_day_time
+  name: abnormal_file_day_time
   adeEventType: scored_enriched.file.startInstant.userId.file.score
   schema: FILE
   anomalyDescriptior:
@@ -820,7 +820,7 @@ indicators:
 
 - id: highestStartInstantScoreUserIdProcessHourly
   type: SCORE_AGGREGATION
-  name: abnormal_event_day_time
+  name: abnormal_process_day_time
   adeEventType: scored_enriched.process.startInstant.userId.process.score
   schema: PROCESS
   anomalyDescriptior:
@@ -1085,7 +1085,7 @@ indicators:
 
 - id: highestStartInstantScoreUserIdRegistryHourly
   type: SCORE_AGGREGATION
-  name: abnormal_event_day_time
+  name: abnormal_registry_day_time
   adeEventType: scored_enriched.registry.startInstant.userId.registry.score
   schema: REGISTRY
   anomalyDescriptior:
