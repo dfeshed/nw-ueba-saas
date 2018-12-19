@@ -227,6 +227,34 @@
       "destinationKeys": [
         "srcProcessCategories"
       ]
+    },
+    {
+      "type": "copy_value",
+      "name": "checksum-id",
+      "sourceKey": "checksum_src",
+      "isRemoveSourceKey": true,
+      "destinationKey": "additionalInfo.checksumId"
+    },
+    {
+      "type": "copy_value",
+      "name": "agent-id",
+      "sourceKey": "agent_id",
+      "isRemoveSourceKey": true,
+      "destinationKey": "additionalInfo.agentId"
+    },
+    {
+      "type": "copy_value",
+      "name": "os-type",
+      "sourceKey": "os",
+      "isRemoveSourceKey": true,
+      "destinationKey": "additionalInfo.osType"
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-src",
+      "sourceKey": "process_vid_src",
+      "isRemoveSourceKey": true,
+      "destinationKey": "additionalInfo.processVidSrc"
     }
   ]
 }
