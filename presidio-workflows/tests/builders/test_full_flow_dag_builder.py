@@ -17,8 +17,7 @@ def assert_task_id_retries(dag):
     fill_tasks_under_dag(dag=dag, dag_to_tasks_list=dag_to_tasks_list)
     for dag,tasks in dag_to_tasks_list.iteritems():
         for task in tasks:
-            if not isinstance(task, ContainerOperator):
-                assert task.retries>0
+            assert task.retries>0
 
 def fill_tasks_under_dag(dag,dag_to_tasks_list):
     dag_to_tasks_list[dag.dag_id] = dag.tasks

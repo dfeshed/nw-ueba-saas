@@ -71,13 +71,28 @@ class PresidioDagBuilder(LoggingMixin):
         populated_dag_tasks = populated_dag.tasks
         new_tasks = [item for item in populated_dag_tasks if item not in old_tasks]
 
-        first_new_tasks = [task for task in new_tasks if not task.upstream_list and not isinstance(task, ContainerOperator)]
-        last_new_tasks = [task for task in new_tasks if not task.downstream_list and not isinstance(task, ContainerOperator)]
+        first_new_tasks = [task for task in new_tasks if
+                           not task.upstream_list and not isinstance(task, ContainerOperator)]
+        last_new_tasks = [task for task in new_tasks if
+                          not task.downstream_list and not isinstance(task, ContainerOperator)]
+
+        retry_args = self._calc_subdag_retry_args(sub_dag_id)
 
         start_task_id = '{}.{}'.format("start_operator", sub_dag_id)
         end_task_id = '{}.{}'.format("end_operator", sub_dag_id)
-        start_operator = DummyOperator(dag=dag, task_id=start_task_id)
-        end_operator = DummyOperator(dag=dag, task_id=end_task_id)
+
+        start_operator = DummyOperator(dag=dag, task_id=start_task_id, retries=retry_args['retries'],
+                                       retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                                       retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                       max_retry_delay=timedelta(
+                                           seconds=int(retry_args['max_retry_delay'])))
+        end_operator = DummyOperator(dag=dag,
+                                     task_id=end_task_id,
+                                     retries=retry_args['retries'],
+                                     retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                                     retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                     max_retry_delay=timedelta(
+                                         seconds=int(retry_args['max_retry_delay'])))
 
         start_operator >> first_new_tasks
         last_new_tasks >> end_operator
@@ -85,7 +100,12 @@ class PresidioDagBuilder(LoggingMixin):
         return ContainerOperator(start_operator=start_operator,
                                  end_operator=end_operator,
                                  task_id='{}.{}'.format("container", sub_dag_id),
-                                 dag=dag)
+                                 dag=dag,
+                                 retries=retry_args['retries'],
+                                 retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                                 retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                 max_retry_delay=timedelta(
+                                     seconds=int(retry_args['max_retry_delay'])))
 
     @staticmethod
     def validate_the_gap_between_dag_start_date_and_current_execution_date(dag, gap, execution_date, schedule_interval):
