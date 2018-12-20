@@ -43,11 +43,11 @@ class ContainerOperator(BaseOperator):
             # append task_id to the container list in order to realize if it is upstream or downstream list
             super(ContainerOperator, self).append_only_new(upstream_or_downstream_list, task_id)
 
-            # if upstream, it means that operator.downstream_list already filed with container_operator task_id.
+            # if upstream
             # find upstream_task_ids list of container.start_operator.
             # remove task_id from container upstream_task_ids list.
-            # add container.task_id with container.start_operator.task_id in task.downstream_task_ids
-            if task_id in self._upstream_task_ids:
+            # add container.start_operator.task_id to task.downstream_task_ids
+            if task_id in self.upstream_task_ids:
                 array = self.start_operator.upstream_task_ids
                 self._upstream_task_ids.remove(task_id)
                 task.append_only_new(task.downstream_task_ids, self.start_operator.task_id)

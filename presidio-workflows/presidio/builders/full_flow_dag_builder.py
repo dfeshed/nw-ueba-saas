@@ -42,11 +42,12 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         root_dag_gap_sensor_operator >> adapter_sub_dag >> presidio_core_sub_dag >> retention_sub_dag
         self.log.debug("Finished creating dag - %s", full_flow_dag.dag_id)
 
-        self.remove_relatives(full_flow_dag)
+        self.remove_relatives_of_container_operator(full_flow_dag)
+        self.remove_container_operator_tasks(full_flow_dag)
         return full_flow_dag
 
     @staticmethod
-    def remove_relatives(full_flow_dag):
+    def remove_relatives_of_container_operator(full_flow_dag):
         """
          Remove ContainerOperator from downstream and upstream lists of other tasks
         :param full_flow_dag:
@@ -61,6 +62,18 @@ class FullFlowDagBuilder(PresidioDagBuilder):
                 for t in task.upstream_task_ids:
                     if isinstance(t, ContainerOperator):
                         task.upstream_task_ids.remove(t.task_id)
+
+    @staticmethod
+    def remove_container_operator_tasks(full_flow_dag):
+        """
+         Remove ContainerOperator tasks
+        :param full_flow_dag:
+        :return:
+        """
+        dicts = full_flow_dag.task_dict
+        for task_id, task in dicts.items():
+            if isinstance(task, ContainerOperator):
+                dicts.pop(task_id)
 
     def _get_adapter_sub_dag_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
