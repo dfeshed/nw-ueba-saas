@@ -13,7 +13,7 @@ let columnsConfig = {
       title: 'Group Name',
       label: 'investigateHosts.files.fields.owner.groupName',
       disableSort: true,
-      width: '20%'
+      width: '370px'
     }
   ],
   windows: [
@@ -29,7 +29,7 @@ let columnsConfig = {
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      width: '20%'
+      width: '370px'
     }
   ],
   mac: [
@@ -45,7 +45,7 @@ let columnsConfig = {
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      width: '20%'
+      width: '370px'
     }
   ]
 };

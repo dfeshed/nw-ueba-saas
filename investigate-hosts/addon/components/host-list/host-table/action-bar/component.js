@@ -10,6 +10,7 @@ import { deleteHosts, getPageOfMachines, triggerMachineActions } from 'investiga
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
+import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   totalItems: state.endpoint.machines.totalItems,
@@ -60,13 +61,19 @@ const ActionBar = Component.extend({
     },
 
     handleResetHostsRiskScore(selectedHostList) {
+      const limitedHostList = selectedHostList.slice(0, 100);
       const callBackOptions = {
-        onSuccess: () => {
-          this.get('flashMessage').showFlashMessage('investigateHosts.hosts.resetHosts.success');
+        onSuccess: (response) => {
+          const { data } = response;
+          if (data === limitedHostList.length) {
+            success('investigateHosts.hosts.resetHosts.success');
+          } else {
+            warning('investigateHosts.hosts.resetHosts.warning');
+          }
         },
-        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+        onFailure: () => failure('investigateHosts.hosts.resetHosts.error')
       };
-      this.send('resetRiskScore', selectedHostList, callBackOptions);
+      this.send('resetRiskScore', limitedHostList, callBackOptions);
     }
   }
 });

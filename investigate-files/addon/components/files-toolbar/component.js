@@ -12,7 +12,7 @@ import {
   triggerFileActions
 } from 'investigate-files/actions/data-creators';
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
-import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -63,8 +63,13 @@ const ToolBar = Component.extend({
   actions: {
     resetRiskScoreAction(itemsList) {
       const callBackOptions = {
-        onSuccess: () => {
-          success('investigateFiles.riskScore.success');
+        onSuccess: (response) => {
+          const { data } = response;
+          if (data === itemsList.length) {
+            success('investigateFiles.riskScore.success');
+          } else {
+            warning('investigateFiles.riskScore.warning');
+          }
         },
         onFailure: () => failure('investigateFiles.riskScore.error')
       };

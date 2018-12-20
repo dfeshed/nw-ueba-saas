@@ -14,3 +14,7 @@ export function success(i18nKey, context) {
 export function failure(i18nKey, context) {
   showFlashMessage(FLASH_MESSAGE_TYPES.ERROR, i18nKey, context);
 }
+
+export function warning(i18nKey, context) {
+  showFlashMessage(FLASH_MESSAGE_TYPES.WARNING, i18nKey, context);
+}

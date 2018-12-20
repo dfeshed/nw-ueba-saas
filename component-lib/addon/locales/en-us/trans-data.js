@@ -2157,6 +2157,7 @@ export default {
       cancel: 'Cancel',
       reset: 'Reset',
       success: 'The Risk Score has been successfully reset.',
+      warning: 'Risk score of some selected files has been reset successfully.',
       error: ' The Risk Score cannot be reset.',
       limitInfo: 'Risk Score of only top 100 files can be reset at a time.'
     },
@@ -3320,6 +3321,7 @@ export default {
         },
         success: 'The Risk Score has been successfully reset.',
         error: ' The Risk Score cannot be reset.',
+        warning: 'Risk score of some selected hosts has been reset successfully.',
         limitInfo: 'Risk Score of only top 100 hosts can be reset at a time.'
       },
       moreActions: {
