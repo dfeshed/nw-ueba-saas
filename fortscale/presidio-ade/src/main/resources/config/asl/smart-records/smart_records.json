@@ -33,7 +33,9 @@
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
         "numberOfEventsUserIdProcessHourly",
-        "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly"
+        "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+        "highestStartInstantScoreUserIdProcessHourly",
+        "highestStartInstantScoreUserIdRegistryHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [
