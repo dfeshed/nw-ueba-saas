@@ -2,6 +2,8 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
+import { isEmpty } from '@ember/utils';
 
 import {
   fileContextFileProperty,
@@ -10,10 +12,11 @@ import {
   selectedFileChecksums,
   isRemediationAllowed,
   fileDownloadButtonStatus,
-  focusedRowChecksum
+  focusedRowChecksum,
+  selectedFileList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
-import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
+import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
 
 import {
   setFileContextFileStatus,
@@ -30,6 +33,8 @@ import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/a
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
+  downloadLink: state.endpoint.detailsInput.downloadLink,
+  selectedFileList: selectedFileList(state, storeName),
   fileProperty: fileContextFileProperty(state, storeName),
   hostDetailPropertyTabs: hostDetailPropertyTabs(state, storeName),
   focusedRowChecksum: focusedRowChecksum(state, storeName),
@@ -55,7 +60,8 @@ const dispatchToActions = {
   getFileAnalysisData,
   resetRiskScore,
   setHostDetailPropertyTab,
-  getUpdatedRiskScoreContext
+  getUpdatedRiskScoreContext,
+  saveLocalFileCopy
 };
 
 
@@ -76,6 +82,15 @@ const ContextWrapper = Component.extend({
 
   flashMessage: service(),
 
+  @computed('downloadLink')
+  iframeSrc(link) {
+    let source = null;
+    if (!isEmpty(link)) {
+      source = `${link}&${Number(new Date())}`;
+    }
+    return source;
+  },
+
   actions: {
     onDownloadFilesToServer() {
       const callBackOptions = {
@@ -93,7 +108,7 @@ const ContextWrapper = Component.extend({
       this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
     },
     onSaveLocalCopy() {
-      // Placeholder for the next PR.
+      this.send('saveLocalFileCopy', this.get('selectedFileList')[0]);
     },
     onAnalyzeFile() {
       // Open analyze file.

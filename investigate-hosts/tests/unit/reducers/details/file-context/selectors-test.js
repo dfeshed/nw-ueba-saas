@@ -14,7 +14,8 @@ import {
   isRemediationAllowed,
   fileStatus,
   fileDownloadButtonStatus,
-  focusedRowChecksum
+  focusedRowChecksum,
+  selectedFileList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
@@ -290,6 +291,20 @@ module('Unit | Selectors | File Context', function() {
       }
     }), 'drivers');
     assert.deepEqual(result, false);
+  });
+
+  test('selectedFileList is set with checksum and filename', function(assert) {
+    const result = selectedFileList(Immutable.from({
+      endpoint: {
+        drivers: {
+          fileContextSelections: [...fileContextSelectionsData]
+        }
+      }
+    }), 'drivers');
+    assert.equal(result.length, 2, '2 files are selected');
+    assert.deepEqual(result[0],
+      { checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
+        fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]' }, 'Verify first file checksum and filename');
   });
 
   test('fileContextFileProperty when selectedRowId is empty', function(assert) {

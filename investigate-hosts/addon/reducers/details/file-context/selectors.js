@@ -77,6 +77,14 @@ export const selectedFileChecksums = createSelector(
   (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );
 
+export const selectedFileList = createSelector(
+  fileContextSelections,
+  (selectedFiles) => selectedFiles.map(({ checksumSha256, fileName }) => ({
+    checksumSha256,
+    fileName
+  }))
+);
+
 export const focusedRowChecksum = createSelector(
   [selectedRowId, _fileContext],
   (rowId, files) => {

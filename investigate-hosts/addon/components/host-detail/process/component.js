@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
+import { isEmpty } from '@ember/utils';
 import {
   getProcessData,
   isNavigatedFromExplore,
@@ -10,7 +11,7 @@ import {
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
-import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
+import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getColumnsConfig, hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
@@ -69,7 +70,8 @@ const dispatchToActions = {
   downloadFilesToServer,
   getFileAnalysisData,
   setHostDetailPropertyTab,
-  getUpdatedRiskScoreContext
+  getUpdatedRiskScoreContext,
+  saveLocalFileCopy
 };
 
 const Container = Component.extend({
@@ -104,6 +106,15 @@ const Container = Component.extend({
     return i18n.t(`investigateHosts.process.toolTip.${toolTipLabel}`);
   },
 
+  @computed('downloadLink')
+  iframeSrc(link) {
+    let source = null;
+    if (!isEmpty(link)) {
+      source = `${link}&${Number(new Date())}`;
+    }
+    return source;
+  },
+
   actions: {
     toggleView(closePanel) {
       closePanel();
@@ -134,7 +145,7 @@ const Container = Component.extend({
     },
 
     onSaveLocalCopy() {
-      // Placeholder for the next PR.
+      this.send('saveLocalFileCopy', this.get('selectedProcessList')[0]);
     },
 
     onAnalyzeFile() {

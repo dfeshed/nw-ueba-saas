@@ -20,6 +20,10 @@
 
 .host-container-detail {
   width: 100%;
+  .save-files-iframe {
+    height: 0;
+    display: none;
+  }
 }
 .host-detail-wrapper {
   background-color: $host-detail-background;

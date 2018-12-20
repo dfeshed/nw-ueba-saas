@@ -263,6 +263,22 @@ const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPER
 
 const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
 
+const saveLocalFileCopy = (selectedFile) => {
+  return (dispatch, getState) => {
+    HostDetails.saveLocalFileCopy(selectedFile.checksumSha256)
+      .then(({ data }) => {
+        if (data.id) {
+          const { serverId } = getState().endpointQuery;
+          const url = serverId ? `/rsa/endpoint/${serverId}/file/download?id=${data.id}&filename=${selectedFile.fileName}.zip` : '';
+          dispatch({ type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: url });
+        }
+      })
+      .catch((response) => {
+        debug(`saveLocalFileCopy - Error: ${JSON.stringify(response)}`);
+      });
+  };
+};
+
 export {
   initializeAgentDetails,
   changeDetailTab,
@@ -278,5 +294,6 @@ export {
   setHostDetailsDataTableSortConfig,
   setAlertTab,
   setPropertyPanelTabView,
-  setHostDetailPropertyTab
+  setHostDetailPropertyTab,
+  saveLocalFileCopy
 };

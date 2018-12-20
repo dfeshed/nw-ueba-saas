@@ -14,7 +14,8 @@ const initialState = {
   snapShots: null,
   isDetailRightPanelVisible: true,
   isSnapshotsLoading: false,
-  activeHostDetailPropertyTab: 'FILE_DETAILS'
+  activeHostDetailPropertyTab: 'FILE_DETAILS',
+  downloadLink: null
 };
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
@@ -49,6 +50,14 @@ test('The SET_ANIMATION will sets the animation to the state', function(assert) 
   });
   const result = reducer(previous, { type: ACTION_TYPES.SET_ANIMATION, payload: 'toDown' });
   assert.equal(result.animation, 'toDown');
+});
+
+test('The SET_DOWNLOAD_FILE_LINK will sets the file download link to the state', function(assert) {
+  const previous = Immutable.from({
+    downloadLink: 'oldLink'
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip' });
+  assert.equal(result.downloadLink, '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip');
 });
 
 test('The SET_HOST_DETAIL_PROPERTY_TAB will set the state of active tab', function(assert) {

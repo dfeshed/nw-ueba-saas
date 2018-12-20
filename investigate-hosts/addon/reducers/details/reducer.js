@@ -12,7 +12,8 @@ const dataInitialState = Immutable.from({
   snapShots: null,
   isDetailRightPanelVisible: true,
   isSnapshotsLoading: false,
-  activeHostDetailPropertyTab: 'FILE_DETAILS'
+  activeHostDetailPropertyTab: 'FILE_DETAILS',
+  downloadLink: null
 });
 
 const data = handleActions({
@@ -34,6 +35,8 @@ const data = handleActions({
   [ACTION_TYPES.SET_SCAN_TIME]: (state, { payload }) => state.set('scanTime', payload),
 
   [ACTION_TYPES.SET_ANIMATION]: (state, { payload }) => state.set('animation', payload),
+
+  [ACTION_TYPES.SET_DOWNLOAD_FILE_LINK]: (state, { payload }) => state.set('downloadLink', payload),
 
   [ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL]: (state) => {
     return state.set('isDetailRightPanelVisible', !state.isDetailRightPanelVisible);
