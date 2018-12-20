@@ -45,6 +45,7 @@ module('Unit | Utility | build-url', function() {
 
   test('it forms the Event Analysis Url', function(assert) {
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails);
+    assert.ok(eventEnalysisUrl.indexOf('pdhash') > 0, 'expected pdhash in url formed');
     assert.ok(eventEnalysisUrl.indexOf('&mf=ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
   });
 
@@ -52,6 +53,7 @@ module('Unit | Utility | build-url', function() {
     selection.metaValue = '17.127.255.250';
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, true);
     assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250') > 0, 'expected host url formed');
+    assert.notOk(eventEnalysisUrl.indexOf('pdhash') === -1, 'expected no pdhash url formed');
     selection.metaValue = '17.127.255.150';
   });
 

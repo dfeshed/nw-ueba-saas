@@ -228,5 +228,40 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     }, { timeout: 10000 });
   });
 
+  test('base route visit with required query input, pill data, and pdhash in URL will execute query and retrieve hash for pill data', async function(assert) {
+    assert.expect(1);
+    const fetchInvestigateDataSpy = sinon.stub(dataCreators, 'fetchInvestigateData');
 
+    // setup reducer and route
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    const params = {
+      sid: '555d9a6fe4b0d37c827d402e',
+      et: '10000',
+      st: '1',
+      mf: "action = 'foo'",
+      pdhash: 'foo'
+    };
+
+    await route.model(params);
+    await settled();
+    return waitUntil(() => {
+      const baseComplete = isBaseInvestigateIntializationComplete();
+      const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
+      const { queryNode } = redux.getState().investigate;
+      const hashes = queryNode.pillDataHashes || [];
+
+      // 1f4 is statically returned by mock-server for persisting params
+      const pillDataHashesPresent = hashes.length === 2 && hashes.includes('1f4') && hashes.includes('foo');
+      const pillsDataPopulated = queryNode.pillsData.length === 4;
+
+      if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
+        assert.ok(true, 'all the expected initial data was populated and query executed');
+        fetchInvestigateDataSpy.restore();
+        return true;
+      }
+
+      return false;
+    }, { timeout: 10000 });
+  });
 });

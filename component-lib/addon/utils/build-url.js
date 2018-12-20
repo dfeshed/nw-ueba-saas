@@ -67,19 +67,27 @@ export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, r
   const queryParamArray = queryParam.split('&');
   const mf = queryParamArray.find((param) => _.startsWith(param, 'mf='));
   // Need to close recon for all scenario.
-  const queryParamWithoutMFandEID = queryParamArray.filter((param) => !_.startsWith(param, 'eid=') && !_.startsWith(param, 'mf='));
+  let filteredParams = queryParamArray.filter((param) => !_.startsWith(param, 'eid=') && !_.startsWith(param, 'mf='));
   // queryParam = queryParam.replace(/eid=/, '');
   const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
   const match = mf && mf.match(/mf=(.*)/);
   const metaFilter = match && match[1] ? match[1] : null;
   let mfToPass = null;
+  let queryParamToPass = null;
+
   if (!metaFilter || refocus) {
+    if (refocus) {
+      // if refocus remove pdhash because refocus requires a replacement of existing filters
+      filteredParams = filteredParams.filter((param) => !_.startsWith(param, 'pdhash='));
+    }
     // If no meta filter add new one.
     mfToPass = `mf=${encodeURI(encodeURIComponent(query))}`;
   } else {
     // If further need to drill add to existing meta filter value.
     mfToPass = `mf=${metaFilter}/${encodeURI(encodeURIComponent(query))}`;
   }
-  const queryParamToPass = queryParamWithoutMFandEID.concat(mfToPass).join('&');
+
+  queryParamToPass = filteredParams.concat(mfToPass).join('&');
+
   return `/investigate/events?${queryParamToPass}`;
 };

@@ -218,7 +218,7 @@ const _handlePillUpdate = (state, pillData) => {
   return state.set('pillsData', newPillsData);
 };
 
-const _replaceAllPills = (state, pillData) => {
+const _replaceAllPills = (state, pillData, pillHashes) => {
   const newPills = pillData.map((pD) => {
     return {
       ..._initialPillState,
@@ -226,7 +226,13 @@ const _replaceAllPills = (state, pillData) => {
       id: _.uniqueId(ID_PREFIX)
     };
   });
-  return state.set('pillsData', newPills);
+
+  state = state.set('pillsData', newPills);
+  if (pillHashes) {
+    state = state.set('pillDataHashes', pillHashes);
+  }
+
+  return state;
 };
 
 const _updatePillProperties = (state, position, updatedProperties) => {
@@ -537,7 +543,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS]: (state, { payload }) => {
-    return _replaceAllPills(state, payload.pillData);
+    return _replaceAllPills(state, payload.pillData, payload.pillHashes);
   },
 
   [ACTION_TYPES.UPDATE_FREE_FORM_TEXT]: (state, { payload }) => {

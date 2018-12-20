@@ -157,91 +157,121 @@ const _handleInitializationError = (dispatch) => {
   };
 };
 
-const _handleSearchParamsInQueryParams = ({ pillData, pillDataHashes }, hashNavigateCallback, isInternalQuery) => {
-  return (dispatch, getState) => {
-    const hasHashInInputParams = pillDataHashes !== undefined;
+const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigateCallback, dispatch, getState) => {
+  const { investigate } = getState();
+  const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, investigate.dictionaries.language);
 
-    if (!hasHashInInputParams) {
-      const hasPillDataInInputParams = pillData !== undefined;
+  // fetch a hash for meta filters passed through the url
+  return dispatch({
+    type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+    promise: getHashForParams(
+      parsedPillData,
+      investigate.dictionaries.language
+    ),
+    meta: {
+      onSuccess({ data }) {
+        const hashIds = data.map((d) => d.id);
+        const allHashIds = hashIds.concat(parsedQueryParams.pillDataHashes);
 
-      // If no hash but also no pill data, we are cool, do nothing
-      if (hasPillDataInInputParams) {
+        // fetch params for all hashes
+        // this will return params for what was in pdhash and mf in the url
+        return getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
+          const paramsArray = paramsObjectArray.map((pO) => pO.query);
+          const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+          const newPillData = paramsArray.map((singleParams) => {
+            return transformTextToPillData(singleParams, metaKeys);
+          });
 
-        // If this is an internal query, then the pills are already
-        // set up and we do not need to set them up again.
-        if (!isInternalQuery) {
+          // update pills with combined params of pdhash and mf returned by getParamsForHashes
           dispatch({
             type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
             payload: {
-              pillData: parsePillDataFromUri(pillData, metaKeySuggestionsForQueryBuilder(getState()))
+              pillData: newPillData,
+              pillHashes: allHashIds
             }
           });
-        }
 
-        // If we have pill data, we need to create/fetch a hash
-        // for that pill data and execute a navigation callback
-        // so the route can be updated. This is async as it is
-        // not critical to immediate downstream activity
-        const { investigate } = getState();
-        dispatch({
-          type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
-          promise: getHashForParams(
-            investigate.queryNode.pillsData,
-            investigate.dictionaries.language
-          ),
-          meta: {
-            onSuccess({ data }) {
-              const hashIds = data.map((d) => d.id);
-
-              // pass the hash ids to the navigation callback
-              // so that it can be included in the URL
-              hashNavigateCallback(hashIds);
-            },
-            onFailure(response) {
-              handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
-            }
-          }
+          // pass the hash ids to the navigation callback
+          // so that it can be included in the URL
+          hashNavigateCallback(allHashIds);
+        }).catch((err) => {
+          handleInvestigateErrorCode(err, 'getParamsForHashes');
         });
-      } else {
-        hashNavigateCallback();
+      },
+      onFailure(response) {
+        handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
       }
-    } else {
-      hashNavigateCallback();
     }
+  });
+};
+
+const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, isInternalQuery) => {
+  return (dispatch, getState) => {
+    const { investigate } = getState();
+    const parsedPillData = parsePillDataFromUri(pillData, investigate.dictionaries.language);
+
+    // If this is an internal query, then the pills are already
+    // set up and we do not need to set them up again.
+    if (!isInternalQuery) {
+      dispatch({
+        type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+        payload: {
+          pillData: parsedPillData
+        }
+      });
+    }
+
+    // If we have pill data, we need to create/fetch a hash
+    // for that pill data and execute a navigation callback
+    // so the route can be updated. This is async as it is
+    // not critical to immediate downstream activity
+    dispatch({
+      type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+      promise: getHashForParams(
+        parsedPillData,
+        investigate.dictionaries.language
+      ),
+      meta: {
+        onSuccess({ data }) {
+          const hashIds = data.map((d) => d.id);
+
+          // pass the hash ids to the navigation callback
+          // so that it can be included in the URL
+          hashNavigateCallback(hashIds);
+        },
+        onFailure(response) {
+          handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+        }
+      }
+    });
   };
 };
 
 const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, getState) => {
-  const hasHashInURL = pillDataHashes !== undefined;
+  // TODO, check for hashes being equal?
 
-  if (hasHashInURL) {
+  return getParamsForHashes(pillDataHashes).then(({ data: paramsObjectArray }) => {
 
-    // TODO, check for hashes being equal?
+    // pull the actual param values out of
+    // the returned params objects
+    const paramsArray = paramsObjectArray.map((pO) => pO.query);
+    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
 
-    return getParamsForHashes(pillDataHashes)
-      .then(({ data: paramsObjectArray }) => {
+    // Transform server param strings into pill data objects
+    // and dispatch those to state
+    const newPillData = paramsArray.map((singleParams) => {
+      return transformTextToPillData(singleParams, metaKeys);
+    });
 
-        // pull the actual param values out of
-        // the returned params objects
-        const paramsArray = paramsObjectArray.map((pO) => pO.query);
-        const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-
-        // Transform server param strings into pill data objects
-        // and dispatch those to state
-        const newPillData = paramsArray.map((singleParams) => {
-          return transformTextToPillData(singleParams, metaKeys);
-        });
-
-        dispatch({
-          type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
-          payload: {
-            pillData: newPillData
-          }
-        });
-      }).catch((err) => {
-        handleInvestigateErrorCode(err, 'getParamsForHashes');
-      });
-  }
+    dispatch({
+      type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+      payload: {
+        pillData: newPillData
+      }
+    });
+  }).catch((err) => {
+    handleInvestigateErrorCode(err, 'getParamsForHashes');
+  });
 };
 
 
@@ -307,18 +337,22 @@ export const initializeInvestigate = function(
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
 
-    // 6) Perform all the checks to see if we need to retrieve hash
-    //    params, and if we do, wait for that retrieval to finish.
-    //    This must be done after the previous promises because
-    //    fetching/creating pills relies on languages being in place
-    const fetchPillDataPromise = _handleHashInQueryParams(parsedQueryParams, dispatch, getState);
-    if (fetchPillDataPromise) {
-      await fetchPillDataPromise.catch(errorHandler);
+    if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
+      // 7) If there is a pdhash and mf in the query, fetch a hash for the mf
+      //    and combine the returned hash into pdhash and redirect.
+      await _handleSearchParamsAndHashInQueryParams(parsedQueryParams, hashNavigateCallback, dispatch, getState);
+    } else if (parsedQueryParams.pillData) {
+      // 7) If there was no hash in the incoming params, do checking to
+      //    see if we need to create one and update the URL with a new hash.
+      //    No need to await since we already have everything required
+      dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
+    } else if (parsedQueryParams.pillDataHashes) {
+      // 7) Perform all the checks to see if we need to retrieve hash
+      //    params, and if we do, wait for that retrieval to finish.
+      //    This must be done after the previous promises because
+      //    fetching/creating pills relies on languages being in place
+      await _handleHashInQueryParams(parsedQueryParams, dispatch, getState);
     }
-
-    // 7) If there was no hash in the incoming params, do checking to
-    //    see if we need to create one and update the URL with a new hash.
-    dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
 
     // 8) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));

@@ -726,7 +726,8 @@ test('REPLACE_ALL_GUIDED_PILLS replaces all pills', function(assert) {
   const action = {
     type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
     payload: {
-      pillData: state.pillsData
+      pillData: state.pillsData,
+      pillHashes: ['foo', 'bar']
     }
   };
 
@@ -738,6 +739,8 @@ test('REPLACE_ALL_GUIDED_PILLS replaces all pills', function(assert) {
   // should end up with two pills
   assert.ok(pillIds[0] !== newPillIds[0], 'ids have changed');
   assert.ok(pillIds[1] !== newPillIds[1], 'ids have changed');
+  assert.equal(result.pillDataHashes[0], 'foo', 'hashes have changed');
+  assert.equal(result.pillDataHashes[1], 'bar', 'hashes have changed');
 });
 
 test('UPDATE_FREE_FORM_TEXT sets free form text pill', function(assert) {
