@@ -1,13 +1,8 @@
 import dateutil.parser
 from airflow import DAG
-from airflow.api.common.experimental import pool
 
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
-
-SPRING_BOOT_JAR_POOL_NAME = "spring_boot_jar_pool"
-SPRING_BOOT_JAR_POOL_NUM_OF_SLOTS = 10
-SPRING_BOOT_JAR_POOL_DESCRIPTION = "A pool for the spring boot jars that belong to the dag"
 
 
 class PresidioDagFactory(AbstractDagFactory):
@@ -52,7 +47,6 @@ class PresidioDagFactory(AbstractDagFactory):
             dagrun_timeout = dag_config.get("dagrun_timeout")
             dag_id_start_date = str(start_date).replace(" ","_").replace(":","_")
             new_dag_id = "{0}_{1}".format(dag_config.get("dag_id"),dag_id_start_date)
-            PresidioDagFactory.create_spring_boot_jar_pool_for_dag()
             if args.get("data_sources"):
                 new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval, default_args=args,
                               end_date=end_date, full_filepath=full_filepath, description=description,
@@ -61,19 +55,6 @@ class PresidioDagFactory(AbstractDagFactory):
                 dags.append(new_dag)
 
         return dags
-
-    @staticmethod
-    def create_spring_boot_jar_pool_for_dag():
-        pool_name = PresidioDagFactory.get_spring_boot_jar_pool_name_for_dag()
-
-        if not any(p.pool == pool_name for p in pool.get_pools()):
-            pool.create_pool(name=pool_name,
-                             slots=SPRING_BOOT_JAR_POOL_NUM_OF_SLOTS,
-                             description=SPRING_BOOT_JAR_POOL_DESCRIPTION)
-
-    @staticmethod
-    def get_spring_boot_jar_pool_name_for_dag():
-        return SPRING_BOOT_JAR_POOL_NAME
 
     def validate(self, created_dags):
         """

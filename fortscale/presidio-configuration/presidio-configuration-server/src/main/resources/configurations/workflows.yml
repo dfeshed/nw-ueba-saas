@@ -24,6 +24,10 @@ dags:
         xms: 70
   operators:
     default_jar_values:
+      pool_args:
+        slots: 10
+        name: spring_boot_jar_pool_2G_10_slots
+        description: A pool for the spring boot jars that belong to the dag
       retry_args:
         retries: 4
         retry_delay: 5
