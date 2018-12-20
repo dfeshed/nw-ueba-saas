@@ -125,13 +125,14 @@ class SpringBootJarOperator(BashOperator):
                     "did not find task %s configuration for task_id=%s. settling for operator=%s configuration" % (
                 args_conf_key, self.task_id, self.__class__.__name__)))
             args = SpringBootJarOperator.conf_reader.read(
-                conf_key=self.get_args_operator_conf_key_prefix(args_conf_key))
+                conf_key=SpringBootJarOperator.get_args_operator_conf_key_prefix(args_conf_key))
         if not args:
             # read default args
             self.log.debug((
                     "did not find operator %s configuration for operator=%s. settling for default configuration" % (
                 args_conf_key, self.__class__.__name__)))
-            args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_default_args_conf_key(args_conf_key))
+            args = SpringBootJarOperator.conf_reader.read(
+                conf_key=SpringBootJarOperator.get_default_args_conf_key(args_conf_key))
         return args
 
     def _create_pool_if_not_exist(self):
@@ -424,47 +425,32 @@ class SpringBootJarOperator(BashOperator):
             self.log.error('Could not run jar file without main class')
             raise ValueError('Please set the full name of main class')
 
-    def get_task_instance_conf_key_prefix(self):
+    @staticmethod
+    def get_task_instance_conf_key_prefix():
         return "%s.tasks_instances" % DAGS_CONF_KEY
 
-    def get_operator_conf_key_prefix(self):
+    @staticmethod
+    def get_operator_conf_key_prefix():
         return "%s.operators.%s" % (DAGS_CONF_KEY, self.__class__.__name__)
 
-    def get_default_args_conf_key(self, args_conf_key):
+    @staticmethod
+    def get_default_args_conf_key(args_conf_key):
         return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, args_conf_key)
 
-    def get_args_operator_conf_key_prefix(self, args_conf_key):
-        return "%s.%s" % (self.get_operator_conf_key_prefix(), args_conf_key)
+    @staticmethod
+    def get_args_operator_conf_key_prefix(args_conf_key):
+        return "%s.%s" % (SpringBootJarOperator.get_operator_conf_key_prefix(), args_conf_key)
+
+    @staticmethod
+    def get_args_task_instance_conf_key_prefix(args_conf_key, task_id):
+        return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), task_id, args_conf_key)
 
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
-        return "%s.%s.%s" % (self.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)
+        return SpringBootJarOperator.get_args_task_instance_conf_key_prefix(args_conf_key, self.task_id)
 
-    def get_default_jvm_args_conf_key(self):
-        return self.get_default_args_conf_key(JVM_ARGS_CONF_KEY)
 
-    def get_jvm_args_operator_conf_key_prefix(self):
-        self.get_args_operator_conf_key_prefix(JVM_ARGS_CONF_KEY)
 
-    def get_jvm_args_task_instance_conf_key_prefix(self):
-        self.get_args_task_instance_conf_key_prefix(JVM_ARGS_CONF_KEY)
 
-    def get_default_retry_args_conf_key(self):
-        return self.get_default_args_conf_key(RETRY_ARGS_CONF_KEY)
-
-    def get_retry_args_operator_conf_key_prefix(self):
-        return self.get_args_operator_conf_key_prefix(RETRY_ARGS_CONF_KEY)
-
-    def get_retry_args_task_instance_conf_key_prefix(self):
-        return self.get_args_task_instance_conf_key_prefix(RETRY_ARGS_CONF_KEY)
-
-    def get_default_pool_args_conf_key(self):
-        return self.get_default_args_conf_key(POOL_ARGS_CONF_KEY)
-
-    def get_pool_args_operator_conf_key_prefix(self):
-        return self.get_args_operator_conf_key_prefix(POOL_ARGS_CONF_KEY)
-
-    def get_pool_args_task_instance_conf_key_prefix(self):
-        return self.get_args_task_instance_conf_key_prefix(POOL_ARGS_CONF_KEY)
 
     def get_retry_command(self):
         bash_command = []
