@@ -39,8 +39,10 @@ export default [].concat(
       'description': '',
       'domain_src': '',
       'device_type': 'nwendpoint',
-      'event_source': '10.40.15.182:50002',
+      'event_source': '10.4.61.33:56005',
       'source': {
+        'filename': 'POWERSHELL.EXE',
+        'hash': '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3',
         'device': {
           'compliance_rating': '',
           'netbios_name': '',
@@ -76,7 +78,7 @@ export default [].concat(
       'from': '',
       'source_hash': '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3',
       'timestamp': '2018-10-23T13:18:02.000+0000',
-      'event_source_id': '14688',
+      'event_source_id': '150',
       'related_links': [{
         'type': 'investigate_original_event', 'url': '/investigation/host/10.40.15.182:50002/navigate/event/AUTO/14688'
       },
@@ -101,7 +103,8 @@ export default [].concat(
       'detector': { 'device_class': '', 'ip_address': '', 'product_name': 'nwendpoint' },
       'user': 'WIN2012R2TMPLTE\\\\Administrator',
       'analysis_session': '',
-      'username': ''
+      'username': '',
+      'vid': '9217136421101689658'
     }
   ]
 );

@@ -19,7 +19,8 @@ const stateToComputed = (state) => ({
   getDataSourceTab: getDataSourceTab(state),
   activeDataSourceTab: state.files.visuals.activeDataSourceTab,
   fileProperty: state.files.fileList.selectedDetailFile,
-  isFilePropertyPanelVisible: state.files.visuals.isFilePropertyPanelVisible
+  isFilePropertyPanelVisible: state.files.visuals.isFilePropertyPanelVisible,
+  listOfServices: state.files.fileList.listOfServices
 });
 
 const dispatchToActions = {

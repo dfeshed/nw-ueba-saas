@@ -4,7 +4,7 @@ import arrayFilterByList from 'respond-shared/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 import { get, set, setProperties } from '@ember/object';
 import { lookup } from 'ember-dependency-lookup';
-import { lookupCoreDevice } from 'respond/utils/storypoint/event-analysis';
+import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
 
 const { createSelector } = reselect;
 

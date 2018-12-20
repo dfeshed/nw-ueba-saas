@@ -30,7 +30,8 @@ const stateToComputed = (state) => ({
   activePropertyPanelTab: state.endpoint.visuals.activePropertyPanelTab,
   propertyPanelTabs: getPropertyPanelTabs(state),
   policiesPropertyData: getPoliciesPropertyData(state),
-  isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible
+  isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
+  listOfServices: state.endpoint.machines.listOfServices
 });
 
 const HostOverview = Component.extend({

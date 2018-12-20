@@ -47,7 +47,7 @@ module('Integration | Component | recon event titlebar', function(hooks) {
     new ReduxDataHelper(setState).isEndpointEvent().build();
     await render(hbs`{{recon-event-titlebar}}`);
     assert.equal(find('.event-title').textContent.trim(), 'Endpoint Event Details', 'Title is correct text');
-    assert.equal(find('.tview-heading').textContent.trim(), 'Text View', 'Text View available for Endpoint Events');
+    assert.equal(find('.tview-heading').textContent.trim(), 'Text Analysis', 'Text Analysis available for Endpoint Events');
     assert.notOk(find('.ember-power-select-trigger'), 'there is not a power select rendered');
   });
 

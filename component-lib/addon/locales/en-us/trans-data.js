@@ -252,7 +252,6 @@ export default {
         log: 'Log Event Details'
       },
       views: {
-        textView: 'Text View',
         text: 'Text Analysis',
         packet: 'Packet Analysis',
         file: 'File Analysis',

@@ -2,7 +2,7 @@ import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { lookupCoreDevice } from 'respond/utils/storypoint/event-analysis';
+import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
 import { getServices } from 'respond/reducers/respond/recon/selectors';
 
 const stateToComputed = (state) => ({

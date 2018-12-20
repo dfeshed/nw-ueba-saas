@@ -3,6 +3,7 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { guidFor } from '@ember/object/internals';
 import HighlightsEntities from 'context/mixins/highlights-entities';
+import { createProcessAnalysisLink } from 'respond-shared/utils/event-analysis';
 
 const GENERIC = 'events-list-row/generic';
 const ENDPOINT = 'events-list-row/endpoint';
@@ -25,6 +26,22 @@ export default Component.extend(HighlightsEntities, {
   @computed('item.eventIndex')
   eventIndex(index) {
     return index && parseInt(index, 10) + 1 || 1;
+  },
+
+  @computed('item', 'services')
+  customizedItem(item, services) {
+    const processAnalysisLink = createProcessAnalysisLink(item, services);
+
+    if (processAnalysisLink) {
+      const modifiedItem = { ...item };
+
+      modifiedItem.related_links = modifiedItem.related_links.concat({
+        type: 'process_analysis',
+        url: processAnalysisLink
+      });
+      return modifiedItem;
+    }
+    return item;
   },
 
   @computed('alerts', 'item.indicatorId')

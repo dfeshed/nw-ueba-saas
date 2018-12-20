@@ -6,15 +6,15 @@
       <span class="inline-events-summary" test-id="eventsAlertSummary">({{t 'respond.eventsList.eventOfTotal' eventIndex=eventIndex numEvents=associatedAlert.numEvents}})</span>
     </div>
   {{/if}}
-  {{component componentClasses.header item=item}}
+  {{component componentClasses.header item=customizedItem}}
 {{/events-list-row/trigger}}
 {{#liquid-if expanded}}
   <div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" test-id="eventsListDetail">
     <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
-    {{component componentClasses.detail item=item}}
+    {{component componentClasses.detail item=customizedItem}}
   </div>
 {{else}}
-  {{component componentClasses.footer item=item}}
+  {{component componentClasses.footer item=customizedItem}}
   <div tabIndex={{tabIndex}} id={{ariaControls}} aria-hidden="{{collapsed}}" class="events-list-detail" test-id="eventsListDetail" hidden={{collapsed}}>
     <h4 class="sr-only">{{t 'respond.eventDetails.title'}}</h4>
   </div>

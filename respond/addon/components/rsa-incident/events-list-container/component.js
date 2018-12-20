@@ -9,7 +9,8 @@ const stateToComputed = (state) => ({
   alerts: getAlertsWithIndicatorId(state),
   expandedId: expandedStorylineEventId(state),
   loadingStatus: storylineEventsStatus(state),
-  selection: incidentSelection(state)
+  selection: incidentSelection(state),
+  services: state.respond.recon.serviceData
 });
 
 const dispatchToActions = {

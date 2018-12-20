@@ -11,7 +11,8 @@ const META_MAP = {
   'user.all': 'user',
   'size': 'size',
   'sessionid': 'event_source_id',
-  'agent.id': 'agent_id'
+  'agent.id': 'agent_id',
+  'process.vid.src': 'vid'
 };
 
 import moment from 'moment';
