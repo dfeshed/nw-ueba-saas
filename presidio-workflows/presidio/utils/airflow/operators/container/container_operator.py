@@ -46,12 +46,10 @@ class ContainerOperator(BaseOperator):
             # if upstream, it means that operator.downstream_list already filed with container_operator task_id.
             # find upstream_task_ids list of container.start_operator.
             # remove task_id from container upstream_task_ids list.
-            # switch container.task_id with container.start_operator.task_id in task.downstream_task_ids
+            # add container.task_id with container.start_operator.task_id in task.downstream_task_ids
             if task_id in self._upstream_task_ids:
                 array = self.start_operator.upstream_task_ids
                 self._upstream_task_ids.remove(task_id)
-                if self.task_id in task.downstream_task_ids:
-                    task.downstream_task_ids.remove(self.task_id)
                 task.append_only_new(task.downstream_task_ids, self.start_operator.task_id)
 
             # if downstream:
@@ -61,8 +59,6 @@ class ContainerOperator(BaseOperator):
             elif task_id in self.downstream_task_ids:
                 array = self.end_operator.downstream_task_ids
                 self.downstream_task_ids.remove(task_id)
-                if self.task_id in task.upstream_task_ids:
-                    task.upstream_task_ids.remove(self.task_id)
                 task.append_only_new(task.upstream_task_ids, self.end_operator.task_id)
 
             # add task_id to container upstream | downstream list
