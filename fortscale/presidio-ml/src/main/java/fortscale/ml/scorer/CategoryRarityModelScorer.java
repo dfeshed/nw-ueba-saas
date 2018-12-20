@@ -87,13 +87,9 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         if(additionalModels.size()>1){
             throw new IllegalArgumentException(ADDITIONAL_MODELS_ERROR_MSG);
         }
-        if (additionalModels.size() == 1 && additionalModels.get(0) != null) {
-            Assert.isInstanceOf(PartitionedDataModel.class, additionalModels.get(0), ADDITIONAL_MODELS_ERROR_MSG);
-        }
-        if(mainModel == null && (additionalModels.size()==0 || additionalModels.get(0) == null)){
-            //todo: add metrics.
-            return false;
-        }
+        Model additionalModel = additionalModels.isEmpty() ? null : additionalModel.get(0);
+        if (additionalModel != null) Assert.isInstanceOf(PartitionedDataModel.class, additionalModel, ADDITIONAL_MODELS_ERROR_MSG);
+        if (mainModel == null && additionalModel == null) return false;
 
         if(mainModel!=null) {
             Assert.isInstanceOf(CategoryRarityModel.class, mainModel, WRONG_MODEL_TYPE_ERROR_MSG);
