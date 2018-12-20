@@ -3322,7 +3322,9 @@ export default {
         success: 'The Risk Score has been successfully reset.',
         error: ' The Risk Score cannot be reset.',
         warning: 'Risk score of some selected hosts has been reset successfully.',
-        limitInfo: 'Risk Score of only top 100 hosts can be reset at a time.'
+        limitInfo: 'Risk Score of only top 100 hosts can be reset at a time.',
+        cancel: 'Cancel',
+        reset: 'Reset'
       },
       moreActions: {
         openIn: 'Pivot to Endpoint Thick Client',

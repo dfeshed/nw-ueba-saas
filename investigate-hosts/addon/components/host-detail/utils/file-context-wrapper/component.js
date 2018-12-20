@@ -28,7 +28,7 @@ import {
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
@@ -120,12 +120,17 @@ const ContextWrapper = Component.extend({
 
     resetRiskScoreAction(itemsList) {
       const callBackOptions = {
-        onSuccess: () => {
-          success('investigateFiles.riskScore.success');
+        onSuccess: (response) => {
+          const { data } = response;
+          if (data === itemsList.length) {
+            success('investigateFiles.riskScore.success');
+          } else {
+            warning('investigateFiles.riskScore.warning');
+          }
         },
         onFailure: () => failure('investigateFiles.riskScore.error')
       };
-      this.send('resetRiskScore', itemsList, callBackOptions);
+      this.send('resetRiskScore', itemsList, 'FILE', callBackOptions);
     }
   }
 

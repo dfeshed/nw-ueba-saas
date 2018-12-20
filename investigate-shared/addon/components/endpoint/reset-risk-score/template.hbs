@@ -1,0 +1,27 @@
+{{#if (eq buttonType 'button')}}
+  {{#rsa-form-button isDisabled=disableButton class='reset-score-button' click=(action 'onResetAction')}}{{t 'investigateHosts.hosts.resetHosts.modal.title'}}{{/rsa-form-button}}
+{{/if}}
+
+{{#if showResetScoreModal}}
+  {{#rsa-application-modal
+     class="reset-risk-score-dialog"
+     autoOpen=true
+     label=(t 'investigateHosts.hosts.resetHosts.modal.title')
+     onClose=(action 'onResetScoreModalClose')}}
+    <div class='modal-content reset-risk-score'>
+      {{#if isMaxResetRiskScoreLimit}}
+        <span class='max-limit-info'>
+          {{rsa-icon class='rsa-icon-information-circle-filled'}}
+          <p>{{t 'investigateHosts.hosts.resetHosts.limitInfo'}}</p>
+        </span>
+      {{/if}}
+      {{t 'investigateHosts.hosts.resetHosts.modal.message'}}
+      <div class="confirmationButtons">
+        {{#rsa-form-button class="closeReset" click=(action 'onResetScoreModalClose') }}{{t 'investigateHosts.hosts.resetHosts.cancel'}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style='primary' click=(action 'handleResetHostsRiskScore')}}
+          {{t 'investigateHosts.hosts.resetHosts.reset'}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}

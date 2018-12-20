@@ -218,7 +218,7 @@ const FileList = Component.extend({
         onFailure: () => failure('investigateFiles.riskScore.error')
       };
       this.set('showResetScoreModal', false);
-      this.send('resetRiskScore', limitedFiles, callBackOptions);
+      this.send('resetRiskScore', limitedFiles, 'FILE', callBackOptions);
       this.set('selectedFiles', null);
     },
 

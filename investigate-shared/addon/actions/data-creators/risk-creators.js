@@ -19,15 +19,14 @@ const STATE_MAP = {
 };
 const alertIdArray = [];
 
-const resetRiskScore = (selecedItems, callbacks = callbacksDefault) => {
-  const selectedList = selecedItems.map((item) => item.checksumSha256 || item.id);
-  return (dispatch, getState) => {
-    const type = riskType(getState());
+const resetRiskScore = (selectedItems, riskType, callbacks = callbacksDefault) => {
+  const selectedList = selectedItems.map((item) => item.checksumSha256 || item.id);
+  return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.RESET_RISK_SCORE,
-      promise: type === 'FILE' ? api.sendDataToResetRiskScore(selectedList) : api.sendHostDataToResetRiskScore(selectedList),
+      promise: riskType === 'FILE' ? api.sendDataToResetRiskScore(selectedList) : api.sendHostDataToResetRiskScore(selectedList),
       meta: {
-        belongsTo: type,
+        belongsTo: riskType,
         onSuccess: (response) => {
           callbacks.onSuccess(response);
         },

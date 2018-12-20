@@ -16,14 +16,7 @@
     onConfirm=( action 'handleDeleteHosts')}}
     {{t 'investigateHosts.hosts.button.delete'}}
   {{/rsa-button-with-confirmation}}
-  {{#rsa-button-with-confirmation
-    isDisabled=noHostsSelected
-    class='reset-risk-score'
-    title=(t 'investigateHosts.hosts.resetHosts.modal.title')
-    confirmationMessage=(t 'investigateHosts.hosts.resetHosts.modal.message')
-    onConfirm=( action 'handleResetHostsRiskScore' selectedHostList)}}
-    {{t 'investigateHosts.hosts.button.resetRiskScore'}}
-  {{/rsa-button-with-confirmation}}
+  {{endpoint/reset-risk-score buttonType='button' selectedList=selectedHostList riskType='HOST' resetRiskScore=(action 'resetRiskScore')}}
   {{host-list/host-table/action-bar/export-button}}
 </hbox>
 

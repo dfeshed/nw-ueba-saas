@@ -1,0 +1,28 @@
+.modal-content.reset-risk-score {
+  height: 110px;
+  padding: rsa-whitespace();
+  width: 420px;
+  @include rsa-font(paragraph);
+  .confirmationButtons {
+    padding-top: rsa-whitespace(more);
+    float: right;
+    padding-bottom: rsa-whitespace();
+  }
+
+  .max-limit-info {
+    i {
+      color: text-color(secondary);
+      float: left;
+      padding-top: 3px;
+    }
+    p {
+      color: text-color(primary, light);
+      font-size: 14px;
+      height: 30px;
+      float: left;
+      width: 380px;
+      padding-left: 10px;
+      padding-bottom: rsa-whitespace();
+    }
+  }
+}
