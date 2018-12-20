@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.full_flow_dag_builder import FullFlowDagBuilder
+from presidio.utils.airflow.operators.container.container_operator import ContainerOperator
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
@@ -16,7 +17,8 @@ def assert_task_id_retries(dag):
     fill_tasks_under_dag(dag=dag, dag_to_tasks_list=dag_to_tasks_list)
     for dag,tasks in dag_to_tasks_list.iteritems():
         for task in tasks:
-            assert task.retries>0
+            if not isinstance(task, ContainerOperator):
+                assert task.retries>0
 
 def fill_tasks_under_dag(dag,dag_to_tasks_list):
     dag_to_tasks_list[dag.dag_id] = dag.tasks
