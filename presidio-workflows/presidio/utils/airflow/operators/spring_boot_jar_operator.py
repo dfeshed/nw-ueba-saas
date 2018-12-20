@@ -123,7 +123,7 @@ class SpringBootJarOperator(BashOperator):
             self.log.debug((
                     "did not find task %s configuration for task_id=%s. settling for operator=%s configuration" % (
                 conf_key, self.task_id, self.__class__.__name__)))
-            conf = self.read(SpringBootJarOperator.get_args_operator_conf_key_prefix(conf_key))
+            conf = self.read(self.get_args_operator_conf_key_prefix(conf_key))
         if not conf:
             # read default conf
             self.log.debug((
@@ -428,17 +428,15 @@ class SpringBootJarOperator(BashOperator):
     def get_task_instance_conf_key_prefix():
         return "%s.tasks_instances" % DAGS_CONF_KEY
 
-    @staticmethod
-    def get_operator_conf_key_prefix():
+    def get_operator_conf_key_prefix(self):
         return "%s.operators.%s" % (DAGS_CONF_KEY, self.__class__.__name__)
 
     @staticmethod
     def get_default_args_conf_key(args_conf_key):
         return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, args_conf_key)
 
-    @staticmethod
-    def get_args_operator_conf_key_prefix(args_conf_key):
-        return "%s.%s" % (SpringBootJarOperator.get_operator_conf_key_prefix(), args_conf_key)
+    def get_args_operator_conf_key_prefix(self, args_conf_key):
+        return "%s.%s" % (self.get_operator_conf_key_prefix(), args_conf_key)
 
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
         return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)
