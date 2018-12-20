@@ -12,14 +12,9 @@ import java.util.List;
 public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public static final String SCORER_TYPE = "category-rarity-model-scorer";
 
-    public static final int NUM_RARE_EVENTS_FACTOR = 1;
     public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
     public static final double MIN_PROBABILITY = 0.7;
 
-    @JsonProperty("minimum-number-of-distinct-values-to-influence")
-    private int minNumOfDistinctValuesToInfluence;
-    @JsonProperty("enough-number-of-distinct-values-to-influence")
-    private int enoughNumOfDistinctValuesToInfluence;
     @JsonProperty("max-rare-count")
     private Integer maxRareCount = null;
     @JsonProperty("max-num-of-rare-partitions")
@@ -40,26 +35,6 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
         CategoryRarityModelScorerAlgorithm.assertMaxRareCountValue(maxRareCount);
         this.maxRareCount = maxRareCount;
         this.maxNumOfRarePartitions = maxNumOfRarePartitions;
-    }
-
-    public CategoryRarityModelScorerConf setMinNumOfDistinctValuesToInfluence(Integer minNumOfDistinctValuesToInfluence) {
-        CategoryRarityModelScorer.assertMinNumOfDistinctValuesToInfluenceValue(minNumOfDistinctValuesToInfluence);
-        this.minNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
-        return this;
-    }
-
-    public CategoryRarityModelScorerConf setEnoughNumOfDistinctValuesToInfluence(Integer enoughNumOfDistinctValuesToInfluence) {
-        CategoryRarityModelScorer.assertEnoughNumOfDistinctValuesToInfluenceValue(enoughNumOfDistinctValuesToInfluence);
-        this.enoughNumOfDistinctValuesToInfluence = enoughNumOfDistinctValuesToInfluence;
-        return this;
-    }
-
-    public int getMinNumOfDistinctValuesToInfluence() {
-        return minNumOfDistinctValuesToInfluence;
-    }
-
-    public int getEnoughNumOfDistinctValuesToInfluence() {
-        return enoughNumOfDistinctValuesToInfluence;
     }
 
     public int getMaxRareCount() {

@@ -54,21 +54,27 @@ public class CategoryRarityModelScorerAlgorithm {
     public double calculateScore(long featureCount, CategoryRarityModel model) {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
-        Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
-                String.format("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
-                                "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d",
-                        maxNumOfRarePartitions, maxRareCount, model.getOccurrencesToNumOfPartitionsList().size()));
+        if(model.getOccurrencesToNumOfPartitionsList() != null) {
+            Assert.isTrue(maxNumOfRarePartitions + maxRareCount <= model.getOccurrencesToNumOfPartitionsList().size(),
+                    String.format("maxNumOfRarePartitions + maxRareCount must be no larger than the model bucket size. " +
+                                    "maxNumOfRarePartitions: %d, maxRareCount: %d, bucket size: %d",
+                            maxNumOfRarePartitions, maxRareCount, model.getOccurrencesToNumOfPartitionsList().size()));
+        }
 
         if (featureCount > maxRareCount || featureCount > maxNumOfRarePartitions) {
             return 0D;
         }
 
-        List<Double> buckets = model.getOccurrencesToNumOfPartitionsList();
-        double numOfDistinctPartitionsContainingRareFeatureValue = 1 + buckets.get((int) featureCount-1);
-        for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
-            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
-            double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i-1);
-            numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
+        double numOfDistinctPartitionsContainingRareFeatureValue = 1;
+
+        if(model.getOccurrencesToNumOfPartitionsList() != null) {
+            List<Double> buckets = model.getOccurrencesToNumOfPartitionsList();
+            numOfDistinctPartitionsContainingRareFeatureValue += buckets.get((int) featureCount - 1);
+            for (int i = (int) featureCount; i < featureCount + maxRareCount; i++) {
+                double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - featureCount + 2);
+                double diffBetweenCurToPrevBucket = buckets.get(i) - buckets.get(i - 1);
+                numOfDistinctPartitionsContainingRareFeatureValue += diffBetweenCurToPrevBucket * commonnessDiscount;
+            }
         }
         double rareValueProbability = 1 - numOfDistinctPartitionsContainingRareFeatureValue / (model.getNumOfPartitions() + 1);
         rareValueProbability = rareValueProbability <= minProbability ?
