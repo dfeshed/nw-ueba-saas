@@ -157,7 +157,15 @@
                         evidenceType: 'AnomalySingleEvent'
                     },
                     {
-                        anomalyTypeFieldName: 'abnormal_event_day_time',
+                        anomalyTypeFieldName: 'abnormal_file_day_time',
+                        evidenceType: 'AnomalySingleEvent'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_process_day_time',
+                        evidenceType: 'AnomalySingleEvent'
+                    },
+                    {
+                        anomalyTypeFieldName: 'abnormal_registry_day_time',
                         evidenceType: 'AnomalySingleEvent'
                     },
                     {
