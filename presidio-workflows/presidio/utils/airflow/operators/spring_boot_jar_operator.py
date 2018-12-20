@@ -440,12 +440,8 @@ class SpringBootJarOperator(BashOperator):
     def get_args_operator_conf_key_prefix(args_conf_key):
         return "%s.%s" % (SpringBootJarOperator.get_operator_conf_key_prefix(), args_conf_key)
 
-    @staticmethod
-    def get_args_task_instance_conf_key_prefix(args_conf_key, task_id):
-        return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), task_id, args_conf_key)
-
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
-        return SpringBootJarOperator.get_args_task_instance_conf_key_prefix(args_conf_key, self.task_id)
+        return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)
 
     def get_retry_command(self):
         bash_command = []
