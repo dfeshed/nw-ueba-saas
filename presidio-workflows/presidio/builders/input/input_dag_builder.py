@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -38,6 +39,8 @@ class InputDagBuilder(PresidioDagBuilder):
 
         self.log.debug("populating the input dag, dag_id=%s ", input_dag.dag_id)
 
+        task_sensor_service = TaskSensorService()
+
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
@@ -45,12 +48,14 @@ class InputDagBuilder(PresidioDagBuilder):
             }
 
             # Create jar operator for each data source
-            FixedDurationJarOperator(
+            fixed_duration_jar_operator = FixedDurationJarOperator(
                 task_id='input_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
                 dag=input_dag)
+
+            task_sensor_service.add_task_sequential_sensor(fixed_duration_jar_operator)
 
         return input_dag

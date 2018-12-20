@@ -6,7 +6,6 @@ from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuil
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
-from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
 class FullFlowDagBuilder(PresidioDagBuilder):
@@ -28,14 +27,12 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         data_sources = [item.strip() for item in default_args.get("data_sources").split(',')]
         self.log.debug("populating the full flow dag, dag_id=%s for data sources:%s ", full_flow_dag.dag_id, data_sources)
 
-        task_sensor_service = TaskSensorService()
-
         root_dag_gap_sensor_operator = RootDagGapSensorOperator(dag=full_flow_dag, task_id='full_flow_gap_sensor', external_dag_id=full_flow_dag.dag_id,
                                        execution_delta=timedelta(days=1),
                                        poke_interval=5)
 
         adapter_sub_dag = self._get_adapter_sub_dag_operator(data_sources, full_flow_dag)
-        task_sensor_service.add_task_sequential_sensor(adapter_sub_dag)
+
         presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
 
         retention_sub_dag = self._get_presidio_retention_sub_dag_operator(data_sources, full_flow_dag)
