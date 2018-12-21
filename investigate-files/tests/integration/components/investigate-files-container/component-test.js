@@ -228,6 +228,22 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     const state = this.owner.lookup('service:redux').getState();
     assert.equal(state.certificate.list.isCertificateView, true, 'Certificate view is closed');
   });
+  test('Certificate view button disabled on selection more than 10 files', async function(assert) {
+    const selectedFileList = new Array(11)
+      .join().split(',')
+      .map(function(item, index) {
+        return { id: ++index, checksumSha256: index };
+      });
+    new ReduxDataHelper(initState)
+      .isSchemaLoading(true)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .setSelectedFileList(selectedFileList)
+      .build();
+    await render(hbs`{{investigate-files-container}}`);
+    assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
+    assert.equal(find('.view-certificate-button').title, 'Selected more than 10 files', 'tooltip added to disabled button');
+  });
   test('it closes the right panel on changing the service', async function(assert) {
     const { files: { schema: { schema } } } = files;
     const services = {

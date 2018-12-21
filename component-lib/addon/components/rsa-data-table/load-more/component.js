@@ -35,6 +35,8 @@ export default Component.extend(HasTableParent, {
 
   message: undefined,
 
+  title: undefined,
+
   actions: {
     safeCallback
   },

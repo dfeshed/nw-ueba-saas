@@ -7,7 +7,8 @@ import {
   isAllSelected,
   files,
   checksums,
-  areFilesLoading
+  areFilesLoading,
+  nextLoadCount
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -25,11 +26,13 @@ import {
   onFileSelection,
   setSelectedIndex
 } from 'investigate-files/actions/data-creators';
+import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
+import FIXED_COLUMNS from './file-list-fixed-columns';
 
 const stateToComputed = (state) => ({
   areFilesLoading: areFilesLoading(state),
@@ -52,7 +55,8 @@ const stateToComputed = (state) => ({
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,
   serverId: state.endpointQuery.serverId,
-  servers: state.endpointServer.serviceData
+  servers: state.endpointServer.serviceData,
+  nextLoadCount: nextLoadCount(state)
 });
 
 const dispatchToActions = {
@@ -67,7 +71,8 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   resetRiskScore,
   onFileSelection,
-  setSelectedIndex
+  setSelectedIndex,
+  toggleCertificateView
 };
 
 /**
@@ -81,43 +86,6 @@ const FileList = Component.extend({
   accessControl: service(),
 
   timezone: service(),
-
-  FIXED_COLUMNS: [
-    {
-      dataType: 'checkbox',
-      width: 20,
-      class: 'rsa-form-row-checkbox',
-      componentClass: 'rsa-form-checkbox',
-      visible: true,
-      disableSort: true,
-      headerComponentClass: 'rsa-form-checkbox'
-    },
-    {
-      dataType: 'string',
-      width: 200,
-      visible: true,
-      field: 'firstFileName',
-      searchable: true,
-      title: 'investigateFiles.fields.firstFileName'
-    },
-    {
-      dataType: 'string',
-      width: 100,
-      visible: true,
-      field: 'score',
-      searchable: false,
-      title: 'investigateFiles.fields.score'
-    },
-    {
-      dataType: 'string',
-      width: 100,
-      visible: true,
-      field: 'machineCount',
-      searchable: false,
-      disableSort: true,
-      title: 'investigateFiles.fields.machineCount'
-    }
-  ],
 
   CONFIG_FIXED_COLUMNS: ['firstFileName', 'score'],
 
@@ -159,7 +127,7 @@ const FileList = Component.extend({
     const sortList = _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
-    return this.FIXED_COLUMNS.concat(sortList);
+    return FIXED_COLUMNS.concat(sortList);
   },
 
   init() {

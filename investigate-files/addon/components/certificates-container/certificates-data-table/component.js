@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { certificatesLoading, columns } from 'investigate-files/reducers/certificates/selectors';
+import { certificatesLoading, columns, nextLoadCount } from 'investigate-files/reducers/certificates/selectors';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import {
@@ -19,7 +19,8 @@ const stateToComputed = (state) => ({
   isCertificateView: state.certificate.list.isCertificateView,
   certificatesColumns: columns(state),
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  nextLoadCount: nextLoadCount(state)
 });
 
 const dispatchToActions = {

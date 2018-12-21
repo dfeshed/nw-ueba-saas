@@ -34,7 +34,7 @@ module('Integration | Component | file pager', function(hooks) {
       .build();
     await render(hbs`{{file-pager}}`);
     return settled().then(() => {
-      assert.equal(find('.file-info').textContent.trim(), 'Showing 11 of 1200  | 0 selected', 'total number of files displayed');
+      assert.equal(find('.file-info').textContent.trim(), 'Showing 11 out of 1200 files | 0 selected', 'total number of files displayed');
     });
   });
 });

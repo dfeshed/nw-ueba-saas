@@ -69,4 +69,27 @@ module('Integration | Component | Files toolbar', function(hooks) {
     await click('.rsa-content-tethered-panel-trigger');
     await click('.service-selector-panel li');
   });
+  test('Certificate view button disabled on selection more than 10 files', async function(assert) {
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    const selectedFileList = new Array(11)
+      .join().split(',')
+      .map(function(item, index) {
+        return { id: ++index, checksumSha256: index };
+      });
+    new ReduxDataHelper(setState)
+      .totalItems(3)
+      .services(services)
+      .setSelectedFileList(selectedFileList)
+      .build();
+    this.set('closeRiskPanel', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
+    assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
+    assert.equal(find('.view-certificate-button').title, 'Selected more than 10 files', 'tooltip added to disabled button');
+  });
 });

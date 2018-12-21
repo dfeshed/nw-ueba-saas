@@ -901,7 +901,7 @@ export default {
           certificateStatus: 'Status'
         },
         noResultsMessage: 'No certificates were found.',
-        footer: 'Showing {{count}} of {{total}} | {{selected}} selected',
+        footer: 'Showing {{count}} out of {{total}} {{label}} | {{selected}} selected',
         filter: {
           invalidFilterInput: 'Invalid filter input',
           invalidFilterInputLength: 'Filter input longer than 256 characters',
@@ -2111,7 +2111,9 @@ export default {
     deleteTitle: 'Confirm Delete',
     noManagePermissions: 'You do not have permissions to make edits to file(s) status',
     certificatePageTitle: 'Certificates',
+    showNextRecords: 'Show next {{count}} {{label}}',
     certificate: {
+      toolTipCertificateViewDisabled: 'Selected more than {{count}} files',
       editCertificateStatus: {
         actionNote: 'Applies to all files signed by this certificate.',
         commentLimitError: 'Comment is limited to 900 characters'
@@ -2143,7 +2145,7 @@ export default {
       serviceDown: 'Endpoint {{serviceType}}Server is offline',
       serviceDownDescription: 'The Endpoint {{serviceType}}Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
     },
-    footer: 'Showing {{count}} of {{total}} {{label}} | {{selectedItems}} selected',
+    footer: 'Showing {{count}} out of {{total}} {{label}} | {{selectedItems}} selected',
     fileStatus: {
       Blacklist: 'Blacklisted',
       Graylist: 'Graylisted',
@@ -3554,7 +3556,8 @@ export default {
         networkEvents: 'Network Events',
         fileEvents: 'File Events',
         processEvents: 'Process Events',
-        registryEvents: 'Registry Events'
+        registryEvents: 'Registry Events',
+        viewCertificate: 'View Certificates'
       },
       savedFilters: 'Saved Filters',
       filter: {

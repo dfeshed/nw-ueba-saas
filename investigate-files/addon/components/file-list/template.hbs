@@ -38,6 +38,7 @@
         pivotToInvestigate=(action 'showServiceList')
         onSaveFileStatus = (action 'saveFileStatus' checksums)
         retrieveRemediationStatus=(action 'retrieveRemediationStatus')
+        toggleCertificateView=(action 'toggleCertificateView')
       )
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}
@@ -94,6 +95,7 @@
     {{endpoint/load-more
       status=loadMoreStatus
       serverId=serverId
+      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='files')
       servers=servers
       count=totalItems
       getMoreData=(action 'getPageOfFiles')}}

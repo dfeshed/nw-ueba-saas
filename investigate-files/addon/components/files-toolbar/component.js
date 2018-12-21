@@ -56,9 +56,20 @@ const ToolBar = Component.extend({
 
   flashMessage: service(),
 
+  i18n: service(),
+
   @computed('fileStatusData')
   data(fileStatusData) {
     return { ...fileStatusData };
+  },
+  @computed('itemList')
+  isCertificateViewDisabled(selectedList) {
+    return selectedList.length > 10;
+  },
+  @computed('itemList')
+  isCertificateViewDisabledTitle(selectedList) {
+    const i18n = this.get('i18n');
+    return selectedList.length > 10 ? i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 10 }).toString() : '';
   },
   actions: {
     resetRiskScoreAction(itemsList) {

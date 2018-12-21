@@ -38,7 +38,10 @@
         {{/if}}
       {{/rsa-data-table/body-cell}}
     {{/rsa-data-table/body}}
-    {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfCertificates')}}
+    {{rsa-data-table/load-more 
+      status=loadMoreStatus 
+      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='certificates') 
+      click=(action 'getPageOfCertificates')}}
   {{/if}}
 {{/rsa-data-table}}
 {{#if showModal}}

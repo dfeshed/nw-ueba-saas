@@ -18,6 +18,7 @@ const _servers = (state) => state.endpointServer.serviceData || [];
 const _fileTotal = (state) => state.files.fileList.totalItems || 0;
 const _hasNext = (state) => state.files.fileList.hasNext;
 const _expressionList = (state) => state.files.filter.expressionList || [];
+
 export const files = createSelector(
   _files,
   (files) => {
@@ -124,5 +125,12 @@ export const fileTotalLabel = createSelector(
       }
     }
     return `${total}`;
+  }
+);
+export const nextLoadCount = createSelector(
+  [_files],
+  (files) => {
+    const loadCount = files.length >= 100 ? 100 : files.length;
+    return loadCount;
   }
 );

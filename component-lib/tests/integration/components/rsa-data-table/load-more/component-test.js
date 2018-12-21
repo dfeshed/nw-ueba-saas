@@ -53,3 +53,18 @@ test('Load More button should render message if showMessage is false', function(
   `);
   assert.equal(this.$('.rsa-data-table-load-more')[0].textContent.trim(), '', 'message is not rendered');
 });
+test('test title button should render message if title exists', function(assert) {
+  this.set('status', 'stopped');
+  this.set('title', 'test title');
+  this.render(hbs`
+      {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
+  `);
+  assert.equal(this.$('.rsa-data-table-load-more')[0].textContent.trim(), 'test title', 'title message is rendered');
+});
+test('Load More button should render message if title not exists', function(assert) {
+  this.set('status', 'stopped');
+  this.render(hbs`
+      {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
+  `);
+  assert.equal(this.$('.rsa-data-table-load-more')[0].textContent.trim(), 'Load More', 'load more message is rendered');
+});

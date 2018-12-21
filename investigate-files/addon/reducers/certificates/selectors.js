@@ -152,4 +152,15 @@ export const isAllSelected = createSelector(
     return false;
   }
 );
-
+/**
+ * To show the number of items available size in the next page load.
+ * @public
+ */
+export const nextLoadCount = createSelector(
+  certificatesList,
+  (certificatesList) => {
+    const PAGE_LOAD_SIZE = 100;
+    const loadCount = certificatesList.length >= PAGE_LOAD_SIZE ? PAGE_LOAD_SIZE : certificatesList.length;
+    return loadCount;
+  }
+);

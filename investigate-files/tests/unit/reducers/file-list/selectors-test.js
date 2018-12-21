@@ -13,7 +13,8 @@ import {
   files,
   areFilesLoading,
   isExportButtonDisabled,
-  fileTotalLabel
+  fileTotalLabel,
+  nextLoadCount
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -300,4 +301,25 @@ test('fileTotalLabel', function(assert) {
   });
   const result4 = fileTotalLabel(state4);
   assert.equal(result4, '1299');
+});
+test('nextLoadCount', function(assert) {
+  const result1 = nextLoadCount(STATE);
+  assert.equal(result1, 3);
+  const fileData = new Array(101)
+    .join().split(',')
+    .map(function(item, index) {
+      return { index: { id: ++index, checksumSha256: index } };
+    });
+  const STATE1 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        totalItems: 101,
+        fileData
+      }
+    }
+  });
+  const result2 = nextLoadCount(STATE1);
+  assert.equal(result2, 100);
 });

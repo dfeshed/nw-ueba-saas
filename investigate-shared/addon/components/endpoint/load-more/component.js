@@ -21,6 +21,8 @@ export default Component.extend({
 
   getMoreData: undefined,
 
+  title: undefined,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const state = {

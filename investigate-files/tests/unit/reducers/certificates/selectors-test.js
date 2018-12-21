@@ -8,7 +8,8 @@ import {
   certificatesCountForDisplay,
   certificatesLoading,
   isAllSelected,
-  columns
+  columns,
+  nextLoadCount
 } from 'investigate-files/reducers/certificates/selectors';
 
 const STATE = Immutable.from({
@@ -112,5 +113,25 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     });
     result = columns(stateNew);
     assert.equal(result[1].visible, true, 'visible column updated.');
+  });
+  test('nextLoadCount', function(assert) {
+    let stateNew = Immutable.from({
+      certificate: {
+        list: {
+          certificatesList: new Array(99)
+        }
+      }
+    });
+    const result1 = nextLoadCount(stateNew);
+    assert.equal(result1, 99);
+    stateNew = Immutable.from({
+      certificate: {
+        list: {
+          certificatesList: new Array(199)
+        }
+      }
+    });
+    const result2 = nextLoadCount(stateNew);
+    assert.equal(result2, 100);
   });
 });

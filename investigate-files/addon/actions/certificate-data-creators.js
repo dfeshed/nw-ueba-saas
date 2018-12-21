@@ -4,10 +4,26 @@ import { debug } from '@ember/debug';
 import { resetFilters } from 'investigate-shared/actions/data-creators/filter-creators';
 import { run } from '@ember/runloop';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import _ from 'lodash';
 
+const _expressionListForThumbprint = (selectedFileList) => {
+  const certificateValues = selectedFileList.map((item) => {
+    const { signature } = item;
+    if (signature) {
+      const { thumbprint } = signature;
+      return { value: thumbprint };
+    }
+  }).compact();
+  return [{
+    propertyName: 'thumbprint',
+    propertyValues: _.uniqBy(certificateValues, 'value'),
+    restrictionType: 'IN'
+  }];
+};
 const toggleCertificateView = () => {
   return (dispatch, getState) => {
     const { files: { filter } } = getState();
+    const { files: { fileList: { selectedFileList } } } = getState();
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
     if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
       const savedFilter = { id: -1, criteria: { expressionList: filter.expressionList } };
@@ -17,7 +33,17 @@ const toggleCertificateView = () => {
     const { isCertificateView } = getState().certificate.list;
     if (isCertificateView) {
       run.next(() => {
-        dispatch(resetFilters('CERTIFICATE'));
+        // Allowing max 10 files selection to apply certificates filter.
+        if (selectedFileList.length <= 10) {
+          const expressionList = _expressionListForThumbprint(selectedFileList);
+          const savedCertificateFilter = { id: -1, criteria: { expressionList } };
+          dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedCertificateFilter, meta: { belongsTo: 'CERTIFICATE' } });
+          dispatch({ type: SHARED_ACTION_TYPES.APPLY_FILTER, payload: expressionList, meta: { belongsTo: 'CERTIFICATE' } });
+          dispatch(getFirstPageOfCertificates());
+        } else {
+          dispatch(resetFilters('CERTIFICATE'));
+          dispatch(getFirstPageOfCertificates());
+        }
       });
     }
   };

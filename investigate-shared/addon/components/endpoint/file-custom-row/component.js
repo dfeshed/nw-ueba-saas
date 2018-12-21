@@ -99,8 +99,19 @@ export default DataTableBodyRow.extend({
         ]
       },
       {
-        label: 'resetRiskScore',
+        label: 'viewCertificate',
         order: 5,
+        prefix: 'investigateShared.endpoint.fileActions.',
+        disabled(selection, context) {
+          return context.get('selections').length > 10;
+        },
+        action(selection, context) {
+          context.toggleCertificateView();
+        }
+      },
+      {
+        label: 'resetRiskScore',
+        order: 6,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
         action(selection, context) {
@@ -114,7 +125,7 @@ export default DataTableBodyRow.extend({
       const fileDownloadButtons = [
         {
           label: 'downloadToServer',
-          order: 6,
+          order: 7,
           prefix: 'investigateShared.endpoint.fileActions.',
           showDivider: true,
           disabled(selection, context) {
@@ -126,7 +137,7 @@ export default DataTableBodyRow.extend({
         },
         {
           label: 'saveLocalCopy',
-          order: 7,
+          order: 8,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
             return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
@@ -137,7 +148,7 @@ export default DataTableBodyRow.extend({
         },
         {
           label: 'analyzeFile',
-          order: 8,
+          order: 9,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
             return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
