@@ -32,7 +32,7 @@ export default {
   {
     field: 'machineCount',
     title: 'machineCount',
-    width: '15%'
+    width: '6vw'
   },
   {
     field: 'fileProperties.downloadInfo',

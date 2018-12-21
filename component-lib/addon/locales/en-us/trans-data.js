@@ -2248,7 +2248,7 @@ export default {
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation Status',
       score: 'Risk Score',
-      machineCount: 'Host Count',
+      machineCount: 'Active On',
       remediationAction: 'Remediation Action',
       elf: {
         classType: 'ELF.Class Type',
@@ -2554,7 +2554,7 @@ export default {
       backToProcesses: 'Processes',
       processDetails: 'Process Details',
       analyzeProcess: 'Analyze Process',
-      machineCount: 'Machine Count',
+      machineCount: 'Active On',
       toolTip: {
         openProcessDetails: 'Open Process details',
         openFileDetails: 'Open File details',
@@ -2622,7 +2622,7 @@ export default {
         message: {
           noResultsMessage: 'No Image Hooks information was found'
         },
-        machineCount: 'Machine Count'
+        machineCount: 'Active On'
       },
       suspiciousThreads: {
         signature: 'Signature',
@@ -2637,7 +2637,7 @@ export default {
         message: {
           noResultsMessage: 'No Suspicious Threads information was found'
         },
-        machineCount: 'Machine Count'
+        machineCount: 'Active On'
       },
       kernelHooks: {
         type: 'Type',
@@ -2652,7 +2652,7 @@ export default {
         message: {
           noResultsMessage: 'No Kernel Hooks information was found'
         },
-        machineCount: 'Machine Count'
+        machineCount: 'Active On'
       },
       registryDiscrepancies: {
         hive: 'Hive',

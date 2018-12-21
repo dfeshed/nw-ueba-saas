@@ -21,8 +21,8 @@ const defaultColumns = [
   },
   {
     field: 'machineCount',
-    title: 'Machine Count',
-    width: '15%'
+    title: 'Active On',
+    width: '6vw'
   },
   {
     field: 'fileProperties.reputationStatus',
