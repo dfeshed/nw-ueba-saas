@@ -2,6 +2,7 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 const _snapShots = (state) => state.endpoint.detailsInput.snapShots;
 const _activeHostDetailPropertyTab = (state) => state.endpoint.detailsInput.activeHostDetailPropertyTab || 'FILE_DETAILS';
+const _downloadLink = (state) => state.endpoint.detailsInput.downloadLink;
 
 const HOST_DETAIL_PROPERTY_TABS = [
   {
@@ -32,5 +33,12 @@ export const hostDetailPropertyTabs = createSelector(
   [_activeHostDetailPropertyTab],
   (activeHostDetailPropertyTab) => {
     return HOST_DETAIL_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostDetailPropertyTab }));
+  }
+);
+
+export const downloadLink = createSelector(
+  _downloadLink,
+  (downloadLink) => {
+    return downloadLink ? `${downloadLink}&${Number(new Date())}` : null;
   }
 );

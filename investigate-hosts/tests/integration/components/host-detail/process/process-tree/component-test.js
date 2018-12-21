@@ -9,14 +9,6 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
-import fileContextCreators from 'investigate-hosts/actions/data-creators/file-context';
-import sinon from 'sinon';
-
-const downloadFilesToServerSpy = sinon.spy(fileContextCreators, 'downloadFilesToServer');
-
-const spys = [
-  downloadFilesToServerSpy
-];
 
 let setState;
 const transitions = [];
@@ -163,15 +155,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   hooks.afterEach(function() {
     revertPatch();
-    spys.forEach((s) => s.resetHistory());
     const wormholeElement = document.querySelector('#wormhole-context-menu');
     if (wormholeElement) {
       document.querySelector('#ember-testing').removeChild(wormholeElement);
     }
-  });
-
-  hooks.after(function() {
-    spys.forEach((s) => s.restore());
   });
 
   test('Column Names appear in datatable header', async function(assert) {

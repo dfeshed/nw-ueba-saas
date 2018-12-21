@@ -2,8 +2,6 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
-import computed from 'ember-computed-decorators';
-import { isEmpty } from '@ember/utils';
 
 import {
   fileContextFileProperty,
@@ -15,7 +13,7 @@ import {
   focusedRowChecksum,
   selectedFileList
 } from 'investigate-hosts/reducers/details/file-context/selectors';
-import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
 import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
 
 import {
@@ -33,7 +31,7 @@ import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/a
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state, { storeName }) => ({
-  downloadLink: state.endpoint.detailsInput.downloadLink,
+  downloadLink: downloadLink(state),
   selectedFileList: selectedFileList(state, storeName),
   fileProperty: fileContextFileProperty(state, storeName),
   hostDetailPropertyTabs: hostDetailPropertyTabs(state, storeName),
@@ -81,15 +79,6 @@ const ContextWrapper = Component.extend({
   tabName: '',
 
   flashMessage: service(),
-
-  @computed('downloadLink')
-  iframeSrc(link) {
-    let source = null;
-    if (!isEmpty(link)) {
-      source = `${link}&${Number(new Date())}`;
-    }
-    return source;
-  },
 
   actions: {
     onDownloadFilesToServer() {

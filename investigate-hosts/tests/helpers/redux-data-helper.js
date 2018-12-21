@@ -45,6 +45,7 @@ export default class DataHelper {
         }
       },
       endpointServer: this.state.endpointServer,
+      endpointQuery: this.state.endpointQuery,
       investigate: this.state.investigate
     });
     this.setState(state);

@@ -1,7 +1,7 @@
 import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeHostPage, getAllSchemas, pollAgentStatus } from 'investigate-hosts/actions/data-creators/host';
+import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
@@ -73,9 +73,6 @@ export default Route.extend({
     // get host list
     redux.dispatch(getEndpointServers(getAllSchemas));
     redux.dispatch(getRestrictedFileList('MACHINE'));
-    setInterval(function() {
-      redux.dispatch(pollAgentStatus());
-    }, '20000'); // poll  every 20 seconds
   },
 
   model(params) {

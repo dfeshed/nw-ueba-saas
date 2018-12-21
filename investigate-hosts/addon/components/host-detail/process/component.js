@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
-import { isEmpty } from '@ember/utils';
 import {
   getProcessData,
   isNavigatedFromExplore,
@@ -13,7 +12,7 @@ import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
 import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
-import { getColumnsConfig, hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
+import { getColumnsConfig, hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 import summaryItems from './summary-item-config';
@@ -35,6 +34,7 @@ import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 const stateToComputed = (state) => ({
+  downloadLink: downloadLink(state),
   isTreeView: state.endpoint.visuals.isTreeView,
   hostDetailPropertyTabs: hostDetailPropertyTabs(state),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
@@ -104,15 +104,6 @@ const Container = Component.extend({
     const toolTipLabel = isTreeView ? 'listView' : 'treeView';
     const i18n = this.get('i18n');
     return i18n.t(`investigateHosts.process.toolTip.${toolTipLabel}`);
-  },
-
-  @computed('downloadLink')
-  iframeSrc(link) {
-    let source = null;
-    if (!isEmpty(link)) {
-      source = `${link}&${Number(new Date())}`;
-    }
-    return source;
   },
 
   actions: {
