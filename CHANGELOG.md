@@ -1,3 +1,11 @@
+# [10.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.3.0)
+## Features
+* [ASOC-64943](https://bedfordjira.na.rsa.net/browse/ASOC-64943):&emsp;i18n - Overlapping table headers in Incident rules page
+* [ASOC-65303](https://bedfordjira.na.rsa.net/browse/ASOC-65303):&emsp;NWE Windows Log Collection - failure loading config with - or / -custom channel
+* [ASOC-67983](https://bedfordjira.na.rsa.net/browse/ASOC-67983):&emsp;Allow tuning of risk threshold's when alerts are sent from RSS -> Respond
+* [ASOC-67463](https://bedfordjira.na.rsa.net/browse/ASOC-67463):&emsp;Make alerts optional in event-list-viewer
+* [ASOC-69645](https://bedfordjira.na.rsa.net/browse/ASOC-69645):&emsp;Filter option for file download status
+
 # [10.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.2.0)
 ## Features
 * [ASOC-60689](https://bedfordjira.na.rsa.net/browse/ASOC-60689):&emsp;Include Completion Details in Console
@@ -309,7 +317,7 @@
 * [ASOC-51763](https://bedfordjira.na.rsa.net/browse/ASOC-51763):&emsp;Non Persistent Module - App rule creation for Windows - Levels 2 and 3
 * [ASOC-52257](https://bedfordjira.na.rsa.net/browse/ASOC-52257):&emsp;Upgrade scenario for 11.1.0.1 patch
 * [ASOC-52757](https://bedfordjira.na.rsa.net/browse/ASOC-52757):&emsp;ESA Rule Alerts for Machine and Module IOC App rules
-      
+
 
 # [8.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.1.0)
 ## Features
