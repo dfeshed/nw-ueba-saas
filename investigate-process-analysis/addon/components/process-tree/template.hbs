@@ -32,7 +32,13 @@
   </centered>
 {{/if}}
 
-{{#rsa-content-tethered-panel style="primary" panelClass='process-tool-tip' displayCloseButton=false position='top' panelId='panel1' as |hide model|}}
-  <header>{{t 'investigateProcessAnalysis.processExecutionDetails.paramDst'}}</header>
-  <section class='launchArguments'>{{model.paramDst}}</section>
+{{#rsa-content-tethered-panel style="primary" panelClass='process-tool-tip' displayCloseButton=false position='top' panelId='panel1'}}
+  <span class='process-title'> {{process.processName}}</span>
+  {{#each-in processData as |key value|}}
+    <hbox fit class='process-hover-content align-center col-xs-12'>
+      <hbox class='process-hover-key col-xs-6'>{{t (concat 'investigateHosts.process.processData.' key)}}</hbox>
+      <hbox class='process-hover-value col-xs-6'>{{value}}</hbox>
+    </hbox>
+  {{/each-in}}
+
 {{/rsa-content-tethered-panel}}

@@ -2597,6 +2597,14 @@ export default {
         message: {
           noResultsMessage: 'No Image Hooks information was found.'
         }
+      },
+      processData: {
+        signature: 'Signature',
+        signer: 'Signer',
+        reputationStatus: 'Reputation Status',
+        fileStatus: 'File Status',
+        directoryDst: 'File Path',
+        paramDst: 'Launch Arguments'
       }
     },
     anomalies: {

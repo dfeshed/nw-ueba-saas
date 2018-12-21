@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import reduxActions from 'redux-actions';
+import { handle } from 'redux-pack';
 
 const initialState = {
   queryInput: null,
@@ -12,7 +13,8 @@ const initialState = {
   eventsSortField: null,
   eventsCount: 0,
   eventsFilteredCount: 0,
-  filterApplied: false
+  filterApplied: false,
+  fileProperty: {}
 };
 
 
@@ -80,7 +82,15 @@ export default reduxActions.handleActions({
       return data;
     });
     return state.set('rawData', newData);
-  }
+  },
 
+  [ACTION_TYPES.GET_FILE_PROPERTY]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const [data] = action.payload.data && action.payload.data.length ? action.payload.data : [];
+        return s.set('fileProperty', data);
+      }
+    });
+  }
 
 }, Immutable.from(initialState));

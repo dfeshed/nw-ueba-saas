@@ -96,6 +96,7 @@ module('Integration | Component | process-tree', function(hooks) {
     document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
+      assert.equal(findAll('.process-hover-key').length, 6, '6 fields are displayed on hovering over a process.');
     });
 
   });

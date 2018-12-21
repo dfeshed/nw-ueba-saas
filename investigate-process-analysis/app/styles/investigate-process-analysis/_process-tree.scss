@@ -123,4 +123,27 @@ section {
   }
 }
 
+.process-hover-content {
+  padding-top: rsa-whitespace();
+  min-height: 1.7rem;
+}
 
+.process-hover-key {
+  display: block;
+  text-align: right;
+  min-height: 1.7rem;
+  margin-top: 0.2rem;
+  padding-right: rsa-whitespace();
+  color: text-color(primary, light);
+}
+.process-hover-value {
+  display: block;
+  text-align: left;
+  min-height: 1.7rem;
+  margin-top: 0.2rem;
+}
+
+.process-tool-tip {
+  width: 300px;
+  padding: rsa-whitespace();
+}

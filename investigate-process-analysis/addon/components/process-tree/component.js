@@ -25,6 +25,7 @@ import {
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 import {
+  getFileProperty,
   getParentAndChildEvents,
   getChildEvents,
   setSelectedProcess,
@@ -38,7 +39,8 @@ const stateToComputed = (state) => ({
   selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : '',
   isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible,
   processName: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.pn : '',
-  selectedServerId: state.processAnalysis.processTree.selectedServerId
+  selectedServerId: state.processAnalysis.processTree.selectedServerId,
+  fileProperty: state.processAnalysis.processTree.fileProperty || {}
 });
 
 const dispatchToActions = {
@@ -48,7 +50,8 @@ const dispatchToActions = {
   fetchProcessDetails,
   selectedProcessEvents,
   resetFilterValue,
-  toggleProcessDetailsVisibility
+  toggleProcessDetailsVisibility,
+  getFileProperty
 };
 
 let freeIdCounter = 0;
@@ -132,6 +135,8 @@ const TreeComponent = Component.extend({
 
   rootNode: null,
 
+  process: null,
+
   @computed('nodeSize', 'nodeSeparation')
   treeInstance(nodeSize, nodeSeparation) {
     const treeInstance = tree()
@@ -142,6 +147,23 @@ const TreeComponent = Component.extend({
     return treeInstance;
   },
 
+  @computed('fileProperty', 'process')
+  processData(fileProperty, process) {
+    const properties = ['signature', 'reputationStatus', 'fileStatus', 'directoryDst', 'paramDst'];
+    const displayProperties = {};
+    properties.forEach(function(prop) {
+      if (prop === 'signature') {
+        const { signature } = fileProperty;
+        displayProperties.signature = signature && signature.signer ? 'Signed' : 'Unsigned';
+        displayProperties.signer = signature && signature.signer ? signature.signer : '';
+      } else {
+        displayProperties[prop] = fileProperty[prop] || '';
+      }
+    });
+    displayProperties.directoryDst = process.directoryDst;
+    displayProperties.paramDst = process.paramDst;
+    return displayProperties;
+  },
 
   getSVG: (element) => {
     if (element) {
@@ -282,6 +304,7 @@ const TreeComponent = Component.extend({
   },
 
   _onNodeEnter(node, source) {
+    const self = this;
     const { expandIcon, collapseIcon, rectWidth: width, eventBus } = this.getProperties('expandIcon', 'collapseIcon', 'rectWidth', 'eventBus');
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
@@ -309,10 +332,15 @@ const TreeComponent = Component.extend({
           run.cancel(hideEvent);
           hideEvent = null;
         }
-        const event = run.later(() => {
+        const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
+        const hashes = [checksum];
+
+        const event = run.later(async() => {
           if (!$el[0]) {
             return;
           }
+          self.set('process', d.data);
+          await self.send('getFileProperty', { hashes }, self.get('selectedServerId'));
           sendTetherEvent($el[0], 'panel1', eventBus, 'display', processDetails(d.data));
         }, 200);
         displayEvent = event;

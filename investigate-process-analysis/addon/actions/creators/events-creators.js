@@ -3,6 +3,7 @@ import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { getQueryNode, hasherizeEventMeta } from './util';
 import { constructFilterQueryString } from 'investigate-process-analysis/reducers/process-filter/selectors';
+import { getProcessDetails } from '../api/process-properties';
 
 const callbacksDefault = { onComplete() {} };
 
@@ -178,3 +179,9 @@ const isExecuting = (meta, payLoadLength) => {
   const percent = meta ? meta.percent : 0;
   return description === 'Queued' || (description === 'Executing' && percent < 100 && payLoadLength === 0);
 };
+
+
+export const getFileProperty = (data, serverId) => ({
+  type: ACTION_TYPES.GET_FILE_PROPERTY,
+  promise: getProcessDetails(data, serverId)
+});

@@ -2,6 +2,8 @@ import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-process-analysis/reducers/process-tree/reducer';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 
 const initialState = Immutable.from({
   queryInput: null,
@@ -13,7 +15,8 @@ const initialState = Immutable.from({
   eventsSortField: null,
   eventsCount: 0,
   eventsFilteredCount: 0,
-  filterApplied: false
+  filterApplied: false,
+  fileProperty: {}
 });
 
 module('Unit | Reducers | process-tree', function() {
@@ -154,4 +157,18 @@ module('Unit | Reducers | process-tree', function() {
     result = reducer(previous, { type: ACTION_TYPES.SET_SERVER_ID, payload: 'nwe://abc-test-server' });
     assert.equal(result.selectedServerId, 'abc-test-server');
   });
+
+  test('GET_FILE_PROPERTY will sets file property', function(assert) {
+    const previous = Immutable.from({
+      fileProperty: null
+    });
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_FILE_PROPERTY,
+      payload: { data: [ { fileName: 'Test File' }] }
+    });
+    const newEndState = reducer(previous, successAction);
+    assert.equal(newEndState.fileProperty.fileName, 'Test File');
+  });
+
+
 });
