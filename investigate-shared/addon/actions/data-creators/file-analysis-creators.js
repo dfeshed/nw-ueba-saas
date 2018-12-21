@@ -7,8 +7,9 @@ const toggleFileAnalysisView = (payload) => ({ type: ACTION_TYPES.TOGGLE_FILE_AN
  * @returns {function(*)}
  * @public
  */
-const getFileAnalysisData = (data) => {
+const getFileAnalysisData = (data, format) => {
   return (dispatch) => {
+
     dispatch({
       type: ACTION_TYPES.FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA,
       promise: api.getFileAnalysisData(data),
@@ -21,10 +22,18 @@ const getFileAnalysisData = (data) => {
         }
       }
     });
-    dispatch({
-      type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
-      promise: api.getFileAnalysisStringFormatData(data)
-    });
+
+    if (format === 'string') {
+      dispatch({
+        type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
+        promise: api.getFileAnalysisStringFormatData(data)
+      });
+    } else {
+      dispatch({
+        type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
+        promise: api.getFileAnalysisTextFormatData(data)
+      });
+    }
   };
 };
 

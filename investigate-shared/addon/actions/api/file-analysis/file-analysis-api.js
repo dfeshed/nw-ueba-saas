@@ -23,7 +23,17 @@ const getFileAnalysisStringFormatData = (data) => {
   });
 };
 
+const getFileAnalysisTextFormatData = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'fileAnalysisTextFormat',
+    modelName: 'endpoint',
+    query: { data }
+  });
+};
+
 export default {
   getFileAnalysisData,
-  getFileAnalysisStringFormatData
+  getFileAnalysisStringFormatData,
+  getFileAnalysisTextFormatData
 };

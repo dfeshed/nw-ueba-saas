@@ -16,7 +16,8 @@ export default [
         field: 'checksumSha256'
       },
       {
-        field: 'size'
+        field: 'size',
+        format: 'SIZE'
       },
       {
         field: 'downloadedFileName'

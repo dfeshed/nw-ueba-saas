@@ -18,6 +18,9 @@ const fileAnalyzerReducer = handleActions({
 
   [SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_DATA]: (state, action) => {
     return handle(state, action, {
+      failure: (s) => {
+        return s.set('fileData', null);
+      },
       success: (s) => {
         return s.set('fileData', action.payload.data);
       }

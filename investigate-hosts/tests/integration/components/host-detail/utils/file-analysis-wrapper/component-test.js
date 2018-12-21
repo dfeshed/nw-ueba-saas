@@ -80,4 +80,60 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     assert.equal(findAll('.string-filter-wrapper .rsa-form-input').length, 0, 'String filter not rendered');
   });
 
+  test('It should render String search when format is string', async function(assert) {
+    const fileAnalysis = {
+      'fileData': [{
+        text: 'OHE3',
+        offset: '0x00017d66',
+        unicode: false
+      },
+      {
+        text: 'E;uht',
+        offset: '0x00017a66',
+        unicode: false
+      }],
+      'filePropertiesData': { format: 'pe' },
+      'isFileAnalysisView': true
+    };
+
+    new ReduxDataHelper(setState)
+      .isSnapshotsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
+      .fileAnalysis(fileAnalysis)
+      .build();
+
+    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+
+    assert.equal(findAll('.string-filter-wrapper').length, 1, 'String filter rendered');
+  });
+
+  test('It should not render String search when format is string', async function(assert) {
+    const fileAnalysis = {
+      'fileData': [{
+        text: 'OHE3',
+        offset: '0x00017d66',
+        unicode: false
+      },
+      {
+        text: 'E;uht',
+        offset: '0x00017a66',
+        unicode: false
+      }],
+      'filePropertiesData': { format: 'script' },
+      'isFileAnalysisView': true
+    };
+
+    new ReduxDataHelper(setState)
+      .isSnapshotsLoading(false)
+      .isSnapshotsAvailable(true)
+      .selectedTabComponent('FILES')
+      .fileAnalysis(fileAnalysis)
+      .build();
+
+    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+
+    assert.equal(findAll('.string-filter-wrapper').length, 0, 'String filter is not rendered');
+  });
+
 });

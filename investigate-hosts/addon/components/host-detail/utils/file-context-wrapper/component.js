@@ -29,6 +29,7 @@ import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/s
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
+import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
 const stateToComputed = (state, { storeName }) => ({
   downloadLink: downloadLink(state),
@@ -102,9 +103,10 @@ const ContextWrapper = Component.extend({
     onAnalyzeFile() {
       // Open analyze file.
       const fileContextSelections = this.get('fileContextSelections');
-      const [{ checksumSha256 }] = fileContextSelections;
+      const [{ checksumSha256, format = '' }] = fileContextSelections;
+      const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256);
+      this.send('getFileAnalysisData', checksumSha256, fileFormat);
     },
 
     resetRiskScoreAction(itemsList) {

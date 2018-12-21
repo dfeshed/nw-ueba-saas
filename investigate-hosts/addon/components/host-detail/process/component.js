@@ -32,6 +32,7 @@ import {
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
 const stateToComputed = (state) => ({
   downloadLink: downloadLink(state),
@@ -142,8 +143,10 @@ const Container = Component.extend({
     onAnalyzeFile() {
       // Open analyze file.
       const selectedProcessList = this.get('selectedProcessList');
-      const [{ checksumSha256 }] = selectedProcessList;
-      this.send('getFileAnalysisData', checksumSha256);
+      const [{ checksumSha256, format = '' }] = selectedProcessList;
+      const fileFormat = componentSelectionForFileType(format).format;
+
+      this.send('getFileAnalysisData', checksumSha256, fileFormat);
     }
   }
 

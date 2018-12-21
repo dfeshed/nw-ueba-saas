@@ -79,6 +79,10 @@ const hostsConfigGen = function(env) {
       saveLocalCopy: {
         subscriptionDestination: '/user/queue/endpoint/file/export',
         requestDestination: '/ws/endpoint/file/export'
+      },
+      fileAnalysisTextFormat: {
+        subscriptionDestination: '/user/queue/endpoint/file/get-encoded-data',
+        requestDestination: '/ws/endpoint/file/get-encoded-data'
       }
     },
     'context-service': {

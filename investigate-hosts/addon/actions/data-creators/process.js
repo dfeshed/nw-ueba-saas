@@ -9,9 +9,9 @@ const toggleProcessView = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
     const { process: { processTree, processList }, visuals: { isTreeView } } = getState().endpoint;
     if (isTreeView) {
-      dispatch(_getProcessDetails(processTree[0].pid));
+      dispatch(getProcessDetails(processTree[0].pid));
     } else {
-      dispatch(_getProcessDetails(processList[0].pid));
+      dispatch(getProcessDetails(processList[0].pid));
     }
   };
 };
@@ -21,7 +21,7 @@ const toggleProcessDetailsView = (item, isOpen = false) => {
     dispatch(deSelectAllProcess());
     if (item) {
       const { pid } = item;
-      dispatch(_getProcessDetails(pid));
+      dispatch(getProcessDetails(pid));
     }
     dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen } });
   };
@@ -41,7 +41,7 @@ const _getList = () => {
       meta: {
         onSuccess: (response) => {
           if (!isTreeView && response.data.length) {
-            dispatch(_getProcessDetails(response.data[0].pid));
+            dispatch(getProcessDetails(response.data[0].pid));
           }
         },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_LIST, response)
@@ -59,7 +59,7 @@ const _getTree = () => {
       meta: {
         onSuccess: (response) => {
           if (isTreeView && response.data.length) {
-            dispatch(_getProcessDetails(response.data[0].pid));
+            dispatch(getProcessDetails(response.data[0].pid));
           }
         },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
@@ -86,7 +86,7 @@ const getAllProcess = () => {
   };
 };
 
-const _getProcessDetails = (processId) => {
+const getProcessDetails = (processId) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
     dispatch({
@@ -106,7 +106,7 @@ const onProcessSelection = (processId, checksumSha256) => {
   return (dispatch) => {
     dispatch(getRespondServerStatus());
     dispatch(resetRiskContext());
-    dispatch(_getProcessDetails(processId));
+    dispatch(getProcessDetails(processId));
     dispatch(getRiskScoreContext(checksumSha256, 'FILE', 'HOST'));
   };
 };
@@ -146,5 +146,6 @@ export {
   setRowIndex,
   toggleProcessDetailsView,
   toggleSelectedProcessDllRow,
-  setDllRowSelectedId
+  setDllRowSelectedId,
+  getProcessDetails
 };

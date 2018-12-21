@@ -6,11 +6,13 @@ import { componentConfig } from 'investigate-hosts/reducers/details/file-analysi
 
 const stringView = {
   component: 'endpoint/string-view',
-  title: 'investigateShared.endpoint.fileAnalysis.stringsView'
+  title: 'investigateShared.endpoint.fileAnalysis.stringsView',
+  format: 'string'
 };
 const textView = {
   component: 'endpoint/text-view',
-  title: 'investigateShared.endpoint.fileAnalysis.textView'
+  title: 'investigateShared.endpoint.fileAnalysis.textView',
+  format: 'text'
 };
 module('Unit | Selector | File Analysis', function() {
 
