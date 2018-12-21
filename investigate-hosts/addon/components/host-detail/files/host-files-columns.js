@@ -75,7 +75,7 @@ const defaultColumns = [
   {
     'field': 'machineCount',
     'title': 'Machine Count',
-    'width': '15%'
+    'width': 100
   },
   {
     'field': 'fileProperties.reputationStatus',

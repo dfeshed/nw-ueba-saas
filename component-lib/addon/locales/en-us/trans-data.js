@@ -2153,7 +2153,7 @@ export default {
     },
     riskScore: {
       label: 'Reset Risk Score',
-      confirmMessage: 'Are you sure you want to reset the Risk Score for the selected file(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0. Click Help for more information.',
+      confirmMessage: 'Are you sure you want to reset the Risk Score for the selected file(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0.',
       cancel: 'Cancel',
       reset: 'Reset',
       success: 'The Risk Score has been successfully reset.',
@@ -3325,7 +3325,7 @@ export default {
       resetHosts: {
         modal: {
           title: 'Reset Risk Score',
-          message: 'Are you sure you want to reset the Risk Score for the selected host(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0. Click Help for more information.'
+          message: 'Are you sure you want to reset the Risk Score for the selected host(s). All alerts related to this risk score will be deleted and the Risk Score will be reset to 0.'
         },
         success: 'The Risk Score has been successfully reset.',
         error: ' The Risk Score cannot be reset.',

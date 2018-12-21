@@ -20,7 +20,7 @@ export default Component.extend({
 
   @computed('selectedList')
   isMaxResetRiskScoreLimit(selectedList) {
-    return selectedList.length > 1;
+    return selectedList.length > 100;
   },
 
   @computed('selectedList')
