@@ -103,6 +103,7 @@ moduleForComponent('rsa-data-table', 'Integration | Component | rsa data table',
     this.register('service:event-bus', eventBusStub);
     this.inject.service('event-bus', { as: 'eventBus' });
     this.registry.injection('component:rsa-data-table/body', 'i18n', 'service:i18n');
+    this.registry.injection('component:rsa-data-table/body-row', 'i18n', 'service:i18n');
     this.registry.injection('component:rsa-data-table/header-cell', 'i18n', 'service:i18n');
   },
 
@@ -540,4 +541,100 @@ test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', f
   const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
   const [ { scrollTop } ] = this.$('.rsa-data-table-body');
   assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
+});
+
+test('it sets the minHeight of the table body rows when enableGrouping is false', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
+  const expectedHeightAsInt = rowHeight * this.get('items.length');
+
+  assert.equal(expectedHeightAsInt, actualHeightAsInt);
+});
+
+test('it sets the minHeight of the table body rows when enableGrouping is true', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=true groupingSize=20 lazy=true}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
+  const expectedHeightAsInt = (rowHeight * this.get('items.length') + rowHeight);
+
+  assert.equal(expectedHeightAsInt, actualHeightAsInt);
+});
+
+test('it renders the group-label when enableGrouping is true', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    <style type="text/css">
+      .rsa-data-table-body {
+        height: 100px;
+        overflow: auto;
+      }
+    </style>
+    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=true groupingSize=10 lazy=true}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(this.$('.group-label').length, 1, '.group-label dom element found.');
+});
+
+test('it does not render the group-label when enableGrouping is false', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=false}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(this.$('.group-label').length, 0, '.group-label dom element found.');
 });

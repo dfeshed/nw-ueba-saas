@@ -4,7 +4,8 @@
   lazy=(readonly useLazyRendering)
   onRowClick=(action "handleRowClickAction")
   fitToWidth=false
-  columnsConfig=(readonly columns)}}
+  columnsConfig=(readonly columns)
+}}
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
     {{#if (eq column.dataType 'checkbox')}}

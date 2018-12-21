@@ -489,6 +489,7 @@ export default {
     events: {
       title: 'Events',
       isAtThreshold: 'The event count reached the query threshold.',
+      tableGroupLabel: 'Displaying records {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {
         custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events View',

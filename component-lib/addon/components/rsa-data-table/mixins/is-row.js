@@ -2,6 +2,7 @@
  * @file Data Table Row mixin
  * @public
  */
+import { schedule } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import SizeBindings from './size-bindings';
 import DomIsReady from './dom-is-ready';
@@ -13,8 +14,15 @@ import Mixin from '@ember/object/mixin';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize'],
   attributeBindings: ['style'],
+
+  // determines if this row is at the limit of the group size
+  // if true, this row will render a group label in didInsertElement
+  @computed('index', 'table.groupingSize', 'table.enableGrouping')
+  isAtGroupingSize(index, groupingSize, enableGrouping) {
+    return enableGrouping && ((index + 1) % groupingSize === 0);
+  },
 
   @computed('top')
   style(top) {
@@ -79,12 +87,24 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
 
   /**
    * The y-coordinate (in pixels) of this row relative to the table body's root DOM element.
+   * If enableGrouping is true, will offset for group-label's inclusion
    * @type {number}
    * @private
    */
-  @computed('index', 'height')
-  top(index, height) {
-    return (height * index) || 0;
+  @computed('index', 'height', 'table.groupingSize', 'table.enableGrouping')
+  top(index, height, groupingSize, enableGrouping) {
+    let top = (height * index) || 0;
+
+    if (enableGrouping) {
+      const previousLabelsRendered = parseInt(index / groupingSize, 10);
+
+      if (previousLabelsRendered) {
+        const groupLabelOffset = height * previousLabelsRendered;
+        top = top + groupLabelOffset;
+      }
+    }
+
+    return top;
   },
 
   /**
@@ -124,5 +144,39 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   init() {
     this.set('sizeBindingsEnabled', !!this.get('isSizeSample'));
     this._super(...arguments);
+  },
+
+  // render a group label if table.enableGrouping is true
+  didInsertElement() {
+    this._super();
+    if (this.get('table.enableGrouping')) {
+      const index = this.get('index');
+      const isAtGroupingSize = this.get('isAtGroupingSize');
+      const length = this.get('table.items.length');
+      const groupingSize = this.get('table.groupingSize');
+      const adjustedIndex = index + 1;
+      const hasMoreGroups = isAtGroupingSize && adjustedIndex < length;
+      const nextGroupIsFull = adjustedIndex + groupingSize < length;
+
+      if (hasMoreGroups) {
+        const startNextGroup = adjustedIndex + 1;
+        let endNextGroup = null;
+
+        if (nextGroupIsFull) {
+          endNextGroup = adjustedIndex + groupingSize;
+        } else {
+          endNextGroup = length;
+        }
+
+        const label = this.get('i18n').t('investigate.events.tableGroupLabel', {
+          startNextGroup,
+          endNextGroup
+        });
+
+        schedule('afterRender', () => {
+          this.$().append(`<div class="group-label"><div>${label}<div></div>`);
+        });
+      }
+    }
   }
 });

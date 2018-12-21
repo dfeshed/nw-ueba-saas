@@ -36,10 +36,10 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * fact that they don't fit within the viewport. Buffering improves UX, reducing the likelihood that the user
    * will scroll faster than the UI can render and thereby see gaps in the list.
    * @type number
-   * @default 0
+   * @default 5
    * @public
    */
-  buffer: 0,
+  buffer: 5,
 
   /**
    *  Configurable option not to show "No Results" when items are empty
@@ -113,9 +113,15 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @readonly
    * @private
    */
-  @computed('_rowHeight', 'items.length')
-  _minScrollHeight(rowHeight, itemsLength) {
-    return rowHeight * itemsLength || 0;
+  @computed('_rowHeight', 'items.length', 'table.enableGrouping')
+  _minScrollHeight(rowHeight, itemsLength, enableGrouping) {
+    if (enableGrouping) {
+      // it is expected that lazy is true anytime enableGrouping is true
+      // as a result, only one group label is expected in the DOM at any given time
+      return rowHeight * (itemsLength + 1) || 0;
+    } else {
+      return rowHeight * itemsLength || 0;
+    }
   },
 
   /**

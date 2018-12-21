@@ -5,6 +5,33 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   @include rsa-col(justify,fill);
   overflow: hidden; /* Hides header cells that spill outside viewport */
 
+  .is-at-grouping-size {
+    .group-label {
+      position: absolute;
+      padding-left: 7px;
+      left: 0;
+      right: 0;
+      top: 100%;
+      bottom: -100%;
+      color: text-color(primary);
+      @include rsa-font(header);
+      display: flex;
+      text-align: center;
+      align-items: center;
+
+      div {
+        top: 10px;
+        position: relative;
+      }
+    }
+
+    &:hover {
+      .group-label {
+        left: 7px;
+      }
+    }
+  }
+
   .rsa-form-checkbox-label {
     letter-spacing: 0;
 

@@ -5,6 +5,16 @@
   right: 0;
   bottom: 0;
 
+  .is-at-grouping-size {
+    .group-label {
+      left: 7px;
+
+      div {
+        top: rsa-whitespace(least);
+      }
+    }
+  }
+
   .items-error {
     font-style: italic;
     font-size: 1.15rem;

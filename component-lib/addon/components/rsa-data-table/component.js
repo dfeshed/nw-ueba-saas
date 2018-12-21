@@ -1,6 +1,7 @@
 /* global addResizeListener */
 /* global removeResizeListener */
 import $ from 'jquery';
+import { assert } from '@ember/debug';
 import computed from 'ember-computed';
 import Component from '@ember/component';
 import EmberObject, { get, set } from '@ember/object';
@@ -16,6 +17,20 @@ export default Component.extend(DomWatcher, {
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
   whitespace: 14,
+
+  /**
+   * Enables the rendering of a group-label based on groupingSize
+   * @type {boolean}
+   * @private
+   */
+  enableGrouping: false,
+
+  /**
+   * Configures the size of groupings if enableGrouping is true
+   * @type {integer}
+   * @private
+   */
+  groupingSize: 100,
 
   /**
    * Initial width as set by column config
@@ -465,6 +480,15 @@ export default Component.extend(DomWatcher, {
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
+  },
+
+  init() {
+    const unsupportedGrouping = this.get('enableGrouping') && !this.get('lazy');
+    if (unsupportedGrouping) {
+      assert('Grouping is not supported for non-lazy tables and has been disabled.');
+      this.set('enableGrouping', false);
+    }
+    this._super(...arguments);
   },
 
   didInsertElement() {
