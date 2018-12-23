@@ -9,7 +9,6 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -74,34 +73,38 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     }
 
     /**
-     * Histogram for single feature are fetched from the FeaureBuckets collections
-     * (aggr_<feature_name>. the missing data are completed using the aggregation framework (i.e: presidio-aggragtion package)
+     * Daily histograms for a single feature are fetched from the feature bucket collection aggr_<feature_name>.
      *
-     * @param timeRange
-     * @param contexts     map of contexts key and values (the context id (i.e userId) -> the context value (i.e: the user name))
-     * @param schema       the schema for which to populate historical behavior
-     * @param featureName  the feature for which to populate historical behavior (e.g: login time)
-     * @return List of feature histogram for each day in the range
-     * e.g:   Feature: operationType, Date: 01/01/2017, Histogram {FILE_MOVED:5, FILE_COPY:9, ACCESS_RIGHTS_CHANGED:1}
+     * @param timeRange           the time range of the feature buckets
+     * @param contexts            map of context keys and values (e.g. userId = Bob, machineId = BOB-PC1)
+     * @param schema              the schema for which to populate historical behavior
+     * @param featureName         the feature for which to populate historical behavior (e.g. operationType)
+     * @param includeOnlyBaseline true if only the baseline time range should be included,
+     *                            false if the rest of the time range should be completed
+     * @return a list of daily histograms, one for each day in the time range. For example:
+     * Feature: operationType, Date: 01/01/2017, Histogram {FILE_MOVED:5, FILE_COPY:9, ACCESS_RIGHTS_CHANGED:1}
      * Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
      */
     @Override
-    public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
+    public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(
+            TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
+            HistoricalDataConfig historicalDataConfig, boolean includeOnlyBaseline) {
 
-        // get historical data from models
+        // Get historical data from model feature buckets.
         String contextId = FeatureBucketUtils.buildContextId(contexts);
-        String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();//getFeatureBucketConfName(schema, featureName);
-        List<FeatureBucket> featureBucketsFromModels = adeManagerSdk.findFeatureBuckets(contextId, featureBucketConfName, timeRange);
+        String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();
+        List<FeatureBucket> featureBuckets = adeManagerSdk.findFeatureBuckets(contextId, featureBucketConfName, timeRange);
 
-        // complete historical data in memory
-        List<FeatureBucket> featureBucketsInMemory = calculateFeatureBuckets(timeRange, contexts, schema, featureName, featureBucketsFromModels, historicalDataConfig);
+        // Convert the model feature buckets to daily histograms.
+        List<DailyHistogram<String, Number>> dailyHistograms = convertFeatureBucketsToHistograms(featureName, featureBuckets);
 
-        // translate FeatureBuckets to dailyHistogram
-        List<DailyHistogram<String, Number>> dailyHistogramList = new ArrayList<DailyHistogram<String, Number>>();
-        dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsFromModels));
-        dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsInMemory));
+        // Complete historical data in memory if required.
+        if (!includeOnlyBaseline) {
+            featureBuckets = calculateFeatureBuckets(timeRange, contexts, schema, featureName, featureBuckets, historicalDataConfig);
+            dailyHistograms.addAll(convertFeatureBucketsToHistograms(featureName, featureBuckets));
+        }
 
-        return dailyHistogramList;
+        return dailyHistograms;
     }
 
     /**

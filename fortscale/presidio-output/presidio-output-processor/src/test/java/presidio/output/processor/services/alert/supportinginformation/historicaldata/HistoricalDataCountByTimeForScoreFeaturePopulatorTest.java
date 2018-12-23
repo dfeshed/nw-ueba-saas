@@ -45,7 +45,9 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         Map<String, Number> histogram = new HashMap<>();
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
-        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyMapOf(String.class, String.class), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
+        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class),
+                Mockito.anyMapOf(String.class, String.class), Mockito.any(Schema.class), Mockito.anyString(),
+                Mockito.any(HistoricalDataConfig.class), Mockito.eq(false))).thenReturn(result);
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
@@ -72,7 +74,9 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         histogram.put("one_hour_resolution_epochtime#1517382000", 64.0);
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
-        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyMapOf(String.class, String.class), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
+        Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class),
+                Mockito.anyMapOf(String.class, String.class), Mockito.any(Schema.class), Mockito.anyString(),
+                Mockito.any(HistoricalDataConfig.class), Mockito.eq(false))).thenReturn(result);
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);

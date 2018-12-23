@@ -31,7 +31,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
         // fetch daily histograms
-        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(
+                timeRange, contexts, schema, featureName, historicalDataConfig, false);
 
         // iterate over days
         for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {
