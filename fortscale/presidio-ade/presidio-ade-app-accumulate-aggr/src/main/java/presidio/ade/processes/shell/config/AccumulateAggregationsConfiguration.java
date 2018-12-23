@@ -3,7 +3,6 @@ package presidio.ade.processes.shell.config;
 import fortscale.accumulator.aggregation.AccumulationsCache;
 import fortscale.accumulator.aggregation.AccumulationsCacheConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,7 @@ import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketServi
         AccumulationsCacheConfig.class,
         AggregationEventsAccumulationDataStoreConfig.class,
         EnrichedDataStoreConfig.class,
-        StoreManagerConfig.class,
-        NullStatsServiceConfig.class, // TODO: Remove this
+        StoreManagerConfig.class
 })
 public class AccumulateAggregationsConfiguration {
 

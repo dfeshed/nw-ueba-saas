@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +34,7 @@ import presidio.monitoring.flush.MetricContainerFlusherConfig;
         EnrichedDataStoreConfig.class,
         MetricContainerFlusherConfig.class,
         AggregatedDataStoreConfig.class,
-        StoreManagerConfig.class,
-        // TODO: Remove this
-        NullStatsServiceConfig.class
+        StoreManagerConfig.class
 })
 public class FeatureAggregationsConfiguration {
     @Autowired
