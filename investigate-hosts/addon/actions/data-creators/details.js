@@ -192,6 +192,7 @@ const setAnomaliesTabView = (tabName) => {
 const changeDetailTab = (tabName) => {
   return (dispatch) => {
     dispatch(toggleFileAnalysisView(false));
+    dispatch({ type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
     dispatch({ type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName } });
     dispatch({ type: ACTION_TYPES.CLOSE_PROCESS_DETAILS });
   };
