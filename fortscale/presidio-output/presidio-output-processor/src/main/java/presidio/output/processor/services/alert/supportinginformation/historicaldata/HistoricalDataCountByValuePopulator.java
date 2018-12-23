@@ -29,7 +29,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
         // Get the daily histograms.
         // Each daily histogram has a map from a feature value to its number of occurrences on that day.
         List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(
-                timeRange, contexts, schema, featureName, historicalDataConfig);
+                timeRange, contexts, schema, featureName, historicalDataConfig, true);
 
         // Create a map from a feature value to the number of days on which it occurred.
         Map<String, Double> featureValueToNumberOfDaysMap = dailyHistograms.stream()

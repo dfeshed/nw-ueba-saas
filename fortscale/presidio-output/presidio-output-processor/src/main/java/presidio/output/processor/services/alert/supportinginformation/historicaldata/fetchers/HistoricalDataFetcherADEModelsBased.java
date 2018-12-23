@@ -75,10 +75,12 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     /**
      * Daily histograms for a single feature are fetched from the feature bucket collection aggr_<feature_name>.
      *
-     * @param timeRange   the time range of the feature buckets
-     * @param contexts    map of context keys and values (e.g. userId = Bob, machineId = BOB-PC1)
-     * @param schema      the schema for which to populate historical behavior
-     * @param featureName the feature for which to populate historical behavior (e.g. operationType)
+     * @param timeRange           the time range of the feature buckets
+     * @param contexts            map of context keys and values (e.g. userId = Bob, machineId = BOB-PC1)
+     * @param schema              the schema for which to populate historical behavior
+     * @param featureName         the feature for which to populate historical behavior (e.g. operationType)
+     * @param includeOnlyBaseline true if only the baseline time range should be included,
+     *                            false if the rest of the time range should be completed
      * @return a list of daily histograms, one for each day in the time range. For example:
      * Feature: operationType, Date: 01/01/2017, Histogram {FILE_MOVED:5, FILE_COPY:9, ACCESS_RIGHTS_CHANGED:1}
      * Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
@@ -86,7 +88,7 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
     @Override
     public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(
             TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
-            HistoricalDataConfig historicalDataConfig) {
+            HistoricalDataConfig historicalDataConfig, boolean includeOnlyBaseline) {
 
         // Get historical data from model feature buckets.
         String contextId = FeatureBucketUtils.buildContextId(contexts);
@@ -94,7 +96,15 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
         List<FeatureBucket> featureBuckets = adeManagerSdk.findFeatureBuckets(contextId, featureBucketConfName, timeRange);
 
         // Convert the model feature buckets to daily histograms.
-        return convertFeatureBucketsToHistograms(featureName, featureBuckets);
+        List<DailyHistogram<String, Number>> dailyHistograms = convertFeatureBucketsToHistograms(featureName, featureBuckets);
+
+        // Complete historical data in memory if required.
+        if (!includeOnlyBaseline) {
+            featureBuckets = calculateFeatureBuckets(timeRange, contexts, schema, featureName, featureBuckets, historicalDataConfig);
+            dailyHistograms.addAll(convertFeatureBucketsToHistograms(featureName, featureBuckets));
+        }
+
+        return dailyHistograms;
     }
 
     /**

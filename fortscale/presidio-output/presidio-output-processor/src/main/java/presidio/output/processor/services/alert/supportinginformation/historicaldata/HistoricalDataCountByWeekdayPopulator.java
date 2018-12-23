@@ -2,7 +2,6 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.time.TimeUtils;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.WeekdayAggregation;
@@ -35,7 +34,8 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
 
         // fetch daily histograms
-        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contexts, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(
+                timeRange, contexts, schema, featureName, historicalDataConfig, false);
 
         // iterate over days
         for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {
