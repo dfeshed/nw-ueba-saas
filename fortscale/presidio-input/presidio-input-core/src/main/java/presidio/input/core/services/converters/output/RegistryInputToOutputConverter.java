@@ -18,6 +18,7 @@ public class RegistryInputToOutputConverter implements InputOutputConverter {
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setMachineId(transformedEvent.getMachineId());
+        outputEvent.setMachineName(transformedEvent.getMachineName());
         outputEvent.setProcessDirectory(transformedEvent.getProcessDirectory());
         outputEvent.setProcessFileName(transformedEvent.getProcessFileName());
         outputEvent.setProcessFilePath(transformedEvent.getProcessFilePath());
