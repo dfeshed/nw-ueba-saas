@@ -54,6 +54,7 @@ class PresidioDagFactory(AbstractDagFactory):
             args = dag_config.get("args")
             temp_interval = dag_config.get("schedule_interval")
             if temp_interval.startswith("timedelta"):
+                from datetime import timedelta
                 interval = eval(temp_interval)
             else:
                 interval = temp_interval
