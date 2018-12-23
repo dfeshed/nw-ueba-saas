@@ -8,6 +8,13 @@ export default EmberContextMenuService.extend({
     if (deactivate) {
       $(document.body).off('contextmenu', deactivate);
     }
+
+    // Clearing the previously set data, which was causing problems in multiple instance
+    this.set('items', null);
+    this.set('event', null);
+    this.set('selection', null);
+    this.set('details', null);
+
     this._super(...arguments);
   },
 
