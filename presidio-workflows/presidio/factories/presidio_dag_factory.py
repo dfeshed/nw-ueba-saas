@@ -18,7 +18,8 @@ class PresidioDagFactory(AbstractDagFactory):
         configuration_reader = dag_params.get('conf_reader')
 
         pool_configs = configuration_reader.read(conf_key='dags.pools_config')
-        self.create_spring_boot_jar_pools_for_dag(pool_configs, self.log)
+        if pool_configs is not None:
+            self.create_spring_boot_jar_pools_for_dag(pool_configs, self.log)
 
         dags_configs = configuration_reader.read(conf_key='dags.dags_configs')
         created_dags = self.create_dags(dags_configs, self.log)
