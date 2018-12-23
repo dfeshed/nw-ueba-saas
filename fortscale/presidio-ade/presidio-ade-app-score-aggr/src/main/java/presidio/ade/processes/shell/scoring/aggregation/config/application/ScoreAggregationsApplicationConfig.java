@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucketService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerConfig;
@@ -41,9 +40,7 @@ import presidio.monitoring.flush.MetricContainerFlusherConfig;
         AggregatedDataStoreConfig.class,
         BootShimConfig.class,
         StoreManagerConfig.class,
-        MetricContainerFlusherConfig.class,
-        // TODO: Remove this
-        NullStatsServiceConfig.class
+        MetricContainerFlusherConfig.class
 })
 public class ScoreAggregationsApplicationConfig {
     @Value("${score-aggregation.pageIterator.pageSize}")
