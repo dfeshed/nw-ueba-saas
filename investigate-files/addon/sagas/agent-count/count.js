@@ -63,7 +63,7 @@ const getAPICalls = (serviceId, startTime, endTime, checksums) => {
     // call api response will stored as key and value
     result[checksum] = call(
       fetchDistinctCount,
-      'agent.id',
+      'alias.host',
       serviceId,
       startTime,
       endTime,

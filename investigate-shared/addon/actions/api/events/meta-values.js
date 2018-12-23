@@ -24,6 +24,7 @@ export default function(queryNode, metaName, size, language, limit, batch, handl
     filter: [
       { field: 'metaName', value: `${metaName}` },
       { field: 'valuesCount', value: size },
+      { field: 'flags', value: 'sessions,order-ascending' },
       serviceIdFilter(queryNode.serviceId),
       timeRangeFilter(queryNode.startTime, queryNode.endTime),
       conditionsFilter(encodeMetaFilterConditions(filters, language))

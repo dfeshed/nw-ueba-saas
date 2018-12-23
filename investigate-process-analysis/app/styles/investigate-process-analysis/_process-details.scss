@@ -11,6 +11,9 @@
   .rsa-data-table {
     height: calc(100vh - 158px);
   }
+  .rsa-data-table-body-row {
+    width: fit-content;
+  }
 }
 .process-events-details {
 

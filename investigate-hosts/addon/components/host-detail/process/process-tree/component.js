@@ -185,7 +185,7 @@ const TreeComponent = Component.extend({
         menu.set('contextItems', this.get('contextItems'));
 
         this.set('itemList', [item]);
-        if (!this._isAlreadySelected(this.get('selections'), item)) {
+        if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
           this.send('deSelectAllProcess');
           this.send('toggleProcessSelection', item);
         }

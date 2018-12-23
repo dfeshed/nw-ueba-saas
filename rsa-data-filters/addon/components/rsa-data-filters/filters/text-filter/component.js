@@ -101,7 +101,8 @@ export default Component.extend({
     }
   },
 
-  _handleFilterChanged() {
+  _handleFilterChanged(value) {
+    this.set('filterValue.value', value);
     const { isValid, message } = this._validate();
     if (isValid) {
       this.set('isError', false);
@@ -114,8 +115,7 @@ export default Component.extend({
 
   actions: {
     handleKeyUp(value = '') {
-      this.set('filterValue.value', value);
-      debounce(this, this._handleFilterChanged, {}, 600);
+      debounce(this, this._handleFilterChanged, value, 600);
     },
 
     changeOperator(option) {
