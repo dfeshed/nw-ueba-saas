@@ -10,7 +10,6 @@ import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
@@ -87,7 +86,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         if(additionalModels.size()>1){
             throw new IllegalArgumentException(ADDITIONAL_MODELS_ERROR_MSG);
         }
-        Model additionalModel = additionalModels.isEmpty() ? null : additionalModel.get(0);
+
+        Model additionalModel = additionalModels.isEmpty() ? null : additionalModels.get(0);
         if (additionalModel != null) Assert.isInstanceOf(PartitionedDataModel.class, additionalModel, ADDITIONAL_MODELS_ERROR_MSG);
         if (mainModel == null && additionalModel == null) return false;
 
