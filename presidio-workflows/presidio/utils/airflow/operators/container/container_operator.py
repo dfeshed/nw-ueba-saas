@@ -40,30 +40,23 @@ class ContainerOperator(BaseOperator):
         if self.dag.has_task(task_id):
             task = self.dag.get_task(task_id)
 
-            # append task_id to the container list in order to realize if it is upstream or downstream list
-            super(ContainerOperator, self).append_only_new(upstream_or_downstream_list, task_id)
-
-            # if upstream
+            # if upstream:
             # find upstream_task_ids list of container.start_operator.
-            # remove task_id from container upstream_task_ids list.
             # add container.start_operator.task_id to task.downstream_task_ids
-            if task_id in self.upstream_task_ids:
+            if upstream_or_downstream_list is self.upstream_task_ids:
                 array = self.start_operator.upstream_task_ids
-                self._upstream_task_ids.remove(task_id)
                 task.append_only_new(task.downstream_task_ids, self.start_operator.task_id)
 
             # if downstream:
-            # find downstream_task_ids list of end_operator.
-            # remove task_id from container downstream_task_ids list.
+            # find downstream_task_ids list of container.end_operator.
             # add container.end_operator.task_id to task.upstream_task_ids
-            elif task_id in self.downstream_task_ids:
+            elif upstream_or_downstream_list is self.downstream_task_ids:
                 array = self.end_operator.downstream_task_ids
-                self.downstream_task_ids.remove(task_id)
                 task.append_only_new(task.upstream_task_ids, self.end_operator.task_id)
 
-            # add task_id to container upstream | downstream list
+            # add task_id to upstream | downstream list of container start/end operator.
             super(ContainerOperator, self).append_only_new(array, task_id)
         else:
             raise AirflowException(
-                'The {} dag should contain {} task_id {}'
+                'The {} dag should contain {} task_id'
                 ''.format(self.dag.dag_id, task_id))

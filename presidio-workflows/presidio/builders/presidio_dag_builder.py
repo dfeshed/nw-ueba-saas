@@ -67,9 +67,8 @@ class PresidioDagBuilder(LoggingMixin):
         """
 
         old_tasks = dag.tasks
-        populated_dag = sub_dag_builder.build(dag)
-        populated_dag_tasks = populated_dag.tasks
-        new_tasks = [item for item in populated_dag_tasks if item not in old_tasks]
+        sub_dag_builder.build(dag)
+        new_tasks = [item for item in dag.tasks if item not in old_tasks]
 
         first_new_tasks = [task for task in new_tasks if
                            not task.upstream_list and not isinstance(task, ContainerOperator)]
