@@ -44,18 +44,18 @@ class ContainerOperator(BaseOperator):
             # find upstream_task_ids list of container.start_operator.
             # add container.start_operator.task_id to task.downstream_task_ids
             if upstream_or_downstream_list is self.upstream_task_ids:
-                array = self.start_operator.upstream_task_ids
+                task_list_to_append_to = self.start_operator.upstream_task_ids
                 task.append_only_new(task.downstream_task_ids, self.start_operator.task_id)
 
             # if downstream:
             # find downstream_task_ids list of container.end_operator.
             # add container.end_operator.task_id to task.upstream_task_ids
             elif upstream_or_downstream_list is self.downstream_task_ids:
-                array = self.end_operator.downstream_task_ids
+                task_list_to_append_to = self.end_operator.downstream_task_ids
                 task.append_only_new(task.upstream_task_ids, self.end_operator.task_id)
 
             # add task_id to upstream | downstream list of container start/end operator.
-            super(ContainerOperator, self).append_only_new(array, task_id)
+            super(ContainerOperator, self).append_only_new(task_list_to_append_to, task_id)
         else:
             raise AirflowException(
                 'The {} dag should contain {} task_id'

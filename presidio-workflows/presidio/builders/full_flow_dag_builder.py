@@ -55,15 +55,13 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         """
         tasks = full_flow_dag.tasks
         for task in tasks:
-            if isinstance(task, ContainerOperator):
-                end_downstream_tasks = task.end_operator.downstream_list
-                start_upstream_tasks = task.start_operator.upstream_list
-                for end_downstream_task in end_downstream_tasks:
-                    if task.task_id in end_downstream_task.upstream_task_ids:
-                        end_downstream_task.upstream_ltask_ids.remove(task.task_id)
-                for start_upstream_task in start_upstream_tasks:
-                    if task.task_id in start_upstream_task.downstream_task_ids:
-                        start_upstream_task.downstream_task_ids.remove(task.task_id)
+            if not isinstance(task, ContainerOperator):
+                for t in task.downstream_list:
+                    if isinstance(t, ContainerOperator):
+                        task.downstream_task_ids.remove(t.task_id)
+                for t in task.upstream_task_ids:
+                    if isinstance(t, ContainerOperator):
+                        task.upstream_task_ids.remove(t.task_id)
 
     @staticmethod
     def remove_container_operator_tasks(full_flow_dag):
