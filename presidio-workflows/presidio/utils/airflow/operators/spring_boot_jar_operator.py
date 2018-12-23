@@ -129,7 +129,7 @@ class SpringBootJarOperator(BashOperator):
             self.log.debug((
                     "did not find operator %s configuration for operator=%s. settling for default configuration" % (
                 conf_key, self.__class__.__name__)))
-            conf = self.read(SpringBootJarOperator.get_default_conf_conf_key(conf_key))
+            conf = self.read(SpringBootJarOperator.get_default_args_conf_key(conf_key))
         return conf
 
     @staticmethod
