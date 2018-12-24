@@ -3,7 +3,7 @@ pipeline {
         stages {
             stage('Build') {
                 steps {
-                    String BASEURL="baseurl="
+                    String BASEURL="baseurl=";
                     script {
                         if (env.SPECIFIC_RPM_BUILD != '') {
                             BASEURL=BASEURL+env.SPECIFIC_RPM_BUILD
