@@ -1,6 +1,6 @@
 node (env.NODE) {
 
-        stage('UEBA RPM Upgarde') {
+        stage {
             steps {
                 sh "#!/bin/bash \n" +
                         "echo \"Hello from \$SHELL\""
