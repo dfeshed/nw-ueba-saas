@@ -1,9 +1,12 @@
 node (env.NODE) {
 
-    stage "Create build output"
-
-    // Make the output directory.
-    sh "mkdir -p output"
-
+    stages {
+        stage('UEBA RPM Upgarde') {
+            steps {
+                sh "#!/bin/bash \n" +
+                        "echo \"Hello from \$SHELL\""
+            }
+        }
+    }
 
 }
