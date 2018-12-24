@@ -1,8 +1,13 @@
 node (env.NODE) {
 
     stage (){
-        echo "$hostname"
-        echo "$whoami"
+
+        steps {
+            bash '''#!/bin/bash
+                 echo "$hostname"
+                 echo "$whoami"
+                '''
+        }
     }
 
 
