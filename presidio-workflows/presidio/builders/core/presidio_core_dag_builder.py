@@ -35,15 +35,11 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         self.log.debug("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
-        task_sensor_service = TaskSensorService()
-
         input_sub_dag_operator = self._get_input_sub_dag_operator(presidio_core_dag)
-        task_sensor_service.add_task_sequential_sensor(input_sub_dag_operator)
 
         ade_scoring_sub_dag_operator = self._get_ade_scoring_sub_dag_operator(presidio_core_dag)
 
         output_sub_dag_operator = self._get_output_sub_dag_operator(presidio_core_dag)
-        task_sensor_service.add_task_sequential_sensor(output_sub_dag_operator)
 
         self._push_forwarding(output_sub_dag_operator, presidio_core_dag)
 
@@ -91,4 +87,6 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         output_dag_id = 'output_dag'
 
         return self._create_sub_dag_operator(OutputDagBuilder(self.data_sources), output_dag_id, presidio_core_dag)
+
+
 
