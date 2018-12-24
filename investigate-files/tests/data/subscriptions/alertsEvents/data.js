@@ -104,7 +104,7 @@ export default [].concat(
       'user': 'WIN2012R2TMPLTE\\\\Administrator',
       'analysis_session': '',
       'username': '',
-      'vid': '9217136421101689658'
+      'process_vid': '9217136421101689658'
     }
   ]
 );

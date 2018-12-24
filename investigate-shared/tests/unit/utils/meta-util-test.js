@@ -54,7 +54,7 @@ test('transform returns fields from map or specific object', function(assert) {
   assert.equal(keys[3], 'IP', 'ip.all => IP');
   assert.equal(keys[4], 'device_type', 'device.type => device_type');
   assert.equal(keys[5], 'file_SHA256', 'checksum.src => file_SHA256');
-  assert.equal(keys[6], 'vid', 'process.vid.src => vid');
+  assert.equal(keys[6], 'process_vid', 'process.vid.src => process_vid');
   assert.equal(keys[7], 'action', 'action => action');
   assert.equal(keys[8], 'user', 'user.all => user');
   assert.equal(keys[9], 'operating_system', 'OS => operating_system');

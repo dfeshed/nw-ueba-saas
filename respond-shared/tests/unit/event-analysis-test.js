@@ -10,7 +10,7 @@ const services = [
 
 const event = {
   'agent_id': 'C73CD5FF-5962-4A5F-2E9D-1CFFF4DFED2D',
-  'vid': '9217136421101689658',
+  'process_vid': '9217136421101689658',
   'event_source': '10.40.15.182:50002',
   'device_type': 'nwendpoint',
   'source': {
@@ -38,7 +38,7 @@ test('Calling createProcessAnalysisLink() returned process analysis link', funct
   assert.ok(result, 'Expected valid process analysis link');
 });
 
-test('Calling createProcessAnalysisLink() when process vid is missing returns null', function(assert) {
+test('Calling createProcessAnalysisLink() when process_vid is missing returns null', function(assert) {
 
   const eventItem = {
     'agent_id': 'C73CD5FF-5962-4A5F-2E9D-1CFFF4DFED2D',

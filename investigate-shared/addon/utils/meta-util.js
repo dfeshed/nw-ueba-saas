@@ -12,7 +12,7 @@ const META_MAP = {
   'size': 'size',
   'sessionid': 'event_source_id',
   'agent.id': 'agent_id',
-  'process.vid.src': 'vid'
+  'process.vid.src': 'process_vid'
 };
 
 import moment from 'moment';
