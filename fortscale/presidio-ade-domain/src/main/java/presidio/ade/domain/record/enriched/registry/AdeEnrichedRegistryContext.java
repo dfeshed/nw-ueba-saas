@@ -7,6 +7,7 @@ public class AdeEnrichedRegistryContext extends BaseEnrichedContext {
 
     private String userId;
     private String machineId;
+    private String machineOwner;
     private String processDirectory;
     private String processFileName;
     private List<String> processDirectoryGroups;
@@ -24,6 +25,7 @@ public class AdeEnrichedRegistryContext extends BaseEnrichedContext {
         super(enrichedRegistryRecord.getEventId());
         this.userId = enrichedRegistryRecord.getUserId();
         this.machineId = enrichedRegistryRecord.getMachineId();
+        this.machineOwner = enrichedRegistryRecord.getMachineOwner();
         this.processDirectory = enrichedRegistryRecord.getProcessDirectory();
         this.processFileName = enrichedRegistryRecord.getProcessFileName();
         this.processDirectoryGroups = enrichedRegistryRecord.getProcessDirectoryGroups();
@@ -32,7 +34,6 @@ public class AdeEnrichedRegistryContext extends BaseEnrichedContext {
         this.registryKeyGroup = enrichedRegistryRecord.getRegistryKeyGroup();
         this.registryKey = enrichedRegistryRecord.getRegistryKey();
         this.registryValueName = enrichedRegistryRecord.getRegistryValueName();
-
     }
 
     public String getUserId() {
@@ -49,6 +50,14 @@ public class AdeEnrichedRegistryContext extends BaseEnrichedContext {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public String getMachineOwner() {
+        return machineOwner;
+    }
+
+    public void setMachineOwner(String machineOwner) {
+        this.machineOwner = machineOwner;
     }
 
     public String getProcessDirectory() {
