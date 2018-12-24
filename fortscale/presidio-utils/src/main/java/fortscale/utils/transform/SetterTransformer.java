@@ -59,4 +59,9 @@ public class SetterTransformer extends AbstractJsonObjectTransformer {
     public void setValue(Object value) {
         this.value = value;
     }
+
+    public static SetterTransformer forKey(String key) {
+        String name = String.format("%s-setter-transformer", key);
+        return new SetterTransformer(name, key, null);
+    }
 }
