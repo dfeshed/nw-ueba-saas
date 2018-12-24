@@ -1,12 +1,10 @@
 node (env.NODE) {
 
-    stage ('test'){
+    stage ('GetNodeName'){
 
         steps {
-            sh '''#!/bin/bash
-                 echo "$hostname"
-                 echo "$whoami"
-                '''
+            def node_name = "${NODE_NAME}"
+            echo "The Node Name is: ${node_name}"
         }
     }
 
