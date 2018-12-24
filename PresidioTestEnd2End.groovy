@@ -3,7 +3,7 @@ node (env.NODE) {
     stage ('test'){
 
         steps {
-            bash '''#!/bin/bash
+            sh '''#!/bin/bash
                  echo "$hostname"
                  echo "$whoami"
                 '''
