@@ -19,6 +19,7 @@ public class EnrichedProcessRecord extends EnrichedRecord {
 
     public static final String USER_ID_FIELD = "userId";
     public static final String MACHINE_ID_FIELD = "machineId";
+    public static final String MACHINE_OWNER_FIELD = "machineOwner";
     public static final String SRC_PROCESS_DIRECTORY_FIELD = "srcProcessDirectory";
     public static final String SRC_PROCESS_FILE_NAME_FIELD = "srcProcessFileName";
     public static final String SRC_PROCESS_DIRECTORY_GROUPS_FIELD = "srcProcessDirectoryGroups";
@@ -35,6 +36,8 @@ public class EnrichedProcessRecord extends EnrichedRecord {
     private String userId;
     @Field(MACHINE_ID_FIELD)
     private String machineId;
+    @Field(MACHINE_OWNER_FIELD)
+    private String machineOwner;
     @Field(SRC_PROCESS_DIRECTORY_FIELD)
     private String srcProcessDirectory;
     @Field(SRC_PROCESS_FILE_NAME_FIELD)
@@ -92,6 +95,14 @@ public class EnrichedProcessRecord extends EnrichedRecord {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public String getMachineOwner() {
+        return machineOwner;
+    }
+
+    public void setMachineOwner(String machineOwner) {
+        this.machineOwner = machineOwner;
     }
 
     public String getSrcProcessDirectory() {

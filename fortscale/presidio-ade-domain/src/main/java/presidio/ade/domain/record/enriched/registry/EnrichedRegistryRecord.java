@@ -21,6 +21,7 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
 
     public static final String USER_ID_FIELD = "userId";
     public static final String MACHINE_ID_FIELD = "machineId";
+    public static final String MACHINE_OWNER_FIELD = "machineOwner";
     public static final String PROCESS_DIRECTORY_FIELD = "processDirectory";
     public static final String PROCESS_FILE_NAME_FIELD = "processFileName";
     public static final String PROCESS_DIRECTORY_GROUPS_FIELD = "processDirectoryGroups";
@@ -36,6 +37,8 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
     private String userId;
     @Field(MACHINE_ID_FIELD)
     private String machineId;
+    @Field(MACHINE_OWNER_FIELD)
+    private String machineOwner;
     @Field(PROCESS_DIRECTORY_FIELD)
     private String processDirectory;
     @Field(PROCESS_FILE_NAME_FIELD)
@@ -90,6 +93,14 @@ public class EnrichedRegistryRecord extends EnrichedRecord {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public String getMachineOwner() {
+        return machineOwner;
+    }
+
+    public void setMachineOwner(String machineOwner) {
+        this.machineOwner = machineOwner;
     }
 
     public String getProcessDirectory() {

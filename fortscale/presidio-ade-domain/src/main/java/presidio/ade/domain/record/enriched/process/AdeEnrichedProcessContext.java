@@ -9,6 +9,7 @@ public class AdeEnrichedProcessContext extends BaseEnrichedContext {
 
     private String userId;
     private String machineId;
+    private String machineOwner;
     private String srcProcessDirectory;
     private String srcProcessFileName;
     private List<String> srcProcessDirectoryGroups;
@@ -29,6 +30,7 @@ public class AdeEnrichedProcessContext extends BaseEnrichedContext {
         super(enrichedProcessRecord.getEventId());
         this.userId = enrichedProcessRecord.getUserId();
         this.machineId = enrichedProcessRecord.getMachineId();
+        this.machineOwner = enrichedProcessRecord.getMachineOwner();
         this.srcProcessDirectory = enrichedProcessRecord.getSrcProcessDirectory();
         this.srcProcessFileName = enrichedProcessRecord.getSrcProcessFileName();
         this.srcProcessDirectoryGroups = enrichedProcessRecord.getSrcProcessDirectoryGroups();
@@ -55,6 +57,14 @@ public class AdeEnrichedProcessContext extends BaseEnrichedContext {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public String getMachineOwner() {
+        return machineOwner;
+    }
+
+    public void setMachineOwner(String machineOwner) {
+        this.machineOwner = machineOwner;
     }
 
     public String getSrcProcessDirectory() {
