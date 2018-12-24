@@ -233,28 +233,36 @@
       "name": "checksum-id",
       "sourceKey": "checksum_src",
       "isRemoveSourceKey": true,
-      "destinationKey": "additionalInfo.checksumId"
+      "destinationKeys": [
+        "additionalInfo.checksumId"
+      ]
     },
     {
       "type": "copy_value",
       "name": "agent-id",
       "sourceKey": "agent_id",
       "isRemoveSourceKey": true,
-      "destinationKey": "additionalInfo.agentId"
+      "destinationKeys": [
+        "additionalInfo.agentId"
+      ]
     },
     {
       "type": "copy_value",
       "name": "os-type",
       "sourceKey": "os",
       "isRemoveSourceKey": true,
-      "destinationKey": "additionalInfo.osType"
+      "destinationKeys": [
+        "additionalInfo.osType"
+      ]
     },
     {
       "type": "copy_value",
       "name": "process-vid-src",
       "sourceKey": "process_vid_src",
       "isRemoveSourceKey": true,
-      "destinationKey": "additionalInfo.processVidSrc"
+      "destinationKeys": [
+        "additionalInfo.processVidSrc"
+      ]
     }
   ]
 }
