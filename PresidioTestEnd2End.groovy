@@ -1,6 +1,6 @@
 node (env.NODE) {
 
-    stage (){
+    stage ('test'){
 
         steps {
             bash '''#!/bin/bash
