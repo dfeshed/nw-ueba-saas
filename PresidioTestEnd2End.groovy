@@ -8,8 +8,8 @@ pipeline {
                 steps {
                     script {
                         if (env.SPECIFIC_RPM_BUILD != '') {
-                            $BASEURL = $BASEURL + env.SPECIFIC_RPM_BUILD
-                            echo "$BASEURL"
+                            env.BASEURL = env.BASEURL + env.SPECIFIC_RPM_BUILD
+                            echo env.BASEURL
                         } else {
                             echo 'I execute elsewhere'
                         }
