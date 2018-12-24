@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
 		@Type(value = GaussianPriorModel.class, name = "gaussian-prior-model"),
 		@Type(value = CategoryRarityModel.class, name = "category-rarity-model"),
+		@Type(value = CategoryRarityGlobalModel.class, name = "category-rarity-global-model"),
 		@Type(value = ContinuousDataModel.class, name = "continuous-data-model"),
 		@Type(value = ContinuousMaxDataModel.class, name = "continuous-max-data-model"),
 		@Type(value = TimeModel.class, name = "time-model"),
