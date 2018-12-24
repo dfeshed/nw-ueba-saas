@@ -10,7 +10,7 @@ import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pi
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
@@ -240,14 +240,20 @@ const TreeComponent = Component.extend({
     },
 
     resetRiskScoreAction() {
+      const limitedFiles = this.get('selectedFiles').slice(0, 100);
       const callBackOptions = {
-        onSuccess: () => {
-          success('investigateFiles.riskScore.success');
+        onSuccess: (response) => {
+          const { data } = response;
+          if (data === limitedFiles.length) {
+            success('investigateFiles.riskScore.success');
+          } else {
+            warning('investigateFiles.riskScore.warning');
+          }
         },
         onFailure: () => failure('investigateFiles.riskScore.error')
       };
       this.set('showResetScoreModal', false);
-      this.send('resetRiskScore', this.get('selectedFiles'), callBackOptions);
+      this.send('resetRiskScore', limitedFiles, 'FILE', callBackOptions);
       this.set('selectedFiles', null);
     },
 
