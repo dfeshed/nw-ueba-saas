@@ -467,6 +467,8 @@ const TreeComponent = Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
+    const toolBarButtons = document.querySelector('.process-details-buttons');
+
     if (this.isDestroyed) {
       return;
     }
@@ -500,7 +502,10 @@ const TreeComponent = Component.extend({
           }
           this.set('rootNode', root);
           this.set('hasEvents', true);
+          this._updateStyle(toolBarButtons, 'block');
         } else {
+          // Hide the close button
+          this._updateStyle(toolBarButtons, 'none');
           this.set('hasEvents', false);
         }
 
@@ -515,7 +520,11 @@ const TreeComponent = Component.extend({
     }
   },
 
-
+  _updateStyle(element, style) {
+    if (element) {
+      element.style.display = style;
+    }
+  },
   /**
    * Build the chart for given source and root node
    * @param source
