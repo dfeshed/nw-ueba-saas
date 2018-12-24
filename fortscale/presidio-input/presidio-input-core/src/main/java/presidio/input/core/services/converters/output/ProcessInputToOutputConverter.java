@@ -20,6 +20,7 @@ public class ProcessInputToOutputConverter implements InputOutputConverter {
         outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setMachineId(transformedEvent.getMachineId());
         outputEvent.setMachineName(transformedEvent.getMachineName());
+        outputEvent.setMachineOwner(transformedEvent.getMachineOwner());
         outputEvent.setSrcProcessDirectory(transformedEvent.getSrcProcessDirectory());
         outputEvent.setSrcProcessFileName(transformedEvent.getSrcProcessFileName());
         outputEvent.setSrcProcessFilePath(transformedEvent.getSrcProcessFilePath());
