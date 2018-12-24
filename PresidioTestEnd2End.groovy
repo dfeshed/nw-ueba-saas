@@ -3,10 +3,11 @@ pipeline {
         stages {
             stage('Build') {
                 steps {
-                    String BASEURL="baseurl=";
+                    def BASEURL="baseurl="
                     script {
                         if (env.SPECIFIC_RPM_BUILD != '') {
                             BASEURL=BASEURL+env.SPECIFIC_RPM_BUILD
+                            echo "$BASEURL"
                         } else {
                             echo 'I execute elsewhere'
                         }
