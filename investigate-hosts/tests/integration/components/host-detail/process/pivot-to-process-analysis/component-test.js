@@ -42,4 +42,10 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
     assert.equal(findAll('.rsa-form-button-wrapper')[0].classList.contains('is-disabled'), true, 'Analyze process is disabled when multiple items are selected');
   });
 
+  test('Analyze process is disabled, for linux host', async function(assert) {
+    await render(hbs`{{host-detail/process/pivot-to-process-analysis osType='linux' item=[{ a:1 }, { a:1 }] }}`);
+    assert.equal(findAll('.rsa-form-button-wrapper')[0].classList.contains('is-disabled'), true, 'Analyze process is disabled when multiple items are selected');
+  });
+
+
 });

@@ -44,8 +44,11 @@ const PivotToPA = Component.extend({
    * @public
    */
   @computed('item')
-  disableAnalyzeButton(item) {
-    return item && item.length ? !(item.length === 1) : true;
+  disableAnalyzeButton(item = []) {
+    if (!item.length || item.length > 1 || this.get('osType') === 'linux') {
+      return true;
+    }
+    return false;
   },
 
 
