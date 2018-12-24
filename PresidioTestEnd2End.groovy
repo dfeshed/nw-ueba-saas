@@ -3,8 +3,14 @@ pipeline {
         stages {
             stage('Build') {
                 steps {
-                    sh "#!/bin/bash \n" +
-                            "echo \"Hello from \$SHELL\""
+                    String BASEURL="baseurl="
+                    script {
+                        if (env.SPECIFIC_RPM_BUILD != '') {
+                            BASEURL=BASEURL+env.SPECIFIC_RPM_BUILD
+                        } else {
+                            echo 'I execute elsewhere'
+                        }
+                    }
                 }
             }
         }
