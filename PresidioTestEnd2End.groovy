@@ -1,6 +1,5 @@
 pipeline {
-    node (env.NODE) {
-
+        agent { label env.NODE }
         stages {
             stage('Build') {
                 steps {
@@ -9,5 +8,4 @@ pipeline {
                 }
             }
         }
-    }
 }
