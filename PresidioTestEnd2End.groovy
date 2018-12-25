@@ -5,6 +5,7 @@ pipeline {
             FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
             // The credentials (name + password) associated with the RSA build user.
             RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
+            REPOSITORY_NAME = "presidio-integration-test"
         }
 
         stages {
@@ -84,19 +85,19 @@ def buildIntegrationTestProject(
         String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
     sh "git config --global user.name \"${userName}\""
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
-    dir(repositoryName) {
+    dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
     }
 }
 
 def mvnCleanInstall(){
-    dir(repositoryName) {
+    dir(env.REPOSITORY_NAME) {
         sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
     }
 }
 
 def runEnd2EndTestAutomation(){
-    dir(repositoryName) {
+    dir(env.REPOSITORY_NAME) {
         sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
