@@ -19,7 +19,7 @@ pipeline {
                 steps {
                     script {
                         setBaseUrl ()
-                  //      uebaPreparingEnv()
+                        uebaPreparingEnv()
                     }
                 }
             }
