@@ -90,9 +90,11 @@ def buildIntegrationTestProject(
 }
 
 def mvnCleanInstall(){
-    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=${env.WORKSPACE}/presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+    sh "cd ${env.WORKSPACE}/presidio-integration-test/"
+    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
 }
 
 def runEnd2EndTestAutomation(){
-    sh "mvn -Dmaven.multiModuleProjectDirectory=${env.WORKSPACE}/presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+    sh "cd ${env.WORKSPACE}/presidio-integration-test/"
+    sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
 }
