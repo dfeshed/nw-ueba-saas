@@ -5,12 +5,7 @@ pipeline {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
     }
-    parameters {
-        choice(name: 'STABILITY', choices: ['dev', 'beta', 'alpha', 'rc', 'gold'], description: 'Select RPMs Stability Type')
-        choice(name: 'VERSION', choices: ['11.3.0.0', '11.2.1.0'], description: 'Select RPMs version')
-        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'Insert the location of the Presidio RPMs you want to install. (No ssl use http)')
-        booleanParam(name: 'RUN_CLEANUP', defaultValue: false, description: 'Run Presidio Cleanup and Logs Cleanup')
-    }
+
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
