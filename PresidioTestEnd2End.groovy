@@ -60,8 +60,6 @@ def setBaseUrl (
     }
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
-    println ("baseUrlresponsecode: " + baseUrlresponsecode)
-
     if (baseUrlresponsecode == '200'){
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
     }
@@ -92,9 +90,9 @@ def buildIntegrationTestProject(
 }
 
 def mvnCleanInstall(){
-    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=${env.WORKSPACE}/presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
 }
 
 def runEnd2EndTestAutomation(){
-    sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+    sh "mvn -Dmaven.multiModuleProjectDirectory=${env.WORKSPACE}/presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
 }
