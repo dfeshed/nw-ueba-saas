@@ -33,4 +33,6 @@ def setBaseUrl (
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability
         println (baseUrl)
     }
+    sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
+    sh "cat /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
 }
