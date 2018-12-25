@@ -53,8 +53,8 @@ def setBaseUrl (
 
 def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
-    //String schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler').trim()
-    String schedulerActivity =  sh "systemctl is-active airflow-scheduler || exit 0"
+    String schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler || exit 0').trim()
+    //String schedulerActivity =  sh "systemctl is-active airflow-scheduler || exit 0"
     println ('Presidio RPMs before The Upgrade')
     println (schedulerActivity)
     sh "rpm -qa | grep presidio"
