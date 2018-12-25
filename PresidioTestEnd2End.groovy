@@ -99,6 +99,6 @@ def mvnCleanInstall(){
 def runEnd2EndTestAutomation(){
     dir(env.REPOSITORY_NAME) {
         println(env.REPOSITORY_NAME)
-        sh "mvn -B -f -Dmaven.multiModuleProjectDirectory=presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        sh "mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
