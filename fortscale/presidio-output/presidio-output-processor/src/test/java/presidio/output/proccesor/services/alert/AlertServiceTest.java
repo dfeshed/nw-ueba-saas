@@ -5,15 +5,11 @@ import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,10 +25,6 @@ import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
-import presidio.ade.domain.store.smart.SmartDataReader;
-import presidio.ade.domain.store.smart.SmartRecordsMetadata;
-import presidio.monitoring.services.MetricCollectingService;
-import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.Indicator;
@@ -52,8 +44,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 
 /**
  * @author Efrat Noam
@@ -69,35 +59,10 @@ import static org.mockito.Matchers.eq;
 public class AlertServiceTest {
     private static final String CONTEXT_ID = "testUser";
 
-    @MockBean
-    private SmartDataReader smartDataReader;
-    @MockBean
-    private MetricCollectingService metricCollectingService;
-    @MockBean
-    private MetricsExporter metricsExporter;
-
     @Autowired
     private AlertServiceImpl alertService;
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    public void setup(int smartListSize, int numOfSmartsBelowScoreThreshold, int scoreThreshold) {
-        List<SmartRecord> smarts = new ArrayList<>();
-
-        for (int i = 0; i <= numOfSmartsBelowScoreThreshold - 1; i++) {
-            smarts.add(generateSingleSmart(scoreThreshold - 1));
-        }
-
-        for (int i = numOfSmartsBelowScoreThreshold + 1; i <= smartListSize; i++) {
-            smarts.add(generateSingleSmart(scoreThreshold + 1));
-        }
-
-        List<ContextIdToNumOfItems> contextIdToNumOfItems = Collections.singletonList(new ContextIdToNumOfItems(CONTEXT_ID, smartListSize));
-        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class), eq(50))).thenReturn(contextIdToNumOfItems);
-        Set<String> contextIds = new HashSet<>();
-        contextIds.add(CONTEXT_ID);
-        Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(50))).thenReturn(smarts);
-    }
 
     @Test
     public void generateAlertWithLowSmartScore() {
@@ -117,7 +82,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void generateAlertWithOnlyStaticIndicatorsTest() {
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
@@ -147,7 +111,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void generateAlertWithNotOnlyStaticIndicatorsTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -166,8 +129,9 @@ public class AlertServiceTest {
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
         // enriched event
-        EnrichedRecord fileEnrichedRecord = new EnrichedFileRecord(eventTime);
+        EnrichedFileRecord fileEnrichedRecord = new EnrichedFileRecord(eventTime);
         fileEnrichedRecord.setEventId("eventId");
+        fileEnrichedRecord.setUserId("userId");
         mongoTemplate.save(fileEnrichedRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName("file"));
         // scored enriched event
         AdeScoredEnrichedRecord fileScoredEnrichedEvent = new AdeScoredFileRecord(eventTime, "startInstant.userId.file.score", "file", 10.0d, new ArrayList<>(), fileEnrichedRecord);
@@ -192,7 +156,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void testSingleIndicatorsWithMultipleEventsTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -335,7 +298,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void testAlertWithSourceMachineTransformer() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -358,7 +320,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void testScoreIndicatorsContribution() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
@@ -461,6 +422,7 @@ public class AlertServiceTest {
             enrichedAuthenticationEventRecord.setOperationType(authenticationEvent.getOperationType());
             enrichedAuthenticationEventRecord.setOperationTypeCategories(authenticationEvent.getOperationTypeCategories());
             enrichedAuthenticationEventRecord.setResult(authenticationEvent.getResult());
+            enrichedAuthenticationEventRecord.setSrcMachineNameRegexCluster(authenticationEvent.getSrcMachineNameRegexCluster());
             mongoTemplate.save(enrichedAuthenticationEventRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.AUTHENTICATION.getName().toLowerCase()));
             // generate scored ade events
             AdeScoredEnrichedRecord authenticationScoredEnrichedEvent = new AdeScoredAuthenticationRecord(enrichedAuthenticationEventRecord.getStartInstant(), adeEventType, "authentication", 10.0d, new ArrayList<>(), enrichedAuthenticationEventRecord);
