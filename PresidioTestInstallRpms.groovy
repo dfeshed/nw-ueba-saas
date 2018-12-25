@@ -55,7 +55,6 @@ def setBaseUrl (
 
 def uebaPreparingEnv (){
     schedulerActivity = sh(returnStdout: true, script: "systemctl is-active airflow-scheduler").trim()
-    println ('Presidio RPMs before The Upgrade')
     sh "rpm -qa | grep presidio"
     if (env.RUN_CLEANUP){
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
@@ -66,7 +65,6 @@ def uebaPreparingEnv (){
         sh "systemctl start airflow-scheduler"
         sh "systemctl start airflow-webserver"
     }
-    println ('Presidio RPMs After The Upgrade')
     sh "rpm -qa | grep presidio"
 }
 
