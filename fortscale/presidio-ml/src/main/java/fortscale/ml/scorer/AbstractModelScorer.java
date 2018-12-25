@@ -131,7 +131,7 @@ public abstract class AbstractModelScorer extends AbstractScorer {
         if (featureScore == null) {
             return new CertaintyFeatureScore(getName(), 0d, 0d);
         }
-        double certainty = calculateCertainty(model);
+        double certainty = calculateCertainty(model, additionalModels);
         if (isUseCertaintyToCalculateScore) {
             featureScore.setScore(featureScore.getScore() * certainty);
         } else {
@@ -149,17 +149,19 @@ public abstract class AbstractModelScorer extends AbstractScorer {
                                                    List<Model> additionalModels,
                                                    AdeRecordReader adeRecordReader);
 
-    protected double calculateCertainty(Model model){
-        if (enoughNumOfPartitionsToInfluence <= 1 || model == null) {
+    protected double calculateCertainty(Model model, List<Model> additionalModels){
+        if (model == null  || !(model instanceof PartitionedDataModel)) {
             return 1;
         }
 
-        if(!(model instanceof PartitionedDataModel))
-        {
-            throw new RuntimeException(String.format("can calculate certainty only for models of type %s, got=%s instead ",PartitionedDataModel.class,model.getClass().toString()));
+        return calculateCertainty(((PartitionedDataModel) model).getNumOfPartitions());
+    }
+
+    protected double calculateCertainty(long numOfPartitions){
+        if (enoughNumOfPartitionsToInfluence <= 1) {
+            return 1;
         }
 
-        long numOfPartitions =((PartitionedDataModel) model).getNumOfPartitions();
         double certainty = 0;
         if (numOfPartitions >= enoughNumOfPartitionsToInfluence) {
             certainty = 1;
