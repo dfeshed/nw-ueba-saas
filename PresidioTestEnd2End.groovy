@@ -59,6 +59,8 @@ def setBaseUrl (
         println (baseUrl)
     }
     baseUrlValidation = baseUrl.drop(8)
+    println ("baseUrlValidation: " + ${baseUrlValidation})
+
     baseUrlresponsecode = "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}"
     if (baseUrlresponsecode == '200'){
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
