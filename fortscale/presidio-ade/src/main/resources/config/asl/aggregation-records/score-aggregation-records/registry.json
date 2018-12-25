@@ -16,7 +16,7 @@
       }
     },
     {
-      "name": "sumOfHighestProcessFilePathScoresUserIdRegistryKeyGroupHourly",
+      "name": "sumOfHighestProcessFilePathScoresUserIdRegistryKeyGroupRegistryHourly",
       "type": "P",
       "bucketConfName": "processFilePathToHighestScoreMapRegistryKeyGroupRegistryHourly",
       "numberOfBuckets": 1,
