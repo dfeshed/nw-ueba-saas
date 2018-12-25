@@ -61,7 +61,7 @@ def uebaPreparingEnv (){
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
     }
-    //sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
     if (runCleanup == 'false' && schedulerActivity == 'active' ){
        sh "systemctl start airflow-scheduler"
        sh "systemctl start airflow-webserver"
