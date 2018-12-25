@@ -64,7 +64,7 @@ def setBaseUrl (
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
     }
     else {
-        error("RPM Location is Wrong- ${baseUrl}")
+        error("RPM Location is Wrong- ${baseUrlValidation}")
     }
 }
 
