@@ -7,15 +7,24 @@ pipeline {
             stage('Build') {
                 steps {
                     script {
-                        if (env.SPECIFIC_RPM_BUILD != '') {
-                            env.BASEURL = env.BASEURL env.SPECIFIC_RPM_BUILD
-                            echo env.BASEURL
-                            echo env.SPECIFIC_RPM_BUILD
-                        } else {
-                            echo 'I execute elsewhere'
-                        }
+                        setBaseUrl ()
                     }
                 }
             }
         }
+}
+
+/******************************
+ *   UEBA RPMs Installation   *
+ ******************************/
+def setBaseUrl (
+        String RpmBuildPath = env.SPECIFIC_RPM_BUILD ){
+    String baseUrl = "baseurl="
+    if (RpmBuildPath != '') {
+        baseUrl = baseUrl + RpmBuildPath
+        println (baseUrl)
+        println (RpmBuildPath)
+    } else {
+        echo 'I execute elsewhere'
+    }
 }
