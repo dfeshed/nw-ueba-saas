@@ -49,16 +49,21 @@ def setBaseUrl (
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
     }
     else {
-        error("RPM Location is Wrong- ${baseUrlValidation}")
+        error("RPM Location is Wrong: ${baseUrlValidation}")
     }
 }
 
 def uebaPreparingEnv (){
+    String schedulerActivity = sh "systemctl is-active airflow-scheduler"
     if (RUN_CLEANUP){
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
     }
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
+    if (!RUN_CLEANUP && schedulerActivity == 'active' ){
+        sh "systemctl start airflow-scheduler"
+        sh "systemctl start airflow-webserver"
+    }
 }
 
 /**************************
