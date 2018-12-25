@@ -55,8 +55,9 @@ def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
     //String schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler').trim()
     sh(returnStdout: true, script: 'systemctl is-active mongod').trim()
+    sh "systemctl is-active mongod"
     println ('Presidio RPMs before The Upgrade')
-    sh(returnStdout: true, script: 'rpm -qa | grep presidio').trim()
+    sh "rpm -qa | grep presidio"
     if (runCleanup == true){
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
