@@ -1,42 +1,27 @@
 pipeline {
-        agent { label env.NODE }
-        environment {
-            BASEURL = "baseurl="
-            FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-            // The credentials (name + password) associated with the RSA build user.
-            RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
-        }
+    agent { label env.NODE }
+    environment {
+        BASEURL = "baseurl="
+        // The credentials (name + password) associated with the RSA build user.
+        RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
+    }
 
-        stages {
-            stage('presidio-integration-test Project Clone') {
-                steps {
-                    cleanWs()
-                    buildIntegrationTestProject()
-                }
+    stages {
+        stage('presidio-integration-test Project Clone') {
+            steps {
+                cleanWs()
+                buildIntegrationTestProject()
             }
-            stage('UEBA Cleanup and RPMs Upgrade') {
-                steps {
-                    script {
-                        setBaseUrl ()
-                  //      uebaPreparingEnv()
-                    }
-                }
-            }
-            stage('presidio-integration-test Project Build Pipeline Initialization') {
-                steps {
-                    script {
-                        mvnCleanInstall ()
-                    }
-                }
-            }
-            stage('End 2 End Test Automation') {
-                steps {
-                    script {
-                        runEnd2EndTestAutomation()
-                    }
+        }
+        stage('UEBA Cleanup and RPMs Upgrade') {
+            steps {
+                script {
+                    setBaseUrl ()
+                    uebaPreparingEnv()
                 }
             }
         }
+    }
 }
 
 /******************************
@@ -46,7 +31,7 @@ def setBaseUrl (
         String rpmBuildPath = env.SPECIFIC_RPM_BUILD,
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
-        ){
+){
     String baseUrl = "baseurl="
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
@@ -90,13 +75,11 @@ def buildIntegrationTestProject(
 }
 
 def mvnCleanInstall(){
-    dir(repositoryName) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
-    }
+    sh "cd ${env.WORKSPACE}/presidio-integration-test/"
+    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
 }
 
 def runEnd2EndTestAutomation(){
-    dir(repositoryName) {
-        sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
-    }
+    sh "cd ${env.WORKSPACE}/presidio-integration-test/"
+    sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-test/presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
 }
