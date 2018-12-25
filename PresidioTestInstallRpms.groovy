@@ -55,8 +55,10 @@ def setBaseUrl (
 
 def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
-    //schedulerActivity = sh(returnStdout: true, script: "systemctl is-active airflow-scheduler").trim()
-    if (runCleanup == false){
+    schedulerActivity = sh(returnStdout: true, script: "systemctl is-active airflow-scheduler").trim()
+    println ('Presidio RPMs before The Upgrade')
+    sh "rpm -qa | grep presidio"
+    if (runCleanup == true){
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
     }
@@ -65,20 +67,17 @@ def uebaPreparingEnv (){
         sh "systemctl start airflow-scheduler"
         sh "systemctl start airflow-webserver"
     }
+    println ('Presidio RPMs After The Upgrade')
+    sh "rpm -qa | grep presidio"
 }
 
 /**************************
  * Project Build Pipeline *
  **************************/
 def buildIntegrationTestProject(
-        //String repositoryName = "presidio-integration-test",
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW
-        //String branchName = 'master'
         ) {
     sh "git config --global user.name \"${userName}\""
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
-    //dir(repositoryName) {
-    //    sh "git checkout ${branchName}"
-    //}
 }
