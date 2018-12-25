@@ -1098,9 +1098,9 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
-- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
+- id: sumOfHighestProcessFilePathScoresUserIdRegistryKeyGroupHourly
   type: SCORE_AGGREGATION
-  name: abnormal_process_modified_a_service_key_registry
+  name: abnormal_process_modified_registry_key_group
   schema: REGISTRY
   adeEventType: scored_enriched.registry.processFilePath.registryKeyGroup.registry.score
   modelContextFields:
