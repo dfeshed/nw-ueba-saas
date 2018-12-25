@@ -2,12 +2,11 @@ pipeline {
         agent { label env.NODE }
         environment {
             BASEURL = "baseurl="
+            FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
             // The credentials (name + password) associated with the RSA build user.
             RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         }
-    environmentVariables {
-        env('FLUME_HOME', '/var/lib/netwitness/presidio/flume/')
-    }
+
         stages {
             stage('presidio-integration-test Project Clone') {
                 steps {
