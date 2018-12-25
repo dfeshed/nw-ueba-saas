@@ -4,6 +4,7 @@ pipeline {
         BASEURL = "baseurl="
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
+        OWB_ALLOW_NON_FIPS = "on"
     }
 
     stages {
@@ -55,7 +56,7 @@ def setBaseUrl (
 
 def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
-    //schedulerActivity = sh(returnStdout: true, script: "systemctl is-active airflow-scheduler").trim()
+    String schedulerActivity = sh(returnStdout: true, script: "systemctl is-active airflow-scheduler").trim()
     println ('Presidio RPMs before The Upgrade')
     sh "rpm -qa | grep presidio"
     if (runCleanup == true){
