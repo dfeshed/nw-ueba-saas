@@ -59,7 +59,7 @@ def setBaseUrl (
         println (baseUrl)
     }
     baseUrlValidation = baseUrl.drop(8)
-    baseUrlresponsecode = "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}"
+    baseUrlresponsecode = sh "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}"
     println ("baseUrlresponsecode: " + baseUrlresponsecode)
 
     if (baseUrlresponsecode == '200'){
