@@ -52,10 +52,10 @@ def setBaseUrl (
         baseUrl = baseUrl + rpmBuildPath
         println (baseUrl)
     } else if (rpmVeriosn == '11.2.1.0'){
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.2/11.2.1/11.2.1.0-" + stability
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.2/11.2.1/11.2.1.0-" + stability + "/"
         println (baseUrl)
     } else if (rpmVeriosn == '11.3.0.0'){
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability + "/"
         println (baseUrl)
     }
     baseUrlValidation = baseUrl.drop(8)
