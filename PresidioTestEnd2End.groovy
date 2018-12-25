@@ -5,17 +5,35 @@ pipeline {
             // The credentials (name + password) associated with the RSA build user.
             RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         }
+    environmentVariables {
+        env('FLUME_HOME', '/var/lib/netwitness/presidio/flume/')
+    }
         stages {
-            stage('presidio-integration-test Project Build Pipeline Initialization') {
+            stage('presidio-integration-test Project Clone') {
                 steps {
                     cleanWs()
-                    buildProject()
+                    buildIntegrationTestProject()
                 }
             }
-            stage('Upgrade UEBA RPMs') {
+            stage('UEBA Cleanup and RPMs Upgrade') {
                 steps {
                     script {
                         setBaseUrl ()
+                        uebaPreparingEnv()
+                    }
+                }
+            }
+            stage('presidio-integration-test Project Build Pipeline Initialization') {
+                steps {
+                    script {
+                        mvnCleanInstall ()
+                    }
+                }
+            }
+            stage('End 2 End Test Automation') {
+                steps {
+                    script {
+                        runEnd2EndTestAutomation()
                     }
                 }
             }
@@ -45,10 +63,16 @@ def setBaseUrl (
     sh "cat /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
 }
 
+def uebaPreparingEnv (){
+    sh "bash presidio-integration-common/src/main/resources/dbsCleanup.sh"
+    sh "bash presidio-integration-common/src/main/resources/logsCleanup.sh"
+    sh "bash presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
+}
+
 /**************************
  * Project Build Pipeline *
  **************************/
-def buildProject(
+def buildIntegrationTestProject(
         String repositoryName = "presidio-integration-test",
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
@@ -57,8 +81,13 @@ def buildProject(
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
     dir(repositoryName) {
         sh "git checkout ${branchName}"
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
     }
 }
 
+def mvnCleanInstall(){
+    sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+}
 
+def runEnd2EndTestAutomation(){
+    sh "mvn -Dmaven.multiModuleProjectDirectory=presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+}
