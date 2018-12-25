@@ -2,9 +2,17 @@ pipeline {
         agent { label env.NODE }
         environment {
             BASEURL = "baseurl="
+            // The credentials (name + password) associated with the RSA build user.
+            RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         }
         stages {
-            stage('Build') {
+            stage('presidio-integration-test Project Build Pipeline Initialization') {
+                steps {
+                    cleanWs()
+                    buildProject()
+                }
+            }
+            stage('Upgrade UEBA RPMs') {
                 steps {
                     script {
                         setBaseUrl ()
@@ -36,3 +44,21 @@ def setBaseUrl (
     sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
     sh "cat /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
 }
+
+/**************************
+ * Project Build Pipeline *
+ **************************/
+def buildProject(
+        String repositoryName = "presidio-integration-test",
+        String userName = env.RSA_BUILD_CREDENTIALS_USR,
+        String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
+        String branchName = env.BRANCH_NAME) {
+    sh "git config --global user.name \"${userName}\""
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
+    dir(repositoryName) {
+        sh "git checkout ${branchName}"
+        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+    }
+}
+
+
