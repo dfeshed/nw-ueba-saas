@@ -3,6 +3,7 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
+import fortscale.utils.transform.stringformat.StringFormatTransformer;
 import org.json.JSONObject;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -17,7 +18,8 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = EpochTimeToNanoRepresentationTransformer.class, name = EpochTimeToNanoRepresentationTransformer.TYPE),
         @JsonSubTypes.Type(value = CopyValueTransformer.class, name = CopyValueTransformer.TYPE),
         @JsonSubTypes.Type(value = SetterTransformer.class, name = SetterTransformer.TYPE),
-        @JsonSubTypes.Type(value = JoinTransformer.class, name = JoinTransformer.TYPE)
+        @JsonSubTypes.Type(value = JoinTransformer.class, name = JoinTransformer.TYPE),
+        @JsonSubTypes.Type(value = StringFormatTransformer.class, name = StringFormatTransformer.TYPE)
 })
 public interface IJsonObjectTransformer {
     JSONObject transform(JSONObject jsonObject);
