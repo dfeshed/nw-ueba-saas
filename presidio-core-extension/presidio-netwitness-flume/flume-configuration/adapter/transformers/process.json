@@ -3,6 +3,25 @@
   "name": "process-transformer",
   "transformerList": [
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
+      "sourceKey": "action[0]",
+      "targetKey": "operationType",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "filter",
+      "name": "filter-operation-types",
+      "predicate": {
+        "type": "regex",
+        "name": "operationType-white-list",
+        "sourceKey": "operationType",
+        "regex": "OPEN_PROCESS|CREATE_PROCESS|CREATE_REMOTE_THREAD"
+      },
+      "filterIn": true
+    },
+    {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
       "sourceKey": "event_source_id",
@@ -97,14 +116,6 @@
         "userName",
         "userDisplayName"
       ]
-    },
-    {
-      "type": "string_format",
-      "name": "convert-string-format-of-operation-type",
-      "sourceKey": "action[0]",
-      "targetKey": "operationType",
-      "sourceStringFormat": "LOWER_CAMEL",
-      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "regex_captor_and_formatter",
