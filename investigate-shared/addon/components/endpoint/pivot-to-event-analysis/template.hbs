@@ -1,0 +1,20 @@
+<hbox class="rsa-button-group">
+  {{#rsa-form-button class="event-analysis" defaultAction=(action 'processEventAnalysis') isDisabled=isDisabled}}
+    {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
+  {{/rsa-form-button}}
+  {{#click-outside action=(action "clickOutside")}}
+    {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action 'toggleExpand')}}
+      {{rsa-icon name="arrow-down-12"}}
+    {{/rsa-form-button}}
+    {{#button-menu isExpanded=isExpanded style=offsetsStyle}}
+      {{#each categories as |category|}}
+        <li>
+          <a {{action 'processMenuItem' category.category}}>
+            {{t category.label}}
+          </a>
+        </li>
+      {{/each}}
+    {{/button-menu}}
+  {{/click-outside}}
+</hbox>
+

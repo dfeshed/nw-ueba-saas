@@ -1,0 +1,46 @@
+.button-menu {
+  position: absolute;
+  left: 0;
+  @include rsa-font(body, default, false);
+  z-index: 20000;
+  display: none;
+  float: left;
+  min-width: 151px;
+  list-style: none;
+  background-color: background-color(primary, darkest);
+  background-clip: padding-box;
+  @include border(1px, solid, primary, lightest);
+  box-shadow: 1px 1px 2px background-color(primary, darkest);
+
+  &.expanded {
+    display: block;
+  }
+
+  &.collapsed {
+    display: none;
+  }
+
+  li a {
+    display: block;
+    padding: 10px;
+    clear: both;
+    color: text-color(primary, lightest);
+    text-decoration: none;
+  }
+
+  li a.disabled {
+    pointer-events: none;
+    cursor: default;
+    color: text-color(primary, base);
+  }
+
+  li a:hover {
+    color: text-color(primary, lightest);
+    background: background-color(secondary, darker);
+    cursor: pointer;
+  }
+
+  &.export-packet-menu li a {
+    min-width: 195px;
+  }
+}

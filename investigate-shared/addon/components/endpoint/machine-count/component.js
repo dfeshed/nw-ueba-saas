@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
+import computed from 'ember-computed-decorators';
 
 export default Component.extend({
   layout,
@@ -9,6 +10,13 @@ export default Component.extend({
   item: null,
 
   machineCountMapping: null,
+
+  count: null,
+
+  @computed('count')
+  countLabelKey(count) {
+    return 1 < count ? 'investigateShared.machineCount.plural' : 'investigateShared.machineCount.singular';
+  },
 
   didReceiveAttrs() {
     this._super(arguments);

@@ -76,11 +76,15 @@ const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, ad
  * Opens the investigate/navigate page with query
  * @private
  */
-const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId) => {
+const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList, additionalFilter }, serviceId, timeRange, zoneId) => {
   const { value, unit } = timeRange;
   const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
 
-  const mf = _buildFilter(metaName, metaValue, itemList);
+  let mf = _buildFilter(metaName, metaValue, itemList);
+
+  if (additionalFilter) {
+    mf = `${mf} && ${additionalFilter}`;
+  }
   const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
   const query = encodeURI(encodeURIComponent(mf));
   const path = `${baseURL}/${query}/date/${moment(startTime * 1000).tz('UTC').format()}/${moment(endTime * 1000).tz('UTC').format()}`;

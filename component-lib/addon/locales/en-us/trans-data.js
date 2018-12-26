@@ -3477,6 +3477,10 @@ export default {
     }
   },
   investigateShared: {
+    machineCount: {
+      singular: '{{count}} host',
+      plural: '{{count}} hosts'
+    },
     endpoint: {
       message: {
         brokerViewMessage: 'Reached maximum results supported in a broker view.'

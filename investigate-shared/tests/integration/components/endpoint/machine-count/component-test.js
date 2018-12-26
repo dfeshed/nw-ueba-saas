@@ -26,6 +26,6 @@ module('Integration | Component | machine count', function(hooks) {
     this.set('machineCountMapping', { 123: 10 });
     await render(hbs`{{endpoint/machine-count item=item machineCountMapping=machineCountMapping}}`);
     assert.equal(document.querySelectorAll('.is-small').length, 0, 'Rsa loader not displayed');
-    assert.equal(document.querySelector('.machine-count-text').textContent.trim(), '10  hosts', 'Count text is rendered');
+    assert.equal(document.querySelector('.machine-count-text').textContent.trim(), '10 hosts', 'Count text is rendered');
   });
 });
