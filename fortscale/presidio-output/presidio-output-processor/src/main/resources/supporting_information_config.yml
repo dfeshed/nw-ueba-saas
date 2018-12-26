@@ -1109,7 +1109,7 @@ indicators:
     anomalyField: processFilePath
     anomalyFilters:
     - fieldName: operationType
-      fieldValue: SET_VALUE
+      fieldValue: MODIFY_REGISTRY_VALUE
   splitFields:
     - processFileName
     - processDirectory
