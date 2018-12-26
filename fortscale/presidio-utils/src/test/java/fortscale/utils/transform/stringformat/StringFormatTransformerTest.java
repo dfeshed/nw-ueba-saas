@@ -2,6 +2,7 @@ package fortscale.utils.transform.stringformat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.transform.IJsonObjectTransformer;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -101,6 +102,44 @@ public class StringFormatTransformerTest {
             jsonObject = jsonObjectTransformer.transform(jsonObject);
             Assert.assertEquals(scenario.targetValue, jsonObject.get("after"));
         }
+    }
+
+    @Test
+    public void test_string_format_transformer_when_source_value_is_null() {
+        JSONObject configuration = new JSONObject();
+        configuration.put("type", "string_format");
+        configuration.put("name", "test-string-format-transformer");
+        configuration.put("sourceKey", "before");
+        configuration.put("targetKey", "after");
+        configuration.put("sourceStringFormat", "LOWER_UNDERSCORE");
+        configuration.put("targetStringFormat", "UPPER_UNDERSCORE");
+        IJsonObjectTransformer jsonObjectTransformer = deserializeConfiguration(configuration);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("before", JSONObject.NULL);
+        jsonObject = jsonObjectTransformer.transform(jsonObject);
+        Assert.assertEquals(JSONObject.NULL, jsonObject.get("after"));
+    }
+
+    @Test
+    public void test_string_format_transformer_when_source_value_is_list() {
+        JSONObject configuration = new JSONObject();
+        configuration.put("type", "string_format");
+        configuration.put("name", "test-string-format-transformer");
+        configuration.put("sourceKey", "before");
+        configuration.put("targetKey", "after");
+        configuration.put("sourceStringFormat", "LOWER_UNDERSCORE");
+        configuration.put("targetStringFormat", "UPPER_UNDERSCORE");
+        IJsonObjectTransformer jsonObjectTransformer = deserializeConfiguration(configuration);
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put("hello_world");
+        jsonArray.put("hello_galaxy");
+        jsonArray.put("hello_universe");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("before", jsonArray);
+        jsonObject = jsonObjectTransformer.transform(jsonObject);
+        Assert.assertEquals("HELLO_WORLD", jsonObject.getJSONArray("after").get(0));
+        Assert.assertEquals("HELLO_GALAXY", jsonObject.getJSONArray("after").get(1));
+        Assert.assertEquals("HELLO_UNIVERSE", jsonObject.getJSONArray("after").get(2));
     }
 
     private static IJsonObjectTransformer deserializeConfiguration(JSONObject configuration) {
