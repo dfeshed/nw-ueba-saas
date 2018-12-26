@@ -142,7 +142,7 @@
           "type": "contained-in-list",
           "fieldName": "dstProcessCategories",
           "expectedValues": [
-            "IMPORTANT_WINDOWS_PROCESS"
+            "WINDOWS_PROCESS"
           ]
         },
         {

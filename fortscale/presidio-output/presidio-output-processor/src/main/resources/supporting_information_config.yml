@@ -906,7 +906,7 @@ indicators:
       - fieldName: operationType
         fieldValue: CREATE_REMOTE_THREAD
       - fieldName: dstProcessCategories
-        fieldValue: IMPORTANT_WINDOWS_PROCESS
+        fieldValue: WINDOWS_PROCESS
   splitFields:
     - srcProcessFileName
     - srcProcessDirectory
