@@ -84,7 +84,7 @@
                   "type": "contained-in-list",
                   "fieldName": "dstProcessDirectoryGroups",
                   "expectedValues": [
-                    "SYSTEM_32"
+                    "WINDOWS_SYSTEM32"
                   ]
                 },
                 {
@@ -136,7 +136,7 @@
                         "type": "contained-in-list",
                         "fieldName": "dstProcessDirectoryGroups",
                         "expectedValues": [
-                          "SYSTEM_32"
+                          "WINDOWS_SYSTEM32"
                         ]
                       },
                       {

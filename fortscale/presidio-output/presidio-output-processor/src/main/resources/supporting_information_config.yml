@@ -879,7 +879,7 @@ indicators:
     anomalyField: srcProcessFilePath
     anomalyFilters:
       - fieldName: dstProcessDirectoryGroups
-        fieldValue: SYSTEM_32
+        fieldValue: WINDOWS_SYSTEM32
       - fieldName: dstProcessFileName
         fieldValue: lsass.exe
       - fieldName: operationType
