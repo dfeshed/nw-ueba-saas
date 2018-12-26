@@ -202,6 +202,14 @@
       ]
     },
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-registry-key-group",
+      "sourceKey": "registryKeyGroup",
+      "targetKey": "registryKeyGroup",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
       "type": "regex_captor_and_formatter",
       "name": "create-registry-key",
       "sourceKey": "registry_key",
