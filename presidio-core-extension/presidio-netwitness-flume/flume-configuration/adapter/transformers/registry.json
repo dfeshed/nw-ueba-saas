@@ -275,6 +275,14 @@
       ]
     },
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-process-dir-groups",
+      "sourceKey": "processDirectoryGroups",
+      "targetKey": "processDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
       "type": "copy_value",
       "name": "rename-process-categories",
       "sourceKey": "filetype",
@@ -282,6 +290,14 @@
       "destinationKeys": [
         "processCategories"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-process-categories",
+      "sourceKey": "processCategories",
+      "targetKey": "processCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     }
   ]
 }

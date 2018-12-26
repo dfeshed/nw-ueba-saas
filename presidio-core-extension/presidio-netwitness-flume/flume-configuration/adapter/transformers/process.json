@@ -239,6 +239,14 @@
       ]
     },
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-dir-groups",
+      "sourceKey": "srcProcessDirectoryGroups",
+      "targetKey": "srcProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
       "type": "copy_value",
       "name": "rename-dst-process-dir-group",
       "sourceKey": "dir_path_dst",
@@ -246,6 +254,14 @@
       "destinationKeys": [
         "dstProcessDirectoryGroups"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-dir-groups",
+      "sourceKey": "dstProcessDirectoryGroups",
+      "targetKey": "dstProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "copy_value",
@@ -257,6 +273,14 @@
       ]
     },
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-categories",
+      "sourceKey": "srcProcessCategories",
+      "targetKey": "srcProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
       "type": "copy_value",
       "name": "rename-dst-process-categories",
       "sourceKey": "filetype.dst",
@@ -264,6 +288,14 @@
       "destinationKeys": [
         "dstProcessCategories"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-categories",
+      "sourceKey": "dstProcessCategories",
+      "targetKey": "dstProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "copy_value",
