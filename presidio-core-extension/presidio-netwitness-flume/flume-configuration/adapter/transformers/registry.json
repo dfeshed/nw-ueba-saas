@@ -249,15 +249,6 @@
     },
     {
       "type": "copy_value",
-      "name": "copy-registry-value",
-      "sourceKey": "registry_value",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "registryValueName"
-      ]
-    },
-    {
-      "type": "copy_value",
       "name": "rename-process-dir-group",
       "sourceKey": "dir_path_src",
       "isRemoveSourceKey": true,
