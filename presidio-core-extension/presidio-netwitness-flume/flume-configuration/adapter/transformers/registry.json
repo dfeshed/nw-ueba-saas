@@ -105,13 +105,12 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "copy-action-to-operation-type",
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
       "sourceKey": "action[0]",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "operationType"
-      ]
+      "targetKey": "operationType",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "regex_captor_and_formatter",
