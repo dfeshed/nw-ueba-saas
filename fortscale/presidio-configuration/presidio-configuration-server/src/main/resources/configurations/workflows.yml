@@ -15,6 +15,11 @@ dags:
     schedule_interval: timedelta(hours=1)
     start_date: ${dataPipeline.startTime}
 
+  pools_config:
+    - slots: 10
+      name: spring_boot_jar_pool
+      description: A pool for the spring boot jars with 2G xmx that belong to the dag
+
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -24,6 +29,7 @@ dags:
         xms: 70
   operators:
     default_jar_values:
+      pool_name: spring_boot_jar_pool
       retry_args:
         retries: 4
         retry_delay: 5
