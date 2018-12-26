@@ -266,7 +266,7 @@
     {
       "type": "copy_value",
       "name": "rename-src-process-categories",
-      "sourceKey": "filetype.src",
+      "sourceKey": "filetype_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessCategories"
@@ -283,7 +283,7 @@
     {
       "type": "copy_value",
       "name": "rename-dst-process-categories",
-      "sourceKey": "filetype.dst",
+      "sourceKey": "filetype_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessCategories"
