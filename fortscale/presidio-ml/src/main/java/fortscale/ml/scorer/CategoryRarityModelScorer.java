@@ -51,6 +51,16 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRarePartitions, xWithValueHalfFactor, minProbability);
     }
 
+    private PartitionedDataModel extractPartitionDataModel(List<Model> additionalModels){
+        if (additionalModels.isEmpty()) {
+            return null;
+        } else {
+            Model additionalModel = additionalModels.get(0);
+            return  (PartitionedDataModel)additionalModel;
+        }
+
+    }
+
     @Override
     protected double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
         String featureValue = feature.getValue().toString();
@@ -59,14 +69,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             return 0.0;
         }
 
-        PartitionedDataModel partitionedDataModel;
-
-        if (additionalModels.isEmpty()) {
-            partitionedDataModel = null;
-        } else {
-            Model additionalModel = additionalModels.get(0);
-            partitionedDataModel = (PartitionedDataModel)additionalModel;
-        }
+        PartitionedDataModel partitionedDataModel = extractPartitionDataModel(additionalModels);
 
         CategoryRarityModel categoryRarityModel = (CategoryRarityModel)model;
         if(categoryRarityModel == null){
@@ -79,6 +82,26 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         if (count == null) count = 0d;
         if (partitionedDataModel != null) categoryRarityModel.setNumOfPartitions(partitionedDataModel.getNumOfPartitions());
         return algorithm.calculateScore((int)Math.round(count+1), categoryRarityModel);
+    }
+
+    @Override
+    protected double calculateCertainty(Model model, List<Model> additionalModels){
+        PartitionedDataModel additionalModel = extractPartitionDataModel(additionalModels);
+        if(model == null && additionalModel == null){
+            return 1;
+        }
+
+        long numOfPartitions = 0;
+        if(additionalModel != null){
+            numOfPartitions = additionalModel.getNumOfPartitions();
+        } else {
+            if(!(model instanceof PartitionedDataModel))
+            {
+                throw new RuntimeException(String.format("can calculate certainty only for models of type %s, got=%s instead ",PartitionedDataModel.class,model.getClass().toString()));
+            }
+            numOfPartitions = ((PartitionedDataModel) model).getNumOfPartitions();
+        }
+        return calculateCertainty(numOfPartitions);
     }
 
     @Override
