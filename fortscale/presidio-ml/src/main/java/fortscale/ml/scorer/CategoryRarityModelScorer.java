@@ -74,7 +74,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
         CategoryRarityModel categoryRarityModel = (CategoryRarityModel)model;
         if(categoryRarityModel == null){
             categoryRarityModel = new CategoryRarityModel();
-            categoryRarityModel.init(null, null, 0,
+            categoryRarityModel.init(null, 0,
                     partitionedDataModel.getNumOfPartitions(), 0);
         }
 

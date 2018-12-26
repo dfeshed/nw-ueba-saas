@@ -39,8 +39,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
         long numDistinctFeatures = featureValueToNumOfOccurrences.size();
         Map<Long, Integer> occurrencesToNumOfDistinctPartitions = calcOccurrencesToNumOfDistinctPartitions(sequenceReduction);
-        Map<Long, Integer> occurrencesToNumOfDistinctFeatureValues = calcOccurrencesToNumOfDistinctFeatureValues(featureValueToNumOfOccurrences);
-        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, occurrencesToNumOfDistinctFeatureValues, numOfBuckets, numOfPartitions, numDistinctFeatures);
+        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, numOfBuckets, numOfPartitions, numDistinctFeatures);
         saveTopEntriesInModel(featureValueToNumOfOccurrences, categoryRarityModel);
         categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToNumOfOccurrences.size(), numOfPartitions, categoryRarityModel.getOccurrencesToNumOfPartitionsList());
         return categoryRarityModel;
@@ -65,15 +64,6 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         }
 
         return result;
-    }
-
-    private Map<Long, Integer> calcOccurrencesToNumOfDistinctFeatureValues(Map<String, Integer> featureValueToNumOfOccurrences){
-        Map<Long, Integer> ret = new HashMap<>();
-        for(Integer occurrence: featureValueToNumOfOccurrences.values()){
-            ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v++);
-        }
-
-        return ret;
     }
 
     Map<Long, Integer> calcOccurrencesToNumOfDistinctPartitions(Map<Pair<String, Long>, Double> sequenceReducedData) {
