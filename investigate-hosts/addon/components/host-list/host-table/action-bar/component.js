@@ -8,7 +8,6 @@ import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creat
 
 import { deleteHosts, getPageOfMachines, triggerMachineActions } from 'investigate-hosts/actions/data-creators/host';
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
-import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const stateToComputed = (state) => ({
@@ -18,9 +17,7 @@ const stateToComputed = (state) => ({
   selectedHostList: state.endpoint.machines.selectedHostList,
   serverId: state.endpointQuery.serverId,
   servers: state.endpointServer,
-  selectedFilterId: selectedFilterId(state.endpoint),
-  savedFilter: savedFilter(state.endpoint),
-  hostFilters: state.endpoint.filter.savedFilterList
+  selections: state.endpoint.machines.selectedHostList || []
 });
 
 const dispatchToActions = {

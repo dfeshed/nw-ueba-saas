@@ -159,6 +159,7 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({
     id: host.id,
+    machine: { machineName: host.machine.machineName },
     version: host.machine.agentVersion,
     managed: host.groupPolicy.managed
   }))),

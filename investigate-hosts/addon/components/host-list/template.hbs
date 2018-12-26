@@ -1,4 +1,8 @@
-{{host-list/host-table/action-bar openFilterPanel=openFilterPanel closeProperties=closeProperties}}
+{{host-list/host-table/action-bar
+  openFilterPanel=openFilterPanel
+  closeProperties=closeProperties
+  pivotToInvestigate=(action 'pivotToInvestigate')
+}}
 {{#if selectedServiceData.isServiceOnline}}
   {{#if schemaLoading}}
     <centered>

@@ -6,6 +6,8 @@
     {{/rsa-form-button}}
   </h2>
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
+  <div class="divider"></div>
+  {{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=pivotToInvestigate}}
   {{host-scan/scan-command command='START_SCAN'}}
   {{host-scan/scan-command command='STOP_SCAN'}}
   {{#rsa-button-with-confirmation

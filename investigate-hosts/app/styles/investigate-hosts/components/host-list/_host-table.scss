@@ -94,6 +94,17 @@
   }
 }
 
+.divider {
+  @include border(1px, solid, primary);
+  height: 2rem;
+  margin-right: rsa-whitespace();
+}
+
+.pivot-to-event-analysis {
+  margin-right: rsa-whitespace(less);
+  margin-left: rsa-whitespace();
+}
+
 .rsa-initiate-scan-modal {
   padding: rsa-whitespace(more);
   max-width: 500px;

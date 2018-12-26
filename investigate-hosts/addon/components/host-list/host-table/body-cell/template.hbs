@@ -15,14 +15,6 @@
     <div class="host-name">
       {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null) bubbles=false}}{{get item column.field}}{{/link-to}}
     </div>
-    <div class="pivot-to-investigate">
-      {{pivot-to-investigate
-        timeRange=timeRange
-        serviceId=serviceId
-        item=item
-        metaName='machine.machineName'
-        serviceList=serviceList}}
-    </div>
   </hbox>
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}
   <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}" class="{{unless item.groupPolicy.managed "host-disable-text"}}">
