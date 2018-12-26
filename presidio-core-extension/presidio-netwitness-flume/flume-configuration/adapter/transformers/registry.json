@@ -256,5 +256,14 @@
         "processDirectoryGroups"
       ]
     },
+    {
+      "type": "copy_value",
+      "name": "rename-process-categories",
+      "sourceKey": "filetype",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processCategories"
+      ]
+    }
   ]
 }
