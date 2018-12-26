@@ -10,7 +10,7 @@
      isDisabled=isCertificateViewDisabled 
      title=isCertificateViewDisabledTitle
      class="view-certificate-button" click=(action 'toggleCertificateView')}}
-    {{#if (and (eq certificateLoadStatus 'wait') (not-eq servers.isServicesRetrieveError true))}}
+    {{#if (and (eq certificateLoadStatus 'wait') (not-eq servers.isSummaryRetrieveError true))}}
       {{rsa-loader size='small'}}
     {{/if}}
     {{t 'investigateFiles.button.viewCertificates'}}

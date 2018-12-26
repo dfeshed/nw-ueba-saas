@@ -44,6 +44,7 @@ export default [
     field: 'reputationStatus',
     description: '',
     dataType: 'STRING',
+    width: 150,
     visible: true,
     title: 'investigateFiles.fields.reputationStatus'
   },
@@ -64,6 +65,7 @@ export default [
     field: 'firstSeenTime',
     dataType: 'DATE',
     visible: true,
+    width: 200,
     title: 'investigateFiles.fields.firstSeenTime'
   },
   {
@@ -78,6 +80,7 @@ export default [
     description: 'Operating system',
     dataType: 'STRING',
     title: 'investigateFiles.fields.machineOsType',
+    width: 125,
     visible: true
   }
 ];

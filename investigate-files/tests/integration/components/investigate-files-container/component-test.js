@@ -207,7 +207,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     assert.equal(findAll('.rsa-loader')[1].classList.contains('is-larger'), true, 'certificate rsa loader displayed');
   });
   test('it shows the loading indicator certificate stops', async function(assert) {
-    endpointServer.isServicesRetrieveError = true;
+    endpointServer.isSummaryRetrieveError = false;
     new ReduxDataHelper(initState)
       .certificatesLoadingStatus('wait')
       .isSchemaLoading(false)
@@ -215,7 +215,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{investigate-files-container}}`);
-    assert.equal(findAll('.rsa-loader').length, 1, 'certificate loader should not show');
+    assert.equal(findAll('.rsa-loader').length, 2, 'certificate loader should not show');
   });
   test('Certificate view hide and show', async function(assert) {
     new ReduxDataHelper(initState)
