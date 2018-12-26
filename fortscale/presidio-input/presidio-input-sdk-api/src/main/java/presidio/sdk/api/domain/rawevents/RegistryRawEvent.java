@@ -67,7 +67,6 @@ public class RegistryRawEvent extends AbstractInputDocument {
     private String registryKey;
 
     @Field(REGISTRY_VALUE_NAME_FIELD_NAME)
-    @NotEmpty
     private String registryValueName;
 
     @Field(USER_ID_FIELD_NAME)
