@@ -255,6 +255,15 @@
       "destinationKeys": [
         "registryValueName"
       ]
-    }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-process-dir-group",
+      "sourceKey": "dir_path_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processDirectoryGroups"
+      ]
+    },
   ]
 }

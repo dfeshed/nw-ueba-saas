@@ -221,6 +221,24 @@
     },
     {
       "type": "copy_value",
+      "name": "rename-src-process-dir-group",
+      "sourceKey": "dir_path_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-dst-process-dir-group",
+      "sourceKey": "dir_path_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "rename-process-category",
       "sourceKey": "process_category_src",
       "isRemoveSourceKey": true,
