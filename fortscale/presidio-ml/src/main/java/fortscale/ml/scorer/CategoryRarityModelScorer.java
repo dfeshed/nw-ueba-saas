@@ -91,24 +91,17 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             return 1;
         }
 
-
-
-        return calculateCertainty(getNumOfPartitions(model, additionalModel));
-    }
-
-
-    //Assumption!!!
-    //At least one of the models is not null.
-    protected long getNumOfPartitions(Model model, PartitionedDataModel additionalModel){
+        long numOfPartitions = 0;
         if(additionalModel != null){
-            return additionalModel.getNumOfPartitions();
+            numOfPartitions = additionalModel.getNumOfPartitions();
         } else {
             if(!(model instanceof PartitionedDataModel))
             {
                 throw new RuntimeException(String.format("can calculate certainty only for models of type %s, got=%s instead ",PartitionedDataModel.class,model.getClass().toString()));
             }
-            return ((PartitionedDataModel) model).getNumOfPartitions();
+            numOfPartitions = ((PartitionedDataModel) model).getNumOfPartitions();
         }
+        return calculateCertainty(numOfPartitions);
     }
 
     @Override
