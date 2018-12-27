@@ -87,6 +87,12 @@ const activeRiskSeverityTab = (tabName) => {
 const setSelectedAlert = (context) => {
   return (dispatch, getState) => {
     const type = riskType(getState());
+
+    // return if events are requested for same alert for which already events are currently loading.
+    if (context.alertName === selectedAlert(getState()[STATE_MAP[type]]) && eventsLoadingStatus(getState()[STATE_MAP[type]]) === 'loading') {
+      return;
+    }
+
     dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context, meta: { belongsTo: type } });
     dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
     next(() => {
@@ -124,8 +130,8 @@ const setSelectedAlert = (context) => {
             }
           }
         }
+        dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED, meta: { belongsTo: type } });
       })();
-      dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED, meta: { belongsTo: type } });
     });
   };
 };
