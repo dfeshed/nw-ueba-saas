@@ -99,7 +99,7 @@ public class RegistryRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<RegistryRawEvent>> violations = validator.validate(processRawEvent);
-        Assert.assertEquals(CollectionUtils.size(violations),1);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
     @Test

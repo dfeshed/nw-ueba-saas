@@ -28,7 +28,7 @@
                 {
                   "type": "regex",
                   "fieldName": "operationType",
-                  "pattern": "SET_VALUE"
+                  "pattern": "MODIFY_REGISTRY_VALUE"
                 }
               ],
               "scorerConf": {
