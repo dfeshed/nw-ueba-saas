@@ -11,6 +11,8 @@ pipeline {
         stages {
             stage('presidio-integration-test Project Clone') {
                 steps {
+                    sh "echo ${env.REPOSITORY_NAME}"
+                    sh "whoami"
                     cleanWs()
                     buildIntegrationTestProject()
                 }
