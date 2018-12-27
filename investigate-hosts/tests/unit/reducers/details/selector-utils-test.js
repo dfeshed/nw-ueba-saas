@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { getProperties, getValues } from 'investigate-hosts/reducers/details/selector-utils';
+import { getProperties, getValues, secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
 
 module('Unit | Utils | selector-utils');
 
@@ -109,4 +109,15 @@ test('should return the property based on dataSet type', function(assert) {
   const list = getValues(undefined, 'AUTORUNS', dataSet, sortConfig);
   const newResult = getProperties(null, list, dataSetArray);
   assert.equal(newResult.id, 1);
+});
+
+test('secondsToMinutesConverter', function(assert) {
+  const result1 = secondsToMinutesConverter(10);
+  assert.equal(result1, '10 seconds');
+  const result2 = secondsToMinutesConverter(125);
+  assert.equal(result2, '2 minutes 5 seconds');
+  const result3 = secondsToMinutesConverter(180);
+  assert.equal(result3, '3 minutes');
+  const result4 = secondsToMinutesConverter();
+  assert.equal(result4, '0 seconds');
 });

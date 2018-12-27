@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import securityConfig from './config';
+import { secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
 
 const { createSelector } = reselect;
 
@@ -263,13 +264,14 @@ const _getscheduledScanConfig = createSelector(
         };
       }
       if (scanOptions) {
+        const { cpuMax, cpuMaxVm, downloadMbr } = scanOptions;
         newScheduledScanConfig = {
           ...newScheduledScanConfig,
           scanOptions: {
             ...scanOptions,
-            captureFloatingCode: scanOptions.captureFloatingCode ? 'Enabled' : 'Disabled',
-            filterSignedHooks: scanOptions.filterSignedHooks ? 'Enabled' : 'Disabled',
-            downloadMbr: scanOptions.downloadMbr ? 'Enabled' : 'Disabled'
+            cpuMax: cpuMax ? `${cpuMax} %` : undefined,
+            cpuMaxVm: cpuMaxVm ? `${cpuMaxVm} %` : undefined,
+            downloadMbr: downloadMbr ? 'Enabled' : 'Disabled'
           }
         };
       }
@@ -292,8 +294,8 @@ export const getPoliciesPropertyData = createSelector(
       newTransportConfig = {
         primary: {
           ...primary,
-          httpsBeaconIntervalInSeconds: `${httpsBeaconIntervalInSeconds} seconds`,
-          udpBeaconIntervalInSeconds: `${udpBeaconIntervalInSeconds} seconds`
+          httpsBeaconInterval: secondsToMinutesConverter(httpsBeaconIntervalInSeconds),
+          udpBeaconInterval: secondsToMinutesConverter(udpBeaconIntervalInSeconds)
         }
       };
     }
@@ -304,6 +306,7 @@ export const getPoliciesPropertyData = createSelector(
       message,
       edrPolicy: {
         ...edrPolicy,
+        agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',
         blockingConfig: {
           enabled: blockingConfig && blockingConfig.enabled ? 'Enabled' : 'Disabled'
         },

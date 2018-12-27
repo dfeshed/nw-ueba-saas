@@ -39,3 +39,12 @@ export const getProperties = (rowId, list, data) => {
     return list[0];
   }
 };
+
+export const secondsToMinutesConverter = function(seconds = 0) {
+  if (seconds <= 59) {
+    return `${seconds} seconds`;
+  } else if (seconds % 60) {
+    return `${Math.floor(seconds / 60)} minutes ${seconds % 60} seconds`;
+  }
+  return `${seconds / 60} minutes`;
+};

@@ -308,10 +308,10 @@ test('getPoliciesPropertyData', function(assert) {
           message: 'error message',
           policy: {
             'edrPolicy': {
-              'agentMode': 'FULL_MONITORING',
+              'agentMode': 'INSIGHTS',
               'transportConfig': {
                 'primary': {
-                  'httpsBeaconIntervalInSeconds': 900,
+                  'httpsBeaconIntervalInSeconds': 910,
                   'udpBeaconIntervalInSeconds': 30,
                   'address': '10.40.12.8',
                   'httpsPort': 7050,
@@ -321,8 +321,8 @@ test('getPoliciesPropertyData', function(assert) {
               'scheduledScanConfig': {
                 'enabled': true,
                 'scanOptions': {
-                  'captureFloatingCode': true,
-                  'filterSignedHooks': false,
+                  'cpuMax': 80,
+                  'cpuMaxVm': 100,
                   'downloadMbr': false
                 }
               },
@@ -345,11 +345,13 @@ test('getPoliciesPropertyData', function(assert) {
   assert.equal(result1.evaluatedTime, '2018-11-19T09:16:35.969+0000');
   assert.equal(result1.message, 'error message');
   assert.deepEqual(result1.edrPolicy, {
-    'agentMode': 'FULL_MONITORING',
+    'agentMode': 'Insights',
     'transportConfig': {
       'primary': {
-        'httpsBeaconIntervalInSeconds': '900 seconds',
-        'udpBeaconIntervalInSeconds': '30 seconds',
+        'httpsBeaconInterval': '15 minutes 10 seconds',
+        'udpBeaconInterval': '30 seconds',
+        'httpsBeaconIntervalInSeconds': 910,
+        'udpBeaconIntervalInSeconds': 30,
         'address': '10.40.12.8',
         'httpsPort': 7050,
         'udpPort': 7052
@@ -358,8 +360,8 @@ test('getPoliciesPropertyData', function(assert) {
     'scheduledScanConfig': {
       'enabled': 'Scheduled',
       'scanOptions': {
-        'captureFloatingCode': 'Enabled',
-        'filterSignedHooks': 'Disabled',
+        'cpuMax': '80 %',
+        'cpuMaxVm': '100 %',
         'downloadMbr': 'Disabled'
       }
     },
@@ -380,11 +382,12 @@ test('getPoliciesPropertyData', function(assert) {
         policyDetails: {
           policy: {
             'edrPolicy': {
+              'agentMode': 'FULL_MONITORING',
               'scheduledScanConfig': {
                 'enabled': true,
                 'scanOptions': {
-                  'captureFloatingCode': false,
-                  'filterSignedHooks': false,
+                  'cpuMax': 80,
+                  'cpuMaxVm': 100,
                   'downloadMbr': false
                 }
               }
@@ -398,15 +401,16 @@ test('getPoliciesPropertyData', function(assert) {
   const result2 = getPoliciesPropertyData(Immutable.from(state2));
 
   assert.deepEqual(result2.edrPolicy, {
+    'agentMode': 'Advanced',
     'blockingConfig': {
       'enabled': 'Disabled'
     },
     'scheduledScanConfig': {
       'enabled': 'Scheduled',
       'scanOptions': {
-        'captureFloatingCode': 'Disabled',
-        'downloadMbr': 'Disabled',
-        'filterSignedHooks': 'Disabled'
+        'cpuMax': '80 %',
+        'cpuMaxVm': '100 %',
+        'downloadMbr': 'Disabled'
       }
     },
     'serverConfig': {
@@ -424,6 +428,7 @@ test('getPoliciesPropertyData', function(assert) {
         policyDetails: {
           policy: {
             'edrPolicy': {
+              'agentMode': 'INSIGHTS',
               'scheduledScanConfig': {}
             }
           }
@@ -435,6 +440,7 @@ test('getPoliciesPropertyData', function(assert) {
   const result3 = getPoliciesPropertyData(Immutable.from(state3));
 
   assert.deepEqual(result3.edrPolicy, {
+    'agentMode': 'Insights',
     'blockingConfig': {
       'enabled': 'Disabled'
     },

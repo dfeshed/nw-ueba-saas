@@ -54,16 +54,8 @@ export default [
     sectionName: 'Scan Settings',
     fields: [
       {
-        field: 'edrPolicy.scheduledScanConfig.scanOptions.captureFloatingCode',
-        labelKey: 'edrPolicy.captureFloatingCode'
-      },
-      {
         field: 'edrPolicy.scheduledScanConfig.scanOptions.downloadMbr',
         labelKey: 'edrPolicy.downloadMbr'
-      },
-      {
-        field: 'edrPolicy.scheduledScanConfig.scanOptions.filterSignedHooks',
-        labelKey: 'edrPolicy.filterSignedHooks'
       },
       {
         field: 'edrPolicy.serverConfig.requestScanOnRegistration',
@@ -92,7 +84,7 @@ export default [
         labelKey: 'edrPolicy.primaryHttpsPort'
       },
       {
-        field: 'edrPolicy.transportConfig.primary.httpsBeaconIntervalInSeconds',
+        field: 'edrPolicy.transportConfig.primary.httpsBeaconInterval',
         labelKey: 'edrPolicy.primaryHttpsBeaconInterval'
       },
       {
@@ -100,7 +92,7 @@ export default [
         labelKey: 'edrPolicy.primaryUdpPort'
       },
       {
-        field: 'edrPolicy.transportConfig.primary.udpBeaconIntervalInSeconds',
+        field: 'edrPolicy.transportConfig.primary.udpBeaconInterval',
         labelKey: 'edrPolicy.primaryUdpBeaconInterval'
       }
     ]

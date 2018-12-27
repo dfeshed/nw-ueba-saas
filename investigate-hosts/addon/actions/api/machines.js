@@ -14,7 +14,11 @@ const getAllServices = () => {
   return request.promiseRequest({
     method: 'findAll',
     modelName: 'investigate-service',
-    query: {}
+    query: {},
+    streamOptions: {
+      socketUrlPostfix: 'any',
+      requiredSocketUrl: 'endpoint/socket'
+    }
   });
 };
 
