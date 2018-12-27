@@ -171,6 +171,15 @@
     },
     {
       "type": "copy_value",
+      "name": "rename-owner-to-machine-owner",
+      "sourceKey": "owner",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "machineOwner"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "rename-directory-src",
       "sourceKey": "directory_src",
       "isRemoveSourceKey": true,
