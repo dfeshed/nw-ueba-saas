@@ -92,5 +92,6 @@ export default {
       name: 'modifyRegistryRunKey'
     }
   ],
-  'Network Event': []
+  'Network Event': [],
+  'Console Event': []
 };

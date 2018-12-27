@@ -91,8 +91,6 @@ test('processedHostList', function(assert) {
   assert.equal(result.length, 2);
   assert.equal(result[0].canStartScan, false);
   assert.equal(result[1].canStartScan, true);
-  assert.equal(result[0].selected, true);
-  assert.equal(result[1].selected, false);
 });
 
 test('serviceList', function(assert) {

@@ -1,16 +1,34 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, settled, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import hostListState from '../state/host.machines';
 import endpoint from '../state/schema';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
+import HostCreators from 'investigate-hosts/actions/data-creators/host';
+import RiskCreators from 'investigate-shared/actions/data-creators/risk-creators';
+import sinon from 'sinon';
 
-let setState;
+let deleteHostsSpy, startScanSpy, stopScanSpy, resetRiskScoreSpy, setState;
+
+const spys = [];
+
+
+const callback = () => {};
+const e = {
+  clientX: 20,
+  clientY: 20,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
 
 const endpointServer = {
   serviceData: [
@@ -62,7 +80,10 @@ const endpointState =
     endpoint:
     {
       schema: { schema: endpoint.schema },
-      machines: { hostList: hostListState.machines.hostList, selectedHostList: [], hostColumnSort: 'machine.machineName' }
+      machines: {
+        hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F' }],
+        hostColumnSort: 'machine.machineName'
+      }
     },
     preferences: {
       preferences: {
@@ -79,6 +100,10 @@ const endpointState =
     endpointServer,
     endpointQuery
   };
+spys.push(
+  deleteHostsSpy = sinon.stub(HostCreators, 'deleteHosts'),
+  resetRiskScoreSpy = sinon.stub(RiskCreators, 'resetRiskScore')
+);
 
 module('Integration | Component | host-list', function(hooks) {
   setupRenderingTest(hooks, {
@@ -91,7 +116,29 @@ module('Integration | Component | host-list', function(hooks) {
     setState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    spys.push(
+      startScanSpy = sinon.stub(HostCreators, 'startScan'),
+      stopScanSpy = sinon.stub(HostCreators, 'stopScan'));
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
+  });
 
+  hooks.afterEach(function() {
+    spys.forEach((s) => {
+      s.restore();
+    });
+    const wormholeElement = document.querySelector('#wormhole-context-menu');
+    if (wormholeElement) {
+      document.querySelector('#ember-testing').removeChild(wormholeElement);
+    }
+  });
+
+  hooks.after(function() {
+    spys.forEach((s) => {
+      s.restore();
+    });
   });
 
   test('it renders error page when endpointserver is offline', async function(assert) {
@@ -147,5 +194,216 @@ module('Integration | Component | host-list', function(hooks) {
         closeProperties=closeProperties}}`);
     await click(findAll('.rsa-form-checkbox')[1]);
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'One row not highlighted');
+  });
+
+  test('On right clicking the row it renders the context menu', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 5, 'Context menu not rendered');
+    });
+  });
+
+  test('row is getting selected on right click', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      assert.equal(findAll('.checked').length, 2, 'Row checkbox is selected');
+    });
+  });
+
+  test('on clicking the Start Scan it opens scan modal ', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[2].id}`); // START_SCAN
+      return settled().then(() => {
+        assert.equal(document.querySelectorAll('#modalDestination .scan-command-modal').length, 1);
+      });
+    });
+  });
+
+  test('on clicking the Delete host modal opens ', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[1].id}`);
+      return settled().then(() => {
+        assert.equal(document.querySelectorAll('#modalDestination .confirmation-modal').length, 1);
+      });
+    });
+  });
+
+  test('delete host action is called', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[1].id}`);
+      return settled().then(async() => {
+        assert.equal(document.querySelectorAll('#modalDestination .confirmation-modal').length, 1);
+        await click(document.querySelector('.confirmation-modal .is-primary button'));
+        assert.equal(deleteHostsSpy.callCount, 1, 'Delete action is called once');
+      });
+    });
+  });
+
+  test('start scan action is getting called', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[2].id}`); // START_SCAN
+      return settled().then(async() => {
+        await click(document.querySelector('.scan-command button'));
+        assert.equal(startScanSpy.callCount, 1, 'Start Scan action is called');
+      });
+    });
+  });
+
+  test('stop scan action is getting called', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[3].id}`); // START_SCAN
+      return settled().then(async() => {
+        await click(document.querySelector('.scan-command button'));
+        assert.equal(stopScanSpy.callCount, 1, 'Stop Scan action is called');
+      });
+    });
+  });
+
+  test('reset risk score action is getting called', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[4].id}`); // RESET_RISK_SCORE
+      return settled().then(async() => {
+        await click(document.querySelector('.resetButton button'));
+        assert.equal(resetRiskScoreSpy.callCount, 1, 'Reset Score action is called');
+      });
+    });
+  });
+
+  test('on right clicking the machine name context menu not rendered', async function(assert) {
+    setState(endpointState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent('.content-context-menu a', 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 0, 'Context menu not rendered');
+    });
   });
 });

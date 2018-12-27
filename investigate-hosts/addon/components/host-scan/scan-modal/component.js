@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 
 export default Component.extend({
 
-  classNames: 'scan-modal',
+  classNames: ['scan-modal'],
 
   eventBus: service(),
 
@@ -42,11 +42,10 @@ export default Component.extend({
 
     handleClick() {
       this.send('closeModal');
-      this.primaryAction();
+      this.primaryAction(this.get('command'));
     },
     closeModal() {
       this.onModalClose();
-      this.get('eventBus').trigger(`rsa-application-modal-close-${this.get('eventId')}`);
     }
   }
 });

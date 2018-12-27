@@ -13,6 +13,9 @@ export default [
       },
       {
         name: 'Network Event'
+      },
+      {
+        name: 'Console Event'
       }
     ]
   }

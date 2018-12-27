@@ -29,7 +29,7 @@ module('Acceptance | basic', function(hooks) {
     await click(deleteButton);
 
     assert.equal($(popUpCont).length, 1);
-    assert.equal($(popUpCont).find('h3')[0].innerText, 'Delete 1 host(s)');
+    assert.equal($(popUpCont).find('h3')[0].innerText, 'Delete host(s)');
     /* End - Test delete flow */
   });
 

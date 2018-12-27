@@ -8,16 +8,15 @@
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
   <div class="divider"></div>
   {{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=pivotToInvestigate}}
-  {{host-scan/scan-command command='START_SCAN'}}
-  {{host-scan/scan-command command='STOP_SCAN'}}
-  {{#rsa-button-with-confirmation
-    isDisabled=noHostsSelected
-    class='delete-host-button'
-    title=(t 'investigateHosts.hosts.deleteHosts.modal.title' count=selectedHostList.length)
-    confirmationMessage=(t 'investigateHosts.hosts.deleteHosts.modal.message')
-    onConfirm=( action 'handleDeleteHosts')}}
+  {{#rsa-form-button class='start-scan-button' isDisabled=noHostsSelected click=(action showScanModal 'START_SCAN')}}
+    {{t 'investigateHosts.hosts.button.initiateScan'}}
+  {{/rsa-form-button}}
+  {{#rsa-form-button class='stop-scan-button' isDisabled=noHostsSelected click=(action showScanModal 'STOP_SCAN')}}
+    {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
+  {{/rsa-form-button}}
+  {{#rsa-form-button class='delete-host-button' isDisabled=noHostsSelected click=showConfirmationModal}}
     {{t 'investigateHosts.hosts.button.delete'}}
-  {{/rsa-button-with-confirmation}}
+  {{/rsa-form-button}}
   {{endpoint/reset-risk-score buttonType='button' selectedList=selectedHostList riskType='HOST' resetRiskScore=(action 'resetRiskScore')}}
   {{host-list/host-table/action-bar/export-button}}
 </hbox>

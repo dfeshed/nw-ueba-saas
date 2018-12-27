@@ -1,6 +1,6 @@
 {{#if column.componentClass}}
-  <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
-    {{rsa-form-checkbox checked=item.checked change=checkBoxAction}}
+  <label class="rsa-form-checkbox-label {{if (is-selected selections item) 'checked'}}">
+    {{rsa-form-checkbox checked=(if (is-selected selections item) true false) change=checkBoxAction}}
   </label>
 {{else if (eq column.field 'score')}}
   <centered>

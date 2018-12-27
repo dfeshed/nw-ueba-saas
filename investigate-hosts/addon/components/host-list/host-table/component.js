@@ -14,7 +14,8 @@ import { next } from '@ember/runloop';
 import {
   toggleMachineSelected,
   toggleIconVisibility,
-  setSelectedHost
+  setSelectedHost,
+  deSelectAllHosts
 } from 'investigate-hosts/actions/ui-state-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -31,7 +32,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   servers: state.endpointServer.serviceData,
-  focusedHostIndex: state.endpoint.machines.focusedHostIndex
+  focusedHostIndex: state.endpoint.machines.focusedHostIndex,
+  selections: state.endpoint.machines.selectedHostList || []
 });
 
 const dispatchToActions = {
@@ -42,7 +44,8 @@ const dispatchToActions = {
   setHostColumnSort,
   fetchHostContext,
   onHostSelection,
-  setFocusedHostIndex
+  setFocusedHostIndex,
+  deSelectAllHosts
 };
 
 const HostTable = Component.extend({
@@ -64,6 +67,14 @@ const HostTable = Component.extend({
     return _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
+  },
+
+  isAlreadySelected(selections, item) {
+    let selected = false;
+    if (selections && selections.length) {
+      selected = selections.findBy('id', item.id);
+    }
+    return selected;
   },
 
   actions: {
@@ -91,6 +102,26 @@ const HostTable = Component.extend({
         } else {
           this.closeProperties();
           this.send('setFocusedHostIndex', null);
+        }
+      }
+    },
+
+    beforeContextMenuShow(menu, event) {
+      const { contextSelection: item, contextItems } = menu;
+      this.send('setFocusedHostIndex', null);
+      if (!this.get('contextItems')) {
+        // Need to store this locally set it back again to menu object
+        this.set('contextItems', contextItems);
+      }
+      // For anchor tag hid the context menu and show browser default right click menu
+      if (event.target.tagName.toLowerCase() === 'a') {
+        menu.set('contextItems', []);
+      } else {
+        menu.set('contextItems', this.get('contextItems'));
+        this.closeProperties();
+        if (!this.isAlreadySelected(this.get('selections'), item)) {
+          this.send('deSelectAllHosts');
+          this.send('toggleMachineSelected', item);
         }
       }
     }

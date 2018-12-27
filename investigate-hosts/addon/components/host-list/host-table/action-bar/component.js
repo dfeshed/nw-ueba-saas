@@ -19,6 +19,7 @@ const stateToComputed = (state) => ({
   servers: state.endpointServer,
   selections: state.endpoint.machines.selectedHostList || []
 });
+const noop = () => {};
 
 const dispatchToActions = {
   toggleDeleteHostsModal,
@@ -37,6 +38,14 @@ const ActionBar = Component.extend({
   flashMessage: service(),
 
   i18n: service(),
+
+  pivotToInvestigate: noop,
+
+  openFilterPanel: noop,
+
+  showConfirmationModal: noop,
+
+  showScanModal: noop,
 
   actions: {
     handleDeleteHosts() {

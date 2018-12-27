@@ -15,11 +15,23 @@
         {{rsa-panel-message message=(t 'investigateHosts.hosts.list.errorOffline')}}
       </centered>
     {{else}}
-      {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
+      {{#rsa-data-table/body
+        rowComponentClass=(
+          component 'host-list.host-table.row'
+          selections=selections
+          isScanStartButtonDisabled=isScanStartButtonDisabled
+          showConfirmationModal=showConfirmationModal
+          showScanModal=showScanModal
+          showRiskScoreModal=showRiskScoreModal
+          pivotToInvestigate=pivotToInvestigate
+          beforeContextMenuShow=(action 'beforeContextMenuShow')
+        )
+        noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{host-list/host-table/body-cell
           column=column
           serviceList=serviceList
           item=item
+          selections=selections
           serverId=serverId
           serviceId=serviceId
           timeRange=timeRange

@@ -1,0 +1,25 @@
+{{#rsa-application-modal
+  style='standard confirmation-modal'
+  eventId='confirm-modal'
+  label=title
+  autoOpen=true
+  onClose=closeConfirmModal}}
+  <div class='modal-content'>
+    <p>{{confirmationMessage}}</p>
+    {{#if noteMessage}}
+      <div class='modal-content__note'>
+        {{noteMessage}}
+      </div>
+    {{/if}}
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction=closeConfirmModal}}
+        {{t 'forms.no'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style='primary' defaultAction=(action confirmAction)}}
+        {{t 'forms.yes'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}

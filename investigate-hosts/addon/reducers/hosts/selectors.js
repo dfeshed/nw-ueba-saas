@@ -79,8 +79,8 @@ export const hostExportLink = createSelector(
 );
 
 export const processedHostList = createSelector(
-  [ _hostList, _selectedHostList ],
-  (machines, selectedHostList) => {
+  [ _hostList ],
+  (machines) => {
     return machines.map((machine) => {
       let hasScanStatus = false;
       let canStartScan = false;
@@ -92,8 +92,7 @@ export const processedHostList = createSelector(
       return {
         ...machine,
         canStartScan,
-        hasScanStatus,
-        selected: selectedHostList.some((host) => host.id === machine.id)
+        hasScanStatus
       };
     });
   }

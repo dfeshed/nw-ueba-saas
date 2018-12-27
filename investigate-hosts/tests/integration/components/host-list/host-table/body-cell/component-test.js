@@ -12,11 +12,12 @@ moduleForComponent('host-list/host-table/body-cell', 'Integration | Component | 
 
 test('it renders the checkbox column', function(assert) {
   this.set('column', { componentClass: true });
+  this.set('selections', [ { id: 1 }]);
   this.set('item', { selected: true, id: 1, checked: true });
   this.set('checkBoxAction', (id) => {
     assert.equal(id, 1);
   });
-  this.render(hbs`{{host-list/host-table/body-cell column=column item=item checkBoxAction=(action checkBoxAction 1)}}`);
+  this.render(hbs`{{host-list/host-table/body-cell selections=selections column=column item=item checkBoxAction=(action checkBoxAction 1)}}`);
 
   assert.equal(this.$('.rsa-form-checkbox').length, 1);
   assert.equal(this.$('.rsa-form-checkbox:checked').length, 1, 'Expecting to select the checkbox');

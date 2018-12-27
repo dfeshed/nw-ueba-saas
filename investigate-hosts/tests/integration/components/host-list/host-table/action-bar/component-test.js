@@ -1,6 +1,6 @@
 import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, findAll } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -41,63 +41,46 @@ module('Integration | Component | host table action bar', function(hooks) {
 
   test('it renders action bar start button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .host-start-scan-button button').textContent.trim(), 'Start Scan', 'action bar start button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .host-start-scan-button > .is-disabled').length, 1, 'action bar start button is disabled');
+    assert.equal(document.querySelector('.host-table__toolbar .start-scan-button button').textContent.trim(), 'Start Scan', 'action bar start button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 1, 'action bar start button is disabled');
   });
 
   test('it renders action bar stop button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .stop-scan-button button').textContent.trim(), 'Stop Scan', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button > .is-disabled').length, 1, 'action bar stop button is disabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'action bar stop button is disabled');
   });
 
   test('it renders action bar delete button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .delete-host-button button').textContent.trim(), 'Delete', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button > .is-disabled').length, 1, 'action bar delete button is disabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button.is-disabled').length, 1, 'action bar delete button is disabled');
   });
 
   test('it renders action bar export to csv button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(5) .is-disabled').length, 1, 'action bar export to csv button is disabled by default');
+    assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(5).is-disabled').length, 1, 'action bar export to csv button is disabled by default');
   });
 
   test('it renders action bar start button when some hosts are selected', async function(assert) {
     new ReduxDataHelper(setState).scanCount(2).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .host-start-scan-button button').textContent.trim(), 'Start Scan', 'action bar start button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .host-start-scan-button > .is-disabled').length, 0, 'action bar start button is enabled');
+    assert.equal(document.querySelector('.host-table__toolbar .start-scan-button button').textContent.trim(), 'Start Scan', 'action bar start button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'action bar start button is enabled');
   });
 
   test('it renders action bar stop button when some hosts are selected', async function(assert) {
     new ReduxDataHelper(setState).scanCount(2).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .stop-scan-button button').textContent.trim(), 'Stop Scan', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button > .is-disabled').length, 0, 'action bar stop button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'action bar stop button is enabled');
   });
 
   test('it renders action bar delete button when some hosts are selected', async function(assert) {
     new ReduxDataHelper(setState).scanCount(2).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .delete-host-button button').textContent.trim(), 'Delete', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button > .is-disabled').length, 0, 'action bar delete button is enabled');
-  });
-
-  test('it renders confirmation modal when delete button is clicked with some hosts selected', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
-    await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button > .is-disabled').length, 0, 'action bar delete button is enabled');
-    assert.equal(document.querySelectorAll('#modalDestination .confirmation-modal').length, 0, 'confirmation modal is not present'); // Modal content not be added to dom
-    this.$('.host-table__toolbar .delete-host-button button').trigger('click');
-    return settled().then(() => {
-      assert.equal(document.querySelectorAll('#modalDestination.active .confirmation-modal').length, 1, 'delete hosts confirmation modal');
-      assert.equal(document.querySelector('#modalDestination .confirmation-modal h3').textContent.trim(), 'Delete 2 host(s)', 'confirmation modal title');
-      assert.equal(document.querySelector('#modalDestination .confirmation-modal .modal-footer-buttons div:last-child button').textContent.trim(), 'Yes', 'Yes button label');
-      click('.confirmation-modal .modal-footer-buttons div:last-child button');
-      return settled().then(() => {
-        assert.equal(document.querySelectorAll('#modalDestination.active .confirmation-modal').length, 0, 'delete hosts confirmation modal is closed');
-      });
-    });
+    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button.is-disabled').length, 0, 'action bar delete button is enabled');
   });
 
   test('On changing the service host properties is closed', async function(assert) {

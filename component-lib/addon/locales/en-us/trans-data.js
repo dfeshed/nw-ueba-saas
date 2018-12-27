@@ -3542,6 +3542,11 @@ export default {
           resultCount: '(First {{count}} Results)'
         }
       },
+      hostActions: {
+        startScan: 'Start Scan',
+        stopScan: 'Stop Scan',
+        delete: 'Delete'
+      },
       fileActions: {
         editFileStatus: 'Edit File Status',
         pivotToInvestigate: 'Analyze Events',

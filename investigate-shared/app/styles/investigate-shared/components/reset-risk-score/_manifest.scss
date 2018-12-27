@@ -7,6 +7,9 @@
     padding-top: rsa-whitespace(more);
     float: right;
     padding-bottom: rsa-whitespace();
+    .closeReset {
+      padding-right: rsa-whitespace(less);
+    }
   }
 
   .max-limit-info {
@@ -25,4 +28,7 @@
       padding-bottom: rsa-whitespace();
     }
   }
+}
+.reset-risk-score-dialog {
+  display: none;
 }

@@ -2,6 +2,8 @@
   openFilterPanel=openFilterPanel
   closeProperties=closeProperties
   pivotToInvestigate=(action 'pivotToInvestigate')
+  showConfirmationModal=(action 'showConfirmationModal')
+  showScanModal=(action 'showScanModal')
 }}
 {{#if selectedServiceData.isServiceOnline}}
   {{#if schemaLoading}}
@@ -12,10 +14,41 @@
     {{host-list/host-table
       openFilterPanel=openFilterPanel
       openProperties=openProperties
-      closeProperties=closeProperties}}
+      closeProperties=closeProperties
+      pivotToInvestigate=(action 'pivotToInvestigate')
+      showConfirmationModal=(action 'showConfirmationModal')
+      showRiskScoreModal=(action 'showRiskScoreModal')
+      showScanModal=(action 'showScanModal')
+    }}
   {{/if}}
 {{else}}
   {{error-page
     errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)
     title=(t 'investigateFiles.errorPage.serviceDown' serviceType=selectedServiceData.name)}}
+{{/if}}
+{{#if showCommandModal}}
+  {{host-scan/scan-modal
+    command=scanCommand
+    modalStyle='scan-command-modal'
+    eventId='scan-command'
+    modalTitle=modalTitle
+    warningMessages=(if (eq scanCommand 'START_SCAN') warningMessages)
+    onModalClose=(action 'hideScanModal')
+    primaryAction=(action 'initiateScanCommand')}}
+{{/if}}
+
+{{#if showConfirmationModal}}
+  {{host-list/host-table/confirmation-modal
+    confirmAction=(action 'handleDeleteHosts')
+    closeConfirmModal=(action 'hideConfirmationModal')
+    class='delete-host-modal'
+    title=(t 'investigateHosts.hosts.deleteHosts.modal.title')
+    confirmationMessage=(t 'investigateHosts.hosts.deleteHosts.modal.message')}}
+{{/if}}
+
+{{#if showResetScoreModal}}
+  {{endpoint/reset-risk-score/modal
+    isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+    onClose=(action 'onResetScoreModalClose')
+    onReset=(action 'handleResetHostsRiskScore')}}
 {{/if}}
