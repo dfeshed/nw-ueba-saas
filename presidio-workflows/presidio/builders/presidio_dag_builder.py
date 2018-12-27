@@ -2,11 +2,15 @@ from abc import ABCMeta, abstractmethod
 
 from datetime import timedelta
 
+from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.subdag_operator import SubDagOperator
 from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.operators.python_operator import ShortCircuitOperator
 
+from presidio.builders.presidio_dag_wiring import PresidioDagWiring
 from presidio.utils.airflow.operators.container.container_operator import ContainerOperator
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -52,31 +56,37 @@ class PresidioDagBuilder(LoggingMixin):
             provide_context=True
         )
 
-    def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag):
+    def _wire(self, builder, dag, short_circuit_operator, upstream_tasks, downstream_tasks, add_sequential_sensor):
         """
-        create a sub dag of the received "dag" fill it with a flow using the sub_dag_builder
-        and wrap it with a sub dag operator.
-        :param sub_dag_builder:
-        :type sub_dag_builder: PresidioDagBuilder
-        :param sub_dag_id:
-        :type sub_dag_id: str
-        :param dag: The ADE DAG to populate
-        :type dag: airflow.models.DAG
-        :return: The given ADE DAG, after it has been populated
-        :rtype: airflow.models.DAG
+        wire short_circuit_operator, upstream_tasks, downstream_tasks and add_sequential_sensor to the dag.
+        :param builder: builder
+        :param dag: dag
+        :param short_circuit_operator: short_circuit_operator
+        :param upstream_tasks: upstream_tasks
+        :param downstream_tasks: downstream_tasks
+        :param add_sequential_sensor: boolean
+        :return: PresidioDagWiring
         """
+        presidio_dag_wiring = PresidioDagWiring()
+        presidio_dag_wiring.wire(builder, dag, short_circuit_operator, upstream_tasks, downstream_tasks,
+                                 add_sequential_sensor)
+        return presidio_dag_wiring
 
-        old_tasks = dag.tasks
-        sub_dag_builder.build(dag)
-        new_tasks = [item for item in dag.tasks if item not in old_tasks]
-
-        first_new_tasks = [task for task in new_tasks if
-                           not task.upstream_list and not isinstance(task, ContainerOperator)]
-        last_new_tasks = [task for task in new_tasks if
-                          not task.downstream_list and not isinstance(task, ContainerOperator)]
-
+    def _create_container_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, upstream_tasks,
+                                   downstream_tasks, add_sequential_sensor):
+        """
+        create a container operator with start and end dummy operators
+        and wire short_circuit_operator, upstream_tasks, downstream_tasks and add_sequential_sensor to the dag.
+        :param sub_dag_builder: sub_dag_builder
+        :param sub_dag_id: sub_dag_id
+        :param dag: dag
+        :param short_circuit_operator: short_circuit_operator
+        :param upstream_tasks: upstream_tasks
+        :param downstream_tasks: downstream_tasks
+        :param add_sequential_sensor: add_sequential_sensor
+        :return: ContainerOperator
+        """
         retry_args = self._calc_subdag_retry_args(sub_dag_id)
-
         start_task_id = '{}.{}'.format("start_operator", sub_dag_id)
         end_task_id = '{}.{}'.format("end_operator", sub_dag_id)
 
@@ -93,10 +103,9 @@ class PresidioDagBuilder(LoggingMixin):
                                      max_retry_delay=timedelta(
                                          seconds=int(retry_args['max_retry_delay'])))
 
-        start_operator >> first_new_tasks
-        last_new_tasks >> end_operator
+        PresidioDagWiring().wire(sub_dag_builder, dag, None, [start_operator], [end_operator], False, ContainerOperator)
 
-        return ContainerOperator(start_operator=start_operator,
+        container_operator = ContainerOperator(start_operator=start_operator,
                                  end_operator=end_operator,
                                  task_id='{}.{}'.format("container", sub_dag_id),
                                  dag=dag,
@@ -105,6 +114,48 @@ class PresidioDagBuilder(LoggingMixin):
                                  retry_exponential_backoff=retry_args['retry_exponential_backoff'],
                                  max_retry_delay=timedelta(
                                      seconds=int(retry_args['max_retry_delay'])))
+
+        PresidioDagWiring().wire_operator(container_operator, short_circuit_operator, upstream_tasks, downstream_tasks, add_sequential_sensor)
+
+        return container_operator
+
+    def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, upstream_tasks,
+                                 downstream_tasks, add_sequential_sensor):
+        """
+         create a sub dag of the received "dag" fill it with a flow using the sub_dag_builder
+         and wrap it with a sub dag operator.
+        :param sub_dag_builder: sub_dag_builder
+        :param sub_dag_id: sub_dag_id
+        :param dag: dag
+        :param short_circuit_operator: short_circuit_operator
+        :param upstream_tasks: upstream_tasks
+        :param downstream_tasks: downstream_tasks
+        :param add_sequential_sensor: add_sequential_sensor
+        :return: SubDagOperator
+        """
+        sub_dag = DAG(
+            dag_id='{}.{}'.format(dag.dag_id, sub_dag_id),
+            schedule_interval=dag.schedule_interval,
+            start_date=dag.start_date,
+            default_args=dag.default_args)
+
+        retry_args = self._calc_subdag_retry_args(sub_dag_id)
+
+        sub_dag = SubDagOperator(
+            subdag=sub_dag_builder.build(sub_dag),
+            task_id=sub_dag_id,
+            dag=dag,
+            retries=retry_args['retries'],
+            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+            max_retry_delay=timedelta(
+                seconds=int(retry_args['max_retry_delay']))
+        )
+
+        PresidioDagWiring().wire_operator(sub_dag, short_circuit_operator, upstream_tasks,
+                                          downstream_tasks, add_sequential_sensor)
+
+        return sub_dag;
 
     @staticmethod
     def validate_the_gap_between_dag_start_date_and_current_execution_date(dag, gap, execution_date, schedule_interval):

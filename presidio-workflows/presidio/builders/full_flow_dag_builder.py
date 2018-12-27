@@ -77,15 +77,14 @@ class FullFlowDagBuilder(PresidioDagBuilder):
 
     def _get_adapter_sub_dag_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
-
-        return self._create_sub_dag_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag)
+        return self._create_container_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag, None, [], [], False)
 
     def _get_presidio_core_sub_dag_operator(self, data_sources, full_flow_dag):
         presidio_core_dag_id = 'presidio_core_dag'
 
-        return self._create_sub_dag_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag)
+        return self._create_container_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag, None, [], [], False)
 
     def _get_presidio_retention_sub_dag_operator(self, data_sources, full_flow_dag):
         retention_dag_id = 'retention_dag'
 
-        return self._create_sub_dag_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag)
+        return self._create_container_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag, None, [], [], False)

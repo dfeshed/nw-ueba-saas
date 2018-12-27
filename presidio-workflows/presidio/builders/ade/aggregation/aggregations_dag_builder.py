@@ -1,6 +1,7 @@
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
 from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
 class AggregationsDagBuilder(PresidioDagBuilder):
@@ -31,18 +32,22 @@ class AggregationsDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        FeatureAggregationsOperator(
+        task_sensor_service = TaskSensorService()
+
+        feature_aggregations_operator = FeatureAggregationsOperator(
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=PresidioDagBuilder.presidio_command,
             data_source=self.data_source,
             dag=aggregations_dag
         )
 
-        ScoreAggregationsOperator(
+        score_aggregations_operator = ScoreAggregationsOperator(
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=PresidioDagBuilder.presidio_command,
             data_source=self.data_source,
             dag=aggregations_dag
         )
 
+        task_sensor_service.add_task_sequential_sensor(feature_aggregations_operator)
+        task_sensor_service.add_task_sequential_sensor(score_aggregations_operator)
         return aggregations_dag

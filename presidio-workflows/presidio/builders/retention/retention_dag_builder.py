@@ -102,11 +102,11 @@ class RetentionDagBuilder(PresidioDagBuilder):
     def _get_presidio_input_retention_sub_dag_operator(self, data_sources, retention_dag):
         input_retention_dag_id = 'input_retention_dag'
 
-        return self._create_sub_dag_operator(InputRetentionDagBuilder(data_sources), input_retention_dag_id,
-                                             retention_dag)
+        return self._create_container_operator(InputRetentionDagBuilder(data_sources), input_retention_dag_id,
+                                               retention_dag, None, [], [], False)
 
     def _get_presidio_output_retention_sub_dag_operator(self, data_sources, retention_dag):
         output_retention_dag_id = 'output_retention_dag'
 
-        return self._create_sub_dag_operator(OutputRetentionDagBuilder(data_sources), output_retention_dag_id,
-                                             retention_dag)
+        return self._create_container_operator(OutputRetentionDagBuilder(data_sources), output_retention_dag_id,
+                                               retention_dag, None, [], [], False)
