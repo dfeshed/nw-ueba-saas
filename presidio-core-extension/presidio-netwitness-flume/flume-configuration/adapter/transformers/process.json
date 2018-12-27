@@ -3,6 +3,25 @@
   "name": "process-transformer",
   "transformerList": [
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
+      "sourceKey": "action[0]",
+      "targetKey": "operationType",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "filter",
+      "name": "filter-operation-types",
+      "predicate": {
+        "type": "regex",
+        "name": "operationType-white-list",
+        "sourceKey": "operationType",
+        "regex": "OPEN_PROCESS|CREATE_PROCESS|CREATE_REMOTE_THREAD"
+      },
+      "filterIn": true
+    },
+    {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
       "sourceKey": "event_source_id",
@@ -96,15 +115,6 @@
       "destinationKeys": [
         "userName",
         "userDisplayName"
-      ]
-    },
-    {
-      "type": "copy_value",
-      "name": "copy-action-to-operation-type",
-      "sourceKey": "action[0]",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "operationType"
       ]
     },
     {
@@ -230,12 +240,71 @@
     },
     {
       "type": "copy_value",
-      "name": "rename-process-category",
-      "sourceKey": "process_category_src",
+      "name": "rename-src-process-dir-group",
+      "sourceKey": "dir_path_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-dir-groups",
+      "sourceKey": "srcProcessDirectoryGroups",
+      "targetKey": "srcProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-dst-process-dir-group",
+      "sourceKey": "dir_path_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-dir-groups",
+      "sourceKey": "dstProcessDirectoryGroups",
+      "targetKey": "dstProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-src-process-categories",
+      "sourceKey": "filetype_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessCategories"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-categories",
+      "sourceKey": "srcProcessCategories",
+      "targetKey": "srcProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-dst-process-categories",
+      "sourceKey": "filetype_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessCategories"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-categories",
+      "sourceKey": "dstProcessCategories",
+      "targetKey": "dstProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "copy_value",

@@ -3,6 +3,25 @@
   "name": "registry-transformer",
   "transformerList": [
     {
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
+      "sourceKey": "action[0]",
+      "targetKey": "operationType",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "filter",
+      "name": "filter-operation-types",
+      "predicate": {
+        "type": "regex",
+        "name": "operationType-white-list",
+        "sourceKey": "operationType",
+        "regex": "MODIFY_REGISTRY_VALUE"
+      },
+      "filterIn": true
+    },
+    {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
       "sourceKey": "event_source_id",
@@ -105,15 +124,6 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "copy-action-to-operation-type",
-      "sourceKey": "action[0]",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "operationType"
-      ]
-    },
-    {
       "type": "regex_captor_and_formatter",
       "name": "machine-id-normalization",
       "sourceKey": "alias_host[0]",
@@ -176,6 +186,15 @@
     },
     {
       "type": "copy_value",
+      "name": "rename-cert-common",
+      "sourceKey": "cert_common",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processCertificateIssuer"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "copy-process-directory",
       "sourceKey": "directory_src",
       "isRemoveSourceKey": true,
@@ -200,6 +219,14 @@
       "destinationKeys": [
         "registryKeyGroup"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-registry-key-group",
+      "sourceKey": "registryKeyGroup",
+      "targetKey": "registryKeyGroup",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "regex_captor_and_formatter",
@@ -249,12 +276,37 @@
     },
     {
       "type": "copy_value",
-      "name": "copy-registry-value",
-      "sourceKey": "registry_value",
+      "name": "rename-process-dir-group",
+      "sourceKey": "dir_path_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "registryValueName"
+        "processDirectoryGroups"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-process-dir-groups",
+      "sourceKey": "processDirectoryGroups",
+      "targetKey": "processDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-process-categories",
+      "sourceKey": "filetype",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "processCategories"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-process-categories",
+      "sourceKey": "processCategories",
+      "targetKey": "processCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     }
   ]
 }
