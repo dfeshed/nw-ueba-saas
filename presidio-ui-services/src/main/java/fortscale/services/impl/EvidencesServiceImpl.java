@@ -53,6 +53,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	public static final int DEFAULT_EVENT_PAGE_SIZE = 50;
 	public static final int DEFAULT_EVENT_PAGE_NUMBER = 0;
 	public static final String LINK_POSTFIX_FOR_UI = "_link";
+	public static final String MACHINE_ID = "machineId";
+	public static final String PROCESS_FILE_NAME = "ProcessFileName";
 	public NwInvestigateHelper nwInvestigateHelper;
 //	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 //	final String TAG_DATA_ENTITY ="active_directory";
@@ -325,18 +327,22 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 		//After all key values was mapped, add links
 		for (DataEntityField dataEntityField : dataEntity.getFields()){
-			if (StringUtils.isNotBlank(dataEntityField.getLinkedValueFieldName())){
+			String linkedFieldName = dataEntityField.getLinkedValueFieldName();
+			if (StringUtils.isNotBlank(linkedFieldName)){
 				String uiKey = dataEntityField.getId();
-				Object unnormalizedValue = getFromAnyMap(dataEntityField.getLinkedValueFieldName(),event, additionalFields);
+				Object unnormalizedValue = getFromAnyMap(linkedFieldName,event, additionalFields);
 				String link = "";
 				if (unnormalizedValue!=null){
-
-					link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
+					if (linkedFieldName.equals(MACHINE_ID)) {
+						link = nwInvestigateHelper.getLinkToInvestigateHost(unnormalizedValue);
+					} else if (linkedFieldName.endsWith(PROCESS_FILE_NAME)) {
+						link = nwInvestigateHelper.getLinkToInvestigateProcess(unnormalizedValue,getFromAnyMap(MACHINE_ID, event), additionalFields);
+					} else {
+						link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
+					}
 				}
 
 				additionalFields.put(uiKey+ LINK_POSTFIX_FOR_UI,link);
-
-
 			}
 		}
 
