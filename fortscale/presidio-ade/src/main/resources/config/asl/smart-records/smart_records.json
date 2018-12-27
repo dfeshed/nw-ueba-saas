@@ -59,6 +59,14 @@
             "sumOfHighestDstProcessFilePathOpenedGlobalScoresUserIdScriptingProcessHourly",
             "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly"
           ]
+        },
+        {
+          "name": "numberOfReconnaissanceToolExecutedUserIdProcessHourly",
+          "features": [
+            "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+            "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly",
+            "numberOfReconnaissanceToolExecutedUserIdProcessHourly"
+          ]
         }
       ]
     }
