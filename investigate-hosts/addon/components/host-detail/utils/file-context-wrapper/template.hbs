@@ -1,57 +1,64 @@
 <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
-<box xs='9'>
-  {{endpoint/file-actionbar
-    onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
-    getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
-    retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-    resetRiskScore = (action 'resetRiskScoreAction')
-    serviceList=serviceList
-    metaName='checksumSha256'
-    isRemediationAllowed=isRemediationAllowed
-    itemList=fileContextSelections
-    fileStatusData=fileStatus
-    restrictedFileList=restrictedFileList
-    serviceId=serviceId
-    timeRange=timeRange
-    fileDownloadButtonStatus=fileDownloadButtonStatus
-    downloadFiles=(action 'onDownloadFilesToServer')
-    saveLocalCopy=(action 'onSaveLocalCopy')
-    analyzeFile=(action 'onAnalyzeFile')}}
-  {{host-detail/utils/file-context-table
-    isPaginated=isPaginated
-    storeName=storeName
-    tabName=tabName
-    columnsConfig=columnsConfig
-    fileDownloadButtonStatus=fileDownloadButtonStatus
-    downloadFiles=(action 'onDownloadFilesToServer')
-    saveLocalCopy=(action 'onSaveLocalCopy')
-    analyzeFile=(action 'onAnalyzeFile')}}
-</box>
-{{#if propertyConfig}}
-  <box xs='3' class='host-detail-property'>
-    <hbox class="flexi-fit">
-      {{#each hostDetailPropertyTabs as |tab|}}
-        {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostDetailPropertyTab' tab.name)}}
-          <div class="label">{{t tab.label}}</div>
-        {{/rsa-nav-tab}}
-      {{/each}}
-    </hbox>
-    {{#if (eq activeHostDetailPropertyTab 'RISK')}}
-      {{endpoint/risk-properties
-        defaultAction=(action 'getUpdatedRiskScoreContext')
-        riskState=risk
-        riskType='FILE'
-        belongsTo='HOST'
-      }}
-    {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
-      <vbox class="host-properties-box">
-        <box class='scroll-box'>
+{{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+  {{#layout.center}}
+    <box class="process-list-box scroll-box">
+      {{endpoint/file-actionbar
+        onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
+        getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+        retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
+        resetRiskScore = (action 'resetRiskScoreAction')
+        serviceList=serviceList
+        metaName='checksumSha256'
+        isRemediationAllowed=isRemediationAllowed
+        itemList=fileContextSelections
+        fileStatusData=fileStatus
+        restrictedFileList=restrictedFileList
+        serviceId=serviceId
+        timeRange=timeRange
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        downloadFiles=(action 'onDownloadFilesToServer')
+        saveLocalCopy=(action 'onSaveLocalCopy')
+        analyzeFile=(action 'onAnalyzeFile')}}
+      {{host-detail/utils/file-context-table
+        isPaginated=isPaginated
+        storeName=storeName
+        tabName=tabName
+        columnsConfig=columnsConfig
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        openPropertyPanel=(action layout.open 'right')
+        closePropertyPanel=(action layout.close 'right')
+        downloadFiles=(action 'onDownloadFilesToServer')
+        saveLocalCopy=(action 'onSaveLocalCopy')
+        analyzeFile=(action 'onAnalyzeFile')}}
+    </box>
+  {{/layout.center}}
+  {{#layout.right as |right|}}
+    {{#if propertyConfig}}
+      {{#right.header}}
+        {{endpoint/entity-details
+          title=fileProperty.fileName
+          tabs= hostDetailPropertyTabs
+          setTabAction=(action 'setHostDetailPropertyTab' )
+          closeAction=(action layout.close 'right')
+        }}
+      {{/right.header}}
+      {{#if (eq activeHostDetailPropertyTab 'RISK')}}
+        {{endpoint/risk-properties
+          defaultAction=(action 'getUpdatedRiskScoreContext')
+          riskState=risk
+          riskType='FILE'
+          belongsTo='HOST'
+        }}
+      {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
+        <box class="host-properties-box scroll-box">
           {{endpoint/file-property-panel
-            localeNameSpace='investigateHosts.property.file'
             config=propertyConfig
+            localeNameSpace='investigateHosts.property.file'
             data=fileProperty}}
         </box>
-      </vbox>
+      {{/if}}
     {{/if}}
-  </box>
-{{/if}}
+  {{/layout.right}}
+{{/rsa-page-layout}}
+
+

@@ -35,11 +35,11 @@ const getFileContext = (belongsTo, categories) => {
   };
 };
 
-const _setRowSelection = (belongsTo, id) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id }, meta: { belongsTo } });
+const setRowSelection = (belongsTo, id, index) => ({ type: ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION, payload: { id, index }, meta: { belongsTo } });
 
-const onHostFileSelection = (belongsTo, storeName, { id }) => {
+const onHostFileSelection = (belongsTo, storeName, { id }, index) => {
   return (dispatch, getState) => {
-    dispatch(_setRowSelection(belongsTo, id));
+    dispatch(setRowSelection(belongsTo, id, index));
     dispatch(getRespondServerStatus());
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(focusedRowChecksum(getState(), storeName), 'FILE', 'HOST'));
@@ -144,5 +144,6 @@ export {
   retrieveRemediationStatus,
   resetSelection,
   downloadFilesToServer,
-  fetchMachineCount
+  fetchMachineCount,
+  setRowSelection
 };

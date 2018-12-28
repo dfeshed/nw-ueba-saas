@@ -102,3 +102,16 @@
     border-right: 1px solid border-color(primary, dark);
   }
 }
+
+.file-context-wrapper {
+  .center-zone {
+    height: 100%;
+  }
+  .host-properties-box {
+    height: 100%;
+  }
+  .divider {
+    height: 0;
+  }
+}
+

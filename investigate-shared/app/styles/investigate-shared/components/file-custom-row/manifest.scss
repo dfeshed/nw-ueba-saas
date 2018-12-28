@@ -10,6 +10,7 @@
   .context-menu__item {
     margin-right: 30px;
     padding-left: rsa-whitespace();
+    line-height: rsa-whitespace();
   }
   .show-divider {
     @include border-top(1px, solid, primary, base, opaque);

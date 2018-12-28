@@ -182,7 +182,6 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.rsa-data-table-body-row:nth-child(1).is-selected').length, 1, 'First row is selected by default');
     await click('.rsa-data-table-body-row:nth-child(2)');
     assert.equal(findAll('.rsa-data-table-body-row:nth-child(2).is-selected').length, 1, 'Second row is selected');
   });

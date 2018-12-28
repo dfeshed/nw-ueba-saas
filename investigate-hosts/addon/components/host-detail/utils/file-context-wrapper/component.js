@@ -20,7 +20,8 @@ import {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
-  downloadFilesToServer
+  downloadFilesToServer,
+  setRowSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
@@ -60,12 +61,13 @@ const dispatchToActions = {
   resetRiskScore,
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
-  saveLocalFileCopy
+  saveLocalFileCopy,
+  setRowSelection
 };
 
 
 const ContextWrapper = Component.extend({
-  tagName: 'hbox',
+  tagName: 'box',
 
   classNames: ['file-context-wrapper'],
 
@@ -82,6 +84,11 @@ const ContextWrapper = Component.extend({
   flashMessage: service(),
 
   actions: {
+
+    onPropertyPanelClose() {
+      this.send('setRowSelection', this.get('tabName'), null, null);
+    },
+
     onDownloadFilesToServer() {
       const callBackOptions = {
         onSuccess: () => this.get('flashMessage').showFlashMessage('investigateHosts.flash.fileDownloadRequestSent'),

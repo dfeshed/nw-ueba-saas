@@ -18,7 +18,8 @@ const initialState = Immutable.from({
   pageNumber: -1,
   hasNext: false,
   isRemediationAllowed: true,
-  agentCountMapping: {}
+  agentCountMapping: {},
+  selectedRowIndex: null
 });
 
 const LOADING_STATUS = 'loading';
@@ -43,11 +44,11 @@ const fileContext = reduxActions.handleActions({
 
   [ACTION_TYPES.RESET_CONTEXT_DATA]: (state) => state.merge(initialState),
 
-  [ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION]: (state, { payload: { id } }) => state.set('selectedRowId', id),
+  [ACTION_TYPES.SET_FILE_CONTEXT_ROW_SELECTION]: (state, { payload: { id, index } }) => state.merge({ selectedRowId: id, selectedRowIndex: index }),
 
   [ACTION_TYPES.SET_FILE_CONTEXT_COLUMN_SORT]: (s, { payload }) => {
     const { isDescending, field } = payload;
-    return s.merge({ sortConfig: { isDescending, field }, selectedRowId: null });
+    return s.merge({ sortConfig: { isDescending, field }, selectedRowId: null, selectedRowIndex: null });
   },
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT]: (state, action) => {
@@ -61,8 +62,7 @@ const fileContext = reduxActions.handleActions({
         return s.merge({
           totalItems,
           fileContext,
-          contextLoadingStatus: 'completed',
-          selectedRowId: fileContext ? Object.keys(fileContext)[0] : null
+          contextLoadingStatus: 'completed'
         });
       }
     });

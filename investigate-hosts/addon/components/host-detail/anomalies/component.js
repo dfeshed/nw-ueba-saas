@@ -13,7 +13,7 @@ const dispatchToActions = {
 };
 
 const HostAnomalies = Component.extend({
-  tagName: 'vbox',
+  tagName: 'box',
   classNames: ['host-anomalies']
 });
 

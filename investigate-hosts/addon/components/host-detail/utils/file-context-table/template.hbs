@@ -1,11 +1,11 @@
-<box>
+<box class='process-tree-table-box'>
   {{#rsa-data-table
     lazy=true
     items=listOfFiles
     columnsConfig=columnsConfig
     agentCountMapping=agentCountMapping
     tabName=tabName
-    selectedIndex=selectedIndex
+    selectedIndex=selectedRowIndex
     onRowClick=(action 'onRowClick')}}
     {{#rsa-data-table/header as |column|}}
       {{#if (eq column.dataType "checkbox")}}

@@ -49,7 +49,8 @@ const stateToComputed = (state, { storeName }) => ({
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
   sid: state.endpointQuery.serverId,
-  agentCountMapping: state.endpoint[storeName].agentCountMapping
+  agentCountMapping: state.endpoint[storeName].agentCountMapping,
+  selectedRowIndex: state.endpoint[storeName].selectedRowIndex
 });
 
 const dispatchToActions = {
@@ -107,15 +108,19 @@ const FileContextTable = Component.extend({
       }
     },
 
-    onRowClick(item, index, e, table) {
+    onRowClick(item, index, e) {
       const { target: { classList } } = e;
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
-        if (this.get('selectedRowId') !== index) {
-          table.set('selectedIndex', index);
-          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item);
+        if (this.get('selectedRowIndex') !== index) {
+          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item, index);
+          if (this.openPropertyPanel) {
+            this.openPropertyPanel();
+          }
         } else {
-          table.set('selectedIndex', -1);
-          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), { id: null });
+          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), { id: null }, null);
+          if (this.closePropertyPanel) {
+            this.closePropertyPanel();
+          }
         }
       }
     },

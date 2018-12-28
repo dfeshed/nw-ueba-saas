@@ -165,16 +165,24 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
   });
 
   test('it should render the action bar, table and property details', async function(assert) {
-    this.set('propertyConfig', [{}]);
-    await render(hbs`{{host-detail/utils/file-context-wrapper propertyConfig=propertyConfig storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    this.set('propertyConfig', [{ fields: [] }]);
+    new ReduxDataHelper(setState).drivers(drivers).fileContextSelections(fileContextSelections).build();
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-wrapper propertyConfig=propertyConfig storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     assert.equal(findAll('.rsa-data-table').length, 1, 'Table is rendered');
     assert.equal(findAll('.file-actionbar').length, 1, 'action bar rendered');
-
-    assert.equal(findAll('.host-detail-property .rsa-nav-tab').length, 2, '2 tabs are rendered in detail property');
-    assert.equal(findAll('.host-detail-property .rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
+    await click('.rsa-data-table-body-row:nth-child(2)');
+    assert.equal(findAll('.rsa-nav-tab').length, 2, '2 tabs are rendered in detail property');
+    assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
     assert.equal(findAll('.host-property-panel').length, 1, 'Property panel is rendered');
-    await click(findAll('.host-detail-property .rsa-nav-tab')[1]);
-    assert.equal(findAll('.host-detail-property .rsa-nav-tab.is-active')[0].textContent.trim(), 'Risk Details', 'Risk details tab is selected');
+    await click(findAll('.rsa-nav-tab')[1]);
+    assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Risk Details', 'Risk details tab is selected');
     assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
   });
 

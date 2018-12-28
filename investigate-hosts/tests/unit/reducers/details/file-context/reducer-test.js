@@ -20,7 +20,8 @@ const initialState = {
   pageNumber: -1,
   hasNext: false,
   isRemediationAllowed: true,
-  agentCountMapping: {}
+  agentCountMapping: {},
+  selectedRowIndex: null
 };
 
 module('Unit | Reducers | File Context', function() {

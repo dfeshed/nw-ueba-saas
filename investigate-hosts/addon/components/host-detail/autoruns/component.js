@@ -13,7 +13,7 @@ const dispatchToActions = {
 };
 
 const HostAutoruns = Component.extend({
-  tagName: 'vbox',
+  tagName: 'box',
   classNames: ['host-autoruns']
 });
 
