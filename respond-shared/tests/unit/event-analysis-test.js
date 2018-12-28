@@ -13,6 +13,7 @@ const event = {
   'process_vid': '9217136421101689658',
   'event_source': '10.40.15.182:50002',
   'device_type': 'nwendpoint',
+  'operating_system': 'windows',
   'source': {
     'filename': 'POWERSHELL.EXE',
     'hash': '6bd1f5ab9250206ab3836529299055e272ecaa35a72cbd0230cb20ff1cc30902'
@@ -44,6 +45,7 @@ test('Calling createProcessAnalysisLink() when process_vid is missing returns nu
     'agent_id': 'C73CD5FF-5962-4A5F-2E9D-1CFFF4DFED2D',
     'event_source': '10.40.15.182:50002',
     'device_type': 'nwendpoint',
+    'operating_system': 'windows',
     'source': {
       'filename': 'POWERSHELL.EXE',
       'hash': '6bd1f5ab9250206ab3836529299055e272ecaa35a72cbd0230cb20ff1cc30902'

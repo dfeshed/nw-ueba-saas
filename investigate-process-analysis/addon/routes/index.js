@@ -26,9 +26,9 @@ export default Route.extend({
     const request = lookup('service:request');
     const { selectedServerId } = redux.getState().processAnalysis.processTree;
     const { serverId } = params;
-    if (serverId) {
-      request.registerPersistentStreamOptions({ socketUrlPostfix: selectedServerId ? selectedServerId : serverId, requiredSocketUrl: 'endpoint/socket' });
-    }
+
+    request.registerPersistentStreamOptions({ socketUrlPostfix: selectedServerId ? selectedServerId : serverId, requiredSocketUrl: 'endpoint/socket' });
+
     run.next(() => {
       redux.dispatch(initProcessAnalysis(params));
       redux.dispatch(getServices());
