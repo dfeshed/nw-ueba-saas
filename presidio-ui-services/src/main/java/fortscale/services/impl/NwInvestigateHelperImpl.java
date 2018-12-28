@@ -82,19 +82,22 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
 
     @Override
     public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps) {
+
         Configurations conf = getConfigurations();
+
+        JerseyUriBuilder url = new JerseyUriBuilder()
+                .scheme(URL_SCHEMA)
+                .host(conf.getBaseLinkDestinationHostname())
+                .path(PATH_TEMPLATE_PROCESS);
+
         Object agentId = maps.get("agentId");
         Object osType = maps.get("osType");
         Object vid = maps.get("processVidSrc");
         Object checksum = maps.get("checksumId");
         if (null == agentId || null == osType || null == vid || null == checksum) {
-            return null;
+            return url.toString();
         }
-        String url =  new JerseyUriBuilder()
-                .scheme(URL_SCHEMA)
-                .host(conf.getBaseLinkDestinationHostname())
-                .path(PATH_TEMPLATE_PROCESS)
-                .queryParam(SID,conf.getBrokerId())
+        return url.queryParam(SID,conf.getBrokerId())
                 .queryParam(CHECKSUM, checksum)
                 .queryParam(SERVER_ID,conf.getBrokerId())
                 .queryParam("aid",agentId)
@@ -105,8 +108,6 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .queryParam("et",LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
                 .queryParam("st",LocalDateTime.now().minusDays(7).toEpochSecond(ZoneOffset.UTC))
                 .toString();
-
-        return url;
     }
 
     private Configurations getConfigurations() {
