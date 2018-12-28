@@ -6,7 +6,7 @@
     {{/rsa-form-button}}
   </h2>
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
-  <div class="divider"></div>
+  <div class="action-divider"></div>
   {{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=pivotToInvestigate}}
   {{#rsa-form-button class='start-scan-button' isDisabled=noHostsSelected click=(action showScanModal 'START_SCAN')}}
     {{t 'investigateHosts.hosts.button.initiateScan'}}

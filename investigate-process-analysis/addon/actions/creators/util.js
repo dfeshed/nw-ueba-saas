@@ -19,7 +19,7 @@ const _commonFilter = (agentId) => {
       value: '\'nwendpoint\''
     },
     {
-      value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\')'
+      value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\' || category = \'Console Event\')'
     }
   ];
   return query;

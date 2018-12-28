@@ -61,7 +61,7 @@ const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, ad
 
   const queryParams = {
     sid: serviceId, // Service Id
-    mf: encodeURI(encodeURIComponent(mf)), // Meta filter
+    mf: encodeURIComponent(mf), // Meta filter
     st: startTime, // Stat time
     et: endTime, // End time
     mps: 'default', // Meta panel size
@@ -86,7 +86,7 @@ const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList, addition
     mf = `${mf} && ${additionalFilter}`;
   }
   const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
-  const query = encodeURI(encodeURIComponent(mf));
+  const query = encodeURIComponent(mf);
   const path = `${baseURL}/${query}/date/${moment(startTime * 1000).tz('UTC').format()}/${moment(endTime * 1000).tz('UTC').format()}`;
   window.open(path);
 };

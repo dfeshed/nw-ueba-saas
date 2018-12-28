@@ -1,7 +1,7 @@
 <hbox class="rsa-button-group">
   {{#rsa-form-button class="event-analysis" defaultAction=(action 'processEventAnalysis') isDisabled=isDisabled}}
     {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
-    {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
+    {{t 'investigateShared.endpoint.fileActions.pivotToInvestigate'}}
   {{/rsa-form-button}}
   {{#click-outside action=(action "clickOutside")}}
     {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action 'toggleExpand')}}
