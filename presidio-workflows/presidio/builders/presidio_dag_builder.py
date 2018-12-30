@@ -79,12 +79,12 @@ class PresidioDagBuilder(LoggingMixin):
                                         max_retry_delay=timedelta(
                                             seconds=int(retry_args['max_retry_delay'])))
 
-    def _create_single_point_group_connector(self, sub_dag_builder, single_point_group_connector_id, dag,
+    def _create_single_point_group_connector(self, builder, single_point_group_connector_id, dag,
                                              short_circuit_operator, add_sequential_sensor):
         """
         create a single_point_group_connector with start and end dummy operators
         and wire short_circuit_operator and add_sequential_sensor.
-        :param sub_dag_builder: sub_dag_builder
+        :param builder: builder
         :param single_point_group_connector_id: single_point_group_connector_id
         :param dag: dag
         :param short_circuit_operator: short_circuit_operator
@@ -93,7 +93,7 @@ class PresidioDagBuilder(LoggingMixin):
         """
         retry_args = self._calc_subdag_retry_args(single_point_group_connector_id)
         return SinglePointGroupConnector(
-            builder=sub_dag_builder,
+            builder=builder,
             dag=dag,
             single_point_group_connector_id=single_point_group_connector_id,
             retry_args=retry_args,
