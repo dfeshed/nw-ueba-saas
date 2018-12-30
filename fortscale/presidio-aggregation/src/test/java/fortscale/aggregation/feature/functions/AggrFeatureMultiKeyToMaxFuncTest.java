@@ -7,10 +7,10 @@ import fortscale.common.feature.FeatureListValue;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.common.feature.MultiKeyHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.*;
 public class AggrFeatureMultiKeyToMaxFuncTest {
@@ -20,7 +20,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
             featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.GROUP_BY_FIELD_NAME, Arrays.asList(groupByFeatureNames));
         }
         featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.MAXIMIZE_FIELD_NAME, Collections.singletonList(maximizeFeatureName));
-        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -194,7 +194,7 @@ public class AggrFeatureMultiKeyToMaxFuncTest {
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.GROUP_BY_FIELD_NAME, groupByFeatureNames);
         featureNamesMap.put(AggrFeatureMultiKeyToMaxFunc.MAXIMIZE_FIELD_NAME, Collections.singletonList(maximizeFeatureName));
-        AggregatedFeatureConf aggregatedFeatureConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        AggregatedFeatureConf aggregatedFeatureConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 
 
         Object value =  func.updateAggrFeature(

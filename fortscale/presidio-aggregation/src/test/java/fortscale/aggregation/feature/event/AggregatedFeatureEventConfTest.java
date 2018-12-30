@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.feature.functions.AggrFeatureSumFunc;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +15,7 @@ public class AggregatedFeatureEventConfTest {
 	private static final String BUCKET_CONF_NAME = "bucketConf1";
 	private static final int NUMBER_OF_BUCKETS = 3;
 	private static final int BUCKETS_LEAP = 1;
-	private static final String FUNCTION_TYPE = "functionType1";
+	private static final String FUNCTION_TYPE = "aggr_feature_sum_func";
 
 	@Test
 	public void configuration_should_be_deserialized_from_event_json() throws Exception {
@@ -46,13 +47,6 @@ public class AggregatedFeatureEventConfTest {
 		allAggregatedFeatureNames.add("aggregatedFeatureName5");
 		allAggregatedFeatureNames.add("aggregatedFeatureName6");
 
-		// Function parameters (constants)
-		Map<String, String> params = new HashMap<>();
-		params.put("param1", "valueOfParam1");
-		params.put("param2", "valueOfParam2");
-		params.put("param3", "valueOfParam3");
-		JSONObject aggregatedFeatureEventFunction = createAggregatedFeatureEventFunction(FUNCTION_TYPE, params);
-
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
 				TYPE,
@@ -60,7 +54,7 @@ public class AggregatedFeatureEventConfTest {
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
 				aggregatedFeatureNamesMap,
-				aggregatedFeatureEventFunction);
+				getSimpleAggregatedFeatureEventFunction());
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -71,7 +65,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
-		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
+		Assert.assertEquals(new AggrFeatureSumFunc(), actual.getAggrFeatureEventFunction());
 	}
 
 	@Test
@@ -104,13 +98,6 @@ public class AggregatedFeatureEventConfTest {
 		allAggregatedFeatureNames.add("aggregatedFeatureName5");
 		allAggregatedFeatureNames.add("aggregatedFeatureName6");
 
-		// Function parameters (constants)
-		Map<String, String> params = new HashMap<>();
-		params.put("param1", "valueOfParam1");
-		params.put("param2", "valueOfParam2");
-		params.put("param3", "valueOfParam3");
-		JSONObject aggregatedFeatureEventFunction = createAggregatedFeatureEventFunction(FUNCTION_TYPE, params);
-
 		String jsonAsString = createAggregatedFeatureEvent2(
 				NAME,
 				TYPE,
@@ -118,7 +105,7 @@ public class AggregatedFeatureEventConfTest {
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
 				aggregatedFeatureNamesMap,
-				aggregatedFeatureEventFunction);
+				getSimpleAggregatedFeatureEventFunction());
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -129,65 +116,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
-		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
-	}
-
-	@Test
-	public void configuration_should_be_deserialized_from_event_json_with_true_fire_event_for_empty_bucket_tick() throws Exception {
-		List<String> aggregatedFeatureNamesList1 = new ArrayList<>();
-		aggregatedFeatureNamesList1.add("aggregatedFeatureName1");
-		aggregatedFeatureNamesList1.add("aggregatedFeatureName2");
-		aggregatedFeatureNamesList1.add("aggregatedFeatureName3");
-
-		List<String> aggregatedFeatureNamesList2 = new ArrayList<>();
-		aggregatedFeatureNamesList2.add("aggregatedFeatureName4");
-		aggregatedFeatureNamesList2.add("aggregatedFeatureName5");
-		aggregatedFeatureNamesList2.add("aggregatedFeatureName6");
-
-		List<String> aggregatedFeatureNamesList3 = new ArrayList<>();
-		aggregatedFeatureNamesList3.add("aggregatedFeatureName1");
-		aggregatedFeatureNamesList3.add("aggregatedFeatureName4");
-
-		// Function arguments (input)
-		Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
-		aggregatedFeatureNamesMap.put("argument1", aggregatedFeatureNamesList1);
-		aggregatedFeatureNamesMap.put("argument2", aggregatedFeatureNamesList2);
-		aggregatedFeatureNamesMap.put("argument3", aggregatedFeatureNamesList3);
-
-		Set<String> allAggregatedFeatureNames = new HashSet<>();
-		allAggregatedFeatureNames.add("aggregatedFeatureName1");
-		allAggregatedFeatureNames.add("aggregatedFeatureName2");
-		allAggregatedFeatureNames.add("aggregatedFeatureName3");
-		allAggregatedFeatureNames.add("aggregatedFeatureName4");
-		allAggregatedFeatureNames.add("aggregatedFeatureName5");
-		allAggregatedFeatureNames.add("aggregatedFeatureName6");
-
-		// Function parameters (constants)
-		Map<String, String> params = new HashMap<>();
-		params.put("param1", "valueOfParam1");
-		params.put("param2", "valueOfParam2");
-		params.put("param3", "valueOfParam3");
-		JSONObject aggregatedFeatureEventFunction = createAggregatedFeatureEventFunction(FUNCTION_TYPE, params);
-
-		String jsonAsString = createAggregatedFeatureEvent2(
-				NAME,
-				TYPE,
-				BUCKET_CONF_NAME,
-				NUMBER_OF_BUCKETS,
-				BUCKETS_LEAP,
-				aggregatedFeatureNamesMap,
-				aggregatedFeatureEventFunction);
-		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
-
-		Assert.assertNotNull(actual);
-		Assert.assertEquals(NAME, actual.getName());
-		Assert.assertEquals(BUCKET_CONF_NAME, actual.getBucketConfName());
-		Assert.assertNull(actual.getBucketConf());
-		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
-		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
-		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
-		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
-		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
+		Assert.assertEquals(new AggrFeatureSumFunc(), actual.getAggrFeatureEventFunction());
 	}
 
 	@Test
@@ -199,7 +128,7 @@ public class AggregatedFeatureEventConfTest {
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
 				getSimpleAggregatedFeatureNamesMap(),
-				new JSONObject());
+				getSimpleAggregatedFeatureEventFunction());
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -209,7 +138,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
 		Assert.assertEquals(getSimpleAggregatedFeatureNamesMap(), actual.getAggregatedFeatureNamesMap());
-		Assert.assertEquals(new JSONObject(), actual.getAggregatedFeatureEventFunction());
+		Assert.assertEquals(new AggrFeatureSumFunc(), actual.getAggrFeatureEventFunction());
 
 		Set<String> expectedAllAggregatedFeatureNames = new HashSet<>();
 		expectedAllAggregatedFeatureNames.add("aggregatedFeatureName");
@@ -322,13 +251,6 @@ public class AggregatedFeatureEventConfTest {
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 	}
 
-	private static JSONObject createAggregatedFeatureEventFunction(String type, Map<String, String> params) {
-		JSONObject result = new JSONObject();
-		result.put("type", type);
-		result.put("params", params);
-		return result;
-	}
-
 	private static String createAggregatedFeatureEvent2(
 			String name,
 			String type,
@@ -371,8 +293,8 @@ public class AggregatedFeatureEventConfTest {
 	}
 
 	private JSONObject getSimpleAggregatedFeatureEventFunction() {
-		Map<String, String> map = new HashMap<>();
-		map.put("functionParam", "valueOfFunctionParam");
-		return createAggregatedFeatureEventFunction(FUNCTION_TYPE, map);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("type", FUNCTION_TYPE);
+		return jsonObject;
 	}
 }

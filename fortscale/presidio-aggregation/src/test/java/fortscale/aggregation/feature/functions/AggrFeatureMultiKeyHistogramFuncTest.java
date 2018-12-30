@@ -1,15 +1,13 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import fortscale.common.util.GenericHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
 import fortscale.utils.data.Pair;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +74,7 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         featureNames.add("stringFeatureName");
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 
         Map<String, List<String>> groupByValues = new HashMap<>();
         List<String> allowedValues = new ArrayList<>();
@@ -124,7 +122,7 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         featureNames.add("stringFeatureName");
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 
         Map<String, List<String>> groupByValues = new HashMap<>();
         List<String> allowedValues = new ArrayList<>();

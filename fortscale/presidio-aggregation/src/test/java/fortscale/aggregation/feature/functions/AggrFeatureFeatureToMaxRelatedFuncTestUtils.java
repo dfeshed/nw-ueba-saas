@@ -2,8 +2,8 @@ package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
         pickFeatureNameList.add(pickFeatureName);
         Map<String, List<String>> map = new HashMap<>();
         map.put(AbstractAggrFeatureEventFeatureToMaxFunc.PICK_FIELD_NAME, pickFeatureNameList);
-        return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, new JSONObject());
+        return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, Mockito.mock(IAggrFeatureEventFunction.class));
     }
 
 

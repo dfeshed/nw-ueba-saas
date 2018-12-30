@@ -3,9 +3,8 @@ package fortscale.aggregation.feature.functions;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import fortscale.utils.data.Pair;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -38,7 +37,7 @@ public class AggrFeatureTestUtils {
 		}
 		Map<String, List<String>> featureNamesMap = new HashMap<>();
 		featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-		return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+		return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 	}
 
 	public static AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
@@ -48,7 +47,7 @@ public class AggrFeatureTestUtils {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, Mockito.mock(IAggrFeatureEventFunction.class));
 	}
 
 	public static MultiKeyFeature createMultiKeyFeatureWithOneFeature(String featureName, String featureValue){

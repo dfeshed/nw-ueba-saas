@@ -19,12 +19,4 @@ public interface IAggrFeatureEventFunctionsService {
      * @return a new feature created by the relevant function.
      */
     Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList);
-
-    /**
-     * Returns the number of functions created and stored by this service.
-     * This method is mainly used in unit tests.
-     *
-     * @return the number of functions.
-     */
-    public int getNumberOfAggrFeatureEventFunctions();
 }

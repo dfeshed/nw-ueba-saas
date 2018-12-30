@@ -112,4 +112,9 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 		}
 		return aggregatedFeatureNamesList.get(0);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof AggrFeatureSumFunc;
+	}
 }

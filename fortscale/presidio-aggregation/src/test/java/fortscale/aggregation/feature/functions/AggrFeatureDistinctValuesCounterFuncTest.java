@@ -2,11 +2,10 @@ package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import fortscale.common.util.GenericHistogram;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -23,7 +22,7 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, Mockito.mock(IAggrFeatureEventFunction.class));
 	}
 
 	private AggrFeatureValue createExpected(Long numberOfDistinctValues, MultiKeyHistogram... multiKeyHistograms) {

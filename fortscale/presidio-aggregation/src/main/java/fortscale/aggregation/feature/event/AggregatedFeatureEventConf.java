@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import net.minidev.json.JSONObject;
+import fortscale.aggregation.feature.functions.IAggrFeatureEventFunction;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private int numberOfBuckets;
 	private int bucketsLeap;
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
-	private JSONObject aggregatedFeatureEventFunction;
+	private IAggrFeatureEventFunction aggrFeatureEventFunction;
 	private String type;
 
 	@JsonCreator
@@ -36,7 +36,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
 			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
-			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
+			@JsonProperty("aggregatedFeatureEventFunction") IAggrFeatureEventFunction aggrFeatureEventFunction) {
 
 		setName(name);
 		setType(type);
@@ -44,7 +44,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 		setBucketConf(null);
 		setNumberOfBuckets(numberOfBuckets);
 		setBucketsLeap(bucketsLeap);
-		setAggregatedFeatureEventFunction(aggregatedFeatureEventFunction);
+		setAggrFeatureEventFunction(aggrFeatureEventFunction);
 		setAggregatedFeatureNamesMap(aggregatedFeatureNamesMap);
 	}
 
@@ -96,8 +96,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 		return union;
 	}
 
-	public JSONObject getAggregatedFeatureEventFunction() {
-		return aggregatedFeatureEventFunction;
+	public IAggrFeatureEventFunction getAggrFeatureEventFunction() {
+		return aggrFeatureEventFunction;
 	}
 
 	public void setName(String name) {
@@ -133,9 +133,9 @@ public class AggregatedFeatureEventConf implements Serializable {
 		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
 	}
 
-	public void setAggregatedFeatureEventFunction(JSONObject aggregatedFeatureEventFunction) {
-		Assert.notNull(aggregatedFeatureEventFunction, "aggregatedFeatureEventFunction cannot be null.");
-		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
+	public void setAggrFeatureEventFunction(IAggrFeatureEventFunction aggrFeatureEventFunction) {
+		Assert.notNull(aggrFeatureEventFunction, "aggrFeatureEventFunction cannot be null.");
+		this.aggrFeatureEventFunction = aggrFeatureEventFunction;
 	}
 
 	public void setType(String type) {

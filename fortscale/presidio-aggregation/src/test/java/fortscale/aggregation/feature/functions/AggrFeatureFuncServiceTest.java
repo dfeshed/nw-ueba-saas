@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.functions;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.filter.JsonFilter;
@@ -15,14 +16,12 @@ import org.junit.Test;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AggrFeatureFuncServiceTest {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    AggrFeatureFuncService funcService;
+    private AggrFeatureFuncService funcService;
 
     @Before
     public void initTest(){
@@ -41,7 +40,7 @@ public class AggrFeatureFuncServiceTest {
         JSONObject funcConf = new JSONObject();
         funcConf.put("type", funcName);
 
-        AggregatedFeatureConf ret = new AggregatedFeatureConf(aggrFeatureName, featureNamesMap, funcConf);
+        AggregatedFeatureConf ret = new AggregatedFeatureConf(aggrFeatureName, featureNamesMap, deserializeAggrFeatureFuncConf(funcConf));
         if(filter != null){
         	ret.setFilter(filter);
         }
@@ -985,7 +984,7 @@ public class AggrFeatureFuncServiceTest {
                 "testBucketConf",
                 3, 1,
                 aggregatedFeatureNamesMap,
-                aggrFeatureAvgStdNFunc);
+                deserializeAggrFeatureEventFuncConf(aggrFeatureAvgStdNFunc));
 
         // Prepare a list of aggregated feature maps for multiple buckets
         Map<String, Feature> aggregatedFeatureMap = AggrFeatureTestUtils.createFeatureMap(
@@ -1016,7 +1015,7 @@ public class AggrFeatureFuncServiceTest {
                 "testBucketConf",
                 3, 1,
                 aggregatedFeatureNamesMap,
-                aggrFeatureHistogramFunc);
+                deserializeAggrFeatureEventFuncConf(aggrFeatureHistogramFunc));
 
         // Prepare a list of aggregated feature maps for multiple buckets
         aggregatedFeatureMap.clear();
@@ -1027,9 +1026,6 @@ public class AggrFeatureFuncServiceTest {
         Assert.assertNotNull(feature);
         Assert.assertEquals(aggregatedFeatureEventName, feature.getName());
         Assert.assertEquals(GenericHistogram.class, feature.getValue().getClass());
-
-        // Check number of functions
-        Assert.assertEquals(2, funcService.getNumberOfAggrFeatureEventFunctions());
 
         // Prepare AggrFeatureAvgStdNFunc arguments
         aggregatedFeatureNamesMap.clear();
@@ -1047,7 +1043,7 @@ public class AggrFeatureFuncServiceTest {
                 "testBucketConf",
                 3, 1,
                 aggregatedFeatureNamesMap,
-                newAvgStdNFuncJson);
+                deserializeAggrFeatureEventFuncConf(newAvgStdNFuncJson));
 
         // Prepare a list of aggregated feature maps for multiple buckets
         aggregatedFeatureMap.clear();
@@ -1058,40 +1054,19 @@ public class AggrFeatureFuncServiceTest {
         Assert.assertNotNull(feature);
         Assert.assertEquals(aggregatedFeatureEventName, feature.getName());
         Assert.assertEquals(ContinuousValueAvgStdN.class, feature.getValue().getClass());
-
-        // Check number of functions
-        Assert.assertEquals(2, funcService.getNumberOfAggrFeatureEventFunctions());
     }
 
-    @Test
-    public void testCalculateAggrFeatureWithUnknownFunction() {
-        String aggregatedFeatureName = "aggregatedFeatureName";
-        List<String> aggregatedFeatureNamesList = new ArrayList<>();
-        aggregatedFeatureNamesList.add(aggregatedFeatureName);
+    @Test(expected = IllegalArgumentException.class)
+    public void testAggregatedFeatureEventConfInstantiationWithUnknownFunctionType() {
         Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
-        aggregatedFeatureNamesMap.put("dummyFunctionArgument", aggregatedFeatureNamesList);
-        JSONObject params = new JSONObject();
-        params.put("dummyFunctionParam", 42);
+        aggregatedFeatureNamesMap.put("dummyFunctionArgument", Collections.singletonList("aggregatedFeatureName"));
         JSONObject dummyFunction = new JSONObject();
         dummyFunction.put("type", "unknownFunctionType");
+        JSONObject params = new JSONObject();
+        params.put("dummyFunctionParam", 42);
         dummyFunction.put("params", params);
-        AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf("testAggregatedFeatureEvent",
-                "aggregated_feature_event_type_F", "testBucketConf", 3, 1, aggregatedFeatureNamesMap, dummyFunction);
-        ImmutablePair<String, Object> immutablePair = new ImmutablePair<>(aggregatedFeatureName, -1);
-        @SuppressWarnings("unchecked")
-        Map<String, Feature> aggregatedFeatureMap = AggrFeatureTestUtils.createFeatureMap(immutablePair);
-        List<Map<String, Feature>> listOfAggregatedFeatureMaps = new ArrayList<>();
-        listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
-        boolean exceptionThrown = false;
-
-        try {
-            funcService.calculateAggrFeature(conf, listOfAggregatedFeatureMaps);
-        } catch (IllegalArgumentException e) {
-            exceptionThrown = true;
-        }
-
-        Assert.assertTrue(exceptionThrown);
-        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+        new AggregatedFeatureEventConf("testAggregatedFeatureEvent", "aggregated_feature_event_type_F",
+                "testBucketConf", 3, 1, aggregatedFeatureNamesMap, deserializeAggrFeatureEventFuncConf(dummyFunction));
     }
 
     @Test
@@ -1104,7 +1079,6 @@ public class AggrFeatureFuncServiceTest {
         listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
 
         Assert.assertNull(funcService.calculateAggrFeature(null, listOfAggregatedFeatureMaps));
-        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
     }
 
     @Test
@@ -1123,10 +1097,31 @@ public class AggrFeatureFuncServiceTest {
                 "testBucketConf",
                 3, 1,
                 aggregatedFeatureNamesMap,
-                aggrFeatureHistogramFunc);
+                deserializeAggrFeatureEventFuncConf(aggrFeatureHistogramFunc));
 
         Assert.assertNull(funcService.calculateAggrFeature(conf, null));
-        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
+
+    private static IAggrFeatureFunction deserializeAggrFeatureFuncConf(JSONObject funcConf) {
+        String jsonString = funcConf.toJSONString();
+
+        try {
+            return objectMapper.readValue(jsonString, IAggrFeatureFunction.class);
+        } catch (Exception e) {
+            String message = String.format("Could not deserialize aggregated feature function %s.", jsonString);
+            throw new IllegalArgumentException(message, e);
+        }
+    }
+
+    private static IAggrFeatureEventFunction deserializeAggrFeatureEventFuncConf(JSONObject funcConf) {
+        String jsonString = funcConf.toJSONString();
+
+        try {
+            return objectMapper.readValue(jsonString, IAggrFeatureEventFunction.class);
+        } catch (Exception e) {
+            String message = String.format("Could not deserialize aggregated feature event function %s.", jsonString);
+            throw new IllegalArgumentException(message, e);
+        }
     }
 
     class TestAdeRecord extends AdeRecord

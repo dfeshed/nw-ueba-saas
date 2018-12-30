@@ -3,8 +3,9 @@ package fortscale.aggregation.feature.event;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.functions.AggrFeatureSumFunc;
+import fortscale.aggregation.feature.functions.IAggrFeatureEventFunction;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import net.minidev.json.JSONObject;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,12 +24,10 @@ import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AggregatedFeatureEventsConfServiceTest {
-    private static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"adeEventTypes\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"aggrFeatureFuncJson\":{\"type\":\"func1\"},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"filter\":null}],\"allFeatureNames\":[\"feature2\",\"feature1\"],\"predicates\":[]}";
-    private static final String AGGR_FEATURE_EVENT_FUNCTION_AS_STRING1 = "{\"params\":{\"param1\":\"valueOfParam1\",\"param2\":\"valueOfParam2\",\"param3\":\"valueOfParam3\"},\"type\":\"type1\"}";
+    private static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"adeEventTypes\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"aggrFeatureFunction\":{\"type\":\"aggr_feature_max_func\"},\"filter\":null}],\"allFeatureNames\":[\"feature2\",\"feature1\"],\"predicates\":[]}";
     private static final String FEATURE_NAME_MAP_AS_STRING1 = "{functionArgument=[aggregatedFeatureName1, aggregatedFeatureName2, aggregatedFeatureName3]}";
     private static final String FEATURE_NAMES_AS_STRING1 = "[aggregatedFeatureName1, aggregatedFeatureName3, aggregatedFeatureName2]";
-    private static final String BUCKET_CONF_AS_STRING2 = "{\"name\":\"bc2\",\"adeEventTypes\":[\"vpn\"],\"contextFieldNames\":[\"field3\",\"field4\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-2\",\"featureNamesMap\":{\"param1\":[\"feature3\",\"feature4\"]},\"aggrFeatureFuncJson\":{\"type\":\"func2\"},\"allFeatureNames\":[\"feature4\",\"feature3\"],\"filter\":null}],\"allFeatureNames\":[\"feature4\",\"feature3\"]}";
-    private static final String AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2 = "{\"params\":{\"param1\":\"valueOfParam1\",\"param2\":\"valueOfParam2\",\"param3\":\"valueOfParam3\"},\"type\":\"type2\"}";
+    private static final String BUCKET_CONF_AS_STRING2 = "{\"name\":\"bc2\",\"adeEventTypes\":[\"vpn\"],\"contextFieldNames\":[\"field3\",\"field4\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-2\",\"featureNamesMap\":{\"param1\":[\"feature3\",\"feature4\"]},\"allFeatureNames\":[\"feature4\",\"feature3\"],\"aggrFeatureFunction\":{\"type\":\"aggr_feature_max_func\"},\"filter\":null}],\"allFeatureNames\":[\"feature4\",\"feature3\"]}";
     private static final String FEATURE_NAMES_AS_STRING2 = "[aggregatedFeatureName1, aggregatedFeatureName3, aggregatedFeatureName2]";
 
     @Configuration
@@ -71,7 +70,7 @@ public class AggregatedFeatureEventsConfServiceTest {
     private void assertAggregatedFeatureEventConf1(AggregatedFeatureEventConf aggregatedFeatureEventConf) throws JSONException {
         String bucketConfName = aggregatedFeatureEventConf.getBucketConfName();
         FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-        JSONObject aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
+        IAggrFeatureEventFunction aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggrFeatureEventFunction();
         String name = aggregatedFeatureEventConf.getName();
         int bucketLeap = aggregatedFeatureEventConf.getBucketsLeap();
         Map<String, List<String>> featureNameMap = aggregatedFeatureEventConf.getAggregatedFeatureNamesMap();
@@ -80,7 +79,7 @@ public class AggregatedFeatureEventsConfServiceTest {
 
         Assert.assertEquals("bc1", bucketConfName);
         Assert.assertEquals(BUCKET_CONF_AS_STRING1, featureBucketConf.toString());
-        JSONAssert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING1, aggrFeatureEventFunction.toString(), false);
+        Assert.assertEquals(new AggrFeatureSumFunc(), aggrFeatureEventFunction);
         Assert.assertEquals("name1", name);
         Assert.assertEquals(1, bucketLeap);
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING1, featureNameMap.toString());
@@ -91,7 +90,7 @@ public class AggregatedFeatureEventsConfServiceTest {
     private void assertAggregatedFeatureEventConf2(AggregatedFeatureEventConf aggregatedFeatureEventConf) throws JSONException {
         String bucketConfName = aggregatedFeatureEventConf.getBucketConfName();
         FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-        JSONObject aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
+        IAggrFeatureEventFunction aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggrFeatureEventFunction();
         String name = aggregatedFeatureEventConf.getName();
         int bucketLeap = aggregatedFeatureEventConf.getBucketsLeap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
@@ -99,7 +98,7 @@ public class AggregatedFeatureEventsConfServiceTest {
 
         Assert.assertEquals("bc2", bucketConfName);
         JSONAssert.assertEquals(BUCKET_CONF_AS_STRING2, featureBucketConf.toString(), false);
-        JSONAssert.assertEquals(AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2, aggrFeatureEventFunction.toString(), false);
+        Assert.assertEquals(new AggrFeatureSumFunc(), aggrFeatureEventFunction);
         Assert.assertEquals("name2", name);
         Assert.assertEquals(2, bucketLeap);
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString(), false);

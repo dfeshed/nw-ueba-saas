@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.bucket;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.aggregation.feature.functions.IAggrFeatureFunction;
 import fortscale.aggregation.filter.JsonFilter;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -27,13 +28,13 @@ public class AggregatedFeatureConf implements Serializable {
 	private String name;
 	private Map<String, List<String>> featureNamesMap;
 	private Set<String> allFeatureNames;
-	private JSONObject aggrFeatureFuncJson;
+	private IAggrFeatureFunction aggrFeatureFunction;
 	private JsonFilter filter;
 
 	public AggregatedFeatureConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("featureNamesMap") Map<String, List<String>> featureNamesMap,
-			@JsonProperty("aggrFeatureFuncJson") JSONObject aggrFeatureFuncJson) {
+			@JsonProperty("aggrFeatureFuncJson") IAggrFeatureFunction aggrFeatureFunction) {
 
 		// Validate name
 		Assert.hasText(name, "name cannot be blank.");
@@ -47,8 +48,8 @@ public class AggregatedFeatureConf implements Serializable {
 			}
 		}
 
-		// Validate aggrFeatureFuncJson
-		Assert.notNull(aggrFeatureFuncJson, "aggrFeatureFuncJson cannot be null.");
+		// Validate aggrFeatureFunction
+		Assert.notNull(aggrFeatureFunction, "aggrFeatureFunction cannot be null.");
 
 		this.name = name;
 		this.featureNamesMap = featureNamesMap;
@@ -56,7 +57,7 @@ public class AggregatedFeatureConf implements Serializable {
 		for (List<String> featureNames : featureNamesMap.values()) {
 			this.allFeatureNames.addAll(featureNames);
 		}
-		this.aggrFeatureFuncJson = aggrFeatureFuncJson;
+		this.aggrFeatureFunction = aggrFeatureFunction;
 	}
 
 	public String getName() {
@@ -71,8 +72,8 @@ public class AggregatedFeatureConf implements Serializable {
 		return allFeatureNames;
 	}
 
-	public JSONObject getAggrFeatureFuncJson() {
-		return aggrFeatureFuncJson;
+	public IAggrFeatureFunction getAggrFeatureFunction() {
+		return aggrFeatureFunction;
 	}
 
 	public void setFilter(JsonFilter filter) {
@@ -107,7 +108,7 @@ public class AggregatedFeatureConf implements Serializable {
 		AggregatedFeatureConf other = (AggregatedFeatureConf) obj;
 		return new EqualsBuilder()
 				.append(this.name, other.name)
-				.append(this.aggrFeatureFuncJson, other.aggrFeatureFuncJson)
+				.append(this.aggrFeatureFunction, other.aggrFeatureFunction)
 				.append(this.allFeatureNames, other.allFeatureNames)
 				.append(this.filter, other.filter)
 				.isEquals();

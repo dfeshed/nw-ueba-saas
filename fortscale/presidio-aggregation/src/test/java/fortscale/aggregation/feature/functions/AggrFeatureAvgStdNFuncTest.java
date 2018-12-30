@@ -4,10 +4,10 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.ContinuousValueAvgStdN;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class AggrFeatureAvgStdNFuncTest {
         }
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, featureNames);
-        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
     }
 
     private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
@@ -37,7 +37,7 @@ public class AggrFeatureAvgStdNFuncTest {
         }
         Map<String, List<String>> map = new HashMap<>();
         map.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, list);
-        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, new JSONObject());
+        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, Mockito.mock(IAggrFeatureEventFunction.class));
     }
 
     @Test
