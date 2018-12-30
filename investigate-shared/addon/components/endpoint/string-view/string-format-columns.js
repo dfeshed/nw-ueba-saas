@@ -1,7 +1,7 @@
 export default [
   {
     field: 'text',
-    title: 'Text',
+    title: 'String',
     disableSort: true,
     width: 400
   },
@@ -15,7 +15,7 @@ export default [
     field: 'unicode',
     title: 'Unicode',
     disableSort: true,
-    width: '25%',
+    width: '15%',
     format: 'UNICODE'
   },
   {

@@ -2712,6 +2712,7 @@ export default {
       averageAlertRiskScore: 'Risk Score',
       created: 'Created',
       assignee: 'Assignee',
+      details: 'Details',
       error: {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
         'context.error': 'Context service is not reachable. Check your service connectivity.'
@@ -2825,7 +2826,8 @@ export default {
         registryDiscrepancies: 'Registry Discrepancies',
         hostFiles: 'files',
         drivers: 'drivers',
-        libraries: 'libraries'
+        libraries: 'libraries',
+        strings: 'Showing {{count}} of {{total}} strings'
       },
       summary: {
         snapshotTime: 'Snapshot Time',
@@ -3594,7 +3596,7 @@ export default {
           compileTime: 'Compile Time',
           entryPoint: 'Entry Point',
           importedDlls: 'Imported DLLs',
-          sectionNames: 'Section Names',
+          sectionNames: 'Section Names {{count}}',
           subSystem: 'Subsystem',
           entryPointValid: 'Entry Point Valid',
           uncommonSectionFound: 'Uncommon Section Found',
@@ -3604,7 +3606,7 @@ export default {
           neededLibraries: 'Needed Libraries',
           architecture: 'Architecture',
           entryPoint: 'Entry Point',
-          sectionNames: 'Section Names',
+          sectionNames: 'Section Names {{count}}',
           entryPointValid: 'Entry Point Valid',
           uncommonSectionFound: 'Uncommon Section Found',
           packerSectionFound: 'Packer Section Found',
@@ -3614,7 +3616,7 @@ export default {
           architecture: 'Architecture',
           entryPoint: 'Entry Point',
           importedDlls: 'Imported DLLs',
-          segmentNames: 'Segment Names',
+          segmentNames: 'Segment Names {{count}}',
           subSystem: 'Subsystem',
           entryPointValid: 'Entry Point Valid',
           uncommonSectionFound: 'Uncommon Section Found',

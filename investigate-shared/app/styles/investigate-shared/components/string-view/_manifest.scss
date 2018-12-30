@@ -1,3 +1,11 @@
 .string-view {
-  margin: 0 20px;
+  .rsa-data-table-header-cell, .rsa-data-table-body-row .rsa-data-table-body-cell{
+    &:first-child{
+      padding-left: 1.5rem;
+    }
+  }
+  .files-footer {
+    text-align: center;
+    padding: 10px;
+  }
 }

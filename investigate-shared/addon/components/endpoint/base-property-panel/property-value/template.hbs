@@ -19,7 +19,7 @@
     {{else if (eq property.format 'ACCORDION')}}
       {{#rsa-content-accordion
       isCollapsed=true
-      label=(t property.label)
+      label=(t property.label count=propertyValueLength)
       class="properties__accordion__item"}}
         {{#each property.value as |item|}}
           <div class='value'>{{item}}</div>

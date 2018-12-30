@@ -15,17 +15,18 @@
     }
     .file-analysis-title {
       border-left: 1px solid;
-      border-right: 1px solid;
       height: 28px;
       display: inline-block;
       line-height: 2rem;
-      padding: 0 10px;
-      margin: 0 10px;
+      padding: 0 0 0 10px;
+      margin: 0 0 0 10px;
       font-size: 1.2rem;
+      font-weight: 100;
     }
     .view-type {
       font-size: 1.2rem;
-      border-bottom: 3px solid border-color(secondary);
+      padding-right: 14px;
+      font-weight: 100;
     }
   }
   .rsa-page-layout.show-right-zone .right-zone {
@@ -33,22 +34,40 @@
     h3.title {
       margin: 0 auto;
     }
+    > .rsa-header {
+      height: 69px;
+      border-bottom: 0px;
+      padding: 3% 0;
+    }
   }
   .string-filter-wrapper {
     width: 300px;
     display: inline-block;
-    margin-left: 30px;
+    padding-left: 21px;
+    height: 34px;
+    border-left: 1px solid;
     label {
       display: inline-block;
+      span.rsa-form-label {
+        margin-bottom: 0px;
+      }
     }
     .label {
       display: inline-block;
-      margin-right: 5px;
+      margin-right: 14px;
       color: $formSelectLabelColor;
       margin-bottom: rsa-whitespace(less);
       @include rsa-font(header, small);
       text-transform: uppercase;
     }
+  }
+  .rsa-nav-tab.is-active {
+    width: 100px;
+    align-self: normal;
+    padding-top: 0;
+  }
+  .file-analysis-properties {
+    @include border-top(1px, solid, primary);
   }
 }
 
