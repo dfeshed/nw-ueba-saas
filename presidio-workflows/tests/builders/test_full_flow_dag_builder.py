@@ -56,7 +56,7 @@ def test_valid_build():
     assert_task_id_uniqueness(dag)
     assert_task_id_retries(dag)
 
-    assert dag.task_count == 105
+    assert dag.task_count == 115
 
 
 def assert_task_id_uniqueness(dag):
