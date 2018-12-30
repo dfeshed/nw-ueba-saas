@@ -34,11 +34,11 @@ class FullFlowDagBuilder(PresidioDagBuilder):
                                                                 execution_delta=timedelta(days=1),
                                                                 poke_interval=5)
 
-        adapter_sub_dag = self._get_adapter_sub_dag_operator(data_sources, full_flow_dag)
+        adapter_sub_dag = self._get_adapter_container_operator(data_sources, full_flow_dag)
 
-        presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
+        presidio_core_sub_dag = self._get_presidio_core_container_operator(data_sources, full_flow_dag)
 
-        retention_sub_dag = self._get_presidio_retention_sub_dag_operator(data_sources, full_flow_dag)
+        retention_sub_dag = self._get_presidio_retention_container_operator(data_sources, full_flow_dag)
 
         root_dag_gap_sensor_operator >> adapter_sub_dag >> presidio_core_sub_dag >> retention_sub_dag
         self.log.debug("Finished creating dag - %s", full_flow_dag.dag_id)
@@ -76,16 +76,16 @@ class FullFlowDagBuilder(PresidioDagBuilder):
             if isinstance(task, ContainerOperator) or isinstance(task, WireOperator):
                 dicts.pop(task_id)
 
-    def _get_adapter_sub_dag_operator(self, data_sources, full_flow_dag):
+    def _get_adapter_container_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
         return self._create_container_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag, None, False)
 
-    def _get_presidio_core_sub_dag_operator(self, data_sources, full_flow_dag):
+    def _get_presidio_core_container_operator(self, data_sources, full_flow_dag):
         presidio_core_dag_id = 'presidio_core_dag'
 
         return self._create_container_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag, None, False)
 
-    def _get_presidio_retention_sub_dag_operator(self, data_sources, full_flow_dag):
+    def _get_presidio_retention_container_operator(self, data_sources, full_flow_dag):
         retention_dag_id = 'retention_dag'
 
         return self._create_container_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag, None, False)

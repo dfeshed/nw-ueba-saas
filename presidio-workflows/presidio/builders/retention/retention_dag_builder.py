@@ -87,9 +87,9 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                  retention_dag.schedule_interval)
         )
 
-        input_retention_sub_dag = self._get_presidio_input_retention_sub_dag_operator(self.data_sources, retention_dag)
-        output_retention_sub_dag = self._get_presidio_output_retention_sub_dag_operator(self.data_sources,
-                                                                                        retention_dag)
+        input_retention_sub_dag = self._get_presidio_input_retention_container_operator(self.data_sources, retention_dag)
+        output_retention_sub_dag = self._get_presidio_output_retention_container_operator(self.data_sources,
+                                                                                          retention_dag)
 
         input_retention_short_circuit_operator >> input_retention_sub_dag
         output_retention_short_circuit_operator >> output_retention_sub_dag
@@ -99,13 +99,13 @@ class RetentionDagBuilder(PresidioDagBuilder):
 
         return retention_dag
 
-    def _get_presidio_input_retention_sub_dag_operator(self, data_sources, retention_dag):
+    def _get_presidio_input_retention_container_operator(self, data_sources, retention_dag):
         input_retention_dag_id = 'input_retention_dag'
 
         return self._create_container_operator(InputRetentionDagBuilder(data_sources), input_retention_dag_id,
                                                retention_dag, None, False)
 
-    def _get_presidio_output_retention_sub_dag_operator(self, data_sources, retention_dag):
+    def _get_presidio_output_retention_container_operator(self, data_sources, retention_dag):
         output_retention_dag_id = 'output_retention_dag'
 
         return self._create_container_operator(OutputRetentionDagBuilder(data_sources), output_retention_dag_id,
