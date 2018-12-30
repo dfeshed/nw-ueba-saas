@@ -3,14 +3,14 @@ from abc import ABCMeta, abstractmethod
 from datetime import timedelta
 
 from airflow import DAG
-from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.subdag_operator import SubDagOperator
 from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.operators.python_operator import ShortCircuitOperator
 
-from presidio.builders.presidio_dag_wiring import PresidioDagWiring
-from presidio.utils.airflow.operators.container.container_operator import ContainerOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.utils.airflow.operators.wiring.container_operator import ContainerOperator
+from presidio.utils.airflow.operators.wiring.wire_operator import WireOperator
+from presidio.utils.airflow.operators.wiring.wiring_utils import WiringUtils
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -56,83 +56,66 @@ class PresidioDagBuilder(LoggingMixin):
             provide_context=True
         )
 
-    def _wire(self, builder, dag, short_circuit_operator, upstream_tasks, downstream_tasks, add_sequential_sensor):
+    def _create_wire_operator(self, builder, dag, wire_operator_id, short_circuit_operator, add_sequential_sensor):
         """
-        wire short_circuit_operator, upstream_tasks, downstream_tasks and add_sequential_sensor to the dag.
+        create wire_operator with first and last tasks
+        and wire short_circuit_operator and add_sequential_sensor.
         :param builder: builder
         :param dag: dag
         :param short_circuit_operator: short_circuit_operator
-        :param upstream_tasks: upstream_tasks
-        :param downstream_tasks: downstream_tasks
         :param add_sequential_sensor: boolean
-        :return: PresidioDagWiring
+        :return: WireOperator
         """
-        presidio_dag_wiring = PresidioDagWiring()
-        presidio_dag_wiring.wire(builder, dag, short_circuit_operator, upstream_tasks, downstream_tasks,
-                                 add_sequential_sensor)
-        return presidio_dag_wiring
+        retry_args = self._calc_subdag_retry_args(wire_operator_id)
+        return WireOperator(builder=builder,
+                            dag=dag,
+                            task_id='{}.{}'.format("wire", wire_operator_id),
+                            retry_args=retry_args,
+                            add_sequential_sensor=add_sequential_sensor,
+                            short_circuit_operator=short_circuit_operator,
+                            retries=retry_args['retries'],
+                            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                            max_retry_delay=timedelta(
+                                seconds=int(retry_args['max_retry_delay'])))
 
-    def _create_container_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, upstream_tasks,
-                                   downstream_tasks, add_sequential_sensor):
+    def _create_container_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, add_sequential_sensor):
         """
         create a container operator with start and end dummy operators
-        and wire short_circuit_operator, upstream_tasks, downstream_tasks and add_sequential_sensor to the dag.
+        and wire short_circuit_operator and add_sequential_sensor.
         :param sub_dag_builder: sub_dag_builder
         :param sub_dag_id: sub_dag_id
         :param dag: dag
         :param short_circuit_operator: short_circuit_operator
-        :param upstream_tasks: upstream_tasks
-        :param downstream_tasks: downstream_tasks
         :param add_sequential_sensor: add_sequential_sensor
         :return: ContainerOperator
         """
         retry_args = self._calc_subdag_retry_args(sub_dag_id)
-        start_task_id = '{}.{}'.format("start_operator", sub_dag_id)
-        end_task_id = '{}.{}'.format("end_operator", sub_dag_id)
+        return ContainerOperator(
+            builder=sub_dag_builder,
+            dag=dag,
+            container_operator_id=sub_dag_id,
+            retry_args=retry_args,
+            add_sequential_sensor=add_sequential_sensor,
+            short_circuit_operator=short_circuit_operator,
+            task_id='{}.{}'.format("wiring", sub_dag_id),
+            retries=retry_args['retries'],
+            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+            max_retry_delay=timedelta(
+                seconds=int(retry_args['max_retry_delay'])))
 
-        start_operator = DummyOperator(dag=dag, task_id=start_task_id, retries=retry_args['retries'],
-                                       retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                                       retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                       max_retry_delay=timedelta(
-                                           seconds=int(retry_args['max_retry_delay'])))
-        end_operator = DummyOperator(dag=dag,
-                                     task_id=end_task_id,
-                                     retries=retry_args['retries'],
-                                     retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                                     retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                     max_retry_delay=timedelta(
-                                         seconds=int(retry_args['max_retry_delay'])))
-
-        PresidioDagWiring().wire(sub_dag_builder, dag, None, [start_operator], [end_operator], False, ContainerOperator)
-
-        container_operator = ContainerOperator(start_operator=start_operator,
-                                 end_operator=end_operator,
-                                 task_id='{}.{}'.format("container", sub_dag_id),
-                                 dag=dag,
-                                 retries=retry_args['retries'],
-                                 retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                                 retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                 max_retry_delay=timedelta(
-                                     seconds=int(retry_args['max_retry_delay'])))
-
-        PresidioDagWiring().wire_operator(container_operator, short_circuit_operator, upstream_tasks, downstream_tasks, add_sequential_sensor)
-
-        return container_operator
-
-    def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, upstream_tasks,
-                                 downstream_tasks, add_sequential_sensor):
+    def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, add_sequential_sensor):
         """
          create a sub dag of the received "dag" fill it with a flow using the sub_dag_builder
          and wrap it with a sub dag operator.
+         wire short_circuit_operator and add_sequential_sensor.
         :param sub_dag_builder: sub_dag_builder
         :param sub_dag_id: sub_dag_id
         :param dag: dag
-        :param short_circuit_operator: short_circuit_operator
-        :param upstream_tasks: upstream_tasks
-        :param downstream_tasks: downstream_tasks
-        :param add_sequential_sensor: add_sequential_sensor
         :return: SubDagOperator
         """
+
         sub_dag = DAG(
             dag_id='{}.{}'.format(dag.dag_id, sub_dag_id),
             schedule_interval=dag.schedule_interval,
@@ -152,8 +135,11 @@ class PresidioDagBuilder(LoggingMixin):
                 seconds=int(retry_args['max_retry_delay']))
         )
 
-        PresidioDagWiring().wire_operator(sub_dag, short_circuit_operator, upstream_tasks,
-                                          downstream_tasks, add_sequential_sensor)
+        task_sensor_service = TaskSensorService()
+        if add_sequential_sensor:
+            WiringUtils.add_sensor([sub_dag], task_sensor_service)
+        if short_circuit_operator:
+            WiringUtils.add_short_circuit(short_circuit_operator, [sub_dag], task_sensor_service)
 
         return sub_dag;
 

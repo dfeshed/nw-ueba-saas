@@ -4,7 +4,8 @@ from presidio.builders.adapter.adapter_dag_builder import AdapterDagBuilder
 from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
-from presidio.utils.airflow.operators.container.container_operator import ContainerOperator
+from presidio.utils.airflow.operators.wiring.container_operator import ContainerOperator
+from presidio.utils.airflow.operators.wiring.wire_operator import WireOperator
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
 
 
@@ -55,12 +56,12 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         """
         tasks = full_flow_dag.tasks
         for task in tasks:
-            if not isinstance(task, ContainerOperator):
+            if not isinstance(task, ContainerOperator) and not isinstance(task, WireOperator):
                 for t in task.downstream_list:
-                    if isinstance(t, ContainerOperator):
+                    if isinstance(t, ContainerOperator) or isinstance(task, WireOperator):
                         task.downstream_task_ids.remove(t.task_id)
                 for t in task.upstream_task_ids:
-                    if isinstance(t, ContainerOperator):
+                    if isinstance(t, ContainerOperator) or isinstance(task, WireOperator):
                         task.upstream_task_ids.remove(t.task_id)
 
     @staticmethod
@@ -72,19 +73,19 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         """
         dicts = full_flow_dag.task_dict
         for task_id, task in dicts.items():
-            if isinstance(task, ContainerOperator):
+            if isinstance(task, ContainerOperator) or isinstance(task, WireOperator):
                 dicts.pop(task_id)
 
     def _get_adapter_sub_dag_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
-        return self._create_container_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag, None, [], [], False)
+        return self._create_container_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag, None, False)
 
     def _get_presidio_core_sub_dag_operator(self, data_sources, full_flow_dag):
         presidio_core_dag_id = 'presidio_core_dag'
 
-        return self._create_container_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag, None, [], [], False)
+        return self._create_container_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag, None, False)
 
     def _get_presidio_retention_sub_dag_operator(self, data_sources, full_flow_dag):
         retention_dag_id = 'retention_dag'
 
-        return self._create_container_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag, None, [], [], False)
+        return self._create_container_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag, None, False)

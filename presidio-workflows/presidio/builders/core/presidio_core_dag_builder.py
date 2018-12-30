@@ -34,16 +34,16 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         self.log.debug("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
-        input_sub_dag_operator = self._get_input_sub_dag_operator(presidio_core_dag)
+        input_sub_dag_operator = self._get_input_container_operator(presidio_core_dag)
 
-        ade_scoring_sub_dag_operator = self._get_ade_scoring_sub_dag_operator(presidio_core_dag)
+        ade_scoring_sub_dag_operator = self._get_ade_scoring_container_operator(presidio_core_dag)
 
-        output_sub_dag_operator = self._get_output_sub_dag_operator(presidio_core_dag)
+        output_sub_dag_operator = self._get_output_container_operator(presidio_core_dag)
 
         self._push_forwarding(output_sub_dag_operator, presidio_core_dag)
 
-        ade_modeling_sub_dag_operator = self._get_ade_modeling_sub_dag_operator(presidio_core_dag)
-        
+        ade_modeling_sub_dag_operator = self._get_ade_modeling_container_operator(presidio_core_dag)
+
         input_sub_dag_operator >> ade_scoring_sub_dag_operator >> output_sub_dag_operator
         ade_scoring_sub_dag_operator >> ade_modeling_sub_dag_operator
 
@@ -57,35 +57,39 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
             push_forwarding_task = PushForwarderTaskBuilder().build(presidio_core_dag)
             output_sub_dag_operator >> push_forwarding_task
 
-    def _get_input_sub_dag_operator(self, presidio_core_dag):
+    def _get_input_container_operator(self, presidio_core_dag):
         input_dag_id = 'input_dag'
 
-        return self._create_container_operator(InputDagBuilder(self.data_sources), input_dag_id, presidio_core_dag, None, [], [], False)
+        return self._create_container_operator(InputDagBuilder(self.data_sources), input_dag_id, presidio_core_dag,
+                                               None, False)
 
-    def _get_ade_scoring_sub_dag_operator(self, presidio_core_dag):
+    def _get_ade_scoring_container_operator(self, presidio_core_dag):
         default_args = presidio_core_dag.default_args
         daily_smart_events_confs = default_args.get("daily_smart_events_confs")
         hourly_smart_events_confs = default_args.get("hourly_smart_events_confs")
 
         ade_scoring_dag_id = 'ade_scoring_dag'
 
-        builder = AnomalyDetectionEngineScoringDagBuilder(self.data_sources, hourly_smart_events_confs, daily_smart_events_confs)
-        return self._create_container_operator(builder, ade_scoring_dag_id, presidio_core_dag, None, [], [], False)
+        builder = AnomalyDetectionEngineScoringDagBuilder(self.data_sources, hourly_smart_events_confs,
+                                                          daily_smart_events_confs)
+        return self._create_container_operator(builder, ade_scoring_dag_id, presidio_core_dag, None, False)
 
-    def _get_ade_modeling_sub_dag_operator(self, presidio_core_dag):
+    def _get_ade_modeling_container_operator(self, presidio_core_dag):
         default_args = presidio_core_dag.default_args
         daily_smart_events_confs = default_args.get("daily_smart_events_confs")
         hourly_smart_events_confs = default_args.get("hourly_smart_events_confs")
 
         ade_modeling_dag_id = 'ade_modeling_dag'
 
-        builder = AnomalyDetectionEngineModelingDagBuilder(self.data_sources, hourly_smart_events_confs, daily_smart_events_confs)
-        return self._create_container_operator(builder, ade_modeling_dag_id, presidio_core_dag, None, [], [], False)
+        builder = AnomalyDetectionEngineModelingDagBuilder(self.data_sources, hourly_smart_events_confs,
+                                                           daily_smart_events_confs)
+        return self._create_container_operator(builder, ade_modeling_dag_id, presidio_core_dag, None, False)
 
-    def _get_output_sub_dag_operator(self, presidio_core_dag):
+    def _get_output_container_operator(self, presidio_core_dag):
         output_dag_id = 'output_dag'
 
-        return self._create_container_operator(OutputDagBuilder(self.data_sources), output_dag_id, presidio_core_dag, None, [], [], False)
+        return self._create_container_operator(OutputDagBuilder(self.data_sources), output_dag_id, presidio_core_dag,
+                                               None, False)
 
 
 
