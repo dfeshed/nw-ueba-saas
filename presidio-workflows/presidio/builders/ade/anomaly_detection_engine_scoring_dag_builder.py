@@ -89,11 +89,11 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
         for data_source in self.data_sources:
             # Create the hourly aggregations for the data source
-            wire_operator = self._get_aggregations_wire_operator(FIX_DURATION_STRATEGY_HOURLY, data_source,
-                                                                 anomaly_detection_engine_scoring_dag,
-                                                                 hourly_short_circuit_operator)
+            group_connector = self._get_aggregations_group_connector(FIX_DURATION_STRATEGY_HOURLY, data_source,
+                                                                   anomaly_detection_engine_scoring_dag,
+                                                                   hourly_short_circuit_operator)
 
-            hourly_aggregations_last_tasks_list.append(wire_operator)
+            hourly_aggregations_last_tasks_list.append(group_connector)
 
     def _build_smart_flow(self, anomaly_detection_engine_scoring_dag, smart_events_confs, fixed_duration_strategy,
                           task_sensor_service, smart_short_circuit_operator, hourly_aggregations_last_tasks_list):
@@ -118,13 +118,13 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
             else:
                 raise Exception("smart configuration is None or empty")
 
-    def _get_aggregations_wire_operator(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag,
-                                        hourly_short_circuit_operator):
+    def _get_aggregations_group_connector(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag,
+                                          hourly_short_circuit_operator):
         aggregations_dag_id = '{}_{}_aggregations'.format(
             fixed_duration_strategy_to_string(fixed_duration_strategy),
             data_source
         )
-        return self._create_wire_operator(AggregationsDagBuilder(FIX_DURATION_STRATEGY_HOURLY, data_source),
-                                          anomaly_detection_engine_dag, aggregations_dag_id,
-                                          hourly_short_circuit_operator,
-                                          False)
+        return self._create_multi_point_group_connector(AggregationsDagBuilder(FIX_DURATION_STRATEGY_HOURLY, data_source),
+                                                        anomaly_detection_engine_dag, aggregations_dag_id,
+                                                        hourly_short_circuit_operator,
+                                                        False)

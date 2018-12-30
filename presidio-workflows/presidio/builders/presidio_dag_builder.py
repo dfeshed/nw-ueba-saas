@@ -8,9 +8,8 @@ from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
-from presidio.utils.airflow.operators.wiring.container_operator import ContainerOperator
-from presidio.utils.airflow.operators.wiring.wire_operator import WireOperator
-from presidio.utils.airflow.operators.wiring.wiring_utils import WiringUtils
+from presidio.utils.airflow.operators.group_connector.single_point_group_connector import SinglePointGroupConnector
+from presidio.utils.airflow.operators.group_connector.multi_point_group_connector import MultiPointGroupConnector
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -56,49 +55,51 @@ class PresidioDagBuilder(LoggingMixin):
             provide_context=True
         )
 
-    def _create_wire_operator(self, builder, dag, wire_operator_id, short_circuit_operator, add_sequential_sensor):
+    def _create_multi_point_group_connector(self, builder, dag, multi_point_group_connector_id, short_circuit_operator,
+                                            add_sequential_sensor):
         """
-        create wire_operator with first and last tasks
+        create multi_point_group_connector with first and last tasks
         and wire short_circuit_operator and add_sequential_sensor.
         :param builder: builder
         :param dag: dag
+        :param multi_point_group_connector_id: multi_point_group_connector_id
         :param short_circuit_operator: short_circuit_operator
         :param add_sequential_sensor: boolean
         :return: WireOperator
         """
-        retry_args = self._calc_subdag_retry_args(wire_operator_id)
-        return WireOperator(builder=builder,
-                            dag=dag,
-                            task_id='{}.{}'.format("wire", wire_operator_id),
-                            retry_args=retry_args,
-                            add_sequential_sensor=add_sequential_sensor,
-                            short_circuit_operator=short_circuit_operator,
-                            retries=retry_args['retries'],
-                            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
-                            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                            max_retry_delay=timedelta(
-                                seconds=int(retry_args['max_retry_delay'])))
+        retry_args = self._calc_subdag_retry_args(multi_point_group_connector_id)
+        return MultiPointGroupConnector(builder=builder,
+                                        dag=dag,
+                                        add_sequential_sensor=add_sequential_sensor,
+                                        short_circuit_operator=short_circuit_operator,
+                                        task_id='{}.{}'.format("multi_point", multi_point_group_connector_id),
+                                        retries=retry_args['retries'],
+                                        retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                                        retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                        max_retry_delay=timedelta(
+                                            seconds=int(retry_args['max_retry_delay'])))
 
-    def _create_container_operator(self, sub_dag_builder, sub_dag_id, dag, short_circuit_operator, add_sequential_sensor):
+    def _create_single_point_group_connector(self, sub_dag_builder, single_point_group_connector_id, dag,
+                                             short_circuit_operator, add_sequential_sensor):
         """
-        create a container operator with start and end dummy operators
+        create a single_point_group_connector with start and end dummy operators
         and wire short_circuit_operator and add_sequential_sensor.
         :param sub_dag_builder: sub_dag_builder
-        :param sub_dag_id: sub_dag_id
+        :param single_point_group_connector_id: single_point_group_connector_id
         :param dag: dag
         :param short_circuit_operator: short_circuit_operator
         :param add_sequential_sensor: add_sequential_sensor
         :return: ContainerOperator
         """
-        retry_args = self._calc_subdag_retry_args(sub_dag_id)
-        return ContainerOperator(
+        retry_args = self._calc_subdag_retry_args(single_point_group_connector_id)
+        return SinglePointGroupConnector(
             builder=sub_dag_builder,
             dag=dag,
-            container_operator_id=sub_dag_id,
+            single_point_group_connector_id=single_point_group_connector_id,
             retry_args=retry_args,
             add_sequential_sensor=add_sequential_sensor,
             short_circuit_operator=short_circuit_operator,
-            task_id='{}.{}'.format("wiring", sub_dag_id),
+            task_id='{}.{}'.format("single_point", single_point_group_connector_id),
             retries=retry_args['retries'],
             retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
             retry_exponential_backoff=retry_args['retry_exponential_backoff'],
@@ -137,9 +138,9 @@ class PresidioDagBuilder(LoggingMixin):
 
         task_sensor_service = TaskSensorService()
         if add_sequential_sensor:
-            WiringUtils.add_sensor([sub_dag], task_sensor_service)
+            task_sensor_service.add_task_sequential_sensor(sub_dag)
         if short_circuit_operator:
-            WiringUtils.add_short_circuit(short_circuit_operator, [sub_dag], task_sensor_service)
+            task_sensor_service.add_task_short_circuit(sub_dag, short_circuit_operator)
 
         return sub_dag;
 
