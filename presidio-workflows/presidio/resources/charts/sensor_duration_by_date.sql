@@ -1,3 +1,4 @@
+DELETE FROM chart where id = 4;
 INSERT INTO chart (id, label, conn_id, user_id, chart_type, sql_layout, sql, y_log_scale, show_datatable, show_sql, height, default_params, x_is_date, iteration_no, last_modified) VALUES (4, 'Sensor duration (minutes) by date', 'presidio_airflow_con', NULL, 'line', 'series', 'SELECT task_id,
        execution_date,
        duration / 60 AS duration,

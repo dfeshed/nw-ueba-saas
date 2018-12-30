@@ -1,3 +1,4 @@
+DELETE FROM chart where id = 2;
 INSERT INTO chart (id, label, conn_id, user_id, chart_type, sql_layout, sql, y_log_scale, show_datatable, show_sql, height, default_params, x_is_date, iteration_no, last_modified) VALUES (2, 'Task duration (seconds) stats', 'presidio_airflow_con', NULL, 'datatable', 'series', 'SELECT Avg(duration)  AS avg_duration,
        Min(duration)  AS min_duration,
        Max(duration)  AS max_duration,
@@ -8,6 +9,8 @@ WHERE  operator != ''SubDagOperator''
        AND state = ''success''
        AND task_id NOT LIKE ''%sensor%''
        AND task_id NOT LIKE ''%circuit%''
+       AND task_id NOT LIKE ''start_operator.%''
+       AND task_id NOT LIKE ''end_operator.%''
        AND dag_id LIKE ''full_flow%''
        AND execution_date  >= (SELECT Max(execution_date) - interval ''{{logical_hours_back}}'' hour AS
                                     from_date
