@@ -133,6 +133,8 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
             sendEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
         } catch (JsonProcessingException e) {
             failureReason = "CANNOT_SERIALIZE_EVENT";
+        } finally {
+            flumePresidioExternalMonitoringService.reportTotalEventMetric(1);
         }
         if (failureReason == null) {
             flumePresidioExternalMonitoringService.reportSuccessEventMetric(1);
@@ -140,7 +142,6 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
 
             flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason, 1);
         }
-
     }
 
     private void sendEvent(Event flumeEvent) {
