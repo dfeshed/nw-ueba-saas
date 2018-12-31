@@ -6,13 +6,13 @@
       "title": "Adapter Dashboard",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"size_x\":6,\"size_y\":3,\"panelIndex\":1,\"type\":\"visualization\",\"id\":\"7830d200-eb3c-11e7-8347-719599248f4a\",\"col\":1,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":2,\"type\":\"visualization\",\"id\":\"b326fff0-eb2e-11e7-86cf-9b995967c8ec\",\"col\":7,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":3,\"type\":\"visualization\",\"id\":\"0d8fcdb0-eb3d-11e7-8347-719599248f4a\",\"col\":1,\"row\":4}]",
+      "panelsJSON": "[{\"col\":1,\"id\":\"7830d200-eb3c-11e7-8347-719599248f4a\",\"panelIndex\":1,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"0d8fcdb0-eb3d-11e7-8347-719599248f4a\",\"panelIndex\":3,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"AWgEsZZ4hhofCgEsjiTV\",\"panelIndex\":6,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"size_x\":6,\"size_y\":3,\"panelIndex\":9,\"type\":\"visualization\",\"id\":\"AWgEuOQXhhofCgEsjjFB\",\"col\":7,\"row\":4},{\"size_x\":6,\"size_y\":3,\"panelIndex\":10,\"type\":\"visualization\",\"id\":\"AWgEuU6khhofCgEsjjLG\",\"col\":1,\"row\":4}]",
       "optionsJSON": "{\"darkTheme\":false}",
       "uiStateJSON": "{}",
       "version": 1,
       "timeRestore": false,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}],\"highlightAll\":true,\"version\":true}"
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
       }
     }
   }
