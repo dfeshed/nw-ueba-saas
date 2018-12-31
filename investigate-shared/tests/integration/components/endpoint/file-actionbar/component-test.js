@@ -23,7 +23,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   test('presence of priority buttons', async function(assert) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
-    assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), 'Edit File Status', 'Edit file status button is present.');
+    assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), 'Change File Status', 'Edit file status button is present.');
     assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
   });
 

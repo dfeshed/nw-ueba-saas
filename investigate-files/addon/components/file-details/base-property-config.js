@@ -1,6 +1,6 @@
 export default [
   {
-    sectionName: 'File.Status',
+    sectionName: 'Status',
     fields: [
       {
         field: 'reputationStatus'
@@ -8,7 +8,7 @@ export default [
     ]
   },
   {
-    sectionName: 'File.General',
+    sectionName: 'General',
     fields: [
       {
         field: 'firstFileName'
@@ -26,7 +26,7 @@ export default [
     ]
   },
   {
-    sectionName: 'File.Signature',
+    sectionName: 'Signature',
     fields: [
       {
         field: 'signature.features',
@@ -45,7 +45,7 @@ export default [
     ]
   },
   {
-    sectionName: 'File.Hash',
+    sectionName: 'Hash',
     labelPrefix: 'investigateHosts.files.fields',
     fields: [
       {

@@ -173,3 +173,24 @@ test('it should translate the title and filter the columns', function(assert) {
     });
   });
 });
+test('it should show No matching columns on wrong column name', function(assert) {
+  this.set('items', items2);
+  this.set('columnsConfig', columnsConfig);
+  this.set('enableColumnSelector', true);
+  this.set('translateTitles', true);
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig}}
+      {{#rsa-data-table/header searchTerm=searchTerm translateTitles=translateTitles enableColumnSelector=enableColumnSelector as |column|}}
+        {{column.title}}
+      {{/rsa-data-table/header}}
+    {{/rsa-data-table}}
+  `);
+  this.$('.rsa-data-table-header__column-selector').trigger('click');
+  return wait().then(() => {
+    assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+    this.set('searchTerm', 'xyz');
+    return wait().then(() => {
+      assert.equal($('.rsa-data-table-column-selector-panel .no-matching-columns').text().trim(), 'No matching columns', 'No matching columns message displayed');
+    });
+  });
+});

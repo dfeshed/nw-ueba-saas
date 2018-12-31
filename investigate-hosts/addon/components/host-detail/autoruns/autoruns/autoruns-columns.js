@@ -26,7 +26,7 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'Reputation Status'
+    title: 'Reputation'
   },
   {
     field: 'fileProperties.downloadInfo',

@@ -41,6 +41,13 @@ export default [
     title: 'investigateFiles.fields.fileStatus'
   },
   {
+    field: 'remediationAction',
+    description: '',
+    dataType: 'STRING',
+    visible: true,
+    title: 'investigateFiles.fields.remediationAction'
+  },
+  {
     field: 'reputationStatus',
     description: '',
     dataType: 'STRING',

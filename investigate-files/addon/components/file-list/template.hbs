@@ -76,6 +76,8 @@
             {{rsa-content-datetime timestamp=(get item column.field)}}
           {{else if (eq column.field 'fileStatus')}}
             {{t (concat 'investigateFiles.fileStatus.' (get item column.field))}}
+          {{else if (eq column.field 'remediationAction')}}
+            {{t (concat 'investigateFiles.remediationAction.' (get item column.field))}}
           {{else if (eq column.field 'score')}}
             <centered>
               {{#if (get item column.field)}}
@@ -87,7 +89,7 @@
           {{else if (eq column.field 'downloadInfo.status')}}
             {{endpoint/download-status downloadInfo=(get item 'downloadInfo') checksum=item.checksumSha256}}
           {{else}}
-            {{get item column.field}}
+            {{get-field item column timezone dateFormat timeFormat i18n.locale}}
           {{/if}}
         {{/rsa-data-table/body-cell}}
       {{/if}}

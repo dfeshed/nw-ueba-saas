@@ -390,7 +390,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3].textContent.trim(), 'Download to Server', 'File download option present in more actions.');
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3].textContent.trim(), 'Download File to Server', 'File download option present in more actions.');
       assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[4].textContent.trim(), 'Save a Local Copy', 'Save a Local Copy option present in more actions.');
     });
   });

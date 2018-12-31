@@ -1,0 +1,1 @@
+export { default, getField } from 'investigate-shared/helpers/get-field';

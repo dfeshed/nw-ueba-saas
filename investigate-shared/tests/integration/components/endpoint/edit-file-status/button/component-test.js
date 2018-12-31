@@ -8,7 +8,7 @@ module('Integration | Component | endpoint/edit-file-status/button', function(ho
 
   test('it renders', async function(assert) {
     await render(hbs`{{endpoint/edit-file-status/button}}`);
-    assert.equal(this.element.textContent.trim(), 'Edit File Status', 'Edit file status button renders.');
+    assert.equal(this.element.textContent.trim(), 'Change File Status', 'Edit file status button renders.');
   });
 
 
@@ -30,7 +30,7 @@ module('Integration | Component | endpoint/edit-file-status/button', function(ho
 
   test('Edit file status button with title', async function(assert) {
     await render(hbs`{{endpoint/edit-file-status/button showOnlyIcons=false}}`);
-    assert.equal(findAll('.file-status-button')[0].textContent.trim(), 'Edit File Status', 'Edit file status button has title.');
+    assert.equal(findAll('.file-status-button')[0].textContent.trim(), 'Change File Status', 'Edit file status button has title.');
     assert.equal(findAll('.file-status-button .rsa-form-button .rsa-icon').length, 1, 'Edit file status Button has rsa-icon class.');
   });
 

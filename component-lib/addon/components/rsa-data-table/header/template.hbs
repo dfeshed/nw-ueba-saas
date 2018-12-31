@@ -15,22 +15,26 @@
         </section>
       {{/if}}
       <ul>
-        {{#each filterColumnChooser as |column|}}
-          {{#if (and (not-eq column.dataType "checkbox") (not-eq column.dataType "radio"))}}
-            <li>
-              <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
-                {{rsa-form-checkbox
-                  checked=column.selected
-                  change=(action 'toggleColumn' column)}}
-                {{#if translateTitles}}
-                  {{t column.title}}
-                {{else}}
-                  {{column.title}}
-                {{/if}}
-              </label>
-            </li>
-          {{/if}}
-        {{/each}}
+        {{#if (gt filterColumnChooser.length 0)}}
+          {{#each filterColumnChooser as |column|}}
+            {{#if (and (not-eq column.dataType "checkbox") (not-eq column.dataType "radio"))}}
+              <li>
+                <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
+                  {{rsa-form-checkbox
+                    checked=column.selected
+                    change=(action 'toggleColumn' column)}}
+                  {{#if translateTitles}}
+                    {{t column.title}}
+                  {{else}}
+                    {{column.title}}
+                  {{/if}}
+                </label>
+              </li>
+            {{/if}}
+          {{/each}}
+        {{else}}
+          <span class='no-matching-columns'>{{t 'tables.columnChooser.noMatchingColumns'}}</span>
+        {{/if}}
       </ul>
     </section>
   {{/rsa-content-tethered-panel}}

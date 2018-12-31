@@ -72,7 +72,8 @@ export default {
   tables: {
     noResults: 'No Results',
     columnChooser: {
-      filterPlaceHolder: 'Type to filter the list'
+      filterPlaceHolder: 'Type to filter the list',
+      noMatchingColumns: 'No matching columns'
     }
   },
   login: {
@@ -913,7 +914,7 @@ export default {
           signature: 'Signature'
         },
         status: {
-          edit: 'Edit Certificate Status',
+          edit: 'Change Certificate Status',
           certificateStatus: 'Certificate Status',
           success: 'Certificate status updated successfully',
           error: 'Certificate status update failed',
@@ -2041,7 +2042,7 @@ export default {
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
-      errorDescription: 'Endpoint Server may not be configured properly , please check deployment guide for endpoint server provisioning steps and ensure all the steps are followed.'
+      errorDescription: 'Endpoint Server may not be configured properly. See the Physical Host Installation Guide for instructions on Endpoint Hybrid or Endpoint Log Hybrid installation.'
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
@@ -2116,12 +2117,12 @@ export default {
     certificate: {
       toolTipCertificateViewDisabled: 'Selected more than {{count}} files',
       editCertificateStatus: {
-        actionNote: 'Applies to all files signed by this certificate.',
+        actionNote: 'Selected status is applied to all files signed by this certificate.',
         commentLimitError: 'Comment is limited to 900 characters'
       },
       contextMenu: {
         actions: {
-          editCertificateStatus: 'Edit Certificate Status'
+          editCertificateStatus: 'Change Certificate Status'
         }
       }
     },
@@ -2153,6 +2154,10 @@ export default {
       Whitelist: 'Whitelisted',
       KnownGood: 'Known Good',
       Neutral: 'Neutral'
+    },
+    remediationAction: {
+      Unblock: 'Not Blocked',
+      Block: 'Blocked'
     },
     riskScore: {
       label: 'Reset Risk Score',
@@ -2204,9 +2209,9 @@ export default {
         accessError: 'You do not have the required permission to save the filter.',
         error: 'Name already exists. Provide a unique name for the filter.',
         delete: {
-          successMessage: 'Query deleted successfully.',
+          successMessage: 'Saved filter deleted successfully.',
           errorMessage: 'Failed to delete the saved search',
-          confirmMessage: 'Are you sure you want to delete the selected query?'
+          confirmMessage: 'Are you sure you want to delete the saved filter?'
         }
       },
       signature: {
@@ -2249,10 +2254,10 @@ export default {
       checksumSha1: 'SHA1',
       checksumSha256: 'SHA256',
       machineOsType: 'Operating System',
-      reputationStatus: 'Reputation Status',
+      reputationStatus: 'Reputation',
       score: 'Risk Score',
       machineCount: 'Active On',
-      remediationAction: 'Remediation Action',
+      remediationAction: 'Remediation',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',
@@ -2310,7 +2315,7 @@ export default {
       path: 'Path',
       entropy: 'Entropy',
       fileName: 'FileName',
-      firstFileName: 'FileName',
+      firstFileName: 'File Name',
       firstSeenTime: 'First Seen Time',
       timeCreated: 'Created',
       format: 'Format',
@@ -2334,7 +2339,7 @@ export default {
     },
     editFileStatus: {
       successMessage: 'File status updated successfully',
-      title: 'Edit File Status',
+      title: 'Change File Status',
       blacklistCategory: 'Category',
       fileStatusTitle: 'Status',
       fileStatusOptions: {
@@ -2508,7 +2513,7 @@ export default {
           entropy: 'Entropy',
           size: 'Size',
           format: 'Format',
-          reputationStatus: 'Reputation Status',
+          reputationStatus: 'Reputation',
           score: 'Risk Score'
         },
         inlinePatch: {
@@ -2531,7 +2536,7 @@ export default {
         jumpTo: 'Jump To Address',
         jumpCount: 'Jump Count',
         hookedProcess: 'Process Context',
-        reputationStatus: 'Reputation Status'
+        reputationStatus: 'Reputation'
       }
     },
     process: {
@@ -2547,7 +2552,7 @@ export default {
       signature: 'Signature',
       path: 'Path',
       launchArguments: 'Launch Arguments',
-      reputationStatus: 'Reputation Status',
+      reputationStatus: 'Reputation',
       score: 'Risk Score',
       fileStatus: 'File Status',
       downloaded: 'Downloaded',
@@ -2604,7 +2609,7 @@ export default {
       processData: {
         signature: 'Signature',
         signer: 'Signer',
-        reputationStatus: 'Reputation Status',
+        reputationStatus: 'Reputation',
         fileStatus: 'File Status',
         directoryDst: 'File Path',
         paramDst: 'Launch Arguments'
@@ -2614,7 +2619,7 @@ export default {
       imageHooks: {
         type: 'Type',
         dllFileName: 'File Name',
-        reputationStatus: 'Reputation Status',
+        reputationStatus: 'Reputation',
         score: 'Risk Score',
         hookFileName: 'Hooked FileName',
         hookedProcess: 'Hooked Process',
@@ -2631,7 +2636,7 @@ export default {
         signature: 'Signature',
         tid: 'Thread ID',
         dllFileName: 'DLL Name',
-        reputationStatus: 'Reputation Status',
+        reputationStatus: 'Reputation',
         score: 'Risk Score',
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
@@ -2646,7 +2651,7 @@ export default {
         type: 'Type',
         driverFileName: 'Driver Name',
         hookedFileName: 'Hooked FileName',
-        reputationStatus: 'Reputation Status',
+        reputationStatus: 'Reputation',
         score: 'Risk Score',
         signature: 'Signature',
         title: 'Kernel Hooks',
@@ -2984,8 +2989,8 @@ export default {
             sessionType: 'User Session Type',
             isAdministrator: 'User Is Admin',
             groups: 'User Groups',
-            domainUserQualifiedName: 'User QualifiedName',
-            domainUserId: 'User Domain UserID',
+            domainUserQualifiedName: 'User Qualified Name',
+            domainUserId: 'User Domain User ID',
             domainUserOu: 'User Domain User OU',
             domainUserCanonicalOu: 'User Domain User Canonical OU',
             host: 'User Host',
@@ -3020,12 +3025,12 @@ export default {
             remotePath: 'MountedPaths - RemotePath'
           },
           securityProducts: {
-            type: 'SecurityProducts - Type',
-            instance: 'SecurityProducts - Instance',
-            displayName: 'SecurityProducts - DisplayName',
-            companyName: 'SecurityProducts - CompanyName',
-            version: 'SecurityProducts - Version',
-            features: 'SecurityProducts - Features'
+            type: 'Security Products - Type',
+            instance: 'Security Products - Instance',
+            displayName: 'Security Products - Display Name',
+            companyName: 'Security Products - Company Name',
+            version: 'Security Products - Version',
+            features: 'Security Products - Features'
           },
           networkInterfaces: {
             name: 'NIC Name',
@@ -3080,7 +3085,7 @@ export default {
             processorCount: 'Hardware - Processor Count',
             processorName: 'Hardware - Processor Name',
             totalPhysicalMemory: 'Hardware - Total Physical Memory',
-            chassisType: 'Hardware - ChassisType',
+            chassisType: 'Hardware - Chassis Type',
             manufacturer: 'Hardware - Manufacturer',
             model: 'Hardware - Model',
             serial: 'Hardware - Serial',
@@ -3149,7 +3154,7 @@ export default {
             administrator: 'Is Admin',
             groups: 'Groups',
             domainUserQualifiedName: 'QualifiedName',
-            domainUserId: 'Domain UserID',
+            domainUserId: 'Domain User ID',
             domainUserOu: 'Domain User OU',
             domainUserCanonicalOu: 'Domain User Canonical OU',
             host: 'Host',
@@ -3550,10 +3555,10 @@ export default {
         delete: 'Delete'
       },
       fileActions: {
-        editFileStatus: 'Edit File Status',
+        editFileStatus: 'Change File Status',
         pivotToInvestigate: 'Analyze Events',
         watch: 'Watch',
-        downloadToServer: 'Download to Server',
+        downloadToServer: 'Download File to Server',
         more: 'More',
         moreActions: 'More',
         saveLocalCopy: 'Save a Local Copy',

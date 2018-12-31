@@ -22,7 +22,7 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   test('Renders the edit file-status button', async function(assert) {
     await render(hbs`{{endpoint/edit-file-status}}`);
     assert.equal(findAll('.edit-file-status').length, 1, 'Edit Files status button has rendered.');
-    assert.equal(findAll('.file-status-button')[0].textContent.trim(), 'Edit File Status', 'edit-file-status button text verified.');
+    assert.equal(findAll('.file-status-button')[0].textContent.trim(), 'Change File Status', 'change-file-status button text verified.');
   });
 
   test('it should disable the edit-file-status button', async function(assert) {

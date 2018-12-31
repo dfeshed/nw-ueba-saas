@@ -52,8 +52,7 @@ export function getField(params) {
     }
     result = obj;
   }
-
-  return result;
+  return result !== '' ? result : '--';
 }
 
 export default Helper.helper(getField);
