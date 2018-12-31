@@ -57,10 +57,10 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         for task in tasks:
             if not isinstance(task, MultiPointGroupConnector):
                 for t in task.downstream_list:
-                    if isinstance(task, MultiPointGroupConnector):
+                    if isinstance(t, MultiPointGroupConnector):
                         task.downstream_task_ids.remove(t.task_id)
-                for t in task.upstream_task_ids:
-                    if isinstance(task, MultiPointGroupConnector):
+                for t in task.upstream_list:
+                    if isinstance(t, MultiPointGroupConnector):
                         task.upstream_task_ids.remove(t.task_id)
 
     @staticmethod

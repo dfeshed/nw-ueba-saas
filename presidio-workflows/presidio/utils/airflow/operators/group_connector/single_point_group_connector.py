@@ -12,11 +12,8 @@ class SinglePointGroupConnector(MultiPointGroupConnector):
     """
 
     @apply_defaults
-    def __init__(self, builder, dag, single_point_group_connector_id, retry_args, add_sequential_sensor,
-                 short_circuit_operator, *args, **kwargs):
-        super(SinglePointGroupConnector, self).__init__(builder=builder, dag=dag,
-                                                        add_sequential_sensor=add_sequential_sensor,
-                                                        short_circuit_operator=short_circuit_operator, *args, **kwargs)
+    def __init__(self, dag, single_point_group_connector_id, retry_args, *args, **kwargs):
+        super(SinglePointGroupConnector, self).__init__(dag=dag, *args, **kwargs)
 
         start_task_id = '{}.{}'.format("start_operator", single_point_group_connector_id)
         start_operator = self._create_dummy_operators(dag, start_task_id, retry_args)
