@@ -13,12 +13,15 @@
         {
           "name": "numberOfReconnaissanceToolExecutedScoresSum",
           "featureNamesMap": {
-            "sum": [
+            "groupBy": [
+              "context.dstProcessFileName"
+            ],
+            "maximize": [
               "score"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]

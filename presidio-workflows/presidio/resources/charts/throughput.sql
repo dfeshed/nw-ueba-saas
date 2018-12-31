@@ -1,3 +1,4 @@
+DELETE FROM chart where id = 5;
 INSERT INTO chart (id, label, conn_id, user_id, chart_type, sql_layout, sql, y_log_scale, show_datatable, show_sql, height, default_params, x_is_date, iteration_no, last_modified) VALUES (5, 'Throughput', 'presidio_airflow_con', NULL, 'line', 'series', 'SELECT dag_id1 as dag_id,
         execution_day_1 as execution_day,
         EXTRACT (epoch from (end_time-start_time)/60) as duration_in_minutes,

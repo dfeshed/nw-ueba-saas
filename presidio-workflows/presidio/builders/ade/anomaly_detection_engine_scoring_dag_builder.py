@@ -1,4 +1,4 @@
-from datetime import timedelta
+
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -50,7 +50,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
 
         self.log.info("populating the ade scoring dag, dag_id=%s for data sources: %s and hourly smarts: %s",
                      anomaly_detection_engine_scoring_dag.dag_id, self.data_sources, self.hourly_smart_events_confs)
-        hourly_aggregations_sub_dag_operator_list = []
+        hourly_aggregations_last_tasks_list = []
 
         task_sensor_service = TaskSensorService()
 
@@ -71,38 +71,32 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
 
         # Iterate all configured data sources and
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
-        self._build_data_source_scoring_flow(anomaly_detection_engine_scoring_dag,task_sensor_service,
-                                             hourly_short_circuit_operator, hourly_aggregations_sub_dag_operator_list)
+        self._build_data_source_scoring_flow(anomaly_detection_engine_scoring_dag,
+                                             hourly_short_circuit_operator, hourly_aggregations_last_tasks_list)
 
         # Iterate all hourly smart configurations and
         # define the smart operator with its sensor, short circuit and flow dependecies.
         self._build_smart_flow(anomaly_detection_engine_scoring_dag, self.hourly_smart_events_confs,
                                FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
                                hourly_short_circuit_operator,
-                               hourly_aggregations_sub_dag_operator_list)
+                               hourly_aggregations_last_tasks_list)
 
         return anomaly_detection_engine_scoring_dag
 
-    def _build_data_source_scoring_flow(self, anomaly_detection_engine_scoring_dag, task_sensor_service,
-                                        hourly_short_circuit_operator, hourly_aggregations_sub_dag_operator_list):
+    def _build_data_source_scoring_flow(self, anomaly_detection_engine_scoring_dag,
+                                        hourly_short_circuit_operator, hourly_aggregations_last_tasks_list):
         # Iterate all configured data sources and
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
         for data_source in self.data_sources:
-            # Create the hourly aggregations subDAG operator for the data source
-            hourly_aggregations_sub_dag_operator = self._get_aggregations_sub_dag_operator(
-                FIX_DURATION_STRATEGY_HOURLY,
-                data_source,
-                anomaly_detection_engine_scoring_dag
-            )
-            task_sensor_service.add_task_sequential_sensor(hourly_aggregations_sub_dag_operator)
-            task_sensor_service.add_task_short_circuit(hourly_aggregations_sub_dag_operator,
-                                                       hourly_short_circuit_operator)
+            # Create the hourly aggregations for the data source
+            group_connector = self._get_aggregations_group_connector(FIX_DURATION_STRATEGY_HOURLY, data_source,
+                                                                   anomaly_detection_engine_scoring_dag,
+                                                                   hourly_short_circuit_operator)
 
-            hourly_aggregations_sub_dag_operator_list.append(hourly_aggregations_sub_dag_operator)
+            hourly_aggregations_last_tasks_list.append(group_connector)
 
     def _build_smart_flow(self, anomaly_detection_engine_scoring_dag, smart_events_confs, fixed_duration_strategy,
-                          task_sensor_service, smart_short_circuit_operator,
-                          aggregations_sub_dag_operator_list):
+                          task_sensor_service, smart_short_circuit_operator, hourly_aggregations_last_tasks_list):
         # Iterate all smart configurations and
         # define the smart operator with its sensor, short circuit and flow dependecies.
         for smart_events_conf in smart_events_confs:
@@ -118,22 +112,19 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                 task_sensor_service.add_task_short_circuit(smart_events_operator, smart_short_circuit_operator)
 
                 # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
-                for aggregations_sub_dag_operator in aggregations_sub_dag_operator_list:
-                    aggregations_sub_dag_operator.set_downstream(smart_events_operator)
+                for hourly_aggregations_last_task in hourly_aggregations_last_tasks_list:
+                    hourly_aggregations_last_task.set_downstream(smart_events_operator)
 
             else:
                 raise Exception("smart configuration is None or empty")
 
-    def _get_aggregations_sub_dag_operator(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
+    def _get_aggregations_group_connector(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag,
+                                          hourly_short_circuit_operator):
         aggregations_dag_id = '{}_{}_aggregations'.format(
             fixed_duration_strategy_to_string(fixed_duration_strategy),
             data_source
         )
-
-        return self._create_sub_dag_operator(
-            AggregationsDagBuilder(fixed_duration_strategy, data_source), aggregations_dag_id,
-            anomaly_detection_engine_dag)
-
-
-
-
+        return self._create_multi_point_group_connector(AggregationsDagBuilder(FIX_DURATION_STRATEGY_HOURLY, data_source),
+                                                        anomaly_detection_engine_dag, aggregations_dag_id,
+                                                        hourly_short_circuit_operator,
+                                                        False)

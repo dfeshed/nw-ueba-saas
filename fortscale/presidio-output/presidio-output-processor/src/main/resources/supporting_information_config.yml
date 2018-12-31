@@ -879,7 +879,7 @@ indicators:
     anomalyField: srcProcessFilePath
     anomalyFilters:
       - fieldName: dstProcessDirectoryGroups
-        fieldValue: SYSTEM_32
+        fieldValue: WINDOWS_SYSTEM32
       - fieldName: dstProcessFileName
         fieldValue: lsass.exe
       - fieldName: operationType
@@ -906,7 +906,7 @@ indicators:
       - fieldName: operationType
         fieldValue: CREATE_REMOTE_THREAD
       - fieldName: dstProcessCategories
-        fieldValue: IMPORTANT_WINDOWS_PROCESS
+        fieldValue: WINDOWS_PROCESS
   splitFields:
     - srcProcessFileName
     - srcProcessDirectory
@@ -1098,9 +1098,9 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
-- id: sumOfHighestProcessFilePathScoresUserIdRegistryHourly
+- id: sumOfHighestProcessFilePathScoresUserIdRegistryKeyGroupRegistryHourly
   type: SCORE_AGGREGATION
-  name: abnormal_process_modified_a_service_key_registry
+  name: abnormal_process_modified_registry_key_group
   schema: REGISTRY
   adeEventType: scored_enriched.registry.processFilePath.registryKeyGroup.registry.score
   modelContextFields:
@@ -1109,7 +1109,7 @@ indicators:
     anomalyField: processFilePath
     anomalyFilters:
     - fieldName: operationType
-      fieldValue: SET_VALUE
+      fieldValue: MODIFY_REGISTRY_VALUE
   splitFields:
     - processFileName
     - processDirectory
