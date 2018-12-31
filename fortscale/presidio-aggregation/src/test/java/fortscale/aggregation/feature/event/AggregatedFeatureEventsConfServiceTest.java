@@ -38,11 +38,7 @@ public class AggregatedFeatureEventsConfServiceTest {
 
         @Bean
         public AggregatedFeatureEventsConfService getAggregatedFeatureEventsConfService() {
-            return new AggregatedFeatureEventsConfService(
-                    "classpath:config/asl/aggregated_feature_events.json",
-                    "classpath:fortscale/config/asl/aggregation_events/overriding/*.json",
-                    null,
-                    bucketConfigurationService);
+            return new AggregatedFeatureEventsConfService("classpath:config/asl/aggregated_feature_events.json", "classpath:fortscale/config/asl/aggregation_events/overriding/*.json", null, bucketConfigurationService);
         }
 
         @Bean
@@ -76,7 +72,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Map<String, List<String>> featureNameMap = aggregatedFeatureEventConf.getAggregatedFeatureNamesMap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
-
         Assert.assertEquals("bc1", bucketConfName);
         Assert.assertEquals(BUCKET_CONF_AS_STRING1, featureBucketConf.toString());
         Assert.assertEquals(new AggrFeatureSumFunc(), aggrFeatureEventFunction);
@@ -95,7 +90,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         int bucketLeap = aggregatedFeatureEventConf.getBucketsLeap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
-
         Assert.assertEquals("bc2", bucketConfName);
         JSONAssert.assertEquals(BUCKET_CONF_AS_STRING2, featureBucketConf.toString(), false);
         Assert.assertEquals(new AggrFeatureSumFunc(), aggrFeatureEventFunction);
@@ -108,7 +102,6 @@ public class AggregatedFeatureEventsConfServiceTest {
     @Test
     public void getAggregatedFeatureEventConfListTest() throws JSONException {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
-
         Assert.assertEquals(2, aggregatedFeatureEventConfs.size());
         assertAggregatedFeatureEventConf1(aggregatedFeatureEventConfs.get(0));
         assertAggregatedFeatureEventConf2(aggregatedFeatureEventConfs.get(1));
