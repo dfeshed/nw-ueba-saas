@@ -74,6 +74,7 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         for task_id, task in dicts.items():
             if isinstance(task, MultiPointGroupConnector):
                 dicts.pop(task_id)
+        full_flow_dag.task_count = len(full_flow_dag.tasks)
 
     def _get_adapter_group_connector_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
