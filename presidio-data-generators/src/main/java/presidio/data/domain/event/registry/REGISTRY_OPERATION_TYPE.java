@@ -3,8 +3,8 @@ package presidio.data.domain.event.registry;
 import java.util.Arrays;
 
 public enum REGISTRY_OPERATION_TYPE {
-    CREATE_KEY("CREATE_KEY"),
-    SET_VALUE("SET_VALUE");
+    CREATE_KEY("createKey"),
+    SET_VALUE("modifyRegistryKey");
 
     public final String value;
 

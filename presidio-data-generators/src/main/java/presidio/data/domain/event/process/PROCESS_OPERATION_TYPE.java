@@ -3,9 +3,9 @@ package presidio.data.domain.event.process;
 import java.util.Arrays;
 
 public enum PROCESS_OPERATION_TYPE {
-    OPEN_PROCESS("OPEN_PROCESS"),
-    CREATE_PROCESS("CREATE_PROCESS"),
-    CREATE_REMOTE_THREAD("CREATE_REMOTE_THREAD");
+    OPEN_PROCESS("openProcess"),
+    CREATE_PROCESS("createProcess"),
+    CREATE_REMOTE_THREAD("createRemoteThread");
 
     public final String value;
 

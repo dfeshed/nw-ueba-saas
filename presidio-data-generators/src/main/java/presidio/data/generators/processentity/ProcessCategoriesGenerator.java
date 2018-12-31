@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class ProcessCategoriesGenerator implements IStringListGenerator {
     private static final String[] ALL_PROCESS_CATEGORIES = {
-            "WORD_PROCESSOR",
-            "OFFICE",
-            "RECONNAISSANCE_TOOL"
+            "word processor",
+            "office",
+            "reconnaissance tool"
     };
 
     private List<String> value = Arrays.asList(ALL_PROCESS_CATEGORIES);
