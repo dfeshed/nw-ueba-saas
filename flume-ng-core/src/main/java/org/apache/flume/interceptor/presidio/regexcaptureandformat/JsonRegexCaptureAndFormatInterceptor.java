@@ -3,7 +3,6 @@ package org.apache.flume.interceptor.presidio.regexcaptureandformat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.transform.regexcaptureandformat.JsonRegexCaptorAndFormatter;
 import org.apache.commons.lang3.Validate;
 import org.apache.flume.Context;
 import org.apache.flume.Event;

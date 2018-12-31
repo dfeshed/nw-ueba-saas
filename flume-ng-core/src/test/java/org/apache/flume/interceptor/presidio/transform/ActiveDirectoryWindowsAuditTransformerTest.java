@@ -5,6 +5,7 @@ import fortscale.utils.transform.*;
 import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
 import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
+import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
 import org.json.JSONArray;

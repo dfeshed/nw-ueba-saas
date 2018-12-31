@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fortscale.utils.transform.*;
 import fortscale.utils.transform.predicate.*;
+import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
 import org.json.JSONObject;
