@@ -26,7 +26,8 @@ export const currentSeverityContext = createSelector(
         eventCount: alertContext[key].eventContexts.length,
         filesCount: 0,
         usersCount: 0,
-        context: alertContext[key].eventContexts
+        context: alertContext[key].eventContexts,
+        totalEventsCount: alertContext[key].totalEventsCount
       }));
     }
     return null;

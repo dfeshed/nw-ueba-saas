@@ -3503,6 +3503,7 @@ export default {
         alerts: {
           heading: 'Alerts Severity',
           events: '{{count}} event(s)',
+          moreEvents: '{{count}}+ event(s)',
           critical: 'CRITICAL',
           high: 'HIGH',
           medium: 'MEDIUM',

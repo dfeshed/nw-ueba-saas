@@ -34,7 +34,11 @@
           selectedAlert=selectedAlert as |context|}}
           <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
           <div class="alert-context__event">
-            <span>{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</span>
+            {{#if (gt context.totalEventsCount context.eventCount)}}
+              <span>{{t 'investigateShared.endpoint.riskProperties.alerts.moreEvents' count=context.eventCount}}</span>
+            {{else}}
+              <span>{{t 'investigateShared.endpoint.riskProperties.alerts.events' count=context.eventCount}}</span>
+            {{/if}}
           </div>
         {{/endpoint/risk-properties/alert-context}}
       {{/if}}
