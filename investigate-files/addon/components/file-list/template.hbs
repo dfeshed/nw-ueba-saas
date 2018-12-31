@@ -35,7 +35,7 @@
         beforeContextMenuShow=(action 'beforeContextMenuShow')
         editFileStatus=(action 'showEditFileStatus')
         resetRiskScore=(action 'showRiskScoreModal')
-        pivotToInvestigate=(action 'showServiceList')
+        pivotToInvestigate=(action 'pivotToInvestigate')
         onSaveFileStatus = (action 'saveFileStatus' checksums)
         retrieveRemediationStatus=(action 'retrieveRemediationStatus')
         toggleCertificateView=(action 'toggleCertificateView')
@@ -103,14 +103,6 @@
       getMoreData=(action 'getPageOfFiles')}}
   {{/if}}
 {{/rsa-data-table}}
-
-{{#if showServiceModal}}
-  {{endpoint/pivot-to-investigate/modal
-    serviceList=serviceList
-    metaName='checksumSha256'
-    itemList=itemList
-    closeModal=(action 'onCloseServiceModal')}}
-{{/if}}
 
 {{#if showFileStatusModal}}
   {{endpoint/edit-file-status/modal

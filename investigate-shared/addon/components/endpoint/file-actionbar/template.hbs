@@ -9,15 +9,7 @@
   retrieveRemediationStatus=retrieveRemediationStatus
   isRemediationAllowed=isRemediationAllowed}}
 
-{{endpoint/pivot-to-investigate
-  itemList=itemList
-  serviceId=serviceId
-  timeRange=timeRange
-  metaName=metaName
-  serviceList=serviceList
-  showOnlyIcons=showOnlyIcons
-  getAllServices=getAllServices
-  disabled=pivotInvestigateDisabled}}
+{{endpoint/pivot-to-event-analysis selections=itemList pivotToInvestigate=(action 'pivotToInvestigate')}}
 
 {{#rsa-content-tethered-panel-trigger
   panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')

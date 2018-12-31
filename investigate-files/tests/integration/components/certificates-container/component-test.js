@@ -73,8 +73,8 @@ module('Integration | Component | certificates-container', function(hooks) {
       .isCertificateView(true)
       .build();
     await render(hbs`{{certificates-container}}`);
-    assert.equal(findAll('.certificates-container .actionbar-pivot-to-investigate').length, 1, 'Event analysis button rendered');
-    assert.equal(find('.certificates-container .pivot-to-investigate-button').classList.contains('is-disabled'), true, 'Event analysis button disabled');
+    assert.equal(findAll('.certificates-container .pivot-to-event-analysis').length, 1, 'Event analysis button rendered');
+    assert.equal(find('.certificates-container .event-analysis').classList.contains('is-disabled'), true, 'Event analysis button disabled');
   });
 
   test('event analysis button enabled', async function(assert) {
@@ -83,8 +83,8 @@ module('Integration | Component | certificates-container', function(hooks) {
       .selectedCertificatesList(new Array(1))
       .build();
     await render(hbs`{{certificates-container}}`);
-    assert.equal(findAll('.certificates-container .actionbar-pivot-to-investigate').length, 1, 'Event analysis button rendered');
-    assert.equal(find('.certificates-container .pivot-to-investigate-button').classList.contains('is-disabled'), false, 'Event analysis button enabled');
+    assert.equal(findAll('.certificates-container .pivot-to-event-analysis').length, 1, 'Event analysis button rendered');
+    assert.equal(find('.certificates-container .pivot-to-event-analysis').classList.contains('is-disabled'), false, 'Event analysis button enabled');
   });
 
 });

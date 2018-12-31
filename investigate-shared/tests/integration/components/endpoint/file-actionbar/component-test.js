@@ -17,36 +17,28 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
-    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 3, 'five buttons have been rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 4, 'five buttons have been rendered.');
   });
 
   test('presence of priority buttons', async function(assert) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), 'Change File Status', 'Edit file status button is present.');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
-  });
-
-  test('when component is used to show only icons', async function(assert) {
-    this.set('itemList', []);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showOnlyIcons=true}}`);
-    assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), '', 'Edit file status button is present without any text content.');
-    assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-icon-only'), true, 'Edit file statusButton is icon only.');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-icon-only'), true, 'Analyze Events Button is icon only.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
   });
 
   test('when noFiles selected', async function(assert) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), true, 'Edit file status Button is disabled when no files are selected');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when no files are selected');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when no files are selected');
   });
 
   test('Buttons enabling/disabling for multiple files selection', async function(assert) {
     this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
-    assert.equal(findAll('.file-actionbar .pivot-to-investigate-button')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
   });
 
   test('More action external lookup for google', async function(assert) {

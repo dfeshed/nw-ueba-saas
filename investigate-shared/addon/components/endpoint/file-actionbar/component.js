@@ -38,6 +38,8 @@ export default Component.extend({
 
   accessControl: service(),
 
+  pivot: service(),
+
   showOnlyIcons: false,
 
   serviceList: null,
@@ -146,7 +148,12 @@ export default Component.extend({
       const selectedList = this.get('itemList');
       this.resetRiskScore(selectedList.slice(0, 100));
       this.set('showResetScoreModal', false);
+    },
+
+    pivotToInvestigate(item, category) {
+      this.get('pivot').pivotToInvestigate(this.get('metaName'), this.get('itemList')[0], category);
     }
+
   }
 
 });

@@ -6,7 +6,6 @@ import LIST_CONFIG from './process-list-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree, areAllSelected, selectedFileChecksums, processList } from 'investigate-hosts/reducers/details/process/selectors';
-import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -78,9 +77,9 @@ const TreeComponent = Component.extend({
 
   classNames: ['rsa-process-tree'],
 
-  timezone: service(),
-
   accessControl: service(),
+
+  pivot: service(),
 
   showServiceModal: false,
 
@@ -196,25 +195,8 @@ const TreeComponent = Component.extend({
       }
     },
 
-    showServiceList(item, category) {
-      const serviceId = this.get('serviceId');
-      this.set('itemList', [item]);
-      if (serviceId && serviceId !== '-1') {
-        const {
-          timeRange,
-          agentId
-        } = this.getProperties('timeRange', 'agentId');
-
-        const { zoneId } = this.get('timezone.selected');
-        const additionalFilter = `agent.id="${agentId}" && category="${category}"`;
-        navigateToInvestigateEventsAnalysis(
-          { metaName: 'checksumSha256', metaValue: null, itemList: [item], additionalFilter },
-          serviceId,
-          timeRange,
-          zoneId);
-      } else {
-        this.set('showServiceModal', true);
-      }
+    pivotToInvestigate(item, category) {
+      this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
     },
 
     onCloseServiceModal() {

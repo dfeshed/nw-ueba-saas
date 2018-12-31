@@ -32,22 +32,14 @@
         {{t 'investigateFiles.certificatePageTitle'}}
       </label>
       {{certificates-container/certificate-status}}
-      {{endpoint/pivot-to-investigate
-        itemList=selections
-        serviceId=serviceId
-        timeRange=timeRange
-        metaName='thumbprint'
-        serviceList=serviceList
-        showOnlyIcons=false
-        getAllServices=getAllServices
-        disabled=pivotInvestigateDisabled}}
+      {{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=(action 'pivotToInvestigate')}}
       {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
         {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
       {{/rsa-form-button}}
     </hbox>
     {{#if selectedServiceData.isServiceOnline}}
       <box class="certificates-body">
-        {{certificates-container/certificates-data-table}}
+        {{certificates-container/certificates-data-table pivotToInvestigate=(action 'pivotToInvestigate')}}
       </box>
       <box class="certificates-footer">
         {{certificates-container/certificates-pager}}

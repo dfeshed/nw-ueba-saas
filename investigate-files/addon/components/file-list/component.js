@@ -30,7 +30,6 @@ import { toggleCertificateView } from 'investigate-files/actions/certificate-dat
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import FIXED_COLUMNS from './file-list-fixed-columns';
 
@@ -86,6 +85,8 @@ const FileList = Component.extend({
   accessControl: service(),
 
   timezone: service(),
+
+  pivot: service(),
 
   CONFIG_FIXED_COLUMNS: ['firstFileName', 'score'],
 
@@ -211,16 +212,8 @@ const FileList = Component.extend({
       }
     },
 
-    showServiceList(item) {
-      this.set('itemList', [item]);
-      const serviceId = this.get('serviceId');
-      if (serviceId !== '-1') {
-        const { itemList, timeRange } = this.getProperties('itemList', 'timeRange');
-        const { zoneId } = this.get('timezone.selected');
-        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', itemList }, serviceId, timeRange, zoneId);
-      } else {
-        this.set('showServiceModal', true);
-      }
+    pivotToInvestigate(item, category) {
+      this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
     },
 
     onCloseServiceModal() {

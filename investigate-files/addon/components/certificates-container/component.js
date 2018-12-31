@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 import {
   applyFilters,
@@ -53,6 +54,8 @@ const Certificate = Component.extend({
 
   filterTypes: FILTER_TYPES,
 
+  pivot: service(),
+
   @computed('selections')
   pivotInvestigateDisabled(selections) {
     if (!selections) {
@@ -68,6 +71,12 @@ const Certificate = Component.extend({
         this.send('getFilter', () => {}, 'CERTIFICATE');
       }
     });
+  },
+
+  actions: {
+    pivotToInvestigate(item, category) {
+      this.get('pivot').pivotToInvestigate('thumbprint', item, category);
+    }
   }
 
 });

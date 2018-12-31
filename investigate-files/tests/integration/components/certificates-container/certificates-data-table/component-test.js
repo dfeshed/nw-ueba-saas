@@ -8,7 +8,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import sinon from 'sinon';
 
 let initState;
 const callback = () => {};
@@ -216,14 +215,16 @@ module('Integration | Component | certificates-container/certificates-data-table
   });
 
   test('right click on event analysis takes user to the event analysis page', async function(assert) {
-    const actionSpy = sinon.spy(window, 'open');
     new ReduxDataHelper(initState)
       .certificatesItems(items)
       .loadMoreCertificateStatus('stopped')
       .selectedCertificatesList([])
       .certificateStatusData({})
       .build();
-    await render(hbs`{{certificates-container/certificates-data-table}}{{context-menu}}`);
+    this.set('pivotToInvestigate', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{certificates-container/certificates-data-table pivotToInvestigate=(action pivotToInvestigate)}}{{context-menu}}`);
     this.timezone = this.owner.lookup('service:timezone');
     this.get('timezone').set('selected', { zoneId: 'UTC' });
     triggerEvent('.content-context-menu', 'contextmenu', e);
@@ -234,12 +235,6 @@ module('Integration | Component | certificates-container/certificates-data-table
       const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
       assert.equal(subItems.length, 4, 'Sub menu rendered');
       click(`#${subItems[0].id}`);
-      return settled().then(() => {
-        assert.ok(actionSpy.calledOnce);
-        assert.ok(actionSpy.args[0][0].includes('cert.checksum'));
-        actionSpy.resetHistory();
-        actionSpy.restore();
-      });
     });
   });
 });

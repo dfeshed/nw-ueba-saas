@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
-import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
@@ -71,7 +70,7 @@ const FileContextTable = Component.extend({
 
   accessControl: service(),
 
-  timezone: service(),
+  pivot: service(),
 
   classNames: ['file-context-table', 'host-detail__datatable'],
 
@@ -138,21 +137,8 @@ const FileContextTable = Component.extend({
       }
     },
 
-    showServiceList(item, category) {
-      const serviceId = this.get('serviceId');
-      this.set('itemList', [item]);
-      if (serviceId && serviceId !== '-1') {
-        const {
-          timeRange,
-          agentId
-        } = this.getProperties('timeRange', 'agentId');
-
-        const { zoneId } = this.get('timezone.selected');
-        const additionalFilter = `agent.id="${agentId}" && category="${category}"`;
-        navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', metaValue: null, itemList: [item], additionalFilter }, serviceId, timeRange, zoneId);
-      } else {
-        this.set('showServiceModal', true);
-      }
+    pivotToInvestigate(item, category) {
+      this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
     },
 
     onCloseServiceModal() {
