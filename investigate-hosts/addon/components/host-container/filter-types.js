@@ -11,34 +11,6 @@ const FILTER_TYPES = [
     'type': 'range'
   },
   {
-    'name': 'machine.agentVersion',
-    'label': 'investigateHosts.hosts.column.machine.agentVersion',
-    'type': 'text',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return !(/^[0-9.]*$/.test(value));
-        },
-        message: 'investigateHosts.hosts.filters.invalidAgentVersion'
-      }
-    }
-  },
-
-  {
-    'name': 'id',
-    'label': 'investigateHosts.hosts.column.machine.id',
-    'type': 'text',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return !(/^[A-Za-z0-9-]*$/.test(value));
-        },
-        message: 'investigateHosts.hosts.filters.invalidAgentID'
-      }
-    }
-  },
-
-  {
     'name': 'machine.machineOsType',
     'label': 'investigateHosts.hosts.column.machine.machineOsType',
     'listOptions': [
@@ -48,19 +20,28 @@ const FILTER_TYPES = [
     ],
     type: 'list'
   },
-
   {
-    'name': 'machine.machineName',
-    'label': 'investigateHosts.hosts.column.machine.machineName',
-    'type': 'text'
+    'name': 'machineIdentity.agentMode',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agentMode',
+    'listOptions': [
+      { name: 'insights', label: 'investigateHosts.hosts.filters.agentMode.insights' },
+      { name: 'advanced', label: 'investigateHosts.hosts.filters.agentMode.advanced' }
+    ],
+    type: 'list'
   },
   {
-    'name': 'machine.users.name',
-    'label': 'investigateHosts.hosts.column.machine.users.name',
-    'type': 'text'
+    'name': 'groupPolicy.groups.name',
+    'label': 'investigateHosts.hosts.column.groupPolicy.groups.name',
+    'type': 'text',
+    'validations': {
+      format: {
+        validator: (value) => {
+          return !(/^([!-~\s])*$/.test(value));
+        },
+        message: 'investigateHosts.hosts.filters.invalidGroup'
+      }
+    }
   },
-  // TODO : ADD securityConfigurations
-
   {
     name: 'agentStatus.lastSeenTime',
     label: 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
@@ -77,56 +58,6 @@ const FILTER_TYPES = [
       { name: 'LAST_TWO_WEEKS', value: 14, unit: 'Days' },
       { name: 'LAST_ONE_MONTH', value: 30, unit: 'Days' }
     ]
-  },
-
-  {
-    'name': 'machine.networkInterfaces.macAddress',
-    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.macAddress',
-    'type': 'text',
-    'validations': {
-      format: {
-        exclude: ['LIKE'],
-        validator: (value) => {
-          return !(/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(value));
-        },
-        message: 'investigateHosts.hosts.filters.invalidMacAddress'
-      }
-    }
-  },
-  // TODO : ADD agentmode
-  // TODO ADD risk score
-  // TODO LAST SEEN time
-  // SCAN STATUS
-  {
-    'name': 'machine.networkInterfaces.ipv4',
-    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.ipv4',
-    'type': 'text',
-    'validations': {
-      format: {
-        exclude: ['LIKE'],
-        validator: (value) => {
-          const ips = value.split('||');
-          const isValidIps = ips.map((ip) => {
-            return (/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip.trim()));
-          });
-          return isValidIps.includes(false);
-        },
-        message: 'investigateHosts.hosts.filters.invalidIP'
-      }
-    }
-  },
-  {
-    'name': 'groupPolicy.groups.name',
-    'label': 'investigateHosts.hosts.column.groupPolicy.groups.name',
-    'type': 'text',
-    'validations': {
-      format: {
-        validator: (value) => {
-          return !(/^([!-~\s])*$/.test(value));
-        },
-        message: 'investigateHosts.hosts.filters.invalidGroup'
-      }
-    }
   },
   {
     name: 'machine.scanStartTime',
@@ -145,6 +76,49 @@ const FILTER_TYPES = [
       { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
       { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' }
     ]
+  },
+  {
+    'name': 'machine.machineName',
+    'label': 'investigateHosts.hosts.column.machine.machineName',
+    'type': 'text'
+  },
+  {
+    'name': 'machine.users.name',
+    'label': 'investigateHosts.hosts.column.machine.users.name',
+    'type': 'text'
+  },
+  // Driver error code yet to be add
+  {
+    'name': 'machine.networkInterfaces.macAddress',
+    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.macAddress',
+    'type': 'text',
+    'validations': {
+      format: {
+        exclude: ['LIKE'],
+        validator: (value) => {
+          return !(/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(value));
+        },
+        message: 'investigateHosts.hosts.filters.invalidMacAddress'
+      }
+    }
+  },
+  {
+    'name': 'machine.networkInterfaces.ipv4',
+    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.ipv4',
+    'type': 'text',
+    'validations': {
+      format: {
+        exclude: ['LIKE'],
+        validator: (value) => {
+          const ips = value.split('||');
+          const isValidIps = ips.map((ip) => {
+            return (/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip.trim()));
+          });
+          return isValidIps.includes(false);
+        },
+        message: 'investigateHosts.hosts.filters.invalidIP'
+      }
+    }
   },
   {
     'name': 'machine.securityConfigurations',
@@ -178,6 +152,32 @@ const FILTER_TYPES = [
       { name: 'warningOnZoneCrossingDisabled', label: 'investigateHosts.hosts.filters.securityConfig.warningOnZoneCrossingDisabled' }
     ],
     type: 'dropdown'
+  },
+  {
+    'name': 'id',
+    'label': 'investigateHosts.hosts.column.machine.id',
+    'type': 'text',
+    'validations': {
+      format: {
+        validator: (value) => {
+          return !(/^[A-Za-z0-9-]*$/.test(value));
+        },
+        message: 'investigateHosts.hosts.filters.invalidAgentID'
+      }
+    }
+  },
+  {
+    'name': 'machine.agentVersion',
+    'label': 'investigateHosts.hosts.column.machine.agentVersion',
+    'type': 'text',
+    'validations': {
+      format: {
+        validator: (value) => {
+          return !(/^[0-9.]*$/.test(value));
+        },
+        message: 'investigateHosts.hosts.filters.invalidAgentVersion'
+      }
+    }
   }
 ];
 

@@ -2917,6 +2917,10 @@ export default {
           'uacDisabled': 'UAC Disabled',
           'warningPostRedirectionDisabled': 'Warning Post Redirection Disabled',
           'warningOnZoneCrossingDisabled': 'Warning On Zone Crossing Disabled'
+        },
+        agentMode: {
+          insights: 'Insights',
+          advanced: 'Advanced'
         }
       },
       restrictionTypeOptions: {
