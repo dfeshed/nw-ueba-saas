@@ -1,6 +1,5 @@
 package presidio.data.generators.processentity;
 
-import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGORIES;
 import presidio.data.generators.common.IStringListGenerator;
 
 import java.util.Arrays;
@@ -12,9 +11,9 @@ import java.util.List;
  */
 public class ProcessCategoriesGenerator implements IStringListGenerator {
     private static final String[] ALL_PROCESS_CATEGORIES = {
-            "word processor",
-            "office",
-            "reconnaissance tool"
+            "WORD_PROCESSOR",
+            "OFFICE",
+            "RECONNAISSANCE_TOOL"
     };
 
     private List<String> value = Arrays.asList(ALL_PROCESS_CATEGORIES);
