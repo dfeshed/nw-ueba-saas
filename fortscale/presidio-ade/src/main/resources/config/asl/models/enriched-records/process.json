@@ -102,7 +102,7 @@
       }
     },
     {
-      "name": "srcProcessFilePath.userIdDstProcessFileName.process",
+      "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "srcProcessFilePathHistogramUserIdScriptingDstProcessFileNameProcessDaily"
@@ -122,7 +122,7 @@
       }
     },
     {
-      "name": "userId.dstProcessFileNameSrcProcessFilePath.process",
+      "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "userIdHistogramScriptingDstProcessFileNameSrcProcessFilePathProcessDaily"
@@ -142,7 +142,7 @@
       }
     },
     {
-      "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process",
+      "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "dstProcessFilePathCreatedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
@@ -162,7 +162,7 @@
       }
     },
     {
-      "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process",
+      "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameCreatedDstProcessFilePathProcessDaily"
@@ -182,7 +182,7 @@
       }
     },
     {
-      "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process",
+      "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "dstProcessFilePathOpenedHistogramUserIdScriptingSrcProcessFileNameProcessDaily"
@@ -202,7 +202,7 @@
       }
     },
     {
-      "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process",
+      "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "userIdHistogramScriptingSrcProcessFileNameOpenedDstProcessFilePathProcessDaily"

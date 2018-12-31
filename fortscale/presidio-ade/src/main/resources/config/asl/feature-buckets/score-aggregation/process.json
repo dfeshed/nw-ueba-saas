@@ -203,7 +203,7 @@
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.process.srcProcessFilePath.userIdDstProcessFileName.process.score"
+        "scored_enriched.process.srcProcessFilePath.userIdScriptingDstProcessFileName.process.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -232,7 +232,7 @@
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.process.dstProcessFilePathCreated.userIdSrcProcessFileName.process.score"
+        "scored_enriched.process.dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -261,7 +261,7 @@
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.process.dstProcessFilePathOpened.userIdSrcProcessFileName.process.score"
+        "scored_enriched.process.dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
