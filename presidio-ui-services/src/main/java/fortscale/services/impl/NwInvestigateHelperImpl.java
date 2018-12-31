@@ -9,7 +9,10 @@ import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Properties;
 
 public class NwInvestigateHelperImpl implements NwInvestigateHelper {
@@ -27,6 +30,13 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     private ConfigrationServerClientUtils configrationServerClientUtils;
     private Configurations latestKnownConfiguration = new Configurations();
     private final String PATH_TEMPLATE = "investigation/{0}/events/date/{1}/{2}";
+    private final String PATH_TEMPLATE_HOST = "/investigate/host";
+    private final String MACHINE_ID = "machineId";
+    private final String PATH_TEMPLATE_PROCESS = "/investigate/process-analysis";
+    private final String SID = "sid";
+    private final String SERVER_ID = "serverId";
+    private final String CHECKSUM = "checksum";
+    private final String AID = "aid";
 
     public NwInvestigateHelperImpl(ConfigrationServerClientUtils configrationServerClientUtils) {
         this.configrationServerClientUtils = configrationServerClientUtils;
@@ -53,6 +63,51 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
 
         return url;
 
+    }
+
+    @Override
+    public String getLinkToInvestigateHost(Object value) {
+
+        Configurations conf = getConfigurations();
+        String url =  new JerseyUriBuilder()
+                .scheme(URL_SCHEMA)
+                .host(conf.getBaseLinkDestinationHostname())
+                .path(PATH_TEMPLATE_HOST)
+                .queryParam(MACHINE_ID, value)
+                .queryParam(SID,conf.getBrokerId())
+                .toString();
+
+        return url;
+    }
+
+    @Override
+    public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps) {
+
+        Configurations conf = getConfigurations();
+
+        JerseyUriBuilder url = new JerseyUriBuilder()
+                .scheme(URL_SCHEMA)
+                .host(conf.getBaseLinkDestinationHostname())
+                .path(PATH_TEMPLATE_PROCESS);
+
+        Object agentId = maps.get("agentId");
+        Object osType = maps.get("osType");
+        Object vid = maps.get("processVidSrc");
+        Object checksum = maps.get("checksumId");
+        if (null == agentId || null == osType || null == vid || null == checksum) {
+            return url.toString();
+        }
+        return url.queryParam(SID,conf.getBrokerId())
+                .queryParam(CHECKSUM, checksum)
+                .queryParam(SERVER_ID,conf.getBrokerId())
+                .queryParam("aid",agentId)
+                .queryParam("hn",machineId)
+                .queryParam("pn",value)
+                .queryParam("osType", osType)
+                .queryParam("vid", vid)
+                .queryParam("et",LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .queryParam("st",LocalDateTime.now().minusDays(7).toEpochSecond(ZoneOffset.UTC))
+                .toString();
     }
 
     private Configurations getConfigurations() {
