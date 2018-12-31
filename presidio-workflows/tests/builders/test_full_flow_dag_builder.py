@@ -5,7 +5,6 @@ from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.full_flow_dag_builder import FullFlowDagBuilder
-from presidio.utils.airflow.operators.container.container_operator import ContainerOperator
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
@@ -57,7 +56,7 @@ def test_valid_build():
     assert_task_id_uniqueness(dag)
     assert_task_id_retries(dag)
 
-    assert dag.task_count == 132
+    assert dag.task_count == 96
 
 
 def assert_task_id_uniqueness(dag):

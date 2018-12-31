@@ -36,6 +36,7 @@ class TaskSensorService(LoggingMixin):
                                        external_task_id=task.task_id, execution_delta=timedelta(seconds=1),
                                        poke_interval=poke_interval)
         self._add_sensor_to_task(task,sensor)
+        return sensor
 
 
     def add_task_gap_sensor(self, task, gapped_task, execution_delta, poke_interval=60):
