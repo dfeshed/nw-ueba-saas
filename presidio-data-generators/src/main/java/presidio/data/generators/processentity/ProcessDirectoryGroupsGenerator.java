@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class ProcessDirectoryGroupsGenerator implements IStringListGenerator {
     private static final String[] ALL_PROCESS_DIRECTORY_GROUPS = {
-            "SYSTEM_32",
-            "TMP",
-            "DOWNLOADS"
+            "system32",
+            "tmp",
+            "downloads"
     };
 
     private List<String> value = Arrays.asList(ALL_PROCESS_DIRECTORY_GROUPS);
