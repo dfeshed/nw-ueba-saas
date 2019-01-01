@@ -1082,7 +1082,7 @@ indicators:
 
 - id: numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_reconnaissance tools_executed_process
+  name: high_number_of_reconnaissance_tools_executed_process
   schema: PROCESS
   adeEventType: process
   modelContextFields:
