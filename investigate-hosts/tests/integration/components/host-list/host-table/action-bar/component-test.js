@@ -51,12 +51,6 @@ module('Integration | Component | host table action bar', function(hooks) {
     assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'action bar stop button is disabled');
   });
 
-  test('it renders action bar delete button', async function(assert) {
-    await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .delete-host-button button').textContent.trim(), 'Delete', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button.is-disabled').length, 1, 'action bar delete button is disabled');
-  });
-
   test('it renders action bar export to csv button', async function(assert) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.host-table__toolbar  div:nth-of-type(5).is-disabled').length, 1, 'action bar export to csv button is disabled by default');
@@ -74,13 +68,6 @@ module('Integration | Component | host table action bar', function(hooks) {
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .stop-scan-button button').textContent.trim(), 'Stop Scan', 'action bar stop button label');
     assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'action bar stop button is enabled');
-  });
-
-  test('it renders action bar delete button when some hosts are selected', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
-    await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .delete-host-button button').textContent.trim(), 'Delete', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .delete-host-button.is-disabled').length, 0, 'action bar delete button is enabled');
   });
 
   test('On changing the service host properties is closed', async function(assert) {
@@ -104,22 +91,6 @@ module('Integration | Component | host table action bar', function(hooks) {
     await click('.service-selector-panel li');
   });
 
-  test('it renders action bar reset risk score button which is disabled', async function(assert) {
-    this.set('buttonType', 'button');
-    await render(hbs`{{host-list/host-table/action-bar buttonType=buttonType}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .reset-risk-score button').textContent.trim(), 'Reset Risk Score', 'action bar reset risk score label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .reset-risk-score .is-disabled').length, 1, 'Reset risk score button is disabled');
-  });
-
-  test('it renders action bar reset risk score button when some hosts are selected', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
-    this.set('buttonType', 'button');
-    await render(hbs`{{host-list/host-table/action-bar buttonType=buttonType}}`);
-    assert.equal(document.querySelector('.host-table__toolbar .reset-risk-score').textContent.trim(), 'Reset Risk Score', 'action bar reset risk score label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .reset-risk-score .is-disabled').length, 0, 'Reset risk score button is enabled');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .reset-risk-score .max-limit-info').length, 0, 'Info message is not present in Reset risk score');
-  });
-
   skip('it renders flash message when pivot to endpoint is clicked with not 4.4 host selected', function(assert) {
     assert.expect(2);
     const host = {
@@ -141,6 +112,19 @@ module('Integration | Component | host table action bar', function(hooks) {
     });
     this.render(hbs`{{host-list/host-table/action-bar}}`);
     click('.host-table__toolbar-buttons div:nth-child(4) button');
+  });
+
+  test('it render the more actions button', async function(assert) {
+    await render(hbs`{{host-list/host-table/action-bar}}`);
+    assert.equal(document.querySelector('.host-table__toolbar .host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .host_more_actions .is-disabled').length, 1, 'action bar more button is disabled');
+  });
+
+  test('it renders action bar more button when some hosts are selected', async function(assert) {
+    new ReduxDataHelper(setState).scanCount(2).build();
+    await render(hbs`{{host-list/host-table/action-bar}}`);
+    assert.equal(document.querySelector('.host-table__toolbar .host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .host_more_actions .is-disabled').length, 0, 'action bar more button is enabled');
   });
 });
 

@@ -1,0 +1,36 @@
+{{#rsa-content-tethered-panel-trigger
+  panel='host-more-actions'
+  triggerEvent='click'
+}}
+  {{#rsa-form-button
+    isIconOnly=false
+    title=(t 'investigateShared.endpoint.fileActions.moreActions')
+    withDropdown=true
+    isDisabled=noHostsSelected
+    class='more-action-button'}}
+    {{rsa-icon name='navigation-show-more-2' size='small'}}
+    {{#unless showOnlyIcons}}
+      {{t 'investigateShared.endpoint.fileActions.moreActions'}}
+    {{/unless}}
+  {{/rsa-form-button}}
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  panelClass="host-more-actions"
+  displayCloseButton=false
+  isPopover=true
+  panelId='host-more-actions'
+  position='bottom-right'
+}}
+  <ul class="rsa-dropdown-action-list">
+    {{#each moreOptions as |moreOption|}}
+      {{#if (eq moreOption.buttonId 'delete-button')}}
+        <li {{action deleteAction}}>{{t moreOption.name}}</li>
+      {{else if (eq moreOption.buttonId 'reset-button')}}
+        <li {{action showRiskScoreModal}}>{{t moreOption.name}}</li>
+      {{/if}}
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}
+
+

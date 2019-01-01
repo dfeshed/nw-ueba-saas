@@ -14,11 +14,10 @@
   {{#rsa-form-button class='stop-scan-button' isDisabled=noHostsSelected click=(action showScanModal 'STOP_SCAN')}}
     {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
   {{/rsa-form-button}}
-  {{#rsa-form-button class='delete-host-button' isDisabled=noHostsSelected click=showConfirmationModal}}
-    {{t 'investigateHosts.hosts.button.delete'}}
-  {{/rsa-form-button}}
-  {{endpoint/reset-risk-score buttonType='button' selectedList=selectedHostList riskType='HOST' resetRiskScore=(action 'resetRiskScore')}}
+  {{host-list/host-table/action-bar/more-actions
+    deleteAction=showConfirmationModal
+    showRiskScoreModal=showRiskScoreModal
+    noHostsSelected=noHostsSelected
+  }}
   {{host-list/host-table/action-bar/export-button}}
 </hbox>
-
-
