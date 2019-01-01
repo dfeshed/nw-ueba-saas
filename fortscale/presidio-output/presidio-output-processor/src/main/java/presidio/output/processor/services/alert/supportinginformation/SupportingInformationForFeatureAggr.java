@@ -111,7 +111,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
                 LinkedHashMap::new));
         Schema schema = indicatorConfig.getSchema();
         String featureName = indicatorConfig.getHistoricalData().getFeatureName() == null? adeAggregationRecord.getFeatureName():indicatorConfig.getHistoricalData().getFeatureName() ;
-        String anomalyValue = adeAggregationRecord.getFeatureValue().toString();
+        String anomalyValue = indicator.getAnomalyValue();
 
         HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
