@@ -13,6 +13,7 @@ import presidio.output.processor.services.alert.AlertClassificationService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFactory;
 
 @Configuration
 @Import({
@@ -39,6 +40,10 @@ public class AlertServiceElasticConfig {
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
+
+    @Autowired
+    private IndicatorsGeneratorFactory indicatorsGeneratorFactory;
+
     @Autowired
     private SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
 
@@ -51,6 +56,7 @@ public class AlertServiceElasticConfig {
                 alertPersistencyService,
                 alertClassificationService,
                 alertSeverityService,
+                indicatorsGeneratorFactory,
                 supportingInformationGeneratorFactory,
                 eventsLimit,
                 eventsPageSize,

@@ -1079,6 +1079,28 @@ indicators:
     type: hourly_aggregations
   classification: discovery_reconnaissance
 
+
+- id: numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_reconnaissance tools_executed_process
+  schema: PROCESS
+  adeEventType: process
+  modelContextFields:
+    - userId
+    - dstProcessFileName
+  anomalyDescriptior:
+    anomalyField: dstProcessCategories
+    anomalyValue: RECONNAISSANCE_TOOL
+    anomalyFilters:
+    - fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  splitFields:
+    - dstProcessFileName
+  historicalData:
+    type: hourly_aggregations
+    featureName: numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly
+  classification: discovery_reconnaissance
+
 #*********************************************************
 #*                   REGISTRY INDICATORS                 *
 #*********************************************************

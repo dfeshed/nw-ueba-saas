@@ -29,6 +29,9 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorForFeatureAggr;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorForScoreAggr;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFactory;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
@@ -122,6 +125,21 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     @Bean
     public SupportingInformationGeneratorFactory supportingInformationGeneratorFactory() {
         return new SupportingInformationGeneratorFactory();
+    }
+
+    @Bean
+    public IndicatorsGeneratorForFeatureAggr indicatorsGeneratorForFeatureAggr() {
+        return new IndicatorsGeneratorForFeatureAggr(supportingInformationConfig);
+    }
+
+    @Bean
+    public IndicatorsGeneratorForScoreAggr indicatorsGeneratorForScoreAggr() {
+        return new IndicatorsGeneratorForScoreAggr(supportingInformationConfig, adeManagerSdk, recordReaderFactoryService);
+    }
+
+    @Bean
+    public IndicatorsGeneratorFactory indicatorsGeneratorGeneratorFactory() {
+        return new IndicatorsGeneratorFactory();
     }
 
     @Bean(name = "abnormalSourceMachineTransformer")
