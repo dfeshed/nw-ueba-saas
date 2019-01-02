@@ -33,7 +33,6 @@
         "numberOfDistinctSrcMachineIdUserIdPrintHourly",
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
         "numberOfEventsUserIdProcessHourly",
-        "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
         "highestStartInstantScoreUserIdProcessHourly",
         "highestStartInstantScoreUserIdRegistryHourly"
       ],

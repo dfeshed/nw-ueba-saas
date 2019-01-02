@@ -23,13 +23,12 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
- * Supporting information (indicators, events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
+ * Supporting information (events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
  */
 public class SupportingInformationForFeatureAggr implements SupportingInformationGenerator {
 
@@ -56,33 +55,13 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<Indicator> generateIndicators(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
-        AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
-        List<Indicator> indicators = new ArrayList<>();
-        IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-
-        Indicator indicator = new Indicator(alert.getId());
-        indicator.setName(indicatorConfig.getName());
-        indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
-        indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
-        indicator.setAnomalyValue(String.valueOf(adeAggregationRecord.getFeatureValue()));
-        indicator.setSchema(indicatorConfig.getSchema());
-        indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
-        indicator.setScore(((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore());
-        indicator.setScoreContribution(smartAggregationRecord.getContribution());
-        indicators.add(indicator);
-
-        return indicators;
-    }
-
-    @Override
     public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
-        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig);
-
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,indicator.getContexts());
+        
         EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
         List<IndicatorEvent> events = new ArrayList<>();
 
@@ -125,14 +104,16 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         // populate historical data
         Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
-        String contextField = CommonStrings.CONTEXT_USERID;
-        String contextValue = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
-        Map<String, String> contexts = Collections.singletonMap(contextField, contextValue);
+        Map<String, String> modelContexts = indicatorConfig.getModelContextFields().stream().collect(Collectors.toMap(
+                Function.identity(),
+                field -> indicator.getContexts().get(field),
+                (oldValue, newValue) -> oldValue,
+                LinkedHashMap::new));
         Schema schema = indicatorConfig.getSchema();
-        String featureName = adeAggregationRecord.getFeatureName();
-        String anomalyValue = adeAggregationRecord.getFeatureValue().toString();
+        String featureName = indicatorConfig.getHistoricalData().getFeatureName() == null? adeAggregationRecord.getFeatureName():indicatorConfig.getHistoricalData().getFeatureName() ;
+        String anomalyValue = indicator.getAnomalyValue();
 
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, contexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());
         return historicalData;
