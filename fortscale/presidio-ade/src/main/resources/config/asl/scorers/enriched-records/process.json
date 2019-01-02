@@ -39,7 +39,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFileName.userId.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -73,7 +73,25 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "reduction-model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                //todo: change model name after Yaron changes
+                //todo: add linear-noise-reduction-scorer to scrinpting engine indicators
+                "model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                "additional-models": [
+                  {
+                    "name": "contexts.process"
+                  }
+                ],
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95
+                  }
+                }
               }
             },
             {
@@ -128,8 +146,7 @@
                 },
                 {
                   "type": "not",
-                  "predicate":
-                  {
+                  "predicate": {
                     "type": "and",
                     "predicates": [
                       {

@@ -13,7 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = TimeModel.class, name = "time-model"),
 		@Type(value = SMARTValuesModel.class, name = "smart-values-model"),
 		@Type(value = ScoreMappingModel.class, name = "score-mapping-model"),
-		@Type(value = SMARTScoreMappingModel.class, name = "smart-score-mapping-model")
+		@Type(value = SMARTScoreMappingModel.class, name = "smart-score-mapping-model"),
+		@Type(value = ContextModel.class, name = "context-model")
 })
 public interface Model {
 	/**

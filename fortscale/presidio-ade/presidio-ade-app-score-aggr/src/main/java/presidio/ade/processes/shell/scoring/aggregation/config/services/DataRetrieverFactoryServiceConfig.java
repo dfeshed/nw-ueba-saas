@@ -25,6 +25,7 @@ import java.util.Collection;
         ModelScoreAggregationBucketConfigurationServiceConfig.class,
         CustomContextHistogramRetrieverFactoryConfig.class,
         CategoricalFeatureValueRetrieverFactoryConfig.class,
+        DistinctNumOfContextsRetrieverFactoryConfig.class,
         EpochtimeToHighestDoubleMapRetrieverFactoryConfig.class,
         // common application confs
         FeatureBucketReaderConfig.class,

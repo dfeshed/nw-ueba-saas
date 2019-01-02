@@ -280,6 +280,19 @@
         "entriesToSaveInModel" : 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name": "contexts.process",
+      "retriever": {
+        "type": "distinct_num_of_contexts_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdProcessDaily",
+        "featureName": "startInstantHistogram"
+      },
+      "builder": {
+        "type": "context_model_builder"
+      }
     }
   ]
 }
