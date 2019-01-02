@@ -287,10 +287,19 @@
                         anomalyTypeFieldName: 'abnormal_process_opened_by_scripting_tool'
                     },
                     {
-                        anomalyTypeFieldName: 'abnormal_file_permision_change_operation_type'
+                        anomalyTypeFieldName: 'abnormal_file_permission_change_operation_type'
                     },
                     {
-                        anomalyTypeFieldName: 'abnormal_process_modified_a_service_key_registry'
+                        anomalyTypeFieldName: 'abnormal_process_modified_registry_key_group'
+                    },
+                    {
+                        anomalyTypeFieldName: 'user_abnormal_process_executed_a_scripting_tool'
+                    },
+                    {
+                        anomalyTypeFieldName: 'user_abnormal_application_triggered_by_scripting_tool'
+                    },
+                    {
+                        anomalyTypeFieldName: 'user_abnormal_process_opened_by_scripting_tool'
                     },
                     {
                         anomalyTypeFieldName: 'abnormal_process_injects_into_windows_process'
