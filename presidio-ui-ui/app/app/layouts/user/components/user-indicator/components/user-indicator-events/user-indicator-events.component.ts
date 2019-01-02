@@ -239,9 +239,19 @@ module Fortscale.layouts.user {
                         template: '<fs-grid-link text="{{dataItem.user_sid}}" url="{{dataItem.user_sid_link}}"></fs-grid-link>',
                         sortable: false
                     },
+                    process_directory_groups: {
+                        field: 'process_directory_groups',
+                        template: '<span ng-repeat="processDirectoryGroup in dataItem.processDirectoryGroups">{{processDirectoryGroup}} </span>',
+                        sortable: false
+                    },
+                    process_categories: {
+                        field: 'process_categories',
+                        template: '<span ng-repeat="processCategory in dataItem.processCategories">{{processCategory}} </span>',
+                        sortable: false
+                    },
                     computer: {
                         field: 'computer',
-                        template: '<fs-grid-link text="{{dataItem.computer}}" url="{{dataItem.computer_link}}"></fs-grid-link>',
+                        template: '{{dataItem.computer}}',
                         sortable: false
                     },
                     src_device_id: {
