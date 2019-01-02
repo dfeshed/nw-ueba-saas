@@ -99,6 +99,7 @@ const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _isWindowsFlag = (state) => isMachineWindows(state);
 const _riskState = (state) => state.endpoint.risk || {};
 const _activePropertyPanelTab = (state) => state.endpoint.visuals.activePropertyPanelTab || 'HOST_DETAILS';
+const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 
 export const riskState = createSelector(
   [_riskState],
@@ -179,8 +180,13 @@ export const selectedTabComponent = createSelector(
 );
 
 export const getPropertyPanelTabs = createSelector(
-  [_activePropertyPanelTab],
-  (activePropertyPanelTab) => {
+  [_activePropertyPanelTab, _hostDetails],
+  (activePropertyPanelTab, host) => {
+    const { groupPolicy } = host;
+    if (groupPolicy && !groupPolicy.managed) {
+      return PROPERTY_PANEL_TABS.filter((tab) => tab.name !== 'POLICIES')
+        .map((tab) => ({ ...tab, selected: tab.name === activePropertyPanelTab }));
+    }
     return PROPERTY_PANEL_TABS.map((tab) => ({ ...tab, selected: tab.name === activePropertyPanelTab }));
   }
 );

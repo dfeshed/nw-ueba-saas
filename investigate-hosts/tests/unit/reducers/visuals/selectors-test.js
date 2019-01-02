@@ -116,13 +116,63 @@ test('riskState', function(assert) {
 });
 
 test('getPropertyPanelTabs', function(assert) {
-  const state = Immutable.from({
+  const state1 = Immutable.from({
     endpoint: {
       visuals: {
         activePropertyPanelTab: 'POLICIES'
+      },
+      overview: {}
+    }
+  });
+  const result1 = getPropertyPanelTabs(state1);
+  assert.equal(result1.length, 2, 'tabs count');
+  assert.equal(result1.findBy('name', 'POLICIES').selected, true, 'POLICIES tab is selected');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activePropertyPanelTab: null
+      },
+      overview: {
+        hostDetails: {}
       }
     }
   });
-  const result = getPropertyPanelTabs(state).findBy('name', 'POLICIES');
-  assert.equal(result.selected, true, 'POLICIES tab is selected');
+  const result2 = getPropertyPanelTabs(state2);
+  assert.equal(result2.length, 2, 'tabs count');
+
+  const state3 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activePropertyPanelTab: null
+      },
+      overview: {
+        hostDetails: {
+          groupPolicy: {
+            managed: true
+          }
+        }
+      }
+    }
+  });
+  const result3 = getPropertyPanelTabs(state3);
+  assert.equal(result3.length, 2, 'tabs count');
+  assert.equal(result3.findBy('name', 'HOST_DETAILS').selected, true, 'HOST_DETAILS tab is selected');
+
+  const state4 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activePropertyPanelTab: null
+      },
+      overview: {
+        hostDetails: {
+          groupPolicy: {
+            managed: false
+          }
+        }
+      }
+    }
+  });
+  const result4 = getPropertyPanelTabs(state4);
+  assert.equal(result4.length, 1, 'tabs count');
 });
