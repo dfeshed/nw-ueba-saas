@@ -175,7 +175,7 @@ const _handleMessage = function(ws, frame, subscriptionHandler) {
 
     // Create closure over ws state for possible
     // sending of sendMessage to `page` funtion
-    const sendMessage = function(body = null) {
+    const sendMessage = function(body = null, ignoreDelay = false) {
       if (!body && ws.page) {
         console.error(
           chalk.red(
@@ -184,7 +184,7 @@ const _handleMessage = function(ws, frame, subscriptionHandler) {
       }
 
       const _handler = clone(subscriptionHandler);
-      const delay = determineDelay(subscriptionHandler.delay);
+      const delay = ignoreDelay ? 0 : determineDelay(subscriptionHandler.delay);
       setTimeout(function() {
         if (_isClosed(ws)) {
           console.info('Client disconnected, not sending message');

@@ -1,5 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
+import { MAX_EVENTS_ALLOWED } from 'investigate-events/reducers/investigate/event-results/reducer';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
@@ -7,7 +8,7 @@ const _initialState = Immutable.from({
   data: undefined,
   reason: undefined,
   status: undefined,
-  threshold: 100000
+  threshold: MAX_EVENTS_ALLOWED
 });
 
 export default handleActions({

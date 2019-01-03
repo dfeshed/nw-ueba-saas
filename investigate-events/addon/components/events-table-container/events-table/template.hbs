@@ -40,10 +40,22 @@
     noResultsMessage=(t 'investigate.empty.description')
   }}
 
-  {{rsa-data-table/load-more
-    status=status
-    nextPayloadSize=nextPayloadSize
-    clickAction=(action 'eventsGetMore')
-  }}
+  {{!--
+    Utilizing load-more to take advantage of its ability to
+    stick itself to the right place in the DOM
+   --}}
+  {{#rsa-data-table/load-more}}
+    {{!-- still streaming, show loader --}}
+    {{#if areEventsStreaming}}
+      {{rsa-loader size="small" label=(t 'investigate.loading')}}
+    {{else if (is-equal status 'complete')}}
+      {{#if (not allExpectedDataLoaded)}}
+        {{!-- do not have all the data, say so --}}
+        {{t 'investigate.notAllLoaded'}}
+      {{/if}}
+    {{/if}}
+  {{/rsa-data-table/load-more}}
 
 {{/rsa-data-table}}
+
+

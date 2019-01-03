@@ -2,8 +2,10 @@ import { module, test } from 'qunit';
 import {
   isEventResultsError,
   eventResultsErrorMessage,
-  getNextPayloadSize,
-  getDownloadOptions
+  getDownloadOptions,
+  areEventsStreaming,
+  percentageOfEventsDataReturned,
+  allExpectedDataLoaded
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -82,6 +84,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     // preffered Meta option
     await assertForCountsAndSessionIds(assert, result, 2, '', [], false);
   });
+
   // TODO add assert to check disabled
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
     const state = {
@@ -193,54 +196,191 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(formattedErrorMessage, 'The language key "someweirdtextishere" exceeds the maximum size of 16', 'Expected error message');
   });
 
-  test('fetches next events payload size correctly', function(assert) {
-
-    const state0 = {
+  test('areEventsStreaming correctly determines if events are streaming', function(assert) {
+    let state = {
       investigate: {
         eventResults: {
-          goal: 200,
-          streamGoal: 100,
-          status: 'stopped'
-        },
-        eventCount: {
-          data: 330
+          status: 'streaming'
         }
       }
     };
+    let areThey = areEventsStreaming(state);
+    assert.equal(areThey, true, "streaming when 'streaming'");
 
-    const state1 = {
+    state = {
       investigate: {
         eventResults: {
-          goal: 300,
-          streamGoal: 100,
-          status: 'stopped'
-        },
-        eventCount: {
-          data: 330
+          status: 'between-streams'
         }
       }
     };
+    areThey = areEventsStreaming(state);
+    assert.equal(areThey, true, "streaming when 'between-streams'");
 
-    const state2 = {
+    state = {
       investigate: {
         eventResults: {
-          goal: 400,
-          streamGoal: 100,
-          status: 'stopped'
-        },
-        eventCount: {
-          data: 330
+          status: 'complete'
         }
       }
     };
+    areThey = areEventsStreaming(state);
+    assert.equal(areThey, false, "not streaming when 'complete'");
+  });
 
-    const intermediatePayloadSize = getNextPayloadSize(state0);
-    assert.equal(intermediatePayloadSize, 100, 'Intermediate events payload size is equal to streamGoal size');
+  test('percentageOfEventsDataReturned returns correct percentage', function(assert) {
+    let state = {
+      investigate: {
+        eventResults: {
+          status: undefined,
+          data: [],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 100
+        }
+      }
+    };
+    let percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 0, 'no status gives 0');
 
-    const lastPayloadSize = getNextPayloadSize(state1);
-    assert.equal(lastPayloadSize, 30, 'Last events payload size is 30');
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'complete',
+          data: [],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 100
+        }
+      }
+    };
+    percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 100, 'complete gives 100 percent');
 
-    const nextToLastPayloadSize = getNextPayloadSize(state2);
-    assert.equal(nextToLastPayloadSize, 0, 'Next to last events payload size is 0');
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'streaming',
+          data: undefined,
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 100
+        }
+      }
+    };
+    percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 0, 'empty data gives 0');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'streaming',
+          data: [],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 100
+        }
+      }
+    };
+    percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 0, 'empty data gives 0');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'streaming',
+          data: [1, 2, 3, 4, 5],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: undefined
+        }
+      }
+    };
+    percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 5, 'correct percentage returned');
+
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'streaming',
+          data: [1, 2, 3, 4, 5],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 10
+        }
+      }
+    };
+    percentage = percentageOfEventsDataReturned(state);
+    assert.equal(percentage, 50, 'correct percentage returned');
+  });
+
+  test('percentageOfEventsDataReturned returns correct percentage', function(assert) {
+    let state = {
+      investigate: {
+        eventResults: {
+          status: 'streaming',
+          data: [],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 100
+        }
+      }
+    };
+    let hasItAllLoaded = allExpectedDataLoaded(state);
+    assert.equal(hasItAllLoaded, false, 'if not completed, not all loaded');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'complete',
+          data: [1, 2, 3],
+          streamLimit: 100
+        },
+        eventCount: {
+          data: 3
+        }
+      }
+    };
+    hasItAllLoaded = allExpectedDataLoaded(state);
+    assert.equal(hasItAllLoaded, true, 'not all loaded, 5 vs 3');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'complete',
+          data: [1, 2, 3],
+          streamLimit: 3
+        },
+        eventCount: {
+          data: 3
+        }
+      }
+    };
+    hasItAllLoaded = allExpectedDataLoaded(state);
+    assert.equal(hasItAllLoaded, false, 'at the limit, not all loaded');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'complete',
+          data: [1, 2, 3],
+          streamLimit: 10
+        },
+        eventCount: {
+          data: 3
+        }
+      }
+    };
+    hasItAllLoaded = allExpectedDataLoaded(state);
+    assert.equal(hasItAllLoaded, true, 'got it all, not at the limit');
   });
 });
+

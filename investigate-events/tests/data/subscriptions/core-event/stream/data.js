@@ -60,7 +60,7 @@ export default function() {
 
   eventList = [];
 
-  for (let i = 1; i < NUMBER_OF_EVENTS; i++) {
+  for (let i = 1; i < NUMBER_OF_EVENTS + 1; i++) {
     if (i % 3 == 0) {
       eventList.push(endpointFactory(i));
     } else {

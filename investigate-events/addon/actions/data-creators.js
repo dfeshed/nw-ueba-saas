@@ -3,7 +3,7 @@ import * as ACTION_TYPES from './types';
 import { fetchSummary } from 'investigate-shared/actions/api/services';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
-import { eventsGetFirst } from './events-creators';
+import { eventsStartDescending } from './events-creators';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
@@ -111,7 +111,7 @@ export const fetchInvestigateData = () => {
         // dispatch(metaGet());
       }
       // Get first batch of results
-      dispatch(eventsGetFirst());
+      dispatch(eventsStartDescending());
     }
   };
 };

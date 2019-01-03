@@ -10,7 +10,7 @@ import { find, findAll, render } from '@ember/test-helpers';
 
 let setState;
 
-module('Integration | Component | Events Table', function(hooks) {
+module('Integration | Component | events-table', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -80,6 +80,49 @@ module('Integration | Component | Events Table', function(hooks) {
 
     // rt-click elsewhere
     this.$('.rsa-data-table-header').contextmenu();
+  });
+
+  test('if events are streaming, a spinner is displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('between-streams')
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.ok(find('.rsa-loader'), 'spinner present');
+  });
+
+  test('if events are complete, but hit the limit, a message is displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('complete')
+      .eventCount(1)
+      .streamLimit(1)
+      .eventResults([{ sessionId: 'foo', time: 123 }])
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner present');
+    assert.equal(
+      find('.rsa-data-table-load-more').textContent.trim().length > 0,
+      true,
+      'a message is displayed when we get the max events'
+    );
+  });
+
+  test('if events are complete, and did not hit the limit, a message is not displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('complete')
+      .eventCount(1)
+      .streamLimit(100)
+      .eventResults([{ sessionId: 'foo', time: 123 }])
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner present');
+    assert.equal(
+      find('.rsa-data-table-load-more').textContent.trim().length > 0,
+      false,
+      'a message is not displayed when the entire event result is fetched'
+    );
   });
 
   // TODO bring download back

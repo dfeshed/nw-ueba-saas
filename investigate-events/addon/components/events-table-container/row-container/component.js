@@ -146,7 +146,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _renderCell($row, column, item) {
     const field = get(column, 'field');
     const _opts = this.get('_opts');
-    const isEndpoint = item.metas && item.metas.some((d) => d[0] === 'nwe.callback_id');
+    const isEndpoint = !!item['nwe.callback_id'];
 
     const opts = Object.assign(_opts, { isEndpoint }, {
       isChecked: this.get('isChecked')

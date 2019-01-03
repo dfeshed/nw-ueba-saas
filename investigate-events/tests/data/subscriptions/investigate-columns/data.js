@@ -74,7 +74,29 @@ export default [
       { field: 'size', title: 'Size' },
       { field: 'custom.meta-summary', title: 'Summary', width: null }
     ])
-  }, {
+  },
+  {
+    id: 'SUMMARY2',
+    name: 'Summary List',
+    ootb: true,
+    columns: BASE_COLUMNS.concat([
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' },
+      { field: 'custom.meta-details', title: 'Details', width: null }
+    ])
+  },
+  {
+    id: 'SUMMARY3',
+    name: 'Summary List',
+    ootb: true,
+    columns: BASE_COLUMNS.concat([
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' },
+      { field: 'ip.dst', title: 'Destination IP Address' },
+      { field: 'custom.meta-summary', title: 'Summary', width: null }
+    ])
+  },
+  {
     id: 'EMAIL',
     name: 'Email Analysis',
     columns: BASE_COLUMNS.concat([

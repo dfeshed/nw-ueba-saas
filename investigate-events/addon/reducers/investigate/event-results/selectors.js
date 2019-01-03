@@ -4,11 +4,8 @@ import { lookup } from 'ember-dependency-lookup';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _anchor = (state) => state.investigate.eventResults.anchor;
-const _goal = (state) => state.investigate.eventResults.goal;
 const _resultsData = (state) => state.investigate.eventResults.data;
-const _data = (state) => state.investigate.eventCount.data;
-const _streamGoal = (state) => state.investigate.eventResults.streamGoal;
+const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
@@ -16,6 +13,15 @@ const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysi
 const _items = (state) => state.investigate.data.eventsPreferencesConfig.items;
 const _isAllEventsSelected = (state) => state.investigate.eventResults.allEventsSelected;
 const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
+
+export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
+
+export const areEventsStreaming = createSelector(
+  [_status],
+  (status) => {
+    return status === 'streaming' || status === 'between-streams';
+  }
+);
 
 /* Two types of message formats
     - Case one -> 'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454 && time="2018-04-09 15:48:00" - "2018-04-10 15:47:59""'
@@ -46,21 +52,28 @@ export const isEventResultsError = createSelector(
 
 // SELECTOR FUNCTIONS
 export const percentageOfEventsDataReturned = createSelector(
-  [_anchor, _goal, _resultsData, _status],
-  (anchor, goal, data, status) => {
-    let ret = 0;
-    if (status) {
-      if (status === 'complete') {
-        ret = 100;
-      } else {
-        const spread = goal - anchor;
-        const len = data && data.length || 0;
-        if (spread && spread > 0) {
-          ret = parseInt(100 * (len - anchor) / spread, 10);
-        }
-      }
+  [_eventResultCount, streamLimit, _resultsData, _status],
+  (resultCount, streamLimit, events, status) => {
+    if (!status) {
+      return 0;
     }
-    return ret;
+
+    if (status === 'complete') {
+      return 100;
+    }
+
+    if (!events || events.length === 0) {
+      return 0;
+    }
+
+    // If we have a result count, then the progress should be
+    // based on that count. If we do not have a count, then
+    // the progress can only be based on the max.
+    const targetNumberOfEvents = resultCount || streamLimit;
+    const currentNumberOfEvents = events.length;
+    const percentDone = parseInt((currentNumberOfEvents / targetNumberOfEvents) * 100, 10);
+
+    return percentDone;
   }
 );
 
@@ -85,21 +98,18 @@ export const showScrollMessage = createSelector(
   (selectedIndex, sessionId) => sessionId && selectedIndex < 0
 );
 
-export const getNextPayloadSize = createSelector(
-  [_goal, _data, _streamGoal, _status],
-  (goal, data, streamGoal, status) => {
-    let nextPayloadSize = 0;
-    if (status === 'stopped') {
-      const nextPageCount = data - goal;
-      if (nextPageCount > 0) {
-        if (nextPageCount < streamGoal) {
-          nextPayloadSize = nextPageCount;
-        } else {
-          nextPayloadSize = streamGoal;
-        }
-      }
+export const allExpectedDataLoaded = createSelector(
+  [_eventResultCount, _resultsData, _status, streamLimit],
+  (eventResultCount, eventData, status, streamLimit) => {
+
+    // data still streaming, we haven't loaded all the data
+    if (status !== 'complete') {
+      return false;
     }
-    return nextPayloadSize;
+
+    const isAtTheLimit = eventResultCount === streamLimit;
+    const haveAllResults = eventResultCount >= eventData.length;
+    return !isAtTheLimit && haveAllResults;
   }
 );
 

@@ -30,6 +30,7 @@
     "ember-moment": "7.8.0",
     "ember-redux": "4.0.0",
     "ember-cli-seamless-immutable-shim": "1.0.0",
+    "fast-sort": "^1.5.4",
     "flexi": "2.0.1",
     "ember-fetch": "^5.1.3"
   },

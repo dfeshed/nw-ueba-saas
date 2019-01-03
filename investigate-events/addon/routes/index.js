@@ -17,7 +17,7 @@ import {
 } from 'investigate-events/constants/panelSizes';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
 // TODO bring download back.
-// import { teardownNotifications, initializeNotifications } from '../actions/events-creators';
+// import { teardownNotifications, initializeNotifications } from '../actions/notiication-creators';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;

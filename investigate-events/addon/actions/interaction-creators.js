@@ -1,5 +1,8 @@
 import * as ACTION_TYPES from './types';
 import moment from 'moment';
+import { lookup } from 'ember-dependency-lookup';
+import _ from 'lodash';
+
 import { getServiceSummary } from './data-creators';
 import { getDictionaries } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
@@ -11,7 +14,6 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { lookup } from 'ember-dependency-lookup';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 export const cancelQuery = () => {
@@ -78,6 +80,7 @@ export const setQueryTimeRange = ({ id, value, unit }) => {
       } else {
         startTime = moment(dbStartTime * 1000).startOf('minute');
       }
+
       dispatch({
         type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
         payload: {
@@ -138,11 +141,11 @@ export const setService = (service) => {
 };
 
 export const setReconOpen = (event = {}) => {
-  const { metas: eventMetas, sessionId } = event;
+  const { sessionId } = event;
   return {
     type: ACTION_TYPES.SET_RECON_VIEWABLE,
     payload: {
-      eventData: { eventMetas, sessionId },
+      eventData: { sessionId },
       isReconOpen: true
     }
   };
@@ -155,7 +158,7 @@ export const setReconClosed = () => {
       dispatch({
         type: ACTION_TYPES.SET_RECON_VIEWABLE,
         payload: {
-          eventData: { eventMetas: undefined, sessionId: undefined },
+          eventData: { sessionId: undefined },
           isReconOpen: false
         }
       });
@@ -190,6 +193,42 @@ export const toggleQueryConsole = () => {
   return (dispatch, getState) => {
     if (!isConsoleEmpty(getState())) {
       dispatch({ type: ACTION_TYPES.TOGGLE_QUERY_CONSOLE });
+    }
+  };
+};
+
+export const toggleSelectAllEvents = () => ({
+  type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS
+});
+
+export const toggleEventSelection = ({ sessionId }) => {
+  return (dispatch, getState) => {
+    const state = getState().investigate.eventResults;
+    const { allEventsSelected, selectedEventIds, data } = state;
+
+    if (allEventsSelected) {
+      // if all events already selected and one event is toggled
+      // toggle allEventsSelected and also select all event ids minus the one just toggled
+      dispatch(toggleSelectAllEvents());
+      dispatch({
+        type: ACTION_TYPES.SELECT_EVENTS,
+        payload: _.without(data.map((d) => d.sessionId), sessionId)
+      });
+    } else {
+      if (selectedEventIds.includes(sessionId)) {
+        // otherwise, if the event is already selected, deselect it
+        dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
+      } else {
+        if (selectedEventIds.length === (getState().investigate.eventCount.data - 1)) {
+          // if the event is not already selected, but it's the last unselected event
+          // toggle allEventsSelected
+          dispatch(toggleSelectAllEvents());
+        } else {
+          // lastly, if the toggled event is not already selected, and is not the last unselected event
+          // select the event
+          dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: [sessionId] });
+        }
+      }
     }
   };
 };

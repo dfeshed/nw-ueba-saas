@@ -135,9 +135,18 @@ export default class DataHelper {
     return this;
   }
 
-  // event-count
   eventCount(count) {
     _set(this.state, 'eventCount.data', count);
+    return this;
+  }
+
+  streamLimit(limit) {
+    _set(this.state, 'eventResults.streamLimit', limit);
+    return this;
+  }
+
+  streamBatch(batch) {
+    _set(this.state, 'eventResults.streamBatch', batch);
     return this;
   }
 
@@ -151,7 +160,7 @@ export default class DataHelper {
     return this;
   }
 
-  columnGroups(columnGroups) {
+  columnGroups(columnGroups = EventColumnGroups) {
     _set(this.state, 'data.columnGroups', columnGroups);
     return this;
   }
@@ -200,6 +209,11 @@ export default class DataHelper {
 
   selectedEventIds(eventIds) {
     _set(this.state, 'eventResults.selectedEventIds', eventIds);
+    return this;
+  }
+
+  eventResultsStatus(status) {
+    _set(this.state, 'eventResults.status', status);
     return this;
   }
 
@@ -317,6 +331,11 @@ export default class DataHelper {
 
   language(language = DEFAULT_LANGUAGES) {
     _set(this.state, 'dictionaries.language', language);
+    return this;
+  }
+
+  metaFilter(metaFilter = DEFAULT_PILLS_DATA) {
+    _set(this.state, 'queryNode.metaFilter', metaFilter);
     return this;
   }
 

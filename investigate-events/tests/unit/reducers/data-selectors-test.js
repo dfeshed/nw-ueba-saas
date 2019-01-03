@@ -6,7 +6,8 @@ import {
   shouldShowStatus,
   getSelectedColumnGroup,
   getColumns,
-  hasColumnGroups
+  hasColumnGroups,
+  getFlattenedColumnList
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 
@@ -148,7 +149,7 @@ test('Should get selected column groups', function(assert) {
   const selectedColumnGroup = getSelectedColumnGroup(state);
   assert.equal(selectedColumnGroup.name, 'Web Analysis');
   assert.equal(selectedColumnGroup.columns.length, 53);
-  assert.deepEqual(EventColumnGroups[6], selectedColumnGroup);
+  assert.deepEqual(EventColumnGroups[8], selectedColumnGroup);
 });
 
 test('Should get mutable columns for data table', function(assert) {
@@ -163,6 +164,67 @@ test('Should get mutable columns for data table', function(assert) {
   const columns = getColumns(state);
   assert.equal(columns.length, 5);
   assert.notOk(columns.isMutable, 'Columns should not be a mutable object.');
+});
+
+test('columns should not include meta-details column', function(assert) {
+  assert.expect(5);
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY2',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getColumns(state);
+
+  assert.equal(columns.length, 4);
+  columns.forEach((col) => {
+    assert.ok(col.field !== 'custom.meta-details', 'Should not be a meta-details column in list');
+  });
+});
+
+test('flattened list should include fields inside meta-summary and fields always required', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getFlattenedColumnList(state);
+
+  assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
+  assert.ok(columns.includes('sessionid'), 'must always include sessionid');
+  assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
+});
+
+test('flattened list of columns do not include summary fields if no meta-summary column', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY2',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getFlattenedColumnList(state);
+  assert.notOk(columns.includes('ip.dst'), 'fields from inside meta-summary should not be present');
+});
+
+test('flattened list of columns do not include dupe columns if exist in list and in', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY3',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getFlattenedColumnList(state);
+  const ipDstColumns = columns.filter((col) => col === 'ip.dst');
+  assert.ok(ipDstColumns.length === 1, 'summary fields not double included');
 });
 
 test('Should set hasColumnGroups', function(assert) {

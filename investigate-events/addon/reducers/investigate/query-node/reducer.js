@@ -14,7 +14,6 @@ const _initialState = Immutable.from({
   atLeastOneQueryIssued: false,
   endTime: 0,
   timeRangeInvalid: undefined,
-  eventMetas: undefined,
   hasIncommingQueryParams: false,
   metaFilter: [],
   previouslySelectedTimeRanges: {},
@@ -73,7 +72,6 @@ const _initialPillState = {
 const _cloneQueryParams = (state) => {
   const {
     endTime,
-    eventMetas,
     serviceId,
     startTime
   } = state;
@@ -84,10 +82,8 @@ const _cloneQueryParams = (state) => {
     pillsData = [];
   }
 
-  const _eventMetas = eventMetas ? JSON.parse(JSON.stringify(eventMetas)) : undefined;
   return {
     endTime,
-    eventMetas: _eventMetas,
     metaFilter: JSON.parse(JSON.stringify(pillsData)),
     serviceId,
     startTime
@@ -325,7 +321,6 @@ export default handleActions({
 
       return state.merge({
         endTime: queryParams.endTime && parseInt(queryParams.endTime, 10) || 0,
-        eventMetas: undefined,
         hasIncommingQueryParams,
         serviceId: queryParams.serviceId,
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
@@ -391,7 +386,10 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
-    return state.merge({ atLeastOneQueryIssued: true });
+    return state.merge({
+      atLeastOneQueryIssued: true,
+      isQueryRunning: false
+    });
   },
 
   [ACTION_TYPES.QUERY_IS_RUNNING]: (state, { payload }) => {
@@ -414,7 +412,6 @@ export default handleActions({
       serviceId,
       startTime,
       endTime,
-      eventMetas: state.eventMetas,
       pillsData
     });
 

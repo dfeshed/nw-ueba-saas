@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import reducer from 'investigate-events/reducers/investigate/event-results/reducer';
 
-module('Unit | Reducers | event-results | Investigate');
+module('Unit | Reducers | event-results');
 
 const stateWithoutSelections = Immutable.from({
   allEventsSelected: false,
@@ -64,18 +64,52 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
   assert.equal(result.selectedEventIds.length, 0);
 });
 
-test('ACTION_TYPES.SET_ANCHOR_AND_GOAL reducer', function(assert) {
-  const action = {
-    type: ACTION_TYPES.SET_ANCHOR_AND_GOAL,
-    anchor: 1,
-    goal: 1
+test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events', function(assert) {
+  const initialState = Immutable.from({
+    data: []
+  });
+
+  let action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 5555, sessionId: 5 }]
   };
+  let result = reducer(initialState, action);
+  assert.equal(result.data.length, 1, 'One event was absorbed');
 
-  const result = reducer(Immutable.from({
-    anchor: 0,
-    goal: 0
-  }), action);
+  action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 9999, sessionId: 6 }]
+  };
+  result = reducer(result, action);
+  assert.equal(result.data.length, 2, 'Two events now');
+  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
 
-  assert.equal(result.goal, 1);
-  assert.equal(result.anchor, 1);
+  action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 7777, sessionId: 7 }]
+  };
+  result = reducer(result, action);
+  assert.equal(result.data.length, 3, 'Three events now');
+  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
+  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
+  assert.equal(result.data[2].timeAsNumber, 5555, 'sorted descending');
 });
+
+test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', function(assert) {
+  const initialState = Immutable.from({
+    data: [],
+    streamLimit: 2
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 9999, sessionId: 6 }, { timeAsNumber: 7777, sessionId: 7 }]
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.data.length, 2, 'Two events left after truncation');
+
+  // the oldest data was the truncated data
+  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
+  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
+});
+

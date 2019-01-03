@@ -68,4 +68,53 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
 
   });
 
+
+  test('queryIsRunning will not dispatch an event if query is already running and flag is true', async function(assert) {
+    assert.expect(0);
+    const getState = () => {
+      return new ReduxDataHelper().isQueryRunning(true).build();
+    };
+    const dispatch = () => {
+      assert.ok(false, 'Should not have called dispatch');
+    };
+    const callback = initializationCreators.queryIsRunning(true);
+    callback(dispatch, getState);
+  });
+
+  test('queryIsRunning will not dispatch an event if query is not running and flag is false', async function(assert) {
+    assert.expect(0);
+    const getState = () => {
+      return new ReduxDataHelper().isQueryRunning(false).build();
+    };
+    const dispatch = () => {
+      assert.ok(false, 'Should not have called dispatch');
+    };
+    const callback = initializationCreators.queryIsRunning(false);
+    callback(dispatch, getState);
+  });
+
+  test('queryIsRunning will dispatch an event if query is not running and flag is true', async function(assert) {
+    const getState = () => {
+      return new ReduxDataHelper().isQueryRunning(false).build();
+    };
+    const dispatch = (action) => {
+      assert.equal(action.payload, true, 'dispatch called with proper flag');
+    };
+    const callback = initializationCreators.queryIsRunning(true);
+
+    callback(dispatch, getState);
+  });
+
+  test('queryIsRunning will dispatch an event if query is running and flag is false', async function(assert) {
+    const getState = () => {
+      return new ReduxDataHelper().isQueryRunning(true).build();
+    };
+    const dispatch = (action) => {
+      assert.equal(action.payload, false, 'dispatch called with proper flag');
+    };
+    const callback = initializationCreators.queryIsRunning(false);
+    callback(dispatch, getState);
+  });
+
+
 });

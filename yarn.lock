@@ -5074,6 +5074,10 @@ fast-ordered-set@^1.0.0, fast-ordered-set@^1.0.2:
   dependencies:
     blank-object "^1.0.1"
 
+fast-sort@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.npmjs.org/fast-sort/-/fast-sort-1.5.4.tgz#c4064a24f7e0224018839ff5980a2bb7f7d672b9"
+
 fast-sourcemap-concat@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/fast-sourcemap-concat/-/fast-sourcemap-concat-1.4.0.tgz#122c330d4a2afaff16ad143bc9674b87cd76c8ad"

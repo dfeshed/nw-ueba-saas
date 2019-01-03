@@ -3,8 +3,7 @@ import {
   encodeMetaFilterConditions,
   serviceIdFilter,
   streamingRequest,
-  timeRangeFilter,
-  addSessionIdFilter
+  timeRangeFilter
 } from './utils';
 
 /**
@@ -14,11 +13,12 @@ import {
  * @param {number} limit - The stream limit
  * @param {number} batch - The stream batch size
  * @param {object} handlers - Stream event handlers
- * @param {number} startSessionId - (Optional) SessionId from which to start query
+ * @param {array} desiredMetas - (Optional) array of metas to return
+ *   from query for each event
  * @return {object} RSVP Promise
  * @public
  */
-export default function(queryNode, language, limit, batch, handlers, startSessionId = null) {
+export default function(queryNode, language, limit, batch, handlers, desiredMetas) {
   // conditions is legacy
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const query = {
@@ -29,8 +29,13 @@ export default function(queryNode, language, limit, batch, handlers, startSessio
     ],
     stream: { limit, batch }
   };
-  const metaFilterInput = query.filter.find((el) => el.field === 'query');
-  metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
+
+  if (desiredMetas) {
+    query.filter.push({
+      field: 'select',
+      value: desiredMetas.join(',')
+    });
+  }
 
   return streamingRequest(
     'core-event',

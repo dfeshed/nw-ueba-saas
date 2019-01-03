@@ -1,4 +1,3 @@
-import { util } from 'mock-server';
 import decodedData from './decodedData';
 import encodedData from './encodedData';
 import endpointData from './endpointData';
@@ -18,11 +17,11 @@ export default {
       data = decode.value ? decodedData : encodedData;
     }
 
-    util.sendBatches({
-      requestBody,
-      dataArray: data,
-      sendMessage,
-      delayBetweenBatches: 500
+    sendMessage({
+      data,
+      meta: {
+        complete: true
+      }
     });
   }
 };

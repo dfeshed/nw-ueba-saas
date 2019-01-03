@@ -446,6 +446,8 @@ export default {
     title: 'Investigate',
     loading: 'Loading',
     loadMore: 'Load More',
+    allLoaded: 'All results for this query have been loaded',
+    notAllLoaded: 'Maximum events displayed, remaining results not loaded',
     showNextXEvents: 'Show Next {{count}} Events',
     tryAgain: 'Try Again',
     service: 'Service',

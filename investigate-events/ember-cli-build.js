@@ -7,6 +7,11 @@ shim(EmberAddon);
 
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, commonBuildOptions(__dirname));
+
+  app.import('node_modules/fast-sort/sort.es5.js', {
+    using: [{ transformation: 'amd', as: 'fast-sort' }]
+  });
+
   return app.toTree();
 };
 

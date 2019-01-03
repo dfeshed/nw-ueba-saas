@@ -89,6 +89,7 @@
     "ember-wormhole": "0.5.5",
     "eslint-plugin-ember-suave": "1.0.0",
     "faker": "3.1.0",
+    "fast-sort": "^1.5.4",
     "flexi": "2.0.1",
     "fs-extra": "4.0.2",
     "highlightjs": "9.8.0",

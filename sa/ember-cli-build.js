@@ -23,6 +23,9 @@ module.exports = function(defaults) {
   app.import('node_modules/normalizr/dist/normalizr.amd.js', {
     using: [{ transformation: 'amd', as: 'normalizr' }]
   });
+  app.import('node_modules/fast-sort/sort.es5.js', {
+    using: [{ transformation: 'amd', as: 'fast-sort' }]
+  });
   const tree = app.toTree();
   const ieTree = postcssCompiler([tree], 'assets', 'sa.css');
 

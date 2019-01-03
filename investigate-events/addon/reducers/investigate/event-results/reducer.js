@@ -1,23 +1,25 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import _ from 'lodash';
+import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
+export const MAX_EVENTS_ALLOWED = 100000;
+
 const _initialState = Immutable.from({
+  // streaming, complete, stopped, between-streams
   status: undefined,
-  data: null, // *
+
+  data: null,
   reason: undefined,
-  anchor: 0,
-  goal: 0,
-  streamLimit: 1000,
-  streamGoal: 100,
-  streamBatch: 50,
-  metaKeyStates: [],
+  streamLimit: MAX_EVENTS_ALLOWED,
+  streamBatch: 4000,
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: []
 });
+
 // * `data` is an array of objects with the following properties
 // {
 //   sessionId,
@@ -52,18 +54,9 @@ export default handleActions({
     return state.set('selectedEventIds', _.without(state.selectedEventIds, payload));
   },
 
-  [ACTION_TYPES.SET_ANCHOR_AND_GOAL]: (state, { anchor, goal }) => {
-    return state.merge({
-      anchor,
-      goal
-    });
-  },
-
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
     return state.merge({
-      anchor: 0,
       data: [],
-      goal: state.streamGoal,
       message: undefined,
       reason: undefined,
       status: 'streaming'
@@ -71,7 +64,27 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload }) => {
-    return state.set('data', state.data.concat(payload));
+    // Merge the data into the current state data and perform a sort
+    // Have to sort it all as data can come in out of order.
+    // Need to reverse the existing sort or events occurring
+    // in the same second will flip.
+    let newEvents = state.data.asMutable().concat(payload);
+    newEvents = sort(newEvents).by([
+      { desc: 'timeAsNumber' },
+      { desc: 'sessionId' }
+    ]);
+
+    // truncate the array if larger than max
+    if (newEvents.length > state.streamLimit) {
+      if (window.DEBUG_STREAMS) {
+        // eslint-disable-next-line no-console
+        console.log(`Truncating ${newEvents.length} results down to ${state.streamLimit}`);
+      }
+      newEvents.length = state.streamLimit;
+    }
+
+    const newState = state.set('data', Immutable.from(newEvents));
+    return newState;
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE_STATUS]: (state, { payload }) => {

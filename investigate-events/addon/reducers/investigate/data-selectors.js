@@ -6,6 +6,34 @@ import { isEmpty } from '@ember/utils';
 
 const { createSelector } = reselect;
 
+const GENERIC_SUMMARY_DATA = [
+  'ip.src',
+  'ipv6.src',
+  'ip.dst',
+  'ipv6.dst'
+];
+
+const NETWORK_SUMMARY_DATA = [
+  'tcp.srcport',
+  'udp.srcport',
+  'tcp.dstport',
+  'udp.dstport',
+  'service'
+];
+
+const LOG_SUMMARY_DATA = [
+  'device.type',
+  'event.cat.name',
+  'ec.theme'
+];
+
+export const SUMMARY_COLUMN_KEYS = {
+  generic: GENERIC_SUMMARY_DATA,
+  network: NETWORK_SUMMARY_DATA,
+  log: LOG_SUMMARY_DATA,
+  all: [ ...GENERIC_SUMMARY_DATA, ...NETWORK_SUMMARY_DATA, ...LOG_SUMMARY_DATA]
+};
+
 // ACCESSOR FUNCTIONS
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
@@ -71,7 +99,44 @@ export const getColumns = createSelector(
   [getSelectedColumnGroup],
   (selectedColumns) => {
     if (selectedColumns) {
-      return selectedColumns.columns.asMutable();
+      const mutableColumns = selectedColumns.columns.asMutable();
+      // slice out `custom.meta-details` column because that is a column
+      // of every single meta and 1) it looks horrible and has likely
+      // never been tested and 2) it causes us to keep all of the meta
+      // for every event in memory and that is no beuno
+      return mutableColumns.filter((col) => col.field !== 'custom.meta-details');
+    }
+  }
+);
+
+// returns a list of this column names involved in the creation of the events
+// table. This includes flattening the `meta-summary` column.
+export const getFlattenedColumnList = createSelector(
+  [getColumns],
+  (columns) => {
+    if (columns) {
+      columns = columns.map(({ field }) => field);
+      // always need sessionid, also always need nwe.callback_id
+      // because it determines if a row is for endpoint
+      columns = [...columns, 'sessionid', 'nwe.callback_id'];
+
+      // If we don't have a meta-summary column we are done
+      const hasMetaSummaryColumn = columns.some((field) => field === 'custom.meta-summary');
+      if (!hasMetaSummaryColumn) {
+        return columns;
+      }
+
+      // Need to slice out meta-summary and then add
+      // meta-summary's fields into the list
+      columns = columns.filter((field) => field !== 'custom.meta-summary');
+      SUMMARY_COLUMN_KEYS.all.forEach((columnKey) => {
+        const hasColumnAlready = columns.some((field) => field === columnKey);
+        if (!hasColumnAlready) {
+          columns.push(columnKey);
+        }
+      });
+
+      return columns;
     }
   }
 );

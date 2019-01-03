@@ -1,32 +1,10 @@
 import { get } from '@ember/object';
-import { isArray } from '@ember/array';
 import formatUtil from './format-util';
 import { isLogEvent } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 import { lookup } from 'ember-dependency-lookup';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-
-const RESERVED_KEYS = [ 'eth.src', 'eth.dst', 'ip.src', 'ipv6.src', 'ip.dst', 'ipv6.dst', 'tcp.srcport', 'tcp.dstport', 'udp.srcport', 'udp.dstport', 'session.split'];
-const RESERVED_KEY_HASH = {};
-RESERVED_KEYS.forEach((key) => {
-  RESERVED_KEY_HASH[key] = true;
-});
-
-const GENERIC_SUMMARY_DATA = [
-  ['ip.src', 'ipv6.src'],
-  ['ip.dst', 'ipv6.dst']
-];
-
-const NETWORK_SUMMARY_DATA = [
-  ['tcp.srcport', 'udp.srcport'],
-  ['tcp.dstport', 'udp.dstport'],
-  'service'
-];
-
-const LOG_SUMMARY_DATA = [
-  'device.type',
-  ['event.cat.name', 'ec.theme']
-];
+import { SUMMARY_COLUMN_KEYS } from 'investigate-events/reducers/investigate/data-selectors';
 
 /**
  * Applies the width currently specified by a given column model to a given d3 cell.
@@ -65,9 +43,6 @@ function buildCellContent($cell, field, item, opts) {
     case 'custom.meta-summary':
       buildMetaSummaryContent($content, item, opts);
       break;
-    case 'custom.meta-details':
-      buildMetaDetailsContent($content, item, opts);
-      break;
     case 'time':
       buildTimeContent($content, item, opts);
       break;
@@ -92,108 +67,17 @@ function buildMetaSummaryContent($content, item, opts) {
     }
   }
   if (isLogEvent(item)) {
-    const keys = GENERIC_SUMMARY_DATA.concat(LOG_SUMMARY_DATA);
+    const keys = SUMMARY_COLUMN_KEYS.generic.concat(SUMMARY_COLUMN_KEYS.log);
     addMetaSummaryRow(buildLogContent(item));
     addMetaSummaryRow(
       buildMetaKeyValuePairs(keys, item, opts)
     );
   } else {
-    const keys = GENERIC_SUMMARY_DATA.concat(NETWORK_SUMMARY_DATA);
+    const keys = SUMMARY_COLUMN_KEYS.generic.concat(SUMMARY_COLUMN_KEYS.network);
     addMetaSummaryRow(
       buildMetaKeyValuePairs(keys, item, opts)
     );
   }
-}
-
-/**
- * Builds the inner HTML for the custom "meta details" column.
- * Basically a multi-column ordered list (top->bottom, left->right) of all meta key-value pairs; but for 10.6 parity,
- * a few keys get special treatment, as follows.
- * * The following are assumed to be in other columns and thus not included here:
- * sessionId, eth.type, ip.proto, ipv6.proto, service, size, time, log-data, sessionId.
- * * The following are bumped up to the front of the list:
- * eth.src, eth.dst, ip[v6].src, ip[v6].dst, [tcp|udp].srcport, [tcp|udp].dstport, session.split
- * @private
- */
-function buildMetaDetailsContent($content, item, opts) {
-  const maxRowCount = 10;
-  let rowCount = 0;
-  let $column;
-
-  function addMetaDetailsColumn() {
-    return $content.append('div')
-      .classed('meta-details-column', true);
-  }
-
-  function addMetaDetailsRow(elRowContent) {
-    if (!elRowContent) {
-      return;
-    }
-    if (rowCount % maxRowCount === 0) {
-      $column = addMetaDetailsColumn();
-    }
-    $column.node().appendChild(elRowContent);
-    rowCount++;
-  }
-
-  addMetaDetailsRow(
-    buildMetaSrcDstPair('eth.src', 'eth.dst', item, opts)
-  );
-
-  addMetaDetailsRow(
-    buildMetaSrcDstPair(['ip.src', 'ipv6.src'], ['ip.dst', 'ipv6.dst'], item, opts)
-  );
-
-  addMetaDetailsRow(
-    buildMetaSrcDstPair(['tcp.srcport', 'udp.srcport'], ['tcp.dstport', 'udp.dstport'], item, opts)
-  );
-
-  addMetaDetailsRow(
-    buildMetaKeyAndValue('session.split', item, opts)
-  );
-
-  (item.metas || []).forEach(([ metaKey ]) => {
-    if (RESERVED_KEY_HASH[metaKey]) {
-      return;
-    }
-    addMetaDetailsRow(
-      buildMetaKeyAndValue(metaKey, item, opts)
-    );
-  });
-}
-
-/**
- * Builds the DOM for a pair of meta values, one from a source key & one from a destination key.
- * Renders an arrow pointing from source to destination.
- * Only the meta values are rendered, not the meta keys.
- * @private
- */
-function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
-  const srcValue = formatUtil.value(srcMetaKey, item, opts);
-  const dstValue = formatUtil.value(dstMetaKey, item, opts);
-  if ((srcValue.raw == undefined) && (dstValue.raw === undefined)) {
-    return null;
-  }
-  const pair = document.createElement('div');
-  const $pair = select(pair)
-    .classed('meta-src-dst-pair', true)
-    .attr('data-field', (isArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
-  if (srcValue.raw !== undefined) {
-    $pair.append('span')
-      .classed('src', true)
-      .attr('title', srcValue.textAndAlias)
-      .text(srcValue.alias);
-  }
-  if (dstValue.raw !== undefined) {
-    $pair.append('span')
-      .classed('arrow', true)
-      .html('&rarr;');
-    $pair.append('span')
-      .classed('dst', true)
-      .attr('title', dstValue.textAndAlias)
-      .text(dstValue.alias);
-  }
-  return pair;
 }
 
 function buildMetaKeyValuePairs(keys, item, opts) {
@@ -213,30 +97,6 @@ function buildMetaKeyValuePairs(keys, item, opts) {
   });
   $pairs.html(htmlPairs.join(' | '));
   return pairs;
-}
-
-/**
- * Builds the DOM for the meta key & value of a given meta key.
- * @private
- */
-function buildMetaKeyAndValue(metaKey, item, opts) {
-  const value = formatUtil.value(metaKey, item, opts);
-  if (value.raw === undefined) {
-    return null;
-  }
-
-  const pair = document.createElement('div');
-  const $pair = select(pair)
-    .classed('meta-key-and-value', true)
-    .attr('data-field', (isArray(metaKey) ? metaKey[0] : metaKey) || '');
-  $pair.append('span')
-    .classed('key', true)
-    .text(metaKey);
-  $pair.append('span')
-    .classed('value', true)
-    .attr('title', value.textAndAlias)
-    .text(value.alias);
-  return pair;
 }
 
 function buildCheckbox($content, item, opts) {
@@ -263,7 +123,6 @@ function buildTimeContent($content, item, opts) {
   $content.append('div')
     .attr('class', 'time')
     .text(time);
-  // .html(`<div>${date}</div><div>${time}</div>`);
 }
 
 /**

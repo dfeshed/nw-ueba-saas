@@ -204,7 +204,9 @@ export const decoratedDevices = createSelector(
             serviceId: d.serviceId,
             devices: process(d.devices),
             elapsedTime: d.elapsedTime,
-            serviceName: services.findBy('id', d.serviceId).displayName
+            // handle case (mostly in dev env) where service under hood isn't
+            // present by shimming in Unknown
+            serviceName: (services.findBy('id', d.serviceId) || { displayName: 'Unknown' }).displayName
           };
         });
       };

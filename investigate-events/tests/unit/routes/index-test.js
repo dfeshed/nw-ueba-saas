@@ -19,7 +19,7 @@ const isBaseInvestigateIntializationComplete = () => {
 
   const { dictionaries, queryNode, services, data } = investigate;
 
-  const columnGroupsCameback = (data.columnGroups || []).length === 8;
+  const columnGroupsCameback = (data.columnGroups || []).length > 5;
   const preferencesCameBack = queryNode.queryTimeFormat === 'DB';
   const aliasesCameBack = Object.keys(dictionaries.aliases || {}).length === 9;
   const languagesCameBack = (dictionaries.language || []).length === 94;
@@ -106,7 +106,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       }
 
       return false;
-    }, { timeout: 10000 });
+    }, { timeout: 15000 });
   });
 
   test('base route visit with just serviceId should initialize investigate data, no query execution', async function(assert) {

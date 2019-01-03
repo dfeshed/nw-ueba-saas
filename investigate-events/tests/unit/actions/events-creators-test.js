@@ -1,100 +1,146 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+import {
+  eventsStartDescending
+} from 'investigate-events/actions/events-creators';
+import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 
-import eventsCreators from 'investigate-events/actions/events-creators';
-import ACTION_TYPES from 'investigate-events/actions/types';
+let noMoreEventsAllowed = false;
+let allActionsDispatched = [];
+let actionsByType = {};
+let queryIsRunning = true;
+let status = 'foo';
+let queryResults = [];
+let streamBatch = 250;
+let streamLimit = 2000;
 
-module('Unit | Actions | events creators', function(hooks) {
-  setupTest(hooks);
-  hooks.beforeEach(function() {
-    initialize(this.owner);
-  });
 
-  test('toggleSelectAllEvents action creator returns proper type', function(assert) {
-    const { type } = eventsCreators.toggleSelectAllEvents();
-    assert.equal(type, ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS, 'action has the correct type');
-  });
+const getState = () => {
+  return new ReduxDataHelper()
+    .isQueryRunning(queryIsRunning)
+    .columnGroup('SUMMARY')
+    .columnGroups()
+    .endTime(1544026619)
+    .startTime(1513940220)
+    .streamLimit(streamLimit)
+    .streamBatch(streamBatch)
+    .serviceId('789')
+    .pillsDataPopulated()
+    .metaFilter()
+    .eventResultsStatus(status)
+    .eventResults(queryResults)
+    .eventCount(undefined)
+    .language()
+    .build();
+};
 
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is true', function(assert) {
-    const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(true).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).build();
-    };
+const downstreamDispatchCreator = (assert, asserts) => {
 
-    const dispatch = (action) => {
-      switch (action.type) {
-        case ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS:
-          break;
-        case ACTION_TYPES.SELECT_EVENTS:
-          assert.equal(action.payload.length, 1, 'action has the correct payload length');
-          assert.equal(action.payload[0], 'bar', 'action has the correct payload');
-          break;
-        default:
-          assert.equal(true, false, 'action has the correct type');
+  const downstreamDispatch = (actionOrThunk) => {
+    if (noMoreEventsAllowed) {
+      assert.ok(false, 'should not have taken in more events');
+      return;
+    }
+
+    if (typeof actionOrThunk === 'function') {
+      // is another thunk, recurse
+      actionOrThunk(downstreamDispatch, getState);
+    } else {
+
+      allActionsDispatched.push(actionOrThunk);
+
+      if (actionOrThunk.type === ACTION_TYPES.QUERY_IS_RUNNING) {
+        queryIsRunning = actionOrThunk.payload;
       }
-    };
+      if (actionOrThunk.type === ACTION_TYPES.INIT_EVENTS_STREAMING) {
+        status = 'streaming';
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE_STATUS) {
+        status = actionOrThunk.payload;
+        if (status === 'complete') {
+          noMoreEventsAllowed = true;
+          actionsByType = {};
+          allActionsDispatched.forEach((action) => {
+            if (actionsByType[action.type]) {
+              actionsByType[action.type].push(action);
+            } else {
+              actionsByType[action.type] = [action];
+            }
+          });
 
-    const thunk = eventsCreators.toggleEventSelection({ sessionId: 'foo' });
+          assert.equal(queryIsRunning === false, true, 'query is running flag should be false');
+          assert.equal(status, 'complete', 'query is complete');
 
-    thunk(dispatch, getState);
+          asserts();
+        }
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
+        queryResults = queryResults.concat(actionOrThunk.payload);
+      }
+    }
+  };
+
+  return downstreamDispatch;
+};
+
+module('Unit | Actions | event-creators', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    noMoreEventsAllowed = false;
+    allActionsDispatched = [];
+    queryIsRunning = true;
+    status = 'foo';
+    queryResults = [];
+    streamBatch = 250;
+    streamLimit = 2000;
+    actionsByType = {};
   });
 
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false and selectedEventIds includes payload', function(assert) {
-    const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).withSelectedEventIds().build();
+  test('Pages way through large query properly', function(assert) {
+    assert.expect(10);
+    const done = assert.async();
+
+    const asserts = () => {
+      assert.equal(allActionsDispatched.length, 8, 'total actions dispatched');
+      assert.equal(queryResults.length, 2000, 'total results accumulated');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 4, '4 pages of data dispatched');
+      assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
+      assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 2, 'set status twice');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'between-streams', 'first status call is to indicate between streams');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][1].payload, 'complete', 'second status call is to indicate complete');
+      done();
     };
 
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_EVENT, 'action has the correct type');
-      assert.equal(action.payload, 'bar', 'action has the correct payload');
-    };
-
-    const thunk = eventsCreators.toggleEventSelection({ sessionId: 'bar' });
-
-    thunk(dispatch, getState);
+    const eventsStartDescendingThunk = eventsStartDescending();
+    eventsStartDescendingThunk(downstreamDispatchCreator(assert, asserts), getState);
   });
 
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false, and last unselected event is selected', function(assert) {
-    const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).eventCount(2).withSelectedEventIds().build();
+  test('Pages way smaller range correctly', function(assert) {
+    assert.expect(10);
+    const done = assert.async();
+
+    streamBatch = 250;
+    streamLimit = 700;
+
+    const asserts = () => {
+      assert.equal(allActionsDispatched.length, 6, 'total actions dispatched');
+      // only want 700, but 1000 will stream in as entire results have to be processed
+      // (gets truncated in reducer)
+      assert.equal(queryResults.length, 1000, 'total results accumulated');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '4 pages of data dispatched');
+      assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
+      assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 2, 'set status twice');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'between-streams', 'first status call is to indicate between streams');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][1].payload, 'complete', 'second status call is to indicate complete');
+      done();
     };
 
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS, 'action has the correct type');
-    };
-
-    const thunk = eventsCreators.toggleEventSelection({ sessionId: 'foo' });
-
-    thunk(dispatch, getState);
-  });
-
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false, selectedEventIds does not include payload, and all event ids are not selected', function(assert) {
-    const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' },
-        { sessionId: 'baz' }
-      ]).eventCount(3).withSelectedEventIds().build();
-    };
-
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has the correct type');
-      assert.equal(action.payload.length, 1, 'action has the correct payload length');
-      assert.equal(action.payload[0], 'baz', 'action has the correct payload');
-    };
-
-    const thunk = eventsCreators.toggleEventSelection({ sessionId: 'baz' });
-
-    thunk(dispatch, getState);
+    const eventsStartDescendingThunk = eventsStartDescending();
+    eventsStartDescendingThunk(downstreamDispatchCreator(assert, asserts), getState);
   });
 });

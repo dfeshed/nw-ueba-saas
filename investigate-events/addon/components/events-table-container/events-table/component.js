@@ -1,25 +1,30 @@
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
-import { selectedIndex, getNextPayloadSize } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
-import {
-  eventsGetMore,
-  eventsLogsGet,
-  toggleSelectAllEvents,
-  toggleEventSelection
-} from 'investigate-events/actions/events-creators';
 import { inject as service } from '@ember/service';
 
+import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import {
+  selectedIndex,
+  allExpectedDataLoaded,
+  areEventsStreaming
+} from 'investigate-events/reducers/investigate/event-results/selectors';
+import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
+import { eventsLogsGet } from 'investigate-events/actions/events-creators';
+import {
+  toggleSelectAllEvents,
+  toggleEventSelection
+} from 'investigate-events/actions/interaction-creators';
+
 const stateToComputed = (state) => ({
+  areEventsStreaming: areEventsStreaming(state),
   status: state.investigate.eventResults.status,
   allEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),
   items: state.investigate.eventResults.data,
   aliases: state.investigate.dictionaries.aliases,
-  nextPayloadSize: getNextPayloadSize(state),
+  allExpectedDataLoaded: allExpectedDataLoaded(state),
   language: state.investigate.dictionaries.language,
   columns: getColumns(state),
   endpointId: state.investigate.queryNode.serviceId,
@@ -30,7 +35,6 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  eventsGetMore,
   eventsLogsGet,
   toggleSelectAllEvents,
   toggleEventSelection

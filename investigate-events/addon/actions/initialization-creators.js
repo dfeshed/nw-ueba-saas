@@ -371,10 +371,17 @@ export const initializeInvestigate = function(
  * @param {boolean} flag
  * @public
  */
-export const queryIsRunning = (flag) => ({
-  type: ACTION_TYPES.QUERY_IS_RUNNING,
-  payload: flag
-});
+export const queryIsRunning = (flag) => {
+  return (dispatch, getState) => {
+    // only dispatch if the flag is different than state
+    if (getState().investigate.queryNode.isQueryRunning !== flag) {
+      dispatch({
+        type: ACTION_TYPES.QUERY_IS_RUNNING,
+        payload: flag
+      });
+    }
+  };
+};
 
 /**
  * Retrieves the list of services (aka endpoints). This list shouldn't really

@@ -3,7 +3,7 @@ import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { didDownloadFiles, extractFiles } from 'investigate-events/actions/events-creators';
+import { didDownloadFiles, extractFiles } from 'investigate-events/actions/notification-creators';
 
 const stateToComputed = (state) => ({
   isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
