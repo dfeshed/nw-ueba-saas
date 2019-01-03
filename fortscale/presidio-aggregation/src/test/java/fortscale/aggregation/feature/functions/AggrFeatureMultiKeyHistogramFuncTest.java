@@ -1,24 +1,20 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
-import fortscale.common.util.GenericHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
 import fortscale.utils.data.Pair;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class AggrFeatureMultiKeyHistogramFuncTest {
-
     @Test
     public void testUpdateAggregatedFeature() {
         MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
@@ -37,10 +33,10 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         MultiKeyFeature multiKeyFeature2 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2);
         multiKeyHistogram.set(multiKeyFeature2, val2);
 
+        @SuppressWarnings("unchecked")
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
-                new ImmutablePair<String, Object>("feature1", new FeatureStringValue("open")),
-                new ImmutablePair<String, Object>("feature2", new FeatureStringValue("SUCCESS"))
-        );
+                new ImmutablePair<>("feature1", new FeatureStringValue("open")),
+                new ImmutablePair<>("feature2", new FeatureStringValue("SUCCESS")));
 
         Feature aggrFeature = new Feature("MyAggrFeature", multiKeyHistogram);
         AggregatedFeatureConf aggrFuncConf = AggrFeatureTestUtils.createAggrFeatureConf(2);
@@ -49,7 +45,7 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
         Assert.assertEquals(value.getClass(), MultiKeyHistogram.class);
-        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram) aggrFeature.getValue();
+        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram)aggrFeature.getValue();
         Double expectedFeatureValue1 = val1 + 1;
         Double expectedFeatureValue2 = val2;
 
@@ -66,29 +62,28 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         values.add("listFeatureValue1");
         values.add("listFeatureValue2");
 
+        @SuppressWarnings("unchecked")
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
-                new ImmutablePair<String, Object>("stringFeatureName", new FeatureStringValue("stringFeatureValue")),
-                new ImmutablePair<String, Object>("listFeatureName", new FeatureListValue(values))
-        );
+                new ImmutablePair<>("stringFeatureName", new FeatureStringValue("stringFeatureValue")),
+                new ImmutablePair<>("listFeatureName", new FeatureListValue(values)));
 
         List<String> featureNames = new ArrayList<>();
         featureNames.add("listFeatureName");
         featureNames.add("stringFeatureName");
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 
         Map<String, List<String>> groupByValues = new HashMap<>();
         List<String> allowedValues = new ArrayList<>();
         allowedValues.add("listFeatureValue1");
         groupByValues.put("listFeatureName", allowedValues);
-
         IAggrFeatureFunction func = new AggrFeatureMultiKeyHistogramFunc(groupByValues);
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
         Assert.assertEquals(value.getClass(), MultiKeyHistogram.class);
-        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram) aggrFeature.getValue();
+        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram)aggrFeature.getValue();
 
         MultiKeyFeature expected1 = new MultiKeyFeature();
         expected1.add("listFeatureName", "listFeatureValue1");
@@ -97,7 +92,6 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         MultiKeyFeature expected2 = new MultiKeyFeature();
         expected2.add("listFeatureName", AggrFeatureFunctionUtils.OTHER_FIELD_NAME);
         expected2.add("stringFeatureName", "stringFeatureValue");
-
 
         Map<MultiKeyFeature, Double> histogram = aggrFeatureValue.getHistogram();
         Assert.assertEquals(2, histogram.size());
@@ -114,40 +108,37 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         values.add("listFeatureValue1");
         values.add("listFeatureValue2");
 
+        @SuppressWarnings("unchecked")
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
-                new ImmutablePair<String, Object>("stringFeatureName", new FeatureStringValue("stringFeatureValue")),
-                new ImmutablePair<String, Object>("listFeatureName", new FeatureListValue(values))
-        );
+                new ImmutablePair<>("stringFeatureName", new FeatureStringValue("stringFeatureValue")),
+                new ImmutablePair<>("listFeatureName", new FeatureListValue(values)));
 
         List<String> featureNames = new ArrayList<>();
         featureNames.add("listFeatureName");
         featureNames.add("stringFeatureName");
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
-        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, Mockito.mock(IAggrFeatureFunction.class));
 
         Map<String, List<String>> groupByValues = new HashMap<>();
         List<String> allowedValues = new ArrayList<>();
         allowedValues.add("listFeatureValue3");
         groupByValues.put("listFeatureName", allowedValues);
-
         IAggrFeatureFunction func = new AggrFeatureMultiKeyHistogramFunc(groupByValues);
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
         Assert.assertEquals(value.getClass(), MultiKeyHistogram.class);
-        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram) aggrFeature.getValue();
+        MultiKeyHistogram aggrFeatureValue = (MultiKeyHistogram)aggrFeature.getValue();
 
         MultiKeyFeature expected = new MultiKeyFeature();
-        expected.add("listFeatureName",  AggrFeatureFunctionUtils.OTHER_FIELD_NAME);
+        expected.add("listFeatureName", AggrFeatureFunctionUtils.OTHER_FIELD_NAME);
         expected.add("stringFeatureName", "stringFeatureValue");
-
 
         Map<MultiKeyFeature, Double> histogram = aggrFeatureValue.getHistogram();
         Assert.assertEquals(1, histogram.size());
         Assert.assertNotNull(aggrFeatureValue.getHistogram().get(expected));
     }
-
 
     @Test
     public void testCalculateAggrFeature() {
@@ -170,24 +161,24 @@ public class AggrFeatureMultiKeyHistogramFuncTest {
         featureNameToValue2.put("feature1", "move");
         featureNameToValue2.put("feature2", "SUCCESS");
         MultiKeyFeature multiKeyFeature2 = AggrFeatureTestUtils.createMultiKeyFeature(featureNameToValue2);
-
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+
         for (Pair<Double, Double> pair : pairs) {
             MultiKeyHistogram multiKeyHistogram = new MultiKeyHistogram();
             multiKeyHistogram.set(multiKeyFeature1, pair.getKey());
             multiKeyHistogram.set(multiKeyFeature2, pair.getValue());
+            @SuppressWarnings("unchecked")
             Map<String, Feature> map = AggrFeatureTestUtils.createFeatureMap(
-                    new ImmutablePair<String, Object>("feature1", multiKeyHistogram)
-            );
+                    new ImmutablePair<>("feature1", multiKeyHistogram));
             listOfMaps.add(map);
         }
 
         IAggrFeatureEventFunction function = new AggrFeatureMultiKeyHistogramFunc(null);
         Feature actual = function.calculateAggrFeature(AggrFeatureTestUtils.createAggregatedFeatureEventConf(confName, 1), listOfMaps);
 
-        Double resultFeature1 = ((MultiKeyHistogram) actual.getValue()).getHistogram().get(multiKeyFeature1);
-        Double resultFeature12 = ((MultiKeyHistogram) actual.getValue()).getHistogram().get(multiKeyFeature2);
-        Assert.assertEquals(resultFeature1, (Double) (keyPair1 + ketPair2));
-        Assert.assertEquals(resultFeature12, (Double) (valuePair1 + valuePair2));
+        Double resultFeature1 = ((MultiKeyHistogram)actual.getValue()).getHistogram().get(multiKeyFeature1);
+        Double resultFeature12 = ((MultiKeyHistogram)actual.getValue()).getHistogram().get(multiKeyFeature2);
+        Assert.assertEquals(resultFeature1, (Double)(keyPair1 + ketPair2));
+        Assert.assertEquals(resultFeature12, (Double)(valuePair1 + valuePair2));
     }
 }

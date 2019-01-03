@@ -21,7 +21,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "func3"
+            "type": "aggr_feature_max_func"
           }
         }
       ]
