@@ -36,7 +36,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
-      this.owner.lookup('service:eventBus').trigger('rsa-application-click');
+      this.owner.lookup('service:eventBus').trigger('rsa-application-click', this.element);
       return settled().then(async() => {
         assert.notOk(buttonMenu.classList.contains('expanded'));
       });

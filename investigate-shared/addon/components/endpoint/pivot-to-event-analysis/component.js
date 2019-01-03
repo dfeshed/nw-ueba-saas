@@ -55,8 +55,10 @@ export default Component.extend({
 
   init() {
     this._super(arguments);
-    this.get('eventBus').on('rsa-application-click', () => {
-      if (!this.isDestroyed || !this.isDestroying) {
+    this.get('eventBus').on('rsa-application-click', (target = '') => {
+      if (!(target.classList.contains('rsa-icon-arrow-down-12-filled') ||
+        target.classList.contains('rsa-form-button')) &&
+        (!this.isDestroyed || !this.isDestroying)) {
         if (this.get('isExpanded')) {
           this.toggleProperty('isExpanded');
         }
@@ -86,6 +88,7 @@ export default Component.extend({
     toggleExpand() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.toggleProperty('isExpanded');
+      return false;
     }
   }
 
