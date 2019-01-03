@@ -8,13 +8,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
         fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class ContextModel implements Model {
-    private int numOfContexts;
+    private long numOfContexts;
 
-    public ContextModel(int numOfContexts) {
+    public ContextModel(long numOfContexts) {
         this.numOfContexts = numOfContexts;
     }
 
-    public int getNumOfContexts() {
+    public long getNumOfContexts() {
         return numOfContexts;
     }
 
@@ -27,8 +27,8 @@ public class ContextModel implements Model {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ContextModel)) return false;
-        ContextModel timeModel = (ContextModel) o;
-        return this.numOfContexts != timeModel.numOfContexts;
+        ContextModel contextModel = (ContextModel) o;
+        return this.numOfContexts != contextModel.numOfContexts;
     }
 
     @Override

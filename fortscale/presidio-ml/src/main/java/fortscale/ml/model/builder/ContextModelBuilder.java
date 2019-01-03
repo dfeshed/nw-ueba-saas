@@ -12,7 +12,7 @@ public class ContextModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        int numOfContexts = (int) modelBuilderData;
+        long numOfContexts = (long) modelBuilderData;
         return new ContextModel(numOfContexts);
     }
 

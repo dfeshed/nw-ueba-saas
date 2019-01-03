@@ -1,10 +1,12 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.ContextModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.Sigmoid;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import org.springframework.beans.factory.annotation.Configurable;
 import presidio.ade.domain.record.AdeRecordReader;
@@ -14,56 +16,65 @@ import java.util.List;
 
 
 /***
- * Calculate main score and inverse model score and reduce the score by reductionWeight.
+ * Calculate score by main scorer and inverse model scorer and reduce by reductionWeight.
  * reductionWeight defined by ratio between num of contexts with same occurrence and num of contexts in schema
  * and then mapped linearly by noiseReductionWeight. (e.g 0 -> 0.5, 1 -> 0.95)
  */
 @Configurable(preConstruction = true)
-public class LinearNoiseReductionScorer extends AbstractModelScorer {
+public class LinearNoiseReductionScorer extends AbstractScorer {
 
     private Scorer mainScorer;
     private Scorer reductionScorer;
-    private String reductionModelName;
-    private String reductionFeatureName;
-    private List<String> reductionContextFieldNames;
+    private String categoryRarityGlobalModelName;
+    private List<String> categoryRarityGlobalContextFieldNames;
+    private String mainScorerModelName;
+    private String mainScorerFeatureName;
+    private List<String> mainScorerContextFieldNames;
+    private String contextModelName;
+    private List<String> contextModelContextFieldNames;
     private ScoreMapping.ScoreMappingConf noiseReductionWeight;
-
+    private EventModelsCacheService eventModelsCacheService;
+    private int maxRareCount;
+    private double xWithValueHalfFactor;
+    private double epsilonValueForMaxX;
 
     public LinearNoiseReductionScorer(
-            String scorerName, Scorer mainScorer, Scorer reductionScorer,
-            String modelName, List<String> contextFieldNames,
-            String reductionModelName,
-            String reductionFeatureName,
-            List<String> reductionContextFieldNames,
-            List<String> additionalModelNames,
-            List<List<String>> additionalContextFieldNames,
+            String scorerName,
+            Scorer mainScorer,
+            Scorer reductionScorer,
+            String categoryRarityGlobalModelName,
+            List<String> categoryRarityGlobalContextFieldNames,
+            String mainScorerModelName,
+            String mainScorerFeatureName,
+            List<String> mainScorerContextFieldNames,
+            String contextModelName,
+            List<String> contextModelContextFieldNames,
             ScoreMapping.ScoreMappingConf noiseReductionWeight,
-            int minNumOfPartitionsToInfluence,
-            int enoughNumOfPartitionsToInfluence,
-            boolean isUseCertaintyToCalculateScore,
-            EventModelsCacheService eventModelsCacheService) {
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence,
-                isUseCertaintyToCalculateScore, eventModelsCacheService);
+            EventModelsCacheService eventModelsCacheService,
+            int maxRareCount,
+            double xWithValueHalfFactor,
+            double epsilonValueForMaxX) {
+        super(scorerName);
         this.mainScorer = mainScorer;
         this.reductionScorer = reductionScorer;
         this.noiseReductionWeight = noiseReductionWeight;
-        this.reductionModelName = reductionModelName;
-        this.reductionFeatureName = reductionFeatureName;
-        this.reductionContextFieldNames = reductionContextFieldNames;
+        this.categoryRarityGlobalModelName = categoryRarityGlobalModelName;
+        this.categoryRarityGlobalContextFieldNames = categoryRarityGlobalContextFieldNames;
+        this.mainScorerModelName = mainScorerModelName;
+        this.mainScorerFeatureName = mainScorerFeatureName;
+        this.mainScorerContextFieldNames = mainScorerContextFieldNames;
+        this.contextModelName = contextModelName;
+        this.contextModelContextFieldNames = contextModelContextFieldNames;
+        this.eventModelsCacheService = eventModelsCacheService;
+        this.maxRareCount = maxRareCount;
+        this.xWithValueHalfFactor = xWithValueHalfFactor;
+        this.epsilonValueForMaxX = epsilonValueForMaxX;
     }
 
-
     @Override
-    protected FeatureScore calculateScore(Model model, List<Model> additionalModels, AdeRecordReader adeRecordReader) {
-        Feature feature = Feature.toFeature(reductionFeatureName, adeRecordReader.get(reductionFeatureName));
-        if (model == null || additionalModels.contains(null) || feature.getValue() == null) {
-            return null;
-        }
-
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
         FeatureScore featureScore = null;
         FeatureScore mainScore = mainScorer.calculateScore(adeRecordReader);
-
         if (mainScore != null) {
             if (mainScore.getScore() == 0) {
                 // get the score from the main scorer
@@ -80,8 +91,8 @@ public class LinearNoiseReductionScorer extends AbstractModelScorer {
                     double score = mainScore.getScore();
 
                     if (reducingScore.getScore() < score) {
-                        Double reductionWeight = calcReductionWeight(model, additionalModels, adeRecordReader, feature);
-                        if(reductionWeight == null) return null;
+                        Double reductionWeight = calcReductionWeight(adeRecordReader);
+                        if (reductionWeight == null) return null;
 
                         double reducingWeightMultiplyCertainty = reductionWeight * reducingScore.getCertainty();
                         score = reducingScore.getScore() * reducingWeightMultiplyCertainty +
@@ -91,34 +102,50 @@ public class LinearNoiseReductionScorer extends AbstractModelScorer {
                 }
             }
         }
+
+        if (featureScore == null) {
+            return new CertaintyFeatureScore(getName(), 0d, 0d);
+        }
+
         return featureScore;
     }
 
-    private Double calcReductionWeight(Model model, List<Model> additionalModels, AdeRecordReader adeRecordReader, Feature feature) {
-        double numOfContextsWithSameOccurrence = 1;
-        CategoryRarityModel reductionModel = (CategoryRarityModel) getModel(adeRecordReader, reductionModelName, reductionContextFieldNames);
+    private Double calcReductionWeight(AdeRecordReader adeRecordReader) {
+        Model mainScorerModel = getModel(adeRecordReader, mainScorerModelName, mainScorerContextFieldNames);
+        Model categoryRarityGlobalModel = getModel(adeRecordReader, categoryRarityGlobalModelName, categoryRarityGlobalContextFieldNames);
+        Model contextModel = getModel(adeRecordReader, contextModelName, contextModelContextFieldNames);
+
+        Feature feature = Feature.toFeature(mainScorerFeatureName, adeRecordReader.get(mainScorerFeatureName));
+        if (categoryRarityGlobalModel == null || contextModel == null || mainScorerModel == null || feature.getValue() == null) {
+            return null;
+        }
+
         String featureValue = feature.getValue().toString();
-        Double count = reductionModel.getFeatureCount(featureValue);
+        Double count = ((CategoryRarityModel) mainScorerModel).getFeatureCount(featureValue);
         if (count == null) count = 0d;
-        //todo: uncomment after Yaron changes
-//      List<Double> buckets = model.getOccurrencesToNumOfFeatures(count);
-//      numOfContextsWithSameOccurrence += buckets.get((int)( count - 1));
+        //todo: verify after Yaron changes
+        List<Double> buckets = ((CategoryRarityGlobalModel) categoryRarityGlobalModel).getOccurrencesToNumOfFeatures();
+        double numOfContextsWithSameOccurrence = buckets.get((int) Math.round(count));
+        for (int i = (int) Math.round(count) + 1; i < count + maxRareCount; i++) {
+            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - count + 1);
+            numOfContextsWithSameOccurrence += (buckets.get(i) - buckets.get(i - 1)) * commonnessDiscount;
+        }
 
-        ContextModel contextModel = extractContextModel(additionalModels);
-        if(contextModel == null) return null;
-
-        int numOfContexts = contextModel.getNumOfContexts();
+        long numOfContexts = ((ContextModel) contextModel).getNumOfContexts();
         double percentage = numOfContextsWithSameOccurrence / numOfContexts;
         return ScoreMapping.mapScore(percentage, noiseReductionWeight);
     }
 
-    private ContextModel extractContextModel(List<Model> additionalModels) {
-        if (additionalModels.isEmpty()) {
-            return null;
-        } else {
-            Model additionalModel = additionalModels.get(0);
-            return (ContextModel) additionalModel;
-        }
+    protected Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
+        return eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader, modelName, contextFieldNames);
+    }
+
+    private double calcCommonnessDiscounting(int range, double occurrence) {
+        return Sigmoid.calcLogisticFunc(
+                range * xWithValueHalfFactor,
+                range,
+                epsilonValueForMaxX,
+                occurrence - 1);
     }
 
 }

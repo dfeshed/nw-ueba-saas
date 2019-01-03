@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ContextModelBuilderConf implements IModelBuilderConf {
     public static final String CONTEXT_MODEL_BUILDER = "context_model_builder";
 
-    @JsonIgnore
     @Override
     public String getFactoryName() {
         return CONTEXT_MODEL_BUILDER;

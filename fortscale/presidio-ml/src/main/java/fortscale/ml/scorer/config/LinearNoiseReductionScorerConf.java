@@ -12,35 +12,52 @@ import java.util.List;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public class LinearNoiseReductionScorerConf extends ModelScorerConf{
+public class LinearNoiseReductionScorerConf extends AbstractScorerConf {
     public static final String SCORER_TYPE = "linear-noise-reduction-scorer";
+    public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+    public static final int MAX_RARE_COUNT = 8;
+    //TODO: NOT SURE ABOUT THE VALUE
+    private static final double EPSILON_VALUE_FOR_MAX_X = 0.0099999999;
 
     @JsonProperty("main-scorer")
     private IScorerConf mainScorerConf;
     @JsonProperty("reduction-scorer")
     private IScorerConf reductionScorerConf;
+    @JsonProperty("main-scorer-model")
+    private ModelInfo mainScorerModelInfo;
+    @JsonProperty("category-rarity-global-model")
+    private ModelInfo categoryRarityGlobalModelInfo;
+    @JsonProperty("context-model")
+    ModelInfo contextModelInfo;
     @JsonProperty("noise-reduction-weight")
     private ScoreMapping.ScoreMappingConf noiseReductionWeight;
-    @JsonProperty("reduction-model")
-    ModelInfo reductionModelInfo;
-
+    @JsonProperty("max-rare-count")
+    int maxRareCount = MAX_RARE_COUNT;
+    @JsonProperty("x-with-value-half-factor")
+    double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
+    double epsilonValueForMaxX = EPSILON_VALUE_FOR_MAX_X;
 
     @JsonCreator
     public LinearNoiseReductionScorerConf(@JsonProperty("name") String name,
                                           @JsonProperty("main-scorer") IScorerConf mainScorerConf,
                                           @JsonProperty("reduction-scorer") IScorerConf reductionScorerConf,
-                                          @JsonProperty("model") ModelInfo modelInfo,
-                                          @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
-                                          @JsonProperty("reduction-models") List<ModelInfo> reductionModelInfo,
-                                          @JsonProperty("noise-reduction-weight") ScoreMapping.ScoreMappingConf noiseReductionWeight
-                                          ) {
-        super(name, modelInfo, additionalModelInfos);
+                                          @JsonProperty("main-scorer-model") ModelInfo mainScorerModelInfo,
+                                          @JsonProperty("category-rarity-global-model") ModelInfo categoryRarityGlobalModelInfo,
+                                          @JsonProperty("context-model") ModelInfo contextModelInfo,
+                                          @JsonProperty("noise-reduction-weight") ScoreMapping.ScoreMappingConf noiseReductionWeight) {
+        super(name);
         Assert.notNull(mainScorerConf, "mainScorerConf must not be null");
         Assert.notNull(reductionScorerConf, "reductionScorerConf must not be null");
+        Assert.notNull(mainScorerModelInfo, "mainScorerModelInfo must not be null");
+        Assert.notNull(categoryRarityGlobalModelInfo, "categoryRarityGlobalModelInfo must not be null");
+        Assert.notNull(contextModelInfo, "contextModelInfo must not be null");
         Assert.notNull(noiseReductionWeight, "noiseReductionWeight must not be null");
 
         this.mainScorerConf = mainScorerConf;
         this.reductionScorerConf = reductionScorerConf;
+        this.mainScorerModelInfo = mainScorerModelInfo;
+        this.categoryRarityGlobalModelInfo = categoryRarityGlobalModelInfo;
+        this.contextModelInfo = contextModelInfo;
         this.noiseReductionWeight = noiseReductionWeight;
     }
 
@@ -52,12 +69,33 @@ public class LinearNoiseReductionScorerConf extends ModelScorerConf{
         return reductionScorerConf;
     }
 
-    public ModelInfo getReductionModelInfo() {
-        return reductionModelInfo;
+    public ModelInfo getMainScorerModelInfo() {
+        return mainScorerModelInfo;
+    }
+
+    public ModelInfo getCategoryRarityGlobalModelInfo() {
+        return categoryRarityGlobalModelInfo;
+    }
+
+    public ModelInfo getContextModelInfo() {
+        return contextModelInfo;
     }
 
     public ScoreMapping.ScoreMappingConf getNoiseReductionWeight() {
         return noiseReductionWeight;
+    }
+
+
+    public int getMaxRareCount() {
+        return maxRareCount;
+    }
+
+    public double getxWithValueHalfFactor() {
+        return xWithValueHalfFactor;
+    }
+
+    public double getEpsilonValueForMaxX() {
+        return epsilonValueForMaxX;
     }
 
     @Override

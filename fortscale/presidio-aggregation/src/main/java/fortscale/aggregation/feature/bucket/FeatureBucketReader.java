@@ -21,6 +21,8 @@ public interface FeatureBucketReader {
 	 */
 	Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange);
 
+	long getNumOfDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange);
+
 	/**
 	 * Get a list of all the {@link FeatureBucket}s created from the {@link FeatureBucketConf}
 	 * whose name is "featureBucketConfName", that belong to the context IDs in the given set,

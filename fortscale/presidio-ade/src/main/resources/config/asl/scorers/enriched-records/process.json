@@ -73,19 +73,16 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-model": {
+                "main-scorer-model": {
+                  "name": "dstProcessFileName.userId.process"
+                },
+                "category-rarity-global-model": {
+                  //todo: change model name after Yaron changes
                   "name": "userId.dstProcessFileName.process"
                 },
-                //todo: change model name after Yaron changes
-                //todo: add linear-noise-reduction-scorer to scrinpting engine indicators
-                "model": {
-                  "name": "userId.dstProcessFileName.process"
+                "context-model": {
+                  "name": "contexts.process"
                 },
-                "additional-models": [
-                  {
-                    "name": "contexts.process"
-                  }
-                ],
                 "noise-reduction-weight": {
                   "mapping": {
                     "0": 0.5,
@@ -282,7 +279,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -316,7 +313,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "main-scorer-model": {
+                  "name": "srcProcessFilePath.userIdDstProcessFileName.process"
+                },
+                "category-rarity-global-model": {
+                  //todo: change model name after Yaron changes
+                  "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95
+                  }
+                }
               }
             },
             {
@@ -337,7 +349,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -371,7 +383,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "main-scorer-model": {
+                  "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process"
+                },
+                "category-rarity-global-model": {
+                  //todo: change model name after Yaron changes
+                  "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95
+                  }
+                }
               }
             },
             {
@@ -392,7 +419,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -426,7 +453,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "main-scorer-model": {
+                  "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process"
+                },
+                "category-rarity-global-model": {
+                  //todo: change model name after Yaron changes
+                  "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95
+                  }
+                }
               }
             }
           ]
