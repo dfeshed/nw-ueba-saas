@@ -157,7 +157,7 @@ public class ModelingEngine {
 		// Store
 		try {
 			TimeRange timeRange = new TimeRange(endInstant.minusSeconds(timeRangeInSeconds), endInstant);
-			modelStore.save(modelConf, sessionId, contextId, model, timeRange, storeMetadataProperties);
+			modelStore.save(modelConf, sessionId, contextId, model, timeRange, storeMetadataProperties, modelBuilderData.getContextFieldNameToValueMap());
 		} catch (Exception e) {
 			logger.error("Failed to store model for context ID {}.", contextId, e);
 			return false;

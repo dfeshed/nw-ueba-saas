@@ -7,6 +7,6 @@ import java.time.Instant;
  */
 public class EmptyModelDao extends ModelDAO{
     public EmptyModelDao(Instant endTime) {
-        super(null, null, null, null, endTime);
+        super(null, null, null, null, endTime, null);
     }
 }

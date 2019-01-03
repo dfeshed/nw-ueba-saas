@@ -77,8 +77,12 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
     }
 
-    public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties) {
-        ModelDAO modelDao = new ModelDAO(sessionId, contextId, model, timeRange.getStart(), timeRange.getEnd());
+    public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange,
+                     StoreMetadataProperties storeMetadataProperties,
+                     Map<String, String> contextFieldNameToValueMap) {
+        ModelDAO modelDao = new ModelDAO(sessionId, contextId, model,
+                timeRange.getStart(), timeRange.getEnd(),
+                contextFieldNameToValueMap);
         save(modelConf, modelDao, storeMetadataProperties);
     }
 

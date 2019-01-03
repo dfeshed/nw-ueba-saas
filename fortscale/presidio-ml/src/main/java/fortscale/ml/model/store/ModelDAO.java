@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 @Document
 @DynamicIndexing(compoundIndexes = {
@@ -25,6 +27,7 @@ public class ModelDAO {
     public static final String MODEL_FIELD = "model";
     public static final String START_TIME_FIELD = "startTime";
     public static final String END_TIME_FIELD = "endTime";
+    public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 
     @Id
     private String id;
@@ -41,13 +44,17 @@ public class ModelDAO {
     private Instant startTime;
     @Field(END_TIME_FIELD)
     private Instant endTime;
+    @Field(CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD)
+    private Map<String, String> contextFieldNameToValueMap;
 
-    public ModelDAO(String sessionId, String contextId, Model model, Instant startTime, Instant endTime) {
+    public ModelDAO(String sessionId, String contextId, Model model, Instant startTime, Instant endTime,
+                    Map<String, String> contextFieldNameToValueMap) {
         this.sessionId = sessionId;
         this.contextId = contextId;
         this.model = model;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.contextFieldNameToValueMap = contextFieldNameToValueMap;
     }
 
     public String getSessionId() {
@@ -72,6 +79,10 @@ public class ModelDAO {
 
     public Instant getEndTime() {
         return endTime;
+    }
+
+    public Map<String, String> getContextFieldNameToValueMap() {
+        return contextFieldNameToValueMap;
     }
 
     @Override

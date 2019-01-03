@@ -15,7 +15,7 @@ public class CategoryRarityModelGlobalBuilderFactory extends AbstractServiceAuto
 
     @Override
     public String getFactoryName() {
-        return CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER;
+        return CategoryRarityGlobalModelBuilderConf.CATEGORY_RARITY_GLOBAL_MODEL_BUILDER;
     }
 
 

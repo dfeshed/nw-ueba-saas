@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Map;
+
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +37,8 @@ public class ModelStoreTest {
 		Assert.assertFalse(mongoTemplate.getCollectionNames().contains(collectionName));
 		StoreManager storeManager = mock(StoreManager.class);
 		modelStore.setStoreManager(storeManager);
-		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0), new StoreMetadataProperties());
+		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0),
+				new StoreMetadataProperties(), null);
 		Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
 	}
 }
