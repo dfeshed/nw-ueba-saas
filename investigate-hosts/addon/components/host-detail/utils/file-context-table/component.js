@@ -26,7 +26,8 @@ import {
   getFileContextFileStatus,
   setFileContextFileStatus,
   retrieveRemediationStatus,
-  resetSelection
+  resetSelection,
+  deSelectAllSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -61,7 +62,8 @@ const dispatchToActions = {
   setFileContextFileStatus,
   retrieveRemediationStatus,
   resetSelection,
-  resetRiskScore
+  resetRiskScore,
+  deSelectAllSelection
 };
 
 const FileContextTable = Component.extend({
@@ -109,13 +111,17 @@ const FileContextTable = Component.extend({
 
     onRowClick(item, index, e) {
       const { target: { classList } } = e;
+      const { tabName, storeName } = this.getProperties('tabName', 'storeName');
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         if (this.get('selectedRowIndex') !== index) {
-          this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item, index);
+          this.send('deSelectAllSelection', tabName);
+          this.send('toggleRowSelection', tabName, item);
+          this.send('onHostFileSelection', tabName, storeName, item, index);
           if (this.openPropertyPanel) {
             this.openPropertyPanel();
           }
         } else {
+          this.send('toggleRowSelection', tabName, item);
           this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), { id: null }, null);
           if (this.closePropertyPanel) {
             this.closePropertyPanel();

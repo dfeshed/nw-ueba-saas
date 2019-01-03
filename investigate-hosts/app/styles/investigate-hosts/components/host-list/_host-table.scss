@@ -95,7 +95,7 @@
 }
 
 .action-divider {
-  @include border(1px, solid, primary);
+  @include border-left(1px, solid, primary);
   height: 2rem;
   margin-right: rsa-whitespace();
 }

@@ -50,6 +50,8 @@ const toggleRowSelection = (belongsTo, item) => ({ type: ACTION_TYPES.TOGGLE_FIL
 
 const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
 
+const deSelectAllSelection = (belongsTo) => ({ type: ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
+
 const resetSelection = (belongsTo) => ({ type: ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION, meta: { belongsTo } });
 
 const setHostDetailPropertyTab = (belongsTo, tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName }, meta: { belongsTo } });
@@ -145,5 +147,6 @@ export {
   resetSelection,
   downloadFilesToServer,
   fetchMachineCount,
-  setRowSelection
+  setRowSelection,
+  deSelectAllSelection
 };

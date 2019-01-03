@@ -30,43 +30,78 @@ const listData = [
     pid: 732,
     name: 'agetty',
     checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 733,
     name: 'agetty',
     checksumSha256: '38629328d0eb4605393b2a5e75e6372c46b66f55d753439f1e1e2218a9c3ec1c',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 664,
     name: 'auditd',
     checksumSha256: '3f9f060332b8062c66591df85a1baa19a99235590f1b23b91d075d27f88d055e',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 8282,
     name: 'bash',
     checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 10110,
     name: 'bash',
     checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
-    parentPid: 10106
+    parentPid: 10106,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 11061,
     name: 'bash',
     checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   },
   {
     pid: 13871,
     name: 'bash',
     checksumSha256: 'f7a24de16d613d35937aea46503b0ab91e434854c27169e93a23d34ce53fad6b',
-    parentPid: 1
+    parentPid: 1,
+    fileProperties: {
+      checksum256: 'test',
+      score: 11,
+      downLoadInfo: {}
+    }
   }
 ];
 
@@ -82,7 +117,12 @@ const testTree = [
         pid: 517,
         name: 'systemd-udevd',
         checksumSha256: '35a41bad1ca1ba',
-        parentPid: 1
+        parentPid: 1,
+        fileProperties: {
+          checksum256: 'test',
+          score: 11,
+          downLoadInfo: {}
+        }
       },
       {
         pid: 29332,
@@ -94,7 +134,12 @@ const testTree = [
             pid: 29680,
             name: 'rsa_audit_onramp',
             checksumSha256: '4a63263a98b8a67951',
-            parentPid: 29332
+            parentPid: 29332,
+            fileProperties: {
+              checksum256: 'test',
+              score: 11,
+              downLoadInfo: {}
+            }
           }
         ]
       },
@@ -108,7 +153,12 @@ const testTree = [
             pid: 14134,
             name: 'java',
             checksumSha256: 'db598d68d4c6c25e18f94',
-            parentPid: 14102
+            parentPid: 14102,
+            fileProperties: {
+              checksum256: 'test',
+              score: 11,
+              downLoadInfo: {}
+            }
           }
         ]
       }
@@ -248,7 +298,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .agentId(1)
       .scanTime(123456789)
       .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processTree(testTree)
       .selectedTab(null)
       .machineOSType('windows')
       .sortField('name')
@@ -261,7 +311,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           }
       </style>
       {{host-detail/process/process-tree}}`);
-
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'getProcess');
       assert.equal(modelName, 'endpoint');
@@ -389,8 +438,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .agentId(1)
       .scanTime(123456789)
       .isTreeView(false)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
+      .processList(listData)
+      .processTree(testTree)
       .selectedTab(null)
       .sortField('score')
       .isDescOrder(true)
@@ -415,7 +464,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), true, '2nd row is selected after click');
       await click(findAll('.rsa-data-table-body-row')[0]); // clicking on same row deselect the row
       assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), false, '2nd row is selected after click');
-      assert.equal(find('.file-info').textContent.trim().includes('Showing 77 of 77 processes'), true, 'Shows footer message');
+      assert.equal(find('.file-info').textContent.trim().includes('Showing 7 of 7 processes'), true, 'Shows footer message');
     });
   });
   test('clicking on the process name get process-details view', async function(assert) {

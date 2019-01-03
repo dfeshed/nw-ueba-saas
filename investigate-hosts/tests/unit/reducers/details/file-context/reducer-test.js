@@ -332,4 +332,36 @@ module('Unit | Reducers | File Context', function() {
     assert.equal(result.agentCountMapping[0][1211212], 12);
   });
 
+  test('DESELECT_FILE_CONTEXT_ALL_SELECTION', function(assert) {
+    const driver = {
+      id: 0,
+      checksumSha256: 0,
+      signature: '',
+      size: 0,
+      fileProperties: {
+        checksumSha256: 'test',
+        checksumSha1: 'test',
+        checksumMd5: 'test',
+        signature: {
+          thumbprint: 1
+        }
+      }
+    };
+    const previous = Immutable.from({
+      fileContext: {
+        drivers_61: {
+          id: '0',
+          fileProperties: {
+            signature: {
+              thumbprint: 1
+            }
+          }
+        }
+      },
+      selectedRowId: '123',
+      fileContextSelections: [driver]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION, payload: driver });
+    assert.equal(result.fileContextSelections.length, 0);
+  });
 });

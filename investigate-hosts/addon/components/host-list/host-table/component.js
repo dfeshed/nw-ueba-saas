@@ -95,11 +95,14 @@ const HostTable = Component.extend({
         this.send('setFocusedHostIndex', index);
 
         if (!isSameRowClicked && openProperties) {
+          this.send('deSelectAllHosts');
+          this.send('toggleMachineSelected', item);
           this.send('onHostSelection', item);
           next(() => {
             this.openProperties();
           });
         } else {
+          this.send('toggleMachineSelected', item);
           this.closeProperties();
           this.send('setFocusedHostIndex', null);
         }

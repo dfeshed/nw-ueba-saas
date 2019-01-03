@@ -209,8 +209,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
 
   test('it should close the property panel before toggling the view', async function(assert) {
     new ReduxDataHelper(setState)
-      .processList(processList)
-      .processTree(processTree)
+      .processList(modifiedList)
+      .processTree(modifiedTree)
       .processDetails(processDetails)
       .isTreeView(true)
       .machineOSType('windows')

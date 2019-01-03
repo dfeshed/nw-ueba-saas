@@ -45,7 +45,6 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
   test('5 columns rendered in the Image hooks table', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
     await render(hbs`{{host-detail/process/process-image-hooks}}`);
-
     assert.equal(findAll('.process-image-hooks-list .rsa-data-table-header-row > div').length, 5, '5 column rendered');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'DLL Name', 'Header text in first column, DLL Name');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'Hooked FileName', 'Header text in second column, Hooked FileName');

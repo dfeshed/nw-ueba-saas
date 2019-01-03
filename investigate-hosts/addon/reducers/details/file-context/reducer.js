@@ -84,6 +84,8 @@ const fileContext = reduxActions.handleActions({
     }
   },
 
+  [ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION]: (state) => state.set('fileContextSelections', []),
+
   [ACTION_TYPES.FILE_CONTEXT_RESET_SELECTION]: (state) => state.set('fileContextSelections', []),
 
   [ACTION_TYPES.SAVE_FILE_CONTEXT_FILE_STATUS]: (state, action) => {

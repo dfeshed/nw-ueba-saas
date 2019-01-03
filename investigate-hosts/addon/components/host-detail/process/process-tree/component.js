@@ -155,18 +155,25 @@ const TreeComponent = Component.extend({
      * @param index
      * @public
      */
-    handleRowClickAction(item, index) {
+    handleRowClickAction(item, index, e) {
       const { pid, checksumSha256 } = item;
-      if (this.get('selectedRowIndex') !== index) {
-        this.send('setRowIndex', index);
-        if (this.openPropertyPanel) {
-          this.openPropertyPanel();
-        }
-        this.send('onProcessSelection', pid, checksumSha256);
-      } else {
-        this.send('setRowIndex', null);
-        if (this.closePropertyPanel) {
-          this.closePropertyPanel();
+      const { target: { classList } } = e;
+      // do not select row when checkbox is clicked
+      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
+        if (this.get('selectedRowIndex') !== index) {
+          this.send('setRowIndex', index);
+          this.send('deSelectAllProcess');
+          this.send('toggleProcessSelection', item);
+          if (this.openPropertyPanel) {
+            this.openPropertyPanel();
+          }
+          this.send('onProcessSelection', pid, checksumSha256);
+        } else {
+          this.send('toggleProcessSelection', item);
+          this.send('setRowIndex', null);
+          if (this.closePropertyPanel) {
+            this.closePropertyPanel();
+          }
         }
       }
     },

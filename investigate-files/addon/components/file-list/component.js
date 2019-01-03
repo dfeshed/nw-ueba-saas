@@ -157,11 +157,14 @@ const FileList = Component.extend({
         const openRiskPanel = this.get('openRiskPanel');
         this.send('setSelectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
+          this.send('deSelectAllFiles');
+          this.send('toggleFileSelection', item);
           this.send('onFileSelection', item);
           next(() => {
             this.openRiskPanel();
           });
         } else {
+          this.send('toggleFileSelection', item);
           this.closeRiskPanel();
           this.send('setSelectedIndex', null);
         }
