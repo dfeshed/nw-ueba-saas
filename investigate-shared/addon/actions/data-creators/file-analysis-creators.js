@@ -7,7 +7,7 @@ const toggleFileAnalysisView = (payload) => ({ type: ACTION_TYPES.TOGGLE_FILE_AN
  * @returns {function(*)}
  * @public
  */
-const getFileAnalysisData = (data, format) => {
+const getFileAnalysisData = (data, format, callback) => {
   return (dispatch) => {
 
     dispatch({
@@ -19,6 +19,10 @@ const getFileAnalysisData = (data, format) => {
             type: ACTION_TYPES.TOGGLE_FILE_ANALYZER,
             payload: true
           });
+        },
+        onFailure: (response) => {
+          const { meta: { message } } = response;
+          callback.onFailure(message);
         }
       }
     });

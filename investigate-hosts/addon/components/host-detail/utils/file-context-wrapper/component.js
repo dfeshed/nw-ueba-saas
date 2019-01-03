@@ -32,6 +32,11 @@ import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/a
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
+const callBackOptions = (context) => ({
+  onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+  onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
+});
+
 const stateToComputed = (state, { storeName }) => ({
   downloadLink: downloadLink(state),
   selectedFileList: selectedFileList(state, storeName),
@@ -83,6 +88,8 @@ const ContextWrapper = Component.extend({
 
   flashMessage: service(),
 
+  callBackOptions,
+
   actions: {
 
     onPropertyPanelClose() {
@@ -90,11 +97,7 @@ const ContextWrapper = Component.extend({
     },
 
     onDownloadFilesToServer() {
-      const callBackOptions = {
-        onSuccess: () => this.get('flashMessage').showFlashMessage('investigateHosts.flash.fileDownloadRequestSent'),
-        onFailure: (message) => this.get('flashMessage').showErrorMessage(message)
-      };
-
+      const callBackOptions = this.get('callBackOptions')(this);
       const agentId = this.get('agentId');
       let fileContextSelections = this.get('fileContextSelections');
 
@@ -105,15 +108,17 @@ const ContextWrapper = Component.extend({
       this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
     },
     onSaveLocalCopy() {
-      this.send('saveLocalFileCopy', this.get('selectedFileList')[0]);
+      const callBackOptions = this.get('callBackOptions')(this);
+      this.send('saveLocalFileCopy', this.get('selectedFileList')[0], callBackOptions);
     },
     onAnalyzeFile() {
+      const callBackOptions = this.get('callBackOptions')(this);
       // Open analyze file.
       const fileContextSelections = this.get('fileContextSelections');
       const [{ checksumSha256, format = '' }] = fileContextSelections;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat);
+      this.send('getFileAnalysisData', checksumSha256, fileFormat, callBackOptions);
     },
 
     resetRiskScoreAction(itemsList) {

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
+import { inject as service } from '@ember/service';
 import {
   getProcessData,
   isNavigatedFromExplore,
@@ -30,9 +31,14 @@ import {
   downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { success } from 'investigate-shared/utils/flash-messages';
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
+
+const callBackOptions = (context) => ({
+  onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+  onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
+});
 
 const stateToComputed = (state) => ({
   downloadLink: downloadLink(state),
@@ -85,6 +91,10 @@ const Container = Component.extend({
 
   tabName: 'PROCESS',
 
+  flashMessage: service(),
+
+  callBackOptions,
+
   @computed('process')
   loadedDLLNote({ machineOsType }) {
     if (machineOsType && machineOsType !== 'linux') {
@@ -122,10 +132,7 @@ const Container = Component.extend({
     },
 
     onDownloadFilesToServer() {
-      const callBackOptions = {
-        onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
-        onFailure: (message) => failure(message)
-      };
+      const callBackOptions = this.get('callBackOptions')(this);
       const agentId = this.get('agentId');
       let selectedProcessList = this.get('selectedProcessList');
 
@@ -137,16 +144,18 @@ const Container = Component.extend({
     },
 
     onSaveLocalCopy() {
-      this.send('saveLocalFileCopy', this.get('selectedProcessList')[0]);
+      const callBackOptions = this.get('callBackOptions')(this);
+      this.send('saveLocalFileCopy', this.get('selectedProcessList')[0], callBackOptions);
     },
 
     onAnalyzeFile() {
+      const callBackOptions = this.get('callBackOptions')(this);
       // Open analyze file.
       const selectedProcessList = this.get('selectedProcessList');
       const [{ checksumSha256, format = '' }] = selectedProcessList;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat);
+      this.send('getFileAnalysisData', checksumSha256, fileFormat, callBackOptions);
     }
   }
 

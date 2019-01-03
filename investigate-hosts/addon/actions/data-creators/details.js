@@ -264,7 +264,7 @@ const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPER
 
 const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
 
-const saveLocalFileCopy = (selectedFile) => {
+const saveLocalFileCopy = (selectedFile, callback) => {
   return (dispatch, getState) => {
     HostDetails.saveLocalFileCopy(selectedFile.checksumSha256)
       .then(({ data }) => {
@@ -275,7 +275,8 @@ const saveLocalFileCopy = (selectedFile) => {
         }
       })
       .catch((response) => {
-        debug(`saveLocalFileCopy - Error: ${JSON.stringify(response)}`);
+        const { meta: { message } } = response;
+        callback.onFailure(message);
       });
   };
 };
