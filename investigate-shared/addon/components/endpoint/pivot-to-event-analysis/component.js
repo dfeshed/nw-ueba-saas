@@ -57,7 +57,9 @@ export default Component.extend({
     this._super(arguments);
     this.get('eventBus').on('rsa-application-click', () => {
       if (!this.isDestroyed || !this.isDestroying) {
-        this.toggleProperty('isExpanded');
+        if (this.get('isExpanded')) {
+          this.toggleProperty('isExpanded');
+        }
       }
     });
   },
