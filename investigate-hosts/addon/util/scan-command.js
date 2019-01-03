@@ -4,7 +4,7 @@ import { stopScan, startScan } from 'investigate-hosts/actions/data-creators/hos
 export const stopScanCommand = (agentIds) => {
   const callBackOptions = {
     onSuccess: () => success('investigateHosts.hosts.cancelScan.success'),
-    onFailure: (message) => failure(message)
+    onFailure: (message) => failure(message, null, false)
   };
   stopScan(agentIds, callBackOptions);
 };
@@ -13,7 +13,7 @@ export const stopScanCommand = (agentIds) => {
 export const startScanCommand = (agentIds) => {
   const callBackOptions = {
     onSuccess: () => success('investigateHosts.hosts.initiateScan.success'),
-    onFailure: (message) => failure(message)
+    onFailure: (message) => failure(message, null, false)
   };
   startScan(agentIds, callBackOptions);
 };
