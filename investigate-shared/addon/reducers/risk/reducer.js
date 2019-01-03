@@ -16,7 +16,8 @@ const riskScoreState = Immutable.from({
   alertsError: null,
   selectedAlert: null,
   expandedEventId: null,
-  isRespondServerOffline: false
+  isRespondServerOffline: false,
+  alertsLoadingStatus: null
 });
 
 const riskScoreReducer = handleActions({
@@ -33,8 +34,15 @@ const riskScoreReducer = handleActions({
 
   [ACTION_TYPES.GET_RISK_SCORE_CONTEXT]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.set('riskScoreContext', action.payload.data),
-      failure: (s) => s.set('riskScoreContextError', action.payload.meta)
+      start: (s) => s.set('alertsLoadingStatus', 'loading'),
+      success: (s) => s.merge({
+        riskScoreContext: action.payload.data,
+        alertsLoadingStatus: 'completed'
+      }),
+      failure: (s) => s.merge({
+        riskScoreContextError: action.payload.meta,
+        alertsLoadingStatus: null
+      })
     });
   },
   [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
@@ -46,7 +54,8 @@ const riskScoreReducer = handleActions({
       selectedAlert: null,
       eventsData: [],
       expandedEventId: null,
-      alertsError: null
+      alertsError: null,
+      alertsLoadingStatus: null
     });
   },
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {

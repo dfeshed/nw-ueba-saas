@@ -22,7 +22,8 @@ module('Unit | Reducers | risk', function(hooks) {
         isRespondServerOffline: false,
         riskScoreContext: null,
         riskScoreContextError: null,
-        selectedAlert: null
+        selectedAlert: null,
+        alertsLoadingStatus: null
       });
   });
 
@@ -153,7 +154,8 @@ module('Unit | Reducers | risk', function(hooks) {
       selectedAlert: 'Random Alert',
       eventsData: [{}, {}],
       expandedEventId: '1',
-      alertsError: 'Alerts error'
+      alertsError: 'Alerts error',
+      alertsLoadingStatus: 'completed'
     });
     const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
     assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
@@ -164,12 +166,14 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.eventsData.length, 0, 'Events data is reset');
     assert.equal(result.expandedEventId, null, 'expandedEventId is reset');
     assert.equal(result.alertsError, null, 'alertsError is reset');
+    assert.equal(result.alertsLoadingStatus, null, 'alertsLoadingStatus is reset');
   });
 
   test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {
     // Initial state
     const initialResult = reducer(undefined, {});
     assert.equal(initialResult.riskScoreContext, null, 'original riskScoreContext value');
+    assert.equal(initialResult.alertsLoadingStatus, null, 'original alertsLoadingStatus value');
 
     const response = [{
       hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
@@ -189,6 +193,7 @@ module('Unit | Reducers | risk', function(hooks) {
 
     const result = reducer(initialResult, newAction);
     assert.deepEqual(result.riskScoreContext, response, 'riskScoreContext value is set');
+    assert.deepEqual(result.alertsLoadingStatus, 'completed', 'alertsLoadingStatus value is set');
 
   });
 });

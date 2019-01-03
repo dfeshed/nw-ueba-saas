@@ -27,6 +27,8 @@
         <box class='alert-error-message'>
           {{rsa-panel-message message=(t 'investigateShared.endpoint.riskProperties.error.emptyContext')}}
         </box>
+      {{else if (eq alertsLoadingStatus 'loading')}}
+        {{rsa-loader size="larger" class='alerts-loading'}}
       {{else if contexts}}
         {{#endpoint/risk-properties/alert-context
           contexts=contexts

@@ -8,7 +8,8 @@ import {
   currentSeverityContext,
   riskScoringServerError,
   isRiskScoreContextEmpty,
-  isRespondServerOffline
+  isRespondServerOffline,
+  alertsLoadingStatus
 } from 'investigate-shared/selectors/risk/selectors';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -57,7 +58,8 @@ export default Component.extend({
       contexts: currentSeverityContext(state),
       riskScoringServerError: riskScoringServerError(state),
       isRiskScoreContextEmpty: isRiskScoreContextEmpty(state),
-      isRespondServerOffline: isRespondServerOffline(state)
+      isRespondServerOffline: isRespondServerOffline(state),
+      alertsLoadingStatus: alertsLoadingStatus(state)
     });
   },
 

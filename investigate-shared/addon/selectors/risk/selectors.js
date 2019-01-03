@@ -13,6 +13,7 @@ export const selectedAlert = (state) => state.risk.selectedAlert || '';
 export const expandedEventId = (state) => state.risk.expandedEventId;
 export const isRespondServerOffline = (state) => state.risk.isRespondServerOffline;
 export const events = (state) => state.risk.eventsData;
+export const alertsLoadingStatus = (state) => state.risk.alertsLoadingStatus;
 
 export const currentSeverityContext = createSelector(
   [riskScoreContext, activeRiskSeverityTab],
