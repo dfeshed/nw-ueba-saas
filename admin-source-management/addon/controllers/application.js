@@ -21,22 +21,20 @@ export default Controller.extend({
   },
 
   @computed('routing.currentRouteName')
-  isGroupsActive() {
-    const { router } = this.get('routing');
+  isGroupsActive(currentRouteName) {
     let isActive = false;
-    if (router.isActive('admin-source-management.groups') ||
-        router.isActive('admin-source-management.group-wizard')) {
+    if (currentRouteName.indexOf('admin-source-management.groups') !== -1 ||
+        currentRouteName.indexOf('admin-source-management.group-wizard') !== -1) {
       isActive = true;
     }
     return isActive;
   },
 
   @computed('routing.currentRouteName')
-  isPoliciesActive() {
-    const { router } = this.get('routing');
+  isPoliciesActive(currentRouteName) {
     let isActive = false;
-    if (router.isActive('admin-source-management.policies') ||
-        router.isActive('admin-source-management.policy-wizard')) {
+    if (currentRouteName.indexOf('admin-source-management.policies') !== -1 ||
+        currentRouteName.indexOf('admin-source-management.policy-wizard') !== -1) {
       isActive = true;
     }
     return isActive;
