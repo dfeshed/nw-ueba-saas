@@ -10,7 +10,8 @@ export default Component.extend(contextMenuMixin, {
 
   contextMenu(e) {
 
-    if (document.querySelectorAll('.ember-tether').length > 0) {
+    if (document.querySelectorAll('.ember-tether').length > 0 ||
+      document.querySelectorAll('.button-menu.expanded').length > 0) {
       // Need to call application click event to close dropdown menu
       this.get('eventBus').trigger('rsa-application-click', e.target);
     }
@@ -46,7 +47,6 @@ export default Component.extend(contextMenuMixin, {
     if (typeof beforeContextMenuShow === 'function') {
       beforeContextMenuShow(this, e);
     }
-
 
     this._super(e);
   }

@@ -28,6 +28,21 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     });
   });
 
+  test('menu is getting closed on application click event', async function(assert) {
+    this.set('selections', new Array(1));
+    await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections}}`);
+    await click('.rsa-split-dropdown .rsa-form-button');
+    const selector = '.button-menu';
+    const buttonMenu = find(selector);
+    return settled().then(async() => {
+      assert.ok(buttonMenu.classList.contains('expanded'));
+      this.owner.lookup('service:eventBus').trigger('rsa-application-click');
+      return settled().then(async() => {
+        assert.notOk(buttonMenu.classList.contains('expanded'));
+      });
+    });
+  });
+
   test('buttons are disabled if more than one selections', async function(assert) {
     this.set('selections', new Array(10));
     await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections}}`);

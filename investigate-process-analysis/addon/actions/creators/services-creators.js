@@ -105,7 +105,7 @@ export const setQueryTimeRange = ({ id, value, unit, startTime, endTime }, isCus
       }
       _setQueryTimeRange(dispatch, id, startTime.unix(), endTime.unix());
     } else {
-      _setQueryTimeRange(dispatch, 'CUSTOM', startTime / 1000, endTime / 1000);
+      _setQueryTimeRange(dispatch, 'CUSTOM', parseInt(startTime / 1000, 10), parseInt(endTime / 1000, 10));
     }
   };
 };

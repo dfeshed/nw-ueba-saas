@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import layout from './template';
-
+import { inject as service } from '@ember/service';
 
 const CATEGORIES = [
   {
@@ -46,11 +46,21 @@ export default Component.extend({
 
   categories: CATEGORIES,
 
+  eventBus: service(),
+
   @computed('selections')
   isDisabled(selections = []) {
     return selections.length !== 1;
   },
 
+  init() {
+    this._super(arguments);
+    this.get('eventBus').on('rsa-application-click', () => {
+      if (!this.isDestroyed || !this.isDestroying) {
+        this.toggleProperty('isExpanded');
+      }
+    });
+  },
 
   actions: {
     processEventAnalysis() {
