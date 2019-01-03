@@ -14,12 +14,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "type1",
-        "params": {
-          "param1": "valueOfParam1",
-          "param2": "valueOfParam2",
-          "param3": "valueOfParam3"
-        }
+        "type": "aggr_feature_sum_func"
       }
     },
     {
@@ -36,12 +31,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "type2",
-        "params": {
-          "param1": "valueOfParam1",
-          "param2": "valueOfParam2",
-          "param3": "valueOfParam3"
-        }
+        "type": "aggr_feature_sum_func"
       }
     }
   ]
