@@ -48,7 +48,7 @@ export default {
   {
     field: 'objectFunction',
     title: 'objectFunction',
-    width: '15%'
+    width: '15vw'
   },
   {
     field: 'hookedFileName',

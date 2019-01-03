@@ -52,7 +52,7 @@ export default {
   {
     field: 'tid',
     title: 'tid',
-    width: '15%'
+    width: '15vw'
   },
   {
     field: 'teb',

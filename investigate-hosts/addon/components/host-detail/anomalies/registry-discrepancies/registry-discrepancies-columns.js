@@ -25,7 +25,7 @@ export default {
   {
     field: 'apiType',
     title: 'apiType',
-    width: '11%'
+    width: '11vw'
   },
   {
     field: 'apiData',

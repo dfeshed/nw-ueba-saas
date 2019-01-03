@@ -53,7 +53,7 @@ let columnsConfig = {
     {
       field: 'name',
       title: 'SERVICE NAME',
-      width: '10%'
+      width: '10vw'
     },
     {
       field: 'timeCreated',
@@ -69,7 +69,7 @@ let columnsConfig = {
     {
       field: 'state',
       title: 'RUNNING STATUS',
-      width: '15%'
+      width: '15vw'
     },
     {
       field: 'timeCreated',
@@ -89,7 +89,7 @@ let columnsConfig = {
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      width: '15%'
+      width: '15vw'
     },
     {
       field: 'type',

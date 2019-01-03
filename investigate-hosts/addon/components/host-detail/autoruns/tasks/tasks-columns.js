@@ -29,7 +29,7 @@ const defaultColumns = [
   {
     field: 'fileProperties.fileStatus',
     title: 'File Status',
-    width: '15%'
+    width: '15vw'
   },
   {
     field: 'checksumSha256',
@@ -61,7 +61,7 @@ let columnsConfig = {
       field: 'nextRunTime',
       title: 'Next Run Time',
       format: 'DATE',
-      width: '15%'
+      width: '15vw'
     },
     {
       field: 'triggerString',

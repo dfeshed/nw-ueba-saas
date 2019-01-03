@@ -48,7 +48,7 @@ export default {
   {
     field: 'hookedProcess',
     title: 'hookedProcess',
-    width: '15%'
+    width: '15vw'
   },
   {
     field: 'hookedFileName',

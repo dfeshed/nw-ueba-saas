@@ -39,7 +39,7 @@ const defaultColumns = [
   {
     field: 'fileProperties.fileStatus',
     title: 'File Status',
-    width: '15%'
+    width: '15vw'
   }
 ];
 let columnsConfig = {
