@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { selectedProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import computed from 'ember-computed-decorators';
 
 import {
   propertyConfig,
@@ -23,7 +24,15 @@ const PropertyContainer = Component.extend({
 
   tagName: 'vbox',
 
-  classNames: 'property-container'
+  classNames: 'property-container',
+
+  @computed('processDetails')
+  hasProcessDetails(processDetails) {
+    if (processDetails.checksum) {
+      return true;
+    }
+    return false;
+  }
 
 });
 
