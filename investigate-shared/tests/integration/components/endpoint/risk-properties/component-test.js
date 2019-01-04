@@ -181,73 +181,6 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for No alerts available exists.');
   });
 
-  test('when totalEvents are more then + is displayed', async function(assert) {
-    const riskScoreContext = {
-      'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
-      'distinctAlertCount': {
-        'critical': 1,
-        'high': 2,
-        'medium': 3,
-        'low': 1
-      },
-      'categorizedAlerts': {
-        'Critical': {
-          'test alert': {
-            'alertCount': 10,
-            'totalEventsCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
-          }
-        }
-      }
-    };
-    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
-    this.set('riskType', 'FILES');
-    await render(hbs`{{endpoint/risk-properties riskState=riskState riskType=riskType}}`);
-
-    assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
-    assert.equal(find('.alert-context__event').textContent.trim(), '2+ event(s)', 'Display 2+ events for alert context');
-  });
-
-  test('when totalEvents are less then no + is displayed', async function(assert) {
-    const riskScoreContext = {
-      'id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
-      'distinctAlertCount': {
-        'critical': 1,
-        'high': 2,
-        'medium': 3,
-        'low': 1
-      },
-      'categorizedAlerts': {
-        'Critical': {
-          'test alert': {
-            'alertCount': 10,
-            'totalEventsCount': 1,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
-          }
-        }
-      }
-    };
-    this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
-    this.set('riskType', 'FILES');
-    await render(hbs`{{endpoint/risk-properties riskState=riskState riskType=riskType}}`);
-
-    assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
-    assert.equal(find('.alert-context__event').textContent.trim(), '2 event(s)', 'Display 2 events for alert context');
-  });
 
   test('show loading icon when alerts name data is not received', async function(assert) {
     const riskScoreContext = {
@@ -262,7 +195,6 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'Critical': {
           'test alert': {
             'alertCount': 10,
-            'totalEventsCount': 1,
             'eventContexts': [{
               'id': 'decoder-id1',
               'sourceId': '1'
