@@ -130,7 +130,8 @@ export const fileTotalLabel = createSelector(
 export const nextLoadCount = createSelector(
   [_files],
   (files) => {
-    const loadCount = files.length >= 100 ? 100 : files.length;
+    const ONE_PAGE_MAX_LENGTH = 100;
+    const loadCount = files.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : files.length;
     return loadCount;
   }
 );

@@ -87,7 +87,11 @@ const FILTER_TYPES = [
     'label': 'investigateHosts.hosts.column.machine.users.name',
     'type': 'text'
   },
-  // Driver error code yet to be add
+  {
+    'name': 'machineIdentity.agent.driverErrorCode',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agent.driverErrorCode',
+    'type': 'text'
+  },
   {
     'name': 'machine.networkInterfaces.macAddress',
     'label': 'investigateHosts.hosts.column.machine.networkInterfaces.macAddress',

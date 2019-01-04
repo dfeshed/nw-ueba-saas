@@ -3,7 +3,7 @@
     lazy=true
     selectedIndex=focusedHostIndex
     items=hostList
-    columnsConfig=updatedColumns
+    columnsConfig=columns
     onRowClick=(action 'toggleSelectedRow')}}
     {{host-list/host-table/host-table-header}}
     {{#if (eq hostFetchStatus 'wait')}}
@@ -42,6 +42,7 @@
       {{endpoint/load-more
       class="rsa-hosts-load-more"
       status=loadMoreHostStatus
+      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='hosts')
       serverId=serverId
       servers=servers
       count=hostTotal

@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { RESTRICTION_TYPE } from './restriction-type';
+import HOST_LIST_COLUMNS from './host-columns';
 import Immutable from 'seamless-immutable';
 
 const COLUMN_WIDTH = {
@@ -40,7 +41,7 @@ const DEFAULT_COLUMN = Immutable.from([
 ]);
 
 const { createSelector } = reselect;
-const _schema = (state) => state.endpoint.schema.schema || [];
+const _schema = () => HOST_LIST_COLUMNS || [];
 const _preferences = (state) => state.preferences.preferences;
 
 const _visibleColumns = createSelector(

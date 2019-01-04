@@ -6,8 +6,8 @@ import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection, 
 import {
   processedHostList,
   serviceList,
-  hostTotalLabel } from 'investigate-hosts/reducers/hosts/selectors';
-import computed from 'ember-computed-decorators';
+  hostTotalLabel,
+  nextLoadCount } from 'investigate-hosts/reducers/hosts/selectors';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 
@@ -33,7 +33,8 @@ const stateToComputed = (state) => ({
   timeRange: timeRange(state),
   servers: state.endpointServer.serviceData,
   focusedHostIndex: state.endpoint.machines.focusedHostIndex,
-  selections: state.endpoint.machines.selectedHostList || []
+  selections: state.endpoint.machines.selectedHostList || [],
+  nextLoadCount: nextLoadCount(state)
 });
 
 const dispatchToActions = {
@@ -53,14 +54,6 @@ const HostTable = Component.extend({
   tagName: 'box',
 
   classNames: 'machine-zone',
-
-  @computed('columns')
-  updatedColumns(columns) {
-    const fixedColumns = columns.slice(0, 3); // checkbox, machine name and risk score should be displayed first
-    const nonFixedColumns = columns.slice(3); // Remaining column sort by title
-    const sortedColumn = this._sortList(nonFixedColumns);
-    return [...fixedColumns, ...sortedColumn];
-  },
 
   _sortList(columnList) {
     const i18n = this.get('i18n');

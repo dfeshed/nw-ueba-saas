@@ -214,7 +214,6 @@ export const hostListPropertyTabs = createSelector(
     return HOST_LIST_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostListPropertyTab }));
   }
 );
-
 export const hostTotalLabel = createSelector(
   [_hostTotal, _expressionList, _hasNext, isBrokerView],
   (total, expressionList, hasNext, isBrokerView) => {
@@ -224,5 +223,13 @@ export const hostTotalLabel = createSelector(
       }
     }
     return `${total}`;
+  }
+);
+export const nextLoadCount = createSelector(
+  [_hostList],
+  (hostList) => {
+    const ONE_PAGE_MAX_LENGTH = 100;
+    const loadCount = hostList.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : hostList.length;
+    return loadCount;
   }
 );

@@ -2158,7 +2158,7 @@ export default {
       Neutral: 'Neutral'
     },
     remediationAction: {
-      Unblock: 'Not Blocked',
+      Unblock: '--',
       Block: 'Blocked'
     },
     riskScore: {
@@ -3056,6 +3056,7 @@ export default {
         machineIdentity: {
           machineName: 'Hostname',
           agentMode: 'Agent Mode',
+          agentVersion: 'Agent Version',
           agent: {
             exeCompileTime: 'Agent - User Mode Compile Time',
             sysCompileTime: 'Agent - Driver Compile Time',
@@ -3066,7 +3067,8 @@ export default {
             serviceStatus: 'Agent - Service Status',
             driverStatus: 'Agent - Driver Status',
             blockingEnabled: 'Agent - Blocking Enabled',
-            blockingUpdateTime: 'Agent - Blocking Update Time'
+            blockingUpdateTime: 'Agent - Blocking Update Time',
+            driverErrorCode: 'Agent- Driver Error Code'
           },
           operatingSystem: {
             description: 'OS - Description',

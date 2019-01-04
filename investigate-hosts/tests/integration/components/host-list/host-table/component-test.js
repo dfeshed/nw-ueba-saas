@@ -30,11 +30,11 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       .columns(endpoint.schema)
       .build();
     await render(hbs`{{host-list/host-table}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 7, 'Total 7 columns are rendered. checkbox + fields');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Total 6 columns are rendered. checkbox + fields');
     assert.equal(find('.rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Hostname', 'Second column should be hostname');
     assert.equal(find('.rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Risk Score', 'Third column should be Risk Score');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Agent Version', 'Fourth column should be Agent Version');
-    assert.equal(find('.rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'Operating System', 'Sixth column should be Operating System');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Operating System', 'Fourth column should be Operating System');
+    assert.equal(find('.rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Agent ID', 'Sixth column should be Agent ID');
   });
 
   test('column chooser do not have default fields', async function(assert) {
@@ -44,6 +44,6 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     await render(hbs`{{host-list/host-table}}`);
     await click('.rsa-icon-cog-filled');
     assert.equal(endpoint.schema.length, 6, '6 columns are passed to the table');
-    assert.equal(findAll('.column-chooser-lists li').length, 4, '4 fields present in columns chooser (excluding score and machine name)');
+    assert.equal(findAll('.column-chooser-lists li').length, 56, '56 fields present in columns chooser (excluding score and machine name)');
   });
 });

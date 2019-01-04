@@ -5,14 +5,20 @@ import Immutable from 'seamless-immutable';
 const DEFAULT_FILE_PREFERENCES = {
   filePreference: {
     visibleColumns: [
-      'reputationStatus',
+      'firstFileName',
       'firstSeenTime',
-      'machineOsType',
-      'signature.features',
+      'reputationStatus',
+      'score',
       'size',
-      'checksumSha256',
-      'entropy',
-      'fileStatus'
+      'signature.features',
+      'pe.resources.company',
+      'fileStatus',
+      'remediationAction',
+      'downloadInfo.status',
+      'size',
+      'signature.features',
+      'firstSeenTime',
+      'machineOsType'
     ],
     sortField: '{ "sortField": "score", "isSortDescending": false }'
   }

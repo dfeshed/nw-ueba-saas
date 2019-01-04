@@ -29,7 +29,7 @@ const SCHEMA = Immutable.from({
 test('getHostTableColumns', function(assert) {
   const result = getHostTableColumns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 5, 'should return 4 columns including checkbox column');
+  assert.equal(result.length, 62, 'should return 62 columns including checkbox column');
   // 0th field is a checkbox.
   assert.equal(result[1].visible, true, 'Agent Id field is not visible');
   assert.equal(result[3].visible, false, 'Agent Version field is visible');
@@ -38,8 +38,8 @@ test('getHostTableColumns', function(assert) {
 
 test('prepareSchema', function(assert) {
   const result = prepareSchema(SCHEMA);
-  assert.equal(result.length, 2, 'should return 2 columns ');
-  assert.equal(result[0].title, 'investigateHosts.hosts.column.id', 'should return the added title property');
+  assert.equal(result.length, 59, 'should return 59 columns ');
+  assert.equal(result[0].title, 'investigateHosts.hosts.column.agentStatus.lastSeenTime', 'should return the added title property');
 });
 
 

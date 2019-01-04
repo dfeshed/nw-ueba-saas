@@ -12,7 +12,6 @@ import {
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
-import _ from 'lodash';
 import {
   sortBy,
   getPageOfFiles,
@@ -110,7 +109,7 @@ const FileList = Component.extend({
   @computed('columnConfig')
   updatedColumns(columns) {
     const UPDATED_COLUMNS = columns.filter((column) => !this.CONFIG_FIXED_COLUMNS.includes(column.field));
-    return this._sortList(UPDATED_COLUMNS);
+    return FIXED_COLUMNS.concat(UPDATED_COLUMNS);
   },
 
   @computed('fileStatusData')
@@ -121,14 +120,6 @@ const FileList = Component.extend({
   @computed('selectedFiles')
   isMaxResetRiskScoreLimit(selectedFiles) {
     return selectedFiles.length > 100;
-  },
-
-  _sortList(columnList) {
-    const i18n = this.get('i18n');
-    const sortList = _.sortBy(columnList, [(column) => {
-      return i18n.t(column.title).toString();
-    }]);
-    return FIXED_COLUMNS.concat(sortList);
   },
 
   init() {

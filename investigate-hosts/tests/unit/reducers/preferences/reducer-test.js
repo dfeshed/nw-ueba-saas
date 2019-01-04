@@ -27,7 +27,13 @@ test('should return the initial state', function(assert) {
           'machine.scanStartTime',
           'machine.users.name',
           'agentStatus.lastSeenTime',
-          'agentStatus.scanStatus'
+          'agentStatus.scanStatus',
+          'groupPolicy.groups.name',
+          'machine.networkInterfaces.ipv4',
+          'groupPolicy.policyStatus',
+          'machineIdentity.agentMode',
+          'machineIdentity.agentVersion',
+          'machineIdentity.agent.driverErrorCode'
         ],
         sortField: '{ "key": "score", "descending": true }'
       }

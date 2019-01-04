@@ -15,7 +15,8 @@ import {
   extractAgentIds,
   isExportButtonDisabled,
   hostListPropertyTabs,
-  hostTotalLabel } from 'investigate-hosts/reducers/hosts/selectors';
+  hostTotalLabel,
+  nextLoadCount } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -555,4 +556,25 @@ test('hostTotalLabel', function(assert) {
   });
   const result4 = hostTotalLabel(state4);
   assert.equal(result4, '999');
+});
+test('nextLoadCount', function(assert) {
+  const result1 = nextLoadCount(STATE);
+  assert.equal(result1, 2);
+  const hostList = new Array(101)
+    .join().split(',')
+    .map(function(item, index) {
+      return { index: { id: ++index, checksumSha256: index } };
+    });
+  const STATE1 = Immutable.from({
+    endpoint: {
+      filter: {
+      },
+      machines: {
+        totalItems: 101,
+        hostList
+      }
+    }
+  });
+  const result2 = nextLoadCount(STATE1);
+  assert.equal(result2, 100);
 });

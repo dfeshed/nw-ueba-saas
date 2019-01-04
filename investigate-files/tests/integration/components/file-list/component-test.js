@@ -168,9 +168,9 @@ module('Integration | Component | file list', function(hooks) {
       .preferences({ filePreference })
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 14, 'Returned the number of columns of the datatable');
-    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 13, '13 movable columns present');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 12, '12 sortable columns present');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 5, '5 movable columns present');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
   });
 
   test('Should return the number of cells in datatable body', async function(assert) {
@@ -186,7 +186,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length, 28, 'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 12, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -252,8 +252,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[12].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[25].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[9].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[22].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -409,10 +409,10 @@ module('Integration | Component | file list', function(hooks) {
 
     await settled();
 
-    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 13, 'initial visible column count is 13');
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
     findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
-    await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 13);
-    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 13, 'visible column is 13');
+    await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5);
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
   });
 
   test('on row click, file details panel opens up', async function(assert) {
@@ -604,7 +604,7 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.download-status').length, 2, 'Download status is rendered');
+      assert.equal(findAll('.download-status').length, 1, 'Download status is rendered');
     });
   });
 
@@ -645,7 +645,7 @@ module('Integration | Component | file list', function(hooks) {
   });
   test('remediationAction field displayed correctly', function(assert) {
     new ReduxDataHelper(initState)
-      .files({ a: { remediationAction: 'Unblock' } })
+      .files({ a: { remediationAction: 'Block' } })
       .schema([{
         name: 'remediationAction',
         description: 'remediationAction',
@@ -660,9 +660,8 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
       {{file-list}}`);
-
     return settled().then(() => {
-      assert.equal(find('.remediationAction').textContent.trim(), 'Not Blocked', 'RemediationAction is correct');
+      assert.equal(find('.remediationAction').textContent.trim(), 'Blocked', 'RemediationAction is correct');
     });
   });
 

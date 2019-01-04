@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import Immutable from 'seamless-immutable';
+import FILE_LIST_COLUMNS_CONFIG from './file-list-columns-config';
 
 /**
  * Files table column width
@@ -15,7 +16,9 @@ const COLUMN_WIDTH = {
   'pe.resources.company': '6vw',
   'checksumMd5': '15vw',
   'checksumSha1': '15vw',
-  'checksumSha256': '18vw'
+  'checksumSha256': '18vw',
+  'machineOsType': '6vw',
+  'downloadInfo.status': '10vw'
 };
 
 const SUPPORTED_SORT_TYPES = [
@@ -26,13 +29,18 @@ const SUPPORTED_SORT_TYPES = [
   'size',
   'format',
   'signature.features',
-  'entropy',
   'pe.resources.company',
-  'fileStatus'
+  'fileStatus',
+  'remediationAction',
+  'downloadInfo.status',
+  'size',
+  'signature.features',
+  'firstSeenTime',
+  'machineOsType'
 ];
 
 
-const schema = (state) => state.files.schema.schema || Immutable.from([]);
+const schema = () => FILE_LIST_COLUMNS_CONFIG || Immutable.from([]);
 const _preferences = (state) => state.preferences.preferences;
 
 const _visibleColumns = createSelector(
@@ -65,9 +73,8 @@ export const columns = createSelector(
       };
 
     });
-    // Making it as mutable as schema is passed down to data-table component
     // Data-table component is expecting simple array/ember array
-    return updatedSchema.asMutable();
+    return updatedSchema;
   }
 );
 
