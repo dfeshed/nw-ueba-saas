@@ -23,6 +23,7 @@ import { set } from '@ember/object';
 import RSVP from 'rsvp';
 import { warn } from '@ember/debug';
 import { sanitizeHtml } from 'component-lib/utils/sanitize';
+import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
 
 const { Promise } = RSVP;
 
@@ -109,6 +110,8 @@ export default Component.extend({
   securityBannerText: null,
 
   displaySecurityBanner: null,
+
+  isBrowserIeEdge: ieEdgeDetection(),
 
   @computed('eulaKey')
   displayEula: {

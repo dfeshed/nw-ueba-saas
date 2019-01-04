@@ -2,7 +2,12 @@
 {{#if session.isAuthenticated}}
   {{rsa-loader size="largest"}}
 {{else}}
-  <div class="login-wrapper {{if hasError 'has-error'}}">
+  {{#if isBrowserIeEdge}}
+    <div class="unsupported-bowser-warning">
+      <span>{{t 'login.unsupportedBrowser'}}</span>
+    </div>
+  {{/if}}
+  <div class="login-wrapper {{if hasError 'has-error'}} {{if isBrowserIeEdge 'unsupported-browser'}}">
     <header>
       {{rsa-logo title=(t 'appTitle') displayEula=displayEula legacyRsaLogo=false}}
 

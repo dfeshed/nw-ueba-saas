@@ -12,10 +12,22 @@
   left:0;
   right:0;
   bottom:0;
+  display: flex;
+  flex-direction: column;
 
   .form-error-message {
     text-align: center;
     color: rgba(250,250,250, 1);
+  }
+  .unsupported-bowser-warning {
+    @include rsa-font(regular, small);
+    @include border(1px, solid, accentOne);
+    padding: rsa-whitespace(less);
+    background-color:rgba(150, 99, 42, 1);
+    margin: rsa-whitespace();
+    width: 31rem;
+    color: rgba(189,189,189, 1);
+    line-height: 1.2rem;
   }
 
   .eula-content {
@@ -103,6 +115,11 @@
           transform: translate3d(4px, 0, 0);
         }
       }
+    }
+    &.unsupported-browser {
+      border-color: rgba(236,34,39, 1);
+      border-width: 1px;
+      border-style: solid;
     }
   }
 

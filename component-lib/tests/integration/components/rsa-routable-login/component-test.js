@@ -155,4 +155,17 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'End User License Agreement');
   });
 
+  test('unsupported browser warning pops up when ieEdgeDetection returns true', async function(assert) {
+    assert.expect(1);
+
+    await render(hbs `{{rsa-routable-login isBrowserIeEdge=true}}`);
+    assert.equal(findAll('.unsupported-bowser-warning').length, 1, 'Warning message when the browser window is IE or Edge');
+  });
+
+  test('unsupported browser warning does not pop up when ieEdgeDetection returns false', async function(assert) {
+    assert.expect(1);
+
+    await render(hbs `{{rsa-routable-login isBrowserIeEdge=false}}`);
+    assert.equal(findAll('.unsupported-bowser-warning').length, 0, 'No warning message when the browser window is not IE or Edge');
+  });
 });
