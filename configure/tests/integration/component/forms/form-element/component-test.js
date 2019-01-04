@@ -4,13 +4,15 @@ import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { waitUntil, focus, blur, settled, click, find, fillIn, render } from '@ember/test-helpers';
+import { triggerKeyEvent, waitUntil, focus, blur, settled, click, find, fillIn, render } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { formModel, anotherModel } from './data';
 import { selectors } from './selectors';
 import formValidations from './validations';
 import { formGroup, formGroupSync } from './helpers';
+import { FormElement } from './shim';
 
+const ENTER_KEY = 13;
 const timeout = 10000;
 
 let group, label, input, select, options, selectedItem, validation, groupValidation, inlineMessages, submitted;
@@ -28,6 +30,8 @@ module('Integration | Component | Form Element', function(hooks) {
     this.set('formValidations', formValidations);
     this.set('options', ['', 'x', 'y']);
 
+    this.owner.register('component:forms/form-element', FormElement);
+
     await render(hbs`
       {{#forms/form-element formModel=formModel formSave=(action formSave) formValidations=formValidations as |form|}}
         {{#form.input property="foo.bar.baz" label="baz" as |input|}}
@@ -39,6 +43,10 @@ module('Integration | Component | Form Element', function(hooks) {
             {{unit}}
           {{/select.component}}
         {{/form.select}}
+
+        {{#form.input property="wat" label="wat" as |input|}}
+          {{input.component}}
+        {{/form.input}}
 
         {{form.save}}
         {{form.reset}}
@@ -166,6 +174,7 @@ module('Integration | Component | Form Element', function(hooks) {
     await settled().then(() => {
       assert.deepEqual(submitted, {
         zip: 'x',
+        wat: 'm',
         foo: {
           bar: {
             baz: 'w'
@@ -174,6 +183,7 @@ module('Integration | Component | Form Element', function(hooks) {
       });
       assert.deepEqual(formModel, {
         zip: 'x',
+        wat: 'm',
         foo: {
           bar: {
             baz: 'y'
@@ -197,6 +207,7 @@ module('Integration | Component | Form Element', function(hooks) {
     await settled().then(() => {
       assert.deepEqual(submitted, {
         zip: 'y',
+        wat: 'm',
         foo: {
           bar: {
             baz: 'y'
@@ -205,6 +216,7 @@ module('Integration | Component | Form Element', function(hooks) {
       });
       assert.deepEqual(formModel, {
         zip: 'x',
+        wat: 'm',
         foo: {
           bar: {
             baz: 'y'
@@ -215,7 +227,7 @@ module('Integration | Component | Form Element', function(hooks) {
   });
 
   test('when new model is pushed down the form is set to clean state with new values', async function(assert) {
-    assert.expect(10);
+    assert.expect(12);
 
     assert.equal(find(selectors.saveButton).disabled, true);
     assert.equal(find(selectors.resetButton).disabled, true);
@@ -238,6 +250,10 @@ module('Integration | Component | Form Element', function(hooks) {
     ({ label, selectedItem } = await formGroup(2));
     assert.equal(label.textContent.trim(), 'zip');
     assert.equal(selectedItem.textContent.trim(), 'a');
+
+    ({ label, input } = await formGroup(3));
+    assert.equal(label.textContent.trim(), 'wat');
+    assert.equal(input.value, 'u');
   });
 
   test('form group will set label input and validation ids and aria attributes', async function(assert) {
@@ -420,6 +436,62 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(input.value, '');
     assert.equal(inlineMessages.length, 1);
     assert.equal(inlineMessages[0].textContent.trim(), 'Foo.bar.baz can\'t be blank');
+    assert.equal(validation.classList.contains('is-invalid'), true);
+  });
+
+  test('inline validation messages show up after user strikes enter to submit the form', async function(assert) {
+    assert.expect(24);
+
+    ({ input, validation, inlineMessages } = await formGroup(1));
+
+    assert.equal(input.value, 'y');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await fillIn(input, '');
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await triggerKeyEvent(input, 'keydown', ENTER_KEY);
+
+    await waitUntil(() => {
+      ({ inlineMessages } = formGroupSync(1));
+      return inlineMessages && inlineMessages[0].textContent.trim() !== '';
+    }, { timeout });
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), 'Foo.bar.baz can\'t be blank');
+    assert.equal(validation.classList.contains('is-invalid'), true);
+
+    ({ input, validation, inlineMessages } = await formGroup(3));
+
+    assert.equal(input.value, 'm');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await fillIn(input, '');
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await triggerKeyEvent(input, 'keydown', ENTER_KEY);
+
+    await waitUntil(() => {
+      ({ inlineMessages } = formGroupSync(3));
+      return inlineMessages && inlineMessages[0].textContent.trim() !== '';
+    }, { timeout });
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), 'Wat can\'t be blank');
     assert.equal(validation.classList.contains('is-invalid'), true);
   });
 });

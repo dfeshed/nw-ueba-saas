@@ -66,6 +66,7 @@ export default Component.extend({
     },
     save(changeset) {
       set(this, 'submitted', true);
+      this.notifyPropertyChange('submitted');
       const model = get(this, 'model');
       const snapshot = changeset.snapshot();
       return changeset

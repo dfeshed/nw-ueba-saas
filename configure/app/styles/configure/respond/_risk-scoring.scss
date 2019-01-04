@@ -1,7 +1,7 @@
 .risk-scoring {
   overflow: hidden;
   padding: 0 rsa-whitespace();
-  padding-bottom: rsa-whitespace(less);
+  padding-bottom: rsa-whitespace(more);
 
   h1 {
     @include rsa-font(header);
