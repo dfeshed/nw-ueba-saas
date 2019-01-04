@@ -33,6 +33,7 @@
           float: right;
           margin-right: rsa-whitespace(most);
           margin-left: rsa-whitespace();
+          color: text-color(primary, lightest);
         }
         .is-greyed-out {
           color: text-color(primary);
@@ -44,10 +45,13 @@
         padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
       }
       .selected-settings {
-        .is-greyed-out {
-          color: text-color(primary);
+        .remove-setting .rsa-icon {
+          color: text-color(primary, lightest);
+        }
+        .is-greyed-out .rsa-icon {
+          color: text-color(primary, dark);
           pointer-events: none;
-        }        
+        }
       }
       .selected-settings, .available-settings {
         max-height: calc(90vh - #{$wizardStepMaxHeight});
