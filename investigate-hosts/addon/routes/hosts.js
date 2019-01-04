@@ -6,6 +6,10 @@ import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts
 import { run } from '@ember/runloop';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
+import { parseQueryString } from 'investigate-shared/utils/query-util';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import { isEmpty } from '@ember/utils';
+
 import {
   getEndpointServers,
   isEndpointServerOffline,
@@ -77,7 +81,7 @@ export default Route.extend({
 
   model(params) {
     const redux = this.get('redux');
-    const { sid, machineId } = params;
+    const { sid, machineId, query } = params;
     const request = lookup('service:request');
     const selectedServerId = redux.getState().endpointQuery.serverId;
     run.scheduleOnce('afterRender', () => {
@@ -114,6 +118,12 @@ export default Route.extend({
           .catch(function() {
             redux.dispatch(isEndpointServerOffline(true));
           });
+      }
+      // If URL has the query create a temp saved filter and which use that for searching the host
+      if (query && !isEmpty(query)) {
+        const expression = parseQueryString(query);
+        const savedFilter = { id: -1, criteria: { expressionList: expression } };
+        redux.dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
       }
     });
   },

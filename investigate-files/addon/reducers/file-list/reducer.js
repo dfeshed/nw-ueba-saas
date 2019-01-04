@@ -78,7 +78,14 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.FETCH_ALL_FILES]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ fileData: {}, areFilesLoading: 'wait', totalItems: 0, selectedFileList: [] }),
+      start: (s) => s.merge({
+        fileData: {},
+        areFilesLoading: 'wait',
+        totalItems: 0,
+        selectedFileList: [],
+        selectedIndex: null,
+        selectedDetailFile: null
+      }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
       success: _handleAppendFiles(action)
     });

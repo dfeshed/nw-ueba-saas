@@ -391,6 +391,28 @@ module('Integration | Component | file list', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'xt_conntrack.ko', 'After sort filename is different');
   });
 
+  test('It calls the external function on clicking the sort', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .loadMoreStatus('stopped')
+      .setSelectedFileList([])
+      .build();
+    this.set('closeRiskPanel', () => {
+      assert.ok(true);
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{file-list closeRiskPanel=closeRiskPanel}}
+    `);
+    findAll('.rsa-data-table-header-cell .column-sort')[1].click();
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length === 11, { timeout: 10000 });
+  });
+
   test('Column visibility works fine', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)

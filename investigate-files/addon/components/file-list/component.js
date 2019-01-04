@@ -141,6 +141,16 @@ const FileList = Component.extend({
 
 
   actions: {
+
+    sortData(field, sortDirection) {
+      if (this.closeRiskPanel) {
+        this.closeRiskPanel();
+      }
+      next(() => {
+        this.send('sortBy', field, sortDirection);
+      });
+    },
+
     toggleSelectedRow(item, index, e, table) {
       const { target: { classList } } = e;
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {

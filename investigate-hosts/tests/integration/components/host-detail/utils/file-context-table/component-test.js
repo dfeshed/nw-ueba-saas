@@ -212,6 +212,32 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
 
   });
 
+  test('External action is called on clicking the sor', async function(assert) {
+    assert.expect(1);
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    this.set('closePropertyPanel', () => {
+      assert.ok(true);
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName closePropertyPanel=closePropertyPanel columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
+      await click('.rsa-data-table-header-cell:nth-child(2) .rsa-icon');
+    });
+  });
+
+
   test('Load More is shown for paged items', async function(assert) {
     this.set('isPaginated', true);
     initState({

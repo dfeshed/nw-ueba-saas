@@ -114,7 +114,14 @@ const hosts = reduxActions.handleActions({
   },
   [ACTION_TYPES.FETCH_ALL_MACHINES]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0 }),
+      start: (s) => s.merge({
+        hostList: [],
+        hostFetchStatus: 'wait',
+        totalItems: 0,
+        selectedHostList: [],
+        focusedHost: null,
+        focusedHostIndex: null
+      }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
       success: (s) => s.merge({
         hostList: action.payload.data.items,

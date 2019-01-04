@@ -98,6 +98,13 @@ const FileContextTable = Component.extend({
 
     sort(column) {
       column.set('isDescending', !column.isDescending);
+      if (this.closePropertyPanel) {
+        this.closePropertyPanel();
+      }
+      // resetting the selection on sort
+      const tabName = this.get('tabName');
+      this.send('resetSelection', tabName);
+
       const customSort = this.get('customSort');
       if (customSort) {
         this.customSort(column);

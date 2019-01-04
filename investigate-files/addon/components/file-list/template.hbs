@@ -19,7 +19,12 @@
     {{/if}}
     {{! COLUMN SORT }}
     {{#unless column.disableSort}}
-      {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}
+      {{file-list/sort-button
+        sortField=sortField
+        column=column
+        isSortDescending=isSortDescending
+        closeRiskPanel=closeRiskPanel
+        sortBy=(action 'sortData')}}
     {{/unless}}
   {{/file-list/header}}
   {{#if areFilesLoading}}

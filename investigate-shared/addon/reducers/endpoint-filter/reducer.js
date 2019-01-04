@@ -21,12 +21,9 @@ const filterReducer = handleActions({
         const { payload: { data } } = action;
         const filters = data.filter((filter) => (filter.filterType === action.meta.belongsTo));
         let expressionList = [];
-        let filter = s.selectedFilter;
-        if (state.selectedFilterId && filters.length) {
-          filter = filters.findBy('id', state.selectedFilterId);
-          if (filter) {
-            expressionList = filter.criteria.expressionList;
-          }
+        const filter = s.selectedFilter;
+        if (filter) {
+          expressionList = filter.criteria.expressionList;
         }
         return s.merge({
           selectedFilter: filter,

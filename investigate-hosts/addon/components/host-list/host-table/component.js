@@ -80,7 +80,10 @@ const HostTable = Component.extend({
     },
     toggleSelectedRow(item, index, e, table) {
       const { target: { classList } } = e;
-
+      // If it's machine name click don't select the row
+      if (e.target.tagName.toLowerCase() === 'a') {
+        return;
+      }
       // do not select row when checkbox is clicked
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         const isSameRowClicked = table.get('selectedIndex') === index;

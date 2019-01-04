@@ -13,7 +13,9 @@
 {{else if (eq column.field 'machine.machineName')}}
   <hbox class="machine-name-holder">
     <div class="host-name">
-      {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null) bubbles=false}}{{get item column.field}}{{/link-to}}
+      {{#link-to "hosts"(query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null query=null)}}
+        {{get item column.field}}
+      {{/link-to}}
     </div>
   </hbox>
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}

@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { initializeFileDetails, getAllServices, resetInputData } from 'investigate-files/actions/data-creators';
 import { next } from '@ember/runloop';
 import { lookup } from 'ember-dependency-lookup';
-
+import { setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 export default Route.extend({
   redux: service(),
 
@@ -35,6 +35,7 @@ export default Route.extend({
         redux.dispatch(resetInputData());
         request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
         redux.dispatch(getAllServices());
+        redux.dispatch(setSelectedEndpointServer(sid));
         redux.dispatch(initializeFileDetails(checksum));
       }
     });
