@@ -3167,17 +3167,6 @@ export default {
             domainUserCanonicalOu: 'Domain User Canonical OU',
             host: 'Host',
             deviceName: 'DeviceName'
-          },
-          networkInterfaces: {
-            title: 'Network Interfaces',
-            name: 'Name',
-            macAddress: 'MAC Address',
-            networkId: 'NerworkID',
-            ipv4: 'IPv4',
-            ipv6: 'IPv6',
-            gateway: 'Gateway',
-            dns: 'DNS',
-            promiscuous: 'Promiscous'
           }
         },
         machineIdentity: {
@@ -3195,7 +3184,19 @@ export default {
             serviceStatus: 'Service Status',
             driverStatus: 'Driver Status',
             blockingEnabled: 'Blocking Enabled',
-            blockingUpdateTime: 'Blocking Update Time'
+            blockingUpdateTime: 'Blocking Update Time',
+            driverErrorCode: 'Driver Error Code'
+          },
+          networkInterfaces: {
+            title: 'Network Interfaces',
+            name: 'Name',
+            macAddress: 'MAC Address',
+            networkId: 'NerworkID',
+            ipv4: 'IPv4',
+            ipv6: 'IPv6',
+            gateway: 'Gateway',
+            dns: 'DNS',
+            promiscuous: 'Promiscous'
           },
           operatingSystem: {
             title: 'Operating System',

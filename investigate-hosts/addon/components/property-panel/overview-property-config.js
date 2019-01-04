@@ -34,8 +34,12 @@ export default [
         labelKey: 'machineIdentity.agent.agentMode'
       },
       {
-        field: 'machine.agentVersion',
+        field: 'machineIdentity.agentVersion',
         labelKey: 'machineIdentity.agent.agentVersion'
+      },
+      {
+        field: 'machineIdentity.agent.driverErrorCode',
+        labelKey: 'machineIdentity.agent.driverErrorCode'
       }
     ]
   },
@@ -100,36 +104,36 @@ export default [
   },
   {
     sectionName: 'Network Interfaces',
-    prefix: 'machine.networkInterfaces',
+    prefix: 'machineIdentity.networkInterfaces',
     multiOption: true,
     fields: [
       {
         field: 'name',
-        labelKey: 'machine.networkInterfaces.name'
+        labelKey: 'machineIdentity.networkInterfaces.name'
       },
       {
         field: 'macAddress',
-        labelKey: 'machine.networkInterfaces.macAddress'
+        labelKey: 'machineIdentity.networkInterfaces.macAddress'
       },
       {
         field: 'ipv4',
-        labelKey: 'machine.networkInterfaces.ipv4'
+        labelKey: 'machineIdentity.networkInterfaces.ipv4'
       },
       {
         field: 'ipv6',
-        labelKey: 'machine.networkInterfaces.ipv6'
+        labelKey: 'machineIdentity.networkInterfaces.ipv6'
       },
       {
         field: 'gateway',
-        labelKey: 'machine.networkInterfaces.gateway'
+        labelKey: 'machineIdentity.networkInterfaces.gateway'
       },
       {
         field: 'dns',
-        labelKey: 'machine.networkInterfaces.dns'
+        labelKey: 'machineIdentity.networkInterfaces.dns'
       },
       {
         field: 'promiscuous',
-        labelKey: 'machine.networkInterfaces.promiscuous'
+        labelKey: 'machineIdentity.networkInterfaces.promiscuous'
       }
     ]
   },
