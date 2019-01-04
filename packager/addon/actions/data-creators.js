@@ -44,7 +44,7 @@ const getConfig = () => {
  * @public
  * @returns {Object}
  */
-const setConfig = (configData, configType, callback, serverId) => {
+const setConfig = (configData, callback, serverId) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
@@ -60,19 +60,9 @@ const setConfig = (configData, configType, callback, serverId) => {
             } else {
               url = `/rsa/endpoint/packager/download?id=${response.data.id}&agentMode=Full`;
             }
-            if (configType === 'LOG_CONFIG') {
-              if (serverId) {
-                url = `/rsa/endpoint/${serverId}/logconfig/download?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
-              } else {
-                url = `/rsa/endpoint/logconfig/download?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
-              }
-            }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
           callback.onSuccess();
-        },
-        onFailure: (response) => {
-          callback.onFailure(response);
         }
       }
     });

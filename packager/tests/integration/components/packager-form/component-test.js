@@ -75,29 +75,6 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(serviceName.value, 'NWE Agent', 'Expected to match the value "NWE Agent" in DOM.');
   });
 
-  test('Channel filter table has pre-populated values', async function(assert) {
-    assert.expect(1);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .setData('devices', devices)
-      .build();
-
-    await render(hbs`{{packager-form isLogCollectionEnabled=true}}`);
-    assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'There are pre-populated values in the table');
-  });
-
-  test('Add action creates another row in channel filter table', async function(assert) {
-    assert.expect(1);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .setData('devices', devices)
-      .build();
-
-    await render(hbs`{{packager-form isLogCollectionEnabled=true}}`);
-    await click('.add-row .rsa-form-button');
-    assert.equal(findAll('.rsa-data-table-body-row').length, 3, 'There are 3 rows in the table');
-  });
-
   test('Channel filter null validation when generate agent button clicked', async function(assert) {
     assert.expect(2);
     const channelFiltersWithNullData = {
@@ -266,33 +243,6 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(status, 'enabled');
   });
 
-  test('Protocol and TestLog should not resets to default when Generate Log Collection button is clicked', async function(assert) {
-    assert.expect(2);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .build();
-    this.set('selectedProtocol', 'UDP');
-    this.set('testLog', false);
-    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol testLog=testLog}}`);
-    await click('.generate-log-button-js .rsa-form-button');
-    const protocol = this.get('selectedProtocol');
-    const testLog = this.get('testLog');
-    assert.equal(protocol, 'UDP');
-    assert.equal(testLog, false);
-  });
-
-  test('Test log is set false on uncheck of checkbox', async function(assert) {
-    assert.expect(1);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .build();
-    this.set('testLog', 'true');
-    await render(hbs`{{packager-form isLogCollectionEnabled=true testLog=testLog}}`);
-    await click('.testLog .rsa-form-checkbox-label');
-    const disableTestLog = this.get('testLog');
-    assert.equal(disableTestLog, false);
-  });
-
   test('required fields are rendered in the AGENT CONFIGURATION section', async function(assert) {
 
     await render(hbs`{{packager-form}}`);
@@ -319,16 +269,5 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(serviceNameEl.length, 1, 'Service service name input is rendered');
     assert.equal(serviceDisplayNameEl.length, 1, 'Service display name is rendered');
     assert.equal(serviceDescriptionEl.length, 1, 'Service description is rendered');
-  });
-
-  test('Enabled is selected when status is enabled', async function(assert) {
-    assert.expect(2);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .build();
-    this.set('status', 'enabled');
-    await render(hbs `{{packager-form isLogCollectionEnabled=true status=status}}`);
-    assert.equal(findAll('.status-type').length, 2, '2 radio buttons are available for enable and disabled');
-    assert.equal(find('.rsa-form-radio-label.checked').textContent.trim(), 'Enabled');
   });
 });
