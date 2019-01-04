@@ -48,6 +48,14 @@ const FILTER_TYPES = [
     ]
   },
   {
+    name: 'remediationAction',
+    label: 'investigateFiles.fields.remediationAction',
+    type: 'list',
+    listOptions: [
+      { name: 'Block', label: 'investigateFiles.remediationAction.Block' }
+    ]
+  },
+  {
     'name': 'score',
     'label': 'investigateFiles.fields.score',
     'min': 0,

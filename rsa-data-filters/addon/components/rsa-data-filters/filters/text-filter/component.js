@@ -31,10 +31,11 @@ export default Component.extend({
   filterValue: computed('options', {
 
     get() {
-      const { filterValue: { operator, value }, operators } = this.get('options');
+      const { filterValue: { operator, value }, operators, placeholder } = this.get('options');
       const selectedOperator = operators.findBy('type', operator);
       const val = value.join('||');
-      return { operator: selectedOperator, value: val };
+      const placeholderText = placeholder ? placeholder : 'Enter value';
+      return { operator: selectedOperator, value: val, placeholderText };
     },
 
     set(key, value) {

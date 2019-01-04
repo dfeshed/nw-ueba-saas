@@ -90,6 +90,6 @@ module('Integration | Component | Files toolbar', function(hooks) {
     });
     await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
-    assert.equal(find('.view-certificate-button').title, 'Selected more than 10 files', 'tooltip added to disabled button');
+    assert.equal(find('.view-certificate-button').title, 'Select a maximum of 10 files to view.', 'tooltip added to disabled button');
   });
 });

@@ -242,7 +242,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
-    assert.equal(find('.view-certificate-button').title, 'Selected more than 10 files', 'tooltip added to disabled button');
+    assert.equal(find('.view-certificate-button').title, 'Select a maximum of 10 files to view.', 'tooltip added to disabled button');
   });
   test('it closes the right panel on changing the service', async function(assert) {
     const { files: { schema: { schema } } } = files;
@@ -286,6 +286,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   test('filter controls are displayed', async function(assert) {
     this.set('propertyConfig', config);
     await render(hbs`{{investigate-files-container propertyConfig=propertyConfig}}`);
-    assert.equal(findAll('.files-content .rsa-data-filters .filter-controls').length, 12, 'all filter controls are rendered');
+    assert.equal(findAll('.files-content .rsa-data-filters .filter-controls').length, 13, 'all filter controls are rendered');
   });
 });

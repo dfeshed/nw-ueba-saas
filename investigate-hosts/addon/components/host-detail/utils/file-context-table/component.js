@@ -86,6 +86,8 @@ const FileContextTable = Component.extend({
 
   selectedIndex: 0,
 
+  contextItems: null,
+
   _isAlreadySelected(selections, item) {
     let selected = false;
     if (selections && selections.length) {
@@ -137,16 +139,27 @@ const FileContextTable = Component.extend({
       }
     },
 
-    beforeContextMenuShow({ contextSelection: item }) {
-      this.set('itemList', [item]);
-      const tabName = this.get('tabName');
-      if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {
-        this.send('resetSelection', tabName);
-        this.send('toggleRowSelection', tabName, item);
-      }
-      const selections = this.get('fileContextSelections');
-      if (selections && selections.length === 1) {
-        this.send('getFileContextFileStatus', tabName, selections);
+    beforeContextMenuShow(menu, event) {
+      const { contextSelection: item, contextItems } = menu;
+      if (!this.get('contextItems')) {
+        // Need to store this locally set it back again to menu object
+        this.set('contextItems', contextItems);
+      }// For anchor tag hide the context menu and show browser default right click menu
+      if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement.tagName.toLowerCase() === 'a') {
+        menu.set('contextItems', []);
+      } else {
+        menu.set('contextItems', this.get('contextItems'));
+
+        this.set('itemList', [item]);
+        const tabName = this.get('tabName');
+        if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {
+          this.send('resetSelection', tabName);
+          this.send('toggleRowSelection', tabName, item);
+        }
+        const selections = this.get('fileContextSelections');
+        if (selections && selections.length === 1) {
+          this.send('getFileContextFileStatus', tabName, selections);
+        }
       }
     },
 

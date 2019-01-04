@@ -184,8 +184,8 @@ const TreeComponent = Component.extend({
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
       }
-      // For anchor tag hid the context menu and show browser default right click menu
-      if (event.target.tagName.toLowerCase() === 'a') {
+      // For anchor tag hide the context menu and show browser default right click menu
+      if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement.tagName.toLowerCase() === 'a') {
         menu.set('contextItems', []);
       } else {
         menu.set('contextItems', this.get('contextItems'));

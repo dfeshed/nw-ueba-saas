@@ -124,5 +124,14 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     assert.equal(document.querySelectorAll('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
     await selectChoose('.operators', 'Contains');
   });
+  test('Placeholder should show correct message', async function(assert) {
+    this.set('options', { filterValue: { operator: 'IN', value: [] }, filterOnBlur: true });
+    await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
+    assert.equal(document.querySelector('.file-name-input input').placeholder, 'Enter value');
+
+    this.set('options', { filterValue: { operator: 'IN', value: [] }, filterOnBlur: true, placeholder: 'test-placeholder' });
+    await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
+    assert.equal(document.querySelector('.file-name-input input').placeholder, 'test-placeholder');
+  });
 
 });

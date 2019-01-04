@@ -57,6 +57,9 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
     .actionbar-pivot-to-investigate {
       padding-left: rsa-whitespace(less);
     }
+    .certificate-status-button {
+      margin-right: 7px;
+    }
   }
   .certificates-footer {
     max-height: 2rem;

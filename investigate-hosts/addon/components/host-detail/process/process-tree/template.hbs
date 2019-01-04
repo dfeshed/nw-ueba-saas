@@ -77,7 +77,7 @@
           {{else if (eq column.field 'name')}}
             {{#rsa-data-table/body-cell item=item column=column class='process-name'}}
               {{#link-to 'hosts' (query-params tabName='PROCESS' subTabName='process-details' pid=item.pid ) bubbles=false}}
-                {{get item column.field}}
+                {{get-field item column timezone dateFormat timeFormat i18n.locale}}
               {{/link-to}}
             {{/rsa-data-table/body-cell}}
           {{else if (eq column.field 'machineCount')}}

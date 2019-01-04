@@ -2117,7 +2117,7 @@ export default {
     certificatePageTitle: 'Certificates',
     showNextRecords: 'Show next {{count}} {{label}}',
     certificate: {
-      toolTipCertificateViewDisabled: 'Selected more than {{count}} files',
+      toolTipCertificateViewDisabled: 'Select a maximum of {{count}} files to view.',
       editCertificateStatus: {
         actionNote: 'Selected status is applied to all files signed by this certificate.',
         commentLimitError: 'Comment is limited to 900 characters'
