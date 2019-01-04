@@ -1,8 +1,8 @@
 import { fork } from 'redux-saga/effects';
-import { fetchAgentCount } from './agent-count/count';
+import { fetchValue } from './meta-value/value';
 
 export default function* root() {
   yield[
-    fork(fetchAgentCount)
+    fork(fetchValue)
   ];
 }
