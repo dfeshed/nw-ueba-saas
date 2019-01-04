@@ -835,6 +835,10 @@
     border-color: border-color(accentTwo);
   }
 
+  &.is-invalid {
+    border-color: border-color(accentOne);
+  }
+
   &.is-active {
     border-color: transparent;
     padding: 0;

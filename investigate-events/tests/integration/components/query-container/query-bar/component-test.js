@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, fillIn, find, findAll, render, settled } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, settled, waitFor } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -272,26 +272,43 @@ module('Integration | Component | Query Bar', function(hooks) {
 
   });
 
-  test('Creating one filter in FreeForm, toggling to Guided will validate that pill if its not a complex pill', async function(assert) {
+  test('Creating a non-complex filter in FreeForm, then toggling to Guided will validate that pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .build();
+
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-bar executeQuery=executeQuery}}
       </div>
     `);
-
     await click(SELECTORS.queryFormatFreeFormToggle);
     await click(PILL_SELECTORS.freeFormInput);
     await fillIn(PILL_SELECTORS.freeFormInput, 'medium = we');
-
     await click(SELECTORS.queryFormatGuidedToggle);
 
+    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Pill failed client-side validation');
+  });
 
-    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Pill should get validated and expect an invalid pill');
+  test('Creating an invalid complex filter in FreeForm, then toggling to Guided will validate that pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
 
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    await click(PILL_SELECTORS.freeFormInput);
+    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = 32 || service = xxx');
+    await click(SELECTORS.queryFormatGuidedToggle);
+    // We need to wait for the server call to come back, so this could take a bit
+    await waitFor(PILL_SELECTORS.invalidPill, { timeout: 4000 });
+    assert.ok(findAll(PILL_SELECTORS.invalidPill).length, 1, 'no invalid pills found');
   });
 
   test('Creating a pill in Guided, toggling to FF and deleting that filter should delete the pill from state', async function(assert) {

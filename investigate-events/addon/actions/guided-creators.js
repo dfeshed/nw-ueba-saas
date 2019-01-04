@@ -18,8 +18,8 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
  */
 const _clientSideValidation = (pillData, position) => {
   return (dispatch, getState) => {
-    const { meta, value } = pillData;
-    if (value) {
+    const { meta, value, complexFilterText } = pillData;
+    if (value && !complexFilterText) {
       const { investigate: { dictionaries: { language } } } = getState();
       const metaFormat = getMetaFormat(meta, language);
       dispatch({
@@ -33,15 +33,24 @@ const _clientSideValidation = (pillData, position) => {
           }
         }
       });
+    } else {
+      // Probably a complex pill, try validating with the server
+      dispatch(_serverSideValidation(pillData, position));
     }
   };
 };
 
 export const _serverSideValidation = (pillData, position) => {
   return (dispatch, getState) => {
-    const { meta, operator, value } = pillData;
-    // extract stringified pill data
-    const stringifiedPill = `${meta || ''} ${operator || ''} ${value || ''}`.trim();
+    const { meta, operator, value, complexFilterText } = pillData;
+    let stringifiedPill;
+    // create stringified pill data, or just use the what was entered for
+    // complex filters
+    if (meta && operator) {
+      stringifiedPill = `${meta || ''} ${operator || ''} ${value || ''}`.trim();
+    } else {
+      stringifiedPill = complexFilterText;
+    }
     // encode the string and pull out the service id
     const encodedPill = encodeURIComponent(stringifiedPill);
     const { serviceId } = getState().investigate.queryNode;
@@ -203,9 +212,7 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
         fromFreeFormMode
       }
     });
-    if (!pillData.complexFilterText) {
-      dispatch(_clientSideValidation(pillData, position));
-    }
+    dispatch(_clientSideValidation(pillData, position));
   };
 };
 

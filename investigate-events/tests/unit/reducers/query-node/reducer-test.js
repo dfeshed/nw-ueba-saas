@@ -223,7 +223,7 @@ test('ADD_PILL adds pill to end of list', function(assert) {
   assert.equal(result.pillsData[2].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_PILL replces existing pills if from Free Form Mode', function(assert) {
+test('ADD_PILL replaces existing pills if from Free Form Mode', function(assert) {
   const action = {
     type: ACTION_TYPES.ADD_PILL,
     payload: {

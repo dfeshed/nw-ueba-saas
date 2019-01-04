@@ -8,7 +8,7 @@ import { isEscape, isEnter } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['complex-pill'],
-  classNameBindings: ['isActive', 'isSelected', 'isFocused'],
+  classNameBindings: ['isActive', 'isFocused', 'isInvalid', 'isSelected'],
   tagName: 'div',
   attributeBindings: ['title'],
   i18n: service(),
@@ -38,6 +38,15 @@ export default Component.extend({
   isFocused: false,
 
   /**
+   * Update the component once validation completes. A pill is valid if the
+   * server side validation passes.
+   * @type {boolean}
+   * @public
+   */
+  @alias('pillData.isInvalid')
+  isInvalid: false,
+
+  /**
    * Whether or not this pill is selected
    * @type {boolean}
    * @public
@@ -45,13 +54,24 @@ export default Component.extend({
   @computed('pillData')
   isSelected: (pillData) => !!pillData && pillData.isSelected,
 
-  @computed('pillData')
-  title(pillData) {
-    return pillData.complexFilterText;
+  /**
+   * Update the component title with error message once validation returns
+   * If a valid pill, return the filter string
+   * @public
+   */
+  @computed('pillData', 'stringifiedPill', 'isActive')
+  title: (pillData, stringifiedPill, isActive) => {
+    if (!isActive && pillData) {
+      if (pillData.isInvalid) {
+        return pillData.validationError ? pillData.validationError.string || pillData.validationError.message : 'Invalid';
+      } else {
+        return pillData.complexFilterText;
+      }
+    }
   },
 
   init() {
-    this._super(arguments);
+    this._super(...arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
@@ -64,7 +84,7 @@ export default Component.extend({
   },
 
   didInsertElement() {
-    this._super(arguments);
+    this._super(...arguments);
     if (this.get('isActive')) {
       this.element.querySelector('input').focus();
     }

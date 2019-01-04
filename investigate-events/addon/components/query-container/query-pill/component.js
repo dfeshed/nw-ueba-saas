@@ -100,7 +100,6 @@ export default Component.extend({
   @alias('pillData.isFocused')
   isFocused: false,
 
-
   /**
    * Update the component once validation completes. A pill is valid if both
    * client and server side validation passes.

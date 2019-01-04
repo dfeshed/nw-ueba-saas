@@ -144,6 +144,24 @@ module('Integration | Component | complex-pill', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
   });
 
+  test('has proper class when invalid', async function(assert) {
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isInvalid: true,
+      validationError: {
+        message: 'pill is invalid'
+      }
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+      }}
+    `);
+    assert.ok(find(PILL_SELECTORS.invalidPill), 'class to indicate pill is invalid not present');
+  });
+
   test('sends message to be selected when clicked', async function(assert) {
     assert.expect(3);
 

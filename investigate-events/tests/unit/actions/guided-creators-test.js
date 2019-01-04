@@ -11,7 +11,6 @@ import { invalidServerResponse } from './data';
 import guidedCreators from 'investigate-events/actions/guided-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 
-
 module('Unit | Actions | Guided Creators', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
@@ -335,29 +334,39 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
-  test('addFreeFormFilter action creator returns proper type and payload, and does not validate if the pill is complex', function(assert) {
-    assert.expect(2);
-    const thunk = guidedCreators.addFreeFormFilter({
+  test('addFreeFormFilter action creator returns proper type and payload, and validates if the pill is complex', function(assert) {
+    assert.expect(3);
+    const action = guidedCreators.addFreeFormFilter({
       freeFormText: 'medium = 50 && service = 443'
     });
-    const done = assert.async();
 
     const getState = () => {
-      return new ReduxDataHelper().language().build();
+      return new ReduxDataHelper().language().serviceId().build();
     };
 
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, {
-        complexFilterText: '(medium = 50 && service = 443)',
-        meta: undefined,
-        operator: undefined,
-        value: undefined
-      }, 'action pillData has the right value and is a complex pill');
-      done();
+    const addPillDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(clientSideValidationDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, {
+          complexFilterText: '(medium = 50 && service = 443)',
+          meta: undefined,
+          operator: undefined,
+          value: undefined
+        }, 'action pillData has the right value and is a complex pill');
+      }
+    };
+    const clientSideValidationDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(serverSideValidationDispatch, getState);
+      }
+    };
+    const serverSideValidationDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
     };
 
-    thunk(dispatch, getState);
+    action(addPillDispatch, getState);
   });
 
   test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
