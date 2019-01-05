@@ -29,6 +29,10 @@ public class ModelDAO {
     public static final String END_TIME_FIELD = "endTime";
     public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 
+    public static String getContextFieldNamePath(String contextFieldName){
+        return CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD + "." + contextFieldName;
+    }
+
     @Id
     private String id;
 

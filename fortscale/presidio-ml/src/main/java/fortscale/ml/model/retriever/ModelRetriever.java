@@ -21,17 +21,26 @@ public class ModelRetriever extends AbstractDataRetriever {
 		super(config);
 		this.config = config;
 		this.modelStore = modelStore;
-
 	}
 
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
-		Assert.isNull(contextId, String.format("%s can't be used with a context", getClass().getSimpleName()));
 		fillModelConfService();
+		List<Model> models;
+		if(config.getContextFieldName() == null){
+			Assert.isNull(contextId, String.format("%s can't be used with a context", getClass().getSimpleName()));
+			models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.toInstant()).stream()
+					.map(ModelDAO::getModel)
+					.collect(Collectors.toList());
+		} else {
+			models =
+					modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, config.getContextFieldName(),
+							contextId, endTime.toInstant()).stream()
+					.map(ModelDAO::getModel)
+					.collect(Collectors.toList());
+		}
 
-		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.toInstant()).stream()
-				.map(ModelDAO::getModel)
-				.collect(Collectors.toList());
+
 
 		if (models.isEmpty()) {
 			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
@@ -47,6 +56,7 @@ public class ModelRetriever extends AbstractDataRetriever {
 			String modelConfName = config.getModelConfName();
 			modelConf = this.modelConfService.getModelConf(modelConfName);
 			Assert.notNull(modelConf,String.format("failed to find modelConf for modelConfName=%s",modelConfName));
+			modelStore.ensureContextAndDateTimeIndex(modelConf, Collections.singletonList(config.getContextFieldName()));
 		}
 	}
 

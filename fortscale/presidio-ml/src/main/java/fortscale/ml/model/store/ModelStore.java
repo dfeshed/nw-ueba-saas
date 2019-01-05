@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -92,6 +93,23 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
     }
 
+    @Override
+    public Set<String> getAllSubContextsWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName, Instant eventEpochtime) {
+        String collectionName = getCollectionName(modelConf);
+        Aggregation agg = newAggregation(
+                match(where(ModelDAO.END_TIME_FIELD).lte(Date.from(eventEpochtime))),
+                Aggregation.group(ModelDAO.getContextFieldNamePath(contextFieldName)),
+                Aggregation.project(contextFieldName).and("_id").as(contextFieldName).andExclude("_id")
+        );
+        AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+
+        Set<String> ret = aggrResult.getMappedResults().stream()
+                .map(result -> (String)result.get(contextFieldName))
+                .collect(Collectors.toSet());
+
+        return ret;
+    }
+
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
         String collectionName = getCollectionName(modelConf);
         List<ModelDAO> queryResults;
@@ -100,6 +118,30 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         Date latestEndDate = Date.from(eventEpochtime);
         do{
             Query query = new Query()
+                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
+                    .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
+                    .skip(pageIndex*modelQueryPaginationSize)
+                    .limit(modelQueryPaginationSize);
+            queryResults = mongoTemplate.find(query, ModelDAO.class, collectionName);
+            for(ModelDAO modelDAO: queryResults){
+                //the models are ordered by time so we don't have to check if the map contains a model with larger time.
+                contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
+            }
+            pageIndex++;
+        } while (queryResults.size() == modelQueryPaginationSize);
+        return contextIdToModelDaoMap.values();
+    }
+
+    public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
+                                                                            String contextValue, Instant eventEpochtime) {
+        String collectionName = getCollectionName(modelConf);
+        List<ModelDAO> queryResults;
+        Map<String, ModelDAO> contextIdToModelDaoMap = new HashMap<>();
+        int pageIndex = 0;
+        Date latestEndDate = Date.from(eventEpochtime);
+        do{
+            Query query = new Query()
+                    .addCriteria(Criteria.where(ModelDAO.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD+"."+contextFieldName).is(contextValue))
                     .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
                     .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
                     .skip(pageIndex*modelQueryPaginationSize)
@@ -254,4 +296,21 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         mongoTemplate.remove(oldestModelQuery, collectionName);
     }
 
+    /**
+     * Validate that the query fields indexed in the store.
+     */
+    public void ensureContextAndDateTimeIndex(ModelConf modelConf, List<String> contexts){
+        String collectionName = getCollectionName(modelConf);
+
+        // Used by the readRecords method (no sorting)
+        DBObject indexOptions = new BasicDBObject(); // Keeps entries ordered
+        for(String context: contexts) {
+            indexOptions.put(ModelDAO.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD + "." + context, 1);
+        }
+        indexOptions.put(ModelDAO.START_TIME_FIELD, 1);
+        CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
+        String indexName = String.join("_", contexts) + "_" + ModelDAO.START_TIME_FIELD;
+        indexDefinition.named(indexName);
+        mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
+    }
 }
