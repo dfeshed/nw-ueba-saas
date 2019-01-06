@@ -1,3 +1,37 @@
-<h2 id="title">Welcome to Ember</h2>
-
-{{outlet}}
+{{#rsa-dashboard config=model.dashboardConfig layoutStyle='two-column' as |dashboard|}}
+  {{#dashboard.layout as |layout|}}
+    {{#layout.columnOne as |item|}}
+      {{#dashboard.widget as |widget|}}
+        {{#widget.toolBar as |toolBar|}}
+          {{#toolBar.title style='tool-title'}}
+            {{rsa-icon name='server-3' style='lined'}} Test Data source
+            <span class='dashboard-divider'></span>
+            Filter Selection
+          {{/toolBar.title}}
+          {{#toolBar.content}}
+            Test 2342aaasdggbhnnjyu
+          {{/toolBar.content}}
+        {{/widget.toolBar}}
+        {{widget/top-risky-entities config=(get item.items 'topRiskMachine') title=' Top Risky Hosts'}}
+      {{/dashboard.widget}}
+    {{/layout.columnOne}}
+    {{#layout.columnTwo as |item|}}
+      {{#dashboard.widget as |widget|}}
+        {{#widget.toolBar as |toolBar|}}
+          {{#toolBar.title style='tool-title'}}
+            {{rsa-icon name='server-3' style='lined'}} Test Data source
+            <span class='dashboard-divider'></span>
+            Filter Selection
+          {{/toolBar.title}}
+          {{#toolBar.content}}
+            Test 123123
+          {{/toolBar.content}}
+        {{/widget.toolBar}}
+        {{widget/entity-stats config=(get item.items 'entityStats')}}
+      {{/dashboard.widget}}
+      {{#dashboard.widget}}
+        {{widget/top-alerts config=(get item.items 'topAlerts')}}
+      {{/dashboard.widget}}
+    {{/layout.columnTwo}}
+  {{/dashboard.layout}}
+{{/rsa-dashboard}}

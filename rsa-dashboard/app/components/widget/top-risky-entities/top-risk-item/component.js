@@ -1,0 +1,1 @@
+export { default } from 'rsa-dashboard/components/widget/top-risky-entities/top-risk-item/component';

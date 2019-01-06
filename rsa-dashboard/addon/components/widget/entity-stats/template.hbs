@@ -1,0 +1,10 @@
+{{#each config.items as |item|}}
+  <div class="entity-stat">
+    <div class='starts-info'>
+      <div class="stat-count">
+        {{get config.data item.dataIndex}}
+      </div>
+      <div class="stats-label">Stats Label Here</div>
+    </div>
+  </div>
+{{/each}}

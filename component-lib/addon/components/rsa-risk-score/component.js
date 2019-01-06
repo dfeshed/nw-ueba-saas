@@ -4,7 +4,7 @@ import computed from 'ember-computed';
 
 const CIRCLE_RADIUS = {
   small: 12,
-  large: 25
+  large: 29.5
 };
 
 const CIRCLE_SIZE_CLASS = {

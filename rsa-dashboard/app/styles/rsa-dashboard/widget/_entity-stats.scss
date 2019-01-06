@@ -1,0 +1,35 @@
+$background-color: background-color(primary, darker);
+
+.entity-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 21px;
+  padding-bottom: 21px;
+  .entity-stat {
+    background-color: $background-color;
+    height: 119px;
+  }
+  .starts-info {
+    padding-left: 21px;
+    padding-top: 16px;
+  }
+  .stat-count {
+    @include rsa-font(regular, large);
+    color: text-color(secondary, light);
+    font-size: 35px;
+    height: 47px;
+    width: 40px;
+    font-weight: 600;
+    line-height: 47px;
+  }
+  .stats-label {
+    padding-top: rsa-whitespace();
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    height: 14px;
+    color: text-color(primary, light);
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 14px;
+  }
+}

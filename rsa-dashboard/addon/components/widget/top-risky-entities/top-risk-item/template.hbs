@@ -1,0 +1,17 @@
+{{rsa-risk-score score=data.score size='large'}}
+<box class='entity-info'>
+  <div class='entity-info-title' test-id='entity-info-title'>
+    <span class='entity-name'>{{get data config.displayMapping.name.dataIndex}}</span>
+    <span class='dashboard-divider'></span>
+    <span class='os-type'>{{get data config.displayMapping.description.dataIndex}}</span>
+  </div>
+  <div class='additional-info' test-id='additional-info'>
+    {{config.displayMapping.additionalInfo.label}}
+    {{get data config.displayMapping.additionalInfo.dataIndex}}
+  </div>
+  <div class='incident-info' test-id='incident-info'> No Incidents</div>
+  <div class='more-action' test-id='more-action'>
+    {{rsa-icon size='small' name='navigation-show-more-2'}}
+  </div>
+</box>
+

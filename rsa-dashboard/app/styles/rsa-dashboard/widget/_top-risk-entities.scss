@@ -1,0 +1,27 @@
+$background-color: background-color(primary, darker);
+
+.top-risk-entity {
+  background-color: $background-color;
+  .top-risk-items {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding-right: 21px;
+    padding-left: 21px;
+  }
+  .top-risk-item {
+    @include border-bottom(1px, solid, primary, dark);
+    display: flex;
+    flex-flow: row;
+    height: 107px;
+    padding: 20px 0 20px 0;
+    .rsa-risk-score.is-large text {
+      @include rsa-font(regular, larger);
+      font-weight: 700;
+    }
+  }
+  .entity-info {
+    div {
+      padding-left: 1rem;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{{#if hasBlock}}
+  {{yield (hash title=(component 'widget.widget-title' title=config.title))}}
+  <div class='top-risk-items'>
+    {{#each config.data as |data|}}
+      {{yield (hash content=(component 'widget.top-risky-entities.top-risk-item' config=config data=data))}}
+    {{/each}}
+  </div>
+{{else}}
+  {{#widget/widget-title}}
+    {{config.title}}
+  {{/widget/widget-title}}
+  <div class='top-risk-items'>
+    {{#each config.data as |data|}}
+      {{widget/top-risky-entities/top-risk-item config=config data=data}}
+    {{/each}}
+  </div>
+{{/if}}

@@ -1,0 +1,15 @@
+<span class='toolbar-title'>
+  {{yield (hash title=(component 'widget.widget-title'))}}
+</span>
+{{#if showConfig}}
+  <hr class='config-line'>
+  {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=panelId}}
+    {{rsa-icon name='cog'}}
+  {{/rsa-content-tethered-panel-trigger}}
+  {{#rsa-content-tethered-panel style="primary" position='top' panelId=panelId}}
+    <section>
+      {{yield (hash content=(component 'widget.widget-content'))}}
+    </section>
+  {{/rsa-content-tethered-panel}}
+{{/if}}
+

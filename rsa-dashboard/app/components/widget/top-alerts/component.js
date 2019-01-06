@@ -1,0 +1,1 @@
+export { default } from 'rsa-dashboard/components/widget/top-alerts/component';

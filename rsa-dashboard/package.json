@@ -1,5 +1,5 @@
 {
-  "name": "rsa-rsa-dashboard",
+  "name": "rsa-dashboard",
   "version": "1.0.0",
   "description": "An addon for rendering rsa-dashboard controls",
   "keywords": [
@@ -22,6 +22,7 @@
     "@html-next/flexi-default-styles": "2.0.1",
     "@html-next/flexi-dsl": "2.0.1",
     "@html-next/flexi-layouts": "2.0.1",
+    "@html-next/vertical-collection": "1.0.0-beta.12",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "ember-cli-babel": "^6.17.2",
