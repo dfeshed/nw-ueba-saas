@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
-public class CategoryRarityModelGlobalBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
+public class CategoryRarityGlobalModelBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
 
     @Override
     public String getFactoryName() {
