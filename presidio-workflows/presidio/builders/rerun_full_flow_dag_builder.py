@@ -9,8 +9,10 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.utils import helpers
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
-from elasticsearch import Elasticsearch
 
+from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
+from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
+    build_reset_presidio_configuration_operator
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
@@ -44,9 +46,11 @@ class RerunFullFlowDagBuilder(object):
 
         clean_mongo_operator = build_mongo_clean_bash_operator(config_reader, dag, is_remove_ca_tables)
 
-        clean_elastic_operator = build_clean_elastic_operator(dag)
+        clean_elasticsearch_data_operator = build_clean_elasticsearch_data_operator(dag)
 
         clean_adapter_operator = build_clean_adapter_operator(dag, is_remove_ca_tables)
+
+        reset_presidio_configuration_operator = build_reset_presidio_configuration_operator(dag)
 
         clean_dags_from_db_operator = build_clean_dags_from_db_operator(dag, dag_ids_to_clean)
 
@@ -54,12 +58,12 @@ class RerunFullFlowDagBuilder(object):
 
         pause_dags_operator >> kill_dags_task_instances_operator
         kill_dags_task_instances_operator >> clean_mongo_operator
-        kill_dags_task_instances_operator >> clean_elastic_operator
+        kill_dags_task_instances_operator >> clean_elasticsearch_data_operator
         kill_dags_task_instances_operator >> clean_adapter_operator
-
-        clean_mongo_operator >> clean_dags_from_db_operator
-        clean_elastic_operator >> clean_dags_from_db_operator
-        clean_adapter_operator >> clean_dags_from_db_operator
+        clean_mongo_operator >> reset_presidio_configuration_operator
+        clean_elasticsearch_data_operator >> reset_presidio_configuration_operator
+        clean_adapter_operator >> reset_presidio_configuration_operator
+        reset_presidio_configuration_operator >> clean_dags_from_db_operator
         clean_dags_from_db_operator >> clean_logs_operator
 
         logging.debug("Finished creating dag - %s", dag.dag_id)
@@ -189,25 +193,6 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
                                           bash_command=adapter_clean_bash_command,
                                           dag=cleanup_dag)
     return clean_adapter_operator
-
-
-def clean_elastic_data():
-    es = Elasticsearch(hosts=["localhost"])
-    indexes = es.cat.indices(h="index").encode("utf-8").split("\n")
-
-    for index in indexes:
-        if not index.startswith(".") and not index == "":  # escape system metrics
-            if index.startswith(('presidio-monitoring', 'metricbeat', 'packetbeat')):
-                es.indices.delete(index=index, ignore=[404], request_timeout=360)
-            else:
-                es.delete_by_query(index=index, body="{\"query\": {\"match_all\": {}}}", request_timeout=360)
-
-
-def build_clean_elastic_operator(cleanup_dag):
-    clean_elastic_operator = PythonOperator(task_id='clean_elastic_data',
-                                            python_callable=clean_elastic_data,
-                                            dag=cleanup_dag)
-    return clean_elastic_operator
 
 
 def build_clean_dags_from_db_operator(cleanup_dag, dag_ids_to_clean):
