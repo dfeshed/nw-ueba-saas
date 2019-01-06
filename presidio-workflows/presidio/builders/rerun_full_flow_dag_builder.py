@@ -11,6 +11,8 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
+from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
+    build_reset_presidio_configuration_operator
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
@@ -48,6 +50,8 @@ class RerunFullFlowDagBuilder(object):
 
         clean_adapter_operator = build_clean_adapter_operator(dag, is_remove_ca_tables)
 
+        reset_presidio_configuration_operator = build_reset_presidio_configuration_operator(dag)
+
         clean_dags_from_db_operator = build_clean_dags_from_db_operator(dag, dag_ids_to_clean)
 
         clean_logs_operator = build_clean_logs_operator(dag)
@@ -56,10 +60,10 @@ class RerunFullFlowDagBuilder(object):
         kill_dags_task_instances_operator >> clean_mongo_operator
         kill_dags_task_instances_operator >> clean_elasticsearch_data_operator
         kill_dags_task_instances_operator >> clean_adapter_operator
-
-        clean_mongo_operator >> clean_dags_from_db_operator
-        clean_elasticsearch_data_operator >> clean_dags_from_db_operator
-        clean_adapter_operator >> clean_dags_from_db_operator
+        clean_mongo_operator >> reset_presidio_configuration_operator
+        clean_elasticsearch_data_operator >> reset_presidio_configuration_operator
+        clean_adapter_operator >> reset_presidio_configuration_operator
+        reset_presidio_configuration_operator >> clean_dags_from_db_operator
         clean_dags_from_db_operator >> clean_logs_operator
 
         logging.debug("Finished creating dag - %s", dag.dag_id)
