@@ -1,5 +1,6 @@
 package fortscale.ml.model.retriever;
 
+import fortscale.aggregation.feature.bucket.FeatureBucketUtils;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.*;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
@@ -33,9 +34,10 @@ public class ModelRetriever extends AbstractDataRetriever {
 					.map(ModelDAO::getModel)
 					.collect(Collectors.toList());
 		} else {
+			String contextValue = extractContextFromContextId(contextId, config.getContextFieldName());
 			models =
 					modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, config.getContextFieldName(),
-							contextId, endTime.toInstant()).stream()
+							contextValue, endTime.toInstant()).stream()
 					.map(ModelDAO::getModel)
 					.collect(Collectors.toList());
 		}
@@ -75,11 +77,20 @@ public class ModelRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		return Collections.emptyList();
+		return config.getContextFieldName() == null ?
+				Collections.emptyList() : Collections.singletonList(config.getContextFieldName());
 	}
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		return null;
+		return buildContextId(context);
+	}
+
+	public static String buildContextId(Map<String, String> context){
+		return FeatureBucketUtils.buildContextId(context);
+	}
+
+	public static String extractContextFromContextId(String contextId, String contextFieldName){
+		return FeatureBucketUtils.extractContextFromContextId(contextId, contextFieldName);
 	}
 }
