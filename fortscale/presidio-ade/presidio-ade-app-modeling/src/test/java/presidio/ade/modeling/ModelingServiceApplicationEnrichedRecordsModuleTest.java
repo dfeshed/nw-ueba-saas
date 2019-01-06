@@ -10,6 +10,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.DynamicModelConfServiceContainer;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.builder.CategoryRarityGlobalModelBuilderConf;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
@@ -77,6 +78,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
     private Model expectedModel2;
     private Model expectedModel3;
     private Model expectedModel4;
+    private Model expectedModel5;
     private List<ModelConf> modelConfs;
     private ObjectMapper om;
 
@@ -105,6 +107,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         expectedModel2 = om.readValue(filenameToResourceMap.get("expected_model_2.json").getURL(), Model.class);
         expectedModel3 = om.readValue(filenameToResourceMap.get("expected_model_3.json").getURL(), Model.class);
         expectedModel4 = om.readValue(filenameToResourceMap.get("expected_model_4.json").getURL(), Model.class);
+        expectedModel5 = om.readValue(filenameToResourceMap.get("expected_model_5.json").getURL(), Model.class);
     }
 
     private void arrangeData() throws GeneratorException {
@@ -127,7 +130,9 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
                 generateDataForEpochtimeToHighestDoubleMapRetrieverAndContinuousMaxHistogramModelBuilder((EpochtimeToHighestDoubleMapRetrieverConf)retrieverConf);
             } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
                 // No need to generate data, since the model retriever takes the contextual models built by the ContinuousMaxHistogramModelBuilder
-            } else {
+            } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof CategoryRarityGlobalModelBuilderConf) {
+                // No need to generate data, since the model retriever takes the models built by the CategoryRarityModelBuilder
+            }else {
                 String s = String.format(UNSUPPORTED_MODEL_CONF_MESSAGE_FORMAT, modelConf.getName());
                 throw new IllegalArgumentException(s);
             }
@@ -160,6 +165,9 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
             } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
                 Assert.isTrue(models.size() == 1, unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel4), unexpectedModelMessage));
+            } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof CategoryRarityGlobalModelBuilderConf) {
+                Assert.isTrue(expectedModelSize.contains(models.size()), unexpectedNumMessage);
+                models.forEach(model -> Assert.isTrue(model.equals(expectedModel5), unexpectedModelMessage));
             } else {
                 String s = String.format(UNSUPPORTED_MODEL_CONF_MESSAGE_FORMAT, modelConfName);
                 throw new IllegalArgumentException(s);

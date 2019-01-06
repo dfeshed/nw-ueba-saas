@@ -2,6 +2,10 @@ package fortscale.ml.model;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -14,8 +18,10 @@ public class CategoryRarityGlobalModel implements Model{
     private Long numOfSamples;
 
 
-    public CategoryRarityGlobalModel(List<Double> occurrencesToNumOfUsersList,
-                                     Long maxNumOfPartitions, Long numOfSamples){
+    @JsonCreator
+    public CategoryRarityGlobalModel(@JsonProperty("occurrencesToNumOfUsersList") List<Double> occurrencesToNumOfUsersList,
+                                     @JsonProperty("maxNumOfPartitions") Long maxNumOfPartitions,
+                                     @JsonProperty("numOfSamples") Long numOfSamples){
         this.occurrencesToNumOfUsersList = occurrencesToNumOfUsersList;
         this.maxNumOfPartitions = maxNumOfPartitions;
         this.numOfSamples = numOfSamples;
@@ -33,5 +39,21 @@ public class CategoryRarityGlobalModel implements Model{
     @Override
     public long getNumOfSamples() {
         return numOfSamples;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CategoryRarityGlobalModel)) return false;
+        CategoryRarityGlobalModel that = (CategoryRarityGlobalModel)o;
+        return new EqualsBuilder().append(that.numOfSamples, numOfSamples)
+                .append(that.occurrencesToNumOfUsersList, occurrencesToNumOfUsersList)
+                .append(that.maxNumOfPartitions, maxNumOfPartitions).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(numOfSamples).append(occurrencesToNumOfUsersList)
+                .append(maxNumOfPartitions).hashCode();
     }
 }

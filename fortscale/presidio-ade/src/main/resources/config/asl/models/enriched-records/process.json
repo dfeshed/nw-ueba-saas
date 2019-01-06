@@ -122,6 +122,25 @@
       }
     },
     {
+      "name": "srcProcessFilePath.userId.global.scriptingDstProcessFileName.process",
+      "selector": {
+        "type": "models_sub_context_selector",
+        "modelConfName": "srcProcessFilePath.userIdScriptingDstProcessFileName.process",
+        "contextFieldName":"dstProcessFileName"
+      },
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "srcProcessFilePath.userIdScriptingDstProcessFileName.process",
+        "contextFieldName":"dstProcessFileName"
+      },
+      "builder": {
+        "type": "category_rarity_global_model_builder",
+        "minNumOfPartitionsToLearnFrom": 10
+      }
+    },
+    {
       "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
@@ -162,6 +181,25 @@
       }
     },
     {
+      "name": "dstProcessFilePathCreated.userId.global.scriptingSrcProcessFileName.process",
+      "selector": {
+        "type": "models_sub_context_selector",
+        "modelConfName": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process",
+        "contextFieldName":"srcProcessFileName"
+      },
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process",
+        "contextFieldName":"srcProcessFileName"
+      },
+      "builder": {
+        "type": "category_rarity_global_model_builder",
+        "minNumOfPartitionsToLearnFrom": 10
+      }
+    },
+    {
       "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process",
       "selector": {
         "type": "feature_bucket_context_selector",
@@ -199,6 +237,25 @@
         "numOfBuckets": 30,
         "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstProcessFilePathOpened.userId.global.scriptingSrcProcessFileName.process",
+      "selector": {
+        "type": "models_sub_context_selector",
+        "modelConfName": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process",
+        "contextFieldName":"srcProcessFileName"
+      },
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process",
+        "contextFieldName":"srcProcessFileName"
+      },
+      "builder": {
+        "type": "category_rarity_global_model_builder",
+        "minNumOfPartitionsToLearnFrom": 10
       }
     },
     {
