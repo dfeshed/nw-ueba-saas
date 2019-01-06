@@ -36,7 +36,7 @@ public class CategoryRarityGlobalModelBuilder implements IModelBuilder{
             return null;
         }
         int numOfBuckets = models.get(0).getOccurrencesToNumOfPartitionsList().size();
-        List<Double> occurrencesToNumOfUsersList = new ArrayList<>();
+        List<Double> occurrencesToNumOfDistinctFeatureValuesList = new ArrayList<>();
 
         for(int i = 0; i < numOfBuckets; i++){
             double numOfUsers = 0;
@@ -45,7 +45,7 @@ public class CategoryRarityGlobalModelBuilder implements IModelBuilder{
                     numOfUsers++;
                 }
             }
-            occurrencesToNumOfUsersList.add(numOfUsers);
+            occurrencesToNumOfDistinctFeatureValuesList.add(numOfUsers);
         }
 
         long maxNumOfPartitions = 0;
@@ -55,7 +55,7 @@ public class CategoryRarityGlobalModelBuilder implements IModelBuilder{
             }
         }
 
-        return new CategoryRarityGlobalModel(occurrencesToNumOfUsersList, maxNumOfPartitions, (long) models.size());
+        return new CategoryRarityGlobalModel(occurrencesToNumOfDistinctFeatureValuesList, maxNumOfPartitions, (long) models.size());
     }
 
 

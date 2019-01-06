@@ -189,7 +189,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         Assert.assertTrue(scorer.canScore(null, Collections.singletonList(new CategoryRarityModel()), new Feature("source-machine", "host1")));
         CategoryRarityModel additionalModel = new CategoryRarityModel();
-        additionalModel.init(null, 0, 100, 0);
+        additionalModel.init(null, null, 0, 100, 0);
         double score = scorer.calculateScore(null, Collections.singletonList(additionalModel), new Feature("source-machine", "host1"));
         Assert.assertEquals(96.0, score, 0.0);
     }

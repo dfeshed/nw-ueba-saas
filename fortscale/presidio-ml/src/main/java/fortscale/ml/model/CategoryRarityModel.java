@@ -15,8 +15,9 @@ import java.util.*;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class CategoryRarityModel implements PartitionedDataModel {
+public class CategoryRarityModel implements PartitionedDataModel, OccurrencesToNumOfDistinctFeatureValuesModel{
 	private List<Double> occurrencesToNumOfPartitionsList;
+	private List<Double> occurrencesToNumOfDistinctFeatureValuesList;
 	private Long numOfSamples;
 	private Long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
@@ -33,12 +34,14 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	private int numberOfEntriesToSaveInModel;
 
 	public void init(Map<Long, Integer> occurrencesToNumOfPartitions,
+					 Map<Long, Integer> occurrencesToNumOfDistinctFeatureValues,
 					 int numOfBuckets, long numOfPartitions, long numDistinctFeatures) {
 		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
 		this.numOfPartitions = numOfPartitions;
 		this.numOfSamples = numOfPartitions;
 		this.occurrencesToNumOfPartitionsList = createListOutOfAccumulativeHistogram(occurrencesToNumOfPartitions, numOfBuckets);
+		this.occurrencesToNumOfDistinctFeatureValuesList = createListOutOfAccumulativeHistogram(occurrencesToNumOfDistinctFeatureValues, numOfBuckets);
 	}
 
 	private List<Double> createListOutOfAccumulativeHistogram(Map<Long, Integer> occurrencesToValueMap, int numOfBuckets){
@@ -72,6 +75,11 @@ public class CategoryRarityModel implements PartitionedDataModel {
 
 	public List<Double> getOccurrencesToNumOfPartitionsList() {
 		return occurrencesToNumOfPartitionsList;
+	}
+
+	@Override
+	public List<Double> getOccurrencesToNumOfDistinctFeatureValuesList() {
+		return occurrencesToNumOfDistinctFeatureValuesList;
 	}
 
 	@Override
@@ -136,6 +144,7 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		return new EqualsBuilder().append(that.numOfSamples, numOfSamples).append(that.numDistinctFeatures, numDistinctFeatures)
 				.append(that.numOfPartitions, numOfPartitions).append(that.numberOfEntriesToSaveInModel, numberOfEntriesToSaveInModel)
 				.append(that.occurrencesToNumOfPartitionsList, occurrencesToNumOfPartitionsList)
+				.append(that.occurrencesToNumOfDistinctFeatureValuesList, occurrencesToNumOfDistinctFeatureValuesList)
 				.append(that.featureOccurrences, featureOccurrences).isEquals();
 	}
 
@@ -143,6 +152,7 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	public int hashCode() {
 		return new HashCodeBuilder().append(numOfSamples).append(numDistinctFeatures)
 				.append(occurrencesToNumOfPartitionsList)
+				.append(occurrencesToNumOfDistinctFeatureValuesList)
 				.append(numOfPartitions).append(numberOfEntriesToSaveInModel).hashCode();
 	}
 }

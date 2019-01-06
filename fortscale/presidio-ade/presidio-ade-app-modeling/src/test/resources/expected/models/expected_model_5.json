@@ -1,6 +1,6 @@
 {
   "type": "category-rarity-global-model",
-  "occurrencesToNumOfUsersList": [
+  "occurrencesToNumOfDistinctFeatureValuesList": [
     0.0,
     0.0,
     0.0,

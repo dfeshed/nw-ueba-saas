@@ -12,24 +12,24 @@ import java.util.List;
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class CategoryRarityGlobalModel implements Model{
-    private List<Double> occurrencesToNumOfUsersList;
+public class CategoryRarityGlobalModel implements Model, OccurrencesToNumOfDistinctFeatureValuesModel{
+    private List<Double> occurrencesToNumOfDistinctFeatureValuesList;
     private long maxNumOfPartitions;
     private Long numOfSamples;
 
 
     @JsonCreator
-    public CategoryRarityGlobalModel(@JsonProperty("occurrencesToNumOfUsersList") List<Double> occurrencesToNumOfUsersList,
+    public CategoryRarityGlobalModel(@JsonProperty("occurrencesToNumOfDistinctFeatureValuesList") List<Double> occurrencesToNumOfDistinctFeatureValuesList,
                                      @JsonProperty("maxNumOfPartitions") Long maxNumOfPartitions,
                                      @JsonProperty("numOfSamples") Long numOfSamples){
-        this.occurrencesToNumOfUsersList = occurrencesToNumOfUsersList;
+        this.occurrencesToNumOfDistinctFeatureValuesList = occurrencesToNumOfDistinctFeatureValuesList;
         this.maxNumOfPartitions = maxNumOfPartitions;
         this.numOfSamples = numOfSamples;
     }
 
-
-    public List<Double> getOccurrencesToNumOfUsersList() {
-        return occurrencesToNumOfUsersList;
+    @Override
+    public List<Double> getOccurrencesToNumOfDistinctFeatureValuesList() {
+        return occurrencesToNumOfDistinctFeatureValuesList;
     }
 
     public long getMaxNumOfPartitions() {
@@ -47,13 +47,13 @@ public class CategoryRarityGlobalModel implements Model{
         if (!(o instanceof CategoryRarityGlobalModel)) return false;
         CategoryRarityGlobalModel that = (CategoryRarityGlobalModel)o;
         return new EqualsBuilder().append(that.numOfSamples, numOfSamples)
-                .append(that.occurrencesToNumOfUsersList, occurrencesToNumOfUsersList)
+                .append(that.occurrencesToNumOfDistinctFeatureValuesList, occurrencesToNumOfDistinctFeatureValuesList)
                 .append(that.maxNumOfPartitions, maxNumOfPartitions).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(numOfSamples).append(occurrencesToNumOfUsersList)
+        return new HashCodeBuilder().append(numOfSamples).append(occurrencesToNumOfDistinctFeatureValuesList)
                 .append(maxNumOfPartitions).hashCode();
     }
 }
