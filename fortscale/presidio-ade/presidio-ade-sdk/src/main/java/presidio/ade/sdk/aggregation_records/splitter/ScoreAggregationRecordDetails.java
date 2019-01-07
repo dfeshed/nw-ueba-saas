@@ -1,16 +1,13 @@
 package presidio.ade.sdk.aggregation_records.splitter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunction;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.Validate;
 import presidio.ade.domain.record.AdeAggregationReader;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -22,8 +19,6 @@ import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import java.util.List;
 
 public class ScoreAggregationRecordDetails {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     private final TimeRange timeRange;
     private final AggregatedFeatureEventConf aggregatedFeatureEventConf;
     private final String featureBucketConfName;
@@ -57,8 +52,7 @@ public class ScoreAggregationRecordDetails {
             contextFieldNameToValueMap.add(contextFieldName, contextFieldValue);
         });
         featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
-        JSONObject jsonObject = aggregatedFeatureEventConf.getAggregatedFeatureEventFunction();
-        aggrFeatureEventFunction = AggrFeatureFuncService.deserializeAggrFeatureEventFunction(jsonObject);
+        aggrFeatureEventFunction = aggregatedFeatureEventConf.getAggrFeatureEventFunction();
     }
 
     public TimeRange getTimeRange() {

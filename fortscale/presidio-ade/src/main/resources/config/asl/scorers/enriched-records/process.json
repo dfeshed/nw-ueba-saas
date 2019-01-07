@@ -262,7 +262,7 @@
             },
             {
               "type": "conditional",
-              "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+              "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
               "predicates": [
                 {
                   "type": "contained-in-list",
@@ -279,12 +279,12 @@
               ],
               "scorerConf": {
                 "type": "linear-noise-reduction-scorer",
-                "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+                "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "srcProcessFilePath.userIdDstProcessFileName.process.score",
+                  "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
                   "model": {
-                    "name": "srcProcessFilePath.userIdDstProcessFileName.process"
+                    "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process"
                   },
                   "additional-models": [
                     {
@@ -298,12 +298,12 @@
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
-                  "name": "userId.dstProcessFileNameSrcProcessFilePath.process.score",
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process.score",
                   "base-scorer": {
                     "type": "category-rarity-model-scorer",
-                    "name": "userId.dstProcessFileNameSrcProcessFilePath.process.score",
+                    "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process.score",
                     "model": {
-                      "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
+                      "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
                     },
                     "max-rare-count": 8,
                     "number-of-partitions-to-influence-enough": 10,
@@ -313,10 +313,10 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
-                  "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
                 },
                 "context-model": {
                   "name": "contexts.process"
@@ -331,7 +331,7 @@
             },
             {
               "type": "conditional",
-              "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+              "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
               "predicates": [
                 {
                   "type": "contained-in-list",
@@ -348,12 +348,12 @@
               ],
               "scorerConf": {
                 "type": "linear-noise-reduction-scorer",
-                "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+                "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process.score",
+                  "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
                   "model": {
-                    "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process"
+                    "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process"
                   },
                   "additional-models": [
                     {
@@ -367,12 +367,12 @@
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
-                  "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process.score",
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process.score",
                   "base-scorer": {
                     "type": "category-rarity-model-scorer",
-                    "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process.score",
+                    "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process.score",
                     "model": {
-                      "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
+                      "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
                     },
                     "max-rare-count": 8,
                     "number-of-partitions-to-influence-enough": 10,
@@ -382,10 +382,10 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
-                  "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
                 },
                 "context-model": {
                   "name": "contexts.process"
@@ -400,7 +400,7 @@
             },
             {
               "type": "conditional",
-              "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
+              "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
               "predicates": [
                 {
                   "type": "contained-in-list",
@@ -417,12 +417,12 @@
               ],
               "scorerConf": {
                 "type": "linear-noise-reduction-scorer",
-                "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
+                "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process.score",
+                  "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
                   "model": {
-                    "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process"
+                    "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process"
                   },
                   "max-rare-count": 8,
                   "number-of-partitions-to-influence-enough": 10,
@@ -431,12 +431,12 @@
                 },
                 "reduction-scorer": {
                   "type": "score-and-certainty-multiplier-scorer",
-                  "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process.score",
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process.score",
                   "base-scorer": {
                     "type": "category-rarity-model-scorer",
-                    "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process.score",
+                    "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process.score",
                     "model": {
-                      "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
+                      "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
                     },
                     "additional-models": [
                       {
@@ -451,10 +451,10 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
-                  "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
                 },
                 "context-model": {
                   "name": "contexts.process"

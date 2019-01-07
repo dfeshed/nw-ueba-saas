@@ -94,7 +94,7 @@ public class SmartApplicationTest extends BaseAppTest {
         String contextId = "user1";
         TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
         createWeightModel(startDate, weightToFeaturesSortedMap);
-        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+        createLowAnomaliesUserSmartValuesModel(startDate, "userId", contextId, weightToFeaturesSortedMap);
         createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
         List<String> contextIds = Collections.singletonList(contextId);
         createSingleHighValueAggregatedFeatureGenerators();
@@ -194,7 +194,7 @@ public class SmartApplicationTest extends BaseAppTest {
         setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
         TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
         // Generate models for users:
-        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+        createLowAnomaliesUserSmartValuesModel(startDate, "userId", contextId, weightToFeaturesSortedMap);
         createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
         String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
         executeAndAssertCommandSuccess(command);
@@ -254,7 +254,7 @@ public class SmartApplicationTest extends BaseAppTest {
         TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
         // Generate models for users:
         createWeightModel(startDate, weightToFeaturesSortedMap);
-        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+        createLowAnomaliesUserSmartValuesModel(startDate, "userId", contextId, weightToFeaturesSortedMap);
         String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
         executeAndAssertCommandSuccess(command);
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
@@ -366,7 +366,7 @@ public class SmartApplicationTest extends BaseAppTest {
             createPriorModelForLowAnomaliesUser(start, weightToFeaturesSortedMap);
 
             for (String contextId : contextIds) {
-                createLowAnomaliesUserSmartValuesModel(start, "userId#" + contextId, weightToFeaturesSortedMap);
+                createLowAnomaliesUserSmartValuesModel(start, "userId", contextId, weightToFeaturesSortedMap);
             }
 
             start = start.plus(Duration.ofDays(2));
@@ -506,7 +506,7 @@ public class SmartApplicationTest extends BaseAppTest {
             clusterConfs.add(clusterConf);
         }));
         SmartWeightsModel smartWeightsModel = new SmartWeightsModel().setClusterConfs(clusterConfs);
-        ModelDAO modelDao = new ModelDAO("test-session-id", null, smartWeightsModel, end.minus(Duration.ofDays(90)), end);
+        ModelDAO modelDao = new ModelDAO("test-session-id", null, smartWeightsModel, end.minus(Duration.ofDays(90)), end, null);
         mongoTemplate.insert(modelDao, "model_smart.global.weights.userId.hourly");
     }
 
@@ -519,7 +519,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * @param end                       end instant of the model.
      * @param weightToFeaturesSortedMap weight to features sorted map.
      */
-    private void createLowAnomaliesUserSmartValuesModel(Instant end, String contextId, TreeMap<Double, List<String>> weightToFeaturesSortedMap) {
+    private void createLowAnomaliesUserSmartValuesModel(Instant end, String contextFieldName, String contextValue, TreeMap<Double, List<String>> weightToFeaturesSortedMap) {
         int numOfZeroValues = 50;
         int numOfPositiveValues = 5;
         Double minWeight = Collections.min(weightToFeaturesSortedMap.keySet());
@@ -540,7 +540,10 @@ public class SmartApplicationTest extends BaseAppTest {
 
         SMARTMaxValuesModel smartMaxValuesModel = new SMARTMaxValuesModel();
         smartMaxValuesModel.init(startInstantToMaxSmartValue, startInstantToMaxSmartValue.size(), end);
-        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartMaxValuesModel, end.minus(Duration.ofDays(90)), end);
+        String contextId = contextFieldName +"#" + contextValue;
+        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartMaxValuesModel,
+                end.minus(Duration.ofDays(90)), end,
+                Collections.singletonMap(contextFieldName, contextValue));
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }
 
@@ -557,7 +560,7 @@ public class SmartApplicationTest extends BaseAppTest {
         SMARTValuesPriorModel smartValuesPriorModel = new SMARTValuesPriorModel();
         smartValuesPriorModel.init(prior);
         smartValuesPriorModel.setWeightsModelEndTime(end);
-        ModelDAO modelDao = new ModelDAO("test-session-id", null, smartValuesPriorModel, end.minus(Duration.ofDays(90)), end);
+        ModelDAO modelDao = new ModelDAO("test-session-id", null, smartValuesPriorModel, end.minus(Duration.ofDays(90)), end, null);
         mongoTemplate.insert(modelDao, "model_smart.global.prior.userId.hourly");
     }
 

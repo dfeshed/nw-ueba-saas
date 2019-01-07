@@ -17,18 +17,12 @@ public interface SupportingInformationGenerator {
 
     Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    default List<Indicator> generateSupportingInformation(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+    default List<Indicator> generateSupportingInformation(SmartAggregationRecord smartAggregationRecord, Alert alert, List<Indicator> indicators, int eventsLimit, int eventsPageSize) {
 
         AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         logger.debug("starting building supporting info for feature {}, indicator with ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
-        List<Indicator> indicators = new ArrayList<>();
 
         try {
-            // generate indicators
-            indicators = generateIndicators(smartAggregationRecord, alert, eventsLimit, eventsPageSize);
-            if (CollectionUtils.isEmpty(indicators)) {
-                logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
-            }
 
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
@@ -55,8 +49,6 @@ public interface SupportingInformationGenerator {
         logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         return indicators;
     }
-
-    List<Indicator> generateIndicators(SmartAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception;
 
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception;
 

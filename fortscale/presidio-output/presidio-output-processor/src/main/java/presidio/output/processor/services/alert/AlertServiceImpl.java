@@ -13,6 +13,8 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFactory;
+import presidio.output.processor.services.alert.indicator.IndicatorsGenerator;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class AlertServiceImpl implements AlertService {
     private final AlertPersistencyService alertPersistencyService;
     private final AlertSeverityService alertSeverityService;
     private final SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
+    private final IndicatorsGeneratorFactory indicatorsGeneratorFactory;
     private final double indicatorsContributionLimitForClassification;
     private final int eventsLimit;
     private final int eventsPageSize;
@@ -46,6 +49,7 @@ public class AlertServiceImpl implements AlertService {
     public AlertServiceImpl(AlertPersistencyService alertPersistencyService,
                             AlertClassificationService alertClassificationService,
                             AlertSeverityService alertSeverityService,
+                            IndicatorsGeneratorFactory indicatorsGeneratorFactory,
                             SupportingInformationGeneratorFactory supportingInformationGeneratorFactory,
                             int eventsLimit,
                             int eventsPageSize,
@@ -53,6 +57,7 @@ public class AlertServiceImpl implements AlertService {
         this.alertPersistencyService = alertPersistencyService;
         this.alertClassificationService = alertClassificationService;
         this.alertSeverityService = alertSeverityService;
+        this.indicatorsGeneratorFactory = indicatorsGeneratorFactory;
         this.supportingInformationGeneratorFactory = supportingInformationGeneratorFactory;
         this.eventsLimit = eventsLimit;
         this.eventsPageSize = eventsPageSize;
@@ -75,8 +80,19 @@ public class AlertServiceImpl implements AlertService {
 
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
-            SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(smartAggregationRecord, alert, eventsLimit, eventsPageSize));
+            try {
+                IndicatorsGenerator indicatorsGenerator = indicatorsGeneratorFactory.getIndicatorsGenerator(aggregationRecord.getAggregatedFeatureType().name());
+                List<Indicator> indicators = indicatorsGenerator.generateIndicators(smartAggregationRecord, alert);
+                if (CollectionUtils.isNotEmpty(indicators)) {
+                    String indicatorsType = indicators.get(0).getType().name();
+                    SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(indicatorsType);
+                    supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(smartAggregationRecord, alert, indicators, eventsLimit, eventsPageSize));
+                } else {
+                    logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", aggregationRecord.getId(), aggregationRecord.getFeatureName());
+                }
+            } catch (Exception ex) {
+                logger.warn("failed to generate alert for adeAggregationRecord ID {}, feature {}, exception: {}", aggregationRecord.getId(), aggregationRecord.getFeatureName(), ex);
+            }
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {

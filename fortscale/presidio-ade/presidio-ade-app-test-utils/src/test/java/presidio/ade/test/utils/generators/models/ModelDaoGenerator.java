@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -21,6 +22,8 @@ import java.util.List;
 //public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
 public class ModelDaoGenerator{
     private static final String DEFAULT_MODEL_SESSION = "testSession";
+    private static final String CONTEXT_FIELD_NAME = "userId";
+    private static final String CONTEXT_ID_SEPERATOR = "###";
     private CyclicValuesGenerator<String> contextIdGenerator;
     private IStringGenerator sessionIdGenerator;
     private ITimeGenerator endTimeGenerator;
@@ -28,7 +31,7 @@ public class ModelDaoGenerator{
     private int modelsNumberOfDaysBack;
 
     public ModelDaoGenerator(IModelGenerator modelGenerator) throws GeneratorException {
-        this.contextIdGenerator = new StringRegexCyclicValuesGenerator("userId\\#\\#\\#testUser[1-2]{0,1}");
+        this.contextIdGenerator = new StringRegexCyclicValuesGenerator("testUser[1-2]{0,1}");
         this.sessionIdGenerator= new CustomStringGenerator(DEFAULT_MODEL_SESSION);
         this.endTimeGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(0,0),LocalTime.of(23,59),1440,30,1);
         this.modelsNumberOfDaysBack = 30;
@@ -42,9 +45,11 @@ public class ModelDaoGenerator{
             String sessionId = sessionIdGenerator.getNext();
             Instant endTime = endTimeGenerator.getNext();
             Instant startTime = endTime.minus(Duration.ofDays(modelsNumberOfDaysBack));
-            for (String contextId : contextIdGenerator.getValues()) {
+            for (String contextValue : contextIdGenerator.getValues()) {
                 Model model = modelGenerator.getNext();
-                ModelDAO modelDAO = new ModelDAO(sessionId, contextId, model, startTime, endTime);
+                String contextId = CONTEXT_FIELD_NAME + CONTEXT_ID_SEPERATOR + contextValue;
+                ModelDAO modelDAO = new ModelDAO(sessionId, contextId, model, startTime, endTime,
+                        Collections.singletonMap(CONTEXT_FIELD_NAME, contextValue));
                 evList.add(modelDAO);
             }
         }

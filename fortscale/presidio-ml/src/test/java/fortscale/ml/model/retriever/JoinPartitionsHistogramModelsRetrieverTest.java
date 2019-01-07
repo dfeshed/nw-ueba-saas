@@ -154,7 +154,7 @@ public class JoinPartitionsHistogramModelsRetrieverTest {
             }
 
             Model model = new PartitionsDataModel(instantToValue, resolutionInSeconds, instantStep, numOfPartitions);
-            ModelDAO modelDao = new ModelDAO("test_session", contextId, model, startInstant, endInstant);
+            ModelDAO modelDao = new ModelDAO("test_session", contextId, model, startInstant, endInstant,null);
             modelDaoList.add(modelDao);
         }
         ;
@@ -184,7 +184,7 @@ public class JoinPartitionsHistogramModelsRetrieverTest {
                 start = start.plus(Duration.ofHours(1));
             }
             Model model = new PartitionsDataModel(instantToValue, resolutionInSeconds, instantStep, numOfPartitions);
-            ModelDAO modelDao = new ModelDAO("test_session", contextId, model, startInstant, endInstant);
+            ModelDAO modelDao = new ModelDAO("test_session", contextId, model, startInstant, endInstant, null);
             modelDaoList.add(modelDao);
         }
         return modelDaoList;

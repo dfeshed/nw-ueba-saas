@@ -15,10 +15,7 @@ import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
 
@@ -73,19 +70,21 @@ public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
         categoryRarityModelRetrieverMetricsContainer.updateReadMetric(featureBuckets.size());
 
         if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+        Map<String, String> contextFieldNameToValueMap = featureBuckets.get(0).getContextFieldNameToValueMap();
 
         FixedDurationStrategy strategy = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName());
         CategoricalFeatureValue reductionHistogram = new CategoricalFeatureValue(strategy);
         createReductionHistogram(endTime, featureValue, featureBuckets, reductionHistogram);
 
-        return getModelBuilderData(reductionHistogram);
+        return getModelBuilderData(reductionHistogram, contextFieldNameToValueMap);
     }
 
-    ModelBuilderData getModelBuilderData(CategoricalFeatureValue reductionHistogram) {
+    ModelBuilderData getModelBuilderData(CategoricalFeatureValue reductionHistogram,
+                                         Map<String, String> contextFieldNameToValueMap) {
         if (reductionHistogram.getN() == 0) {
             return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
         } else {
-            return new ModelBuilderData(reductionHistogram);
+            return new ModelBuilderData(reductionHistogram, contextFieldNameToValueMap);
         }
     }
 

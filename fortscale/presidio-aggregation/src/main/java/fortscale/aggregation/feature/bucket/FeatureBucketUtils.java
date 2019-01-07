@@ -33,6 +33,16 @@ public class FeatureBucketUtils {
 		return StringUtils.join(listOfPairs, CONTEXT_ID_SEPARATOR);
 	}
 
+	public static String extractContextFromContextId(String contextId, String contextFieldName){
+		String[] contexts = contextId.split(CONTEXT_ID_SEPARATOR);
+		for(int i = 0; i < contexts.length; i += 2){
+			if(contexts[i].equals(contextFieldName)){
+				return contexts[i+1];
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Generate bucket id.
 	 * The bucket id consist: strategyId , contextFieldNames, contextFieldName value.

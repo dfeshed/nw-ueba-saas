@@ -993,7 +993,7 @@ indicators:
   type: SCORE_AGGREGATION
   name: user_abnormal_process_executed_a_scripting_tool
   schema: PROCESS
-  adeEventType: scored_enriched.process.srcProcessFilePath.userIdDstProcessFileName.process.score
+  adeEventType: scored_enriched.process.srcProcessFilePath.userIdScriptingDstProcessFileName.process.score
   modelContextFields:
     - userId
     - dstProcessFileName
@@ -1017,7 +1017,7 @@ indicators:
 - id: sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
   name: user_abnormal_application_triggered_by_scripting_tool
-  adeEventType: scored_enriched.process.dstProcessFilePathCreated.userIdSrcProcessFileName.process.score
+  adeEventType: scored_enriched.process.dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score
   modelContextFields:
     - userId
     - srcProcessFileName
@@ -1042,7 +1042,7 @@ indicators:
 - id: sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly
   type: SCORE_AGGREGATION
   name: user_abnormal_process_opened_by_scripting_tool
-  adeEventType: scored_enriched.process.dstProcessFilePathOpened.userIdSrcProcessFileName.process.score
+  adeEventType: scored_enriched.process.dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score
   modelContextFields:
     - userId
     - srcProcessFileName
@@ -1077,6 +1077,28 @@ indicators:
         fieldValue: CREATE_PROCESS
   historicalData:
     type: hourly_aggregations
+  classification: discovery_reconnaissance
+
+
+- id: numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_reconnaissance_tools_executed_process
+  schema: PROCESS
+  adeEventType: process
+  modelContextFields:
+    - userId
+    - dstProcessFileName
+  anomalyDescriptior:
+    anomalyField: dstProcessCategories
+    anomalyValue: RECONNAISSANCE_TOOL
+    anomalyFilters:
+    - fieldName: operationType
+      fieldValue: CREATE_PROCESS
+  splitFields:
+    - dstProcessFileName
+  historicalData:
+    type: hourly_aggregations
+    featureName: numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly
   classification: discovery_reconnaissance
 
 #*********************************************************

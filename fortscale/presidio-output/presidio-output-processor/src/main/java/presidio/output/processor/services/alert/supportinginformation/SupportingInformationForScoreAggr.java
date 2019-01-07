@@ -11,14 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
-import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.AdeScoredEnrichedRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
-import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.HistoricalData;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.ScoredEventService;
@@ -36,7 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Supporting information (indicators, events and historical data) for SCORE_AGGREGATION events (AKA 'P')
+ * Supporting information (events and historical data) for SCORE_AGGREGATION events (AKA 'P')
  */
 public class SupportingInformationForScoreAggr implements SupportingInformationGenerator {
     public static final String CONTEXT_PREFIX = "context.";
@@ -72,56 +70,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         this.supportingInfoUtils = supportingInfoUtils;
         this.adeManagerSdk = adeManagerSdk;
         this.recordReaderFactoryService = recordReaderFactoryService;
-    }
-
-
-    @Override
-    public List<Indicator> generateIndicators(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
-        AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
-        List<Indicator> indicators = new ArrayList<>();
-        IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-
-        List<String> splitFieldNames = new ArrayList<>(indicatorConfig.getSplitFields());
-        splitFieldNames.replaceAll(field -> translateOutputToAdeName(field));
-
-        ScoreAggregationRecordContributors scoreAggregationRecordContributors = adeManagerSdk.splitScoreAggregationRecordToContributors(adeAggregationRecord, splitFieldNames);
-
-        for (ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor : scoreAggregationRecordContributors.getContributors()) {
-
-            Indicator indicator = new Indicator(alert.getId());
-            indicator.setName(indicatorConfig.getName());
-            AdeScoredEnrichedRecordReader firstRecordReader = (AdeScoredEnrichedRecordReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getFirstScoredRecord());
-            AdeScoredEnrichedRecordReader lastRecordReader = (AdeScoredEnrichedRecordReader)recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getLastScoredRecord());
-            indicator.setStartDate(Date.from(firstRecordReader.getDate_time()));
-            indicator.setEndDate(Date.from(lastRecordReader.getDate_time()));
-            indicator.setSchema(indicatorConfig.getSchema());
-            indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
-            indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
-            Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
-
-            // add split fields
-            Map<String, String> contexts = adeContexts.entrySet().stream()
-                                                .filter(entry -> entry.getValue() != null)
-                                                .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
-                                                                          entry -> entry.getValue()));
-            // add indicator context
-            contexts.put(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
-
-            // add model context
-            indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));
-
-            // add anomaly field
-            contexts.put(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
-                         firstRecordReader.get(translateOutputToAdeName(indicatorConfig.getAnomalyDescriptior().getAnomalyField())).toString());
-
-            String featureValue  = AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())?
-                    StringUtils.EMPTY:
-                    contexts.get(indicatorConfig.getAnomalyDescriptior().getAnomalyField());
-            indicator.setAnomalyValue(featureValue);
-            indicator.setContexts(contexts);
-            indicators.add(indicator);
-        }
-        return indicators;
     }
 
     @Override
@@ -208,18 +156,5 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         // dynamic indicators -> the event value is taken from the indicator itself (e.g: abnormal_file_action_operation_type => FILE_OPENED, FILE_MOVED ...)
         return StringUtils.isNotEmpty(indicator.getAnomalyValue()) ? indicator.getAnomalyValue() : indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
     }
-
-    private String translateAdeNameToOutput(String adeName) {
-        return AdeRecord.START_INSTANT_FIELD.equals(adeName)?
-                EnrichedEvent.EVENT_DATE_FIELD_NAME:
-                adeName.replace(CONTEXT_PREFIX,"");
-    }
-
-    private String translateOutputToAdeName(String outputName) {
-        return EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(outputName)?
-                AdeRecord.START_INSTANT_FIELD:
-                CONTEXT_PREFIX + outputName;
-    }
-
 
 }
