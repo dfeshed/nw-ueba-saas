@@ -161,47 +161,52 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
   const { investigate } = getState();
   const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, investigate.dictionaries.language);
 
-  // fetch a hash for meta filters passed through the url
-  return dispatch({
-    type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
-    promise: getHashForParams(
-      parsedPillData,
-      investigate.dictionaries.language
-    ),
-    meta: {
-      onSuccess({ data }) {
-        const hashIds = data.map((d) => d.id);
-        const allHashIds = hashIds.concat(parsedQueryParams.pillDataHashes);
+  return new Promise(function(resolve, reject) {
+    // fetch a hash for meta filters passed through the url
+    dispatch({
+      type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+      promise: getHashForParams(
+        parsedPillData,
+        investigate.dictionaries.language
+      ),
+      meta: {
+        onSuccess({ data }) {
+          const hashIds = data.map((d) => d.id);
+          const allHashIds = hashIds.concat(parsedQueryParams.pillDataHashes);
 
-        // fetch params for all hashes
-        // this will return params for what was in pdhash and mf in the url
-        return getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
-          const paramsArray = paramsObjectArray.map((pO) => pO.query);
-          const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-          const newPillData = paramsArray.map((singleParams) => {
-            return transformTextToPillData(singleParams, metaKeys);
+          // fetch params for all hashes
+          // this will return params for what was in pdhash and mf in the url
+          getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
+            const paramsArray = paramsObjectArray.map((pO) => pO.query);
+            const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+            const newPillData = paramsArray.map((singleParams) => {
+              return transformTextToPillData(singleParams, metaKeys);
+            });
+
+            // update pills with combined params of pdhash and mf returned by getParamsForHashes
+            dispatch({
+              type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+              payload: {
+                pillData: newPillData,
+                pillHashes: allHashIds
+              }
+            });
+
+            // pass the hash ids to the navigation callback
+            // so that it can be included in the URL
+            resolve();
+            hashNavigateCallback(allHashIds);
+          }).catch((err) => {
+            handleInvestigateErrorCode(err, 'getParamsForHashes');
+            reject(err);
           });
-
-          // update pills with combined params of pdhash and mf returned by getParamsForHashes
-          dispatch({
-            type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
-            payload: {
-              pillData: newPillData,
-              pillHashes: allHashIds
-            }
-          });
-
-          // pass the hash ids to the navigation callback
-          // so that it can be included in the URL
-          hashNavigateCallback(allHashIds);
-        }).catch((err) => {
-          handleInvestigateErrorCode(err, 'getParamsForHashes');
-        });
-      },
-      onFailure(response) {
-        handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+        },
+        onFailure(response) {
+          handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+          reject(response);
+        }
       }
-    }
+    });
   });
 };
 
