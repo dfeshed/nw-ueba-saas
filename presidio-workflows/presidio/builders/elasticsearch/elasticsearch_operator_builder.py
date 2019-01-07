@@ -1,6 +1,6 @@
 from airflow.operators.python_operator import PythonOperator
 from elasticsearch import Elasticsearch
-from presidio.builders.context_conf_extractor import extract_context_conf
+from presidio.utils.airflow.context_conf_extractor import extract_context_conf
 
 ELASTICSEARCH_CONF_KEY_NAME = "elasticsearch"
 CLEAN_DATA_KEY_NAME = "cleanData"

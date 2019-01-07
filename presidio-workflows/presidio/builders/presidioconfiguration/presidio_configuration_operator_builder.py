@@ -2,7 +2,7 @@ import json
 import requests
 
 from airflow.operators.python_operator import PythonOperator
-from presidio.builders.context_conf_extractor import extract_context_conf
+from presidio.utils.airflow.context_conf_extractor import extract_context_conf
 
 PRESIDIO_CONF_KEY_NAME = "presidio"
 DATA_PIPELINE_KEY_NAME = "dataPipeline"
