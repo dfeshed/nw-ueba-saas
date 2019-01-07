@@ -22,8 +22,8 @@ public class LinearNoiseReductionScorerConf extends AbstractScorerConf {
     private IScorerConf mainScorerConf;
     @JsonProperty("reduction-scorer")
     private IScorerConf reductionScorerConf;
-    @JsonProperty("main-scorer-model")
-    private ModelInfo mainScorerModelInfo;
+    @JsonProperty("feature-count-model")
+    private ModelInfo featureCountModelInfo;
     @JsonProperty("occurrences-to-num-of-distinct-feature-values-model")
     private ModelInfo occurrencesToNumOfDistinctFeatureValueModelInfo;
     @JsonProperty("context-model")
@@ -40,21 +40,21 @@ public class LinearNoiseReductionScorerConf extends AbstractScorerConf {
     public LinearNoiseReductionScorerConf(@JsonProperty("name") String name,
                                           @JsonProperty("main-scorer") IScorerConf mainScorerConf,
                                           @JsonProperty("reduction-scorer") IScorerConf reductionScorerConf,
-                                          @JsonProperty("main-scorer-model") ModelInfo mainScorerModelInfo,
+                                          @JsonProperty("feature-count-model") ModelInfo featureCountModelInfo,
                                           @JsonProperty("occurrences-to-num-of-distinct-feature-values-model") ModelInfo occurrencesToNumOfDistinctFeatureValueModelInfo,
                                           @JsonProperty("context-model") ModelInfo contextModelInfo,
                                           @JsonProperty("noise-reduction-weight") ScoreMapping.ScoreMappingConf noiseReductionWeight) {
         super(name);
         Assert.notNull(mainScorerConf, "mainScorerConf must not be null");
         Assert.notNull(reductionScorerConf, "reductionScorerConf must not be null");
-        Assert.notNull(mainScorerModelInfo, "mainScorerModelInfo must not be null");
+        Assert.notNull(featureCountModelInfo, "featureCountModelInfo must not be null");
         Assert.notNull(occurrencesToNumOfDistinctFeatureValueModelInfo, "categoryRarityGlobalModelInfo must not be null");
         Assert.notNull(contextModelInfo, "contextModelInfo must not be null");
         Assert.notNull(noiseReductionWeight, "noiseReductionWeight must not be null");
 
         this.mainScorerConf = mainScorerConf;
         this.reductionScorerConf = reductionScorerConf;
-        this.mainScorerModelInfo = mainScorerModelInfo;
+        this.featureCountModelInfo = featureCountModelInfo;
         this.occurrencesToNumOfDistinctFeatureValueModelInfo = occurrencesToNumOfDistinctFeatureValueModelInfo;
         this.contextModelInfo = contextModelInfo;
         this.noiseReductionWeight = noiseReductionWeight;
@@ -68,8 +68,8 @@ public class LinearNoiseReductionScorerConf extends AbstractScorerConf {
         return reductionScorerConf;
     }
 
-    public ModelInfo getMainScorerModelInfo() {
-        return mainScorerModelInfo;
+    public ModelInfo getFeatureCountModelInfo() {
+        return featureCountModelInfo;
     }
 
     public ModelInfo getOccurrencesToNumOfDistinctFeatureValueModelInfo() {

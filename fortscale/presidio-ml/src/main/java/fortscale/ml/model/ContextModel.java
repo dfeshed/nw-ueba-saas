@@ -2,6 +2,8 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @JsonAutoDetect(
@@ -10,7 +12,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class ContextModel implements Model {
     private long numOfContexts;
 
-    public ContextModel(long numOfContexts) {
+    @JsonCreator
+    public ContextModel(@JsonProperty("numOfContexts") long numOfContexts) {
         this.numOfContexts = numOfContexts;
     }
 
@@ -28,7 +31,7 @@ public class ContextModel implements Model {
         if (this == o) return true;
         if (!(o instanceof ContextModel)) return false;
         ContextModel contextModel = (ContextModel) o;
-        return this.numOfContexts != contextModel.numOfContexts;
+        return this.numOfContexts == contextModel.numOfContexts;
     }
 
     @Override

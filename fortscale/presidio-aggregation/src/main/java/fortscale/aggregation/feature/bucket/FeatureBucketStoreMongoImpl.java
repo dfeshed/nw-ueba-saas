@@ -83,14 +83,16 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	}
 
 	@Override
-	public long getNumOfDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange){
+	public long getNumOfDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
 		String collectionName = getCollectionName(featureBucketConf);
 		Date startDate = Date.from(timeRange.getStart());
 		Date endDate = Date.from(timeRange.getEnd());
 		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
 				.gte(startDate)
 				.lt(endDate));
-		return mongoTemplate.count(query, collectionName);
+
+		List<String> distinctContextIds = mongoTemplate.getCollection(collectionName).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+		return distinctContextIds.size();
 	}
 
 	/**

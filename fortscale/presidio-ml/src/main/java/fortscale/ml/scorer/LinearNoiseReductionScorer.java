@@ -1,6 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.*;
@@ -24,9 +23,9 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
     private Scorer reductionScorer;
     private String occurrencesToNumOfDistinctFeatureValueModelName;
     private List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames;
-    private String mainScorerModelName;
-    private String mainScorerFeatureName;
-    private List<String> mainScorerContextFieldNames;
+    private String featureCountModelName;
+    private String featureCountModelFeatureName;
+    private List<String> featureCountModelContextFieldNames;
     private String contextModelName;
     private List<String> contextModelContextFieldNames;
     private ScoreMapping.ScoreMappingConf noiseReductionWeight;
@@ -41,9 +40,9 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
             Scorer reductionScorer,
             String occurrencesToNumOfDistinctFeatureValueModelName,
             List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames,
-            String mainScorerModelName,
-            String mainScorerFeatureName,
-            List<String> mainScorerContextFieldNames,
+            String featureCountModelName,
+            String featureCountModelFeatureName,
+            List<String> featureCountModelContextFieldNames,
             String contextModelName,
             List<String> contextModelContextFieldNames,
             ScoreMapping.ScoreMappingConf noiseReductionWeight,
@@ -57,9 +56,9 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
         this.noiseReductionWeight = noiseReductionWeight;
         this.occurrencesToNumOfDistinctFeatureValueModelName = occurrencesToNumOfDistinctFeatureValueModelName;
         this.occurrencesToNumOfDistinctFeatureValueContextFieldNames = occurrencesToNumOfDistinctFeatureValueContextFieldNames;
-        this.mainScorerModelName = mainScorerModelName;
-        this.mainScorerFeatureName = mainScorerFeatureName;
-        this.mainScorerContextFieldNames = mainScorerContextFieldNames;
+        this.featureCountModelName = featureCountModelName;
+        this.featureCountModelFeatureName = featureCountModelFeatureName;
+        this.featureCountModelContextFieldNames = featureCountModelContextFieldNames;
         this.contextModelName = contextModelName;
         this.contextModelContextFieldNames = contextModelContextFieldNames;
         this.eventModelsCacheService = eventModelsCacheService;
@@ -108,27 +107,27 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
     }
 
     private Double calcReductionWeight(AdeRecordReader adeRecordReader) {
-        Model mainScorerModel = getModel(adeRecordReader, mainScorerModelName, mainScorerContextFieldNames);
+        Model featureCountModel = getModel(adeRecordReader, featureCountModelName, featureCountModelContextFieldNames);
         Model occurrencesToNumOfDistinctFeatureValueModel = getModel(adeRecordReader, occurrencesToNumOfDistinctFeatureValueModelName, occurrencesToNumOfDistinctFeatureValueContextFieldNames);
         Model contextModel = getModel(adeRecordReader, contextModelName, contextModelContextFieldNames);
 
-        Feature feature = Feature.toFeature(mainScorerFeatureName, adeRecordReader.get(mainScorerFeatureName));
-        if (occurrencesToNumOfDistinctFeatureValueModel == null || contextModel == null || mainScorerModel == null || feature.getValue() == null) {
-            return null;
+        Object featureValue = adeRecordReader.get(featureCountModelFeatureName);
+        if (occurrencesToNumOfDistinctFeatureValueModel == null || contextModel == null || featureCountModel == null || featureValue == null) {
+            return noiseReductionWeight.getHighestValue();
         }
 
-        String featureValue = feature.getValue().toString();
-        Double count = ((CategoryRarityModel) mainScorerModel).getFeatureCount(featureValue);
+        Double count = ((CategoryRarityModel) featureCountModel).getFeatureCount(featureValue.toString());
         if (count == null) count = 0d;
+        int roundingCount = (int) Math.round(count);
         List<Double> buckets = ((OccurrencesToNumOfDistinctFeatureValuesModel) occurrencesToNumOfDistinctFeatureValueModel).getOccurrencesToNumOfDistinctFeatureValuesList();
-        double numOfContextsWithSameOccurrence = buckets.get((int) Math.round(count));
-        for (int i = (int) Math.round(count) + 1; i < count + maxRareCount; i++) {
-            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - count + 1);
+        double numOfContextsWithSameOccurrence = buckets.get(roundingCount);
+        for (int i = roundingCount + 1; i < roundingCount + maxRareCount; i++) {
+            double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - roundingCount + 1);
             numOfContextsWithSameOccurrence += (buckets.get(i) - buckets.get(i - 1)) * commonnessDiscount;
         }
 
         long numOfContexts = ((ContextModel) contextModel).getNumOfContexts();
-        double percentage = numOfContextsWithSameOccurrence / numOfContexts;
+        double percentage = (numOfContextsWithSameOccurrence / numOfContexts) * 100;
         return ScoreMapping.mapScore(percentage, noiseReductionWeight);
     }
 

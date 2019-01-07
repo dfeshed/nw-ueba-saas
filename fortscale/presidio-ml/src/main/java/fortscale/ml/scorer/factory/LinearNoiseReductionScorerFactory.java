@@ -37,14 +37,14 @@ public class LinearNoiseReductionScorerFactory extends AbstractServiceAutowiring
         Assert.isInstanceOf(LinearNoiseReductionScorerConf.class, factoryConfig);
         LinearNoiseReductionScorerConf scorerConf = (LinearNoiseReductionScorerConf) factoryConfig;
 
-        //main scorer model
-        String mainScorerModelName = scorerConf.getMainScorerModelInfo().getModelName();
-        AbstractDataRetriever mainScorerDataRetriever = getDataRetriever(mainScorerModelName);
-        Set<String> mainScorerFeatureNames = mainScorerDataRetriever.getEventFeatureNames();
-        String mainScorerFeatureName = mainScorerFeatureNames.iterator().next();
-        List<String> mainScorerContextFieldNames = mainScorerDataRetriever.getContextFieldNames();
+        //category rarity model to extract feature count
+        String featureCountModelName = scorerConf.getFeatureCountModelInfo().getModelName();
+        AbstractDataRetriever featureCountDataRetriever = getDataRetriever(featureCountModelName);
+        Set<String> featureCountModelFeatureNames = featureCountDataRetriever.getEventFeatureNames();
+        String featureCountModelFeatureName = featureCountModelFeatureNames.iterator().next();
+        List<String> featureCountModelContextFieldNames = featureCountDataRetriever.getContextFieldNames();
 
-        //category rarity global model
+        //occurrencesToNumOfDistinctFeatureValue model
         String occurrencesToNumOfDistinctFeatureValueModelName = scorerConf.getOccurrencesToNumOfDistinctFeatureValueModelInfo().getModelName();
         AbstractDataRetriever occurrencesToNumOfDistinctFeatureValueDataRetriever = getDataRetriever(occurrencesToNumOfDistinctFeatureValueModelName);
         List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames = occurrencesToNumOfDistinctFeatureValueDataRetriever.getContextFieldNames();
@@ -60,9 +60,9 @@ public class LinearNoiseReductionScorerFactory extends AbstractServiceAutowiring
                 factoryService.getProduct(scorerConf.getReductionScorerConf()),
                 occurrencesToNumOfDistinctFeatureValueModelName,
                 occurrencesToNumOfDistinctFeatureValueContextFieldNames,
-                mainScorerModelName,
-                mainScorerFeatureName,
-                mainScorerContextFieldNames,
+                featureCountModelName,
+                featureCountModelFeatureName,
+                featureCountModelContextFieldNames,
                 contextModelName,
                 contextModelContextFieldNames,
                 scorerConf.getNoiseReductionWeight(),

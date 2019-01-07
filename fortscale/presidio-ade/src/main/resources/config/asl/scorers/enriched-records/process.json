@@ -73,7 +73,7 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "main-scorer-model": {
+                "feature-count-model": {
                   "name": "userId.dstProcessFileName.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
@@ -85,7 +85,8 @@
                 "noise-reduction-weight": {
                   "mapping": {
                     "0": 0.5,
-                    "1": 0.95
+                    "1": 0.95,
+                    "100": 0.95
                   }
                 }
               }
@@ -312,7 +313,7 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "main-scorer-model": {
+                "feature-count-model": {
                   "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
@@ -324,7 +325,8 @@
                 "noise-reduction-weight": {
                   "mapping": {
                     "0": 0.5,
-                    "1": 0.95
+                    "1": 0.95,
+                    "100": 0.95
                   }
                 }
               }
@@ -381,7 +383,7 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "main-scorer-model": {
+                "feature-count-model": {
                   "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
@@ -393,7 +395,8 @@
                 "noise-reduction-weight": {
                   "mapping": {
                     "0": 0.5,
-                    "1": 0.95
+                    "1": 0.95,
+                    "100": 0.95
                   }
                 }
               }
@@ -450,7 +453,7 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "main-scorer-model": {
+                "feature-count-model": {
                   "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
@@ -462,7 +465,8 @@
                 "noise-reduction-weight": {
                   "mapping": {
                     "0": 0.5,
-                    "1": 0.95
+                    "1": 0.95,
+                    "100": 0.95
                   }
                 }
               }
