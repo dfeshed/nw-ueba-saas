@@ -3,11 +3,11 @@
   {{rsa-loader size="largest"}}
 {{else}}
   {{#if isBrowserIeEdge}}
-    <div class="unsupported-bowser-warning">
+    <div class="unsupported-bowser-warning {{if displayEula 'with-eula'}}">
       <span>{{t 'login.unsupportedBrowser'}}</span>
     </div>
   {{/if}}
-  <div class="login-wrapper {{if hasError 'has-error'}} {{if isBrowserIeEdge 'unsupported-browser'}}">
+  <div class="login-wrapper {{if hasError 'has-error'}} {{if isBrowserIeEdge 'unsupported-browser'}} {{if displayEula 'with-eula'}}">
     <header>
       {{rsa-logo title=(t 'appTitle') displayEula=displayEula legacyRsaLogo=false}}
 

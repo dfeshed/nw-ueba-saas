@@ -28,6 +28,9 @@
     width: 31rem;
     color: rgba(189,189,189, 1);
     line-height: 1.2rem;
+    &.with-eula {
+      display: none;
+    }
   }
 
   .eula-content {
@@ -116,7 +119,7 @@
         }
       }
     }
-    &.unsupported-browser {
+    &:not(.with-eula), &.unsupported-browser {
       border-color: rgba(236,34,39, 1);
       border-width: 1px;
       border-style: solid;
