@@ -5,24 +5,25 @@ import com.google.common.collect.Lists;
 import fortscale.utils.time.TimeRange;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
-import presidio.monitoring.repository.MetricRepositoryStaticIndexForTests;
 import presidio.monitoring.elastic.services.MetricDocumentStaticIndexForTests;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.generator.MetricGeneratorService;
+import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.repository.MetricRepositoryStaticIndexForTests;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.sdk.api.services.model.Metric;
-import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,8 +47,10 @@ public class MetricPersistencyServiceTest {
     public MetricRepositoryStaticIndexForTests metricRepositoryStaticIndexForTests;
 
     @After
+    @Before
     public void deleteTestData() {
         metricRepository.delete(metricRepository.findAll());
+        metricRepositoryStaticIndexForTests.delete(metricRepositoryStaticIndexForTests.findAll());
     }
 
     @Test
@@ -97,7 +100,6 @@ public class MetricPersistencyServiceTest {
 
     }
 
-    @Ignore
     @Test
     public void testMetricsByNamesAndTime() {
         Instant theDayBefore = Instant.parse("2017-12-02T10:00:00.00Z");
@@ -126,15 +128,12 @@ public class MetricPersistencyServiceTest {
         TimeRange timeRange = new TimeRange(Instant.parse("2017-12-03T00:00:00.00Z"),Instant.parse("2017-12-04T00:00:00.00Z"));
 
         List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange, null);
-        Assert.assertEquals(4,results.size());
+        Assert.assertEquals(2,results.size());
 
-        boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
-        boolean name2Found = results.get(0).getName().equals(name2) || results.get(1).getName().equals(name2);
-        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name1)).count()>0);
-        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name2)).count()>0);
+        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name1)).count()==1);
+        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name2)).count()==1);
     }
 
-    @Ignore
     @Test
     public void testMetricsByNamesAndTime_metricFromTwoDifferentIndexes() {
         Instant today = Instant.parse("2017-12-03T10:00:00.00Z");
@@ -160,9 +159,12 @@ public class MetricPersistencyServiceTest {
         List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange, null);
         Assert.assertEquals(3,results.size());
 
-        boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
-        boolean name2Found = results.get(0).getName().equals(name2) || results.get(1).getName().equals(name2);
-        Assert.assertTrue(name1Found && name2Found && results.get(0).getId()!=results.get(1).getId());
+        long numOfResults = results.stream().filter(metricDocument -> metricDocument.getName().equals(name1)).count();
+        Assert.assertEquals(1, numOfResults);
+        numOfResults = results.stream().filter(metricDocument -> metricDocument.getName().equals(name2)).count();
+        Assert.assertEquals(2, numOfResults);
+        Set<String> uniqueIds = results.stream().map(metricDocument -> metricDocument.getId()).collect(Collectors.toSet());
+        Assert.assertEquals(3, uniqueIds.size());
     }
 
     private MetricDocumentStaticIndexForTests convertMetricDoc(MetricDocument metricDocument) {
