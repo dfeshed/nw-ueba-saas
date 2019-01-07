@@ -70,15 +70,12 @@ public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
         categoryRarityModelRetrieverMetricsContainer.updateReadMetric(featureBuckets.size());
 
         if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+        Map<String, String> contextFieldNameToValueMap = featureBuckets.get(0).getContextFieldNameToValueMap();
 
         FixedDurationStrategy strategy = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName());
         CategoricalFeatureValue reductionHistogram = new CategoricalFeatureValue(strategy);
         createReductionHistogram(endTime, featureValue, featureBuckets, reductionHistogram);
 
-        Map<String, String> contextFieldNameToValueMap = Collections.emptyMap();
-        if(!featureBuckets.isEmpty()){
-            contextFieldNameToValueMap = featureBuckets.get(0).getContextFieldNameToValueMap();
-        }
         return getModelBuilderData(reductionHistogram, contextFieldNameToValueMap);
     }
 

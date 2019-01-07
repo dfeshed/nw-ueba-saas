@@ -111,25 +111,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
-        String collectionName = getCollectionName(modelConf);
-        List<ModelDAO> queryResults;
-        Map<String, ModelDAO> contextIdToModelDaoMap = new HashMap<>();
-        int pageIndex = 0;
-        Date latestEndDate = Date.from(eventEpochtime);
-        do{
-            Query query = new Query()
-                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
-                    .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
-                    .skip(pageIndex*modelQueryPaginationSize)
-                    .limit(modelQueryPaginationSize);
-            queryResults = mongoTemplate.find(query, ModelDAO.class, collectionName);
-            for(ModelDAO modelDAO: queryResults){
-                //the models are ordered by time so we don't have to check if the map contains a model with larger time.
-                contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
-            }
-            pageIndex++;
-        } while (queryResults.size() == modelQueryPaginationSize);
-        return contextIdToModelDaoMap.values();
+        return getAllContextsModelDaosWithLatestEndTimeLte(modelConf, null, null, eventEpochtime);
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
@@ -140,9 +122,11 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         int pageIndex = 0;
         Date latestEndDate = Date.from(eventEpochtime);
         do{
-            Query query = new Query()
-                    .addCriteria(Criteria.where(ModelDAO.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD+"."+contextFieldName).is(contextValue))
-                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
+            Query query = new Query();
+            if(contextFieldName != null){
+                query.addCriteria(Criteria.where(ModelDAO.getContextFieldNamePath(contextFieldName)).is(contextValue));
+            }
+            query.addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
                     .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
                     .skip(pageIndex*modelQueryPaginationSize)
                     .limit(modelQueryPaginationSize);
@@ -305,7 +289,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         // Used by the readRecords method (no sorting)
         DBObject indexOptions = new BasicDBObject(); // Keeps entries ordered
         for(String context: contexts) {
-            indexOptions.put(ModelDAO.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD + "." + context, 1);
+            indexOptions.put(ModelDAO.getContextFieldNamePath(context), 1);
         }
         indexOptions.put(ModelDAO.START_TIME_FIELD, 1);
         CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);

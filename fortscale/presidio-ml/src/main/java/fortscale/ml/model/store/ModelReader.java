@@ -17,6 +17,9 @@ public interface ModelReader {
     Set<String> getAllSubContextsWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
                                                       Instant eventEpochtime);
 
+    public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
+                                                                            String contextValue, Instant eventEpochtime);
+
     Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime);
 
     List<ModelDAO> getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(
