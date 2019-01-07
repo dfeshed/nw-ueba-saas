@@ -239,11 +239,6 @@ module Fortscale.layouts.user {
                         template: '<fs-grid-link text="{{dataItem.user_sid}}" url="{{dataItem.user_sid_link}}"></fs-grid-link>',
                         sortable: false
                     },
-                    computer: {
-                        field: 'computer',
-                        template: '{{dataItem.srcMachineId}}',
-                        sortable: false
-                    },
                     src_device_id: {
                         field: 'src_device_id',
                         template: '<fs-grid-link text="{{dataItem.srcMachineNameRegexCluster}}" url="{{dataItem.src_device_id_link}}"></fs-grid-link>',
