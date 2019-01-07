@@ -27,7 +27,8 @@ export default {
   {
     field: 'machineCount',
     title: 'machineCount',
-    width: '6vw'
+    width: '6vw',
+    disableSort: true
   },
   {
     field: 'fileProperties.reputationStatus',

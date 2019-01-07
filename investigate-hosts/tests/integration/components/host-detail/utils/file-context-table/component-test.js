@@ -434,4 +434,27 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       assert.equal(findAll('.machine-count').length, 3, 'Machine count is displayed, the three items in the table');
     });
   });
+
+  test('Sorting is disabled for active on column', async function(assert) {
+    assert.expect(1);
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
+      assert.equal(findAll('.rsa-data-table-header-cell:nth-child(3) .column-sort').length, 0, 'Sorting is disabled for the column');
+    });
+  });
+
 });
