@@ -513,7 +513,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
                 for (String contextId : contextIds) {
                     ContinuousDataModel continuousDataModel = new ContinuousDataModel().setParameters(N, round(mean), round(sd), round(maxValue));
                     ContinuousMaxDataModel model = new ContinuousMaxDataModel(continuousDataModel, continuousDataModel, N);
-                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, model, endDate.minus(Duration.ofDays(90)), endDate);
+                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, model, endDate.minus(Duration.ofDays(90)), endDate, null);
                     mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
                     models.add(continuousDataModel);
 
@@ -521,7 +521,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
             } else if (modelConf.getModelBuilderConf() instanceof GaussianPriorModelBuilderConf) {
                 IModelBuilder modelBuilder = gaussianPriorModelBuilderFactory.getProduct(modelConf.getModelBuilderConf());
                 Model model = modelBuilder.build(models);
-                ModelDAO modelDao = new ModelDAO("test-session-id", null, model, endDate.minus(Duration.ofDays(90)), endDate);
+                ModelDAO modelDao = new ModelDAO("test-session-id", null, model, endDate.minus(Duration.ofDays(90)), endDate, null);
                 mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
                 models = new ArrayList<>();
             }

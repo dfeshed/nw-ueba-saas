@@ -11,15 +11,18 @@ public class ModelRetrieverConf extends AbstractDataRetrieverConf {
 	public static final String MODEL_RETRIEVER = "model_retriever";
 
 	private String modelConfName;
+	private String contextFieldName;
 
 	@JsonCreator
 	public ModelRetrieverConf(
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
-			@JsonProperty("modelConfName") String modelConfName) {
+			@JsonProperty("modelConfName") String modelConfName,
+			@JsonProperty("contextFieldName") String contextFieldName) {
 		super(timeRangeInSeconds, functions);
 		Assert.hasText(modelConfName);
 		this.modelConfName = modelConfName;
+		this.contextFieldName = contextFieldName;
 	}
 
 	@Override
@@ -29,5 +32,9 @@ public class ModelRetrieverConf extends AbstractDataRetrieverConf {
 
 	public String getModelConfName() {
 		return modelConfName;
+	}
+
+	public String getContextFieldName() {
+		return contextFieldName;
 	}
 }

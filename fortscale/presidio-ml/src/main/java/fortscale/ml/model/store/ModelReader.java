@@ -14,6 +14,12 @@ public interface ModelReader {
 
     List<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant);
 
+    Set<String> getAllSubContextsWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
+                                                      Instant eventEpochtime);
+
+    public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
+                                                                            String contextValue, Instant eventEpochtime);
+
     Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime);
 
     List<ModelDAO> getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(
@@ -39,4 +45,8 @@ public interface ModelReader {
      */
     List<ModelDAO> readRecords(ModelConf modelConf, Instant eventEpochTime, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead);
 
+    /**
+     * Validate that the query fields indexed in the store.
+     */
+    void ensureContextAndDateTimeIndex(ModelConf modelConf, List<String> contexts);
 }

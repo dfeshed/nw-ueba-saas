@@ -14,6 +14,7 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = ContinuousHistogramModelBuilderConf.class, name = ContinuousHistogramModelBuilderConf.CONTINUOUS_HISTOGRAM_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = ContinuousMaxHistogramModelBuilderConf.class, name = ContinuousMaxHistogramModelBuilderConf.CONTINUOUS_MAX_HISTOGRAM_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = CategoryRarityModelBuilderConf.class, name = CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER),
+		@JsonSubTypes.Type(value = CategoryRarityGlobalModelBuilderConf.class, name = CategoryRarityGlobalModelBuilderConf.CATEGORY_RARITY_GLOBAL_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = TimeModelBuilderConf.class, name = TimeModelBuilderConf.TIME_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTValuesModelBuilderConf.class, name = SMARTValuesModelBuilderConf.SMART_VALUES_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTMaxValuesModelBuilderConf.class, name = SMARTMaxValuesModelBuilderConf.SMART_MAX_VALUES_MODEL_BUILDER),

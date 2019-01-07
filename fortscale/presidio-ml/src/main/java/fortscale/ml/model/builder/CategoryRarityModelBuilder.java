@@ -39,10 +39,31 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
         long numDistinctFeatures = featureValueToNumOfOccurrences.size();
         Map<Long, Integer> occurrencesToNumOfDistinctPartitions = calcOccurrencesToNumOfDistinctPartitions(sequenceReduction);
-        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, numOfBuckets, numOfPartitions, numDistinctFeatures);
+        Map<Long, Integer> occurrencesToNumOfDistinctFeatureValues = calcOccurrencesToNumOfDistinctFeatureValues(featureValueToNumOfOccurrences);
+        categoryRarityModel.init(occurrencesToNumOfDistinctPartitions, occurrencesToNumOfDistinctFeatureValues,
+                numOfBuckets, numOfPartitions, numDistinctFeatures);
         saveTopEntriesInModel(featureValueToNumOfOccurrences, categoryRarityModel);
         categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToNumOfOccurrences.size(), numOfPartitions, categoryRarityModel.getOccurrencesToNumOfPartitionsList());
         return categoryRarityModel;
+    }
+
+    //an accumulative histogram
+    private Map<Long, Integer> calcOccurrencesToNumOfDistinctFeatureValues(Map<String, Integer> featureValueToNumOfOccurrences){
+        Map<Long, Integer> ret = new HashMap<>();
+        int maxOccurrence = 0;
+        for(Integer occurrence: featureValueToNumOfOccurrences.values()){
+            ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v++);
+            if(occurrence>maxOccurrence){
+                maxOccurrence = occurrence;
+            }
+        }
+
+        int prevCount = 0;
+        for(int occurrence = 1; occurrence <=maxOccurrence; occurrence++){
+            int finalPrevCount = prevCount;
+            prevCount = ret.compute((long)occurrence, (k, v) -> v == null ? finalPrevCount : v + finalPrevCount);
+        }
+        return ret;
     }
 
     /**

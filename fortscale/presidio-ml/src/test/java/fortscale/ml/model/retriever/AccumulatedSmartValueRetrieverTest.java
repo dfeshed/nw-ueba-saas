@@ -85,7 +85,7 @@ public class AccumulatedSmartValueRetrieverTest {
                 .thenReturn(smartWeightsModelConf);
 
         String globalContextId = null;
-        ModelDAO modelDAO = new ModelDAO("sessionId", globalContextId, smartWeightsModel, startTime, endTime);
+        ModelDAO modelDAO = new ModelDAO("sessionId", globalContextId, smartWeightsModel, startTime, endTime, null);
         when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(eq(smartWeightsModelConf), eq(globalContextId), any(), any(), eq(1))).thenReturn(Collections.singletonList(modelDAO));
 
         retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, new SmartWeightsScorerAlgorithm(0.5, 50));

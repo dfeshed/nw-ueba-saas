@@ -64,7 +64,8 @@ public class ModelingEngineTest {
 			String contextId = contextIds.get(i);
 			Model model = models.get(i);
 			verify(retriever).retrieve(eq(contextId), eq(endTime));
-			verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange), any(StoreMetadataProperties.class));
+			verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange),
+					any(StoreMetadataProperties.class), (Map<String, String>) isNull());
 		}
 
 		verify(builder, times(contextIds.size())).build(any());
@@ -87,7 +88,8 @@ public class ModelingEngineTest {
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange),
+				any(StoreMetadataProperties.class), (Map<String, String>) isNull());
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
@@ -109,7 +111,8 @@ public class ModelingEngineTest {
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq("contextId1"), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)),
+				eq(modelTimeRange), any(StoreMetadataProperties.class), (Map<String, String>) isNull());
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
@@ -129,7 +132,8 @@ public class ModelingEngineTest {
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)),
+				eq(modelTimeRange), any(StoreMetadataProperties.class), (Map<String, String>) isNull());
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
@@ -162,7 +166,8 @@ public class ModelingEngineTest {
 			if (!success) {
 				doThrow(Exception.class)
 						.when(store)
-						.save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange), any(StoreMetadataProperties.class));
+						.save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model),
+								eq(modelTimeRange), any(StoreMetadataProperties.class), (Map<String, String>) isNull());
 			}
 		}
 

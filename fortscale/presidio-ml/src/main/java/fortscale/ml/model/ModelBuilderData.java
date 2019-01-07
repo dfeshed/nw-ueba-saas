@@ -1,5 +1,7 @@
 package fortscale.ml.model;
 
+import java.util.Map;
+
 public class ModelBuilderData {
 	public enum NoDataReason {
 		ALL_DATA_FILTERED,  // There was data in the database, but the retriever filtered out all of it
@@ -8,6 +10,7 @@ public class ModelBuilderData {
 
 	private final Object data;
 	private final NoDataReason noDataReason;
+	private Map<String, String> contextFieldNameToValueMap;
 
 	/**
 	 * C'tor for a {@link ModelBuilderData} that contains data.
@@ -15,12 +18,17 @@ public class ModelBuilderData {
 	 * @param data the data (cannot be null)
 	 */
 	public ModelBuilderData(Object data) {
+		this(data, null);
+	}
+
+	public ModelBuilderData(Object data, Map<String, String> contextFieldNameToValueMap) {
 		if (data == null) {
 			throw new IllegalArgumentException("'data' cannot be null. If there is no data, use the other c'tor.");
 		}
 
 		this.data = data;
 		this.noDataReason = null;
+		this.contextFieldNameToValueMap = contextFieldNameToValueMap;
 	}
 
 	/**
@@ -35,6 +43,7 @@ public class ModelBuilderData {
 
 		this.data = null;
 		this.noDataReason = noDataReason;
+		this.contextFieldNameToValueMap = null;
 	}
 
 	public boolean dataExists() {
@@ -47,5 +56,9 @@ public class ModelBuilderData {
 
 	public NoDataReason getNoDataReason() {
 		return noDataReason;
+	}
+
+	public Map<String, String> getContextFieldNameToValueMap() {
+		return contextFieldNameToValueMap;
 	}
 }
