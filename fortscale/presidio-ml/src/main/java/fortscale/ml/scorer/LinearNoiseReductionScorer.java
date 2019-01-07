@@ -3,10 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.ContextModel;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.Sigmoid;
+import fortscale.ml.model.*;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import org.springframework.beans.factory.annotation.Configurable;
 import presidio.ade.domain.record.AdeRecordReader;
@@ -112,19 +109,18 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
 
     private Double calcReductionWeight(AdeRecordReader adeRecordReader) {
         Model mainScorerModel = getModel(adeRecordReader, mainScorerModelName, mainScorerContextFieldNames);
-        Model categoryRarityGlobalModel = getModel(adeRecordReader, occurrencesToNumOfDistinctFeatureValueModelName, occurrencesToNumOfDistinctFeatureValueContextFieldNames);
+        Model occurrencesToNumOfDistinctFeatureValueModel = getModel(adeRecordReader, occurrencesToNumOfDistinctFeatureValueModelName, occurrencesToNumOfDistinctFeatureValueContextFieldNames);
         Model contextModel = getModel(adeRecordReader, contextModelName, contextModelContextFieldNames);
 
         Feature feature = Feature.toFeature(mainScorerFeatureName, adeRecordReader.get(mainScorerFeatureName));
-        if (categoryRarityGlobalModel == null || contextModel == null || mainScorerModel == null || feature.getValue() == null) {
+        if (occurrencesToNumOfDistinctFeatureValueModel == null || contextModel == null || mainScorerModel == null || feature.getValue() == null) {
             return null;
         }
 
         String featureValue = feature.getValue().toString();
         Double count = ((CategoryRarityModel) mainScorerModel).getFeatureCount(featureValue);
         if (count == null) count = 0d;
-        //todo: verify after Yaron changes
-        List<Double> buckets = ((OccurrencesToNumOfDistinctFeatureValuesModel) categoryRarityGlobalModel).getOccurrencesToNumOfDistinctFeatureValuesList();
+        List<Double> buckets = ((OccurrencesToNumOfDistinctFeatureValuesModel) occurrencesToNumOfDistinctFeatureValueModel).getOccurrencesToNumOfDistinctFeatureValuesList();
         double numOfContextsWithSameOccurrence = buckets.get((int) Math.round(count));
         for (int i = (int) Math.round(count) + 1; i < count + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - count + 1);

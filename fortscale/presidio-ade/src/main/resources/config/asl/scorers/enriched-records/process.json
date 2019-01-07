@@ -74,10 +74,10 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "userId.dstProcessFileName.process.score"
+                  "name": "userId.dstProcessFileName.process"
                 },
                 "occurrences-to-num-of-distinct-feature-values-model": {
-                  "name": "userId.dstProcessFileName.process.score"
+                  "name": "userId.dstProcessFileName.process"
                 },
                 "context-model": {
                   "name": "contexts.process"
