@@ -4407,7 +4407,8 @@ export default {
       623: 'Group criteria attribute IPv6 address value is empty',
       624: 'Group criteria attribute IPv6 address range value is missing',
       625: 'Group criteria attribute IPv6 address range value is invalid',
-      626: 'Group criteria attribute IPv6 address value is invalid'
+      626: 'Group criteria attribute IPv6 address value is invalid',
+      629: 'Invalid advanced configuration: Must be a valid JSON'
     }
   },
   // end admin-source-management (a.k.a USM)
