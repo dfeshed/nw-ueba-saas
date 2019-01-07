@@ -4,15 +4,15 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { findAll, render } from '@ember/test-helpers';
-import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
 let setState;
 
-module('Integration | Component | host-detail/utils/file-analysis-wrapper', function(hooks) {
+module('Integration | Component | file-details/file-analysis-wrapper', function(hooks) {
   setupRenderingTest(hooks, {
-    resolver: engineResolverFor('investigate-hosts')
+    resolver: engineResolverFor('investigate-files')
   });
 
   hooks.beforeEach(function() {
@@ -23,6 +23,17 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
+  const sampleData = [{
+    firstFileName: 'XXX Test',
+    entropy: 1,
+    size: 1024,
+    format: 'pe',
+    signature: {
+      features: 'XXX unsigned',
+      thumbprint: '',
+      signer: ''
+    }
+  }];
 
   test('it should render the file-analysis-wrapper', async function(assert) {
     const fileAnalysis = {
@@ -36,21 +47,19 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
         offset: '0x00017a66',
         unicode: false
       }],
-      'filePropertiesData': { format: 'pe' },
-      'isFileAnalysisView': true
+      'filePropertiesData': { format: 'pe' }
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
-
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
+    assert.equal(findAll('.global-files').length, 1, 'File analysis rendered');
     assert.equal(findAll('.file-analysis-header').length, 1, 'File analysis rendered');
-    assert.equal(findAll('.file-analysis-header button').length, 1, 'File analysis back button rendered');
     assert.equal(findAll('.file-analysis-header .view-type').length, 1, 'view type title rendered');
     assert.equal(findAll('.string-view').length, 1, 'String view rendered');
     assert.equal(findAll('.string-filter-wrapper .rsa-form-input').length, 1, 'String filter present');
@@ -64,13 +73,13 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.file-analysis-header').length, 0, 'File analysis not rendered');
     assert.equal(findAll('.file-analysis-header button').length, 0, 'File analysis back button not rendered');
@@ -97,18 +106,18 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.string-filter-wrapper').length, 1, 'String filter rendered');
   });
 
-  test('It should not render String search when format is string', async function(assert) {
+  test('It should render String search when format is string', async function(assert) {
     const fileAnalysis = {
       'fileData': [{
         text: 'OHE3',
@@ -120,20 +129,20 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
         offset: '0x00017a66',
         unicode: false
       }],
-      'filePropertiesData': { format: 'script' },
+      'filePropertiesData': { format: 'pe' },
       'isFileAnalysisView': true
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
-    assert.equal(findAll('.string-filter-wrapper').length, 0, 'String filter is not rendered');
+    assert.equal(findAll('.string-filter-wrapper').length, 1, 'String filter rendered');
   });
 
   test('Loader should load when the fileDataLoadingStatus status is loading', async function(assert) {
@@ -145,13 +154,13 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.rsa-loader').length, 1, 'loader present');
   });
@@ -165,13 +174,13 @@ module('Integration | Component | host-detail/utils/file-analysis-wrapper', func
     };
 
     new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('FILES')
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
       .fileAnalysis(fileAnalysis)
       .build();
 
-    await render(hbs`{{host-detail/utils/file-analysis-wrapper}}`);
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.rsa-loader').length, 0, 'loader not present');
   });

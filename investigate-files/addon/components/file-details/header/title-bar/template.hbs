@@ -4,22 +4,24 @@
 </hbox>
 <hbox>
   {{#each fileDetailTabs as |tab|}}
-    {{#rsa-nav-tab isActive=tab.selected click=(action 'setNewFileTab' tab.name)}}
+    {{#rsa-nav-tab isActive=tab.selected click=(action 'setFileTabAndFetchData' tab.name)}}
       <div class="label">{{t tab.label}}</div>
     {{/rsa-nav-tab}}
   {{/each}}
 </hbox>
-<hbox class="title-bar__fileProperties flexi-fit">
-  {{#rsa-form-button
-    title=(t 'investigateHosts.hosts.button.rightPanel')
-    class="open-properties"
-    isActive=isFilePropertyPanelVisible
-    isIconOnly=true
-    defaultAction=(action 'toggleFilePropertyPanel')
-  }}
-    {{rsa-icon name='layout-2' size='small'}}
-  {{/rsa-form-button}}
-</hbox>
+{{#if displayCloseRightPanel}}
+  <hbox class="title-bar__fileProperties flexi-fit">
+    {{#rsa-form-button
+      title=(t 'investigateHosts.hosts.button.rightPanel')
+      class="open-properties"
+      isActive=isFilePropertyPanelVisible
+      isIconOnly=true
+      defaultAction=(action 'toggleFilePropertyPanel')
+    }}
+      {{rsa-icon name='layout-2' size='small'}}
+    {{/rsa-form-button}}
+  </hbox>
+{{/if}}
 <hbox class="title-bar__close flexi-fit">
   <a href='/investigate/files'>
     {{rsa-icon class='header-button' name='close' title=(t 'investigateFiles.button.close')}}

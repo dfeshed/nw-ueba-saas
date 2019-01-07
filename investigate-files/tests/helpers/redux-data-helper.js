@@ -207,6 +207,10 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.selectedDetailFile', data);
     return this;
   }
+  fileAnalysis(fileAnalysis) {
+    _set(this.state, 'files.fileAnalysis', fileAnalysis);
+    return this;
+  }
   isFilePropertyPanelVisible(value) {
     _set(this.state, 'files.visuals.isFilePropertyPanelVisible', value);
     return this;

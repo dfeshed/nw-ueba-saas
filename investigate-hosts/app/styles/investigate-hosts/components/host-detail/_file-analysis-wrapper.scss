@@ -39,6 +39,12 @@
       border-bottom: 0px;
       padding: 3% 0;
     }
+    .label {
+      text-transform: uppercase;
+      font-size: .85rem;
+      display: inline-block;
+      letter-spacing: 2px;
+    }
   }
   .string-filter-wrapper {
     width: 320px;
@@ -68,6 +74,9 @@
   }
   .file-analysis-properties {
     @include border-top(1px, solid, primary);
+  }
+  .file-analysis-loading{
+    margin: 20% auto;
   }
 }
 

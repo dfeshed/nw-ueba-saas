@@ -16,7 +16,7 @@ import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
-import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
+import { setEndpointServer, isEndpointServerOffline, setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
@@ -24,6 +24,9 @@ import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getCertificates } from 'investigate-files/actions/certificate-data-creators';
+import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { setNewFileTab } from 'investigate-files/actions/visual-creators';
+import { failure } from 'investigate-shared/utils/flash-messages';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -61,7 +64,6 @@ const initializeFileDetails = (checksum) => {
       dispatch(_fetchHostNameList(checksum));
     }));
     dispatch(getRespondServerStatus());
-    dispatch(_getSelectedFileProperties(checksum));
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(checksum, 'FILE'));
   };
@@ -404,7 +406,43 @@ const _getSelectedFileProperties = (checksum) => {
 
 const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_INDEX, payload: index });
 
-const resetInputData = () => ({ type: ACTION_TYPES.RESET_INPUT_DATA });
+const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat) => {
+  return (dispatch, getState) => {
+    const request = lookup('service:request');
+    dispatch({ type: ACTION_TYPES.RESET_INPUT_DATA });
+    request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
+    const { files: {
+      fileList: { selectedDetailFile, listOfServices },
+      risk: { alertsLoadingStatus },
+      fileAnalysis: { fileData, filePropertiesData }
+    } } = getState();
+
+    if (!selectedDetailFile) {
+      dispatch(_getSelectedFileProperties(checksum));
+    }
+
+    if (tabName === 'ANALYSIS') {
+
+      dispatch(setNewFileTab(tabName));
+
+      if (!fileData || !filePropertiesData) {
+        const callBackOptions = {
+          onFailure: (message) => failure(message, null, false)
+        };
+        dispatch(getFileAnalysisData(checksum, fileFormat, callBackOptions));
+      }
+
+    } else {
+
+      if (!listOfServices || !alertsLoadingStatus) {
+        dispatch(getAllServices());
+        dispatch(setSelectedEndpointServer(sid));
+        dispatch(initializeFileDetails(checksum));
+      }
+
+    }
+  };
+};
 
 export {
   getPageOfFiles,
@@ -430,5 +468,5 @@ export {
   initializeFileDetails,
   setSelectedIndex,
   triggerFileActions,
-  resetInputData
+  initializerForFileDetailsAndAnalysis
 };

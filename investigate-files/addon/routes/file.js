@@ -1,9 +1,9 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeFileDetails, getAllServices, resetInputData } from 'investigate-files/actions/data-creators';
+import { initializerForFileDetailsAndAnalysis } from 'investigate-files/actions/data-creators';
+import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import { next } from '@ember/runloop';
-import { lookup } from 'ember-dependency-lookup';
-import { setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
+
 export default Route.extend({
   redux: service(),
 
@@ -23,21 +23,45 @@ export default Route.extend({
      */
     checksum: {
       refreshModel: true
+    },
+    /**
+     * tabName for selected tab
+     * @type {string}
+     * @public
+     */
+    tabName: {
+      refreshModel: true
+    },
+    /**
+     * fileFormat for selected file
+     * @type {string}
+     * @public
+     */
+    fileFormat: {
+      refreshModel: false
     }
   },
 
   model(params) {
     const redux = this.get('redux');
-    const { checksum, sid } = params;
-    const request = lookup('service:request');
+    const { checksum, sid, tabName, fileFormat = '' } = params;
+
     next(() => {
       if (sid) {
-        redux.dispatch(resetInputData());
-        request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
-        redux.dispatch(getAllServices());
-        redux.dispatch(setSelectedEndpointServer(sid));
-        redux.dispatch(initializeFileDetails(checksum));
+        redux.dispatch(initializerForFileDetailsAndAnalysis(checksum, sid, tabName, fileFormat));
       }
     });
+  },
+
+  actions: {
+    switchToSelectedFileDetailsTab(tabName, fileFormat) {
+      this.get('redux').dispatch(setNewFileTab(tabName));
+      this.transitionTo({
+        queryParams: {
+          tabName,
+          fileFormat
+        }
+      });
+    }
   }
 });

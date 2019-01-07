@@ -130,6 +130,22 @@ const filesConfigGen = function(environment) {
       restrictedList: {
         subscriptionDestination: '/user/queue/endpoint/file/status/restricted',
         requestDestination: '/ws/endpoint/file/status/restricted'
+      },
+      fileAnalysis: {
+        subscriptionDestination: '/user/queue/endpoint/file/analyze',
+        requestDestination: '/ws/endpoint/file/analyze'
+      },
+      fileAnalysisStringFormat: {
+        subscriptionDestination: '/user/queue/endpoint/file/get-strings',
+        requestDestination: '/ws/endpoint/file/get-strings'
+      },
+      saveLocalCopy: {
+        subscriptionDestination: '/user/queue/endpoint/file/export',
+        requestDestination: '/ws/endpoint/file/export'
+      },
+      fileAnalysisTextFormat: {
+        subscriptionDestination: '/user/queue/endpoint/file/get-encoded-data',
+        requestDestination: '/ws/endpoint/file/get-encoded-data'
       }
     },
     'endpoint-server': {

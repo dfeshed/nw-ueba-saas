@@ -1,14 +1,13 @@
 import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
-import reducer from 'investigate-hosts/reducers/details/file-analysis/reducer';
+import reducer from 'investigate-files/reducers/file-analysis/reducer';
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import { LIFECYCLE } from 'redux-pack';
-import makePackAction from '../../../../helpers/make-pack-action';
+import makePackAction from '../../../helpers/make-pack-action';
 
 const initialState = {
   'fileData': null,
   'filePropertiesData': null,
-  'isFileAnalysisView': false,
   'fileDataLoadingStatus': null
 };
 
@@ -17,24 +16,6 @@ module('Unit | Reducers | File Analysis', function() {
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
     assert.deepEqual(result, initialState);
-  });
-
-
-  test('The TOGGLE_FILE_ANALYZER will toggle isFileAnalysisView in the state', function(assert) {
-    const previous = Immutable.from({
-      'fileData': null,
-      'filePropertiesData': null,
-      'isFileAnalysisView': false
-    });
-    // without payload
-    const resultWithoutPayload = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_ANALYZER });
-
-    assert.equal(resultWithoutPayload.isFileAnalysisView, true);
-
-    // with payload
-    const resultWithPayload = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_ANALYZER, payload: false });
-
-    assert.equal(resultWithPayload.isFileAnalysisView, false);
   });
 
   test('FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA sets the filedata', function(assert) {

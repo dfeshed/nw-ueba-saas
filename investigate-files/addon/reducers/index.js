@@ -10,6 +10,7 @@ import preferences from './preferences/reducer';
 import endpointServer from 'investigate-shared/reducers/endpoint-server/reducer';
 import endpointQuery from 'investigate-shared/reducers/endpoint-query/reducer';
 import certificate from './certificates/reducer';
+import fileAnalysis from './file-analysis/reducer';
 import { createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
 const reducerPredicate = (action) => action.meta && action.meta.belongsTo === 'FILE';
@@ -21,7 +22,8 @@ export default combineReducers({
     schema,
     filter: createFilteredReducer(filter, reducerPredicate),
     risk: createFilteredReducer(risk, reducerPredicate),
-    visuals
+    visuals,
+    fileAnalysis
   }),
   investigate: createFilteredReducer(investigate, reducerPredicate),
   fileStatus: createFilteredReducer(fileStatus, reducerPredicate),

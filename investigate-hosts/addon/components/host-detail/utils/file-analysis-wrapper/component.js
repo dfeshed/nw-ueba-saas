@@ -10,7 +10,8 @@ const stateToComputed = (state) => ({
   componentConfig: componentConfig(state),
   activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab.toLowerCase(),
   filePropertiesData: state.endpoint.fileAnalysis.filePropertiesData,
-  fileData: state.endpoint.fileAnalysis.fileData
+  fileData: state.endpoint.fileAnalysis.fileData,
+  fileDataLoadingStatus: state.endpoint.fileAnalysis.fileDataLoadingStatus
 });
 
 const dispatchToActions = {

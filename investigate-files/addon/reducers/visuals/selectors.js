@@ -19,11 +19,14 @@ const FILE_DETAIL_TABS = [
   {
     label: 'investigateFiles.tabs.overview',
     name: 'OVERVIEW',
-    componentClass: 'file-details/overview'
+    componentClass: 'file-details/overview',
+    displayCloseRightPanel: true
   },
   {
     label: 'investigateFiles.tabs.analysis',
-    name: 'ANALYSIS'
+    name: 'ANALYSIS',
+    componentClass: 'file-details/file-analysis-wrapper',
+    displayCloseRightPanel: false
   }];
 
 const _activeFileDetailTab = (state) => state.files.visuals.activeFileDetailTab;
@@ -59,5 +62,14 @@ export const selectedTabComponent = createSelector(
       return selectedTab.componentClass;
     }
     return 'file-details/overview'; // Default selected tab
+  }
+);
+
+export const displayCloseRightPanel = createSelector(
+  [_activeFileDetailTab],
+  (activeFileDetailTab) => {
+    const selectedTab = FILE_DETAIL_TABS.findBy('name', activeFileDetailTab);
+
+    return selectedTab.displayCloseRightPanel; // Display Close Right Panel button
   }
 );
