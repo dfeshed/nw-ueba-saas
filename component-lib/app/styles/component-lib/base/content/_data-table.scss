@@ -27,7 +27,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &:hover {
       .group-label {
-        left: 7px;
+        left: rsa-whitespace(less);
+      }
+    }
+
+    &.is-selected {
+      .group-label {
+        left: rsa-whitespace(less);
       }
     }
   }
@@ -152,7 +158,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &.is-selected,
     &.has-focus:hover,
     &.is-selected:hover {
-      border-top: 1px solid transparent;
+      border-color: transparent;
 
       .rsa-form-checkbox-label {
         &::before {

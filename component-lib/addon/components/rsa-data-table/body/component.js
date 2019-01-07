@@ -113,15 +113,19 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @readonly
    * @private
    */
-  @computed('_rowHeight', 'items.length', 'table.enableGrouping')
-  _minScrollHeight(rowHeight, itemsLength, enableGrouping) {
+  @computed('_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping')
+  _minScrollHeight(rowHeight, itemsLength, groupSize, enableGrouping) {
     if (enableGrouping) {
-      // it is expected that lazy is true anytime enableGrouping is true
-      // as a result, only one group label is expected in the DOM at any given time
-      return rowHeight * (itemsLength + 1) || 0;
+      // ensure enough room is provided for grouping labels
+      return ((rowHeight * (itemsLength + (itemsLength / groupSize) - 1))) || 0;
     } else {
       return rowHeight * itemsLength || 0;
     }
+  },
+
+  @computed('_rowHeight', 'table.groupingSize')
+  _distributedGroupLabelHeight(rowHeight, groupSize) {
+    return rowHeight ? rowHeight / groupSize : 0;
   },
 
   /**
@@ -130,10 +134,15 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @type number
    * @private
    */
-  @computed('table.lazy', '_rowHeight', 'scrollTop')
-  _firstIndex(lazy, rowHeight, scrollTop) {
+  @computed('table.lazy', '_rowHeight', 'scrollTop', '_distributedGroupLabelHeight', 'table.enableGrouping')
+  _firstIndex(lazy, rowHeight, scrollTop, labelHeight, enableGrouping) {
     if (lazy) {
-      return rowHeight ? parseInt(scrollTop / rowHeight, 10) : 0;
+      if (enableGrouping) {
+        // ensure the height of grouping labels are accounted for
+        return rowHeight ? parseInt(scrollTop / (rowHeight + labelHeight), 10) : 0;
+      } else {
+        return rowHeight ? parseInt(scrollTop / rowHeight, 10) : 0;
+      }
     } else {
       return 0;
     }
@@ -157,10 +166,16 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @type number
    * @private
    */
-  @computed('table.lazy', '_firstIndex', '_rowHeight', 'clientHeight')
-  _lastIndex(lazy, firstIndex, rowHeight, clientHeight) {
+
+  @computed('table.lazy', '_firstIndex', '_rowHeight', 'clientHeight', '_distributedGroupLabelHeight', 'table.enableGrouping')
+  _lastIndex(lazy, firstIndex, rowHeight, clientHeight, labelHeight, enableGrouping) {
     if (lazy) {
-      return rowHeight ? firstIndex + Math.ceil(clientHeight / rowHeight) : 0;
+      if (enableGrouping) {
+        // ensure the height of grouping labels are accounted for
+        return rowHeight ? firstIndex + Math.ceil(clientHeight / (rowHeight + labelHeight)) : 0;
+      } else {
+        return rowHeight ? firstIndex + Math.ceil(clientHeight / rowHeight) : 0;
+      }
     } else {
       return this.get('items.length') || 0;
     }

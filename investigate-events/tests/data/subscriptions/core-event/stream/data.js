@@ -9,9 +9,6 @@ const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
 const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']).map(Number);
 const IP_PROTOS = Object.keys(aliases['ip.proto']);
 
-const now = +(new Date());
-const oneDayAgo = now - 24 * 60 * 60 * 1000;
-
 const randInt = function(min, max) {
   return parseInt(min + (max - min) * Math.random(), 10);
 };
@@ -37,10 +34,14 @@ const endpointMetas = [
   [ 'nwe.callback_id', randInt(15, 2000) ]
 ];
 
+const oneDayAgo = (now) => {
+  return now - 24 * 60 * 60 * 1000;
+};
+
 const logAndNetworkFactory = function(i) {
   return {
     sessionId: i,
-    time: oneDayAgo + i,
+    time: oneDayAgo(new Date()),
     metas: logAndNetworkMetas
   };
 };
@@ -48,16 +49,12 @@ const logAndNetworkFactory = function(i) {
 const endpointFactory = function(i) {
   return {
     sessionId: i,
-    time: oneDayAgo + i,
+    time: oneDayAgo(new Date()),
     metas: endpointMetas
   };
 };
 
 export default function() {
-  if (eventList) {
-    return eventList;
-  }
-
   eventList = [];
 
   for (let i = 1; i < NUMBER_OF_EVENTS + 1; i++) {
