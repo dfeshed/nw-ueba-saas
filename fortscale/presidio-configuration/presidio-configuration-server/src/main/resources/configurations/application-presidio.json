@@ -1,11 +1,12 @@
 {
   "system": {
-    "username": "presidio@somecompany.dom",
-    "krbServiceName": "HTTP/hostname@fortscale.dom",
-    "password": "password",
-    "analystGroup": "presidio-soc-team-somecompany",
-    "smtpHost": "name.of-server.com:25",
-    "kdcUrl": "string"
+    "username": "a",
+    "password": "a",
+    "ldapUrl": "ldap://1.1.1.1",
+    "realmName": "a",
+    "analystGroup": "a",
+    "krbServiceName": "a",
+    "smtpHost": "a"
   },
   "dataPipeline": {
     "schemas": [
@@ -16,7 +17,7 @@
     "enableForwarding": "false"
   },
   "dataPulling": {
-    "source": "test"
+    "source": "nws://${USER_NAME}:${PASSWORD}@${HOST}:${PORT}"
   },
   "uiIntegration":{
     "brokerId": "broker-uuid",
