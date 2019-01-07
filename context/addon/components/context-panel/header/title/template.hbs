@@ -1,0 +1,9 @@
+<div class="rsa-context-panel-header__title">
+  {{#if (and headerTitle (not errorMessage))}}
+    <span>{{headerTitle}} :</span>
+    {{#rsa-content-tethered-panel-trigger class="rsa-context-panel-header__title__lookup" panel='headerLookup'}}{{lookupKey}}{{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel style="primary" displayCloseButton=false position='bottom-left' panelId='headerLookup'}}
+      <div class="rsa-context-panel-header__tooltip"> {{lookupKey}}</div>
+    {{/rsa-content-tethered-panel}}
+  {{/if}}
+</div>

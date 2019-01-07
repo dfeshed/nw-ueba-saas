@@ -1,29 +1,6 @@
 <hbox>
-  <vbox xs='10'>
-    <div class="rsa-context-panel-header__title">
-      {{#if (and headerTitle (not errorMessage))}}
-        <span>{{headerTitle}} :</span>
-        {{#rsa-content-tethered-panel-trigger class="rsa-context-panel-header__title__lookup" panel='headerLookup'}}{{lookupKey}}{{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel style="primary" displayCloseButton=false position='bottom-left' panelId='headerLookup'}}
-          <div class="rsa-context-panel-header__tooltip"> {{lookupKey}}</div>
-        {{/rsa-content-tethered-panel}}
-      {{/if}}
-    </div>
-  </vbox>
-  <vbox xs='2' class="rsa-context-panel-header__header-icons">
-    <div>
-      <span>
-        {{#rsa-form-button
-          isIconOnly=true title= (t 'context.header.help.title')
-          defaultAction=(action 'goToHelp')}}
-          {{rsa-icon name="help-circle" style="lined" }}
-        {{/rsa-form-button}}
-      </span>
-      <span class="rsa-context-panel-header__close-icon">
-        <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
-          {{rsa-icon style='filled' name='close'}}
-        </button>
-      </span>
-    </div>
-  </vbox>
+  {{yield (hash
+    title=(component "context-panel/header/title" headerTitle=headerTitle errorMessage=errorMessage lookupKey=lookupKey)
+    icons=(component "context-panel/header/icons" restoreDefault=(action "restoreDefault") goToHelp=(action "goToHelp"))
+  )}}
 </hbox>

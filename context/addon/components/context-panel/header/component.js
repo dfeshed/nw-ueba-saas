@@ -28,10 +28,6 @@ const HeaderComponent = Component.extend({
   },
 
   actions: {
-    closeAction() {
-      this.sendAction('closePanel');
-      this.send('restoreDefault');
-    },
     goToHelp() {
       const { panelHelpId } = contextHelpIds();
       this.get('contextualHelp').goToHelp(panelHelpId.moduleId, panelHelpId.topicId);

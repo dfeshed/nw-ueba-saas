@@ -1,0 +1,14 @@
+<div>
+  <span>
+    {{#rsa-form-button
+      isIconOnly=true title= (t 'context.header.help.title')
+      defaultAction=goToHelp}}
+      {{rsa-icon name="help-circle" style="lined" }}
+    {{/rsa-form-button}}
+  </span>
+  <span class="rsa-context-panel-header__close-icon">
+    <button class="rsa-context-panel-header__panel-close" onclick={{action "closeAction"}} title={{t 'context.header.closeButton.title'}}>
+      {{rsa-icon style='filled' name='close'}}
+    </button>
+  </span>
+</div>

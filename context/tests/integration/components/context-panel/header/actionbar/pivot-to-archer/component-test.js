@@ -1,11 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, waitFor } from '@ember/test-helpers';
+import { waitUntil, render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
 import rsvp from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
+const timeout = 15000;
 const contextStub = Service.extend({
   metas: () => {
     return new rsvp.Promise((resolve) => resolve({}));
@@ -26,9 +27,12 @@ module('Integration | Component | context-panel/pivotToArcher', function(hooks) 
     this.set('entityType', 'IP');
     await render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
 
-    return waitFor('.rsa-nav-tab-group').then(() => {
-      assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for IP');
-    });
+    await waitUntil(() => {
+      const tabGroup = findAll('.rsa-nav-tab-group');
+      return tabGroup && tabGroup.length === 1;
+    }, { timeout });
+
+    assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for IP');
   });
 
   test('Pivot to Archer link is available for MAC_ADDRESS', async function(assert) {
@@ -37,9 +41,13 @@ module('Integration | Component | context-panel/pivotToArcher', function(hooks) 
       entityId: '00:50:56:BA:60:18'
     });
     await render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
-    return waitFor('.rsa-nav-tab-group').then(() => {
-      assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for MAC_ADDRESS');
-    });
+
+    await waitUntil(() => {
+      const tabGroup = findAll('.rsa-nav-tab-group');
+      return tabGroup && tabGroup.length === 1;
+    }, { timeout });
+
+    assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for MAC_ADDRESS');
   });
 
 });

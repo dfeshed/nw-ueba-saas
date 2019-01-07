@@ -20,7 +20,14 @@ test('it renders', function(assert) {
     payload: { lookupKey: '1.1.1.1', meta: 'IP' }
   });
 
-  this.render(hbs`{{context-panel/header i18n=i18n}}`);
+
+  this.render(hbs`
+    {{#context-panel/header i18n=i18n as |header|}}
+      {{header.title}}
+      {{header.icons closePanel=closePanel}}
+    {{/context-panel/header}}
+  `);
+
   assert.ok(this.$('.rsa-icon-help-circle-lined').length === 1, 'Need to display help icons.');
   assert.ok(this.$('.rsa-icon-close-filled').length === 1, 'Need to display close icons.');
   assert.ok(this.$('.rsa-context-panel__header').text().indexOf('1.1.1.1') > 0, 'Need to display only Meta key.');

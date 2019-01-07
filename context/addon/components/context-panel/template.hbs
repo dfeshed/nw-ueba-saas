@@ -5,7 +5,11 @@
 </div>
 {{#if isReady}}
   <div class='rsa-context-panel__body_layout'>
-    {{context-panel/header closePanel=closePanel}}
+    {{#context-panel/header as |header|}}
+      {{header.title}}
+      {{header.icons closePanel=closePanel}}
+    {{/context-panel/header}}
+
     {{#if errorMessage}}
       <hbox class='rsa-context-panel__loader'>
         <span class='rsa-context-panel__error-text'>
