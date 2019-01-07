@@ -163,7 +163,7 @@
                             <sources>
                                 <source>
                                     <includes>
-                                        <include>*.jar</include>
+                                        <include>presidio*.jar</include>
                                     </includes>
                                     <location>${project.build.directory}/dependencies</location>
                                 </source>
