@@ -2,6 +2,7 @@ import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import { debug } from '@ember/debug';
 import { fetchEndpointServers } from 'investigate-shared/actions/api/server';
+import RSVP from 'rsvp';
 
 export const _initializeEndpoint = (serverId, callback) => {
   return (dispatch) => {
@@ -65,4 +66,97 @@ export const getEndpointServers = (callback) => {
 export const setSelectedEndpointServer = (id) => ({ type: ACTION_TYPES.ENDPOINT_SERVER_SELECTED, payload: id });
 
 export const setSelectedMachineServerId = (id) => ({ type: ACTION_TYPES.SET_SELECTED_MACHINE_SERVER_ID, payload: id });
+
+// New endpoint server selection flow
+
+export const pingEndpointServer = (dispatch) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const request = lookup('service:request');
+    request.ping('endpoint-server-ping')
+      .then(function() {
+        dispatch(isEndpointServerOffline(false));
+        resolve({ isOnline: true });
+      })
+      .catch(function() {
+        dispatch(isEndpointServerOffline(true));
+        reject({ isOnline: false });
+      });
+  });
+};
+
+export const setupEndpointServer = () => {
+  return async(dispatch) => {
+    registerStreamOptions(null);
+    const { isOnline } = await pingEndpointServer(dispatch);
+    if (isOnline) {
+      const persistedServerId = _getPersistedServerId();
+      if (persistedServerId) {
+        registerStreamOptions(persistedServerId);
+        dispatch(setSelectedEndpointServer(persistedServerId));
+        // 2. Load all the server and set first as default sever
+        await dispatch(_loadAllEndpointServers(persistedServerId));
+        await pingEndpointServer(dispatch);
+      }
+    }
+  };
+};
+
+export const changeEndpointServer = ({ id }) => {
+  return async(dispatch, getState) => {
+    const { serverId } = getState().endpointQuery;
+    if (serverId !== id) {
+      _setPersistedServerId(id);
+      registerStreamOptions(id);
+      dispatch(setSelectedEndpointServer(id));
+      await pingEndpointServer(dispatch);
+    }
+  };
+};
+
+export const _loadAllEndpointServers = (serverId) => {
+  return async(dispatch, getState) => {
+    registerStreamOptions(serverId);
+    // Wait for all endpoint server to load
+    await dispatch({
+      type: ACTION_TYPES.LIST_OF_ENDPOINT_SERVERS,
+      promise: fetchEndpointServers(),
+      meta: {
+        onSuccess: () => {
+          if (!serverId) {
+            // Set the server id and continue with that server id
+            const [defaultServer] = getState().endpointServer.serviceData || [{}];
+            _setPersistedServerId(defaultServer.id);
+            registerStreamOptions(defaultServer.id);
+            dispatch(setSelectedEndpointServer(defaultServer.id));
+          }
+        },
+        onFailure: () => {
+          clearStreamOptions();
+        }
+      }
+    });
+  };
+};
+
+const _getPersistedServerId = () => {
+  const localStoragePersistedServerId = localStorage.getItem('endpoint:persistedServerId');
+  const persistedServerId = localStoragePersistedServerId !== 'null' ? localStoragePersistedServerId : null;
+  return persistedServerId;
+};
+
+const registerStreamOptions = (serviceId) => {
+  const request = lookup('service:request');
+  const socketUrlPostfix = serviceId ? serviceId : 'any';
+  request.registerPersistentStreamOptions({ socketUrlPostfix, requiredSocketUrl: 'endpoint/socket' });
+};
+
+const clearStreamOptions = () => {
+  const request = lookup('service:request');
+  request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
+};
+
+const _setPersistedServerId = (serverId) => {
+  localStorage.setItem('endpoint:persistedServerId', serverId);
+};
+
 

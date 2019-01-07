@@ -1,8 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { getEndpointServers } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
-import { userLeftFilesPage, fetchSchemaInfo } from 'investigate-files/actions/data-creators';
-import { run } from '@ember/runloop';
+import { userLeftFilesPage, bootstrapInvestigateFiles } from 'investigate-files/actions/data-creators';
 import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../actions/types';
 
@@ -14,9 +12,7 @@ export default Route.extend({
 
   model() {
     const redux = this.get('redux');
-    run.next(() => {
-      redux.dispatch(getEndpointServers(fetchSchemaInfo));
-    });
+    return redux.dispatch(bootstrapInvestigateFiles());
   },
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {

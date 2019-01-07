@@ -16,7 +16,7 @@ import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
-import { setEndpointServer, isEndpointServerOffline, setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
+import { setSelectedEndpointServer, setupEndpointServer, changeEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
@@ -35,6 +35,42 @@ const _handleError = (response, type) => {
   warn(`_handleError ${type} ${warnResponse}`, { id: 'investigate-files.actions.data-creators' });
 };
 
+/**
+ * Bootstraping investigate files page, loads all the endpoint server and checks for availability
+ * @returns {Function}
+ */
+const bootstrapInvestigateFiles = () => {
+  return async(dispatch) => {
+    try {
+      // 1. Wait for endpoint server to load and availability
+      await dispatch(setupEndpointServer());
+      // 2. Endpoint server is online do other action
+      // 2.1. Wait for user preference to load
+      await dispatch(initializeFilesPreferences());
+      // 2.2. Load list of files
+      dispatch(getFirstPageOfFiles());
+      // 3. Fetch remaining required data
+      dispatch(getFilter(() => {}, 'FILE'));
+      dispatch(getRestrictedFileList('FILE'));
+      dispatch(triggerFileActions());
+    } catch (e) {
+      // Endpoint server offline
+    }
+
+  };
+};
+
+const changeEndpointServerSelection = (server) => {
+  return async(dispatch) => {
+    try {
+      await dispatch(changeEndpointServer(server));
+      dispatch(getFirstPageOfFiles());
+      dispatch(triggerFileActions());
+    } catch (e) {
+      // Endpoint server offline
+    }
+  };
+};
 /**
  * Action creator that dispatches a set of actions for fetching files (with or without filters) and sorted by one field.
  * @method _fetchFiles
@@ -134,35 +170,16 @@ const initializeFilesPreferences = () => {
           });
         }
       }
-      dispatch(getRestrictedFileList('FILE'));
-      dispatch(getFilter(_initializeFilesView, 'FILE'));
     });
-  };
-};
-
-const _initializeFilesView = () => {
-  return (dispatch) => {
-    dispatch(setEndpointServer(null, null, triggerFileActions));
   };
 };
 
 const triggerFileActions = () => {
   return (dispatch) => {
-    const request = lookup('service:request');
-    dispatch({ type: ACTION_TYPES.RESET_FILES });
     dispatch({ type: ACTION_TYPES.RESET_CERTIFICATES });
     dispatch({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
-    return request.ping('endpoint-server-ping')
-      .then(function() {
-        dispatch(isEndpointServerOffline(false));
-        dispatch(getServiceId('FILE'));
-        dispatch(getCertificates());
-        dispatch(getAllServices());
-        dispatch(getFirstPageOfFiles());
-      })
-      .catch(function() {
-        dispatch(isEndpointServerOffline(true));
-      });
+    dispatch(getServiceId('FILE'));
+    dispatch(getCertificates());
   };
 };
 
@@ -468,5 +485,7 @@ export {
   initializeFileDetails,
   setSelectedIndex,
   triggerFileActions,
-  initializerForFileDetailsAndAnalysis
+  initializerForFileDetailsAndAnalysis,
+  bootstrapInvestigateFiles,
+  changeEndpointServerSelection
 };

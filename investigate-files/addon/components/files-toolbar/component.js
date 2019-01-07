@@ -9,7 +9,7 @@ import {
   saveFileStatus,
   getSavedFileStatus,
   retrieveRemediationStatus,
-  triggerFileActions
+  changeEndpointServerSelection
 } from 'investigate-files/actions/data-creators';
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
@@ -43,7 +43,8 @@ const dispatchToActions = {
   getSavedFileStatus,
   retrieveRemediationStatus,
   resetRiskScore,
-  toggleCertificateView
+  toggleCertificateView,
+  changeEndpointServerSelection
 };
 /**
  * Toolbar that provides search filtering.
@@ -88,7 +89,7 @@ const ToolBar = Component.extend({
     },
 
     handleServiceSelection(service) {
-      this.send('setEndpointServer', true, service, triggerFileActions);
+      this.send('changeEndpointServerSelection', service);
       if (this.closeRiskPanel) {
         this.closeRiskPanel();
       }

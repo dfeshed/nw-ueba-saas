@@ -46,7 +46,6 @@ const stateToComputed = (state) => ({
   selectedFile: state.files.fileList.selectedFile,
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,
-  schemaLoading: state.files.schema.schemaLoading,
   fileProperty: state.files.fileList.selectedDetailFile
 });
 

@@ -25,13 +25,7 @@
         </section>
         {{#if selectedServiceData.isServiceOnline}}
           <box class="files-body">
-            {{#if schemaLoading}}
-              <centered>
-                {{rsa-loader size='larger'}}
-              </centered>
-            {{else}}
-              {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
-            {{/if}}
+            {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
           </box>
           <box class="files-footer">
             {{file-pager}}
