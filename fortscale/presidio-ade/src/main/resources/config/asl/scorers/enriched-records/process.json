@@ -74,11 +74,10 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "dstProcessFileName.userId.process"
+                  "name": "userId.dstProcessFileName.process.score"
                 },
-                "category-rarity-global-model": {
-                  //todo: change model name after Yaron changes
-                  "name": "userId.dstProcessFileName.process"
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.dstProcessFileName.process.score"
                 },
                 "context-model": {
                   "name": "contexts.process"
@@ -314,10 +313,9 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "srcProcessFilePath.userIdDstProcessFileName.process"
+                  "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
                 },
-                "category-rarity-global-model": {
-                  //todo: change model name after Yaron changes
+                "occurrences-to-num-of-distinct-feature-values-model": {
                   "name": "userId.dstProcessFileNameSrcProcessFilePath.process"
                 },
                 "context-model": {
@@ -384,10 +382,9 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "dstProcessFilePathCreated.userIdSrcProcessFileName.process"
+                  "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
                 },
-                "category-rarity-global-model": {
-                  //todo: change model name after Yaron changes
+                "occurrences-to-num-of-distinct-feature-values-model": {
                   "name": "userId.srcProcessFileNameCreatedDstProcessFilePath.process"
                 },
                 "context-model": {
@@ -454,10 +451,9 @@
                   }
                 },
                 "main-scorer-model": {
-                  "name": "dstProcessFilePathOpened.userIdSrcProcessFileName.process"
+                  "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
                 },
-                "category-rarity-global-model": {
-                  //todo: change model name after Yaron changes
+                "occurrences-to-num-of-distinct-feature-values-model": {
                   "name": "userId.srcProcessFileNameOpenedDstProcessFilePath.process"
                 },
                 "context-model": {

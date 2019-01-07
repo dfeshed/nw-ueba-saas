@@ -25,8 +25,8 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
 
     private Scorer mainScorer;
     private Scorer reductionScorer;
-    private String categoryRarityGlobalModelName;
-    private List<String> categoryRarityGlobalContextFieldNames;
+    private String occurrencesToNumOfDistinctFeatureValueModelName;
+    private List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames;
     private String mainScorerModelName;
     private String mainScorerFeatureName;
     private List<String> mainScorerContextFieldNames;
@@ -42,8 +42,8 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
             String scorerName,
             Scorer mainScorer,
             Scorer reductionScorer,
-            String categoryRarityGlobalModelName,
-            List<String> categoryRarityGlobalContextFieldNames,
+            String occurrencesToNumOfDistinctFeatureValueModelName,
+            List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames,
             String mainScorerModelName,
             String mainScorerFeatureName,
             List<String> mainScorerContextFieldNames,
@@ -58,8 +58,8 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
         this.mainScorer = mainScorer;
         this.reductionScorer = reductionScorer;
         this.noiseReductionWeight = noiseReductionWeight;
-        this.categoryRarityGlobalModelName = categoryRarityGlobalModelName;
-        this.categoryRarityGlobalContextFieldNames = categoryRarityGlobalContextFieldNames;
+        this.occurrencesToNumOfDistinctFeatureValueModelName = occurrencesToNumOfDistinctFeatureValueModelName;
+        this.occurrencesToNumOfDistinctFeatureValueContextFieldNames = occurrencesToNumOfDistinctFeatureValueContextFieldNames;
         this.mainScorerModelName = mainScorerModelName;
         this.mainScorerFeatureName = mainScorerFeatureName;
         this.mainScorerContextFieldNames = mainScorerContextFieldNames;
@@ -112,7 +112,7 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
 
     private Double calcReductionWeight(AdeRecordReader adeRecordReader) {
         Model mainScorerModel = getModel(adeRecordReader, mainScorerModelName, mainScorerContextFieldNames);
-        Model categoryRarityGlobalModel = getModel(adeRecordReader, categoryRarityGlobalModelName, categoryRarityGlobalContextFieldNames);
+        Model categoryRarityGlobalModel = getModel(adeRecordReader, occurrencesToNumOfDistinctFeatureValueModelName, occurrencesToNumOfDistinctFeatureValueContextFieldNames);
         Model contextModel = getModel(adeRecordReader, contextModelName, contextModelContextFieldNames);
 
         Feature feature = Feature.toFeature(mainScorerFeatureName, adeRecordReader.get(mainScorerFeatureName));
@@ -124,7 +124,7 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
         Double count = ((CategoryRarityModel) mainScorerModel).getFeatureCount(featureValue);
         if (count == null) count = 0d;
         //todo: verify after Yaron changes
-        List<Double> buckets = ((CategoryRarityGlobalModel) categoryRarityGlobalModel).getOccurrencesToNumOfFeatures();
+        List<Double> buckets = ((OccurrencesToNumOfDistinctFeatureValuesModel) categoryRarityGlobalModel).getOccurrencesToNumOfDistinctFeatureValuesList();
         double numOfContextsWithSameOccurrence = buckets.get((int) Math.round(count));
         for (int i = (int) Math.round(count) + 1; i < count + maxRareCount; i++) {
             double commonnessDiscount = calcCommonnessDiscounting(maxRareCount, i - count + 1);

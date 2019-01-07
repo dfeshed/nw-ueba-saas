@@ -45,9 +45,9 @@ public class LinearNoiseReductionScorerFactory extends AbstractServiceAutowiring
         List<String> mainScorerContextFieldNames = mainScorerDataRetriever.getContextFieldNames();
 
         //category rarity global model
-        String categoryRarityGlobalModelName = scorerConf.getCategoryRarityGlobalModelInfo().getModelName();
-        AbstractDataRetriever categoryRarityGlobalDataRetriever = getDataRetriever(categoryRarityGlobalModelName);
-        List<String> categoryRarityGlobalContextFieldNames = categoryRarityGlobalDataRetriever.getContextFieldNames();
+        String occurrencesToNumOfDistinctFeatureValueModelName = scorerConf.getOccurrencesToNumOfDistinctFeatureValueModelInfo().getModelName();
+        AbstractDataRetriever occurrencesToNumOfDistinctFeatureValueDataRetriever = getDataRetriever(occurrencesToNumOfDistinctFeatureValueModelName);
+        List<String> occurrencesToNumOfDistinctFeatureValueContextFieldNames = occurrencesToNumOfDistinctFeatureValueDataRetriever.getContextFieldNames();
 
         //context model
         String contextModelName = scorerConf.getContextModelInfo().getModelName();
@@ -58,8 +58,8 @@ public class LinearNoiseReductionScorerFactory extends AbstractServiceAutowiring
                 scorerConf.getName(),
                 factoryService.getProduct(scorerConf.getMainScorerConf()),
                 factoryService.getProduct(scorerConf.getReductionScorerConf()),
-                categoryRarityGlobalModelName,
-                categoryRarityGlobalContextFieldNames,
+                occurrencesToNumOfDistinctFeatureValueModelName,
+                occurrencesToNumOfDistinctFeatureValueContextFieldNames,
                 mainScorerModelName,
                 mainScorerFeatureName,
                 mainScorerContextFieldNames,
