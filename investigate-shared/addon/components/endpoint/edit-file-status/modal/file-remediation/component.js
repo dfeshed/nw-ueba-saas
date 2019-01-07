@@ -34,8 +34,8 @@ export default Component.extend({
     return item.machineOsType === 'windows';
   },
 
-  @computed('itemList', 'isRemediationAllowed')
-  errorDecorator(itemList, isRemediationAllowed) {
+  @computed('itemList', 'isRemediationAllowed', 'isFloatingOrMemoryDll')
+  errorDecorator(itemList, isRemediationAllowed, isFloatingOrMemoryDll) {
     const size = itemList.mapBy('size');
     const sizeExceeds = size.some(this._isSizeExceeded);
     const isNotWindowsAgent = !itemList.every(this._isWindowsAgent);
@@ -46,9 +46,11 @@ export default Component.extend({
       message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.isSigned');
     } else if (sizeExceeds) {
       message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.sizeExceeds');
+    } else if (isFloatingOrMemoryDll) {
+      message = this.get('i18n').t('investigateFiles.editFileStatus.remediationActionAlert.isFloatingOrMemoryDll');
     }
     return {
-      disableBlocking: isNotWindowsAgent || !isRemediationAllowed || sizeExceeds,
+      disableBlocking: isNotWindowsAgent || !isRemediationAllowed || sizeExceeds || isFloatingOrMemoryDll,
       remediationAlert: message
     };
   },

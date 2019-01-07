@@ -49,7 +49,8 @@
             {{endpoint/edit-file-status/modal/file-remediation
               data=formData
               itemList=itemList
-              isRemediationAllowed=isRemediationAllowed}}
+              isRemediationAllowed=isRemediationAllowed
+              isFloatingOrMemoryDll=isFloatingOrMemoryDll}}
           {{/if}}
         {{/if}}
         {{#if (eq radio.value 'Graylist')}}
@@ -57,7 +58,8 @@
             {{endpoint/edit-file-status/modal/file-remediation
               data=formData
               itemList=itemList
-              isRemediationAllowed=isRemediationAllowed}}
+              isRemediationAllowed=isRemediationAllowed
+              isFloatingOrMemoryDll=isFloatingOrMemoryDll}}
           {{/if}}
         {{/if}}
       {{/each}}

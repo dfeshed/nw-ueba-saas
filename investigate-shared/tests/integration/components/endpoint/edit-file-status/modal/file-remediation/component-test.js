@@ -70,4 +70,19 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files on non-windows machines.');
   });
+
+  test('Blocking files disabled for files with floating code or memory dll', async function(assert) {
+    this.set('itemList', [{
+      signature: {
+        signer: 'unsigned'
+      },
+      machineOsType: 'windows',
+      size: 104857610
+    }]);
+    this.set('restrictedFileList', ['test']);
+    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList isFloatingOrMemoryDll=true showFileStatusModal=showFileStatusModal isRemediationAllowed=true itemList=itemList}}`);
+    await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
+    assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
+    assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files with floating code or memory dll');
+  });
 });

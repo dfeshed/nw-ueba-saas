@@ -56,14 +56,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5 } = payload;
+  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5, features, format } = payload;
   let selectedList = [];
   // Previously selected file
 
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size }];
+    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size, features, format }];
   }
   return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {}, isRemediationAllowed: true });
 

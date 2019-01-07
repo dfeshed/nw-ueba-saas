@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
+import { serviceList, checksums, isAnyFileFloatingOrMemoryDll } from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
@@ -32,7 +32,8 @@ const stateToComputed = (state) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  certificateLoadStatus: state.certificate.list.certificatesLoadingStatus
+  certificateLoadStatus: state.certificate.list.certificatesLoadingStatus,
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state)
 });
 
 const dispatchToActions = {

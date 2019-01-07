@@ -22,7 +22,8 @@ import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import {
   fileStatus,
   isRemediationAllowed,
-  fileDownloadButtonStatus
+  fileDownloadButtonStatus,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import {
   setFileContextFileStatus,
@@ -65,7 +66,8 @@ const stateToComputed = (state) => ({
   timeRange: timeRange(state),
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   risk: riskState(state),
-  fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process')
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process'),
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process')
 });
 
 const dispatchToActions = {

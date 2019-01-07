@@ -14,7 +14,8 @@ import {
   areFilesLoading,
   isExportButtonDisabled,
   fileTotalLabel,
-  nextLoadCount
+  nextLoadCount,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -322,4 +323,24 @@ test('nextLoadCount', function(assert) {
   });
   const result2 = nextLoadCount(STATE1);
   assert.equal(result2, 100);
+});
+
+test('isAnyFileFloatingOrMemoryDll', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        fileData: { 1: { id: 1 }, 2: { id: 2 } },
+        selectedFileList: [
+          { id: 1,
+            format: 'floating'
+          },
+          {
+            id: 2
+          }
+        ]
+      }
+    }
+  });
+  const result = isAnyFileFloatingOrMemoryDll(state);
+  assert.equal(result, true);
 });

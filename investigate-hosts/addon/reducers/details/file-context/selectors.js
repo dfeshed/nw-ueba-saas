@@ -157,7 +157,18 @@ const _isFloatingOrMemoryDll = createSelector(
     return true;
   }
 );
-
+export const isAnyFileFloatingOrMemoryDll = createSelector(
+  fileContextSelections,
+  (fileContextSelections) => {
+    if (fileContextSelections && fileContextSelections.length) {
+      const filteredList = fileContextSelections.some((item) => {
+        return (item.format && item.format === 'floating') || (item.features && item.features.includes('file.memoryHash'));
+      });
+      return filteredList;
+    }
+    return false;
+  }
+);
 const _areAllFilesNotDownloadedToServer = createSelector(
   fileContextSelections,
   (fileContextSelections) => {

@@ -15,7 +15,8 @@ import {
   selectedFileChecksums,
   totalItems,
   contextLoadMoreStatus,
-  isRemediationAllowed
+  isRemediationAllowed,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import {
@@ -50,7 +51,8 @@ const stateToComputed = (state, { storeName }) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   sid: state.endpointQuery.serverId,
   agentCountMapping: state.endpoint[storeName].agentCountMapping,
-  selectedRowIndex: state.endpoint[storeName].selectedRowIndex
+  selectedRowIndex: state.endpoint[storeName].selectedRowIndex,
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName)
 });
 
 const dispatchToActions = {

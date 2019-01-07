@@ -8,7 +8,8 @@ import {
   files,
   checksums,
   areFilesLoading,
-  nextLoadCount
+  nextLoadCount,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -54,7 +55,8 @@ const stateToComputed = (state) => ({
   selectedIndex: state.files.fileList.selectedIndex,
   serverId: state.endpointQuery.serverId,
   servers: state.endpointServer.serviceData,
-  nextLoadCount: nextLoadCount(state)
+  nextLoadCount: nextLoadCount(state),
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state)
 });
 
 const dispatchToActions = {

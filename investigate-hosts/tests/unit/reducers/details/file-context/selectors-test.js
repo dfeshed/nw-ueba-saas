@@ -15,7 +15,8 @@ import {
   fileStatus,
   fileDownloadButtonStatus,
   focusedRowChecksum,
-  selectedFileList
+  selectedFileList,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
@@ -483,6 +484,120 @@ module('Unit | Selectors | File Context', function() {
       }
     }), 'drivers');
     assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
+  });
+
+  test('isAnyFileFloatingOrMemoryDll', function(assert) {
+    const state = Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            machineIdentity: {
+              agentMode: 'Advanced'
+            }
+          }
+        },
+        drivers: {
+          fileContextSelections: [
+            {
+              id: 'imageHooks_1',
+              fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]',
+              checksumSha1: '77e2e1facd878903daacfb5a561456225c05a445',
+              checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
+              checksumMd5: '054f182db0fd4afbe92b311874c721c8',
+              size: 65536,
+              machineOsType: 'windows',
+              path: '',
+              downloadInfo: {},
+              features: [],
+              format: 'floating'
+            },
+            {
+              id: 'imageHooks_13',
+              fileName: '[MEMORY_DLL_EF01C6AE31431AA02BE6DF1EA764A3D4]',
+              checksumSha1: '53f32db2c7221bdcf55be69387ec6ebffe1daa02',
+              checksumSha256: '5e99949211beab5f6d72e66a2f1e40e0ada5ab4d9d1b29b60e5952dddfe4551f',
+              checksumMd5: 'ef01c6ae31431aa02be6df1ea764a3d4',
+              signature: {
+                features: [
+                  'unsigned'
+                ]
+              },
+              size: 0,
+              machineOsType: 'windows',
+              path: '',
+              downloadInfo: {},
+              features: [
+                'file.dll',
+                'file.arch64',
+                'file.memoryHash',
+                'file.iconPresent',
+                'file.versionInfoPresent'
+              ],
+              format: 'pe'
+            }
+          ]
+        }
+      }
+    });
+    const result = isAnyFileFloatingOrMemoryDll(state, 'drivers');
+    assert.equal(result, true);
+  });
+
+  test('isAnyFileFloatingOrMemoryDll when file has only memory dll, in one of the selections', function(assert) {
+    const state = Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            machineIdentity: {
+              agentMode: 'Advanced'
+            }
+          }
+        },
+        drivers: {
+          fileContextSelections: [
+            {
+              id: 'imageHooks_1',
+              fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]',
+              checksumSha1: '77e2e1facd878903daacfb5a561456225c05a445',
+              checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
+              checksumMd5: '054f182db0fd4afbe92b311874c721c8',
+              size: 65536,
+              machineOsType: 'windows',
+              path: '',
+              downloadInfo: {},
+              features: [],
+              format: 'pe'
+            },
+            {
+              id: 'imageHooks_13',
+              fileName: '[MEMORY_DLL_EF01C6AE31431AA02BE6DF1EA764A3D4]',
+              checksumSha1: '53f32db2c7221bdcf55be69387ec6ebffe1daa02',
+              checksumSha256: '5e99949211beab5f6d72e66a2f1e40e0ada5ab4d9d1b29b60e5952dddfe4551f',
+              checksumMd5: 'ef01c6ae31431aa02be6df1ea764a3d4',
+              signature: {
+                features: [
+                  'unsigned'
+                ]
+              },
+              size: 0,
+              machineOsType: 'windows',
+              path: '',
+              downloadInfo: {},
+              features: [
+                'file.dll',
+                'file.arch64',
+                'file.memoryHash',
+                'file.iconPresent',
+                'file.versionInfoPresent'
+              ],
+              format: 'pe'
+            }
+          ]
+        }
+      }
+    });
+    const result = isAnyFileFloatingOrMemoryDll(state, 'drivers');
+    assert.equal(result, true);
   });
 });
 

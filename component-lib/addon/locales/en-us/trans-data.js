@@ -2358,7 +2358,8 @@ export default {
       remediationActionAlert: {
         isSigned: 'Files signed by RSA and Microsoft cannot be blocked.',
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.',
-        osNotToBlock: 'Files on Linux and Mac hosts cannot be blocked.'
+        osNotToBlock: 'Files on Linux and Mac hosts cannot be blocked.',
+        isFloatingOrMemoryDll: 'Files with Floating code and Memory Hash cannot be blocked.'
       },
 
       commentLimitError: 'Comment is limited to 900 characters',

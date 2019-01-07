@@ -11,7 +11,8 @@ import {
   isRemediationAllowed,
   fileDownloadButtonStatus,
   focusedRowChecksum,
-  selectedFileList
+  selectedFileList,
+  isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
 import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
@@ -54,7 +55,8 @@ const stateToComputed = (state, { storeName }) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   fileDownloadButtonStatus: fileDownloadButtonStatus(state, storeName),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
-  risk: riskState(state)
+  risk: riskState(state),
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName)
 });
 
 const dispatchToActions = {

@@ -135,3 +135,16 @@ export const nextLoadCount = createSelector(
     return loadCount;
   }
 );
+
+export const isAnyFileFloatingOrMemoryDll = createSelector(
+  _selectedFileList,
+  (fileContextSelections) => {
+    if (fileContextSelections && fileContextSelections.length) {
+      const filteredList = fileContextSelections.some((item) => {
+        return (item.format && item.format === 'floating') || (item.features && item.features.includes('file.memoryHash'));
+      });
+      return filteredList;
+    }
+    return false;
+  }
+);
