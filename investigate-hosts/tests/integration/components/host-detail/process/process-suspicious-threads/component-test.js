@@ -53,7 +53,7 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Thread ID', 'Header text in forth column, Thread ID');
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Thread Environment Block', 'Header text in fifth column, Thread Environment Block');
     assert.equal(findAll('.file-name-link').length, 2, 'link added to dll name');
-    assert.equal(find('.file-info').textContent.trim(), 'Showing 2 of 2 suspicious threads', 'Shows footer message');
+    assert.equal(find('.file-info').textContent.trim(), 'Showing 2 out of 2 suspicious threads', 'Shows footer message');
   });
   test('row click of suspicious threads table', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();

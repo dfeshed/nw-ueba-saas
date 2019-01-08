@@ -5,7 +5,7 @@
     </span>
   {{/if}}
   <span title="{{t 'investigateHosts.process.toolTip.openProcessDetails'}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
-    {{#link-to 'hosts' (query-params tabName='PROCESS' subTabName='process-details' pid=item.pid ) bubbles=false}}
+    {{#link-to 'hosts' (query-params tabName='PROCESS' subTabName='process-details' pid=item.pid ) }}
       <label >{{item.name}}</label>
     {{/link-to}}
   </span>

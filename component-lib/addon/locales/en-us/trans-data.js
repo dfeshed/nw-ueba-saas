@@ -3380,7 +3380,7 @@ export default {
       }
     },
     files: {
-      footer: 'Showing {{count}} of {{total}} {{label}}',
+      footer: 'Showing {{count}} out of {{total}} {{label}}',
       footerSelected: '| {{selectedItems}} selected',
       filter: {
         filters: 'Saved Filters',

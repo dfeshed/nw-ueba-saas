@@ -26,7 +26,7 @@ module('Integration | Component | host table footer', function(hooks) {
     await render(
       hbs`{{host-table-footer total=hostItemsLength index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const expected1 = `Showing ${hostCount} of ${hostItems.length} hosts`;
+    const expected1 = `Showing ${hostCount} out of ${hostItems.length} hosts`;
     const expected2 = `| ${selectedHosts} selected`;
     assert.equal(find('div.file-info').textContent.trim().includes(expected1), true, 'When count of hosts displayed is less than total hosts length');
     assert.equal(find('div.file-info').textContent.trim().includes(expected2), true, 'The selected count When count of hosts displayed is less than total hosts length');
@@ -35,7 +35,7 @@ module('Integration | Component | host table footer', function(hooks) {
     await render(
       hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label selectedItems=selectedHosts}}`
     );
-    const part1 = `Showing ${hostCount} of ${hostItems2.length} hosts`;
+    const part1 = `Showing ${hostCount} out of ${hostItems2.length} hosts`;
     const part2 = ` | ${selectedHosts} selected`;
 
     assert.equal(find('div.file-info').textContent.trim().includes(part1), true, 'When count of hosts displayed is equal to total hosts length');

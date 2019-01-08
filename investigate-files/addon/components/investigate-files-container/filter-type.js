@@ -21,7 +21,8 @@ const FILTER_TYPES = [
         },
         message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
       }
-    }
+    },
+    'placeholder': 'e.g., Filename.dll'
   },
   {
     name: 'fileStatus',
@@ -125,7 +126,8 @@ const FILTER_TYPES = [
   {
     'name': 'pe.resources.company',
     'label': 'investigateFiles.fields.companyName',
-    'type': 'text'
+    'type': 'text',
+    'placeholder': 'e.g., RSA Security Inc'
   },
   {
     'name': 'fileHash',

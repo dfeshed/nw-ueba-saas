@@ -302,7 +302,7 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       </style>
     {{host-detail/utils/file-context-table isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.ok(find('.file-info').textContent.trim().includes('3 of 3'));
+    assert.ok(find('.file-info').textContent.trim().includes('3 out of 3'));
   });
 
   test('it opens the service list modal', async function(assert) {

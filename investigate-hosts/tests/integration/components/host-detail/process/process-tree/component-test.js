@@ -465,7 +465,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), true, '2nd row is selected after click');
       await click(findAll('.rsa-data-table-body-row')[0]); // clicking on same row deselect the row
       assert.equal(find(findAll('.rsa-data-table-body-row')[0]).classList.contains('is-selected'), false, '2nd row is selected after click');
-      assert.equal(find('.file-info').textContent.trim().includes('Showing 7 of 7 processes'), true, 'Shows footer message');
+      assert.equal(find('.file-info').textContent.trim().includes('Showing 7 out of 7 processes'), true, 'Shows footer message');
     });
   });
   test('clicking on the process name get process-details view', async function(assert) {

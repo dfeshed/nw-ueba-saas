@@ -182,6 +182,10 @@ const TreeComponent = Component.extend({
     handleRowClickAction(item, index, e) {
       const { pid, checksumSha256 } = item;
       const { target: { classList } } = e;
+      // If it's machine name click don't select the row
+      if (e.target.tagName.toLowerCase() === 'a' || e.target.parentElement.tagName.toLowerCase() === 'a') {
+        return;
+      }
       // do not select row when checkbox is clicked
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         if (this.get('selectedRowIndex') !== index) {
