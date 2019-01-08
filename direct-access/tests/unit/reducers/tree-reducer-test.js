@@ -149,40 +149,53 @@ module('Unit | Reducers | Tree', (hooks) => {
     assert.strictEqual(result.operationResponse, null, 'operationResponse is cleared');
   });
 
-  test('TREE_SEND_OPERATION sets pendingOperation to true upon start', (assert) => {
-    const action = makePackAction(LIFECYCLE.START, {
-      type: ACTION_TYPES.TREE_SEND_OPERATION
-    });
-    const state = new ReduxDataHelper()
+  test('TREE_UPDATE_RESPONSE sets operationResponse to its value', (assert) => {
+
+    const action = {
+      type: ACTION_TYPES.TREE_UPDATE_RESPONSE,
+      payload: dummyResponse
+    };
+    let state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
       .build();
 
-    assert.strictEqual(state.pendingOperation, false);
+    // required initialization of state
+    state = reducer(state, {
+      type: ACTION_TYPES.TREE_SET_REQUEST,
+      tid: 42
+    });
 
     const result = reducer(state, action);
 
     assert.strictEqual(result.treePath, '/', 'treePath is /');
-
-    assert.strictEqual(result.pendingOperation, true);
+    assert.deepEqual(result.operationResponse.raw[0], dummyResponse, 'the response was added to state');
   });
 
-  test('TREE_SEND_OPERATION sets operationResponse to its value', (assert) => {
-    const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.TREE_SEND_OPERATION,
-      payload: dummyResponse
-    });
+  test('TREE_SET_REQUEST sets the transport stream id', (assert) => {
+    const action1 = {
+      type: ACTION_TYPES.TREE_SET_REQUEST,
+      tid: 12
+    };
+    const action2 = {
+      type: ACTION_TYPES.TREE_CANCELLED_REQUEST
+    };
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .pendingOperation(true)
       .build();
 
-    const result = reducer(state, action);
+    assert.strictEqual(state.operationResponse, null);
 
-    assert.strictEqual(result.treePath, '/', 'treePath is /');
-    assert.deepEqual(result.operationResponse, dummyResponse, 'the response was added to state');
-    assert.strictEqual(result.pendingOperation, false);
+    const result1 = reducer(state, action1);
+
+    assert.strictEqual(result1.operationResponse.requestId, action1.tid);
+    assert.strictEqual(result1.operationResponse.complete, false);
+
+    const result2 = reducer(result1, action2);
+
+    assert.strictEqual(result1.operationResponse.requestId, action1.tid);
+    assert.strictEqual(result2.operationResponse.complete, true);
   });
 
   test('TREE_UPDATE_CONTENTS changes a current object', (assert) => {

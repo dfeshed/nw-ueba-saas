@@ -5,6 +5,7 @@ import * as ACTION_TYPES from '../actions/types';
 import { operationNames, selectedOperation } from './selectors';
 import parseOperationParams from './selectors/parse-operation-params';
 import parseParamHelp from './selectors/parse-param-help';
+import parseFlags from '../services/transport/parse-flags';
 
 const initialState = Immutable.from({
   activeTab: null,
@@ -17,7 +18,6 @@ const initialState = Immutable.from({
   treeSelectedOperationIndex: -1,
   treeOperationParams: {},
   operationResponse: null,
-  pendingOperation: false,
   treeMonitorStreamTid: null,
   selectedNode: null,
   appStatNodes: {},
@@ -124,13 +124,51 @@ const reducer = handleActions({
     });
   },
 
+  [ACTION_TYPES.TREE_UPDATE_RESPONSE]: (state, action) => {
+
+    const flags = parseFlags(action.payload.flags);
+    if (flags.statusUpdate && action.payload.params && action.payload.params.percent) {
+      state = state.setIn(['operationResponse', 'progress'], action.payload.params.percent);
+      if (action.payload.params.description) {
+        state = state.setIn(['operationResponse', 'status'], action.payload.params.description);
+      }
+    }
+    if (flags.complete || flags.error) {
+      state = state.setIn(['operationResponse', 'complete'], true);
+    }
+    if (flags.error) {
+      const error = action.payload.error.message.replace(/\n/g, '\n')
+        .replace(/\t/g, '  ');
+      state = state.setIn(['operationResponse', 'error'], error);
+    }
+    const raw = state.operationResponse.raw || [];
+    state = state.setIn(['operationResponse', 'raw'], raw.concat(action.payload));
+
+    return state;
+  },
+
+  [ACTION_TYPES.TREE_SET_REQUEST]: (state, action) => {
+    // new request, clear current request state
+    return state.set('operationResponse', {
+      requestId: action.tid,
+      complete: false,
+      error: null,
+      progress: null,
+      raw: []
+    });
+  },
+
+  [ACTION_TYPES.TREE_CANCELLED_REQUEST]: (state) => {
+    return state.setIn(['operationResponse', 'complete'], true);
+  },
+
   [ACTION_TYPES.TREE_GET_OPERATIONS]: (state, action) => {
     return handle(state, action, {
       finish: (prevState) => prevState.setIn(
         [ 'treePathContents', 'operations' ],
         Object.keys(action.payload.params).map((key) => {
           return { name: key, params: parseOperationParams(action.payload.params[key]) };
-        })
+        }).sort((a, b) => a.name.localeCompare(b.name))
       )
     });
   },
@@ -239,20 +277,6 @@ const reducer = handleActions({
 
   [ACTION_TYPES.TREE_UPDATE_OPERATION_PARAMS]: (state, action) => {
     return state.set('treeOperationParams', action.payload);
-  },
-
-  [ACTION_TYPES.TREE_SEND_OPERATION]: (state, action) => {
-    return handle(state, action, {
-      start: (prevState) => {
-        return prevState.set('pendingOperation', true);
-      },
-      finish: (prevState) => {
-        return prevState.merge({
-          operationResponse: action.payload,
-          pendingOperation: false
-        });
-      }
-    });
   },
 
   [ACTION_TYPES.TREE_SET_CONFIG_VALUE]: (state, action) => {

@@ -77,8 +77,9 @@ function buildDirectAccess {
     then
       rm -rf /mnt/libhq-SA/SAStyle/direct-access/*
       version="$(grep -Po '(?<="version": ")[^"]*' package.json)"
+      buildno="0"
       # tarball lives here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/direct-access/direct-access-$version.tar.gz
-      mkdir -p /mnt/libhq-SA/SAStyle/direct-access && tar -czvf /mnt/libhq-SA/SAStyle/direct-access/direct-access-$version.tar.gz dist/*
+      mkdir -p /mnt/libhq-SA/SAStyle/direct-access && tar -cyvf /mnt/libhq-SA/SAStyle/direct-access/ngcoreui-${version}.nw.${buildno}.any.tar.bz2 dist/*
       success "Hosted direct-access app has been updated"
     fi
   fi

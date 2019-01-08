@@ -1,6 +1,7 @@
 import { lookup } from 'ember-dependency-lookup';
 import { Promise } from 'rsvp';
 import * as ACTION_TYPES from './types';
+import parseFlags from '../services/transport/parse-flags';
 
 const MAX_BATCH_SIZE = 10000;
 const LOG_FETCH_INTERVAL = 1000;
@@ -70,6 +71,7 @@ const changeDirectory = (path) => {
 
 const selectOperation = (operationName) => {
   return (dispatch, getState) => {
+    dispatch(cancelOperation());
     dispatch({
       type: ACTION_TYPES.TREE_SELECT_OPERATION,
       payload: operationName
@@ -80,8 +82,11 @@ const selectOperation = (operationName) => {
 };
 
 const deselectOperation = () => {
-  return {
-    type: ACTION_TYPES.TREE_DESELECT_OPERATION
+  return (dispatch) => {
+    dispatch(cancelOperation());
+    dispatch({
+      type: ACTION_TYPES.TREE_DESELECT_OPERATION
+    });
   };
 };
 
@@ -102,10 +107,45 @@ const updateCustomParameter = (newParam) => {
 const sendOperation = (operationMessageObject) => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
-    dispatch({
-      type: ACTION_TYPES.TREE_SEND_OPERATION,
-      promise: transport.send(getState().treePath, operationMessageObject)
+    dispatch(cancelOperation());
+    const path = getState().treePath;
+    const tid = transport.stream({
+      path,
+      message: operationMessageObject,
+      messageCallback: (updateMessage) => {
+        dispatch({
+          type: ACTION_TYPES.TREE_UPDATE_RESPONSE,
+          payload: updateMessage
+        });
+
+        // if this was an error or message with complete flag set, close the stream
+        const flags = parseFlags(updateMessage.flags);
+        if (flags.complete || flags.error) {
+          dispatch(cancelOperation());
+        }
+      },
+      errorCallback: (errorMessage) => {
+        throw new Error(errorMessage);
+      }
     });
+    dispatch({
+      type: ACTION_TYPES.TREE_SET_REQUEST,
+      tid
+    });
+  };
+};
+
+const cancelOperation = () => {
+  const transport = lookup('service:transport');
+  return (dispatch, getState) => {
+    const { operationResponse } = getState();
+    const requestId = operationResponse ? operationResponse.requestId : null;
+    const complete = operationResponse ? operationResponse.complete : null;
+    if (requestId && complete === false) {
+      // there is an outstanding request, kill it!
+      transport.stopStream(requestId);
+      dispatch({ type: ACTION_TYPES.TREE_CANCELLED_REQUEST });
+    }
   };
 };
 
@@ -375,6 +415,7 @@ export {
   updateOperationParams,
   updateCustomParameter,
   sendOperation,
+  cancelOperation,
   changeActiveTab,
   selectNode,
   deselectStat,

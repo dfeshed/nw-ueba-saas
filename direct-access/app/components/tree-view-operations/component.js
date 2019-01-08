@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import Immutable from 'seamless-immutable';
 import { connect } from 'ember-redux';
 import { selectOperation } from 'direct-access/actions/actions';
 import { filteredOperationNames, selectedOperation } from 'direct-access/reducers/selectors';
@@ -8,8 +7,7 @@ import { filteredOperationNames, selectedOperation } from 'direct-access/reducer
 const stateToComputed = (state) => ({
   filteredOperationNames: filteredOperationNames(state),
   selectedOperation: selectedOperation(state),
-  pendingOperation: state.pendingOperation,
-  operationResponse: state.operationResponse
+  operationResponse: state.operationResponse || {}
 });
 
 const dispatchToActions = {
@@ -17,17 +15,15 @@ const dispatchToActions = {
 };
 
 const treeViewOperations = Component.extend({
+
   @computed('operationResponse')
-  response: (operationResponse) => {
-    operationResponse = Immutable.without(operationResponse, ['path', 'route', 'flags']);
-    const keys = Object.keys(operationResponse);
-    if (keys.length === 1 && keys[0] === 'string') {
-      return operationResponse.string
-        .replace(/\n/g, '\n')
-        .replace(/\t/g, '  ');
-    } else {
-      return JSON.stringify(operationResponse, null, 2);
-    }
+  responses: (operationResponse) => {
+    return {
+      ...operationResponse,
+      status: operationResponse.status ? `${operationResponse.status} ...` : null,
+      hasError: !!operationResponse.error,
+      hasPendingOperation: operationResponse.complete === false
+    };
   },
 
   @computed('filteredOperationNames')

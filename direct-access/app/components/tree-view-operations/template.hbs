@@ -18,14 +18,20 @@
     {{tree-view-operation-panel}}
   {{/if}}
 
-  {{#if pendingOperation}}
-    <div class="small-header top-margin">Response</div>
+  {{#if responses.error}}
     <br>
-    {{rsa-loader size='medium'}}
-  {{else if operationResponse}}
-    <div class="small-header top-margin">Response (Click text to select)</div>
-    <div class="scroll-box response-panel padding" {{action "selectResponseText"}}>
-      <pre>{{response}}</pre>
-    </div>
+    {{rsa-form-textarea value=responses.error label='Error' isError=true isReadOnly=true}}
   {{/if}}
+
+  <div class="small-header top-margin">Response (Click text to select)</div>
+  {{#if responses.hasPendingOperation}}
+    {{rsa-loader size='medium' label=(concat responses.progress '% ' responses.status)}}
+  {{/if}}
+
+  <br>
+  <div class="scroll-box response-panel padding" {{action "selectResponseText"}}>
+    {{#each responses.raw key="@index" as |response|}}
+      {{tree-view-response-item item=response}}
+    {{/each}}
+  </div>
 {{/if}}

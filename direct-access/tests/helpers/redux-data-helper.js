@@ -75,7 +75,6 @@ export default class DataHelper {
     _set(this.state, 'treeOperationParams', {});
     _set(this.state, 'deviceInfo', {});
     _set(this.state, 'operationResponse', null);
-    _set(this.state, 'pendingOperation', false);
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);
     _set(this.state, 'logs', null);
@@ -112,11 +111,6 @@ export default class DataHelper {
 
   operationResponse(response) {
     _set(this.state, 'operationResponse', response);
-    return this;
-  }
-
-  pendingOperation(value) {
-    _set(this.state, 'pendingOperation', value);
     return this;
   }
 

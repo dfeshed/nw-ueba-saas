@@ -99,7 +99,7 @@ Used to send a message to a path that will result in multiple responses from the
 
 ### Returns
 
-`Promsie` - Resolved when the internal channel is created. The payload contains a function which to call when you are done with the stream and wish to close it. **If this function is not called, the server may continue sending messages and consuming resources.** *This does not close the WebSocket, only the channel. If you're not familiar with how the channels are used, all you need to know is to call `close()` when you're done with the stream.*
+`Promise` - Resolved when the internal channel is created. The payload contains a function which to call when you are done with the stream and wish to close it. **If this function is not called, the server may continue sending messages and consuming resources.** *This does not close the WebSocket, only the channel. If you're not familiar with how the channels are used, all you need to know is to call `close()` when you're done with the stream.*
 
 ### Example
 

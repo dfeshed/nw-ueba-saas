@@ -17,21 +17,24 @@ and the outer class defines the collapsed width.
   <hr>
   <a href="http://{{host}}/sys/caupload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> CA Upload</div></a>
   <a href="http://{{host}}/sys/trustpeer" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="account-group-5" style="lined"}}</span> Trusted Peer</div></a>
-  <a href="http://{{host}}/storedproc/upload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="cloud-upload" style="lined"}}</span> Feed Upload</div></a>
-  <a href="http://{{host}}/sdk/app/packetdrops" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="move-down" style="lined"}}</span> Packet Drops</div></a>
+  <a href="http://{{host}}/storedproc/upload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="cloud-upload" style="lined"}}</span> SP Upload</div></a>
   <a href="http://{{host}}/sdk/app/reports" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="notepad-2" style="lined"}}</span> Reports</div></a>
   <a href="http://{{host}}/sdk/app/sessions" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="settings-1" style="lined"}}</span> Sessions</div></a>
   <a href="http://{{host}}/sdk/app/stats" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="graph-line-2" style="lined"}}</span> Stats</div></a>
   <a href="http://{{host}}/sdk/content" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="pencil-write-2" style="lined"}}</span> Content</div></a>
   <a href="http://{{host}}/sdk/packets" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="server-network-5" style="lined"}}</span> Packets</div></a>
   <a href="http://{{host}}/logs/download" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="download-2" style="lined"}}</span> Log Download</div></a>
-  {{#if isDecoder}}
+  {{#if (or isDecoder isLogDecoder)}}
     <a href="http://{{host}}/decoder/agg" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="add-circle-1" style="lined"}}</span> Aggregation</div></a>
     <a href="http://{{host}}/decoder/import" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="network" style="lined"}}</span> Packet Import</div></a>
     <a href="http://{{host}}/decoder/parsers/upload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="network-connecting" style="lined"}}</span> Parser Upload</div></a>
-    <a href="http://{{host}}/decoder/sslkeys" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> SSL Key Upload</div></a>
-  {{/if}}
-  {{#if isConcentrator}}
+    {{#if isDecoder}}
+      <a href="http://{{host}}/sdk/app/packetdrops" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="move-down" style="lined"}}</span> Packet Drops</div></a>
+      <a href="http://{{host}}/decoder/sslkeys" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> SSL Key Upload</div></a>
+    {{else}}
+      <a href="http://{{host}}/sdk/app/rtlogs" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="move-down" style="lined"}}</span> RT Logs</div></a>
+    {{/if}}
+  {{else if isConcentrator}}
     <a href="{{restPagesRoot}}/concentrator/agg" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="add-circle-1" style="lined"}}</span> Aggregation</div></a>
   {{/if}}
 </div>

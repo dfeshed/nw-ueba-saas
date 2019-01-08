@@ -167,20 +167,20 @@ const isDevelopmentBuild = createSelector(
   }
 );
 
-const isDecoder = createSelector(
-  [ _module ],
-  // `module` is a reserved word
-  (mod) => {
-    return mod ? mod === 'decoder' : false;
-  }
-);
+const _isModule = (_mod) => {
+  return createSelector(
+    [ _module ],
+    (mod) => {
+      return mod ? mod === _mod : false;
+    }
+  );
+};
 
-const isConcentrator = createSelector(
-  [ _module ],
-  (mod) => {
-    return mod ? mod === 'concentrator' : false;
-  }
-);
+const isArchiver = _isModule('archiver');
+const isBroker = _isModule('broker');
+const isConcentrator = _isModule('concentrator');
+const isDecoder = _isModule('decoder');
+const isLogDecoder = _isModule('logdecoder');
 
 export {
   currentDirectoryContents,
@@ -197,6 +197,9 @@ export {
   selectedIsStatNode,
   selectedNodeRequiresRestart,
   isDevelopmentBuild,
+  isArchiver,
+  isBroker,
+  isConcentrator,
   isDecoder,
-  isConcentrator
+  isLogDecoder
 };

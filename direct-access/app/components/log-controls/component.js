@@ -79,15 +79,13 @@ const logControls = Component.extend({
     return result;
   },
 
-  init() {
-    this._super(...arguments);
-    this.send('stopUpdates');
+  didReceiveAttrs() {
     this.set('time1', Math.floor(this.set('time1Local', Math.floor((new Date()).getTime() - (24 * 60 * 60 * 1000))) / 1000).toString());
     this.set('time2', Math.floor(this.set('time2Local', Math.floor((new Date()).getTime())) / 1000).toString());
     this.send('updateParams');
   },
 
-  willDestroy() {
+  willDestroyElement() {
     this.send('stopUpdates');
   },
 

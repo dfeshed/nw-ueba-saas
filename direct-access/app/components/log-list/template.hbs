@@ -4,9 +4,9 @@
       {{rsa-loader size='largest'}}
     </centered>
   {{else}}
-    <centered>
-      <div class="description-nonexistent">No logs found matching query</div>
-    </centered>
+    {{#rsa-panel-message}}
+      <div>No logs found matching query</div>
+    {{/rsa-panel-message}}
   {{/if}}
 {{else}}
   {{#if logsLoading}}<div>{{rsa-loader}}</div>{{/if}}

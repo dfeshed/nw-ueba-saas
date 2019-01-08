@@ -3,18 +3,19 @@ import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import { deselectOperation, sendOperation, updateOperationParams, updateCustomParameter } from 'direct-access/actions/actions';
+import { sendOperation, cancelOperation, updateOperationParams, updateCustomParameter } from 'direct-access/actions/actions';
 import { selectedOperation, selectedOperationHelp } from 'direct-access/reducers/selectors';
 
 const stateToComputed = (state) => ({
   selectedOperation: selectedOperation(state),
   operationHelp: selectedOperationHelp(state),
-  params: state.treeOperationParams
+  params: state.treeOperationParams,
+  operationResponse: state.operationResponse
 });
 
 const dispatchToActions = {
-  deselectOperation,
   sendOperation,
+  cancelOperation,
   updateOperationParams,
   updateCustomParameter
 };
@@ -35,6 +36,11 @@ const treeViewOperationPanel = Component.extend({
     message: selectedOperation.name,
     params
   }),
+
+  @computed('operationResponse')
+  hasPendingOperation: (operationResponse) => {
+    return operationResponse && operationResponse.complete === false;
+  },
 
   actions: {
     updateParams(update) {

@@ -40,7 +40,7 @@
     </div>
     <hbox class="bottom-margin flex-space-between">
       {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) style='primary'}}Send{{/rsa-form-button}}
-      {{#rsa-form-button defaultAction=(action 'deselectOperation')}}Cancel{{/rsa-form-button}}
+      {{#rsa-form-button defaultAction=(action 'cancelOperation') isDisabled=(if hasPendingOperation false true)}}Cancel{{/rsa-form-button}}
     </hbox>
     {{#if operationHelp}}
       <h1 class="small-header">Help for "{{selectedOperation.name}}"</h1>
