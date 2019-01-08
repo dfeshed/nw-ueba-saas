@@ -29,6 +29,7 @@ export default {
       'id': 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
       'group': 'default',
       'machineName': 'inenmathua3m3.corp.emc.com',
+      'agentMode': 'insights',
       'agent': {
         'installTime': '2017-03-22T09:24:26.000Z',
         'serviceStartTime': '2017-03-22T09:24:26.756Z',
@@ -185,6 +186,7 @@ export default {
       'id': '019A39C8-3E18-387F-EAD4-EA217519638A',
       'group': 'default',
       'machineName': 'inenmathua3m3.corp.emc.com',
+      'agentMode': 'insights',
       'agent': {
         'installTime': '2017-03-22T09:24:26.000Z',
         'serviceStartTime': '2017-03-22T09:24:26.756Z',
@@ -298,6 +300,7 @@ export default {
     'machineIdentity': {
       'id': '3e6febe6-0cb6-4e9f-bdf6-ce238c7011b6',
       'machineName': 'INWILLL2Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-16T13:48:52.3890618+05:30',
         'sysCompileTime': '2017-03-19T13:48:52.3890618+05:30',
@@ -398,6 +401,7 @@ export default {
     'machineIdentity': {
       'id': '71827985-aaf5-45c7-970f-c54329505d60',
       'machineName': 'INJENNIFERL2Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-16T16:31:22.5213432+05:30',
         'sysCompileTime': '2017-03-17T16:31:22.5213432+05:30',
@@ -499,6 +503,7 @@ export default {
     'machineIdentity': {
       'id': 'cda86315-c941-4749-8cdb-43f33497a4f8',
       'machineName': 'INLINDSAYL1Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-21T16:33:19.9620604+05:30',
         'sysCompileTime': '2017-03-18T16:33:19.9620604+05:30',
@@ -604,6 +609,7 @@ export default {
     'machineIdentity': {
       'id': '3d91b489-8522-486d-aec7-4c3916348e77',
       'machineName': 'INMORGANL3Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-19T16:33:19.3290242+05:30',
         'sysCompileTime': '2017-03-23T16:33:19.3290242+05:30',
@@ -705,6 +711,7 @@ export default {
     'machineIdentity': {
       'id': '6993fa8c-e00a-4afa-9c60-344736deca65',
       'machineName': 'INRADHIKAL1Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-18T16:33:24.1523001+05:30',
         'sysCompileTime': '2017-03-20T16:33:24.1523001+05:30',
@@ -806,6 +813,7 @@ export default {
     'machineIdentity': {
       'id': '724530a0-6550-4ff4-a392-23cc00f93197',
       'machineName': 'INNATALIEL1Cmac',
+      'agentMode': 'advanced',
       'agent': {
         'exeCompileTime': '2017-03-19T16:33:19.9920621+05:30',
         'sysCompileTime': '2017-03-17T16:33:19.9920621+05:30',

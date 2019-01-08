@@ -16,7 +16,8 @@ import {
   isExportButtonDisabled,
   hostListPropertyTabs,
   hostTotalLabel,
-  nextLoadCount } from 'investigate-hosts/reducers/hosts/selectors';
+  nextLoadCount,
+  isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -557,6 +558,7 @@ test('hostTotalLabel', function(assert) {
   const result4 = hostTotalLabel(state4);
   assert.equal(result4, '999');
 });
+
 test('nextLoadCount', function(assert) {
   const result1 = nextLoadCount(STATE);
   assert.equal(result1, 2);
@@ -577,4 +579,21 @@ test('nextLoadCount', function(assert) {
   });
   const result2 = nextLoadCount(STATE1);
   assert.equal(result2, 100);
+});
+
+test('isInsightsAgent', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        focusedHost: {
+          id: 1,
+          machineIdentity: {
+            agentMode: 'insights'
+          }
+        }
+      }
+    }
+  });
+  const result = isInsightsAgent(state);
+  assert.equal(result, true, 'Agent available in current state is insight agent');
 });

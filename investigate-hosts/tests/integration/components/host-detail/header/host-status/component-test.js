@@ -46,4 +46,24 @@ module('Integration | Component | host detail host-status', function(hooks) {
     assert.equal(findAll(selectors.summaryFields).length, 4, '4 summary fields present');
 
   });
+
+  test('for insight agent risk score should displayed as N/A', async function(assert) {
+    const state = {
+      endpoint: {
+        machines: {
+          focusedHost: {
+            machineIdentity: {
+              agentMode: 'insights'
+            }
+          }
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+
+    await render(hbs`{{host-detail/header/host-status}}`);
+
+    assert.equal(findAll(selectors.summaryFields)[0].textContent.trim(), 'N/A', 'N/A should be displayed');
+
+  });
 });

@@ -213,4 +213,17 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
     assert.equal(findAll('.risk-properties').length, 1, 'risk properties is rendered');
     assert.equal(findAll('.alerts-loading').length, 1, 'loading icon is present');
   });
+
+  test('relevant error message is displayed when risk score context for insight agent is requested', async function(assert) {
+
+    this.set('state', {
+      activeRiskSeverityTab: 'critical'
+    });
+
+    await render(hbs`{{endpoint/risk-properties
+      isInsightsAgent=true
+      riskState=state}}`);
+
+    assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for Risk Score feature not available for insight agent.');
+  });
 });

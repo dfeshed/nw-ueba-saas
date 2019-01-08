@@ -2,10 +2,12 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { lastScanTime, hostWithStatus } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
+import { isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 
 const stateToComputed = (state) => ({
   hostDetails: hostWithStatus(state),
-  lastScanTime: lastScanTime(state)
+  lastScanTime: lastScanTime(state),
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const dispatchToActions = {

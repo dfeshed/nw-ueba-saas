@@ -1,7 +1,11 @@
-{{#if hostDetails.score}}
-  {{rsa-risk-score score=hostDetails.score size='large'}}
+{{#if isInsightsAgent}}
+  {{rsa-content-definition class='host-action' value='N/A'}}
 {{else}}
-  {{rsa-risk-score score='0' size='large'}}
+  {{#if hostDetails.score}}
+    {{rsa-risk-score score=hostDetails.score size='large'}}
+  {{else}}
+    {{rsa-risk-score score='0' size='large'}}
+  {{/if}}
 {{/if}}
 {{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machine.machineOsType') value=hostDetails.machine.machineOsType}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}

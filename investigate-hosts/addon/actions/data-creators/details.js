@@ -5,7 +5,7 @@ import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
 import { getFileContext } from './file-context';
-import { fetchHostContext, getAllServices } from './host';
+import { fetchHostContext, getAllServices, setFocusedHost } from './host';
 import { toggleExploreSearchResults, setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';
 import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
@@ -69,6 +69,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             const request = lookup('service:request');
             request.registerPersistentStreamOptions({ socketUrlPostfix: response.data.serviceId, requiredSocketUrl: 'endpoint/socket' });
+            dispatch(setFocusedHost(data));
             dispatch(setSelectedMachineServerId(response.data.serviceId));
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));

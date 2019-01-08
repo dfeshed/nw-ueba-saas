@@ -4,10 +4,16 @@
   </label>
 {{else if (eq column.field 'score')}}
   <centered>
-    {{#if (get item column.field)}}
-      {{rsa-risk-score score=(get item column.field) size='small'}}
+    {{#if (eq (get item 'machineIdentity.agentMode') 'insights')}}
+      <div title="{{t 'investigateHosts.hosts.insightAgentTooltip'}}" class="insights-host">
+        N/A
+      </div>
     {{else}}
-      {{rsa-risk-score score='0' size='small'}}
+      {{#if (get item column.field)}}
+        {{rsa-risk-score score=(get item column.field) size='small'}}
+      {{else}}
+        {{rsa-risk-score score='0' size='small'}}
+      {{/if}}
     {{/if}}
   </centered>
 {{else if (eq column.field 'machine.machineName')}}

@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { hasMachineId, hostListPropertyTabs } from 'investigate-hosts/reducers/hosts/selectors';
+import { hasMachineId, hostListPropertyTabs, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { getPageOfMachines, setHostListPropertyTab, setFocusedHostIndex } from 'investigate-hosts/actions/data-creators/host';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
@@ -29,7 +29,8 @@ const stateToComputed = (state) => ({
   savedFilter: savedFilter(state.endpoint),
   hostFilters: state.endpoint.filter.savedFilterList,
   activeHostListPropertyTab: state.endpoint.machines.activeHostListPropertyTab,
-  risk: riskState(state)
+  risk: riskState(state),
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const dispatchToActions = {

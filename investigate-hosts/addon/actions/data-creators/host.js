@@ -334,7 +334,7 @@ const fetchHostContext = (machineName) => {
   };
 };
 
-const _setFocusedHost = (item) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST, payload: item });
+const setFocusedHost = (item) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST, payload: item });
 
 const setFocusedHostIndex = (index) => ({ type: ACTION_TYPES.SET_FOCUSED_HOST_INDEX, payload: index });
 
@@ -343,7 +343,7 @@ const setHostListPropertyTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_HOST_LI
 const onHostSelection = (item) => {
   return (dispatch) => {
     dispatch(getRespondServerStatus());
-    dispatch(_setFocusedHost(item));
+    dispatch(setFocusedHost(item));
     dispatch(resetRiskContext());
     next(() => {
       dispatch(getRiskScoreContext(item.id, 'HOST'));
@@ -370,5 +370,6 @@ export {
   setHostListPropertyTab,
   setFocusedHostIndex,
   triggerMachineActions,
-  pollAgentStatus
+  pollAgentStatus,
+  setFocusedHost
 };

@@ -11,6 +11,7 @@ import {
   setPropertyPanelTabView
 } from 'investigate-hosts/actions/data-creators/details';
 import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
+import { isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 
 const dispatchToActions = {
   setAlertTab,
@@ -31,7 +32,8 @@ const stateToComputed = (state) => ({
   propertyPanelTabs: getPropertyPanelTabs(state),
   policiesPropertyData: getPoliciesPropertyData(state),
   isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
-  listOfServices: state.endpoint.machines.listOfServices
+  listOfServices: state.endpoint.machines.listOfServices,
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const HostOverview = Component.extend({

@@ -29,6 +29,7 @@ const _activeHostListPropertyTab = (state) => state.endpoint.machines.activeHost
 const _hostTotal = (state) => state.endpoint.machines.totalItems || 0;
 const _expressionList = (state) => state.endpoint.filter.expressionList || [];
 const _hasNext = (state) => state.endpoint.machines.hasNext;
+const _focusedHost = (state) => state.endpoint.machines.focusedHost;
 
 const _allAreMigratedHosts = createSelector(
   _selectedHostList,
@@ -214,6 +215,7 @@ export const hostListPropertyTabs = createSelector(
     return HOST_LIST_PROPERTY_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostListPropertyTab }));
   }
 );
+
 export const hostTotalLabel = createSelector(
   [_hostTotal, _expressionList, _hasNext, isBrokerView],
   (total, expressionList, hasNext, isBrokerView) => {
@@ -231,5 +233,15 @@ export const nextLoadCount = createSelector(
     const ONE_PAGE_MAX_LENGTH = 100;
     const loadCount = hostList.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : hostList.length;
     return loadCount;
+  }
+);
+
+export const isInsightsAgent = createSelector(
+  [_focusedHost],
+  (focusedHost) => {
+    if (focusedHost) {
+      return focusedHost.machineIdentity ? focusedHost.machineIdentity.agentMode === 'insights' : false;
+    }
+    return false;
   }
 );
