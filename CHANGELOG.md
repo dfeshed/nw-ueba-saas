@@ -1,3 +1,20 @@
+# [10.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.4.0)
+## Features
+* [ASOC-60778](https://bedfordjira.na.rsa.net/browse/ASOC-60778):&emsp;PSR Testing on Risk score calculation - Phase 1
+* [ASOC-63663](https://bedfordjira.na.rsa.net/browse/ASOC-63663):&emsp;Access token stored in browser localStorage
+* [ASOC-67919](https://bedfordjira.na.rsa.net/browse/ASOC-67919):&emsp;Change console icon to something more users understand
+* [ASOC-67920](https://bedfordjira.na.rsa.net/browse/ASOC-67920):&emsp;Update the time range format in the query console
+* [ASOC-68008](https://bedfordjira.na.rsa.net/browse/ASOC-68008):&emsp;Query NWDB to find out all the hosts on which a blacklisted file exists
+* [ASOC-68327](https://bedfordjira.na.rsa.net/browse/ASOC-68327):&emsp;Verification of ESA content for risk score calculation - Phase 2
+* [ASOC-68787](https://bedfordjira.na.rsa.net/browse/ASOC-68787):&emsp;Enable by default Reversing Lab
+* [ASOC-69233](https://bedfordjira.na.rsa.net/browse/ASOC-69233):&emsp;Getting duplicate events when clicked on load more events button
+* [ASOC-69254](https://bedfordjira.na.rsa.net/browse/ASOC-69254):&emsp;E2E Validation of Risk Threshold Tuning
+* [ASOC-69282](https://bedfordjira.na.rsa.net/browse/ASOC-69282):&emsp;Show 500 plus events in the event list of host and files
+* [ASOC-69669](https://bedfordjira.na.rsa.net/browse/ASOC-69669):&emsp;Insights Agents don't calculate the risk score show N/A in the UI
+* [ASOC-70136](https://bedfordjira.na.rsa.net/browse/ASOC-70136):&emsp;Latest updates to Risk Score setting
+* [ASOC-70533](https://bedfordjira.na.rsa.net/browse/ASOC-70533):&emsp;Update Events API to request specific fields
+
+
 # [10.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.3.0)
 ## Features
 * [ASOC-64943](https://bedfordjira.na.rsa.net/browse/ASOC-64943):&emsp;i18n - Overlapping table headers in Incident rules page
