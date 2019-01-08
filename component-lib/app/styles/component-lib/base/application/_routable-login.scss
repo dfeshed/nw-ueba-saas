@@ -119,7 +119,7 @@
         }
       }
     }
-    &:not(.with-eula), &.unsupported-browser {
+    &.unsupported-browser {
       border-color: rgba(236,34,39, 1);
       border-width: 1px;
       border-style: solid;

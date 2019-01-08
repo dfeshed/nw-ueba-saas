@@ -134,6 +134,11 @@ export default Component.extend({
     }
   },
 
+  @computed('isBrowserIeEdge', 'displayEula')
+  browserWarning: (isBrowserIeEdge, displayEula) => {
+    return (!displayEula && isBrowserIeEdge);
+  },
+
   @notEmpty('errorMessage')
   hasError: false,
 
