@@ -108,7 +108,7 @@ module('Integration | Component | events-table', function(hooks) {
     );
   });
 
-  test('if events are complete, and did not hit the limit, a message is not displayed', async function(assert) {
+  test('if events are complete, and did not hit the limit, a message is displayed', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('complete')
       .eventCount(1)
@@ -120,8 +120,8 @@ module('Integration | Component | events-table', function(hooks) {
     assert.notOk(find('.rsa-loader'), 'spinner present');
     assert.equal(
       find('.rsa-data-table-load-more').textContent.trim().length > 0,
-      false,
-      'a message is not displayed when the entire event result is fetched'
+      true,
+      'a message is displayed when the entire event result is fetched'
     );
   });
 

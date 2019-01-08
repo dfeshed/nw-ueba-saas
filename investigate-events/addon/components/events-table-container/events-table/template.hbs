@@ -47,11 +47,17 @@
   {{#rsa-data-table/load-more}}
     {{!-- still streaming, show loader --}}
     {{#if areEventsStreaming}}
-      {{rsa-loader size="small" label=(t 'investigate.loading')}}
+      <div class='events-table-footer-status'>
+        {{rsa-loader size="large" label=(t 'investigate.loading')}}
+      </div>
     {{else if (is-equal status 'complete')}}
       {{#if (not allExpectedDataLoaded)}}
         {{!-- do not have all the data, say so --}}
-        {{t 'investigate.notAllLoaded'}}
+        {{t 'investigate.notAllLoaded' maxEvents=maxEvents}}
+      {{else}}
+        <div class='events-table-footer-status'>
+          {{t 'investigate.allResultsLoaded'}}
+        </div>
       {{/if}}
     {{/if}}
   {{/rsa-data-table/load-more}}

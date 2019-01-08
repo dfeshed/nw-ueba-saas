@@ -19,6 +19,7 @@ import {
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
   status: state.investigate.eventResults.status,
+  maxEvents: state.investigate.eventResults.streamLimit,
   allEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),

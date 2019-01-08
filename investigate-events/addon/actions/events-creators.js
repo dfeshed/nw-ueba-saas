@@ -279,8 +279,22 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         }
 
         // IF WE ARE THIS FAR...
-        // We either expect results (99.9% of the time) to come back
-        // or we haven't got an event count yet (0.1% of the time).
+        // We either expect results (99% of the time) to come back
+        // or we haven't got an event count yet (1% of the time).
+
+        // Did we make a call for data before the count call returned
+        // and we already have all the data we need?
+        // This early exit is important if the extra call that was made
+        // has a count of 0, because otherwise we'll loop looking for
+        // more data
+        if (eventCount > 0) {
+          const { data: currentData } = investigate.eventResults;
+          const haveAllData = currentData.length >= eventCount;
+          if (haveAllData) {
+            dispatch(_done());
+            return;
+          }
+        }
 
         // completed with no results? We need to try again with
         // a larger window, because we expect results.
