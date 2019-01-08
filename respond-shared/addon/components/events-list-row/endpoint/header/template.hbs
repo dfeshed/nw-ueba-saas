@@ -28,7 +28,7 @@
     <dd test-id="eventOperatingSystemValue">{{properties-for/determine-value value=item.operating_system}}</dd>
   </div>
   <div class="column hash">
-    <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.fileHash'}}</dt>
-    {{properties-for/determine-value key="hash" value=item.file_SHA256 testId="eventFileHashValue"}}
+    <dt test-id="eventFileHashLabel">{{t 'respond.eventsList.endpoint.hash'}}</dt>
+    {{properties-for/determine-value key="hash" value=item.data.0.hash testId="eventFileHashValue"}}
   </div>
 </div>

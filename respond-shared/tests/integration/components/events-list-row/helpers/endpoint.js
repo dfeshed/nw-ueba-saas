@@ -19,7 +19,7 @@ export const assertRowAlertDetails = (assert, { name, summary, score }) => {
   assert.equal(find(selectors.eventSummary).textContent.trim(), summary);
 };
 
-export const assertRowHeaderContext = (assert, { hostname, userAccount, fileHash }) => {
+export const assertRowHeaderContext = (assert, { hostname, userAccount, hash }) => {
   if (hostname) {
     assert.equal(find(endpoint.eventHostnameValue).attributes[DATA_ENTITY_ID].nodeValue, hostname);
     assert.equal(find(endpoint.eventHostnameValue).attributes[DATA_META_KEY].nodeValue, 'dns_hostname');
@@ -34,8 +34,8 @@ export const assertRowHeaderContext = (assert, { hostname, userAccount, fileHash
   } else {
     assert.equal(find(endpoint.eventUserAccountValue).classList.contains(ENTITY_CLASS), false);
   }
-  if (fileHash) {
-    assert.equal(find(endpoint.eventFileHashValue).attributes[DATA_ENTITY_ID].nodeValue, fileHash);
+  if (hash) {
+    assert.equal(find(endpoint.eventFileHashValue).attributes[DATA_ENTITY_ID].nodeValue, hash);
     assert.equal(find(endpoint.eventFileHashValue).attributes[DATA_META_KEY].nodeValue, 'hash');
     assert.equal(find(endpoint.eventFileHashValue).classList.contains(ENTITY_CLASS), true);
   } else {
@@ -43,7 +43,7 @@ export const assertRowHeaderContext = (assert, { hostname, userAccount, fileHash
   }
 };
 
-export const assertRowHeader = (assert, { eventType, category, action, hostname, userAccount, operatingSystem, fileHash }) => {
+export const assertRowHeader = (assert, { eventType, category, action, hostname, userAccount, operatingSystem, hash }) => {
   assert.equal(find(endpoint.eventTimeLabel).textContent.trim(), 'EVENT TIME');
   assert.ok(find(endpoint.eventTimeValue).textContent.trim() !== '');
   assert.equal(find(endpoint.eventTypeLabel).textContent.trim(), 'EVENT TYPE');
@@ -58,8 +58,8 @@ export const assertRowHeader = (assert, { eventType, category, action, hostname,
   assert.equal(find(endpoint.eventUserAccountValue).textContent.trim(), userAccount);
   assert.equal(find(endpoint.eventOperatingSystemLabel).textContent.trim(), 'OPERATING SYSTEM');
   assert.equal(find(endpoint.eventOperatingSystemValue).textContent.trim(), operatingSystem);
-  assert.equal(find(endpoint.eventFileHashLabel).textContent.trim(), 'FILE HASH');
-  assert.equal(find(endpoint.eventFileHashValue).textContent.trim(), fileHash);
+  assert.equal(find(endpoint.eventFileHashLabel).textContent.trim(), 'HASH');
+  assert.equal(find(endpoint.eventFileHashValue).textContent.trim(), hash);
 };
 
 export const assertTableColumns = (assert) => {

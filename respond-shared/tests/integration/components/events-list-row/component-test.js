@@ -167,13 +167,13 @@ module('Integration | Component | events-list-row', function(hooks) {
       hostname: 'INENMENONS4L2C',
       userAccount: 'foobar',
       operatingSystem: 'windows',
-      fileHash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa'
     });
 
     endpoint.assertRowHeaderContext(assert, {
       hostname: 'INENMENONS4L2C',
       userAccount: 'foobar',
-      fileHash: '9f7ebb79def0bf8cccb5a902db11746375af3fe618355fe5a69c69e4bcd50ac9'
+      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa'
     });
 
     endpoint.assertTableColumns(assert);
@@ -385,13 +385,13 @@ module('Integration | Component | events-list-row', function(hooks) {
       hostname: 'N/A',
       userAccount: 'N/A',
       operatingSystem: 'N/A',
-      fileHash: 'N/A'
+      hash: 'N/A'
     });
 
     endpoint.assertRowHeaderContext(assert, {
       hostname: '',
       userAccount: '',
-      fileHash: ''
+      hash: ''
     });
 
     endpoint.assertTableColumns(assert);
