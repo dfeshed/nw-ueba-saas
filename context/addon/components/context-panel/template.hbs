@@ -3,13 +3,12 @@
     {{context-panel/tabs}}
   {{/if}}
 </div>
-{{#if isReady}}
-  <div class='rsa-context-panel__body_layout'>
-    {{#context-panel/header as |header|}}
-      {{header.title}}
-      {{header.icons closePanel=closePanel}}
-    {{/context-panel/header}}
-
+<div class='rsa-context-panel__body_layout'>
+  {{#context-panel/header as |header|}}
+    {{header.title}}
+    {{header.icons closePanel=closePanel}}
+  {{/context-panel/header}}
+  {{#if isReady}}
     {{#if errorMessage}}
       <hbox class='rsa-context-panel__loader'>
         <span class='rsa-context-panel__error-text'>
@@ -29,12 +28,12 @@
       </div>
       {{context-panel/footer}}
     {{/if}}
-  </div>
-{{else}}
-  <hbox class='rsa-context-panel__loader'>
-    <div class="rsa-loader is-largest">
-      <div class="rsa-loader__wheel"></div>
-      <div class="rsa-loader__text"></div>
-    </div>
-  </hbox>
-{{/if}}
+  {{else}}
+    <hbox class='rsa-context-panel__loader'>
+      <div class="rsa-loader is-largest">
+        <div class="rsa-loader__wheel"></div>
+        <div class="rsa-loader__text"></div>
+      </div>
+    </hbox>
+  {{/if}}
+</div>

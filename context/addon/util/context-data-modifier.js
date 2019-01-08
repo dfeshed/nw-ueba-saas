@@ -99,7 +99,7 @@ const getErrorMessage = (dsData, i18n) => {
 const getTabs = (meta, dataSources) => {
   const tabList = TabList.find((tab) => tab.tabType === meta);
   // Map over the columns and build the tab count text for each tab
-  return tabList.columns.filter((tab) => tab.tabRequired).map((tab) => {
+  return tabList && tabList.columns.filter((tab) => tab.tabRequired).map((tab) => {
     const dataSourceDetails = dataSources.find((dataSource) => dataSource.dataSourceType === tab.dataSourceType);
     return {
       ...tab,

@@ -22,6 +22,22 @@ module('Integration | Component | context-panel', function(hooks) {
     this.owner.register('service:context', contextStub);
   });
 
+  test('Test header for context panel should display when loading and afterword', async function(assert) {
+    this.set('entityId', '1.1.1.1');
+    this.set('entityType', 'IP');
+    await render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
+
+    assert.equal(findAll('[test-id=contextPanelHeader]').length, 1);
+
+    await waitUntil(() => {
+      const tabGroup = findAll('.rsa-nav-tab-group');
+      return tabGroup && tabGroup.length === 1;
+    }, { timeout });
+
+    assert.equal(findAll('.rsa-nav-tab').length, 6, 'We should get all 5 data sources for meta ip');
+    assert.equal(findAll('[test-id=contextPanelHeader]').length, 1);
+  });
+
   test('Test context panel should display', async function(assert) {
     this.set('entityId', '1.1.1.1');
     this.set('entityType', 'IP');

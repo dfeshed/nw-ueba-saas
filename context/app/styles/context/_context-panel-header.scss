@@ -24,6 +24,7 @@
   &__title {
     @include rsa-font(header, large);
     height: inherit;
+    padding-top: rsa-whitespace(less);
     > span {
       height: inherit;
       vertical-align: top;

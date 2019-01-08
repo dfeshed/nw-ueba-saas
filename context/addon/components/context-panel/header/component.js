@@ -19,6 +19,10 @@ const HeaderComponent = Component.extend({
   layout,
   contextualHelp: service(),
   classNames: 'rsa-context-panel__header',
+  testId: 'contextPanelHeader',
+  attributeBindings: [
+    'testId:test-id'
+  ],
 
   @computed('activeTabName')
   headerTitle(activeTabName) {

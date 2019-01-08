@@ -194,9 +194,9 @@ const ContextComponent = Component.extend({
         if (obj && obj.record && obj.record.length) {
           const entityType = liveConnectObj[relatedEntities.dataSourceType];
           const contextData = this.get('model.contextData');
-          const contextDataForDS = contextData[entityType.relatedEntity] || {};
+          const contextDataForDS = contextData && contextData[entityType.relatedEntity] || {};
           contextDataForDS.resultList = obj.record[0][entityType.relatedEntity][entityType.relatedEntityResponse];
-          contextData.set(entityType.relatedEntity, contextDataForDS);
+          contextData && contextData.set(entityType.relatedEntity, contextDataForDS);
         }
       });
     }
