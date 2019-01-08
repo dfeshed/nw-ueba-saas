@@ -104,6 +104,14 @@ This method is useful for UIs where preferences are saved along with actions, Li
 
 _Way to define preferences for new module._
 
+## Adding a new Preference
+
+Add preferences to the following files
+ 1. `~\preferences\tests\data\config.js`
+ 2. `~\investigate-events\addon\reducers\investigate\config.js`
+
+ Note: If a preference needs additional explanatory information, parameter `info: true` needs to be added to the preference object along with suitable translation for the tooltip. This is currently working for preferences of input type 'radio' only. 
+
 ## Adding new socket route
 
 Preferences will be stored in application mongo. So there will be separate channel for different module preferences. Same need to be define as follows:

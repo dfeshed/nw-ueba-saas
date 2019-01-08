@@ -11,7 +11,9 @@ export const DEFAULT_INITIALIZE = {
     isReconExpanded: true,
     isReconOpen: true,
     isRequestShown: true,
-    isResponseShown: true
+    isResponseShown: true,
+    eventSortOrder: 'Ascending',
+    eventResultSetStart: 'Oldest'
   }
 };
 export const makePackAction = (lifecycle, { type, payload, meta = {} }) => {

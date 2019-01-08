@@ -27,7 +27,9 @@ const preferences = {
   isReconExpanded: true,
   isReconOpen: true,
   isRequestShown: true,
-  isResponseShown: true
+  isResponseShown: true,
+  eventSortOrder: 'Ascending',
+  eventResultSetStart: 'Oldest'
 };
 
 let result;

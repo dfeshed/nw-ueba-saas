@@ -113,3 +113,22 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', funct
   assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
 });
 
+test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
+  const initialState = Immutable.from({
+    eventSortOrder: 'Ascending',
+    eventResultSetStart: 'Oldest'
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        eventSortOrder: 'Descending',
+        eventResultSetStart: 'Newest'
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.eventSortOrder, 'Descending');
+  assert.equal(result.eventResultSetStart, 'Newest');
+});

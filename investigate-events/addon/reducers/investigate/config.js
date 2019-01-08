@@ -85,6 +85,25 @@ export default {
     name: 'preferences.investigate-events.autoUpdateSummary',
     type: 'checkbox',
     field: 'eventAnalysisPreferences.autoUpdateSummary'
+  },
+  {
+    name: 'preferences.investigate-events.eventSortOrder',
+    type: 'radio',
+    options: [
+      'Descending',
+      'Ascending'
+    ],
+    field: 'eventAnalysisPreferences.eventSortOrder'
+  },
+  {
+    name: 'preferences.investigate-events.eventResultSetStart',
+    info: true, // for preferences that need additional information
+    type: 'radio',
+    options: [
+      'Newest',
+      'Oldest'
+    ],
+    field: 'eventAnalysisPreferences.eventResultSetStart'
   }],
   defaultPreferences: {
     queryTimeFormat: 'DB',
@@ -95,7 +114,9 @@ export default {
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
-      autoUpdateSummary: false
+      autoUpdateSummary: false,
+      eventSortOrder: 'Ascending',
+      eventResultSetStart: 'Oldest'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

@@ -2014,7 +2014,14 @@ export default {
       'WALL-tooltip': 'Current time with timezone set in user preferences',
       autoDownloadExtractedFiles: 'Download extracted files automatically',
       autoUpdateSummary: 'Update time window automatically',
-      'autoUpdateSummary-tooltip': 'Enable this option to automatically update the time range window in the breadcrumb when the service is polled and sends fresh results. When the time range is updated, you can see the Submit Query button activated and click to get the fresh results. To keep the time range window in the breadcrumb synchronized with the current results, do not enable this option.'
+      'autoUpdateSummary-tooltip': 'Enable this option to automatically update the time range window in the breadcrumb when the service is polled and sends fresh results. When the time range is updated, you can see the Submit Query button activated and click to get the fresh results. To keep the time range window in the breadcrumb synchronized with the current results, do not enable this option.',
+      eventSortOrder: 'Event Sort Order',
+      Descending: 'Newest First',
+      Ascending: 'Oldest First',
+      eventResultSetStart: 'Over Limit Results Time Window',
+      'eventResultSetStart-tooltip': 'If the limit for results is reached for a query, you will not see all results. If the limit is reached, you can choose to see the oldest or newest events within the selected time range.',
+      Newest: 'Newest Events',
+      Oldest: 'Oldest Events'
     },
     'endpoint-preferences': {
       visibleColumns: 'Visible Columns',

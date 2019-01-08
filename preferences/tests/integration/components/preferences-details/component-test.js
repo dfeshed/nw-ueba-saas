@@ -13,6 +13,14 @@ const assertForPreferencesPanelSelectedOptions = async function(assert, child, i
   assert.equal(str, selectedOption, 'Value needs to default to the user selected option');
 };
 
+const assertForPreferencesInfoIcon = async function(assert, index, resultExpected, assertionMessage) {
+  const radioGroupChildren = findAll('.rsa-form-radio-group div')[index].childNodes;
+  const arr = [...radioGroupChildren];
+  const infoIcon = arr.find((e) => e.nodeName === 'I');
+  const resultFound = typeof infoIcon !== 'undefined';
+  assert.equal(resultFound, resultExpected, assertionMessage);
+};
+
 const renderApplicationContent = async function(ctx, assert) {
   ctx.set('preferencesConfig', preferencesConfig);
   await render(hbs`
@@ -36,7 +44,7 @@ const renderApplicationContent = async function(ctx, assert) {
   `);
   await click('.rsa-icon-settings-1-filled');
   // TODO bring download back. Add meta download preference back
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 6, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 8, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -147,6 +155,24 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.notOk(find('.rsa-form-radio-label.DB.checked'));
   });
 
+  test('Preferences panel should change Sort Event Settings on click', async function(assert) {
+    await renderApplicationContent(this, assert);
+    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.notOk(find('.rsa-form-radio-label.Descending.checked'));
+    await click('.rsa-form-radio-label.Descending');
+    await waitUntil(() => find('.rsa-form-radio-label.Descending.checked'), { timeout: 3000 });
+    assert.notOk(find('.rsa-form-radio-label.Ascending.checked'));
+  });
+
+  test('Preferences panel should change Over Limit Event Results Settings on click', async function(assert) {
+    await renderApplicationContent(this, assert);
+    assert.ok(find('.rsa-form-radio-label.Oldest.checked'));
+    assert.notOk(find('.rsa-form-radio-label.Newest.checked'));
+    await click('.rsa-form-radio-label.Newest');
+    await waitUntil(() => find('.rsa-form-radio-label.Newest.checked'), { timeout: 3000 });
+    assert.notOk(find('.rsa-form-radio-label.Oldest.checked'));
+  });
+
   test('Preferences panel should uncheck the Download automatically checkbox on click', async function(assert) {
     await renderApplicationContent(this, assert);
     await click('.rsa-form-checkbox-label');
@@ -168,5 +194,12 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await checkboxForTimeWindow.click();
     // clicking on the Time Window checkbox should mark it checked.
     await waitUntil(() => checkboxForTimeWindow.className.trim() === 'rsa-form-checkbox-label checked', { timeout: 3000 });
+  });
+
+  test('renders info icon where information is needed', async function(assert) {
+    await renderApplicationContent(this, assert);
+    await assertForPreferencesInfoIcon(assert, 0, false, 'No Info icon for Date Time Format');
+    await assertForPreferencesInfoIcon(assert, 1, false, 'No Info icon for Event Sort Order');
+    await assertForPreferencesInfoIcon(assert, 2, true, 'Over Limit Time Window has info icon');
   });
 });

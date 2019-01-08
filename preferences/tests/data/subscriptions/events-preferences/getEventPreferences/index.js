@@ -19,7 +19,9 @@ export default {
         defaultMetaFormat: 'TEXT',
         autoDownloadExtractedFiles: true,
         packetsPageSize: 100,
-        autoUpdateSummary: false
+        autoUpdateSummary: false,
+        eventSortOrder: 'Ascending',
+        eventResultSetStart: 'Oldest'
       },
       eventPreferences: {
         columnGroup: 'EMAIL'

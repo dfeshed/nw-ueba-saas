@@ -17,7 +17,9 @@ const _initialState = Immutable.from({
   streamBatch: 4000,
   message: undefined,
   allEventsSelected: false,
-  selectedEventIds: []
+  selectedEventIds: [],
+  eventSortOrder: undefined,
+  eventResultSetStart: undefined
 });
 
 // * `data` is an array of objects with the following properties
@@ -127,6 +129,12 @@ export default handleActions({
     // replace event in array
     const newData = _update(state.data, sessionId, updatedItem);
     return state.set('data', newData);
+  },
+
+  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+    const eventSortOrder = _.get(eventAnalysisPreferences, 'eventSortOrder', state);
+    const eventResultSetStart = _.get(eventAnalysisPreferences, 'eventResultSetStart', state);
+    return state.merge({ eventSortOrder, eventResultSetStart });
   }
 }, _initialState);
 
