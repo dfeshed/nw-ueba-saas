@@ -505,9 +505,20 @@ export const eventsLogsGet = (events = []) => {
   return (dispatch, getState) => {
     const { serviceId } = getActiveQueryNode(getState());
     const sessionIds = events.mapBy('sessionId');
+    const numSessionIds = sessionIds.length;
+    const logAccumulation = [];
+
     const handlers = {
-      onResponse(response) {
-        dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
+      onResponse(response, stopStream) {
+        logAccumulation.push(response.data);
+        // rather than dispatch each one, one at a time
+        // take it easy on redux/components and wait until
+        // we have them all, then dispatch. Also stop the
+        // stream or else it stays open forrrrreverrrr
+        if (logAccumulation.length >= numSessionIds) {
+          stopStream();
+          dispatch({ type: ACTION_TYPES.SET_LOG, payload: logAccumulation });
+        }
       },
       onError({ code, request }) {
         // When an error comes back, it could point to multiple sessionIds, like
@@ -517,13 +528,13 @@ export const eventsLogsGet = (events = []) => {
         const filter = Array.isArray(request.filter) ? request.filter : [];
         const sessionIds = filter.find((d) => d.field === 'sessionIds');
         const values = sessionIds ? sessionIds.values : [];
-        values.forEach((d) => {
-          const payload = {
-            code,
-            data: { sessionId: d }
+        const payload = values.forEach((d) => {
+          return {
+            sessionId: d,
+            code
           };
-          dispatch({ type: ACTION_TYPES.SET_LOG, payload });
         });
+        dispatch({ type: ACTION_TYPES.SET_LOG, payload });
       }
     };
 

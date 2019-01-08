@@ -132,3 +132,69 @@ test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(asser
   assert.equal(result.eventSortOrder, 'Descending');
   assert.equal(result.eventResultSetStart, 'Newest');
 });
+
+test('ACTION_TYPES.SET_LOG will merge log status into data', function(assert) {
+  const initialState = Immutable.from({
+    data: [
+      { sessionId: 1 },
+      { sessionId: 2 },
+      { sessionId: 3 }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_LOG,
+    payload: [{
+      sessionId: 1, log: 'covfefe'
+    }]
+  };
+
+  const result = reducer(initialState, action);
+  assert.equal(result.data[0].log, 'covfefe', 'log data was set properly');
+  assert.equal(result.data[0].logStatus, 'resolved', 'log status was set properly');
+  assert.equal(result.data[1].log, undefined, 'log data was not changed');
+  assert.equal(result.data[2].log, undefined, 'log data was not changed');
+
+});
+
+test('ACTION_TYPES.SET_LOG will do nothing if no logs match existing data', function(assert) {
+  const initialState = Immutable.from({
+    data: [
+      { sessionId: 1 },
+      { sessionId: 2 },
+      { sessionId: 3 }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_LOG,
+    payload: [{
+      sessionId: 4, log: 'covfefe'
+    }]
+  };
+
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, initialState, 'state unchanged');
+});
+
+test('ACTION_TYPES.SET_LOG will properly set error data', function(assert) {
+  const initialState = Immutable.from({
+    data: [
+      { sessionId: 1 },
+      { sessionId: 2 },
+      { sessionId: 3 }
+    ]
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_LOG,
+    payload: [{
+      sessionId: 1, log: 'covfefe', errorCode: 154
+    }]
+  };
+
+  const result = reducer(initialState, action);
+  assert.equal(result.data[0].log, undefined, 'log data was not set');
+  assert.equal(result.data[0].errorCode, 154, 'log data was not set');
+  assert.equal(result.data[0].logStatus, 'rejected', 'log status was set properly');
+});

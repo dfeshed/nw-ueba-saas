@@ -18,10 +18,11 @@ const stateToComputed = (state) => ({
 const EventsTableBody = DataTableBody.extend({
   insertCheckbox: true,
 
-  // Responds to a change in the viewport by fetching log data for any visible log records that need it.
-  // Debounces fetch call, because scrolling may fire this handler at rapid rates.
+  // Responds to a change in the viewport by fetching log data
+  // for any visible log records that need it. Debounces fetch
+  // call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {
-    run.debounce(this, this._fetchLogData, 100);
+    run.debounce(this, this._fetchLogData, 1000);
   }),
 
   _fetchLogData() {
@@ -32,8 +33,10 @@ const EventsTableBody = DataTableBody.extend({
     }
 
     // Make an array of all the visible items.
-    // Minor hack: rsa-data-table always renders the first item (in order to measure its height), and therefore never
-    // includes it in the `_visibleItems` array. So we manually include it here, in case it needs log data fetched too.
+    // Minor hack: rsa-data-table always renders the first item
+    // (in order to measure its height), and therefore never
+    // includes it in the `_visibleItems` array. So we manually
+    // include it here, in case it needs log data fetched too.
     const visibles = [ first, ...this.get('_visibleItems') ];
     // Find all the visible items that need to have their log data fetched.
     const logEvents = visibles.filter((event) => {
