@@ -34,10 +34,12 @@
         rowComponentClass=(
           component 'endpoint/file-custom-row'
           serviceList=serviceList
+          showProcessAnalysis = true
           selections=selectedProcessList
           beforeContextMenuShow=(action 'beforeContextMenuShow')
           editFileStatus=(action 'showEditFileStatus')
           pivotToInvestigate=(action 'pivotToInvestigate')
+          navigateToProcessAnalysis=(action 'navigateToProcessAnalysis')
           isRemediationAllowed=isRemediationAllowed
           restrictedFileList=restrictedFileList
           fileDownloadButtonStatus=fileDownloadButtonStatus

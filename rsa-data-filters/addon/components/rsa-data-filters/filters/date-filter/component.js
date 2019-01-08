@@ -124,7 +124,7 @@ export default Component.extend({
     const onChange = this.get('onChange');
     if (onChange) {
       if (unit) {
-        onChange({ name, operator: 'GREATER_THAN', value, unit });
+        onChange({ name, operator: 'LESS_THAN', value, unit });
       } else {
         onChange({ name, operator: 'BETWEEN', value });
       }

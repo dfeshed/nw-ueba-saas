@@ -22,6 +22,8 @@ export default DataTableBodyRow.extend({
 
   showFileStatusModal: false,
 
+  showProcessAnalysis: false,
+
   @computed('item', 'selections')
   isRowChecked(item, selections = []) {
     const isSelected = selections.findBy('id', item.id);
@@ -160,6 +162,18 @@ export default DataTableBodyRow.extend({
       ];
       contextConf.push(...fileDownloadButtons);
     }
+
+    if (this.get('showProcessAnalysis')) {
+      contextConf.push({
+        label: 'analyzeProcess',
+        prefix: 'investigateHosts.process.',
+        action(selection, context) {
+          context.navigateToProcessAnalysis(context.get('item'));
+        },
+        order: 1
+      });
+    }
+
 
     if (this.get('showPivotToInvestigate') !== false) {
       const pivot = {

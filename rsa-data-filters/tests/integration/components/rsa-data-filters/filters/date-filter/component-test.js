@@ -78,7 +78,7 @@ module('Integration | Component | rsa-data-filters/filters/date-filter', functio
       timeframes
     });
     this.set('onQueryChange', (filterValue) => {
-      assert.equal(filterValue.operator, 'GREATER_THAN');
+      assert.equal(filterValue.operator, 'LESS_THAN');
       assert.equal(filterValue.value[0], 10);
       assert.equal(filterValue.unit, 'Minutes');
     });

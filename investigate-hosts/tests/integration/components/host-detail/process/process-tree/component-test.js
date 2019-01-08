@@ -9,6 +9,7 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
+import sinon from 'sinon';
 
 let setState;
 const transitions = [];
@@ -193,7 +194,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         transitions.push({ name, queryParams });
       }
     }));
-
+    this.owner.lookup('service:timezone').set('selected', { zoneId: 'UTC' });
     // Right click setup
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
@@ -574,7 +575,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 6, 'Context menu not rendered');
+      assert.equal(items.length, 7, 'Context menu not rendered');
     });
   });
 
@@ -608,7 +609,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 9, 'Context menu rendered');
+      assert.equal(items.length, 10, 'Context menu rendered');
     });
   });
 
@@ -822,8 +823,8 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 1);
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await triggerEvent(`#${menuItems[1].id}`, 'mouseover');
-      const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
+      await triggerEvent(`#${menuItems[2].id}`, 'mouseover');
+      const subItems = findAll(`#${menuItems[2].id} > .context-menu--sub .context-menu__item`);
       assert.equal(subItems.length, 4, 'Sub menu rendered');
     });
   });
@@ -878,7 +879,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[6].id}`); // Edit file status
+      await click(`#${menuItems[7].id}`); // Edit file status
     });
 
   });
@@ -934,7 +935,63 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[8].id}`); // Edit file status
+      await click(`#${menuItems[9].id}`); // Edit file status
+    });
+
+  });
+
+  test('it calls the analyze process', async function(assert) {
+    assert.expect(5);
+    const actionSpy = sinon.spy(window, 'open');
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[1].id}`); // Edit file status
+      assert.ok(actionSpy.calledOnce, 'Window.open is called');
+      assert.ok(actionSpy.args[0][0].includes('/investigate/process-analysis?checksum='));
+      assert.ok(actionSpy.args[0][0].includes('sid=-1'));
+      assert.ok(actionSpy.args[0][0].includes('pn=rsyslogd'));
+      assert.ok(actionSpy.args[0][0].includes('osType=windows'));
     });
 
   });

@@ -13,6 +13,7 @@ import { success, failure, warning } from 'investigate-shared/utils/flash-messag
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
+import { buildTimeRange } from 'investigate-shared/utils/time-util';
 
 import {
   setRowIndex,
@@ -67,7 +68,8 @@ const stateToComputed = (state) => ({
   timeRange: timeRange(state),
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
   selectedFileChecksums: selectedFileChecksums(state),
-  agentCountMapping: state.endpoint.process.agentCountMapping
+  agentCountMapping: state.endpoint.process.agentCountMapping,
+  serverId: state.endpointQuery.serverId
 });
 
 
@@ -80,6 +82,8 @@ const TreeComponent = Component.extend({
   accessControl: service(),
 
   pivot: service(),
+
+  timezone: service(),
 
   showServiceModal: false,
 
@@ -136,6 +140,26 @@ const TreeComponent = Component.extend({
 
   actions: {
 
+    navigateToProcessAnalysis(item) {
+      const { zoneId } = this.get('timezone.selected');
+      const {
+        agentId,
+        osType,
+        hostName,
+        timeRange,
+        serviceId,
+        serverId
+      } = this.getProperties('agentId', 'osType', 'hostName', 'timeRange', 'serviceId', 'serverId');
+      const { name, checksumSha256, vpid } = item;
+      const { value, unit } = timeRange;
+      const range = buildTimeRange(value, unit, zoneId);
+      const timeStr = `st=${range.startTime}&et=${range.endTime}`;
+      const osTypeParam = `osType=${osType}&vid=${vpid}`;
+      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}&serverId=${serverId}`;
+      window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
+    },
+
+
     sort(column) {
       const { field: sortField, isDescending: isDescOrder } = column;
       this.send('sortBy', sortField, !isDescOrder);
@@ -180,6 +204,7 @@ const TreeComponent = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
+
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
