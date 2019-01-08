@@ -56,7 +56,8 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5, features, format } = payload;
+  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5, pe, format } = payload;
+  const features = pe ? pe.features : [];
   let selectedList = [];
   // Previously selected file
 

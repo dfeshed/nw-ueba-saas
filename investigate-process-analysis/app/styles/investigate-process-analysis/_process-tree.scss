@@ -149,3 +149,11 @@ section {
   width: 300px;
   padding: rsa-whitespace();
 }
+
+.process-title {
+  display: inline-block;
+  width: 270px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-height: 1.7rem;
+}
