@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,14 @@ public class ScoreMapping {
 
 		public Map<Double, Double> getMapping() {
 			return mapping;
+		}
+
+		public Double getHighestValue() {
+			List<ImmutablePair<Double, Double>> sortedMappingPoints = mapping.entrySet().stream()
+					.sorted(Comparator.comparing(Map.Entry::getKey))
+					.map(e -> new ImmutablePair<>(e.getKey(), e.getValue()))
+					.collect(Collectors.toList());
+			return sortedMappingPoints.get(sortedMappingPoints.size()-1).getValue();
 		}
 
 		public ScoreMappingConf setMapping(Map<Double, Double> mapping) {
@@ -52,7 +61,7 @@ public class ScoreMapping {
 
 	public static double mapScore(double score, ScoreMappingConf scoreMappingConf) {
 		List<ImmutablePair<Double, Double>> sortedMappingPoints = scoreMappingConf.getMapping().entrySet().stream()
-				.sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
+				.sorted(Comparator.comparing(Map.Entry::getKey))
 				.map(e -> new ImmutablePair<>(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 

@@ -30,6 +30,7 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = SmartWeightsModelScorerConf.class, name = SmartWeightsModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = SMARTMaxValuesModelScorerConf.class, name = SMARTMaxValuesModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ScoreExponentialStepsMapperConf.class, name = ScoreExponentialStepsMapperConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = LinearNoiseReductionScorerConf.class, name = LinearNoiseReductionScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = JoinGaussianModelScorerConf.class, name = JoinGaussianModelScorerConf.SCORER_TYPE)
 })
 public interface IScorerConf extends FactoryConfig {

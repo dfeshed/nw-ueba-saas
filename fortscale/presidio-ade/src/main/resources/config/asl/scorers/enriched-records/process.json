@@ -39,7 +39,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFileName.userId.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -73,7 +73,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "feature-count-model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
               }
             },
             {
@@ -128,8 +143,7 @@
                 },
                 {
                   "type": "not",
-                  "predicate":
-                  {
+                  "predicate": {
                     "type": "and",
                     "predicates": [
                       {
@@ -265,7 +279,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -299,7 +313,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "feature-count-model": {
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
               }
             },
             {
@@ -320,7 +349,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -354,7 +383,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "feature-count-model": {
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
               }
             },
             {
@@ -375,7 +419,7 @@
                 }
               ],
               "scorerConf": {
-                "type": "reduction-scorer",
+                "type": "linear-noise-reduction-scorer",
                 "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
@@ -409,7 +453,22 @@
                     "max-num-of-rare-partitions": 15
                   }
                 },
-                "reduction-weight": 0.5
+                "feature-count-model": {
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
               }
             }
           ]
