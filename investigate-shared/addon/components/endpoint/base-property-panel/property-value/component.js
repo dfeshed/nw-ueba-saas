@@ -4,12 +4,30 @@ import computed from 'ember-computed-decorators';
 
 export default Component.extend({
 
-  tagName: 'hbox',
   layout,
+
+  tagName: 'hbox',
 
   classNames: 'col-xs-6 col-md-7',
 
   classNameBindings: ['property-value'],
+
+  @computed
+  contextItems() {
+    return [
+      {
+        label: 'analyzeUser',
+        prefix: 'investigateShared.endpoint.fileActions.',
+        action([selection]) {
+          if (selection) {
+            const userName = selection.split('\\');
+            const path = `${window.location.origin}/investigate/users?ueba=/username/${userName[1]}`;
+            window.open(path);
+          }
+        }
+      }
+    ];
+  },
 
   @computed('property')
   propertyValueLength({ value }) {

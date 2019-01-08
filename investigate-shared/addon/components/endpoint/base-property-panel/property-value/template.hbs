@@ -25,6 +25,12 @@
           <div class='value'>{{item}}</div>
         {{/each}}
       {{/rsa-content-accordion}}
+    {{else if property.showRightClick}}
+      {{#rsa-context-menu
+        contextItems=contextItems
+        contextSelection=property.value}}
+        <span class="user-name">{{property.value}}</span>
+      {{/rsa-context-menu}}
     {{else}}
       {{property.value}}
     {{/if}}

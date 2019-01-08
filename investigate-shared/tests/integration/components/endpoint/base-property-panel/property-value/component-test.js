@@ -1,8 +1,22 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, triggerEvent } from '@ember/test-helpers';
+import { find, findAll, render, triggerEvent, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import sinon from 'sinon';
+
+const callback = () => {};
+const e = {
+  clientX: 10,
+  clientY: 10,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
 
 module('Integration | Component | endpoint/base-property-panel/property-value', function(hooks) {
   setupRenderingTest(hooks);
@@ -10,6 +24,11 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
     initialize(this.owner);
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
   });
 
   test('it renders the tooltip-text', async function(assert) {
@@ -81,13 +100,32 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
     assert.equal(findAll('.properties__accordion__item').length, 3);
   });
 
-  test('it renders the tooltip-text ACCORDION content', async function(assert) {
+  test('it renders the context menu', async function(assert) {
     const field = {
-      format: 'ACCORDION',
-      value: [1, 2, 3]
+      value: 'corp\\raghs',
+      showRightClick: true
     };
     this.set('field', field);
-    await render(hbs`{{endpoint/base-property-panel/property-value property=field}}`);
-    assert.equal(findAll('.properties__accordion__item').length, 1);
+    const actionSpy = sinon.spy(window, 'open');
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{endpoint/base-property-panel/property-value property=field}}{{context-menu}}
+    `);
+    triggerEvent(findAll('.user-name')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      assert.equal(menuItems.length, 1, 'Context menu rendered');
+      await click(`#${menuItems[0].id}`); // Edit file status
+      return settled().then(() => {
+        assert.ok(actionSpy.calledOnce, 'Window.open is called');
+        assert.ok(actionSpy.args[0][0].includes('investigate/users?ueba=/username/raghs'), 'valid link');
+        actionSpy.restore();
+      });
+    });
   });
 });

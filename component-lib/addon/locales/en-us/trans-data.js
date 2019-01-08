@@ -3585,7 +3585,8 @@ export default {
         fileEvents: 'File Events',
         processEvents: 'Process Events',
         registryEvents: 'Registry Events',
-        viewCertificate: 'View Certificates'
+        viewCertificate: 'View Certificates',
+        analyzeUser: 'Analyze User'
       },
       savedFilters: 'Saved Filters',
       filter: {
