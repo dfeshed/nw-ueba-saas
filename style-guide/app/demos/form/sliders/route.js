@@ -10,10 +10,16 @@ export default Route.extend({
 
   model() {
     return {
+      // defaults for 2 handle slider
       start: [ 25, 75 ],
       steps: 1,
       disabled: true,
       connect: true,
+      // defaults for 1 handle slider
+      singleStart: [ 25 ],
+      singleSteps: 1,
+      singleConnect: false,
+      //
       title: 'Form Slider',
       subtitle: 'Basic form slider.',
       description: 'For consistent form elements throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.',

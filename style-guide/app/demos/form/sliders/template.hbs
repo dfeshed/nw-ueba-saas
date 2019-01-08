@@ -70,6 +70,22 @@
       END-SNIPPET --}}
       {{code-snippet name="slider4.hbs"}}
     {{/spec-member}}
+
+    {{#spec-member title="Single handle (single handle supports keyboard left/right arrow keys)"}}
+      {{range-slider
+        start=model.singleStart
+        step=1
+        connect=false
+        on-change="onSliderChange"}}
+      {{!-- BEGIN-SNIPPET slider5
+        {{range-slider
+          start=model.singleStart
+          step=1
+          connect=false
+          on-change="onSliderChange"}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider5.hbs"}}
+    {{/spec-member}}
   {{/spec-category}}
 </fill>
 </hbox>
