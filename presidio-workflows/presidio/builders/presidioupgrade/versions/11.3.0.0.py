@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 clean_data = False
 # Reset the start time to 27 days before the current system time, at the beginning of the day:
 # Since there shouldn't be duplicate Alerts, every logical hour that was already processed should be skipped, including
-# hours of the current system day. Presidio starts triggering Alerts 28 logical days after the start time. Therefore if
-# the start time is reset to 27 days before the current system time, the first Alerts Presidio triggers will be of the
+# hours of the current system day. Presidio starts triggering Alerts 28 logical days after the start time. So if the
+# start time is reset to 27 days before the current system time, the first Alerts Presidio triggers will be of the
 # following day (i.e. of tomorrow). This means that there will be a maximum of 24 hours without Alerts (those of the
 # current system day), which is acceptable by Product.
 start_time = datetime.utcnow() - timedelta(days=27)

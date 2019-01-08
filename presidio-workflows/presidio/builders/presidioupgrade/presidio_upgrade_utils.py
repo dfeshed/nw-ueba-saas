@@ -44,7 +44,7 @@ def read_installed_presidio_version():
     return version.strip()
 
 
-def version_comparator(first, second):
+def presidio_version_comparator(first, second):
     """
     :param first: The first Presidio version
     :type first: str
