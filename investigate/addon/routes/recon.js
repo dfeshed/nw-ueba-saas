@@ -17,7 +17,7 @@ export default Route.extend({
 
   beforeModel() {
     if (!this.get('accessControl.hasInvestigateEventsAccess')) {
-      this.transitionTo('investigate.investigate-events.permission-denied');
+      this.transitionTo('investigate-events.permission-denied');
     }
   }
 
