@@ -331,6 +331,14 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			if (StringUtils.isNotBlank(linkedFieldName)){
 				String uiKey = dataEntityField.getId();
 				Object unnormalizedValue = getFromAnyMap(linkedFieldName,event, additionalFields);
+
+				// Special handling for Source Host
+				if (dataEntityField.getId().equals("computer")) {
+					unnormalizedValue = event.get("srcMachineName") == null ? event.get("srcMachineName") : event.get("srcMachineId");
+				} else if (dataEntityField.getId().equals("dest_machine")) {
+					unnormalizedValue = event.get("dstMachineName") == null ? event.get("dstMachineName") : event.get("dstMachineId");
+				}
+
 				String link = "";
 				if (unnormalizedValue!=null){
 					if (linkedFieldName.equals(MACHINE_ID)) {
@@ -384,8 +392,14 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			if (subValue==null){
 				value = "";
 			} else {
-
-				value = subValue.get(jsonPath[jsonPath.length-1]);
+				// Special handling for Source Host
+				if (dataEntityField.getId().equals("computer")) {
+					value = subValue.get("srcMachineName") == null ? subValue.get("srcMachineName") : subValue.get("srcMachineId");
+				} else if (dataEntityField.getId().equals("dest_machine")) {
+					value = subValue.get("dstMachineName") == null ? subValue.get("dstMachineName") : subValue.get("dstMachineId");
+				} else {
+					value = subValue.get(jsonPath[jsonPath.length-1]);
+				}
 				if (value!=null){
 					switch (dataEntityField.getType()){
 						case DATE_TIME:
