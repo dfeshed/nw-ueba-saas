@@ -27,13 +27,13 @@ module('Unit | Reducers | risk', function(hooks) {
       });
   });
 
-  test('The GET_EVENTS action will will append new events', function(assert) {
+  test('The GET_ESA_EVENTS action will will append new events', function(assert) {
     const previous = Immutable.from({
       eventsData: [{ 'agent_id': '123-abc', 'device_type': 'nwendpoint' }]
     });
     assert.equal(previous.eventsData.length, 1, 'Initial length is 1');
     const newEndState = reducer(previous, {
-      type: ACTION_TYPES.GET_EVENTS,
+      type: ACTION_TYPES.GET_ESA_EVENTS,
       payload: { indicatorId: '234-xyz', events: [
         {
           sessionId: 102921,
@@ -56,28 +56,12 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.eventsLoadingStatus, 'completed');
   });
 
-  test('The GET_EVENTS_ERROR action will set the error status', function(assert) {
-    const previous = Immutable.from({
-      eventsLoadingStatus: 'loading'
-    });
-    const result = reducer(previous, { type: ACTION_TYPES.GET_EVENTS_ERROR });
-    assert.equal(result.eventsLoadingStatus, 'error');
-  });
-
-  test('The GET_RESPOND_EVENTS_INITIALIZED action will set the loading status to loading', function(assert) {
+  test('The GET_EVENTS_INITIALIZED action will set the loading status to loading', function(assert) {
     const previous = Immutable.from({
       eventsLoadingStatus: null
     });
-    const result = reducer(previous, { type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED });
+    const result = reducer(previous, { type: ACTION_TYPES.GET_EVENTS_INITIALIZED });
     assert.equal(result.eventsLoadingStatus, 'loading');
-  });
-
-  test('The GET_RESPOND_EVENTS_COMPLETED action will set the loading status to completed', function(assert) {
-    const previous = Immutable.from({
-      eventsLoadingStatus: null
-    });
-    const result = reducer(previous, { type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED });
-    assert.equal(result.eventsLoadingStatus, 'completed');
   });
 
   test('The CLEAR_EVENTS action will set reset events', function(assert) {

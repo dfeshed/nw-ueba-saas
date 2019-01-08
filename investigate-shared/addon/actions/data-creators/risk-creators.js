@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { riskType, eventsLoadingStatus, selectedAlert } from 'investigate-shared/selectors/risk/selectors';
 import { warn } from '@ember/debug';
+import RSVP from 'rsvp';
 
 const _handleError = (response, type) => {
   const warnResponse = JSON.stringify(response);
@@ -96,7 +97,7 @@ const setSelectedAlert = (context) => {
     dispatch({ type: ACTION_TYPES.SET_SELECTED_ALERT, payload: context, meta: { belongsTo: type } });
     dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
     next(() => {
-      dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED, meta: { belongsTo: type } });
+      dispatch({ type: ACTION_TYPES.GET_EVENTS_INITIALIZED, meta: { belongsTo: type } });
       (async() => {
         for (let i = 0; i < context.context.length; i++) {
           const event = context.context[i];
@@ -124,34 +125,37 @@ const setSelectedAlert = (context) => {
               alertIdArray.push(event);
               if (alertIdArray.length === 100 || i === (context.context.length - 1)) {
                 // For every 100 events or on last event, make an api call
-                await dispatch(getAlertEvents(alertIdArray));
+                await getAlertEvents(alertIdArray)
+                  .then((data) => {
+                    dispatch({ type: ACTION_TYPES.GET_ESA_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
+                  })
+                  .catch((response) => {
+                    _handleError(ACTION_TYPES.GET_ESA_EVENTS, response);
+                  });
                 alertIdArray.length = 0;
               }
             }
           }
         }
-        dispatch({ type: ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED, meta: { belongsTo: type } });
+        dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED, meta: { belongsTo: type } });
       })();
     });
   };
 };
 
 const getAlertEvents = (event) => {
-  return (dispatch, getState) => {
+  return new RSVP.Promise((resolve, reject) => {
     const handlers = {
-      onResponse(response) {
-        const { data } = response || {};
-        dispatch({ type: ACTION_TYPES.GET_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
+      onError(response) {
+        reject(response);
       },
-      onError() {
-        dispatch({ type: ACTION_TYPES.GET_EVENTS_ERROR, meta: { belongsTo: riskType(getState()) } });
-      },
-      onCompleted() {
-        dispatch({ type: ACTION_TYPES.GET_EVENTS_COMPLETED, meta: { belongsTo: riskType(getState()) } });
+      onResponse() { },
+      onCompleted(response) {
+        resolve(response.data);
       }
     };
     fetchStreamingAlertEvents(event, handlers);
-  };
+  });
 };
 
 const expandEvent = (id) => {

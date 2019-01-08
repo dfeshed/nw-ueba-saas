@@ -61,7 +61,7 @@ const riskScoreReducer = handleActions({
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
     return state.merge({ selectedAlert: payload.alertName, expandedEventId: null });
   },
-  [ACTION_TYPES.GET_EVENTS]: (state, { payload: { indicatorId, events } }) => {
+  [ACTION_TYPES.GET_ESA_EVENTS]: (state, { payload: { indicatorId, events } }) => {
     const { eventsData } = state;
     const transformedEvents = events.map(transform);
     transformedEvents.forEach((evt, index) => {
@@ -95,20 +95,14 @@ const riskScoreReducer = handleActions({
     fixNormalizedEvents(events);
     return state.set('eventsData', [ ...eventsData, ...events ]);
   },
-  [ACTION_TYPES.GET_RESPOND_EVENTS_INITIALIZED]: (state) => {
+  [ACTION_TYPES.GET_EVENTS_INITIALIZED]: (state) => {
     return state.set('eventsLoadingStatus', 'loading');
-  },
-  [ACTION_TYPES.GET_RESPOND_EVENTS_COMPLETED]: (state) => {
-    return state.set('eventsLoadingStatus', 'completed');
   },
   [ACTION_TYPES.CLEAR_EVENTS]: (state) => {
     return state.merge({ eventsData: [], eventsLoadingStatus: null });
   },
   [ACTION_TYPES.GET_EVENTS_COMPLETED]: (state) => {
     return state.set('eventsLoadingStatus', 'completed');
-  },
-  [ACTION_TYPES.GET_EVENTS_ERROR]: (state) => {
-    return state.set('eventsLoadingStatus', 'error');
   },
   [ACTION_TYPES.EXPANDED_EVENT]: (state, { id }) => {
     if (state.expandedEventId === id) {
