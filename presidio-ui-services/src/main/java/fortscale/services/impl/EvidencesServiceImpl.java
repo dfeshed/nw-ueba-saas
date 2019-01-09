@@ -334,9 +334,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 				// Special handling for Source Host
 				if (dataEntityField.getId().equals("computer")) {
-					unnormalizedValue = event.get("srcMachineName") == null ? event.get("srcMachineName") : event.get("srcMachineId");
+					unnormalizedValue = event.get("srcMachineName") == null ? event.get("srcMachineId") : event.get("srcMachineName");
 				} else if (dataEntityField.getId().equals("dest_machine")) {
-					unnormalizedValue = event.get("dstMachineName") == null ? event.get("dstMachineName") : event.get("dstMachineId");
+					unnormalizedValue = event.get("dstMachineName") == null ? event.get("dstMachineId") : event.get("dstMachineName");
 				}
 
 				String link = "";
@@ -394,9 +394,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			} else {
 				// Special handling for Source Host
 				if (dataEntityField.getId().equals("computer")) {
-					value = subValue.get("srcMachineName") == null ? subValue.get("srcMachineName") : subValue.get("srcMachineId");
+					value = subValue.get("srcMachineName") == null ? subValue.get("srcMachineId") : subValue.get("srcMachineName");
 				} else if (dataEntityField.getId().equals("dest_machine")) {
-					value = subValue.get("dstMachineName") == null ? subValue.get("dstMachineName") : subValue.get("dstMachineId");
+					value = subValue.get("dstMachineName") == null ? subValue.get("dstMachineId") : subValue.get("dstMachineName");
 				} else {
 					value = subValue.get(jsonPath[jsonPath.length-1]);
 				}
