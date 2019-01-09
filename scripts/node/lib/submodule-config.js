@@ -170,7 +170,8 @@ const saModuleDependants = {
   ],
   'ember-cli-document-title': [],
   'hosts-scan-configure': ['sa', 'configure'],
-  'direct-access': []
+  'direct-access': [],
+  'ember-computed-decorators': []
 };
 
 module.exports = {
