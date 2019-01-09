@@ -330,7 +330,7 @@ test('getPoliciesPropertyData', function(assert) {
                 'scanOptions': {
                   'cpuMax': 80,
                   'cpuMaxVm': 100,
-                  'downloadMbr': false
+                  'scanMbr': false
                 }
               },
               'blockingConfig': {
@@ -369,7 +369,7 @@ test('getPoliciesPropertyData', function(assert) {
       'scanOptions': {
         'cpuMax': '80 %',
         'cpuMaxVm': '100 %',
-        'downloadMbr': 'Disabled'
+        'scanMbr': 'Disabled'
       }
     },
     'blockingConfig': {
@@ -395,7 +395,7 @@ test('getPoliciesPropertyData', function(assert) {
                 'scanOptions': {
                   'cpuMax': 80,
                   'cpuMaxVm': 100,
-                  'downloadMbr': false
+                  'scanMbr': false
                 }
               }
             }
@@ -417,7 +417,7 @@ test('getPoliciesPropertyData', function(assert) {
       'scanOptions': {
         'cpuMax': '80 %',
         'cpuMaxVm': '100 %',
-        'downloadMbr': 'Disabled'
+        'scanMbr': 'Disabled'
       }
     },
     'serverConfig': {

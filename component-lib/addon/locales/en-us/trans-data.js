@@ -4253,6 +4253,7 @@ export default {
         advScanSettings: 'Scan Settings',
         captureFloatingCode: 'Capture Floating Code',
         downloadMbr: 'Download Master Boot Record',
+        scanMbr: 'Scan Master Boot Record',
         filterSignedHooks: 'Include Hooks With Signed Modules',
         requestScanOnRegistration: 'Auto Scan New Systems When Added',
         radioOptionEnabled: 'Enabled',

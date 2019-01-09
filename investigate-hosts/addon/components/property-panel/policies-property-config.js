@@ -54,8 +54,8 @@ export default [
     sectionName: 'Scan Settings',
     fields: [
       {
-        field: 'edrPolicy.scheduledScanConfig.scanOptions.downloadMbr',
-        labelKey: 'edrPolicy.downloadMbr'
+        field: 'edrPolicy.scheduledScanConfig.scanOptions.scanMbr',
+        labelKey: 'edrPolicy.scanMbr'
       },
       {
         field: 'edrPolicy.serverConfig.requestScanOnRegistration',

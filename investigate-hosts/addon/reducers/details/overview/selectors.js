@@ -264,14 +264,14 @@ const _getscheduledScanConfig = createSelector(
         };
       }
       if (scanOptions) {
-        const { cpuMax, cpuMaxVm, downloadMbr } = scanOptions;
+        const { cpuMax, cpuMaxVm, scanMbr } = scanOptions;
         newScheduledScanConfig = {
           ...newScheduledScanConfig,
           scanOptions: {
             ...scanOptions,
             cpuMax: cpuMax ? `${cpuMax} %` : undefined,
             cpuMaxVm: cpuMaxVm ? `${cpuMaxVm} %` : undefined,
-            downloadMbr: downloadMbr ? 'Enabled' : 'Disabled'
+            scanMbr: scanMbr ? 'Enabled' : 'Disabled'
           }
         };
       }
