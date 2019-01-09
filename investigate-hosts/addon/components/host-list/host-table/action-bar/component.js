@@ -6,7 +6,7 @@ import {
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
-import { deleteHosts, getPageOfMachines, triggerMachineActions } from 'investigate-hosts/actions/data-creators/host';
+import { deleteHosts, getPageOfMachines, changeEndpointServerSelection } from 'investigate-hosts/actions/data-creators/host';
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 
@@ -26,7 +26,8 @@ const dispatchToActions = {
   deleteHosts,
   setEndpointServer,
   getPageOfMachines,
-  resetRiskScore
+  resetRiskScore,
+  changeEndpointServerSelection
 };
 
 const ActionBar = Component.extend({
@@ -59,7 +60,7 @@ const ActionBar = Component.extend({
     },
 
     handleServiceSelection(service) {
-      this.send('setEndpointServer', true, service, triggerMachineActions);
+      this.send('changeEndpointServerSelection', service);
       if (this.closeProperties) {
         this.closeProperties();
       }

@@ -1,19 +1,8 @@
 import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
+import { bootstrapInvestigateHosts, initializeHostDetailsPage } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
-import { run } from '@ember/runloop';
-import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
-import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
-import { parseQueryString } from 'investigate-shared/utils/query-util';
-import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
-import { isEmpty } from '@ember/utils';
-
-import {
-  getEndpointServers,
-  isEndpointServerOffline,
-  setSelectedEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -35,6 +24,8 @@ export default Route.extend({
   accessControl: service(),
 
   contextualHelp: service(),
+
+  listLoaded: false,
 
   queryParams: {
     machineId: {
@@ -72,60 +63,21 @@ export default Route.extend({
     }
   },
 
-  activate() {
-    const redux = this.get('redux');
-    // get host list
-    redux.dispatch(getEndpointServers(getAllSchemas));
-    redux.dispatch(getRestrictedFileList('MACHINE'));
-  },
-
   model(params) {
     const redux = this.get('redux');
-    const { sid, machineId, query } = params;
-    const request = lookup('service:request');
-    const selectedServerId = redux.getState().endpointQuery.serverId;
-    run.scheduleOnce('afterRender', () => {
-      // refreshing host details page or routing using url
-      if (!machineId && selectedServerId) {
-        request.registerPersistentStreamOptions({ socketUrlPostfix: selectedServerId, requiredSocketUrl: 'endpoint/socket' });
-        redux.dispatch(resetDetailsInputAndContent());
+    const { sid, machineId, query, tabName } = params;
+    // if both sid and machine id there then that is host details page
+    if (sid && machineId) {
+      this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
+      redux.dispatch(initializeHostDetailsPage(params));
+    } else {
+      this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
+      redux.dispatch(resetDetailsInputAndContent());
+      if (!this.get('listLoaded')) {
+        this.set('listLoaded', true);
+        return redux.dispatch(bootstrapInvestigateHosts(query));
       }
-      if (sid) {
-        // get host details
-        // if endpointQuery serverId is already set and is equal to sid then
-        // there is no point of calling registerPersistentStreamOptions again
-        if (!selectedServerId || selectedServerId !== sid) {
-          request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
-          redux.dispatch(setSelectedEndpointServer(sid));
-        }
-        return request.ping('endpoint-server-ping')
-          .then(() => {
-            const { machineId, tabName = 'OVERVIEW', subTabName, pid } = params;
-            if (machineId) {
-              this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
-            } else {
-              this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
-            }
-            redux.dispatch(isEndpointServerOffline(false));
-            redux.dispatch(initializeHostPage(params));
-            // To redirect to the Process details panel in the process tab
-            run(() => {
-              if (tabName === 'PROCESS' && subTabName === 'process-details') {
-                redux.dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
-              }
-            });
-          })
-          .catch(function() {
-            redux.dispatch(isEndpointServerOffline(true));
-          });
-      }
-      // If URL has the query create a temp saved filter and which use that for searching the host
-      if (query && !isEmpty(query)) {
-        const expression = parseQueryString(query);
-        const savedFilter = { id: -1, criteria: { expressionList: expression } };
-        redux.dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
-      }
-    });
+    }
   },
 
   resetController(controller, isExiting) {
@@ -145,5 +97,6 @@ export default Route.extend({
     redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
     request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
     this.set('contextualHelp.topic', null);
+    this.set('listLoaded', false);
   }
 });

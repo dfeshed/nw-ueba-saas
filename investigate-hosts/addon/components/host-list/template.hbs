@@ -7,21 +7,15 @@
   showScanModal=(action 'showScanModal')
 }}
 {{#if selectedServiceData.isServiceOnline}}
-  {{#if schemaLoading}}
-    <centered>
-      {{rsa-loader size='larger'}}
-    </centered>
-  {{else}}
-    {{host-list/host-table
-      openFilterPanel=openFilterPanel
-      openProperties=openProperties
-      closeProperties=closeProperties
-      pivotToInvestigate=(action 'pivotToInvestigate')
-      showConfirmationModal=(action 'showConfirmationModal')
-      showRiskScoreModal=(action 'showRiskScoreModal')
-      showScanModal=(action 'showScanModal')
-    }}
-  {{/if}}
+  {{host-list/host-table
+    openFilterPanel=openFilterPanel
+    openProperties=openProperties
+    closeProperties=closeProperties
+    pivotToInvestigate=(action 'pivotToInvestigate')
+    showConfirmationModal=(action 'showConfirmationModal')
+    showRiskScoreModal=(action 'showRiskScoreModal')
+    showScanModal=(action 'showScanModal')
+  }}
 {{else}}
   {{error-page
     errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription' serviceType=selectedServiceData.name)

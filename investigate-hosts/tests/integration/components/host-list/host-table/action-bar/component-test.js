@@ -79,6 +79,7 @@ module('Integration | Component | host table action bar', function(hooks) {
     };
     new ReduxDataHelper(setState)
       .totalItems(3)
+      .hostSortField([{ key: 'test', descending: false }])
       .services(services)
       .selectedHostList([])
       .build();

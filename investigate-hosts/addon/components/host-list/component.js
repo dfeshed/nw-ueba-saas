@@ -12,7 +12,6 @@ import { deleteHosts } from 'investigate-hosts/actions/data-creators/host';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
-  schemaLoading: state.endpoint.schema.schemaLoading,
   selectedServiceData: selectedServiceWithStatus(state),
   selections: state.endpoint.machines.selectedHostList || [],
   warningMessages: warningMessages(state),

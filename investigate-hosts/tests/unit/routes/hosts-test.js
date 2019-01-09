@@ -14,32 +14,39 @@ import endpointServerCreators from 'investigate-shared/actions/data-creators/end
 let redux;
 
 module('Unit | Route | investigate-hosts.hosts', function(hooks) {
+
   setupTest(hooks);
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('service:contextualHelp', Service.extend({}));
   });
 
   const setupRoute = function() {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'investigate-hosts'
     }));
+
     redux = this.owner.lookup('service:redux');
+    const contextualHelp = this.owner.lookup('service:contextualHelp');
     const PatchedRoute = InvestigateHosts.extend({
       redux: computed(function() {
         return redux;
+      }),
+      contextualHelp: computed(function() {
+        return contextualHelp;
       })
     });
     return PatchedRoute.create();
   };
 
-  test('should call setSelectedEndpointServer', async function(assert) {
-    const endpointServerCreatorsMock = sinon.stub(endpointServerCreators, 'setSelectedEndpointServer');
+  test('should call changeEndpointServer', async function(assert) {
+    const endpointServerCreatorsMock = sinon.stub(endpointServerCreators, 'changeEndpointServer');
 
     // setup reducer and route
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
-
     const params = {
       sid: '7723dc',
       machineId: '123',
@@ -51,7 +58,7 @@ module('Unit | Route | investigate-hosts.hosts', function(hooks) {
     await waitUntil(() => {
       return endpointServerCreatorsMock.callCount === 1;
     });
-    assert.deepEqual(endpointServerCreatorsMock.args[0][0], params.sid, 'sid should be set');
+    assert.deepEqual(endpointServerCreatorsMock.args[0][0], { 'id': '7723dc' }, 'sid should be set');
     await settled();
   });
 });

@@ -3,26 +3,76 @@ import { Machines } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { isEmpty } from '@ember/utils';
-import {
-  setAppliedHostFilter,
-  resetDetailsInputAndContent,
-  resetHostDownloadLink
-} from 'investigate-hosts/actions/ui-state-creators';
-import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
+import { resetHostDownloadLink } from 'investigate-hosts/actions/ui-state-creators';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
-import { setEndpointServer, isEndpointServerOffline } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
+import { setupEndpointServer, changeEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
+import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
 
 import { debug } from '@ember/debug';
 
-
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
+const bootstrapInvestigateHosts = (query) => {
+  return async(dispatch) => {
+    try {
+      // 1. Wait for endpoint server to load and availability
+      await dispatch(setupEndpointServer());
+      // 2. Endpoint server is online do other action
+      // 2.1. Wait for user preference to load
+      await dispatch(initializeHostsPreferences());
+      // 2.2. Load list of files
+      dispatch(getPageOfMachines(query));
+      // 3. Remaining data
+      dispatch(getFilter(() => {}, 'MACHINE'));
+      dispatch(getServiceId('MACHINE'));
+      dispatch(getRestrictedFileList('MACHINE'));
+
+    } catch (e) {
+      // Endpoint server offline
+    }
+  };
+};
+
+const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }) => {
+  return async(dispatch, getState) => {
+    const id = sid || getState().endpointQuery.serverId;
+    await dispatch(changeEndpointServer({ id }));
+    dispatch(getRespondServerStatus());
+    dispatch(initializeAgentDetails({ agentId: machineId }, true));
+    dispatch(changeDetailTab(tabName));
+    dispatch(resetHostDownloadLink());
+    dispatch(resetRiskContext());
+    dispatch(getRiskScoreContext(machineId, 'HOST'));
+    // To redirect to the Process details panel in the process tab
+    next(() => {
+      if (tabName === 'PROCESS' && subTabName === 'process-details') {
+        dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
+      }
+    });
+  };
+};
+
+
+const changeEndpointServerSelection = (server) => {
+  return async(dispatch) => {
+    try {
+      await dispatch(changeEndpointServer(server));
+      dispatch(getPageOfMachines());
+      dispatch(getServiceId('MACHINE'));
+      dispatch(getRestrictedFileList('MACHINE'));
+    } catch (e) {
+      // Endpoint server offline
+    }
+  };
+};
 /**
  * Action creator for polling all agent status
  * @method pollAgentStatus
@@ -63,22 +113,31 @@ const pollAgentStatus = () => {
  * @public
  * @returns {Object}
  */
-const getPageOfMachines = () => {
+const getPageOfMachines = (query) => {
   return (dispatch, getState) => {
-    const { hostColumnSort } = getState().endpoint.machines;
-    const { systemFilter, expressionList } = getState().endpoint.filter;
-    dispatch({
-      type: ACTION_TYPES.FETCH_ALL_MACHINES,
-      promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
-      meta: {
-        onSuccess: (response) => {
-          debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
-          dispatch(pollAgentStatus());
-        },
-        onFailure: (response) => {
-          handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
+
+    if (query && !isEmpty(query)) {
+      const expression = parseQueryString(query);
+      const savedFilter = { id: -1, criteria: { expressionList: expression } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
+    }
+    next(() => {
+      const { hostColumnSort } = getState().endpoint.machines;
+      const { systemFilter, expressionList } = getState().endpoint.filter;
+
+      dispatch({
+        type: ACTION_TYPES.FETCH_ALL_MACHINES,
+        promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
+        meta: {
+          onSuccess: (response) => {
+            debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
+            dispatch(pollAgentStatus());
+          },
+          onFailure: (response) => {
+            handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
+          }
         }
-      }
+      });
     });
   };
 };
@@ -104,27 +163,6 @@ const getAllSchemas = () => {
         }
       }
     });
-  };
-};
-
-const _initializeHostView = () => {
-  return (dispatch) => {
-    dispatch(setEndpointServer(null, null, triggerMachineActions));
-  };
-};
-
-const triggerMachineActions = () => {
-  return (dispatch) => {
-    const request = lookup('service:request');
-    return request.ping('endpoint-server-ping')
-      .then(() => {
-        dispatch(isEndpointServerOffline(false));
-        dispatch(getServiceId('MACHINE'));
-        dispatch(getPageOfMachines());
-      })
-      .catch(function() {
-        dispatch(isEndpointServerOffline(true));
-      });
   };
 };
 
@@ -245,34 +283,10 @@ const _stringifyObject = (data) => {
   return JSON.stringify(data);
 };
 
-const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query } = {}) => {
-  return (dispatch) => {
-    // On clicking the host name setting the machineId in the URL, on close removing the it from url
-    if (machineId && !isEmpty(machineId)) {
-      dispatch(getRespondServerStatus());
-      dispatch(initializeAgentDetails({ agentId: machineId }, true));
-      dispatch(changeDetailTab(tabName));
-      dispatch(resetHostDownloadLink());
-      dispatch(resetRiskContext());
-      dispatch(getRiskScoreContext(machineId, 'HOST'));
-    } else {
-      // Resetting the details data and input data
-      dispatch(resetDetailsInputAndContent());
-    }
-    if (filterId && !isEmpty(filterId)) {
-      dispatch(setAppliedHostFilter(filterId, true));
-    }
-    // Parse the query string and set the filter
-    if (query && !isEmpty(query)) {
-      dispatch(addExternalFilter(parseQueryString(query)));
-    }
-  };
-};
-
 const initializeHostsPreferences = () => {
-  return (dispatch) => {
+  return async(dispatch) => {
     const prefService = lookup('service:preferences');
-    prefService.getPreferences('endpoint-preferences').then((data) => {
+    await prefService.getPreferences('endpoint-preferences').then((data) => {
       if (data && data.machinePreference) {
         // Only if preferences is sent from api, set the preference state.
         // Otherwise, initial state will be used.
@@ -288,7 +302,6 @@ const initializeHostsPreferences = () => {
           });
         }
       }
-      dispatch(getFilter(_initializeHostView, 'MACHINE'));
     });
   };
 };
@@ -361,7 +374,6 @@ export {
   updateColumnVisibility,
   setHostColumnSort,
   deleteHosts,
-  initializeHostPage,
   initializeHostsPreferences,
   startScan,
   stopScan,
@@ -369,7 +381,9 @@ export {
   onHostSelection,
   setHostListPropertyTab,
   setFocusedHostIndex,
-  triggerMachineActions,
   pollAgentStatus,
-  setFocusedHost
+  setFocusedHost,
+  bootstrapInvestigateHosts,
+  changeEndpointServerSelection,
+  initializeHostDetailsPage
 };
