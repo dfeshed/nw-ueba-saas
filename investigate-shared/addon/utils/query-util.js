@@ -1,9 +1,9 @@
 import { isBlank } from '@ember/utils';
 
 const HASH_COLUMNS = ['checksumSha256', 'checksumMd5', 'checksumSha1'];
-const ENDPOINT_IP_MAPPING = 'machine.networkInterfaces.ipv4';
-const ENDPOINT_MAC_NAME_MAPPING = 'machine.networkInterfaces.macAddress';
-const ENDPOINT_HOST_MAPPING = 'machine.machineName';
+const ENDPOINT_IP_MAPPING = 'machineIdentity.networkInterfaces.ipv4';
+const ENDPOINT_MAC_NAME_MAPPING = 'machineIdentity.networkInterfaces.macAddress';
+const ENDPOINT_HOST_MAPPING = 'machineIdentity.machineName';
 
 const INVESTIGATE_ENDPOINT_META_MAPPING = {
   'alias.host': ENDPOINT_HOST_MAPPING,

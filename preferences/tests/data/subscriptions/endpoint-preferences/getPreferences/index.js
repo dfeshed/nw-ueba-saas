@@ -19,14 +19,14 @@ export default {
       },
       machinePreference: {
         visibleColumns: [
-          'machine.machineOsType',
-          'machine.machineName',
+          'machineIdentity.machineOsType',
+          'machineIdentity.machineName',
           'machine.scanStartTime',
           'machine.users.name',
           'agentStatus.lastSeenTime',
           'agentStatus.scanStatus'
         ],
-        sortField: '{ "key": "machine.machineOsType", "descending": true }'
+        sortField: '{ "key": "machineIdentity.machineOsType", "descending": true }'
       }
     };
     return {

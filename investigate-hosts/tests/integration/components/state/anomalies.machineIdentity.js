@@ -1,6 +1,8 @@
 export default {
   id: '938F4EF4-B8F5-C0F1-D9E4-ECCC3EEFCFC9',
   machineName: 'sharma7',
+  machineOsType: 'windows',
+  agentVersion: '11.3.0.0',
   agent: {
     exeCompileTime: '2018-11-27T11:43:09.000+0000',
     sysCompileTime: '2018-11-27T11:46:23.000+0000',

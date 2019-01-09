@@ -64,7 +64,7 @@ const endpointState =
             machines: {
               hostList: hostListState.machines.hostList,
               selectedHostList: [],
-              hostColumnSort: 'machine.machineName',
+              hostColumnSort: 'machineIdentity.machineName',
               activeHostListPropertyTab: 'HOST_DETAILS'
             }
           },
@@ -73,9 +73,9 @@ const endpointState =
           machinePreference: {
             visibleColumns: [
               'id',
-              'machine.agentVersion',
+              'machineIdentity.agentVersion',
               'machine.scanStartTime',
-              'machine.machineOsType'
+              'machineIdentity.machineOsType'
             ]
           }
         }

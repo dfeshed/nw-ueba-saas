@@ -31,7 +31,7 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
     new ReduxDataHelper(setState)
       .hostExportStatus('streaming')
       .hostList(hostListState.machines.hostList)
-      .hostSortField('machine.machineName')
+      .hostSortField('machineIdentity.machineName')
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 1, 'loader is rendered');
@@ -40,7 +40,7 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
   test('it renders host table action bar export button when exportStatus is completed', async function(assert) {
     new ReduxDataHelper(setState)
       .hostList(hostListState.machines.hostList)
-      .hostSortField('machine.machineName')
+      .hostSortField('machineIdentity.machineName')
       .hostExportStatus('completed')
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);

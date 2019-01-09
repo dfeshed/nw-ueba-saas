@@ -13,7 +13,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.agentVersion',
+          'propertyName': 'machineIdentity.agentVersion',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -38,7 +38,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -69,7 +69,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineName',
+          'propertyName': 'machineIdentity.machineName',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -170,7 +170,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -202,7 +202,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -225,7 +225,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -256,7 +256,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {

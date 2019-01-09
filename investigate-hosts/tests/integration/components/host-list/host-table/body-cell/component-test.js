@@ -43,7 +43,7 @@ test('it should render zero risk score for host', function(assert) {
 });
 
 test('it should render the anchor tag for machine name', function(assert) {
-  this.set('column', { field: 'machine.machineName' });
+  this.set('column', { field: 'machineIdentity.machineName' });
   this.set('item', { machine: { machineName: 'Test' }, id: 1 });
   this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
   assert.equal(this.$('.host-name > a').length, 1, 'Expected to render machine name with anchor tag');

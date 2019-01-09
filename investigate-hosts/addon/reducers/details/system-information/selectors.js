@@ -22,7 +22,7 @@ export const machineOsType = createSelector(
   _hostDetails,
   (hostDetails) => {
     if (hostDetails && hostDetails.machine) {
-      return hostDetails.machine.machineOsType;
+      return hostDetails.machineIdentity.machineOsType;
     }
     return 'windows';
   }

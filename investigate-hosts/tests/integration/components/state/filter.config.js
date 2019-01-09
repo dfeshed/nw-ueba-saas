@@ -5,8 +5,8 @@
  */
 const filterConfig = [
   {
-    'propertyName': 'machine.agentVersion',
-    'label': 'investigateHosts.hosts.column.machine.agentVersion',
+    'propertyName': 'machineIdentity.agentVersion',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agentVersion',
     'filterControl': 'host-list/content-filter/text-filter',
     'panelId': 'agentVersion',
     'selected': true,

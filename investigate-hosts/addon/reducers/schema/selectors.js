@@ -8,8 +8,8 @@ const COLUMN_WIDTH = {
   'machine.scanStartTime': '6vw',
   'agentStatus.lastSeenTime': '6vw',
   'analysisData.machineRiskScore': '6vw',
-  'machine.machineOsType': '5vw',
-  'machine.networkInterfaces.ipv4': '5vw',
+  'machineIdentity.machineOsType': '5vw',
+  'machineIdentity.networkInterfaces.ipv4': '5vw',
   'machine.users.name': '5vw'
 };
 
@@ -27,9 +27,9 @@ const DEFAULT_COLUMN = Immutable.from([
     dataType: 'string',
     width: '15vw',
     visible: true,
-    field: 'machine.machineName',
+    field: 'machineIdentity.machineName',
     searchable: true,
-    title: 'investigateHosts.hosts.column.machine.machineName'
+    title: 'investigateHosts.hosts.column.machineIdentity.machineName'
   },
   {
     dataType: 'string',

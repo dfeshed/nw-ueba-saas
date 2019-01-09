@@ -13,7 +13,7 @@ const HOST_LIST_COLUMNS = [
     dataType: 'STRING'
   },
   {
-    name: 'machine.networkInterfaces.ipv4',
+    name: 'machineIdentity.networkInterfaces.ipv4',
     description: '',
     dataType: 'STRING'
   },
@@ -46,7 +46,7 @@ const HOST_LIST_COLUMNS = [
     dataType: 'LONG'
   },
   {
-    name: 'machine.machineOsType',
+    name: 'machineIdentity.machineOsType',
     description: 'Operating System',
     dataType: 'STRING',
     values: [
@@ -63,11 +63,6 @@ const HOST_LIST_COLUMNS = [
   {
     name: 'id',
     description: 'Agent Id',
-    dataType: 'STRING'
-  },
-  {
-    name: 'machine.machineName',
-    description: 'Host Name',
     dataType: 'STRING'
   },
   {
@@ -107,21 +102,21 @@ const HOST_LIST_COLUMNS = [
     ]
   },
   {
-    name: 'machine.networkInterfaces.name',
+    name: 'machineIdentity.networkInterfaces.name',
     dataType: 'STRING'
   },
   {
-    name: 'machine.networkInterfaces.macAddress',
+    name: 'machineIdentity.networkInterfaces.macAddress',
     description: '',
     dataType: 'STRING'
   },
   {
-    name: 'machine.networkInterfaces.ipv6',
+    name: 'machineIdentity.networkInterfaces.ipv6',
     description: '',
     dataType: 'STRING'
   },
   {
-    name: 'machine.networkInterfaces.promiscuous',
+    name: 'machineIdentity.networkInterfaces.promiscuous',
     dataType: 'BOOLEAN'
   },
   {

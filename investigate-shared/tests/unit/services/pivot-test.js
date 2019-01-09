@@ -31,7 +31,7 @@ module('Unit | Service | Pivot', function(hooks) {
   test('pivoting to navigate page', function(assert) {
     const actionSpy = sinon.spy(window, 'open');
     const pivot = this.owner.lookup('service:pivot');
-    pivot.pivotToInvestigate('machine.machineName,', [{ machine: { machineName: 'test' } }], null, 'EVENTS');
+    pivot.pivotToInvestigate('machineIdentity.machineName,', [{ machineIdentity: { machineName: 'test' } }], null, 'EVENTS');
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
     assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
@@ -42,7 +42,7 @@ module('Unit | Service | Pivot', function(hooks) {
   test('pivoting to investigate navigate', function(assert) {
     const actionSpy = sinon.spy(window, 'open');
     const pivot = this.owner.lookup('service:pivot');
-    pivot.pivotToInvestigate('machine.machineName,', [{ machine: { machineName: 'test' } }]);
+    pivot.pivotToInvestigate('machineIdentity.machineName,', [{ machineIdentity: { machineName: 'test' } }]);
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
     assert.ok(actionSpy.args[0][0].includes('/navigate/query'));

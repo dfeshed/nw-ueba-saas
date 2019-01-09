@@ -24,8 +24,8 @@ const _hostAgentStatus = createSelector(
 export const machineOsType = createSelector(
   _hostDetails,
   (hostDetails) => {
-    if (hostDetails && hostDetails.machine) {
-      return hostDetails.machine.machineOsType;
+    if (hostDetails && hostDetails.machineIdentity) {
+      return hostDetails.machineIdentity.machineOsType;
     }
     return 'windows';
   }
@@ -53,7 +53,7 @@ export const hostWithStatus = createSelector(
 
 export const hostName = createSelector(
   _hostDetails,
-  (hostDetails) => hostDetails && hostDetails.machine ? hostDetails.machine.machineName : ''
+  (hostDetails) => hostDetails && hostDetails.machineIdentity ? hostDetails.machineIdentity.machineName : ''
 );
 
 export const lastScanTime = createSelector(
@@ -88,9 +88,9 @@ export const downloadLink = createSelector(
 
 export const getNetworkInterfaces = createSelector(
   _hostDetails,
-  ({ machine }) => {
-    if (machine) {
-      const networkInterfaces = machine.networkInterfaces || [];
+  ({ machineIdentity }) => {
+    if (machineIdentity) {
+      const networkInterfaces = machineIdentity.networkInterfaces || [];
       const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => networkInterface.ipv4 && ((networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1));
       const validIPList = validNetworkInterfaceList.map((networkInterface) => ({
         ...networkInterface,
@@ -172,8 +172,8 @@ export const sameConfigStatus = createSelector(
 export const isEcatAgent = createSelector(
   _hostDetails,
   (hostDetails) => {
-    if (hostDetails && hostDetails.machine) {
-      const { machine: { agentVersion } } = hostDetails;
+    if (hostDetails && hostDetails.machineIdentity) {
+      const { machineIdentity: { agentVersion } } = hostDetails;
       return agentVersion && agentVersion.startsWith('4.4');
     }
     return false;

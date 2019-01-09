@@ -23,7 +23,9 @@ moduleForComponent('host-detail/process/process-dll-list', 'Integration | Compon
 test('it renders data table with libraries not signed by microsoft', function(assert) {
   const host = {
     machine: {
-      machineAgentId: 'A8F19AA5-A48D-D17E-2930-DF5F1A75A711',
+      machineAgentId: 'A8F19AA5-A48D-D17E-2930-DF5F1A75A711'
+    },
+    machineIdentity: {
       machineName: 'INENDHUPAAL1C',
       machineOsType: 'windows'
     }

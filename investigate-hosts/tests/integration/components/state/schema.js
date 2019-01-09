@@ -9,7 +9,7 @@ export default {
       wrapperType: 'STRING'
     },
     {
-      name: 'machine.agentVersion',
+      name: 'machineIdentity.agentVersion',
       description: 'Agent Version',
       dataType: 'STRING',
       searchable: true,
@@ -17,7 +17,7 @@ export default {
       wrapperType: 'STRING'
     },
     {
-      name: 'machine.machineOsType',
+      name: 'machineIdentity.machineOsType',
       description: 'Operating System',
       dataType: 'STRING',
       values: [
@@ -30,7 +30,7 @@ export default {
       wrapperType: 'STRING'
     },
     {
-      name: 'machine.machineName',
+      name: 'machineIdentity.machineName',
       description: 'Machine Name',
       dataType: 'STRING',
       searchable: true,

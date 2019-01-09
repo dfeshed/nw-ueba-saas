@@ -11,8 +11,8 @@ const FILTER_TYPES = [
     'type': 'range'
   },
   {
-    'name': 'machine.machineOsType',
-    'label': 'investigateHosts.hosts.column.machine.machineOsType',
+    'name': 'machineIdentity.machineOsType',
+    'label': 'investigateHosts.hosts.column.machineIdentity.machineOsType',
     'listOptions': [
       { name: 'windows', label: 'investigateFiles.filter.fileType.pe' },
       { name: 'linux', label: 'investigateFiles.filter.fileType.linux' },
@@ -78,8 +78,8 @@ const FILTER_TYPES = [
     ]
   },
   {
-    'name': 'machine.machineName',
-    'label': 'investigateHosts.hosts.column.machine.machineName',
+    'name': 'machineIdentity.machineName',
+    'label': 'investigateHosts.hosts.column.machineIdentity.machineName',
     'type': 'text'
   },
   {
@@ -93,8 +93,8 @@ const FILTER_TYPES = [
     'type': 'text'
   },
   {
-    'name': 'machine.networkInterfaces.macAddress',
-    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.macAddress',
+    'name': 'machineIdentity.networkInterfaces.macAddress',
+    'label': 'investigateHosts.hosts.column.machineIdentity.networkInterfaces.macAddress',
     'type': 'text',
     'validations': {
       format: {
@@ -104,11 +104,12 @@ const FILTER_TYPES = [
         },
         message: 'investigateHosts.hosts.filters.invalidMacAddress'
       }
-    }
+    },
+    'placeholder': 'e.g.,00:00:00:00:00:00'
   },
   {
-    'name': 'machine.networkInterfaces.ipv4',
-    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.ipv4',
+    'name': 'machineIdentity.networkInterfaces.ipv4',
+    'label': 'investigateHosts.hosts.column.machineIdentity.networkInterfaces.ipv4',
     'type': 'text',
     'validations': {
       format: {
@@ -122,7 +123,8 @@ const FILTER_TYPES = [
         },
         message: 'investigateHosts.hosts.filters.invalidIP'
       }
-    }
+    },
+    'placeholder': 'e.g., 0.0.0.0'
   },
   {
     'name': 'machine.securityConfigurations',
@@ -171,8 +173,8 @@ const FILTER_TYPES = [
     }
   },
   {
-    'name': 'machine.agentVersion',
-    'label': 'investigateHosts.hosts.column.machine.agentVersion',
+    'name': 'machineIdentity.agentVersion',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agentVersion',
     'type': 'text',
     'placeholder': 'e.g., 11.0.0',
     'validations': {

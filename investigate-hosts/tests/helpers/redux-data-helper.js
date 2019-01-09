@@ -37,9 +37,9 @@ export default class DataHelper {
           machinePreference: {
             visibleColumns: [
               'id',
-              'machine.agentVersion',
+              'machineIdentity.agentVersion',
               'machine.scanStartTime',
-              'machine.machineOsType'
+              'machineIdentity.machineOsType'
             ]
           }
         }
@@ -177,9 +177,8 @@ export default class DataHelper {
     return this;
   }
   hostName(value) {
-    const machine = { machineName: value };
-    _set(this.state, 'overview.hostDetails', { machine });
-    _set(this.state, 'overview.hostDetails', { machine });
+    const machineIdentity = { machineName: value };
+    _set(this.state, 'overview.hostDetails', { machineIdentity });
     return this;
   }
   isProcessTreeLoading(value) {
@@ -191,7 +190,7 @@ export default class DataHelper {
     return this;
   }
   machineOSType(value) {
-    _set(this.state, 'overview.hostDetails.machine.machineOsType', value);
+    _set(this.state, 'overview.hostDetails.machineIdentity.machineOsType', value);
     return this;
   }
   registryDiscrepancies(value) {

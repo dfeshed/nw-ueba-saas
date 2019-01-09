@@ -4,43 +4,11 @@ const linux = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       machine: {
         machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-        agentVersion: '1.0.0.0',
-        machineOsType: 'linux',
         machineName: 'HarpServer',
         scanStartTime: '2017-07-11T05:42:54.000Z',
         scanRequestTime: '2017-07-11T05:42:54.000Z',
         scanType: 'standard',
         scanTrigger: 'manual',
-        networkInterfaces: [
-          {
-            name: 'ens160',
-            macAddress: '00:50:56:01:47:01',
-            ipv6: ['fe80::250:56ff:fe01:4701'],
-            gateway: [
-              '0.0.0.0'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'ens32',
-            macAddress: '00:50:56:01:2B:B5',
-            ipv4: ['10.40.15.187'],
-            ipv6: ['fe80::250:56ff:fe01:2bb5'],
-            gateway: [
-              '10.40.12.1'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'lo',
-            ipv4: ['127.0.0.1'],
-            ipv6: ['::1'],
-            gateway: [
-              '0.0.0.0'
-            ],
-            promiscuous: false
-          }
-        ],
         users: [
           {
             name: 'sharms74',
@@ -123,6 +91,38 @@ const linux = {
         id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
         group: 'default',
         machineName: 'HarpServer',
+        agentVersion: '1.0.0.0',
+        machineOsType: 'linux',
+        networkInterfaces: [
+          {
+            name: 'ens160',
+            macAddress: '00:50:56:01:47:01',
+            ipv6: ['fe80::250:56ff:fe01:4701'],
+            gateway: [
+              '0.0.0.0'
+            ],
+            promiscuous: false
+          },
+          {
+            name: 'ens32',
+            macAddress: '00:50:56:01:2B:B5',
+            ipv4: ['10.40.15.187'],
+            ipv6: ['fe80::250:56ff:fe01:2bb5'],
+            gateway: [
+              '10.40.12.1'
+            ],
+            promiscuous: false
+          },
+          {
+            name: 'lo',
+            ipv4: ['127.0.0.1'],
+            ipv6: ['::1'],
+            gateway: [
+              '0.0.0.0'
+            ],
+            promiscuous: false
+          }
+        ],
         agent: {
           installTime: '2017-06-20T07:09:01.000Z',
           serviceStartTime: '2017-06-28T04:19:45.000Z',
@@ -168,118 +168,9 @@ const windows = {
       id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
       machine: {
         machineAgentId: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
-        agentVersion: '11.1.0.0',
-        machineOsType: 'windows',
-        machineName: 'INENKUMARP10L8C',
         scanStartTime: 1515150192676,
         securityConfigurations: [
           'warningOnZoneCrossingDisabled'
-        ],
-        networkInterfaces: [
-          {
-            name: 'Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64',
-            macAddress: '00:05:9A:3C:7A:00',
-            networkIdv4: [
-              '10.42.32.0'
-            ],
-            ipv4: [
-              '10.42.35.93'
-            ],
-            ipv6: [
-              'fe80::682d:b410:2858:da86%20',
-              'fe80::b49f:77fc:71a4:308d%20',
-              'fe80::d9dc:777a:518c:3499%20'
-            ],
-            networkIdv6: [
-              'fe80::%20',
-              'fe80::%20',
-              'fe80::%20'
-            ],
-            gateway: [
-              '::',
-              '10.42.32.1'
-            ],
-            dns: [
-              '10.73.241.89',
-              '137.69.224.246'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'Intel(R) Dual Band Wireless-AC 7260',
-            macAddress: '4C:EB:42:AC:5B:98',
-            networkIdv4: [
-              '192.168.0.0'
-            ],
-            ipv4: [
-              '192.168.0.104'
-            ],
-            ipv6: [
-              'fe80::c549:7b49:adb5:17b%14'
-            ],
-            networkIdv6: [
-              'fe80::%14'
-            ],
-            gateway: [
-              '192.168.0.1'
-            ],
-            dns: [
-              '192.168.0.1'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64',
-            macAddress: '00:05:9A:3C:7A:00',
-            networkIdv4: [
-              '10.42.32.0'
-            ],
-            ipv4: [
-              '10.42.35.93'
-            ],
-            ipv6: [
-              'fe80::682d:b410:2858:da86%20',
-              'fe80::b49f:77fc:71a4:308d%20',
-              'fe80::d9dc:777a:518c:3499%20'
-            ],
-            networkIdv6: [
-              'fe80::%20',
-              'fe80::%20',
-              'fe80::%20'
-            ],
-            gateway: [
-              '::',
-              '10.42.32.1'
-            ],
-            dns: [
-              '10.73.241.89',
-              '137.69.224.246'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'Intel(R) Dual Band Wireless-AC 7260',
-            macAddress: '4C:EB:42:AC:5B:98',
-            networkIdv4: [
-              '192.168.0.0'
-            ],
-            ipv4: [
-              '192.168.0.104'
-            ],
-            ipv6: [
-              'fe80::c549:7b49:adb5:17b%14'
-            ],
-            networkIdv6: [
-              'fe80::%14'
-            ],
-            gateway: [
-              '192.168.0.1'
-            ],
-            dns: [
-              '192.168.0.1'
-            ],
-            promiscuous: false
-          }
         ],
         systemPatches: [
           'KB3199986',
@@ -444,6 +335,8 @@ const windows = {
         id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
         group: 'default',
         machineName: 'INENKUMARP10L8C',
+        machineOsType: 'windows',
+        agentVersion: '11.1.0.0',
         agent: {
           exeCompileTime: 1515062054000,
           packageTime: 1515149873444,
@@ -645,43 +538,10 @@ const mac = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       machine: {
         machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-        agentVersion: '1.0.0.0',
-        machineOsType: 'linux',
-        machineName: 'HarpServer',
         scanStartTime: '2017-07-11T05:42:54.000Z',
         scanRequestTime: '2017-07-11T05:42:54.000Z',
         scanType: 'standard',
         scanTrigger: 'manual',
-        networkInterfaces: [
-          {
-            name: 'ens160',
-            macAddress: '00:50:56:01:47:01',
-            ipv6: ['fe80::250:56ff:fe01:4701'],
-            gateway: [
-              '0.0.0.0'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'ens32',
-            macAddress: '00:50:56:01:2B:B5',
-            ipv4: ['10.40.15.187'],
-            ipv6: ['fe80::250:56ff:fe01:2bb5'],
-            gateway: [
-              '10.40.12.1'
-            ],
-            promiscuous: false
-          },
-          {
-            name: 'lo',
-            ipv4: ['127.0.0.1'],
-            ipv6: ['::1'],
-            gateway: [
-              '0.0.0.0'
-            ],
-            promiscuous: false
-          }
-        ],
         users: [
           {
             name: 'root',
@@ -747,6 +607,38 @@ const mac = {
         id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
         group: 'default',
         machineName: 'HarpServer',
+        machineOsType: 'linux',
+        agentVersion: '1.0.0.0',
+        networkInterfaces: [
+          {
+            name: 'ens160',
+            macAddress: '00:50:56:01:47:01',
+            ipv6: ['fe80::250:56ff:fe01:4701'],
+            gateway: [
+              '0.0.0.0'
+            ],
+            promiscuous: false
+          },
+          {
+            name: 'ens32',
+            macAddress: '00:50:56:01:2B:B5',
+            ipv4: ['10.40.15.187'],
+            ipv6: ['fe80::250:56ff:fe01:2bb5'],
+            gateway: [
+              '10.40.12.1'
+            ],
+            promiscuous: false
+          },
+          {
+            name: 'lo',
+            ipv4: ['127.0.0.1'],
+            ipv6: ['::1'],
+            gateway: [
+              '0.0.0.0'
+            ],
+            promiscuous: false
+          }
+        ],
         agent: {
           installTime: '2017-06-20T07:09:01.000Z',
           serviceStartTime: '2017-06-28T04:19:45.000Z',

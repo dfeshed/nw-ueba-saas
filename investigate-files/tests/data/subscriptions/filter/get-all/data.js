@@ -9,7 +9,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.agentVersion',
+          'propertyName': 'machineIdentity.agentVersion',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -32,7 +32,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineName',
+          'propertyName': 'machineIdentity.machineName',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -54,7 +54,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -80,7 +80,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -107,7 +107,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.agentVersion',
+          'propertyName': 'machineIdentity.agentVersion',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -130,7 +130,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.networkInterfaces.ipv4',
+          'propertyName': 'machineIdentity.networkInterfaces.ipv4',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -157,7 +157,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.networkInterfaces.ipv4',
+          'propertyName': 'machineIdentity.networkInterfaces.ipv4',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -180,7 +180,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.networkInterfaces.ipv4',
+          'propertyName': 'machineIdentity.networkInterfaces.ipv4',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -213,7 +213,7 @@ module.exports = [
           ]
         },
         {
-          'propertyName': 'machine.agentVersion',
+          'propertyName': 'machineIdentity.agentVersion',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -236,7 +236,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.networkInterfaces.ipv4',
+          'propertyName': 'machineIdentity.networkInterfaces.ipv4',
           'restrictionType': 'LIKE',
           'propertyValues': [
             {
@@ -259,7 +259,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.networkInterfaces.ipv4',
+          'propertyName': 'machineIdentity.networkInterfaces.ipv4',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -308,7 +308,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -330,7 +330,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {
@@ -352,7 +352,7 @@ module.exports = [
       'criteriaList': [],
       'expressionList': [
         {
-          'propertyName': 'machine.machineOsType',
+          'propertyName': 'machineIdentity.machineOsType',
           'restrictionType': 'IN',
           'propertyValues': [
             {

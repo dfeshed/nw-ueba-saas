@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 const DEFAULT_HOSTS_PREFERENCE = {
   machinePreference: {
     visibleColumns: [
-      'machine.machineOsType',
+      'machineIdentity.machineOsType',
       'machine.scanStartTime',
       'machine.users.name',
       'agentStatus.lastSeenTime',

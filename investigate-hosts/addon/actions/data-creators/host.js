@@ -182,7 +182,7 @@ const exportAsFile = () => {
 
 const _getVisibleColumnNames = (getState) => {
   const { preferences: { machinePreference } } = getState().preferences;
-  return ['machine.machineName', 'score', ...machinePreference.visibleColumns];
+  return ['machineIdentity.machineName', 'score', ...machinePreference.visibleColumns];
 };
 
 const _setPreferences = (getState) => {

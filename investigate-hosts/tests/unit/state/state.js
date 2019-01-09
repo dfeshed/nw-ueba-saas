@@ -2,9 +2,6 @@ export const hostDetails = {
   'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
   'machine': {
     'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-    'agentVersion': '4.4.0.0',
-    'machineOsType': 'linux',
-    'machineName': 'HarpServer',
     'scanStartTime': '2017-07-11T05:42:54.000Z',
     'scanRequestTime': '2017-07-11T05:42:54.000Z',
     'scanType': 'standard',
@@ -13,35 +10,6 @@ export const hostDetails = {
       'uacDisabled',
       'luaDisabled'
     ],
-    'networkInterfaces': [{
-      'name': 'ens160',
-      'macAddress': '00:50:56:01:47:01',
-      'ipv4': ['10.40.15.171', '127.0.0.1'],
-      'ipv6': ['fe80::250:56ff:fe01:4701', '::1'],
-      'gateway': ['0.0.0.0'],
-      'promiscuous': false
-    },
-    {
-      'name': 'ens32',
-      'macAddress': '00:50:56:01:2B:B5',
-      'ipv4': ['10.40.15.187', '10.40.12.7'],
-      'ipv6': ['fe80::250:56ff:fe01:2bb5', 'fe80::250:56ff:fe01:4701'],
-      'gateway': ['10.40.12.1'],
-      'promiscuous': false
-    },
-    {
-      'name': 'lo',
-      'ipv4': ['127.0.0.1'],
-      'ipv6': ['::1'],
-      'gateway': ['0.0.0.0'],
-      'promiscuous': false
-    },
-    {
-      'name': 'ens33',
-      'macAddress': '00:50:56:01:2C:B5',
-      'gateway': ['10.40.12.1'],
-      'promiscuous': false
-    }],
     'users': [{
       'name': 'root',
       'sessionId': 0,
@@ -214,7 +182,38 @@ export const hostDetails = {
   'machineIdentity': {
     'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
     'group': 'default',
+    'agentVersion': '4.4.0.0',
+    'machineOsType': 'linux',
     'machineName': 'HarpServer',
+    'networkInterfaces': [{
+      'name': 'ens160',
+      'macAddress': '00:50:56:01:47:01',
+      'ipv4': ['10.40.15.171', '127.0.0.1'],
+      'ipv6': ['fe80::250:56ff:fe01:4701', '::1'],
+      'gateway': ['0.0.0.0'],
+      'promiscuous': false
+    },
+    {
+      'name': 'ens32',
+      'macAddress': '00:50:56:01:2B:B5',
+      'ipv4': ['10.40.15.187', '10.40.12.7'],
+      'ipv6': ['fe80::250:56ff:fe01:2bb5', 'fe80::250:56ff:fe01:4701'],
+      'gateway': ['10.40.12.1'],
+      'promiscuous': false
+    },
+    {
+      'name': 'lo',
+      'ipv4': ['127.0.0.1'],
+      'ipv6': ['::1'],
+      'gateway': ['0.0.0.0'],
+      'promiscuous': false
+    },
+    {
+      'name': 'ens33',
+      'macAddress': '00:50:56:01:2C:B5',
+      'gateway': ['10.40.12.1'],
+      'promiscuous': false
+    }],
     'agent': {
       'installTime': '2017-06-20T07:09:01.000Z',
       'serviceStartTime': '2017-06-28T04:19:45.000Z',

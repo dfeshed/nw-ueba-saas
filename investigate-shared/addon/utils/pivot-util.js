@@ -3,7 +3,7 @@ import { get } from '@ember/object';
 import moment from 'moment';
 
 const INVESTIGATE_META_MAPPING = {
-  'machine.machineName': 'alias.host',
+  'machineIdentity.machineName': 'alias.host',
   'userName': ['username', 'user.dst', 'user.src'],
   'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
   'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6'],

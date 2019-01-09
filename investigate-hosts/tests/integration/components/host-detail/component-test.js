@@ -148,7 +148,9 @@ module('Integration | Component | host-detail', function(hooks) {
     const host = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       'machine': {
-        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B'
+      },
+      'machineIdentity': {
         'agentVersion': '11.1'
       }
     };
@@ -239,11 +241,11 @@ module('Integration | Component | host-detail', function(hooks) {
     const host = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       'machine': {
-        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-        'agentVersion': '11.1'
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B'
       },
       machineIdentity: {
-        'agentMode': 'testMode'
+        'agentMode': 'testMode',
+        'agentVersion': '11.1'
       }
     };
     new ReduxDataHelper(setState)
@@ -262,7 +264,9 @@ module('Integration | Component | host-detail', function(hooks) {
     const host = {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       'machine': {
-        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B'
+      },
+      'machineIdentity': {
         'agentVersion': '11.1'
       }
     };

@@ -15,7 +15,7 @@ test('Should be styled appropriately if scanStatus is set idle', function(assert
       hasScanStatus: true,
       canStartScan: true
     },
-    machine: {
+    machineIdentity: {
       agentVersion: '11.1.0.1'
     }
   };
@@ -33,7 +33,7 @@ test('Should be styled appropriately if scanStatus is set scanning', function(as
       hasScanStatus: true,
       canStartScan: true
     },
-    machine: {
+    machineIdentity: {
       agentVersion: '11.1.0.1'
     }
   };
@@ -51,7 +51,7 @@ test('Should be styled appropriately if scanStatus is set cancelPending', functi
       hasScanStatus: true,
       canStartScan: true
     },
-    machine: {
+    machineIdentity: {
       agentVersion: '11.1.0.1'
     }
   };
@@ -69,7 +69,7 @@ test('Should be styled appropriately if scanStatus is set scanPending', function
       hasScanStatus: true,
       canStartScan: true
     },
-    machine: {
+    machineIdentity: {
       agentVersion: '11.1.0.1'
     }
   };
@@ -87,7 +87,7 @@ test('Should be styled appropriately if agentVersion is 4.4', function(assert) {
       hasScanStatus: true,
       canStartScan: true
     },
-    machine: {
+    machineIdentity: {
       agentVersion: '4.4.0.1'
     }
   };
@@ -101,7 +101,7 @@ test('Should be styled appropriately if scanStatus is undefined', function(asser
 
   const hostDetails = {
     agentStatus: {},
-    machine: {
+    machineIdentity: {
       agentVersion: '4.4.0.1'
     }
   };

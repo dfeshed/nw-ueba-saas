@@ -61,7 +61,7 @@ const Container = Component.extend({
 
   actions: {
     pivotToInvestigate(item, category) {
-      this.get('pivot').pivotToInvestigate('machine.machineName', item, category);
+      this.get('pivot').pivotToInvestigate('machineIdentity.machineName', item, category);
     },
 
     initiateScanCommand(command) {

@@ -2989,8 +2989,6 @@ export default {
           serverName: 'Server'
         },
         machine: {
-          machineOsType: 'Operating System',
-          machineName: 'Hostname',
           id: 'Agent ID',
           agentVersion: 'Agent Version',
           scanStartTime: 'Last Scan Time',
@@ -3050,16 +3048,6 @@ export default {
             companyName: 'Security Products - Company Name',
             version: 'Security Products - Version',
             features: 'Security Products - Features'
-          },
-          networkInterfaces: {
-            name: 'NIC Name',
-            macAddress: 'NIC MAC Address',
-            networkId: 'NetworkInterface - NerworkID',
-            ipv4: 'IPv4',
-            ipv6: 'IPv6',
-            gateway: 'NetworkInterface - Gateway',
-            dns: 'NetworkInterface - DNS',
-            promiscuous: 'NIC Promiscous'
           }
         },
         riskScore: {
@@ -3070,6 +3058,17 @@ export default {
           machineName: 'Hostname',
           agentMode: 'Agent Mode',
           agentVersion: 'Agent Version',
+          machineOsType: 'Operating System',
+          networkInterfaces: {
+            name: 'NIC Name',
+            macAddress: 'NIC MAC Address',
+            networkId: 'NetworkInterface - NerworkID',
+            ipv4: 'IPv4',
+            ipv6: 'IPv6',
+            gateway: 'NetworkInterface - Gateway',
+            dns: 'NetworkInterface - DNS',
+            promiscuous: 'NIC Promiscous'
+          },
           agent: {
             exeCompileTime: 'Agent - User Mode Compile Time',
             sysCompileTime: 'Agent - Driver Compile Time',

@@ -11,7 +11,7 @@ const HOST_LIST = [
   {
     id: 1,
     showIcon: false,
-    machine: {
+    machineIdentity: {
       agentVersion: '1.1.0.0'
     },
     groupPolicy: {
@@ -21,7 +21,7 @@ const HOST_LIST = [
   {
     id: 2,
     showIcon: false,
-    machine: {
+    machineIdentity: {
       agentVersion: '1.1.0.0'
     },
     groupPolicy: {
@@ -31,7 +31,7 @@ const HOST_LIST = [
   {
     id: 3,
     showIcon: false,
-    machine: {
+    machineIdentity: {
       agentVersion: '1.1.0.0'
     },
     groupPolicy: {

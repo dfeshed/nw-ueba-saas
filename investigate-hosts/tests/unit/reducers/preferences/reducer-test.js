@@ -23,7 +23,7 @@ test('should return the initial state', function(assert) {
     preferences: {
       machinePreference: {
         visibleColumns: [
-          'machine.machineOsType',
+          'machineIdentity.machineOsType',
           'machine.scanStartTime',
           'machine.users.name',
           'agentStatus.lastSeenTime',
@@ -44,18 +44,18 @@ test('should return the initial state', function(assert) {
 
 test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', function(assert) {
 
-  let result = reducer(preferencesInitialState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.machineOsType', selected: true } });
+  let result = reducer(preferencesInitialState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machineIdentity.machineOsType', selected: true } });
   assert.equal(result.preferences.machinePreference.visibleColumns.length, 1, 'expected to have one column');
-  assert.equal(result.preferences.machinePreference.visibleColumns[0], 'machine.machineOsType', 'expected to match machine.machineOsType');
+  assert.equal(result.preferences.machinePreference.visibleColumns[0], 'machineIdentity.machineOsType', 'expected to match machineIdentity.machineOsType');
 
   const previousState = Immutable.from({
     preferences: {
       machinePreference: {
-        visibleColumns: ['machine.machineOsType']
+        visibleColumns: ['machineIdentity.machineOsType']
       }
     }
   });
-  result = reducer(previousState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.machineOsType', selected: false } });
+  result = reducer(previousState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machineIdentity.machineOsType', selected: false } });
   assert.equal(result.preferences.machinePreference.visibleColumns.length, 0);
 });
 
@@ -64,7 +64,7 @@ test('The SET_PREFERENCES  action will set visibleColumns', function(assert) {
 
   const response = {
     machinePreference: {
-      visibleColumns: ['machine.machineOsType']
+      visibleColumns: ['machineIdentity.machineOsType']
     }
   };
 
@@ -86,7 +86,7 @@ test('The SET_HOST_COLUMN_SORT  action will set visibleColumns', function(assert
       }
     }
   });
-  const result = reducer(previousState, { type: ACTION_TYPES.SET_HOST_COLUMN_SORT, payload: { key: 'machine.machineName', descending: true } });
-  assert.equal(result.preferences.machinePreference.sortField, '{"key":"machine.machineName","descending":true}');
+  const result = reducer(previousState, { type: ACTION_TYPES.SET_HOST_COLUMN_SORT, payload: { key: 'machineIdentity.machineName', descending: true } });
+  assert.equal(result.preferences.machinePreference.sortField, '{"key":"machineIdentity.machineName","descending":true}');
 });
 

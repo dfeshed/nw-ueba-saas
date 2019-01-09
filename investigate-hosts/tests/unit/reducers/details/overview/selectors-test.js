@@ -74,7 +74,8 @@ test('getSecurityConfigurations when security Configuration is undefined', funct
     endpoint: {
       overview: {
         hostDetails: {
-          machine: {}
+          machine: {},
+          machineIdentity: {}
         }
       }
     }
@@ -89,11 +90,13 @@ test('arrangedSecurityConfigs when arrangeBy is status', function(assert) {
         arrangeSecurityConfigsBy: 'status',
         hostDetails: {
           machine: {
-            machineOsType: 'windows',
             securityConfigurations: [
               'uacDisabled',
               'luaDisabled'
             ]
+          },
+          machineIdentity: {
+            machineOsType: 'windows'
           }
         }
       }
@@ -109,11 +112,13 @@ test('sameConfigStatus check for same config status for all the security configs
       overview: {
         hostDetails: {
           machine: {
-            machineOsType: 'windows',
             securityConfigurations: [
               'uacDisabled',
               'luaDisabled'
             ]
+          },
+          machineIdentity: {
+            machineOsType: 'windows'
           }
         }
       }
@@ -128,7 +133,8 @@ test('isEcatAgent to check the agent is 4.4 agent', function(assert) {
     endpoint: {
       overview: {
         hostDetails: {
-          machine: {
+          machine: {},
+          machineIdentity: {
             machineOsType: 'windows',
             agentVersion: '4.4.0.2'
           }
@@ -145,7 +151,8 @@ test('isEcatAgent to check the agent is not 4.4 agent', function(assert) {
     endpoint: {
       overview: {
         hostDetails: {
-          machine: {
+          machine: {},
+          machineIdentity: {
             machineOsType: 'windows',
             agentVersion: '4.1.0.1'
           }
@@ -169,12 +176,12 @@ test('isEcatAgent, when hostDetails is null', function(assert) {
   assert.deepEqual(result, false);
 });
 
-test('isEcatAgent, when hostDetails.machine is null', function(assert) {
+test('isEcatAgent, when hostDetails.machineIdentity is null', function(assert) {
   const result = isEcatAgent(Immutable.from({
     endpoint: {
       overview: {
         hostDetails: {
-          machine: null
+          machineIdentity: null
         }
       }
     }
@@ -189,7 +196,7 @@ test('isMachineLinux, if the OS of the selected agent is undefined', function(as
 });
 
 test('isMachineLinux, if the OS of the selected agent is not Linux', function(assert) {
-  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: { machine: { machineOsType: 'windows' } } } } }));
+  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: { machineIdentity: { machineOsType: 'windows' } } } } }));
   assert.equal(result, false, 'OS of the Selected agent is not Linux, value is false');
 });
 
@@ -204,7 +211,7 @@ test('isMachineWindows, if the OS of the selected agent is not Windows', functio
 });
 
 test('isMachineWindows, if the OS of the selected agent is Windows', function(assert) {
-  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails: { machine: { machineOsType: 'windows' } } } } }));
+  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails: { machineIdentity: { machineOsType: 'windows' } } } } }));
   assert.equal(result, true, 'OS of the Selected agent is Windows, value is true');
 });
 

@@ -7,11 +7,11 @@
     {{rsa-risk-score score='0' size='large'}}
   {{/if}}
 {{/if}}
-{{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machine.machineOsType') value=hostDetails.machine.machineOsType}}
+{{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machineIdentity.machineOsType') value=hostDetails.machineIdentity.machineOsType}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}
   {{host-scan-status agent=hostDetails}}
 {{/rsa-content-definition}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.lastSeenTime')}}
   <span>{{moment-from-now hostDetails.agentStatus.lastSeenTime locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>
 {{/rsa-content-definition}}
-{{rsa-content-definition class='host-action agent-version' label=(t 'investigateHosts.hosts.column.machine.agentVersion') value=hostDetails.machine.agentVersion}}
+{{rsa-content-definition class='host-action agent-version' label=(t 'investigateHosts.hosts.column.machineIdentity.agentVersion') value=hostDetails.machineIdentity.agentVersion}}

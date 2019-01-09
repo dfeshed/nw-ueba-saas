@@ -29,8 +29,8 @@
       {{/layout.center}}
       {{#layout.right as |rightPanel|}}
         {{#rightPanel.header  class="host-list-properties"}}
-          <h3 class='title' title={{focusedHost.machine.machineName}}>
-            {{focusedHost.machine.machineName}}
+          <h3 class='title' title={{focusedHost.machineIdentity.machineName}}>
+            {{focusedHost.machineIdentity.machineName}}
           </h3>
           {{#each hostListPropertyTabs as |tab|}}
             {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostListPropertyTab' tab.name)}}

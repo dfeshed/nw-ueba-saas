@@ -9,11 +9,11 @@ module('Unit | Reducers | schema');
 
 const SCHEMA = [
   {
-    'name': 'machine.machineOsType',
+    'name': 'machineIdentity.machineOsType',
     'visible': true
   },
   {
-    'name': 'machine.machineName',
+    'name': 'machineIdentity.machineName',
     'visible': false
   },
   {

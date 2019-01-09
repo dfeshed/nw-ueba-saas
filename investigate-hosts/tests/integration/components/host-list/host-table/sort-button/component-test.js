@@ -11,10 +11,10 @@ module('Integration | Component | host-list/host-table/sort-button', function(ho
 
   test('it renders the sort button with direction of sort', async function(assert) {
     assert.expect(2);
-    this.set('sortField', 'machine.machineName');
+    this.set('sortField', 'machineIdentity.machineName');
     this.set('isSortDescending', true);
     this.set('column', {
-      field: 'machine.machineName'
+      field: 'machineIdentity.machineName'
     });
 
     await render(hbs`{{host-list/host-table/sort-button sortField=sortField column=column isSortDescending=isSortDescending}}`);
@@ -25,10 +25,10 @@ module('Integration | Component | host-list/host-table/sort-button', function(ho
 
   test('it hides sort button', async function(assert) {
     assert.expect(1);
-    this.set('sortField', 'machine.machineName1');
+    this.set('sortField', 'machineIdentity.machineName1');
     this.set('isSortDescending', false);
     this.set('column', {
-      field: 'machine.machineName'
+      field: 'machineIdentity.machineName'
     });
 
     await render(hbs`{{host-list/host-table/sort-button sortField=sortField column=column isSortDescending=isSortDescending}}`);
@@ -38,13 +38,13 @@ module('Integration | Component | host-list/host-table/sort-button', function(ho
 
   test('calls the sortBy action with sortConfig', async function(assert) {
     assert.expect(2);
-    this.set('sortField', 'machine.machineName');
+    this.set('sortField', 'machineIdentity.machineName');
     this.set('isSortDescending', false);
     this.set('column', {
-      field: 'machine.machineName'
+      field: 'machineIdentity.machineName'
     });
     this.set('sortBy', function(sortField) {
-      assert.equal(sortField.key, 'machine.machineName');
+      assert.equal(sortField.key, 'machineIdentity.machineName');
       assert.equal(sortField.descending, true);
     });
 

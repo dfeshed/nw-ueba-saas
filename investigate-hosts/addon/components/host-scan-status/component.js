@@ -15,7 +15,7 @@ export default Component.extend({
 
   classNames: ['rsa-agent-scan-status'],
 
-  @computed('agent.agentStatus.scanStatus', 'agent.machine.agentVersion')
+  @computed('agent.agentStatus.scanStatus', 'agent.machineIdentity.agentVersion')
   status: (scanStatus, agentVersion) => {
     if (agentVersion && agentVersion.startsWith('4.4')) {
       return 'N/A';

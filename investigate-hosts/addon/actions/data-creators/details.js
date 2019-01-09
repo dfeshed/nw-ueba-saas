@@ -75,7 +75,7 @@ const _getHostDetails = (forceRefresh) => {
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());
             dispatch(getServiceId('MACHINE'));
-            dispatch(fetchHostContext(data.machine.machineName));
+            dispatch(fetchHostContext(data.machineIdentity.machineName));
             dispatch(setSelectedHost(data));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);

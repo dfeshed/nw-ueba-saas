@@ -59,7 +59,8 @@ test('it renders when ipv4 is 127.0.0.1', function(assert) {
   const agent = {
     overview: {
       hostDetails: {
-        machine: {
+        machine: {},
+        machineIdentity: {
           networkInterfaces: [
             {
               name: 'local',
@@ -87,7 +88,8 @@ test('it renders when ipv4 is undefined', function(assert) {
   const agent = {
     overview: {
       hostDetails: {
-        machine: {
+        machine: {},
+        machineIdentity: {
           networkInterfaces: [
             {
               name: 'em03',

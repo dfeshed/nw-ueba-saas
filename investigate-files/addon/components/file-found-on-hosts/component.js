@@ -28,7 +28,7 @@ const fileHosts = Component.extend({
 
   showOnlyIcons: true,
 
-  metaName: 'machine.machineName',
+  metaName: 'machineIdentity.machineName',
 
   init() {
     this._super(arguments);

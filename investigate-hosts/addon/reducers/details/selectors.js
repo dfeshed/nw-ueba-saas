@@ -22,7 +22,7 @@ export const hasScanTime = createSelector(
 
 const _machineOsType = (state) => {
   if (state.endpoint.overview.hostDetails) {
-    return state.endpoint.overview.hostDetails.machine.machineOsType;
+    return state.endpoint.overview.hostDetails.machineIdentity.machineOsType;
   }
   return 'windows';
 };

@@ -11,7 +11,7 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.agentVersion',
+      'name': 'machineIdentity.agentVersion',
       'description': 'Agent Version',
       'dataType': 'STRING',
       'searchable': true,
@@ -19,7 +19,7 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.machineOsType',
+      'name': 'machineIdentity.machineOsType',
       'description': 'Operating System',
       'dataType': 'STRING',
       'values': [
@@ -32,7 +32,7 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.machineName',
+      'name': 'machineIdentity.machineName',
       'description': 'Machine Name',
       'dataType': 'STRING',
       'searchable': true,
@@ -100,14 +100,14 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.name',
+      'name': 'machineIdentity.networkInterfaces.name',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.macAddress',
+      'name': 'machineIdentity.networkInterfaces.macAddress',
       'description': 'NetworkInterface - Name',
       'dataType': 'STRING',
       'searchable': true,
@@ -115,42 +115,42 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.networkId',
+      'name': 'machineIdentity.networkInterfaces.networkId',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.ipv4',
+      'name': 'machineIdentity.networkInterfaces.ipv4',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.ipv6',
+      'name': 'machineIdentity.networkInterfaces.ipv6',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.gateway',
+      'name': 'machineIdentity.networkInterfaces.gateway',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.dns',
+      'name': 'machineIdentity.networkInterfaces.dns',
       'dataType': 'STRING',
       'searchable': false,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machine.networkInterfaces.promiscuous',
+      'name': 'machineIdentity.networkInterfaces.promiscuous',
       'description': 'NetworkInterface - Promiscuous',
       'dataType': 'BOOLEAN',
       'searchable': true,

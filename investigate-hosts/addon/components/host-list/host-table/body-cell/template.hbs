@@ -16,7 +16,7 @@
       {{/if}}
     {{/if}}
   </centered>
-{{else if (eq column.field 'machine.machineName')}}
+{{else if (eq column.field 'machineIdentity.machineName')}}
   <hbox class="machine-name-holder">
     <div class="host-name">
       {{#link-to "hosts"(query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null query=null)}}

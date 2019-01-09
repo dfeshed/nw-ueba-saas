@@ -13,7 +13,7 @@ module.exports = {
     'criteriaList': [],
     'expressionList': [
       {
-        'propertyName': 'machine.machineOsType',
+        'propertyName': 'machineIdentity.machineOsType',
         'restrictionType': 'IN',
         'propertyValues': [
           {

@@ -58,10 +58,10 @@ const ActionBar = Component.extend({
     },
     openInAction() {
       const host = this.get('host');
-      const { machine: { agentVersion } } = host;
+      const { machineIdentity: { agentVersion } } = host;
       const url = `ecatui:///machines/${host.id}`;
       const i18n = this.get('i18n');
-      if (agentVersion.startsWith('4.4')) {
+      if (agentVersion && agentVersion.startsWith('4.4')) {
         window.open(url);
       } else {
         this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
