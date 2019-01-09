@@ -199,7 +199,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
   test('renders info icon where information is needed', async function(assert) {
     await renderApplicationContent(this, assert);
     await assertForPreferencesInfoIcon(assert, 0, false, 'No Info icon for Date Time Format');
-    await assertForPreferencesInfoIcon(assert, 1, false, 'No Info icon for Event Sort Order');
+    await assertForPreferencesInfoIcon(assert, 1, true, 'Event Sort Order has info icon');
     await assertForPreferencesInfoIcon(assert, 2, true, 'Over Limit Time Window has info icon');
   });
 });

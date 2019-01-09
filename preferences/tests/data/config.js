@@ -86,6 +86,7 @@ export default {
   },
   {
     name: 'preferences.investigate-events.eventSortOrder',
+    info: true, // for preferences that need additional information
     type: 'radio',
     options: [
       'Descending',
