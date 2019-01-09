@@ -52,7 +52,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         Map<Long, Integer> ret = new HashMap<>();
         int maxOccurrence = 0;
         for(Integer occurrence: featureValueToNumOfOccurrences.values()){
-            ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v++);
+            ret.compute((long)occurrence, (k,v) -> v == null ? 1 : v+1);
             if(occurrence>maxOccurrence){
                 maxOccurrence = occurrence;
             }
