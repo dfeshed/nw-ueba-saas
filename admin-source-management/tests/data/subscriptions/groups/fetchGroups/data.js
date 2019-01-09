@@ -230,7 +230,7 @@ export default [
   {
     'id': 'group_008',
     'name': 'Excellent! 008',
-    'description': 'Excellent! 008 of group group_008',
+    'description': 'Group using Default EDR Policy',
     'createdBy': 'admin',
     'createdOn': 1523655368173,
     'dirty': true,
@@ -238,7 +238,12 @@ export default [
     'lastPublishedOn': 0,
     'lastModifiedBy': 'admin',
     'lastModifiedOn': 1523655368173,
-    'assignedPolicies': {},
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': '__default_edr_policy',
+        'name': 'Default EDR Policy'
+      }
+    },
     'sourceCount': -3,
     'groupCriteria': {
       'conjunction': 'AND',

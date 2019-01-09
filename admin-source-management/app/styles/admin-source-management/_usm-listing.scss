@@ -14,6 +14,9 @@
     .status-unpublished, .status-unpublished-edits, .status-noassociated-groups {
       color: text-color(accentThree, dark);
     }
+    .status-default-policy-associated-group {
+      color: text-color(primary, light);
+    }
     .status-noassigned-policies {
       color: text-color(primary);
     }

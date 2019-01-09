@@ -3939,6 +3939,7 @@ export default {
         associatedGroups: 'Applied to Group(s)',
         description: 'Policy Description',
         noResultsMessage: 'No Policies found.',
+        defaultPolicyAssociatedGroup: 'Base Policy',
         noAssociatedGroups: 'None'
       },
       filter: {

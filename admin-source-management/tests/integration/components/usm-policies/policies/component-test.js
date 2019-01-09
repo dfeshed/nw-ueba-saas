@@ -148,7 +148,7 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
   });
 
   test('Show applied to group with sort=name descending', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
     setState('name', true);
     const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
     await render(hbs`{{usm-policies/policies}}`);
@@ -157,5 +157,9 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
       'None', 'row1 applied to group value is as expected');
     assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(2) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
       'Group 01 , Group 02', 'row2 applied to group value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(7) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
+      'Base Policy', 'row7 applied to group value is as expected');
+    assert.equal(findAll('.rsa-data-table-body-row:nth-of-type(8) .rsa-data-table-body-cell:nth-of-type(3)')[0].innerText.trim(),
+      'Base Policy, Group 03', 'row8 applied to group value is as expected');
   });
 });

@@ -16,7 +16,12 @@ export default [
       lastPublishedOn: 0,
       createdOn: 0,
       lastModifiedOn: 0,
-      associatedGroups: [],
+      associatedGroups: [
+        {
+          referenceId: '5b7d886500319b5520f4b674',
+          name: 'Group 03'
+        }
+      ],
       scanType: 'ENABLED',
       scanStartDate: '2018-09-09',
       scanStartTime: '10:23',
@@ -43,7 +48,12 @@ export default [
     lastPublishedOn: 1540318459759,
     createdOn: 0,
     lastModifiedOn: 0,
-    associatedGroups: [],
+    associatedGroups: [
+      {
+        referenceId: '5b7d886500319b5520f4b674',
+        name: 'Group 03'
+      }
+    ],
     scanType: 'ENABLED',
     scanStartDate: '2018-09-09',
     scanStartTime: '10:23',

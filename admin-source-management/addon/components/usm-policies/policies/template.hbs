@@ -43,9 +43,20 @@
           {{/if}}
         {{else if (eq column.field "associatedGroups")}}
           {{#each item.associatedGroups as |group index|}}
-            {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+            {{#if (not-eq index 0)}}
+              <span>,  </span>
+            {{else}}
+              {{#if item.defaultPolicy}}
+                <span class="status-default-policy-associated-group">{{t 'adminUsm.policies.list.defaultPolicyAssociatedGroup'}},  </span>
+              {{/if}}
+            {{/if}}
+            {{group.name}}
           {{else}}
-            <p class="status-noassociated-groups">{{t 'adminUsm.policies.list.noAssociatedGroups'}}</p>
+            {{#if item.defaultPolicy}}
+              <p class="status-default-policy-associated-group">{{t 'adminUsm.policies.list.defaultPolicyAssociatedGroup'}}</p>
+            {{else}}
+              <p class="status-noassociated-groups">{{t 'adminUsm.policies.list.noAssociatedGroups'}}</p>
+            {{/if}}
           {{/each}}
         {{else if (eq column.field "numSources")}}
           <span>----</span>
