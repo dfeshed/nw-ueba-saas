@@ -230,7 +230,6 @@ const fileListReducer = handleActions({
     hasNext: false,
     downloadStatus: 'completed',
     downloadId: null,
-    listOfServices: null,
     activeDataSourceTab: 'FILE_DETAILS',
     lookupData: [{}],
     contextError: null,

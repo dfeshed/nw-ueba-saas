@@ -23,7 +23,7 @@
   </hbox>
 {{/if}}
 <hbox class="title-bar__close flexi-fit">
-  <a href='/investigate/files'>
+  {{#link-to 'files.index' (query-params sid=null checksum=null)}}
     {{rsa-icon class='header-button' name='close' title=(t 'investigateFiles.button.close')}}
-  </a>
+  {{/link-to}}
 </hbox>

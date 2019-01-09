@@ -10,7 +10,9 @@
               {{tab.label}}
             {{/link-to}}
           {{else if (eq tab.name 'investigate.investigate-files')}}
-            <a href={{tab.url}}>{{tab.label}}</a>
+            {{#link-to 'files.index' (query-params sid=null checksum=null)}}
+              {{tab.label}}
+            {{/link-to}}
           {{else}}
             <a href='#'>{{tab.label}}</a>
           {{/if}}

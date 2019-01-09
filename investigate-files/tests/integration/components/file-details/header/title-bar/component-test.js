@@ -35,7 +35,6 @@ module('Integration | Component | file-details/header/title-bar', function(hooks
     assert.equal(find(selectors.filename).textContent, 'dtf.exe', 'Filename is rendered');
     assert.equal(findAll(selectors.fileTabs).length, 2, 'Two tabs are rendered');
     assert.equal(findAll(selectors.closeButton).length, 1, 'Close button is present');
-    assert.equal(findAll(selectors.closeLink)[0].pathname, '/investigate/files', 'links to investigate files');
     assert.equal(findAll(selectors.filePropertyPanel).length, 1, 'Show/Hide file Property panel button is present');
   });
 });
