@@ -3,4 +3,6 @@
   padding: 15px;
   overflow: auto;
   height: calc(100vh - 305px);
+  background-color: transparent;
+  color: text-color(primary, light);
 }

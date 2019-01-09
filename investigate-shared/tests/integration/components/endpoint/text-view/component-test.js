@@ -26,7 +26,7 @@ module('Integration | Component | endpoint/text-view', function(hooks) {
 
     await render(hbs`{{endpoint/text-view fileData=fileData}}`);
 
-    assert.equal(findAll('pre.text-view').length, 1, 'text view component has rendered.');
+    assert.equal(findAll('textarea.text-view').length, 1, 'text view component has rendered.');
   });
 
   test('Text-view component renders base64 data set in unicode', async function(assert) {
@@ -43,7 +43,7 @@ module('Integration | Component | endpoint/text-view', function(hooks) {
 
     await render(hbs`{{endpoint/text-view fileData=fileData}}`);
 
-    assert.equal(find('pre.text-view').textContent.trim(), 'dankogai小飼弾✓ à la mode', 'Array of base64 strings converted into unicode');
+    assert.equal(find('textarea.text-view').textContent.trim(), 'dankogai小飼弾✓ à la mode', 'Array of base64 strings converted into unicode');
   });
 
 });

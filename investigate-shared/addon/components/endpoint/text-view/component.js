@@ -6,9 +6,8 @@ import { base64ToUnicode } from 'investigate-shared/utils/file-analysis-base64de
 
 export default Component.extend({
   layout,
-  classNames: ['text-view'],
   title: 'investigateShared.endpoint.fileAnalysis.textView',
-  tagName: 'pre',
+  tagName: '',
 
   @computed('fileData')
   decodedData(fileData) {
