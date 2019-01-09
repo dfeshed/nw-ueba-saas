@@ -1,6 +1,8 @@
 <div class='rsa-context-panel__tabs'>
   {{#if isReady}}
     {{context-panel/tabs}}
+  {{else}}
+    <div class="rsa-context-panel__tabs__empty"></div>
   {{/if}}
 </div>
 <div class='rsa-context-panel__body_layout'>

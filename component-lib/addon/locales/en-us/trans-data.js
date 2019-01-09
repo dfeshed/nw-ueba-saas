@@ -1308,6 +1308,7 @@ export default {
         'Instant IOC': 'Instant IOC',
         'Log': 'Log',
         'Network': 'Network',
+        'Endpoint': 'Endpoint',
         'Correlation': 'Correlation',
         'Web Threat Detection': 'Web Threat Detection',
         'Web Threat Detection Incident': 'Web Threat Detection Incident',

@@ -161,7 +161,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     });
 
     endpoint.assertRowHeader(assert, {
-      eventType: 'Log',
+      eventType: 'Endpoint',
       category: 'Process Event',
       action: 'createProcess',
       hostname: 'INENMENONS4L2C',

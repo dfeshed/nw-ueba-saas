@@ -26,7 +26,7 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     endpoint.assertDetailColumns(assert, {
       total: 13,
-      children: 16
+      children: 17
     });
 
     const sourceElement = endpoint.assertDetailRowParent(assert, {
@@ -249,62 +249,69 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
     endpoint.assertDetailRow(assert, {
       column: 1,
       row: 8,
+      label: 'Alias Host',
+      value: 'WIN7ENTX64'
+    });
+
+    endpoint.assertDetailRow(assert, {
+      column: 1,
+      row: 9,
       label: 'Device Type',
       value: 'nwendpoint'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 9,
+      row: 10,
       label: 'Target Domain',
       value: 'nist.gov'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 10,
+      row: 11,
       label: 'Source Domain',
       value: 'corp.rsa'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 11,
+      row: 12,
       label: 'Event Source',
       value: '10.63.0.117:56005'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 12,
+      row: 13,
       label: 'Event Source ID',
       value: '857775'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 13,
+      row: 14,
       label: 'Target Host',
       value: 'test_host_dst'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 14,
+      row: 15,
       label: 'Source Host',
       value: 'test_host_src'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 15,
+      row: 16,
       label: 'User',
       value: 'CORP\\menons4'
     });
 
     endpoint.assertDetailRow(assert, {
       column: 1,
-      row: 16,
+      row: 17,
       label: 'User Src',
       value: 'CORP\\menons4'
     });
