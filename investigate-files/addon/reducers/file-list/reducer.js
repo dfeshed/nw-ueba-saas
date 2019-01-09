@@ -202,8 +202,9 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SELECT_ALL_FILES]: (state) => {
     const selectedList = Object.values(state.fileData).map((file) => {
-      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5, machineOsType } = file;
-      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size, machineOsType };
+      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5, machineOsType, pe } = file;
+      const features = pe ? pe.features : [];
+      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size, machineOsType, features };
     });
     return state.set('selectedFileList', selectedList);
   },
