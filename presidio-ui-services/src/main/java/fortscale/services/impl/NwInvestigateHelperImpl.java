@@ -94,8 +94,11 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
         Object osType = maps.get("osType");
         Object vid = maps.get("processVidSrc");
         Object checksum = maps.get("checksumId");
-        if (null == agentId || null == osType || null == vid || null == checksum) {
-            return url.toString();
+        if (null == osType) {
+            osType = "windows";
+        }
+        if (null == agentId || null == vid || null == checksum) {
+            return null;
         }
         return url.queryParam(SID,conf.getBrokerId())
                 .queryParam(CHECKSUM, checksum)

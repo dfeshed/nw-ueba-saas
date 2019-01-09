@@ -279,6 +279,11 @@ module Fortscale.layouts.user {
                         template: '<fs-grid-link text="{{dataItem.machine_name}}" url="{{dataItem.machine_name_link}}"></fs-grid-link>',
                         sortable: false
                     },
+                    dest_machine: {
+                        field: 'machine_name',
+                        template: '<fs-grid-link text="{{dataItem.dest_machine}}" url="{{dataItem.dest_machine_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
                     src_process: {
                         field: 'src_process',
 
