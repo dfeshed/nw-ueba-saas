@@ -223,8 +223,8 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
       'name': 'Group 001',
       'assignedPolicies': {
         'edrPolicy': {
-          'name': 'test_123',
-          'referenceId': 'test_abc'
+          'name': 'Policy 001',
+          'referenceId': 'policy_001'
         }
       }
     };
@@ -234,19 +234,31 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
       .groupWizPolicyList(policyListPayload)
       .build();
 
-    const expectedAssignmentsAfterRemovel = {
+    const expectedAssignmentsAfterRemoval = {
       'edrPolicy': {
         'name': 'Select a Policy',
         'referenceId': 'placeholder'
       }
     };
-    const selectedPolicy = { 'policyType': 'edrPolicy' };
+    const selectedPolicy = {
+      id: 'policy_001',
+      name: 'Policy 001',
+      policyType: 'edrPolicy',
+      description: 'EMC 001 of policy policy_001',
+      lastPublishedOn: 1527489158739,
+      dirty: true,
+      defaultPolicy: false
+    };
+
+    this.set('selectedSourceType', 'edrPolicy');
     this.set('selectedPolicy', selectedPolicy);
-    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=null selectedPolicy=selectedPolicy}}`);
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=selectedPolicy}}`);
     assert.equal(findAll('.remove-policy').length, 1, 'control to remove policy appears in the DOM');
-    await click('.remove-policy');
+    assert.equal(findAll('.available .policy-name').length, 1, 'One row appears in available list');
+    const [removeBtnEl] = findAll('.remove-policy:not(.is-disabled) button');
+    await click(removeBtnEl);
     const state = this.owner.lookup('service:redux').getState();
-    assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Policy test_123 vas removed');
+    assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemoval, 'Policy policy_001 vas removed');
   });
 
   test('Remove edrPolicy source type', async function(assert) {
@@ -329,5 +341,61 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
     assert.deepEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Source type windowsLogPolicy vas removed');
   });
 
+  test('No-Selected Policy shows 2-rows in available list', async function(assert) {
+    const groupAssignments = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'name': 'Select a Policy',
+          'referenceId': 'placeholder'
+        }
+      }
+    };
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupAssignments)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+
+    this.set('selectedSourceType', 'edrPolicy');
+    this.set('selectedPolicy', null);
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=null}}`);
+    assert.equal(findAll('.available .policy-name').length, 2, 'two rows appears in available list');
+  });
+
+  test('Selected Policy shows 1-rows in available list', async function(assert) {
+    const groupAssignments = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'name': 'Policy 001',
+          'referenceId': 'policy_001'
+        }
+      }
+    };
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupAssignments)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+
+    const selectedPolicy = {
+      id: 'policy_001',
+      name: 'Policy 001',
+      policyType: 'edrPolicy',
+      description: 'EMC 001 of policy policy_001',
+      lastPublishedOn: 1527489158739,
+      dirty: true,
+      defaultPolicy: false
+    };
+
+    this.set('selectedSourceType', 'edrPolicy');
+    this.set('selectedPolicy', selectedPolicy);
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=selectedPolicy}}`);
+    assert.equal(findAll('.remove-policy').length, 1, 'control to remove policy appears in the DOM');
+    assert.equal(findAll('.available .policy-name').length, 1, 'One row appears in available list');
+  });
 
 });

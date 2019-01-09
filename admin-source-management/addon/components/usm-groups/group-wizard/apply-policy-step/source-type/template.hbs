@@ -39,28 +39,33 @@
       <table>
         <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
         {{#each availablePoliciesForSourceType as |item|}}
-          <tr>
-            <td class="policy-name table-cell-text">
-              {{#rsa-text-with-tooltip value=item.name style="standard"}}
-                {{item.name}}
-              {{/rsa-text-with-tooltip}}
-            </td>
-            <td class="applied-to-group">
-              {{#each item.associatedGroups as |group index|}}
-                {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
-              {{/each}}
-            </td>
-            <td class="description table-cell-text">
-              {{#rsa-text-with-tooltip value=item.description style="standard"}}
-                {{item.description}}
-              {{/rsa-text-with-tooltip}}
-            </td>
-            <td>
-              <span class="assign-policy" {{action 'handlePolicyAssignment' item}}>
-                {{rsa-icon size='large' name="add-circle-1" style="lined"}}
-              </span>
-            </td>
-          </tr>
+          {{#if (not-eq selectedPolicy.id item.id)}}
+            <tr>
+              <td class="policy-name table-cell-text">
+                {{#rsa-text-with-tooltip value=item.name style="standard"}}
+                  {{item.name}}
+                {{/rsa-text-with-tooltip}}
+              </td>
+              <td class="applied-to-group">
+                {{#each item.associatedGroups as |group index|}}
+                  {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+                {{/each}}
+              </td>
+              <td class="description table-cell-text">
+                {{#rsa-text-with-tooltip value=item.description style="standard"}}
+                  {{item.description}}
+                {{/rsa-text-with-tooltip}}
+              </td>
+              <td>
+                {{#rsa-form-button class="assign-policy"
+                  isIconOnly=true 
+                  isDisabled=hasSelectedPolicy
+                  defaultAction=(action 'handlePolicyAssignment' item)}}
+                  {{rsa-icon name="add-circle-1" style="lined"}}
+                {{/rsa-form-button}}
+              </td>
+            </tr>
+          {{/if}}            
         {{/each}}
       </table>
     </td>
@@ -88,9 +93,12 @@
               {{/rsa-text-with-tooltip}}
             </td>
             <td>
-              <span class="remove-policy" {{action 'handlePolicyRemove' selectedPolicy}}>
-                {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
-              </span>
+              {{#rsa-form-button class="remove-policy"
+                isIconOnly=true 
+                isDisabled=false
+                defaultAction=(action 'handlePolicyRemove' selectedPolicy)}}
+                {{rsa-icon name="remove-circle-1" style="lined"}}
+              {{/rsa-form-button}}
             </td>
           </tr>
         {{/if}}

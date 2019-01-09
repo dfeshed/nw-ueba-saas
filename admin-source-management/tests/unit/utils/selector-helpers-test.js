@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import _ from 'lodash';
-import { descriptionsForDisplay, groupExpressionValidator } from 'admin-source-management/reducers/usm/util/selector-helpers';
+import { descriptionsForDisplay, groupExpressionValidator, sortBy } from 'admin-source-management/reducers/usm/util/selector-helpers';
 
 module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
   setupTest(hooks);
@@ -153,6 +153,70 @@ module('Unit | Utils | reducers/usm/util/selector-helpers', function(hooks) {
     assert.deepEqual(groupExpressionValidator('2001:db8:0:200:0:0:0:7, 2001:db8:0:200:0:0:0:8 2001:db8:0:200:0:0:0:9', 'validIPv6List', true, true), { isError: false, showError: false }, '\'2001:db8:0:200:0:0:0:7, 2001:db8:0:200:0:0:0:8 2001:db8:0:200:0:0:0:9\' validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', true, true), { isError: false, showError: false }, '\'   ::1, ::1 \', trim enabled validation is good as expected');
     assert.deepEqual(groupExpressionValidator('   ::1, ::1 ', 'validIPv6List', false, true), { isError: false, showError: false }, '\'   ::1, ::1 \',  trim disabled validation is good as expected, list trims automatically');
+  });
+
+  test('sortBy() list helper', function(assert) {
+    const unsortedList = [
+      {
+        id: '05',
+        name: 'name-05'
+      },
+      {
+        id: '03',
+        name: 'name-03'
+      },
+      {
+        id: '01',
+        name: 'name-01'
+      },
+      {
+        id: '04',
+        name: 'name-04'
+      },
+      {
+        id: '06',
+        name: 'name-06'
+      },
+      {
+        id: '02',
+        name: 'name-02'
+      }
+    ];
+
+    const expectedSortedList = [
+      {
+        id: '01',
+        name: 'name-01'
+      },
+      {
+        id: '02',
+        name: 'name-02'
+      },
+      {
+        id: '03',
+        name: 'name-03'
+      },
+      {
+        id: '04',
+        name: 'name-04'
+      },
+      {
+        id: '05',
+        name: 'name-05'
+      },
+      {
+        id: '06',
+        name: 'name-06'
+      }
+    ];
+
+    // sort the list by policy name
+    const sortColumn = 'name';
+    const descending = false;
+    const actualSortedList = unsortedList.sort(sortBy(sortColumn, descending, function(a) {
+      return String(a).toUpperCase();
+    }));
+    assert.deepEqual(actualSortedList, expectedSortedList, 'list is sorted as expected');
   });
 
 });

@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import computed from 'ember-computed-decorators';
 import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import { sortBy } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import {
   policyList,
   assignedPolicies,
@@ -45,7 +46,13 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
         list.push(policy);
       }
     }
-    return list;
+    // sort the list by policy name
+    const sortColumn = 'name';
+    const descending = false;
+    const sortedList = list.sort(sortBy(sortColumn, descending, function(a) {
+      return String(a).toUpperCase();
+    }));
+    return sortedList;
   },
 
   @computed('selectedSourceType', 'selectedPolicy', 'stepShowErrors')
@@ -58,6 +65,11 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
       isError: !inputValid,
       showError: stepShowErrors ? !inputValid : false
     };
+  },
+
+  @computed('selectedPolicy')
+  hasSelectedPolicy(selectedPolicy) {
+    return !!selectedPolicy;
   },
 
   actions: {
