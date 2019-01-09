@@ -5,6 +5,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, find, render, waitUntil } from '@ember/test-helpers';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 
 const fileContext = {
   1: {
@@ -454,6 +455,32 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(async() => {
       assert.equal(findAll('.rsa-data-table-header-cell:nth-child(3) .column-sort').length, 0, 'Sorting is disabled for the column');
+    });
+  });
+
+  test('It calls the external function when data is loading ', async function(assert) {
+    assert.expect(1);
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    this.set('closePropertyPanel', () => {
+      assert.ok(true);
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel}}`);
+    return waitUntil(() => findAll('.rsa-loader__wheel').length > 0, { timeout: 6000 }).then(() => {
+      const redux = this.owner.lookup('service:redux');
+      redux.dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo: 'DRIVER' } });
     });
   });
 

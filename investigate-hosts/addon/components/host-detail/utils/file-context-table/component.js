@@ -4,6 +4,7 @@ import { success, failure, warning } from 'investigate-shared/utils/flash-messag
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
+import { observer } from '@ember/object';
 
 import {
   listOfFiles,
@@ -39,7 +40,7 @@ const stateToComputed = (state, { storeName }) => ({
   fileContextSelections: fileContextSelections(state, storeName),
   isAllSelected: isAllSelected(state, storeName),
   selectedRowId: selectedRowId(state, storeName),
-  isDataLoading: isDataLoading(state, storeName),
+  isDataLoading: isDataLoading(state, storeName) || false,
   serviceList: serviceList(state, storeName),
   fileStatus: fileStatus(state, storeName),
   selectedFileChecksums: selectedFileChecksums(state, storeName),
@@ -97,6 +98,18 @@ const FileContextTable = Component.extend({
     }
     return selected;
   },
+
+  /**
+   * We are using observer here because we need to close the property panel when snapshot changes, snapshot is outside
+   * of the this component
+   */
+  _loadingStatus: observer('isDataLoading', function() {
+    if (this.get('isDataLoading')) {
+      if (this.closePropertyPanel) {
+        this.closePropertyPanel();
+      }
+    }
+  }),
 
   actions: {
 
