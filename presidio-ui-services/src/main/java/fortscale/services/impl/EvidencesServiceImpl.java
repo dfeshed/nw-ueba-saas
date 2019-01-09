@@ -349,8 +349,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 						link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
 					}
 				}
-
-				additionalFields.put(uiKey+ LINK_POSTFIX_FOR_UI,link);
+				if (link != null) {
+					additionalFields.put(uiKey+ LINK_POSTFIX_FOR_UI,link);
+				}
 			}
 		}
 

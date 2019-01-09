@@ -98,7 +98,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
             osType = "windows";
         }
         if (null == agentId || null == vid || null == checksum) {
-            return url.toString();
+            return null;
         }
         return url.queryParam(SID,conf.getBrokerId())
                 .queryParam(CHECKSUM, checksum)
