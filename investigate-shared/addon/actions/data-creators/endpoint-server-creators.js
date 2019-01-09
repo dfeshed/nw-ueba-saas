@@ -93,10 +93,10 @@ export const setupEndpointServer = () => {
       if (persistedServerId) {
         registerStreamOptions(persistedServerId);
         dispatch(setSelectedEndpointServer(persistedServerId));
-        // 2. Load all the server and set first as default sever
-        await dispatch(_loadAllEndpointServers(persistedServerId));
-        await pingEndpointServer(dispatch);
       }
+      // 2. Load all the server and set first as default sever
+      await dispatch(_loadAllEndpointServers(persistedServerId));
+      await pingEndpointServer(dispatch);
     }
   };
 };
