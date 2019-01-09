@@ -87,9 +87,7 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
                     double score = mainScore.getScore();
 
                     if (reducingScore.getScore() < score) {
-                        Double reductionWeight = calcReductionWeight(adeRecordReader);
-                        if (reductionWeight == null) return null;
-
+                        double reductionWeight = calcReductionWeight(adeRecordReader);
                         double reducingWeightMultiplyCertainty = reductionWeight * reducingScore.getCertainty();
                         score = reducingScore.getScore() * reducingWeightMultiplyCertainty +
                                 mainScore.getScore() * (1 - reducingWeightMultiplyCertainty);
@@ -106,7 +104,7 @@ public class LinearNoiseReductionScorer extends AbstractScorer {
         return featureScore;
     }
 
-    private Double calcReductionWeight(AdeRecordReader adeRecordReader) {
+    private double calcReductionWeight(AdeRecordReader adeRecordReader) {
         Model featureCountModel = getModel(adeRecordReader, featureCountModelName, featureCountModelContextFieldNames);
         Model occurrencesToNumOfDistinctFeatureValueModel = getModel(adeRecordReader, occurrencesToNumOfDistinctFeatureValueModelName, occurrencesToNumOfDistinctFeatureValueContextFieldNames);
         Model contextModel = getModel(adeRecordReader, contextModelName, contextModelContextFieldNames);
