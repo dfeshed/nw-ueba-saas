@@ -54,7 +54,7 @@
       {{#if (not allExpectedDataLoaded)}}
         {{!-- do not have all the data, say so --}}
         {{t 'investigate.notAllLoaded' maxEvents=maxEvents}}
-      {{else}}
+      {{else if hasResults}}
         <div class='events-table-footer-status'>
           {{t 'investigate.allResultsLoaded'}}
         </div>

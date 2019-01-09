@@ -68,6 +68,11 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   selectEvent: () => {},
   accessControl: service(),
 
+  @computed('items')
+  hasResults(results) {
+    return !!results && results.length > 0;
+  },
+
   @computed('metaName', 'metaValue', 'endpointId')
   contextSelection: (metaName, metaValue) => ({ metaName, metaValue }),
 

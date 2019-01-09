@@ -108,12 +108,16 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
     const { investigate } = getState();
     const { streamLimit } = investigate.eventResults;
     if (countToCheck >= streamLimit) {
-      if (window.DEBUG_STREAMS) {
-        console.log('too MANY results, need to try for less');
-      }
-
       // too many results, need better gap
       const batchWindow = batchEndTime - batchStartTime;
+
+      if (window.DEBUG_STREAMS) {
+        console.log('too MANY results, need to try for less, last window was', batchWindow);
+        if (batchWindow === 1) {
+          console.error('We have the smallest possible window and too many events, let David know about this!');
+        }
+      }
+
       const newGap = calculateNextGapAfterFailure(
         currentStreamState.binarySearchBatchStartTime, batchWindow, true);
       const newStartTime = batchEndTime - newGap;
@@ -354,7 +358,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         }
 
         if (window.DEBUG_STREAMS) {
-          console.log('But we are not done, need more');
+          console.log(`But we are not done, need more, accumulated ${totalEventsAccumulated}, event count ${eventCount}`);
         }
 
         // IF WE ARE THIS FAR...

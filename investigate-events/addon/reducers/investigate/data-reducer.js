@@ -60,12 +60,17 @@ export default handleActions({
       success: (s) => {
         const columnGroups = action.payload.data;
         if (columnGroups) {
-          // Need to update summary column width for SUMMARY column group to auto as server is retuering null.
-          // SUMMARY column cannot be null if columns are coming from investigate server.
-          const summaryColumnGroup = _.find(columnGroups, { id: 'SUMMARY' });
-          _.merge(_.find(summaryColumnGroup.columns, { field: 'custom.meta-summary' }), { width: 1000 });
+          // Want to fix certain sizes to certain columns if those
+          // columns exist
+          columnGroups.forEach((cg) => {
+            _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 1000 });
+            _.merge(_.find(cg.columns, { field: 'time' }), { width: 130 });
+          });
+
           return s.merge({ columnGroups });
         }
+
+        // if none returned, return the default set of column groups
         return s.merge({ columnGroups: EventColumnGroups });
       }
     });

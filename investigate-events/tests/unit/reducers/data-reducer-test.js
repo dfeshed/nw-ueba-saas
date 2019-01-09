@@ -26,6 +26,23 @@ test('Should get column list from server', function(assert) {
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 });
 
+test('Should update the column widths if the right columns are present', function(assert) {
+  const previous = Immutable.from({
+    columnGroups: null
+  });
+
+  // Need to reset width to null to simulate server call.
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.COLUMNS_RETRIEVE,
+    payload: { data: EventColumnGroups }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
+
+  assert.equal(newEndState.columnGroups[0].columns[0].width, 130, 'time set to right value');
+  assert.equal(newEndState.columnGroups[0].columns[4].width, 1000, 'summary set to right value');
+});
+
 test('Should show default column list in case of failure', function(assert) {
   const previous = Immutable.from({
     columnGroups: null
@@ -39,7 +56,7 @@ test('Should show default column list in case of failure', function(assert) {
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 });
 
-test('test REHYDRATE', function(assert) {
+test('REHYDRATE', function(assert) {
   const previous = Immutable.from({
     reconSize: RECON_PANEL_SIZES.MAX
   });
@@ -58,7 +75,7 @@ test('test REHYDRATE', function(assert) {
   assert.deepEqual(newEndState.reconSize, RECON_PANEL_SIZES.MIN);
 });
 
-test('test REHYDRATE when state is not saved in local storage yet', function(assert) {
+test('REHYDRATE when state is not saved in local storage yet', function(assert) {
   const previous = Immutable.from({
     reconSize: RECON_PANEL_SIZES.MAX
   });
@@ -71,7 +88,7 @@ test('test REHYDRATE when state is not saved in local storage yet', function(ass
   assert.deepEqual(newEndState.reconSize, RECON_PANEL_SIZES.MAX);
 });
 
-test('test SET_PREFERENCES when columnGroup is present in the payload', function(assert) {
+test('SET_PREFERENCES when columnGroup is present in the payload', function(assert) {
   const previous = Immutable.from({
     columnGroup: null
   });
@@ -88,7 +105,7 @@ test('test SET_PREFERENCES when columnGroup is present in the payload', function
   assert.deepEqual(newEndState.columnGroup, 'EMAIL');
 });
 
-test('test SET_PREFERENCES when columnGroup is not present in the payload and no column group is set currently', function(assert) {
+test('SET_PREFERENCES when columnGroup is not present in the payload and no column group is set currently', function(assert) {
   const previous = Immutable.from({
     columnGroup: null
   });
@@ -103,7 +120,7 @@ test('test SET_PREFERENCES when columnGroup is not present in the payload and no
   assert.deepEqual(newEndState.columnGroup, 'SUMMARY');
 });
 
-test('test SET_PREFERENCES when columnGroup is not present in the payload and current group should be preserved', function(assert) {
+test('SET_PREFERENCES when columnGroup is not present in the payload and current group should be preserved', function(assert) {
   const previous = Immutable.from({
     columnGroup: 'SOME_GROUP'
   });

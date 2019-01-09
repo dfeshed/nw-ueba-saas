@@ -14,12 +14,13 @@ import { SUMMARY_COLUMN_KEYS } from 'investigate-events/reducers/investigate/dat
  */
 function applyCellWidth($cell, column, opts) {
   let width = get(column, 'width');
-  const hasAutoWidth = (width === 'auto');
+  const hasAutoWidth = width === 'auto';
   if (!hasAutoWidth) {
     width = formatUtil.width(width, opts);
   } else {
     width = '100%';
   }
+
   $cell
     .classed('auto-width', hasAutoWidth)
     .style('width', width);
@@ -111,18 +112,12 @@ function buildCheckbox($content, item, opts) {
 function buildTimeContent($content, item, opts) {
   const tooltip = formatUtil.tooltip('time', item.time, opts);
   const text = formatUtil.text('time', item.time, opts);
-  const firstSpace = text.indexOf(' ');
-  const date = text.slice(0, firstSpace);
-  const time = text.slice(firstSpace, text.length);
 
   $content
     .attr('title', tooltip)
     .append('div')
     .attr('class', 'time')
-    .text(date);
-  $content.append('div')
-    .attr('class', 'time')
-    .text(time);
+    .text(text);
 }
 
 /**

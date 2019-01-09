@@ -1,3 +1,6 @@
+// Temporary while feature goes through QE
+/* eslint-disable  no-console */
+
 // Event count calls rely on times being rounded to the minute in
 // order to be accurate. If we have more than a minute of gap, then
 // make sure we round to the minute.
@@ -66,10 +69,28 @@ export const calculateNewStartForNextBatch = (
   // maxEvents * .25 means we want to attempt to get a 4th
   // of the limit with our next batch
   const target = maxEvents * 0.25;
-  let newStartTime = lastBatchStartTime - Math.floor(target * secondsPerEvent);
+  let nextGap = Math.floor(target * secondsPerEvent);
+
+  // If we calculate down to 0, that'll obviously do nothing
+  // so try 1 second
+  if (nextGap === 0) {
+    nextGap++;
+  }
+
+  // subtract one from the lastBatchStartTime as the
+  // end time for a range is the last batches start time
+  // minus a second
+  let newStartTime = lastBatchStartTime - nextGap;
 
   const timeGap = lastBatchStartTime - newStartTime;
   newStartTime = _roundToMinute(timeGap, newStartTime);
+
+  if (newStartTime === lastBatchStartTime - 1) {
+    if (window.DEBUG_STREAMS) {
+      console.log('the next batch time start time was calculated to be the same as the next batch end time. This means no gap. Subtracting 1 for a gap of 1.');
+    }
+    newStartTime--;
+  }
 
   return newStartTime;
 };

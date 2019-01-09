@@ -33,6 +33,17 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
       11211, 15000, totalEvents, maxEvents
     );
     assert.equal(result, 9300, 'calculated correctly');
+
+
+    // 75.78 milliseconds/event, (15000 - 11211) / 50
+    // target is 25 events
+    // 1894.5 milliseconds, 75.78 * 25
+    // 9316.5, 11211 - 1894.5
+    // is rounded because does not divide evenly by 60
+    result = calculateNewStartForNextBatch(
+      11211, 11212, 90000, maxEvents
+    );
+    assert.equal(result, 11209, 'calculated correctly, is previous begin date minus 1 + minus 1');
   });
 
   test('calculateNextGapAfterFailure calculations', function(assert) {
