@@ -581,7 +581,7 @@ test('nextLoadCount', function(assert) {
   assert.equal(result2, 100);
 });
 
-test('isInsightsAgent', function(assert) {
+test('isInsightsAgent when focused agent is an insight agent', function(assert) {
   const state = Immutable.from({
     endpoint: {
       machines: {
@@ -595,5 +595,34 @@ test('isInsightsAgent', function(assert) {
     }
   });
   const result = isInsightsAgent(state);
-  assert.equal(result, true, 'Agent available in current state is insight agent');
+  assert.equal(result, true, 'focused agent is an insight agent');
+});
+
+test('isInsightsAgent when focused agent is an advanced agent', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        focusedHost: {
+          id: 1,
+          machineIdentity: {
+            agentMode: 'advanced'
+          }
+        }
+      }
+    }
+  });
+  const result = isInsightsAgent(state);
+  assert.equal(result, false, 'focused agent is not an insight agent');
+});
+
+test('isInsightsAgent when focused agent is undefined in current state', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        focusedHost: undefined
+      }
+    }
+  });
+  const result = isInsightsAgent(state);
+  assert.equal(result, false, 'default value as false should return');
 });

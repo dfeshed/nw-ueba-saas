@@ -2874,7 +2874,7 @@ export default {
         }
       },
       selected: 'selected ({{count}})',
-      insightAgentTooltip: 'For Insight Agents risk score feature is not supported and it is supported only for Full Agent Monitoring Mode',
+      insightAgentTooltip: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',
       list: {
         noResultsMessage: 'No Results Found.',
         errorOffline: 'An error has occurred. The Endpoint Server may be offline or inaccessible.'
@@ -3536,7 +3536,7 @@ export default {
           'mongo.connection.failed': 'Database is not reachable. Retry after sometime.',
           emptyContext: 'Risk Score is 0. Reasons could be whitelisting/reset of the file or no alerts.',
           noEvents: 'No Events are available for this file.',
-          insightAgentRiskError: 'For Insight Agents risk score feature is not supported and it is supported only for Full Agent Monitoring Mode.'
+          insightAgentRiskError: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.'
         },
         errorPage: {
           serviceDown: 'Respond Server is offline',

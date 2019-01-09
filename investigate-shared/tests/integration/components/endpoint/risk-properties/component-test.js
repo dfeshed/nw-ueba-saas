@@ -132,6 +132,9 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
 
     assert.equal(find('.alert-context__name').textContent.trim(), 'test alert (10)',
       'Display alert name and alert count for alert context');
+
+    assert.equal(findAll('.rsa-panel-message').length, 0,
+      'No Error Message related to Context Empty/Server Error/Insight Agent should be displayed for valid Risk Score of an agent.');
   });
 
   test('relevant error message is displayed when respond server mongo is down', async function(assert) {
