@@ -1,4 +1,6 @@
-
+/**
+ * Selectors for anything contained within a query filter pill.
+ */
 const metaTrigger = '.pill-meta .ember-power-select-trigger';
 const operatorTrigger = '.pill-operator .ember-power-select-trigger';
 const valueTrigger = '.pill-value .ember-power-select-trigger';
@@ -13,8 +15,6 @@ const triggerValuePowerSelect = `${newPillTriggerContainer} ${valueTrigger}`;
 export default {
   queryPill: '.query-pill',
   allPills: '.query-pills',
-  queryButton: '.execute-query-button button',
-  queryButtonDisabled: '.execute-query-button.is-disabled',
   complexPill: '.complex-pill',
   complexPillInput: '.complex-pill input',
   complexPillInputFocus: '.complex-pill input:focus',

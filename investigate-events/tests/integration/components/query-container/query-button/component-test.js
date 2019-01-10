@@ -5,9 +5,9 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
-import { click, find, findAll, render } from '@ember/test-helpers';
+import { click, find, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import PILL_SELECTORS from '../pill-selectors';
+import PILL_SELECTORS from '../selectors';
 import interactionCreators from 'investigate-events/actions/interaction-creators';
 
 const cancelQuerySpy = sinon.spy(interactionCreators, 'cancelQuery');
@@ -36,7 +36,7 @@ module('Integration | Component | query-button', function(hooks) {
     spys.forEach((s) => s.restore());
   });
 
-  test('Button is disabled when the query is not ready', async function(assert) {
+  test('it is disabled when the query is not ready', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(false)
@@ -52,21 +52,20 @@ module('Integration | Component | query-button', function(hooks) {
       }}
     `);
 
-    assert.equal(findAll(PILL_SELECTORS.queryButtonDisabled).length, 1, 'button should be disabled');
+    assert.ok(find(PILL_SELECTORS.queryButtonDisabled), 'search button was not disabled');
   });
 
-  test('Shows a textual label if query is NOT running', async function(assert) {
+  test('it is in an INACTIVE state if the query is not running', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)
       .isQueryRunning(false)
       .build();
-
     await render(hbs`{{query-container/query-button}}`);
-    assert.equal(find(PILL_SELECTORS.queryButton).textContent.trim(), 'Query Events', 'displays "query" label');
+    assert.ok(find(PILL_SELECTORS.queryButtonInactive), 'search button is not in an INACTIVE state');
   });
 
-  test('Shows a spinner if pills are validating while a query is running', async function(assert) {
+  test('it is in a QUEUED state if pills are validating while a query is running', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)
@@ -74,23 +73,21 @@ module('Integration | Component | query-button', function(hooks) {
       .markValidationInProgress(['2'])
       .isQueryRunning(true)
       .build();
-
     await render(hbs`{{query-container/query-button}}`);
-    assert.equal(findAll(PILL_SELECTORS.loadingQueryButton).length, 1, 'displays loading button');
+    assert.ok(find(PILL_SELECTORS.queryButtonQueued), 'search button is not in an QUEUED state');
   });
 
-  test('Shows a textual label if a query can be canceled', async function(assert) {
+  test('it is in an EXECUTING state while a query is running', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)
       .isQueryRunning(true)
       .build();
-
     await render(hbs`{{query-container/query-button}}`);
-    assert.equal(find(PILL_SELECTORS.queryButton).textContent.trim(), 'Cancel Query', 'displays "cancel" label');
+    assert.ok(find(PILL_SELECTORS.queryButtonExecuting), 'search button is not in an EXECUTING state');
   });
 
-  test('Calls function to execute query', async function(assert) {
+  test('it can call an action to execute the query', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .language()
@@ -112,7 +109,7 @@ module('Integration | Component | query-button', function(hooks) {
     await click(PILL_SELECTORS.queryButton);
   });
 
-  test('Calls action to cancel query', async function(assert) {
+  test('it can call an action to cancel the query', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .hasRequiredValuesToQuery(true)

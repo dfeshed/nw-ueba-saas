@@ -386,14 +386,11 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
-    return state.merge({
-      atLeastOneQueryIssued: true,
-      isQueryRunning: false
-    });
+    return state.set('atLeastOneQueryIssued', true);
   },
 
   [ACTION_TYPES.QUERY_IS_RUNNING]: (state, { payload }) => {
-    return state.merge({ isQueryRunning: payload });
+    return state.set('isQueryRunning', payload);
   },
 
   // START GUIDED

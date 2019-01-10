@@ -67,22 +67,38 @@ const _resetForNextBatch = () => {
   currentStreamState.currentBatchEvents.length = 0;
 };
 
-// Called when all batching is complete and we are done
-// with an entire query. This is not called when we cancel.
-const _done = () => {
-  if (window.DEBUG_STREAMS) {
-    console.log('ALL DONE');
-  }
+// Called if there's an error or if all batching is complete and we are done
+// with the entire query. This is not called when we cancel.
+const _done = (errorCode, serverMessage) => {
+  return (dispatch) => {
+    if (window.DEBUG_STREAMS) {
+      console.log('ALL DONE');
+    }
 
-  // currentBatchEvents is a temporary holding spot for
-  // events, we want clear out that memory ASAP
-  // because it could be holding 100k events. Rather
-  // not wait for garbage collection.
-  currentStreamState.currentBatchEvents.length = 0;
+    // Set queryIsRunning to false so UI can react
+    dispatch(queryIsRunning(false));
 
-  return {
-    type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-    payload: 'complete'
+    // currentBatchEvents is a temporary holding spot for
+    // events, we want clear out that memory ASAP
+    // because it could be holding 100k events. Rather
+    // not wait for garbage collection.
+    currentStreamState.currentBatchEvents.length = 0;
+
+    if (errorCode) {
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
+        payload: {
+          status: 'error',
+          reason: errorCode,
+          message: serverMessage
+        }
+      });
+    } else {
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+        payload: 'complete'
+      });
+    }
   };
 };
 
@@ -260,15 +276,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-          payload: {
-            status: 'error',
-            reason: errorCode,
-            message: serverMessage
-          }
-        });
-        dispatch(queryIsRunning(false));
+        dispatch(_done(errorCode, serverMessage));
       },
       onCompleted() {
         const { investigate } = getState();
@@ -414,7 +422,6 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // TODO check eventual cancel logic to see how that
         // ends up working
         dispatch(_handleEventsStatus('between-streams'));
-        dispatch(queryIsRunning(false));
       }
     };
 

@@ -99,35 +99,29 @@
 
   .query-button-wrapper {
     height: 40px;
+    width: 40px;
   }
   .execute-query-button {
-    position: relative;
-    height: 40px;
-    min-width: 117px;
+    height: 100%;
+    width: 100%;
     .rsa-form-button {
-      padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
-      padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
-      padding-left: rsa-whitespace();
-      white-space: nowrap;
-      @include border(1px, solid, primary);
-      color: text-color(primary, lighter) !important;
-      &:hover,
-      &:active {
-        cursor: default !important;
-        background-color: inherit !important;
-        button {
-          cursor: default !important;
-          background-color: inherit !important;
-        }
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      i.rsa-icon {
+        margin: 0;
       }
     }
     .rsa-loader {
+      height: 40px;
+      width: 40px;
       margin: 0;
       padding-top: 9px;
-      width: 100%;
       box-sizing: border-box;
-      height: 40px;
-      @include border(1px, solid, primary);
+      .rsa-loader__wheel {
+        border-color: text-color(secondary);
+        border-top-color: text-color(primary, lightest);
+      }
     }
   }
 

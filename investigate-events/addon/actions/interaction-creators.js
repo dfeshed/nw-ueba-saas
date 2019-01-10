@@ -4,7 +4,7 @@ import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 
 import { getServiceSummary } from './data-creators';
-import { getDictionaries } from './initialization-creators';
+import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
@@ -20,6 +20,7 @@ export const cancelQuery = () => {
   return (dispatch) => {
     dispatch(cancelEventCountStream());
     dispatch(cancelEventsStream());
+    dispatch(queryIsRunning(false));
   };
 };
 

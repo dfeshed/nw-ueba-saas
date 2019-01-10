@@ -9,6 +9,7 @@ import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import PILL_SELECTORS from './pill-selectors';
+import SELECTORS from './selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
 const ENTER_KEY = KEY_MAP.enter.code;
@@ -66,7 +67,7 @@ module('Integration | Component | query-container', function(hooks) {
     await render(hbs`{{query-container}}`);
     assert.ok(find('.console-trigger'));
 
-    assert.equal(findAll(PILL_SELECTORS.queryButton).length, 1, 'button should be present');
+    assert.equal(findAll(SELECTORS.queryButton).length, 1, 'button should be present');
   });
 
   test('TimeRange should be updated when start/endTime in state is updated', async function(assert) {

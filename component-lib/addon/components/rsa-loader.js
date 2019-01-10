@@ -5,6 +5,8 @@ import layout from '../templates/components/rsa-loader';
 export default Component.extend({
   layout,
 
+  attributeBindings: ['testId:test-id'],
+
   classNames: ['rsa-loader'],
   classNameBindings: ['isSmall',
     'isMedium',
