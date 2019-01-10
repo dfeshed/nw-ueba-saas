@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 import urllib
 from datetime import datetime, timedelta
 
@@ -35,3 +36,22 @@ response = requests.get("http://localhost:8100/admin/rest_api/api?%s" % urllib.u
 
 if response.status_code != 200:
     raise ValueError("Get request to trigger a 'Reset Presidio' DAG run failed.")
+
+# Wait for the "Reset Presidio" DAG run to finish.
+url = "http://localhost:8100/admin/rest_api/api?%s" % urllib.urlencode({
+    "api": "dag_state",
+    "dag_id": "reset_presidio",
+    "execution_date": exec_date
+})
+
+while True:
+    time.sleep(60)
+    response = requests.get(url)
+    state = response.json()["output"]["stdout"].strip()
+
+    if state == "success":
+        break
+    elif state == "failed":
+        raise ValueError("The triggered 'Reset Presidio' DAG run failed.")
+    elif state != "running":
+        raise ValueError("The triggered 'Reset Presidio' DAG run is in an unknown state (%s)." % state)
