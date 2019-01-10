@@ -26,3 +26,18 @@
 .file-name-link {
   color: text-color(secondary, light);
 }
+
+.host-container-detail {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: calc(100vw - 50px);
+}
+
+.license-banner.shown + .host-container-detail {
+  // When license banner is shown, the absolute top position has to be adjusted
+  top: 86px;
+  max-height: calc(100vw - 86px);
+}

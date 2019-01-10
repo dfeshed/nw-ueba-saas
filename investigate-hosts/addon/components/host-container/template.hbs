@@ -1,65 +1,59 @@
-{{#liquid-if hasMachineId use=(if hasMachineId "toLeft" "toRight")}}
-  <vbox class="host-container-detail host-detail">
-    {{host-detail}}
-  </vbox>
-{{else}}
-  <vbox class="host-container-list">
-    {{#rsa-page-layout showRightZone=false onClose=(action 'setFocusedHostIndex' null) as |layout|}}
-      {{#layout.left as |leftPanel|}}
-        {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
-        {{endpoint/filters-wrapper
-          filterState=filter
-          filterType='MACHINE'
-          filterTypes=filterTypes
-          savedFilter=savedFilter
-          savedFilters=hostFilters
-          selectedFilterId=selectedFilterId
-          resetFilters=(action 'resetFilters')
-          applyFilters=(action 'applyFilters' (action 'getPageOfMachines'))
-          applySavedFilters=(action 'applySavedFilters' (action 'getPageOfMachines'))
-          deleteFilter=(action 'deleteFilter')
-          createCustomSearch=(action 'createCustomSearch')
-          closeEntityDetails=(action layout.close 'right')}}
-      {{/layout.left}}
-      {{#layout.center}}
-        {{host-list
-          openProperties=(action layout.open 'right')
-          closeProperties=(action layout.close 'right')
-          openFilterPanel=(action layout.open 'left')}}
-      {{/layout.center}}
-      {{#layout.right as |rightPanel|}}
-        {{#rightPanel.header  class="host-list-properties"}}
-          <h3 class='title' title={{focusedHost.machineIdentity.machineName}}>
-            {{focusedHost.machineIdentity.machineName}}
-          </h3>
-          {{#each hostListPropertyTabs as |tab|}}
-            {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostListPropertyTab' tab.name)}}
-              <div class="label">{{t tab.label}}</div>
-            {{/rsa-nav-tab}}
-          {{/each}}
-          {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
-            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-          {{/rsa-form-button}}
-        {{/rightPanel.header}}
+<vbox class="host-container-list">
+  {{#rsa-page-layout showRightZone=false onClose=(action 'setFocusedHostIndex' null) as |layout|}}
+    {{#layout.left as |leftPanel|}}
+      {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
+      {{endpoint/filters-wrapper
+        filterState=filter
+        filterType='MACHINE'
+        filterTypes=filterTypes
+        savedFilter=savedFilter
+        savedFilters=hostFilters
+        selectedFilterId=selectedFilterId
+        resetFilters=(action 'resetFilters')
+        applyFilters=(action 'applyFilters' (action 'getPageOfMachines'))
+        applySavedFilters=(action 'applySavedFilters' (action 'getPageOfMachines'))
+        deleteFilter=(action 'deleteFilter')
+        createCustomSearch=(action 'createCustomSearch')
+        closeEntityDetails=(action layout.close 'right')}}
+    {{/layout.left}}
+    {{#layout.center}}
+      {{host-list
+        openProperties=(action layout.open 'right')
+        closeProperties=(action layout.close 'right')
+        openFilterPanel=(action layout.open 'left')}}
+    {{/layout.center}}
+    {{#layout.right as |rightPanel|}}
+      {{#rightPanel.header  class="host-list-properties"}}
+        <h3 class='title' title={{focusedHost.machineIdentity.machineName}}>
+          {{focusedHost.machineIdentity.machineName}}
+        </h3>
+        {{#each hostListPropertyTabs as |tab|}}
+          {{#rsa-nav-tab align='left' isActive=tab.selected click=(action 'setHostListPropertyTab' tab.name)}}
+            <div class="label">{{t tab.label}}</div>
+          {{/rsa-nav-tab}}
+        {{/each}}
+        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
+          {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+        {{/rsa-form-button}}
+      {{/rightPanel.header}}
 
-        {{#if (eq activeHostListPropertyTab 'RISK')}}
-          {{endpoint/risk-properties
-            defaultAction=(action 'getUpdatedRiskScoreContext')
-            riskState=risk
-            riskType='HOST'
-            isInsightsAgent=isInsightsAgent
-          }}
-        {{else if (eq activeHostListPropertyTab 'HOST_DETAILS')}}
-          <vbox class="host-properties-box">
-            <box class='scroll-box'>
-              {{property-panel
-                data=focusedHost
-                localeNameSpace='investigateHosts.hosts.properties'
-                config=hostDetailsConfig}}
-            </box>
-          </vbox>
-        {{/if}}
-      {{/layout.right}}
-    {{/rsa-page-layout}}
-  </vbox>
-{{/liquid-if}}
+      {{#if (eq activeHostListPropertyTab 'RISK')}}
+        {{endpoint/risk-properties
+          defaultAction=(action 'getUpdatedRiskScoreContext')
+          riskState=risk
+          riskType='HOST'
+          isInsightsAgent=isInsightsAgent
+        }}
+      {{else if (eq activeHostListPropertyTab 'HOST_DETAILS')}}
+        <vbox class="host-properties-box">
+          <box class='scroll-box'>
+            {{property-panel
+              data=focusedHost
+              localeNameSpace='investigateHosts.hosts.properties'
+              config=hostDetailsConfig}}
+          </box>
+        </vbox>
+      {{/if}}
+    {{/layout.right}}
+  {{/rsa-page-layout}}
+</vbox>

@@ -19,7 +19,7 @@
 {{else if (eq column.field 'machineIdentity.machineName')}}
   <hbox class="machine-name-holder">
     <div class="host-name">
-      {{#link-to "hosts"(query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null query=null)}}
+      {{#link-to "hosts.details" item.id (query-params machineId=item.id tabName='OVERVIEW' sid=serverId subTabName=null pid=null query=null)}}
         {{get item column.field}}
       {{/link-to}}
     </div>

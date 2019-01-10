@@ -104,9 +104,9 @@ export const setupEndpointServer = () => {
 export const changeEndpointServer = ({ id }) => {
   return async(dispatch, getState) => {
     const { serverId } = getState().endpointQuery;
+    _setPersistedServerId(id);
+    registerStreamOptions(id);
     if (serverId !== id) {
-      _setPersistedServerId(id);
-      registerStreamOptions(id);
       dispatch(setSelectedEndpointServer(id));
       await pingEndpointServer(dispatch);
     }

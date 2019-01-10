@@ -44,13 +44,15 @@ const bootstrapInvestigateHosts = (query) => {
 const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }) => {
   return async(dispatch, getState) => {
     const id = sid || getState().endpointQuery.serverId;
-    await dispatch(changeEndpointServer({ id }));
+    if (sid !== getState().endpointQuery.serverId) {
+      await dispatch(changeEndpointServer({ id }));
+    }
     dispatch(getRespondServerStatus());
-    dispatch(initializeAgentDetails({ agentId: machineId }, true));
-    dispatch(changeDetailTab(tabName));
     dispatch(resetHostDownloadLink());
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(machineId, 'HOST'));
+    dispatch(initializeAgentDetails({ agentId: machineId }, true));
+    dispatch(changeDetailTab(tabName));
     // To redirect to the Process details panel in the process tab
     next(() => {
       if (tabName === 'PROCESS' && subTabName === 'process-details') {
@@ -121,24 +123,23 @@ const getPageOfMachines = (query) => {
       const savedFilter = { id: -1, criteria: { expressionList: expression } };
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'MACHINE' } });
     }
-    next(() => {
-      const { hostColumnSort } = getState().endpoint.machines;
-      const { systemFilter, expressionList } = getState().endpoint.filter;
 
-      dispatch({
-        type: ACTION_TYPES.FETCH_ALL_MACHINES,
-        promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
-        meta: {
-          onSuccess: (response) => {
-            debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
-            dispatch(pollAgentStatus());
-          },
-          onFailure: (response) => {
-            handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
-          }
+    const { hostColumnSort } = getState().endpoint.machines;
+    const { systemFilter, expressionList } = getState().endpoint.filter;
+
+    dispatch({
+      type: ACTION_TYPES.FETCH_ALL_MACHINES,
+      promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
+      meta: {
+        onSuccess: (response) => {
+          debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
         }
-      });
+      }
     });
+
   };
 };
 

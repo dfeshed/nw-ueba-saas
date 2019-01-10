@@ -113,15 +113,6 @@ module('Integration | Component | host-container', function(hooks) {
     assert.equal(findAll('.host-container').length, 1, 'host container rendered');
   });
 
-  test('it renders host container detail', async function(assert) {
-    const state = {
-      endpoint: { detailsInput: { agentId: 'agentId' } }
-    };
-    setState(state);
-    await render(hbs`{{host-container}}`);
-    assert.equal(findAll('.host-container-detail').length, 1, 'host container detail rendered');
-  });
-
   test('it renders host container list', async function(assert) {
     const state = {
       endpoint: { detailsInput: { agentId: null } }
@@ -201,18 +192,5 @@ module('Integration | Component | host-container', function(hooks) {
         assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'Clicked row is not highlighted on closing right panel');
       });
     });
-  });
-
-  test('show right panel button is not present for process tab', async function(assert) {
-    const state = {
-      endpoint: { detailsInput: { agentId: 'agentId' } }
-    };
-    setState(state);
-    this.set('closeProperties', () => {});
-    this.set('openProperties', () => {});
-    await render(hbs`{{host-container}}`);
-    assert.equal(findAll('.open-properties').length, 1, 'Right panel button is visible');
-    await click(findAll('.rsa-nav-tab')[1]);
-    assert.equal(findAll('.open-properties').length, 0, 'Right panel button is hidden');
   });
 });
