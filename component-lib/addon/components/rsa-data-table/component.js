@@ -17,6 +17,8 @@ export default Component.extend(DomWatcher, {
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
   whitespace: 14,
+  groupLabelHeight: 28,
+
 
   /**
    * Enables the rendering of a group-label based on groupingSize

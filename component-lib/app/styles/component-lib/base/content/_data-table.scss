@@ -12,17 +12,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       left: 0;
       right: 0;
       top: 100%;
-      bottom: -100%;
+      bottom: -28px;
       color: text-color(primary);
       @include rsa-font(header);
       display: flex;
       text-align: center;
       align-items: center;
-
-      div {
-        top: 10px;
-        position: relative;
-      }
     }
 
     &:hover {
@@ -151,6 +146,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-font(paragraph, small);
     color: text-color(primary, lightest);
     border-top: 1px solid border-color(primary, dark);
+
+    &.is-at-grouping-size {
+      .rsa-data-table-body-cell {
+        border-bottom: 1px solid border-color(primary, dark);
+      }
+    }
+
     &:hover {
         background-color: background-color(primary, darker);
     }

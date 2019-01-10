@@ -589,7 +589,7 @@ test('it sets the minHeight of the table body rows when enableGrouping is true',
   const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
   const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
   const length = this.get('items.length');
-  const expectedHeightAsInt = (rowHeight * (length + (length / 20) - 1));
+  const expectedHeightAsInt = ((rowHeight * length) + (28 * (length / 20) - 1));
 
   assert.equal(expectedHeightAsInt, actualHeightAsInt);
 });

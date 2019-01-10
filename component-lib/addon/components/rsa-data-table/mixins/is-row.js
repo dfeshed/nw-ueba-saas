@@ -91,15 +91,15 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
    * @type {number}
    * @private
    */
-  @computed('index', 'height', 'table.groupingSize', 'table.enableGrouping')
-  top(index, height, groupingSize, enableGrouping) {
+  @computed('index', 'height', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight')
+  top(index, height, groupingSize, enableGrouping, groupLabelHeight) {
     let top = (height * index) || 0;
 
     if (enableGrouping) {
       const previousLabelsRendered = parseInt(index / groupingSize, 10);
 
       if (previousLabelsRendered) {
-        const groupLabelOffset = height * previousLabelsRendered;
+        const groupLabelOffset = groupLabelHeight * previousLabelsRendered;
         top = top + groupLabelOffset;
       }
     }
@@ -174,7 +174,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
         });
 
         schedule('afterRender', () => {
-          this.$().append(`<div class="group-label"><div>${label}<div></div>`);
+          this.$().append(`<div class="group-label"><div>${label}</div></div>`);
         });
       }
     }
