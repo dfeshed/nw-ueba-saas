@@ -21,6 +21,8 @@ const _listOfEndpoints = (state) => state.usm.policyWizard.listOfEndpointServers
 export const selectedEdrPolicy = createSelector(
   focusedPolicy, _listOfEndpoints,
   (focusedPolicy, _listOfEndpoints) => {
+    const _i18n = lookup('service:i18n');
+
     const policyDetails = [];
     const scanScheduleSettings = [];
     const advancedScanSettings = [];
@@ -28,6 +30,16 @@ export const selectedEdrPolicy = createSelector(
     const endpointServersSettings = [];
     const agentSettings = [];
     const advancedConfigSettings = [];
+
+    if (focusedPolicy && focusedPolicy.defaultPolicy &&
+      focusedPolicy.policyType === 'edrPolicy' && _.isEmpty(focusedPolicy.primaryAddress)) {
+      endpointServersSettings.push({
+        name: 'adminUsm.policyWizard.edrPolicy.primaryAddress',
+        value: _i18n.t('adminUsm.policies.detail.defaultPrimaryAddress'),
+        tooltip: _i18n.t('adminUsm.policies.detail.defaultPrimaryAddressTooltip'),
+        defaultEndpointServer: true
+      });
+    }
 
     for (const prop in focusedPolicy) {
       if (!isBlank(focusedPolicy[prop])) {

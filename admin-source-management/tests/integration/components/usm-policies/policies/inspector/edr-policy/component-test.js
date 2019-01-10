@@ -147,4 +147,55 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
       `${expectedCustomSetting.substring(0, 253)}...`,
       'custom setting tooltip is as expected');
   });
+
+  test('Default endpoint server and its tooltip is shown for default EDR policy', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    new ReduxDataHelper(setState)
+      .focusedPolicy({
+        id: '__default_edr_policy',
+        policyType: 'edrPolicy',
+        name: 'Default EDR Policy',
+        description: 'Default EDR Policy __default_edr_policy',
+        dirty: false,
+        defaultPolicy: true,
+        lastPublishedCopy: {},
+        lastPublishedOn: 1540318459759,
+        createdOn: 0,
+        lastModifiedOn: 0,
+        associatedGroups: [],
+        scanType: 'ENABLED',
+        scanStartDate: '2018-09-09',
+        scanStartTime: '10:23',
+        recurrenceInterval: 1,
+        recurrenceUnit: 'DAYS',
+        runOnDaysOfWeek: null,
+        cpuMax: 75,
+        cpuMaxVm: 85,
+        // captureFloatingCode: false,
+        downloadMbr: false,
+        // filterSignedHooks: false,
+        requestScanOnRegistration: false,
+        blockingEnabled: false,
+        primaryAddress: '',
+        primaryNwServiceId: '',
+        primaryHttpsPort: 443,
+        primaryHttpsBeaconInterval: null,
+        primaryHttpsBeaconIntervalUnit: null,
+        primaryUdpPort: 444,
+        primaryUdpBeaconInterval: null,
+        primaryUdpBeaconIntervalUnit: null,
+        agentMode: 'INSIGHTS'
+      }).build();
+
+    const expectedDefaultEndpointServer = translation.t('adminUsm.policies.detail.defaultPrimaryAddress');
+    const expectedDefaultEndpointTooltip = translation.t('adminUsm.policies.detail.defaultPrimaryAddressTooltip');
+    await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
+    assert.equal(findAll('.heading').length, 5, '5 headings are shown');
+    assert.equal(findAll('.default-host-name')[0].innerText.trim(),
+      expectedDefaultEndpointServer, 'default endpoint server value is as expected');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[0], 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
+      expectedDefaultEndpointTooltip,
+      'default endpoint tooltip is as expected');
+  });
 });

@@ -43,7 +43,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 1rem;
-      }
+      }      
+    }
+
+    .default-host-name {      
+      color: text-color(primary);
+      padding-top: 0rem;
     }
 
     .count {
@@ -55,7 +60,6 @@
       display: block;
       padding-right: rsa-whitespace();
       color: text-color(primary, light);
-      padding-top: .4rem;
     }
 
     .conjunction {

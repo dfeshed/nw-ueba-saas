@@ -425,4 +425,56 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[4].props[2].value, '5 Minutes', 'https beacon interval unit is as expected');
     assert.equal(policyDetails[4].props[4].value, '5 Seconds', 'udp beacon interval unit is as expected');
   });
+
+  test('default EDR policy has default endpoint server', function(assert) {
+    const state = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizEndpointServers()
+      .focusedPolicy({
+        id: '__default_edr_policy',
+        policyType: 'edrPolicy',
+        name: 'Default EDR Policy',
+        description: 'Default EDR Policy __default_edr_policy',
+        dirty: false,
+        defaultPolicy: true,
+        lastPublishedCopy: {},
+        lastPublishedOn: 1540318459759,
+        createdOn: 0,
+        lastModifiedOn: 0,
+        associatedGroups: [],
+        scanType: 'ENABLED',
+        scanStartDate: '2018-09-09',
+        scanStartTime: '10:23',
+        recurrenceInterval: 1,
+        recurrenceUnit: 'DAYS',
+        runOnDaysOfWeek: null,
+        cpuMax: 75,
+        cpuMaxVm: 85,
+        // captureFloatingCode: false,
+        downloadMbr: false,
+        // filterSignedHooks: false,
+        requestScanOnRegistration: false,
+        blockingEnabled: false,
+        primaryAddress: '',
+        primaryNwServiceId: '',
+        primaryHttpsPort: 443,
+        primaryHttpsBeaconInterval: null,
+        primaryHttpsBeaconIntervalUnit: null,
+        primaryUdpPort: 444,
+        primaryUdpBeaconInterval: null,
+        primaryUdpBeaconIntervalUnit: null,
+        agentMode: 'INSIGHTS'
+      })
+      .build();
+    assert.expect(5);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails);
+    assert.equal(policyDetails.length, 5, '5 sections returned as expected');
+    assert.equal(policyDetails[4].props.length, 3, '3 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[4].props[0].value, 'As Per Packager', 'default value returned as expected');
+    assert.equal(policyDetails[4].props[0].defaultEndpointServer, true, 'flag set as expected');
+    assert.equal(policyDetails[4].props[0].tooltip,
+      'The agent will communicate to the endpoint server defined in the agent packager.',
+      'default endpoint server tooltip is as expected');
+  });
 });

@@ -3963,6 +3963,8 @@ export default {
         windowsLogPolicyEnabled: 'Status',
         primaryDestination: 'Primary Destination',
         secondaryDestination: 'Secondary Destination',
+        defaultPrimaryAddress: 'As Per Packager',
+        defaultPrimaryAddressTooltip: 'The agent will communicate to the endpoint server defined in the agent packager.',
         protocol: 'Protocol',
         sendTestLog: 'Send Test Log',
         eventId: 'Event Id',
@@ -4427,7 +4429,7 @@ export default {
       624: 'Group criteria attribute IPv6 address range value is missing',
       625: 'Group criteria attribute IPv6 address range value is invalid',
       626: 'Group criteria attribute IPv6 address value is invalid',
-      629: 'Invalid advanced configuration: Must be a valid JSON'
+      629: 'Invalid advanced configuration: Must be valid JSON'
     }
   },
   // end admin-source-management (a.k.a USM)
