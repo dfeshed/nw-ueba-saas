@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from presidio.builders.presidioupgrade.presidio_upgrade_operator import PresidioUpgradeOperator
 from presidio.builders.presidioupgrade.presidio_upgrade_utils import presidio_version_comparator
 
@@ -24,6 +25,8 @@ class PresidioUpgradeDagBuilder(object):
                                               bash_command="python %s/%s.py" % (directory_name, version),
                                               dag=dag,
                                               retries=99999,
+                                              retry_delay=timedelta(minutes=5),
+                                              retry_exponential_backoff=True,
                                               task_id=version)
 
             if previous is not None:
