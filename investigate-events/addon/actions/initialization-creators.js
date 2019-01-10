@@ -252,7 +252,7 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
   };
 };
 
-const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, getState) => {
+const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCallback, getState) => {
   // TODO, check for hashes being equal?
 
   return getParamsForHashes(pillDataHashes).then(({ data: paramsObjectArray }) => {
@@ -274,6 +274,7 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, getState) => {
         pillData: newPillData
       }
     });
+    hashNavigateCallback();
   }).catch((err) => {
     handleInvestigateErrorCode(err, 'getParamsForHashes');
   });
@@ -356,7 +357,13 @@ export const initializeInvestigate = function(
       //    params, and if we do, wait for that retrieval to finish.
       //    This must be done after the previous promises because
       //    fetching/creating pills relies on languages being in place
-      await _handleHashInQueryParams(parsedQueryParams, dispatch, getState);
+      await _handleHashInQueryParams(parsedQueryParams, dispatch, hashNavigateCallback, getState);
+    } else {
+      // This callback is required to maintain browser history. There are
+      // 2 conditions where we have to callback this without params fn.
+      // a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
+      // b) When parsedQueryParams neither has hash or pill data(mf)
+      hashNavigateCallback();
     }
 
     // 8) Initialize the querying state so we can get going
