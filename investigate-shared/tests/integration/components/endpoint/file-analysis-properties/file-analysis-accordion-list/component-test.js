@@ -14,14 +14,18 @@ module('Integration | Component | endpoint/file-analysis-properties/file-analysi
 
   test('Accordion list content rendered', async function(assert) {
     const data = {
-      library06: [
-        '.interp01',
-        '.interp02'
-      ],
-      library07: [
-        '.interp01',
-        '.interp02'
-      ]
+      value: {
+        importedDlls1: [
+          '.interp01',
+          '.interp02'
+        ],
+        importedDlls2: [
+          '.interp01',
+          '.interp02'
+        ]
+      },
+      parentTitle: 'investigateShared.endpoint.fileAnalysis.importedDlls.parentTitle',
+      childTitle: 'investigateShared.endpoint.fileAnalysis.importedDlls.childTitle'
     };
     this.set('data', data);
     await render(hbs`{{endpoint/file-analysis-properties/file-analysis-accordion-list data=data}}`);

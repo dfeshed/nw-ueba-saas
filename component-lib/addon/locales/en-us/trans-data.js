@@ -3656,6 +3656,10 @@ export default {
         importedDlls: {
           parentTitle: 'Imported DLLs ({{dllCount}}) and Functions ({{functionCount}})',
           childTitle: '{{importedDllName}} - Functions ({{functionCount}})'
+        },
+        importedDyLib: {
+          parentTitle: 'Imported Dylibs ({{dllCount}}) and Functions ({{functionCount}})',
+          childTitle: '{{importedDllName}} - Functions ({{functionCount}})'
         }
       }
     }

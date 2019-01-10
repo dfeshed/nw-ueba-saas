@@ -21,11 +21,6 @@ const newConfig = {
     'certificatePassword': 'test',
     'serviceName': 'test',
     'displayName': 'Display Name Test'
-  },
-  'logCollectionConfig': {
-    'configName': 'test',
-    'primaryDestination': '10.10.10.10',
-    'channels': [{ channel: 'Security', filter: 'Include', eventId: '1234' }, { channel: 'Security', filter: 'Include', eventId: '111' } ]
   }
 };
 const devices = [{
@@ -75,20 +70,14 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(serviceName.value, 'NWE Agent', 'Expected to match the value "NWE Agent" in DOM.');
   });
 
-  test('Channel filter null validation when generate agent button clicked', async function(assert) {
-    assert.expect(2);
+  test('Accordion is opened only when error is within the accordion section', async function(assert) {
+    assert.expect(4);
     const channelFiltersWithNullData = {
       'packageConfig': {
         'id': '59894c9984518a5cfb8fbec2',
-        'server': '10.101.34.245',
+        'server': 'test',
         'port': 443,
-        'certificatePassword': 'test'
-      },
-      'logCollectionConfig': {
-        'configName': 'test',
-        'primaryDestination': '10.10.10.10',
-        'protocol': 'UDP',
-        'channels': [{ channel: 'Security', filter: 'Include', eventId: '' }]
+        'certificatePassword': ''
       }
     };
     new ReduxDataHelper(setState)
@@ -97,7 +86,33 @@ module('Integration | Component | packager-form', function(hooks) {
       .build();
 
     this.set('selectedProtocol', 'UDP');
-    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+    await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
+    const beforeIsErrorEl = findAll('.packager-form .is-error');
+    assert.equal(beforeIsErrorEl.length, 0, 'is-error class is not present');
+    assert.equal(findAll('.agentConfiguration.is-collapsed').length, 1, 'Accordion is collapsed');
+    await click('.generate-button-js .rsa-form-button');
+    const afterIsErrorEl = findAll('.packager-form .is-error');
+    assert.equal(afterIsErrorEl.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.agentConfiguration.is-collapsed').length, 1, 'Accordion is collapsed, as error is not within the accordion');
+  });
+
+  test('Channel filter null validation when generate agent button clicked', async function(assert) {
+    assert.expect(2);
+    const channelFiltersWithNullData = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': 'test'
+      }
+    };
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', channelFiltersWithNullData)
+      .setData('devices', devices)
+      .build();
+
+    this.set('selectedProtocol', 'UDP');
+    await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
     const beforeIsErrorEl = findAll('.packager-form .is-error');
     assert.equal(beforeIsErrorEl.length, 0, 'is-error class is not present');
     await click('.generate-button-js .rsa-form-button');
@@ -106,19 +121,13 @@ module('Integration | Component | packager-form', function(hooks) {
   });
 
   test('Channel filter regex validation when generate agent button clicked', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
     const channelFiltersWithInvalidData = {
       'packageConfig': {
         'id': '59894c9984518a5cfb8fbec2',
         'server': '10.101.34.245',
         'port': 443,
         'certificatePassword': 'test'
-      },
-      'logCollectionConfig': {
-        'configName': 'test',
-        'protocol': 'UDP',
-        'primaryDestination': '10.10.10.10',
-        'channels': [{ channel: 'Security', filter: 'Include', eventId: 'abcd' }]
       }
     };
     new ReduxDataHelper(setState)
@@ -126,12 +135,14 @@ module('Integration | Component | packager-form', function(hooks) {
       .setData('devices', devices)
       .build();
     this.set('selectedProtocol', 'UDP');
-    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+    await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
     const beforeIsErrorEl = findAll('.packager-form .is-error');
     assert.equal(beforeIsErrorEl.length, 0, 'is-error class is not present');
+    assert.equal(findAll('.agentConfiguration.is-collapsed').length, 1, 'Accordion is collapsed');
     await click('.generate-button-js .rsa-form-button');
     const afterIsErrorEl = findAll('.packager-form .is-error');
     assert.equal(afterIsErrorEl.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.agentConfiguration.is-collapsed').length, 0, 'Accordion is open, as error is within the accordion');
 
   });
   // i am looking into it, some problem with stub usage in ember 3
@@ -142,12 +153,6 @@ module('Integration | Component | packager-form', function(hooks) {
         'server': '10.101.34.245',
         'port': 443,
         'certificatePassword': 'test'
-      },
-      'logCollectionConfig': {
-        'configName': 'test',
-        'protocol': 'UDP',
-        'primaryDestination': '10.10.10.10',
-        'channels': [{ channel: 'Security', filter: 'Include', eventId: '111111111111' }]
       }
     };
     new ReduxDataHelper(setState)
@@ -155,7 +160,7 @@ module('Integration | Component | packager-form', function(hooks) {
       .setDevices(devices)
       .build();
     this.set('selectedProtocol', 'UDP');
-    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+    await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
     const error = { meta: { reason: 'EVENT_ID_INVALID', identifier: 1 } };
     const beforeIsErrorEl = findAll('.packager-form .is-error');
     assert.equal(beforeIsErrorEl.length, 0, 'is-error class is not present');
@@ -233,7 +238,7 @@ module('Integration | Component | packager-form', function(hooks) {
     this.set('selectedProtocol', 'UDP');
     this.set('testLog', false);
     this.set('status', 'disabled');
-    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol testLog=testLog status=status}}`);
+    await render(hbs`{{packager-form selectedProtocol=selectedProtocol testLog=testLog status=status}}`);
     await click('.reset-button .rsa-form-button');
     const protocol = this.get('selectedProtocol');
     const testLog = this.get('testLog');

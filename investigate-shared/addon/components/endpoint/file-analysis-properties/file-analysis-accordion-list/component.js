@@ -10,15 +10,15 @@ export default Component.extend({
   classNames: ['file-analysis-accordion-list'],
 
   @computed('data')
-  importedDllInfoList(data) {
-    const keys = data ? Object.keys(data) : [];
+  importedDllInfoList({ value }) {
+    const keys = value ? Object.keys(value) : [];
     let totalFunctionCount = 0;
 
     const importedDllAndFunctionCountList = keys && keys.map(
       (importedDll) => {
-        const functionCount = data[importedDll].length;
+        const functionCount = value[importedDll].length;
         totalFunctionCount = totalFunctionCount + functionCount;
-        const functionList = [...data[importedDll]];
+        const functionList = [...value[importedDll]];
         return {
           importedDll,
           functionCount,

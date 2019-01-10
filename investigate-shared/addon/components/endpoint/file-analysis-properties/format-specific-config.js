@@ -18,7 +18,10 @@ export default {
         },
         {
           field: 'pe.importedDlls',
-          format: 'ACCORDIONLIST'
+          format: 'ACCORDIONLIST',
+          parentTitle: 'investigateShared.endpoint.fileAnalysis.importedDlls.parentTitle',
+          childTitle: 'investigateShared.endpoint.fileAnalysis.importedDlls.childTitle'
+
         },
         {
           field: 'pe.sectionNames',
@@ -60,7 +63,9 @@ export default {
         },
         {
           field: 'macho.importedDlls',
-          format: 'ACCORDIONLIST'
+          format: 'ACCORDIONLIST',
+          parentTitle: 'investigateShared.endpoint.fileAnalysis.importedDyLib.parentTitle',
+          childTitle: 'investigateShared.endpoint.fileAnalysis.importedDyLib.childTitle'
         },
         {
           field: 'macho.segmentNames',

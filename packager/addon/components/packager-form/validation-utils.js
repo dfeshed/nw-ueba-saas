@@ -40,25 +40,29 @@ export const validatePackageConfig = (formData) => {
   if (!VALID_NAME_PATTERN.test(serviceName)) {
     return {
       isServiceNameError: true,
-      invalidServiceNameMessage: 'packager.errorMessages.invalidName'
+      invalidServiceNameMessage: 'packager.errorMessages.invalidName',
+      isAccordion: true
     };
   }
   if (!VALID_DISPLAY_NAME_PATTERN.test(displayName)) {
     return {
       isDisplayNameError: true,
-      invalidDisplayNameMessage: 'packager.errorMessages.invalidName'
+      invalidDisplayNameMessage: 'packager.errorMessages.invalidName',
+      isAccordion: true
     };
   }
   if (!VALID_DISPLAY_NAME_PATTERN.test(driverServiceName)) {
     return {
       isDriverServiceNameError: true,
-      invalidServiceNameMessage: 'packager.errorMessages.invalidName'
+      invalidServiceNameMessage: 'packager.errorMessages.invalidName',
+      isAccordion: true
     };
   }
   if (!VALID_DISPLAY_NAME_PATTERN.test(driverDisplayName)) {
     return {
       isDriverDisplayNameError: true,
-      invalidDisplayNameMessage: 'packager.errorMessages.invalidName'
+      invalidDisplayNameMessage: 'packager.errorMessages.invalidName',
+      isAccordion: true
     };
   }
   return null;

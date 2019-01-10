@@ -51,6 +51,7 @@ test('validatePackageConfig - invalid serviceName', function(assert) {
   const error = validatePackageConfig(formData);
   assert.deepEqual(error, {
     'invalidServiceNameMessage': 'packager.errorMessages.invalidName',
-    'isServiceNameError': true
+    'isServiceNameError': true,
+    'isAccordion': true
   });
 });

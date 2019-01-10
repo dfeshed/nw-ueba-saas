@@ -76,9 +76,11 @@
     {{t 'packager.forceOverwrite'}}
   </label>
 </div>
-
-<div class='agentConfiguration'>
-  <h3>{{t 'packager.agentConfiguration'}}</h3>
+{{#rsa-content-accordion
+  animate=animate
+  isCollapsed=true
+  class='agentConfiguration'
+  label=(t 'packager.agentConfiguration')}}
   <p class='agentConfigNote'>{{t 'packager.agentConfigNote'}}</p>
   <div class='agentConfigurationService'>
     <h3>{{t 'packager.service'}}</h3>
@@ -144,8 +146,8 @@
       </div>
     </div>
   </div>
-</div>
 
+{{/rsa-content-accordion}}
 <div class="field buttons">
   <hbox class="rsa-button-group">
     {{#rsa-form-button class="reset-button" isDisabled=isResetDisabled defaultAction=(action 'reset')}}

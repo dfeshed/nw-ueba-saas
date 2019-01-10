@@ -153,6 +153,12 @@ const formComponent = Component.extend({
     };
   },
 
+  _agentConfigExpand() {
+    if (document.querySelector('.agentConfiguration.is-collapsed')) {
+      document.querySelector('.agentConfiguration > h3').click();
+    }
+  },
+
   actions: {
 
     validate(value) {
@@ -186,6 +192,9 @@ const formComponent = Component.extend({
         this.send('saveUIState', this.get('configData'));
         this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, this._getCallbackFunction(), this.get('serverId'));
       } else {
+        if (error.isAccordion) {
+          this._agentConfigExpand();
+        }
         this._scrollTo('.server-input-group');
       }
     },
