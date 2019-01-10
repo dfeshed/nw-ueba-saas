@@ -31,7 +31,7 @@ export default {
       ]
     },
     {
-      sectionName: 'Packaging Detection',
+      sectionName: 'Packing Detection',
       fields: [
         {
           field: 'pe.entryPointValid'
@@ -76,7 +76,7 @@ export default {
       ]
     },
     {
-      sectionName: 'Packaging Detection',
+      sectionName: 'Packing Detection',
       fields: [
         {
           field: 'macho.entryPointValid'
@@ -119,7 +119,7 @@ export default {
       ]
     },
     {
-      sectionName: 'Packaging Detection',
+      sectionName: 'Packing Detection',
       fields: [
         {
           field: 'elf.entryPointValid'
@@ -138,7 +138,7 @@ export default {
   ],
   default: [
     {
-      sectionName: 'Packaging Detection',
+      sectionName: 'Packing Detection',
       fields: [
         {
           field: 'entropy'

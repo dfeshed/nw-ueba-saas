@@ -3,6 +3,8 @@
   padding: 15px;
   overflow: auto;
   height: calc(100vh - 305px);
-  background-color: transparent;
+  background-color: background-color(primary, darker);
   color: text-color(primary, light);
+  border: 0px;
+  font-size: 1rem;
 }
