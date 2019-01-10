@@ -93,3 +93,14 @@ test('md5 is set for checksum when sha256 is not there', function(assert) {
   assert.equal(result.source.hash, '09a1afb374069223e1ec1d2609a42e87', 'Source hash (md5) is set');
   assert.equal(result.destination.hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Destination hash is Sha256');
 });
+
+test('operating_system property for tranformed event should set only for valid supported types of windows, linux and mac', function(assert) {
+  const event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['OS', 'windows'],
+      ['OS', 'windows 10 edition']
+    ] };
+  const result = transform(event);
+  assert.equal(result.operating_system, 'windows', 'Operating System sets as windows');
+});

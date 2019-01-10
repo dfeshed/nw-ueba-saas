@@ -33,7 +33,7 @@ export const createProcessAnalysisLink = (item, services) => {
   const endTime = now.unix();
   const startTime = now.subtract(7, 'days').unix();
 
-  if (item.device_type === 'nwendpoint' && item.agent_id && item.source.hash && item.source.filename && item.process_vid && item.operating_system && sid) {
+  if (item.device_type === 'nwendpoint' && item.agent_id && item.source.hash && item.source.filename && item.process_vid && item.operating_system && item.operating_system !== 'linux' && sid) {
     const processAnalysisQueryString = [
       `checksum=${item.source.hash}`,
       `sid=${sid}`,

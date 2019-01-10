@@ -1,5 +1,6 @@
+import moment from 'moment';
+
 const META_MAP = {
-  'OS': 'operating_system',
   'device.type': 'device_type',
   'category': 'category',
   'time': 'timestamp',
@@ -15,8 +16,7 @@ const META_MAP = {
   'process.vid.src': 'process_vid'
 };
 
-import moment from 'moment';
-
+const OS_TYPE_SUPPORTED = ['windows', 'linux', 'mac'];
 
 /* Both md5 and Sha256 checksum values are present in the same meta key. If Sha256 is present, use it.
    Otherwise, use md5
@@ -105,6 +105,11 @@ export const transform = (event) => {
           break;
         case 'forward.ip':
           forwardIp = metaValue;
+          break;
+        case 'OS':
+          if (OS_TYPE_SUPPORTED.includes(metaValue)) {
+            newEvent.operating_system = metaValue;
+          }
           break;
       }
     }

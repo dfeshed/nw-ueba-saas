@@ -32,20 +32,39 @@ test('Calling lookupCoreDevice() returns false when event source detail is incor
   assert.equal(result, false);
 });
 
-test('Calling createProcessAnalysisLink() returned process analysis link', function(assert) {
+test('Calling createProcessAnalysisLink() with all necessary event metas returned process analysis link', function(assert) {
 
   const result = createProcessAnalysisLink(event, services);
 
   assert.ok(result, 'Expected valid process analysis link');
 });
 
-test('Calling createProcessAnalysisLink() when process_vid is missing returns null', function(assert) {
+test('Calling createProcessAnalysisLink() when process_vid is missing returns undefined', function(assert) {
 
   const eventItem = {
     'agent_id': 'C73CD5FF-5962-4A5F-2E9D-1CFFF4DFED2D',
     'event_source': '10.40.15.182:50002',
     'device_type': 'nwendpoint',
     'operating_system': 'windows',
+    'source': {
+      'filename': 'POWERSHELL.EXE',
+      'hash': '6bd1f5ab9250206ab3836529299055e272ecaa35a72cbd0230cb20ff1cc30902'
+    }
+  };
+
+  const result = createProcessAnalysisLink(eventItem, services);
+
+  assert.notOk(result, 'Expected valid process analysis link');
+});
+
+test('Calling createProcessAnalysisLink() when os type is linux returns undefined', function(assert) {
+
+  const eventItem = {
+    'agent_id': 'C73CD5FF-5962-4A5F-2E9D-1CFFF4DFED2D',
+    'event_source': '10.40.15.182:50002',
+    'device_type': 'nwendpoint',
+    'operating_system': 'linux',
+    'process_vid': '9217136421101689658',
     'source': {
       'filename': 'POWERSHELL.EXE',
       'hash': '6bd1f5ab9250206ab3836529299055e272ecaa35a72cbd0230cb20ff1cc30902'
