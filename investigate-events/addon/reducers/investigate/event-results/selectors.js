@@ -7,6 +7,7 @@ const { createSelector } = reselect;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
+const _eventResultSetStart = (state) => state.investigate.eventResults.eventResultSetStart;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
@@ -15,6 +16,18 @@ const _isAllEventsSelected = (state) => state.investigate.eventResults.allEvents
 const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
 
 export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
+
+export const RESULT_SET_START = {
+  OLDEST: 'Oldest',
+  NEWEST: 'Newest'
+};
+
+export const shouldStartAtOldest = createSelector(
+  [_eventResultSetStart],
+  (eventResultSetStart) => {
+    return eventResultSetStart === RESULT_SET_START.OLDEST;
+  }
+);
 
 export const areEventsStreaming = createSelector(
   [_status],

@@ -1,7 +1,7 @@
 // Temporary while feature goes through QE
 /* eslint-disable  no-console */
 
-// window.DEBUG_STREAMS = true;
+window.DEBUG_STREAMS = true;
 
 import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import { queryIsRunning } from 'investigate-events/actions/initialization-creators';
@@ -72,6 +72,7 @@ const _resetForNextBatch = () => {
 const _done = (errorCode, serverMessage) => {
   return (dispatch) => {
     if (window.DEBUG_STREAMS) {
+      console.timeEnd();
       console.log('ALL DONE');
     }
 
@@ -374,8 +375,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // AND we have not reached the end of the time range. Need to go
         // get more events.
 
-        const eventCountLessThanStreamLimit = !!eventCount && eventCount < streamLimit;
-        if (eventCountLessThanStreamLimit) {
+        const isEventCountLessThanStreamLimit = !!eventCount && eventCount < streamLimit;
+        if (isEventCountLessThanStreamLimit) {
           if (window.DEBUG_STREAMS) {
             console.log('Event count says we can just get all the rest, so lets do that');
           }
@@ -470,17 +471,20 @@ export const cancelEventsStream = () => {
   currentStreamState.cancelled = true;
 };
 
-
 /**
- * Kicks off a descending search for events. Descending searches
+ * Kicks off a search for the newest events. Newest event searches
  * are very complex because the data itself never comes back
- * descending. So we have to slice off little time ranges at the
+ * top-down. So we have to slice off little time ranges at the
  * most recent edge of the time boundary in an attempt to
  * piece together a result set comprised of the most recent data.
  * @public
  */
-export const eventsStartDescending = () => {
+export const eventsStartNewest = () => {
   return (dispatch, getState) => {
+    if (window.DEBUG_STREAMS) {
+      console.time();
+    }
+
     const { queryNode } = getState().investigate;
 
     currentStreamState.binarySearchBatchStartTime = { tooMany: 0, noResults: 0 };
@@ -503,6 +507,121 @@ export const eventsStartDescending = () => {
     // Kick off batching with the initial set
     // of parameters for the first batch
     dispatch(_getEventsBatch(startTimeForFirstBatch, queryNode.endTime));
+  };
+};
+
+/**
+ * Kicks off a search for the oldest events. This is a simple search to
+ * execute because the sort order from the database is naturally oldest
+ * first
+ * @public
+ */
+export const eventsStartOldest = () => {
+  if (window.DEBUG_STREAMS) {
+    console.time();
+  }
+
+  currentStreamState.cancelled = false;
+
+  _resetForNextBatch();
+
+  return (dispatch, getState) => {
+
+    const handlers = {
+      onInit(stopStream) {
+        currentStreamState.stopStreamingCallbacks.push(stopStream);
+        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
+      },
+      onResponse(response) {
+        // if we cancelled before this message got back, do not
+        // bother processing it
+        if (currentStreamState.cancelled) {
+          return;
+        }
+
+        const { data: _payload, meta } = response || {};
+        const payload = Array.isArray(_payload) ? _payload : [];
+        const description = meta ? meta.description : null;
+        const percent = meta ? meta.percent : '0';
+
+        // A streaming websocket call goes through different phases. First is
+        // `Queued`, then `Executing`, then an optional, unnamed "data" phase.
+        // Brokers appear to only use the first two pahses, while concentrators
+        // use all three. For the first two phases, the data property could be
+        // an empty array. When we dispatch that, it will show a message that
+        // the query filters returned no data, which isn't necessarily true.
+        // We will always skip the `Queued` phase. We will skip the `Executing`
+        // phase if `percent` is less than 100% and we have no data to show.
+        // This covers brokers as they fetch data from their connected devices
+        // and return it in the `Executing` phase. Concentrators will return
+        // their data in the unnamed "data" phase.
+        const lowerCaseDesc = description ? description.toLowerCase() : null;
+        if (description && (lowerCaseDesc === 'queued' ||
+           (lowerCaseDesc === 'executing' && parseInt(percent, 10) < 100 && payload.length === 0))) {
+          return;
+        } else {
+          payload.forEach(mergeMetaIntoEvent);
+          dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
+
+          const { investigate } = getState();
+          const { data, streamLimit } = investigate.eventResults;
+
+          const totalEvents = data.length;
+          const areEventsAtLimit = totalEvents >= streamLimit;
+
+          if (window.DEBUG_STREAMS) {
+            console.log(`Received batch of ${payload.length} to make ${totalEvents}`);
+            console.timeEnd();
+            console.time();
+          }
+
+          // The stream does not indicate it is 'complete' if it hits the limit
+          // so we have to detect that and jump to complete.
+          if (areEventsAtLimit) {
+            if (window.DEBUG_STREAMS) {
+              console.log('Query is ending because the limit has been hit');
+            }
+            dispatch(queryIsRunning(false));
+            dispatch(_handleEventsStatus('complete'));
+          }
+        }
+      },
+      onError(response = {}) {
+        const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
+        dispatch({
+          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
+          payload: { status: 'error', reason: errorCode, message: serverMessage }
+        });
+        dispatch(queryIsRunning(false));
+      },
+      onCompleted() {
+        if (window.DEBUG_STREAMS) {
+          console.timeEnd();
+          console.log('Query is ending because we received all results');
+        }
+
+        dispatch(queryIsRunning(false));
+        dispatch(_handleEventsStatus('complete'));
+      },
+      onStopped() {
+        dispatch(queryIsRunning(false));
+        dispatch(_handleEventsStatus('stopped'));
+      }
+    };
+
+    const state = getState();
+    const { investigate } = state;
+    const { queryNode } = investigate;
+    const { language } = investigate.dictionaries;
+    const { streamLimit, streamBatch } = investigate.eventResults;
+    fetchStreamingEvents(
+      queryNode,
+      language,
+      streamLimit,
+      streamBatch,
+      handlers,
+      getFlattenedColumnList(state)
+    );
   };
 };
 

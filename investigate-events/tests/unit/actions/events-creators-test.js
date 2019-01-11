@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 import {
-  eventsStartDescending
+  eventsStartNewest,
+  eventsStartOldest
 } from 'investigate-events/actions/events-creators';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
@@ -36,7 +37,7 @@ const getState = () => {
     .build();
 };
 
-const downstreamDispatchCreator = (assert, asserts) => {
+const downstreamNewestDispatchCreator = (assert, asserts) => {
 
   const downstreamDispatch = (actionOrThunk) => {
     if (noMoreEventsAllowed) {
@@ -85,6 +86,54 @@ const downstreamDispatchCreator = (assert, asserts) => {
   return downstreamDispatch;
 };
 
+const downstreamOldestDispatchCreator = (assert, asserts) => {
+
+  const downstreamDispatch = (actionOrThunk) => {
+    if (noMoreEventsAllowed) {
+      assert.ok(false, 'should not have taken in more events');
+      return;
+    }
+
+    if (typeof actionOrThunk === 'function') {
+      // is another thunk, recurse
+      actionOrThunk(downstreamDispatch, getState);
+    } else {
+
+      allActionsDispatched.push(actionOrThunk);
+
+      if (actionOrThunk.type === ACTION_TYPES.QUERY_IS_RUNNING) {
+        queryIsRunning = actionOrThunk.payload;
+      }
+      if (actionOrThunk.type === ACTION_TYPES.INIT_EVENTS_STREAMING) {
+        status = 'streaming';
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE_STATUS) {
+        status = actionOrThunk.payload;
+        if (status === 'complete') {
+          noMoreEventsAllowed = true;
+          actionsByType = {};
+          allActionsDispatched.forEach((action) => {
+            if (actionsByType[action.type]) {
+              actionsByType[action.type].push(action);
+            } else {
+              actionsByType[action.type] = [action];
+            }
+          });
+
+          assert.equal(queryIsRunning === false, true, 'query is running flag should be false');
+          assert.equal(status, 'complete', 'query is complete');
+          asserts();
+        }
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
+        queryResults = queryResults.concat(actionOrThunk.payload);
+      }
+    }
+  };
+
+  return downstreamDispatch;
+};
+
 module('Unit | Actions | event-creators', function(hooks) {
   setupTest(hooks);
 
@@ -115,8 +164,8 @@ module('Unit | Actions | event-creators', function(hooks) {
       done();
     };
 
-    const eventsStartDescendingThunk = eventsStartDescending();
-    eventsStartDescendingThunk(downstreamDispatchCreator(assert, asserts), getState);
+    const eventsStartNewestThunk = eventsStartNewest();
+    eventsStartNewestThunk(downstreamNewestDispatchCreator(assert, asserts), getState);
   });
 
   test('Pages way smaller range correctly', function(assert) {
@@ -131,7 +180,7 @@ module('Unit | Actions | event-creators', function(hooks) {
       // only want 700, but 1000 will stream in as entire results have to be processed
       // (gets truncated in reducer)
       assert.equal(queryResults.length, 1000, 'total results accumulated');
-      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '4 pages of data dispatched');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
       assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 2, 'set status twice');
@@ -140,7 +189,30 @@ module('Unit | Actions | event-creators', function(hooks) {
       done();
     };
 
-    const eventsStartDescendingThunk = eventsStartDescending();
-    eventsStartDescendingThunk(downstreamDispatchCreator(assert, asserts), getState);
+    const eventsStartNewestThunk = eventsStartNewest();
+    eventsStartNewestThunk(downstreamNewestDispatchCreator(assert, asserts), getState);
+  });
+
+  test('david Retrieves oldest data when does not hit limit', function(assert) {
+    assert.expect(9);
+    const done = assert.async();
+
+    streamBatch = 250;
+    // limit of 1000, 500 get returned so stream ends naturally
+    streamLimit = 1000;
+
+    const asserts = () => {
+      assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
+      assert.equal(queryResults.length, 500, 'total results accumulated');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
+      assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
+      assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 1, 'set status once');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'complete', 'first status call is to indicate between streams');
+      done();
+    };
+
+    const eventsStartOldestThunk = eventsStartOldest();
+    eventsStartOldestThunk(downstreamOldestDispatchCreator(assert, asserts), getState);
   });
 });
