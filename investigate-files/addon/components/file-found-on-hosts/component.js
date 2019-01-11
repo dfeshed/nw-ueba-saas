@@ -45,7 +45,7 @@ const fileHosts = Component.extend({
       this.send('fetchAgentId', item, ([data]) => {
         if (!this.get('isDestroyed') && !this.get('isDestroying')) {
           const serverId = this.get('serverId');
-          window.open(`${window.location.origin}/investigate/hosts?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
+          window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
         }
       });
     }

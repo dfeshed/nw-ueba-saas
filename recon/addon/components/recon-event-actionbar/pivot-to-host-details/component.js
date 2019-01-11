@@ -15,7 +15,7 @@ const PivotToHostDetail = Component.extend({
   actions: {
     goToHostDetails() {
       const { agentId, sid } = this.getProperties('agentId', 'sid');
-      window.open(`${window.location.origin}/investigate/hosts?machineId=${agentId}&sid=${sid}&tabName=OVERVIEW`);
+      window.open(`${window.location.origin}/investigate/hosts/${agentId}?machineId=${agentId}&sid=${sid}&tabName=OVERVIEW`);
     }
   }
 });

@@ -27,6 +27,7 @@ import { getCertificates } from 'investigate-files/actions/certificate-data-crea
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import { failure } from 'investigate-shared/utils/flash-messages';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -95,7 +96,14 @@ const _fetchFiles = (type) => {
 };
 
 const initializeFileDetails = (checksum) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { files: { filter } } = getState();
+    //  To fix the filter reload issue we need to set the applied filter as a saved filter
+    if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
+    }
+
     dispatch(getServiceId('FILE', () => {
       dispatch(_fetchHostNameList(checksum));
     }));
