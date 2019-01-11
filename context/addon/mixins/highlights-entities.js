@@ -370,7 +370,6 @@ export default Mixin.create({
    * @private
    */
   _highlightEntity($el, types, metas) {
-
     // Read the entity type from the DOM node.
     let type = $el.attr(HTML_ATTR_ENTITY_TYPE);
     if (!type) {
@@ -441,6 +440,7 @@ export default Mixin.create({
     if (dontUnwireTooltips !== true) {
       (this._requests || []).forEach(({ elementId }) => {
         const $element = $(`#${elementId}`);
+        $element.removeClass(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
         this._unwireEntityToTooltip($element);
       });
     }

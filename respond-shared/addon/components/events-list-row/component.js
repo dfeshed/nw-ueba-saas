@@ -1,4 +1,5 @@
 import layout from './template';
+import { next, join } from '@ember/runloop';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { guidFor } from '@ember/object/internals';
@@ -17,6 +18,14 @@ export default Component.extend(HighlightsEntities, {
   classNameBindings: ['expanded'],
   classNames: ['events-list-table-row'],
   attributeBindings: ['testId:test-id'],
+
+  didUpdateAttrs() {
+    this._super(...arguments);
+    join(() => {
+      this.teardownEntities();
+      next(this, 'highlightEntities');
+    });
+  },
 
   @computed('expanded')
   tabIndex(expanded) {

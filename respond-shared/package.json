@@ -32,6 +32,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0"
   },
   "devDependencies": {
+    "ember-redux": "4.0.0",
     "babel-eslint": "10.0.1",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^3.0.0",

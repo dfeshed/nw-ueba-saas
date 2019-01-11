@@ -300,7 +300,7 @@ export default [].concat(
       'from': '',
       'host_dst': '',
       'host_src': '',
-      'hostname': 'INENMENONS4L2C',
+      'hostname': 'LINUXHOSTNAME',
       'operating_system': 'linux',
       'port_dst': '',
       'related_links': [

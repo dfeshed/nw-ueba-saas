@@ -1,11 +1,13 @@
 import arrayFlattenBy from 'respond-shared/utils/array/flatten-by';
 import arrayFilterByList from 'respond-shared/utils/array/filter-by-list';
 
+export const endpointAlertSelectionId = '5b8554be0a32bd353ad3a167';
 export const alertSelectionId = '5b841c880a32bd5a68baeaf3';
 export const eventSelectionId = '5b7f06c10a32bd5a68baea84:0';
 export const reEventId = '5b841c880a32bd5a68baeaf3:0';
 export const networkEventId = '5b757f480a32bd36c7609e96:0';
 export const endpointEventId = '5b8554be0a32bd353ad3a167:0';
+export const linuxEndpointEventId = '5b8554be0a32bd353ad3a167:2';
 export const ecatEventId = '5b7f06c10a32bd5a68baea84:0';
 export const uebaEventId = '44732bcc-b9e8-4b2d-badb-e8747c98db46';
 export const endpointRelatedLinkOne = '/investigation/host/10.63.0.117:56005/navigate/event/AUTO/857775';
@@ -1335,7 +1337,7 @@ const storyLineEvents = {
               from: '',
               host_dst: '',
               host_src: '',
-              hostname: 'INENMENONS4L2C',
+              hostname: 'LINUXHOSTNAME',
               operating_system: 'linux',
               port_dst: '',
               related_links: [
@@ -1390,7 +1392,7 @@ const storyLineEvents = {
               username: '',
               indicatorId: '5b8554be0a32bd353ad3a167',
               eventIndex: 2,
-              id: '5b8554be0a32bd353ad3a167:2'
+              id: linuxEndpointEventId
             },
             {
               action: 'openProcess',
@@ -2130,6 +2132,33 @@ export const getAlertSelection = () => {
     type: 'storyPoint',
     ids: [
       alertSelectionId
+    ]
+  };
+};
+
+export const filterEndpointEventsBySelection = (selectionType) => {
+  if (selectionType === 'alert') {
+    return arrayFilterByList(getAllEvents(), 'indicatorId', [endpointAlertSelectionId]);
+  }
+  return arrayFilterByList(getAllEvents(), 'id', [linuxEndpointEventId]);
+};
+
+export const getEndpointEventSelection = () => {
+  return {
+    id: 'INC-108',
+    type: 'event',
+    ids: [
+      linuxEndpointEventId
+    ]
+  };
+};
+
+export const getEndpointAlertSelection = () => {
+  return {
+    id: 'INC-108',
+    type: 'storyPoint',
+    ids: [
+      endpointAlertSelectionId
     ]
   };
 };

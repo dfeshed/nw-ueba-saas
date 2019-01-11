@@ -141,7 +141,8 @@ const saModuleDependants = {
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [
     'sa',
-    'respond'
+    'respond',
+    'respond-shared'
   ],
   preferences: [
     'sa',
