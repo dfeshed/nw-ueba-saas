@@ -345,7 +345,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 9, 'Context menu rendered');
+      assert.equal(items.length, 8, 'Context menu rendered');
     });
   });
 
@@ -376,7 +376,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[1], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
-      await click(findAll(`${selector} > .context-menu__item`)[7]);
+      await click(findAll(`${selector} > .context-menu__item`)[6]);
       const redux = this.owner.lookup('service:redux');
       return waitUntil(() => redux.getState().endpoint.detailsInput.downloadLink !== null, { timeout: 6000 })
         .then(() => {

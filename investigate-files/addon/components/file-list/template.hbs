@@ -41,9 +41,10 @@
         editFileStatus=(action 'showEditFileStatus')
         resetRiskScore=(action 'showRiskScoreModal')
         pivotToInvestigate=(action 'pivotToInvestigate')
-        onSaveFileStatus = (action 'saveFileStatus' checksums)
+        onSaveFileStatus=(action 'saveFileStatus' checksums)
         retrieveRemediationStatus=(action 'retrieveRemediationStatus')
-        toggleCertificateView=(action 'toggleCertificateView')
+        showViewCertificate=true
+        navigateToCertificateView=(action 'toggleCertificateView')
       )
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}

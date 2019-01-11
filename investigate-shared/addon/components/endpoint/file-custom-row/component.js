@@ -101,17 +101,6 @@ export default DataTableBodyRow.extend({
         ]
       },
       {
-        label: 'viewCertificate',
-        order: 5,
-        prefix: 'investigateShared.endpoint.fileActions.',
-        disabled(selection, context) {
-          return context.get('selections').length > 10;
-        },
-        action(selection, context) {
-          context.toggleCertificateView();
-        }
-      },
-      {
         label: 'resetRiskScore',
         order: 6,
         prefix: 'investigateShared.endpoint.fileActions.',
@@ -121,6 +110,22 @@ export default DataTableBodyRow.extend({
         }
       }
     ];
+
+    if (this.get('showViewCertificate')) {
+      contextConf.push(
+        {
+          label: 'viewCertificate',
+          order: 5,
+          prefix: 'investigateShared.endpoint.fileActions.',
+          disabled(selection, context) {
+            return context.get('selections').length > 10;
+          },
+          action(selection, context) {
+            context.navigateToCertificateView();
+          }
+        }
+      );
+    }
 
     if (this.get('fileDownloadButtonStatus') && canManageFiles) {
 

@@ -10,7 +10,7 @@ const INVESTIGATE_META_MAPPING = {
   'checksumSha256': 'checksum.all',
   'checksumMd5': 'checksum.all',
   'firstFileName': 'filename',
-  'thumbprint': 'cert.checksum'
+  'thumbprint': 'cert.thumbprint'
 };
 
 const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];

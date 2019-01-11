@@ -11,7 +11,9 @@ const _expressionListForThumbprint = (selectedFileList) => {
     const { signature } = item;
     if (signature) {
       const { thumbprint } = signature;
-      return { value: thumbprint };
+      if (thumbprint) {
+        return { value: thumbprint };
+      }
     }
   }).compact();
   return [{

@@ -575,7 +575,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 7, 'Context menu not rendered');
+      assert.equal(items.length, 6, 'Context menu not rendered');
     });
   });
 
@@ -609,7 +609,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 10, 'Context menu rendered');
+      assert.equal(items.length, 9, 'Context menu rendered');
     });
   });
 
@@ -879,7 +879,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[7].id}`); // Edit file status
+      await click(`#${menuItems[6].id}`); // Edit file status
     });
 
   });
@@ -935,7 +935,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[9].id}`); // Edit file status
+      await click(`#${menuItems[8].id}`); // Edit file status
     });
 
   });

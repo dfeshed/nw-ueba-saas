@@ -176,7 +176,7 @@ const FILTER_TYPES = [
     'name': 'machineIdentity.agentVersion',
     'label': 'investigateHosts.hosts.column.machineIdentity.agentVersion',
     'type': 'text',
-    'placeholder': 'e.g., 11.0.0',
+    'placeholder': 'e.g., 11.0.0.0',
     'validations': {
       format: {
         validator: (value) => {
