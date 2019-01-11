@@ -193,7 +193,7 @@ module('Unit | Actions | event-creators', function(hooks) {
     eventsStartNewestThunk(downstreamNewestDispatchCreator(assert, asserts), getState);
   });
 
-  test('david Retrieves oldest data when does not hit limit', function(assert) {
+  test('Retrieves oldest data when does not hit limit', function(assert) {
     assert.expect(9);
     const done = assert.async();
 

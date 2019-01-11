@@ -114,7 +114,7 @@ export const calculateNextGapAfterFailure = (
   if (isReturningTooManyResults) {
     // too many results being returned, need to shrink gap
     binarySearchData.tooMany = lastGap;
-    newGap = Math.floor((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
+    newGap = Math.ceil((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
   } else {
     // 0 results being returned, need to increase gap to try to get some
     binarySearchData.noResults = lastGap;

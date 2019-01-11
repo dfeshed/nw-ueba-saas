@@ -117,6 +117,16 @@ const _handleEventsStatus = (newStatus) => {
   };
 };
 
+// Prepares and sends events to state
+const _dispatchEvents = () => {
+  currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent);
+  return {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: currentStreamState.currentBatchEvents
+  };
+};
+
+
 // Checks to see if the count provided is over the streamLimit,
 // if it is, then we need to re-execute another batch with a smaller
 // time window.
@@ -124,21 +134,33 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
   return (dispatch, getState) => {
     const { investigate } = getState();
     const { streamLimit } = investigate.eventResults;
+
     if (countToCheck >= streamLimit) {
       // too many results, need better gap
       const batchWindow = batchEndTime - batchStartTime;
 
       if (window.DEBUG_STREAMS) {
         console.log('too MANY results, need to try for less, last window was', batchWindow);
-        if (batchWindow === 1) {
-          console.error('We have the smallest possible window and too many events, let David know about this!');
-        }
       }
 
-      const newGap = calculateNextGapAfterFailure(
-        currentStreamState.binarySearchBatchStartTime, batchWindow, true);
-      const newStartTime = batchEndTime - newGap;
-      dispatch(_getEventsBatch(newStartTime, batchEndTime));
+      if (batchWindow > 1) {
+        const newGap = calculateNextGapAfterFailure(
+          currentStreamState.binarySearchBatchStartTime, batchWindow, true);
+        const newStartTime = batchEndTime - newGap;
+        dispatch(_getEventsBatch(newStartTime, batchEndTime));
+      } else {
+
+        if (window.DEBUG_STREAMS) {
+          console.log(`window was all the way down to ${batchWindow}, just going with what we have and end search`);
+        }
+
+        // So we have a window that is 0 or 1 second long, and in that window
+        // we have too many results. We can't get smaller. So just dispatch
+        // the events and get outta Dodge. The user won't get the "latest" events
+        // within that second, but there's just no way to do that.
+        dispatch(_dispatchEvents());
+        dispatch(_done());
+      }
     }
   };
 };
@@ -158,6 +180,9 @@ const _getBatchEventCount = (queryNode, language, streamLimit, dispatch) => {
       // protect against null data while query is being processed
       // and when devices are re  turned
       if (response.data != null) {
+        if (window.DEBUG_STREAMS) {
+          console.log('Count returned, it is', response.data);
+        }
         // Don't need to keep the event count stream going, kill it
         _stopStream();
         // check if the count is over the limit and react
@@ -312,19 +337,23 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // completed with no results? We need to try again with
         // a larger window, because we expect results.
         if (currentStreamState.currentBatchEvents.length === 0) {
-          if (window.DEBUG_STREAMS) {
-            console.log('too FEW results, need to try for more');
-          }
-
           // calculate a new start time
           const batchWindow = batchEndTime - batchStartTime;
           const newGap = calculateNextGapAfterFailure(
             currentStreamState.binarySearchBatchStartTime, batchWindow, false);
           let newStartTime = batchEndTime - newGap;
 
+          if (window.DEBUG_STREAMS) {
+            console.log('too FEW results, need to try for more, last window was', batchWindow);
+          }
+
+
           // Don't let the start time be before the actual window
           // start time
           if (newStartTime < queryNode.startTime) {
+            if (window.DEBUG_STREAMS) {
+              console.log('new calulcated start time is before the query start time, set to query start time of ', queryNode.startTime);
+            }
             newStartTime = queryNode.startTime;
           }
 
@@ -347,11 +376,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         currentStreamState.binarySearchBatchStartTime = { tooMany: 0, noResults: 0 };
 
         // Preprocess and send these results to state
-        currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent);
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE,
-          payload: currentStreamState.currentBatchEvents
-        });
+        dispatch(_dispatchEvents());
 
         const { data, streamLimit } = investigate.eventResults;
         const totalEventsAccumulated = data.length + currentStreamState.currentBatchEvents.length;
