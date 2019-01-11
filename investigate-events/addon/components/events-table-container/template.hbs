@@ -4,12 +4,10 @@
     toggleSlaveFullScreen=toggleSlaveFullScreen
   }}
   <section class="rsa-investigate-events-table__body">
-    {{#if areEventsStreaming}}
-      {{progress-bar
-        percent=percent
-        enabled=true
-      }}
-    {{/if}}
+    {{progress-bar
+      percent=displayPercent
+      enabled=areEventsStreaming
+    }}
     {{events-table-container/events-table selectEvent=selectEvent}}
   </section>
 

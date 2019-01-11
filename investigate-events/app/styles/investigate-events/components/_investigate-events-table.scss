@@ -173,6 +173,10 @@
       cursor: default;
       border-top: 0px;
 
+      // Need to set height big enough to accommodate logs which
+      // come in after the row is rendered
+      min-height: 57px;
+
       .rsa-data-table-body-cell[data-field="checkbox"] {
         text-align: right;
 

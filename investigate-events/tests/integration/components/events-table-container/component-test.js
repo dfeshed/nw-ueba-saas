@@ -162,7 +162,7 @@ module('Integration | Component | events-table-container', function(hooks) {
     assert.notOk(eventSelected, 'Keystroke does not trigger event selection when dropdown in view');
   });
 
-  test('if events have begun streaming, the progress bar is present', async function(assert) {
+  test('if events have begun streaming, the progress bar is set to 1', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
@@ -172,23 +172,10 @@ module('Integration | Component | events-table-container', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container}}`);
-    assert.ok(find('.rsa-progress-bar'), 'progress bar is present');
+    assert.equal(find('.rsa-progress-bar').getAttribute('data-percent'), 1, 'progress bar is initialized');
   });
 
-  test('if events are between streams, the progress bar is present', async function(assert) {
-    new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
-      .columnGroups(EventColumnGroups)
-      .eventsPreferencesConfig()
-      .eventResultsStatus('between-streams')
-      .eventResults([])
-      .build();
-
-    await render(hbs`{{events-table-container}}`);
-    assert.ok(find('.rsa-progress-bar'), 'progress bar is present');
-  });
-
-  test('if event streaming has completed, the progress bar is not present', async function(assert) {
+  test('if event streaming has completed, the progress bar full', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
@@ -198,7 +185,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container}}`);
-    assert.notOk(find('.rsa-progress-bar'), 'progress bar is not present');
+    assert.equal(find('.rsa-progress-bar').getAttribute('data-percent'), 100, 'progress bar is full');
   });
 
 });
