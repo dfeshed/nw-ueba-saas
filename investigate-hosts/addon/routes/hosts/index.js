@@ -1,6 +1,8 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { bootstrapInvestigateHosts } from 'investigate-hosts/actions/data-creators/host';
+import { next } from '@ember/runloop';
+import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
 
 export default Route.extend({
   redux: service(),
@@ -12,8 +14,10 @@ export default Route.extend({
   },
 
   model({ query }) {
-    const redux = this.get('redux');
-    return redux.dispatch(bootstrapInvestigateHosts(query));
+    next(() => {
+      const redux = this.get('redux');
+      redux.dispatch(bootstrapInvestigateHosts(query));
+    });
   },
 
   resetController(controller, isExiting) {
@@ -26,6 +30,8 @@ export default Route.extend({
   },
 
   deactivate() {
+    const redux = this.get('redux');
     this.set('contextualHelp.topic', null);
+    redux.dispatch(userLeftListPage());
   }
 });

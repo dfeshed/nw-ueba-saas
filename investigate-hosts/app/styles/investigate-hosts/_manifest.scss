@@ -34,24 +34,18 @@
     top: rsa-whitespace(less);
   }
 }
-
-.host-container {
-  position: absolute;
-  top: 50px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: text-color(primary, lightest);
-  background-color: background-color(custom, respond);
-  @include rsa-col(justify,fill);
-
+.hosts-route {
+  height: calc(100vh - 90px);
   .liquid-container,
   .liquid-child {
     height: 100%;
     width: 100%;
-    display: flex;
   }
-
+}
+.host-container {
+  height: 100%;
+  color: text-color(primary, lightest);
+  background-color: background-color(custom, respond);
   &-list {
     transition-property: background-color right;
     transition-duration: 0.3s;
@@ -65,7 +59,6 @@
   }
 }
 
-.license-banner.shown + .host-container {
-  // When license banner is shown, the absolute top position has to be adjusted
-  top: 86px;
+.license-banner.shown + .hosts-route {
+  height: calc(100vh - 126px);
 }

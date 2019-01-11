@@ -32,7 +32,7 @@
   {{/if}}
 
   <div class='divider'/>
-  {{#link-to 'hosts' (query-params machineId=null tabName=null sid=null subTabName=null pid=null)}}
+  {{#link-to 'hosts.index' (query-params machineId=null tabName=null sid=null subTabName=null pid=null)}}
     {{rsa-icon class='header-button' name='close' title=(t 'investigateHosts.hosts.button.close')}}
   {{/link-to}}
 </hbox>

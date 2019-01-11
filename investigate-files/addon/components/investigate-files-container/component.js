@@ -68,7 +68,7 @@ const dispatchToActions = {
  * @public
  */
 const Files = Component.extend({
-  tagName: 'vbox',
+  tagName: 'box',
 
   classNames: 'rsa-investigate-files main-zone',
 

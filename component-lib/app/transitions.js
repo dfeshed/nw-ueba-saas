@@ -81,4 +81,20 @@ export default function() {
       use: ['fade', { duration: explodeFadeDuration }]
     })
   );
+
+  // Investigate hosts route
+  this.transition(
+    this.fromRoute('hosts.index'),
+    this.toRoute('hosts.details'),
+    this.use('toLeft'),
+    this.reverse('toRight')
+  );
+
+  // Investigate files route
+  this.transition(
+    this.fromRoute('files.index'),
+    this.toRoute('files.details'),
+    this.use('toLeft'),
+    this.reverse('toRight')
+  );
 }

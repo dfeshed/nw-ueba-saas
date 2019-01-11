@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializeHostDetailsPage } from 'investigate-hosts/actions/data-creators/host';
+import { resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -33,7 +34,7 @@ export default Route.extend({
       refreshModel: true
     },
     subTabName: {
-      refreshModel: true
+      refreshModel: false
     },
     pid: {
       refreshModel: true
@@ -60,5 +61,10 @@ export default Route.extend({
         controller.set(queryParams[i], null);
       }
     }
+  },
+
+  deactivate() {
+    const redux = this.get('redux');
+    redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
   }
 });

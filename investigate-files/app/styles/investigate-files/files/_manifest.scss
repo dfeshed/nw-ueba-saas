@@ -10,7 +10,7 @@ page.investigate-files-engine {
 }
 
 .rsa-investigate-files {
-
+  height: 100%;
   .certificates-container, .files-content {
     width: 100%;
     height: 100%;
@@ -34,12 +34,6 @@ page.investigate-files-engine {
   }
   @include rsa-vendor-prefix(transition-property, background-color, color);
   @include rsa-vendor-prefix(transition-duration, 0.3s);
-  position: absolute;
-  top: 50px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
   .main-zone {
     overflow: hidden;
     flex-wrap: nowrap;
@@ -52,7 +46,6 @@ page.investigate-files-engine {
   .favourite-filters {
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
     overflow-y: scroll;
-    overflow: auto
   }
 
   .filter_title {
@@ -290,9 +283,18 @@ page.investigate-files-engine {
   }
 }
 
-.license-banner.shown + .rsa-investigate-files {
-  // When license banner is shown, the absolute top position has to be adjusted
-  top: 86px;
+.files-route {
+  height: calc(100vh - 90px);
+  .liquid-container,
+  .liquid-child {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+
+.license-banner.shown + .files-route {
+  height: calc(100vh - 126px);
   .content-body {
     height: calc(100vh - 296px);
   }

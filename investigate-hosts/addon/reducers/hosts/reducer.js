@@ -156,7 +156,7 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_HOST_COLUMN_SORT]: (state, { payload }) => state.set('hostColumnSort', [ payload ]),
 
-  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('hostExportLinkId', null),
+  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.merge({ hostExportLinkId: null, hostList: [], hostFetchStatus: 'wait' }),
 
   [ACTION_TYPES.FETCH_AGENT_STATUS]: (state, action) => _updateAgentStatus(state, action),
 
@@ -166,7 +166,7 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({
     id: host.id,
-    machine: { machineName: host.machineIdentity.machineName },
+    machineIdentity: { machineName: host.machineIdentity.machineName },
     version: host.machineIdentity.agentVersion,
     managed: host.groupPolicy.managed
   }))),
