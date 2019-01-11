@@ -168,8 +168,8 @@ const _getAdvancedScanSetting = (prop, focusedPolicy) => {
       name: 'adminUsm.policyWizard.edrPolicy.captureFloatingCode',
       value: settingValue
     },*/
-    downloadMbr: {
-      name: 'adminUsm.policyWizard.edrPolicy.downloadMbr',
+    scanMbr: {
+      name: 'adminUsm.policyWizard.edrPolicy.scanMbr',
       value: settingValue
     },
     /*

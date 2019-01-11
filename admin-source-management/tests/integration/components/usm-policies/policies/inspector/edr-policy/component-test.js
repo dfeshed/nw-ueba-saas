@@ -61,7 +61,7 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
         cpuMax: 75,
         cpuMaxVm: 85,
         // captureFloatingCode: true,
-        downloadMbr: false,
+        scanMbr: false,
         // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
@@ -117,7 +117,7 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
         cpuMax: 75,
         cpuMaxVm: 85,
         // captureFloatingCode: true,
-        downloadMbr: false,
+        scanMbr: false,
         // filterSignedHooks: false,
         requestScanOnRegistration: true,
         blockingEnabled: false,
@@ -130,10 +130,10 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
         primaryUdpBeaconInterval: 3,
         primaryUdpBeaconIntervalUnit: 'MINUTES',
         agentMode: 'ADVANCED',
-        customConfig: '"cpuMax" : 90,"cpuMaxVm" : 90,"downloadMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "ADVANCED","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,'
+        customConfig: '"cpuMax" : 90,"cpuMaxVm" : 90,"scanMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "ADVANCED","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,'
       }).build();
 
-    const expectedCustomSetting = '"cpuMax" : 90,"cpuMaxVm" : 90,"downloadMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "ADVANCED","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,';
+    const expectedCustomSetting = '"cpuMax" : 90,"cpuMaxVm" : 90,"scanMbr" : false,"blockingEnabled" : false,"requestScanOnRegistration" : false,"primaryHttpsPort" : 443,"primaryHttpsBeaconInterval" : 15,"primaryHttpsBeaconIntervalUnit" : "MINUTES","primaryUdpPort" : 444,"primaryUdpBeaconInterval" : 30,"primaryUdpBeaconIntervalUnit" : "SECONDS","agentMode" : "ADVANCED","offlineDiskStorageSizeInMb" : 100,"policyType" : "edrPolicy","name" : "Default EDR Policy","description" : "These are the settings that are applied when not defined in another policy applied to an agent.","dirty" : false,"defaultPolicy" : true,';
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
     assert.equal(findAll('.heading').length, 6, '6 headings are shown');
     assert.equal(findAll('.heading')[5].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
@@ -172,7 +172,7 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
         cpuMax: 75,
         cpuMaxVm: 85,
         // captureFloatingCode: false,
-        downloadMbr: false,
+        scanMbr: false,
         // filterSignedHooks: false,
         requestScanOnRegistration: false,
         blockingEnabled: false,

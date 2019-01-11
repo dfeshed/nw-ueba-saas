@@ -115,7 +115,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     // assert.equal(findAll('.available-settings .captureFloatingCode').length, 1, 'Capture Floating code component is shown in the available settings');
-    assert.equal(findAll('.available-settings .downloadMbr').length, 1, 'Download Master Boot Record component is shown in the available settings');
+    assert.equal(findAll('.available-settings .scanMbr').length, 1, 'Download Master Boot Record component is shown in the available settings');
     // assert.equal(findAll('.available-settings .filterSignedHooks').length, 1, 'Signed Modules component is shown in the available settings');
     assert.equal(findAll('.available-settings .requestScanOnRegistration').length, 1, 'New System added component is shown in the available settings');
     assert.equal(findAll('.available-settings .blockingEnabled').length, 1, 'Blocking Action component is shown in the available settings');

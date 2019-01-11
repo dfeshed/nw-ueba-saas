@@ -36,7 +36,7 @@ import {
 import {
   SCAN_SCHEDULE_CONFIG,
   // CAPTURE_CODE_CONFIG,
-  DOWNLOAD_MBR_CONFIG,
+  SCAN_MBR_CONFIG,
   // FILTER_SIGNED_CONFIG,
   REQUEST_SCAN_CONFIG,
   BLOCKING_ENABLED_CONFIG,
@@ -221,14 +221,14 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     assert.deepEqual(result, expectedState, `should return captureFloatingCode of ${expectedState}`);
   }); */
 
-  test('downloadMbr', function(assert) {
+  test('scanMbr', function(assert) {
     const expectedState = true;
     const fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizDownloadMbr(expectedState)
+      .policyWizScanMbr(expectedState)
       .build();
-    const result = radioButtonValue(fullState, 'downloadMbr');
-    assert.deepEqual(result, expectedState, `should return downloadMbr of ${expectedState}`);
+    const result = radioButtonValue(fullState, 'scanMbr');
+    assert.deepEqual(result, expectedState, `should return scanMbr of ${expectedState}`);
   });
 
   /* test('filterSignedHooks', function(assert) {
@@ -276,8 +276,8 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     assert.deepEqual(result1, SCAN_SCHEDULE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanType id');
     // const result2 = radioButtonOption('captureFloatingCode');
     // assert.deepEqual(result2, CAPTURE_CODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for captureFloatingCode id');
-    const result3 = radioButtonOption('downloadMbr');
-    assert.deepEqual(result3, DOWNLOAD_MBR_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for downloadMbr id');
+    const result3 = radioButtonOption('scanMbr');
+    assert.deepEqual(result3, SCAN_MBR_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanMbr id');
     // const result4 = radioButtonOption('filterSignedHooks');
     // assert.deepEqual(result4, FILTER_SIGNED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for filterSignedHooks id');
     const result5 = radioButtonOption('requestScanOnRegistration');

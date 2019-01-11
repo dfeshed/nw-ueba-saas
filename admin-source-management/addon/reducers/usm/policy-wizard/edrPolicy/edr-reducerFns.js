@@ -36,7 +36,7 @@ const edrDefaultPolicy = (state) => {
       case 'agentSettingsHeader':
       case 'agentMode':
       case 'advScanSettingsHeader':
-      case 'downloadMbr':
+      case 'scanMbr':
       case 'requestScanOnRegistration':
       case 'invActionsHeader':
       case 'blockingEnabled': {

@@ -28,7 +28,7 @@ export default {
     cpuMax: null, // 75
     cpuMaxVm: null, // 85
     // captureFloatingCode: null, // true or false
-    downloadMbr: null, // true or false
+    scanMbr: null, // true or false
     // filterSignedHooks: null, // true or false
     requestScanOnRegistration: null, // true or false
     blockingEnabled: null, // true or false
@@ -60,7 +60,7 @@ export default {
     /* Capture floating code is currently disabled for 11.3 since endpoint agent wont support them.
     { index: 8, id: 'captureFloatingCode', label: 'adminUsm.policyWizard.edrPolicy.captureFloatingCode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'captureFloatingCode', value: true }] },
     */
-    { index: 10, id: 'downloadMbr', label: 'adminUsm.policyWizard.edrPolicy.downloadMbr', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'downloadMbr', value: false }] },
+    { index: 10, id: 'scanMbr', label: 'adminUsm.policyWizard.edrPolicy.scanMbr', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanMbr', value: false }] },
     /* Include hooks with signed modules is currently disabled for 11.3 since endpoint agent wont support them.
     // { index: 10, id: 'filterSignedHooks', label: 'adminUsm.policyWizard.edrPolicy.filterSignedHooks', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'filterSignedHooks', value: false }] },
     */

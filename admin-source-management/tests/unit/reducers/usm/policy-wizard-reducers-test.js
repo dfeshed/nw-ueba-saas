@@ -163,7 +163,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
         cpuMax: 75,
         cpuMaxVm: 85,
         // captureFloatingCode: true,
-        downloadMbr: false,
+        scanMbr: false,
         // filterSignedHooks: false,
         requestScanOnRegistration: false,
         blockingEnabled: false,
@@ -380,7 +380,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .policyWizRecurrenceUnit(null)
       .policyWizCpuMax(null)
       .policyWizCpuMaxVm(null)
-      .policyWizDownloadMbr(null)
+      .policyWizScanMbr(null)
       .policyWizAgentMode(null)
       .policyWizRequestScanOnRegistration(null)
       .policyWizBlockingEnabled(null)
@@ -396,7 +396,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(endState.policy.cpuMaxVm, 90, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to cpuMaxVm correctly');
     assert.deepEqual(endState.policy.agentMode, 'ADVANCED', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to agentMode correctly');
     assert.deepEqual(endState.policy.blockingEnabled, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to blockingEnabled correctly');
-    assert.deepEqual(endState.policy.downloadMbr, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to downloadMbr correctly');
+    assert.deepEqual(endState.policy.scanMbr, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to scanMbr correctly');
     assert.deepEqual(endState.policy.requestScanOnRegistration, false, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to requestScanOnRegistration correctly');
   });
 
@@ -514,12 +514,12 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     initialStateCopy.selectedSettings = [
       { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' },
       { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' },
-      { index: 9, id: 'downloadMbr', label: 'adminUsm.policyWizard.edrPolicy.downloadMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
+      { index: 9, id: 'scanMbr', label: 'adminUsm.policyWizard.edrPolicy.scanMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
     ];
 
     const expectedEndState = {
       selectedSettings: [
-        { index: 9, id: 'downloadMbr', label: 'adminUsm.policyWizard.edrPolicy.downloadMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
+        { index: 9, id: 'scanMbr', label: 'adminUsm.policyWizard.edrPolicy.scanMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
       ]
     };
 
@@ -598,7 +598,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       cpuMax: 75,
       cpuMaxVm: 85,
       captureFloatingCode: true,
-      downloadMbr: false,
+      scanMbr: false,
       filterSignedHooks: false,
       requestScanOnRegistration: false,
       blockingEnabled: false,
@@ -645,7 +645,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       cpuMax: 75,
       cpuMaxVm: 85,
       captureFloatingCode: true,
-      downloadMbr: false,
+      scanMbr: false,
       filterSignedHooks: false,
       requestScanOnRegistration: false,
       blockingEnabled: false,

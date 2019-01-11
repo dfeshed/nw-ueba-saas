@@ -49,9 +49,9 @@ export const CAPTURE_CODE_CONFIG = {
   ]
 };
 
-export const DOWNLOAD_MBR_CONFIG = {
+export const SCAN_MBR_CONFIG = {
   name: 'download-mbr',
-  label: 'adminUsm.policyWizard.edrPolicy.downloadMbr',
+  label: 'adminUsm.policyWizard.edrPolicy.scanMbr',
   type: 'radioGroup',
   items: [
     {
@@ -132,7 +132,7 @@ export const AGENT_MODE_CONFIG = {
 export const ALL_RADIO_OPTIONS = [
   { id: 'scanType', options: SCAN_SCHEDULE_CONFIG },
   // { id: 'captureFloatingCode', options: CAPTURE_CODE_CONFIG },
-  { id: 'downloadMbr', options: DOWNLOAD_MBR_CONFIG },
+  { id: 'scanMbr', options: SCAN_MBR_CONFIG },
   // { id: 'filterSignedHooks', options: FILTER_SIGNED_CONFIG },
   { id: 'requestScanOnRegistration', options: REQUEST_SCAN_CONFIG },
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },

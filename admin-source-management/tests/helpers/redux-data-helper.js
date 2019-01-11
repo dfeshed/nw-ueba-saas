@@ -126,8 +126,8 @@ export default class DataHelper {
     return this;
   }
 
-  policyWizDownloadMbr(downloadMbr) {
-    _set(this.state, 'usm.policyWizard.policy.downloadMbr', downloadMbr);
+  policyWizScanMbr(scanMbr) {
+    _set(this.state, 'usm.policyWizard.policy.scanMbr', scanMbr);
     return this;
   }
 
