@@ -64,14 +64,15 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
   assert.equal(result.selectedEventIds.length, 0);
 });
 
-test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events', function(assert) {
+test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Ascending order of Time', function(assert) {
   const initialState = Immutable.from({
-    data: []
+    data: [],
+    eventSortOrder: 'Ascending'
   });
 
   let action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 5555, sessionId: 5 }]
+    payload: [{ timeAsNumber: 7777, sessionId: 5 }]
   };
   let result = reducer(initialState, action);
   assert.equal(result.data.length, 1, 'One event was absorbed');
@@ -82,11 +83,43 @@ test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events', fu
   };
   result = reducer(result, action);
   assert.equal(result.data.length, 2, 'Two events now');
-  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
+  assert.equal(result.data[0].timeAsNumber, 7777, 'sorted ascending');
 
   action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 7777, sessionId: 7 }]
+    payload: [{ timeAsNumber: 5555, sessionId: 7 }]
+  };
+  result = reducer(result, action);
+  assert.equal(result.data.length, 3, 'Three events now');
+  assert.equal(result.data[0].timeAsNumber, 5555, 'sorted ascending');
+  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted ascending');
+  assert.equal(result.data[2].timeAsNumber, 9999, 'sorted ascending');
+});
+
+test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Descending order of Time', function(assert) {
+  const initialState = Immutable.from({
+    data: [],
+    eventSortOrder: 'Descending'
+  });
+
+  let action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 7777, sessionId: 5 }]
+  };
+  let result = reducer(initialState, action);
+  assert.equal(result.data.length, 1, 'One event was absorbed');
+
+  action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 5555, sessionId: 6 }]
+  };
+  result = reducer(result, action);
+  assert.equal(result.data.length, 2, 'Two events now');
+  assert.equal(result.data[0].timeAsNumber, 7777, 'sorted descending');
+
+  action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 9999, sessionId: 7 }]
   };
   result = reducer(result, action);
   assert.equal(result.data.length, 3, 'Three events now');
@@ -98,7 +131,8 @@ test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events', fu
 test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', function(assert) {
   const initialState = Immutable.from({
     data: [],
-    streamLimit: 2
+    streamLimit: 2,
+    eventSortOrder: 'Descending'
   });
 
   const action = {

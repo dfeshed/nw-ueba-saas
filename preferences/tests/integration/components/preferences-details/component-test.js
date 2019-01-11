@@ -76,6 +76,8 @@ module('Integration | Component | Preferences Details', function(hooks) {
     // assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
+    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+    assert.ok(find('.rsa-form-radio-label.Oldest.checked'));
   });
 
   test('Preferences panel should show Time format Settings', async function(assert) {
