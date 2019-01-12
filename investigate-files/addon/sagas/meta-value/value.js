@@ -80,10 +80,11 @@ function* fetchHostNameList({ payload }) {
 
 const getAPICalls = (input, checksums) => {
   const apiCalls = checksums.reduce((result, checksum) => {
-    input.filter = { value: `(checksum.all = '${checksum}')` };
+    const query = { ...input };
+    query.filter = { value: `(checksum.all = '${checksum}')` };
     result[checksum] = call(
       getMetaValues,
-      input
+      query
     );
     return result;
   }, {});
