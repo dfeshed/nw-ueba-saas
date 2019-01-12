@@ -15,7 +15,8 @@ import {
   isExportButtonDisabled,
   fileTotalLabel,
   nextLoadCount,
-  isAnyFileFloatingOrMemoryDll
+  isAnyFileFloatingOrMemoryDll,
+  fileDownloadButtonStatus
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -343,4 +344,94 @@ test('isAnyFileFloatingOrMemoryDll', function(assert) {
   });
   const result = isAnyFileFloatingOrMemoryDll(state);
   assert.equal(result, true);
+});
+
+test('fileDownloadButtonStatus', function(assert) {
+  const state1 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: []
+      }
+    }
+  });
+  const result1 = fileDownloadButtonStatus(Immutable.from(state1));
+  assert.deepEqual(result1.isDownloadToServerDisabled, true, 'selectedFile is empty');
+
+  const state2 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{}, {}]
+      }
+    }
+  });
+  const result2 = fileDownloadButtonStatus(Immutable.from(state2));
+  assert.deepEqual(result2.isDownloadToServerDisabled, true, 'selectedFileList is of length 2');
+  assert.deepEqual(result2.isSaveLocalAndFileAnalysisDisabled, true);
+
+  const state3 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{ format: 'pe', signature: { features: ['signed'] }, downloadInfo: { status: 'Downloaded' } }]
+      }
+    }
+  });
+
+  const result3 = fileDownloadButtonStatus(Immutable.from(state3));
+  assert.deepEqual(result3.isDownloadToServerDisabled, true, 'file is downloaded');
+  assert.deepEqual(result3.isSaveLocalAndFileAnalysisDisabled, false);
+
+  const state4 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{ format: 'floating' }]
+      }
+    }
+  });
+  const result4 = fileDownloadButtonStatus(Immutable.from(state4));
+  assert.deepEqual(result4.isDownloadToServerDisabled, true, 'format is floating');
+  assert.deepEqual(result4.isSaveLocalAndFileAnalysisDisabled, true);
+
+  const state5 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{ format: 'pe' }]
+      }
+    }
+  });
+  const result5 = fileDownloadButtonStatus(Immutable.from(state5));
+  assert.deepEqual(result5.isDownloadToServerDisabled, false);
+
+  const state6 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{ signature: { features: ['file.memoryHash'] } }]
+      }
+    }
+  });
+  const result6 = fileDownloadButtonStatus(Immutable.from(state6));
+  assert.deepEqual(result6.isDownloadToServerDisabled, true);
+
+  const state7 = Immutable.from({
+    files: {
+      filter: {
+      },
+      fileList: {
+        selectedFileList: [{ signature: { features: ['signed'] } }]
+      }
+    }
+  });
+  const result7 = fileDownloadButtonStatus(Immutable.from(state7));
+  assert.deepEqual(result7.isDownloadToServerDisabled, false);
 });

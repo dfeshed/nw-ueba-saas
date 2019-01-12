@@ -21,11 +21,17 @@
       {{/layout.left}}
       {{#layout.center}}
         <section class="rsa-files-toolbar flexi-fit">
-          {{files-toolbar openFilterPanel=(action layout.open 'left') closeRiskPanel=(action layout.close 'right')}}
+          {{files-toolbar
+            openFilterPanel=(action layout.open 'left')
+            closeRiskPanel=(action layout.close 'right')
+            downloadFiles=(action 'onDownloadFilesToServer')}}
         </section>
         {{#if selectedServiceData.isServiceOnline}}
           <box class="files-body">
-            {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
+            {{file-list
+              openRiskPanel=(action layout.open 'right')
+              closeRiskPanel=(action layout.close 'right')
+              downloadFiles=(action 'onDownloadFilesToServer')}}
           </box>
           <box class="files-footer">
             {{file-pager}}

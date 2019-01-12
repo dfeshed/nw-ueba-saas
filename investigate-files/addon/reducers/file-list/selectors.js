@@ -148,3 +148,29 @@ export const isAnyFileFloatingOrMemoryDll = createSelector(
     return false;
   }
 );
+
+const _isFloatingOrMemoryDll = createSelector(
+  _selectedFileList,
+  (selectedFileList) => {
+    if (selectedFileList && selectedFileList.length) {
+      return !!selectedFileList.find((file) => (file.format === 'floating') || (file.signature && file.signature.features.includes('file.memoryHash')));
+    }
+    return true;
+  }
+);
+
+const _isSelectedFileDownloaded = createSelector(
+  _selectedFileList,
+  (selectedFileList) => !!selectedFileList.find((file) => file.downloadInfo && file.downloadInfo.status === 'Downloaded'));
+
+export const fileDownloadButtonStatus = createSelector(
+  [ _isFloatingOrMemoryDll, _selectedFileList, _isSelectedFileDownloaded],
+  (isFloatingOrMemoryDll, selectedFileList, isSelectedFileDownloaded) => {
+    const isDownloadToServerDisabled = isSelectedFileDownloaded || selectedFileList.length !== 1 || isFloatingOrMemoryDll;
+    const isSaveLocalAndFileAnalysisDisabled = !isSelectedFileDownloaded || selectedFileList.length !== 1;
+    return {
+      isDownloadToServerDisabled,
+      isSaveLocalAndFileAnalysisDisabled
+    };
+  }
+);

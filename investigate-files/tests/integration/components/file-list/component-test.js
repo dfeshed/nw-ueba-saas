@@ -40,7 +40,8 @@ const dataItems = {
     'signature': {
       'timeStamp': '2016-09-14T09:43:27.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
-      'signer': 'ABC'
+      'signer': 'ABC',
+      'features': ['signed', 'valid']
     },
     'id': '1',
     'checksumsha256': 'abc',

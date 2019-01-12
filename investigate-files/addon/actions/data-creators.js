@@ -469,6 +469,31 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
   };
 };
 
+const downloadFilesToServer = (checksumSha256, callbacks) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigate;
+    const input = {
+      filter: { value: `(checksum.all = '${checksumSha256}')` },
+      queryNode,
+      size: 100,
+      metaName: 'agent.id',
+      onComplete: (data) => {
+        const agentIds = data ? data.map((d) => d.value) : [];
+        if (agentIds.length) {
+          File.sendFileDownloadToServerRequest({ checksumSha256, agentIds })
+            .then(() => {
+              callbacks.onSuccess();
+            }).catch(({ meta: message }) => {
+              callbacks.onFailure(message.message);
+            });
+        }
+      }
+    };
+    _getMetaValues(dispatch, input);
+  };
+};
+
+
 export {
   getPageOfFiles,
   sortBy,
@@ -495,5 +520,6 @@ export {
   triggerFileActions,
   initializerForFileDetailsAndAnalysis,
   bootstrapInvestigateFiles,
-  changeEndpointServerSelection
+  changeEndpointServerSelection,
+  downloadFilesToServer
 };

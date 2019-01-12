@@ -9,7 +9,7 @@ import {
 } from 'investigate-shared/actions/data-creators/filter-creators';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
+import { hasFiles, selectedFileStatusHistory, checksums } from 'investigate-files/reducers/file-list/selectors';
 import { getDataSourceTab, riskState } from 'investigate-files/reducers/visuals/selectors';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
@@ -18,7 +18,8 @@ import {
   setDataSourceTab,
   toggleRiskPanel,
   getFirstPageOfFiles,
-  setSelectedIndex
+  setSelectedIndex,
+  downloadFilesToServer
 } from 'investigate-files/actions/data-creators';
 
 import {
@@ -30,6 +31,13 @@ import { inject as service } from '@ember/service';
 import { FILTER_TYPES } from './filter-type';
 
 import CONFIG from '../file-details/base-property-config';
+
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+
+const callBackOptions = {
+  onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+  onFailure: (message) => failure(message, null, false)
+};
 
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
@@ -46,7 +54,8 @@ const stateToComputed = (state) => ({
   selectedFile: state.files.fileList.selectedFile,
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,
-  fileProperty: state.files.fileList.selectedDetailFile
+  fileProperty: state.files.fileList.selectedDetailFile,
+  checksums: checksums(state)
 });
 
 const dispatchToActions = {
@@ -60,7 +69,8 @@ const dispatchToActions = {
   applySavedFilters,
   deleteFilter,
   resetFilters,
-  setSelectedIndex
+  setSelectedIndex,
+  downloadFilesToServer
 };
 
 /**
@@ -78,6 +88,8 @@ const Files = Component.extend({
 
   propertyConfig: CONFIG,
 
+  callBackOptions,
+
   willDestroyElement() {
     this.send('resetDownloadId');
   },
@@ -85,6 +97,12 @@ const Files = Component.extend({
   actions: {
     onPanelClose() {
       this.send('setSelectedIndex', null);
+    },
+
+    onDownloadFilesToServer() {
+      const callBackOptions = this.get('callBackOptions');
+      const [checksumSha256] = this.get('checksums');
+      this.send('downloadFilesToServer', checksumSha256, callBackOptions);
     }
   }
 });

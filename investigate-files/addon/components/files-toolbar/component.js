@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { serviceList, checksums, isAnyFileFloatingOrMemoryDll } from 'investigate-files/reducers/file-list/selectors';
+import { serviceList, checksums, isAnyFileFloatingOrMemoryDll, fileDownloadButtonStatus } from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
@@ -33,7 +33,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   certificateLoadStatus: state.certificate.list.certificatesLoadingStatus,
-  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state)
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state)
 });
 
 const dispatchToActions = {
@@ -59,6 +60,8 @@ const ToolBar = Component.extend({
   flashMessage: service(),
 
   i18n: service(),
+
+  agentIds: [],
 
   @computed('fileStatusData')
   data(fileStatusData) {

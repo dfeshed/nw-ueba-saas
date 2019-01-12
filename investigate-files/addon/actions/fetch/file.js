@@ -162,6 +162,15 @@ const getSelectedFileProperties = (checksum) => {
   });
 };
 
+const sendFileDownloadToServerRequest = (selectedFileDetails) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'downloadFileToServer',
+    modelName: 'files',
+    query: { data: selectedFileDetails }
+  });
+};
+
 export default {
   fetchFiles,
   fileExport,
@@ -171,5 +180,6 @@ export default {
   getAllServices,
   getContext,
   fetchRemediation,
-  getSelectedFileProperties
+  getSelectedFileProperties,
+  sendFileDownloadToServerRequest
 };
