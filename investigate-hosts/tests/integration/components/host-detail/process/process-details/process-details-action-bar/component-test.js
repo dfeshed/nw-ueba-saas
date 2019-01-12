@@ -16,7 +16,7 @@ module('Integration | Component | host-detail/process/process-details/process-de
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'host',
+      currentRouteName: 'hosts.details',
       generateURL: () => {
         return;
       },
@@ -33,7 +33,7 @@ module('Integration | Component | host-detail/process/process-details/process-de
     assert.equal(find('.process-details-label').textContent.trim(), 'Process Details', 'process details label present');
     await click(findAll('.back-to-process')[0]);
     assert.deepEqual(transitions, [{
-      name: 'hosts',
+      name: 'hosts.details',
       queryParams: {
         pid: null,
         subTabName: null

@@ -1,5 +1,5 @@
 <div class='action-bar'>
-  {{#link-to 'hosts' (query-params subTabName=null pid=null)}}
+  {{#link-to (query-params subTabName=null pid=null)}}
     {{#rsa-form-button class='back-to-process' isDisabled=isDisabled}}
       {{rsa-icon name='arrow-left-12'}}
       {{t 'investigateHosts.process.backToProcesses'}}
@@ -11,7 +11,7 @@
   </label>
 </div>  
 <div class='process-details-close'>
-  {{#link-to 'hosts' (query-params subTabName=null pid=null)}}
+  {{#link-to (query-params subTabName=null pid=null)}}
     {{#rsa-form-button class='close-zone' isIconOnly=true }}
       {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
     {{/rsa-form-button}}

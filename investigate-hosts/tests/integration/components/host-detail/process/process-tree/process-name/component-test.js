@@ -23,7 +23,7 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
       applyPatch(state);
     };
     this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'host',
+      currentRouteName: 'hosts.details',
       generateURL: () => {
         return;
       },
@@ -55,7 +55,7 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
     await render(hbs`{{host-detail/process/process-tree/process-name item=item index=index}}`);
     await click(findAll('.process-name label')[0]);
     assert.deepEqual(transitions, [{
-      name: 'hosts',
+      name: 'hosts.details',
       queryParams: {
         pid: 1,
         subTabName: 'process-details',

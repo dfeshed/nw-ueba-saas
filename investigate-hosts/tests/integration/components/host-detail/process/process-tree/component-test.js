@@ -186,7 +186,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       applyPatch(state);
     };
     this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'host',
+      currentRouteName: 'hosts.details',
       generateURL: () => {
         return;
       },
@@ -494,7 +494,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         return redux.getState().endpoint.detailsInput.animation !== 'default';
       }, { timeout: 6000 });
       assert.deepEqual(transitions, [{
-        name: 'hosts',
+        name: 'hosts.details',
         queryParams: {
           pid: 517,
           subTabName: 'process-details',

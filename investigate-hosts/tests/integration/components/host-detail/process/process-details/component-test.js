@@ -37,7 +37,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'host',
+      currentRouteName: 'hosts.details',
       generateURL: () => {
         return;
       },
@@ -154,7 +154,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     await render(hbs`{{host-detail/process/process-details}}`);
     await click(findAll('.action-bar a')[0]);
     assert.deepEqual(transitions, [{
-      name: 'hosts',
+      name: 'hosts.details',
       queryParams: {
         pid: null,
         subTabName: null
