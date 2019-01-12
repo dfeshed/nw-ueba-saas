@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { userLeftFilesPage } from 'investigate-files/actions/data-creators';
-import * as ACTION_TYPES from '../actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
 export default Route.extend({
 
@@ -13,7 +13,7 @@ export default Route.extend({
   deactivate() {
     const redux = this.get('redux');
     this.set('contextualHelp.topic', null);
-    redux.dispatch({ type: ACTION_TYPES.RESET_FILES });
+    redux.dispatch({ type: SHARED_ACTION_TYPES.RESET_FILTER, meta: { belongsTo: 'FILE' } });
     redux.dispatch(userLeftFilesPage());
   },
 

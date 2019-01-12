@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { userLeftListPage, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 
 export default Route.extend({
 
@@ -27,6 +28,7 @@ export default Route.extend({
     const redux = this.get('redux');
     redux.dispatch(userLeftListPage());
     redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
+    redux.dispatch({ type: SHARED_ACTION_TYPES.RESET_FILTER, meta: { belongsTo: 'MACHINE' } });
     this.set('contextualHelp.topic', null);
     this.set('listLoaded', false);
   }
