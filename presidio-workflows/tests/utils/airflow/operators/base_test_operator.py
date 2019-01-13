@@ -29,6 +29,3 @@ def assert_task_success_state(task_instances, task_id):
     for task_instance in task_instances:
         if task_instance.task_id == task_id:
             assert task_instance.state == State.SUCCESS
-        else:
-            raise
-

@@ -1,0 +1,4 @@
+import presidio_upgrade_utils
+
+version = presidio_upgrade_utils.get_installed_presidio_version()
+presidio_upgrade_utils.write_installed_presidio_version(version)
