@@ -149,7 +149,7 @@ test('Should get selected column groups', function(assert) {
   const selectedColumnGroup = getSelectedColumnGroup(state);
   assert.equal(selectedColumnGroup.name, 'Web Analysis');
   assert.equal(selectedColumnGroup.columns.length, 53);
-  assert.deepEqual(EventColumnGroups[8], selectedColumnGroup);
+  assert.deepEqual(EventColumnGroups[9], selectedColumnGroup);
 });
 
 test('Should get mutable columns for data table', function(assert) {
@@ -226,6 +226,23 @@ test('flattened list of columns do not include dupe columns if exist in list and
   const ipDstColumns = columns.filter((col) => col === 'ip.dst');
   assert.ok(ipDstColumns.length === 1, 'summary fields not double included');
 });
+
+test('flattened list should include fields inside metasummary and fields always required', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY4',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getFlattenedColumnList(state);
+
+  assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
+  assert.ok(columns.includes('sessionid'), 'must always include sessionid');
+  assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
+});
+
 
 test('Should set hasColumnGroups', function(assert) {
   assert.ok(

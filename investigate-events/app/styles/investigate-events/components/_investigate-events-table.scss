@@ -235,7 +235,8 @@
         }
       }
 
-      &[data-field="custom.meta-summary"] {
+      &[data-field="custom.meta-summary"],
+      &[data-field="custom.metasummary"] {
         position: relative;
 
         .meta-key-and-value,

@@ -64,6 +64,7 @@ export default handleActions({
           // columns exist
           columnGroups.forEach((cg) => {
             _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 1000 });
+            _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 1000 });
             _.merge(_.find(cg.columns, { field: 'time' }), { width: 130 });
           });
 

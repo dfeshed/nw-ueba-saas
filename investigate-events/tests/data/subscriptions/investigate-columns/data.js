@@ -97,6 +97,17 @@ export default [
     ])
   },
   {
+    id: 'SUMMARY4',
+    name: 'Summary List',
+    ootb: true,
+    columns: BASE_COLUMNS.concat([
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' },
+      { field: 'ip.dst', title: 'Destination IP Address' },
+      { field: 'custom.metasummary', title: 'Summary', width: null }
+    ])
+  },
+  {
     id: 'EMAIL',
     name: 'Email Analysis',
     columns: BASE_COLUMNS.concat([

@@ -42,6 +42,7 @@ function buildCellContent($cell, field, item, opts) {
       buildCheckbox($content, item, opts);
       break;
     case 'custom.meta-summary':
+    case 'custom.metasummary':
       buildMetaSummaryContent($content, item, opts);
       break;
     case 'time':

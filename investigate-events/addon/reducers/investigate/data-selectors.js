@@ -121,14 +121,18 @@ export const getFlattenedColumnList = createSelector(
       columns = [...columns, 'sessionid', 'nwe.callback_id'];
 
       // If we don't have a meta-summary column we are done
-      const hasMetaSummaryColumn = columns.some((field) => field === 'custom.meta-summary');
+      const hasMetaSummaryColumn = columns.some((field) => {
+        return field === 'custom.meta-summary' || field === 'custom.metasummary';
+      });
       if (!hasMetaSummaryColumn) {
         return columns;
       }
 
       // Need to slice out meta-summary and then add
       // meta-summary's fields into the list
-      columns = columns.filter((field) => field !== 'custom.meta-summary');
+      columns = columns.filter((field) => {
+        return field !== 'custom.meta-summary' && field !== 'custom.metasummary';
+      });
       SUMMARY_COLUMN_KEYS.all.forEach((columnKey) => {
         const hasColumnAlready = columns.some((field) => field === columnKey);
         if (!hasColumnAlready) {

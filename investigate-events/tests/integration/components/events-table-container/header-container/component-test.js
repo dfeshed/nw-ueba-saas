@@ -53,7 +53,7 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(find(columnSelector).textContent.trim(), 'Summary List', 'Default Column group is Summary List.');
     await clickTrigger();
     const options = findAll('.ember-power-select-option').map((d) => d.textContent.trim());
-    assert.equal(options.join('').replace(/\s+/g, ''), 'Custom1Custom2SummaryListSummaryListSummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
+    assert.equal(options.join('').replace(/\s+/g, ''), 'Custom1Custom2SummaryListSummaryListSummaryListSummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
     assert.equal(findAll('.ember-power-select-group').length, 2, 'render two column groups');
     assert.equal(findAll('.ember-power-select-group-name')[0].textContent.trim(), 'Custom Column Groups', 'render custom column group');
     assert.equal(findAll('.ember-power-select-group-name')[1].textContent.trim(), 'Default Column Groups', 'render default column group');
