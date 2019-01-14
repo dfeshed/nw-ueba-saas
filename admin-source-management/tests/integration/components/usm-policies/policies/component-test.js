@@ -44,6 +44,21 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     assert.equal(findAll('.usm-policies-filter .rsa-data-filters').length, 1, 'data-filters rendered within policies filter panel');
   });
 
+  test('Policy/Source Type filter rendered', async function(assert) {
+    assert.expect(2);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    const translation = this.owner.lookup('service:i18n');
+    const expectedFilterText = translation.t('adminUsm.policies.filter.sourceType');
+    const exOptLen = 2;
+    // policy/source type filter will be the 1st list-filter
+    const [el] = findAll('.filter-controls .list-filter');
+    assert.equal(el.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
+    assert.equal(el.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
+  });
+
   test('Publication Status filter rendered', async function(assert) {
     assert.expect(2);
     setState('name', false);
@@ -53,25 +68,10 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
     const expectedFilterText = translation.t('adminUsm.policies.list.publishStatus');
     const exOptLen = 3;
-    // published filter will be the first list-filter
-    const [el] = findAll('.filter-controls .list-filter');
+    // published filter will be the 2nd list-filter
+    const [, el] = findAll('.filter-controls .list-filter');
     assert.equal(el.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
     assert.equal(el.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
-  });
-
-  test('Policy Type filter rendered', async function(assert) {
-    assert.expect(2);
-    setState('name', false);
-    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
-    await render(hbs`{{usm-policies/policies}}`);
-    await getItems;
-    const translation = this.owner.lookup('service:i18n');
-    const expectedFilterText = translation.t('adminUsm.policies.list.sourceType');
-    const exOptLen = 2;
-    // policy type filter is second list-filter
-    const [, el2] = findAll('.filter-controls .list-filter');
-    assert.equal(el2.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
-    assert.equal(el2.querySelectorAll('.list-filter-option').length, exOptLen, `There are ${exOptLen} filter options as expected`);
   });
 
   test('Show policy list', async function(assert) {

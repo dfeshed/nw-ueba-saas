@@ -319,21 +319,21 @@ test('when multiple items in selection including a default Policy item', functio
 test('filterTypesConfig selector', function(assert) {
   const expectedConfig = [
     {
+      name: 'sourceType',
+      label: 'adminUsm.policies.filter.sourceType',
+      listOptions: [
+        { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
+        { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
+      ],
+      type: 'list'
+    },
+    {
       'name': 'publishStatus',
       'label': 'adminUsm.policies.list.publishStatus',
       'listOptions': [
         { name: 'published', label: 'adminUsm.publishStatus.published' },
         { name: 'unpublished', label: 'adminUsm.publishStatus.unpublished' },
         { name: 'unpublished_edits', label: 'adminUsm.publishStatus.unpublishedEdits' }
-      ],
-      type: 'list'
-    },
-    {
-      name: 'sourceType',
-      label: 'adminUsm.policies.list.sourceType',
-      listOptions: [
-        { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
-        { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
       ],
       type: 'list'
     }

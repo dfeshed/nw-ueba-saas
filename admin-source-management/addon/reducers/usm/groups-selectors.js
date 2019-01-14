@@ -118,10 +118,31 @@ const sourceTypeFilterConfig = createSelector(
   }
 );
 
+const publishStatusFilterConfig = {
+  'name': 'publishStatus',
+  'label': 'adminUsm.groups.list.publishStatus',
+  'listOptions': [
+    // group.lastPublishedOn > 0 ???
+    { name: 'published', label: 'adminUsm.publishStatus.published' },
+    // group.lastPublishedOn === 0
+    { name: 'unpublished', label: 'adminUsm.publishStatus.unpublished' },
+    // group.dirty === true
+    { name: 'unpublished_edits', label: 'adminUsm.publishStatus.unpublishedEdits' }
+  ],
+  type: 'list'
+};
+
+let sourceTypeConfigCache = null;
 export const filterTypesConfig = createSelector(
   sourceTypeFilterConfig,
   (sourceTypeConfig) => {
-    const configs = [sourceTypeConfig];
+    // only set the sourceTypeConfigCache if unset, or the first time we have list option values...
+    // this avoids re-building & re-rendering every time the manage groups screen is refreshed,
+    // which we don't need to do since there will always be at least one of each policy type (a.k.a the default policies)
+    if (!sourceTypeConfigCache || sourceTypeConfigCache.listOptions.length === 0) {
+      sourceTypeConfigCache = sourceTypeConfig;
+    }
+    const configs = [sourceTypeConfigCache, publishStatusFilterConfig];
     return configs;
   }
 );

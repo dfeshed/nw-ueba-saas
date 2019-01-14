@@ -233,6 +233,16 @@ module('Unit | Selectors | Groups Selectors', function() {
           { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
         ],
         type: 'list'
+      },
+      {
+        'name': 'publishStatus',
+        'label': 'adminUsm.groups.list.publishStatus',
+        'listOptions': [
+          { name: 'published', label: 'adminUsm.publishStatus.published' },
+          { name: 'unpublished', label: 'adminUsm.publishStatus.unpublished' },
+          { name: 'unpublished_edits', label: 'adminUsm.publishStatus.unpublishedEdits' }
+        ],
+        type: 'list'
       }
     ];
     const fullState = new ReduxDataHelper()

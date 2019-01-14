@@ -97,7 +97,7 @@ const sourceTypeFilterConfig = createSelector(
   (sourceTypes) => {
     const config = {
       name: 'sourceType',
-      label: 'adminUsm.policies.list.sourceType',
+      label: 'adminUsm.policies.filter.sourceType',
       listOptions: [],
       type: 'list'
     };
@@ -130,12 +130,13 @@ let sourceTypeConfigCache = null;
 export const filterTypesConfig = createSelector(
   sourceTypeFilterConfig,
   (sourceTypeConfig) => {
-    // set the sourceTypeConfigCache no matter what the first time through,
-    // only set it the first time since the types are built from the filtered policies the next time around
+    // only set the sourceTypeConfigCache if unset, or the first time we have list option values...
+    // this avoids re-building & re-rendering every time the manage policies screen is refreshed,
+    // which we don't need to do since there will always be at least one of each policy type (a.k.a the default policies)
     if (!sourceTypeConfigCache || sourceTypeConfigCache.listOptions.length === 0) {
       sourceTypeConfigCache = sourceTypeConfig;
     }
-    const configs = [publishStatusFilterConfig, sourceTypeConfigCache];
+    const configs = [sourceTypeConfigCache, publishStatusFilterConfig];
     return configs;
   }
 );
