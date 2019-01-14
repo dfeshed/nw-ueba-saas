@@ -82,5 +82,6 @@ test('Extract the agent id', function(assert) {
   assert.equal(getSelectedAgentIds(list2).length, 0, 'has ecat and unmanaged agents');
   const list3 = [{ id: 1, version: '11.1', managed: false }, { id: 2, version: '11.1', managed: true }];
   assert.equal(getSelectedAgentIds(list3).length, 1, 'some agents are managed');
-
+  const list4 = [{ id: 1, managed: false }, { id: 2, managed: true }];
+  assert.equal(getSelectedAgentIds(list4).length, 0, 'list is empty because versions are undefined');
 });
