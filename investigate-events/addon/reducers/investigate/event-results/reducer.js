@@ -68,21 +68,15 @@ export default handleActions({
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload }) => {
     // Merge the data into the current state data and perform a sort
     // Have to sort it all as data can come in out of order.
-    // Need to reverse the existing sort or events occurring
-    // in the same second will flip.
-
-    let newEvents = state.data.asMutable().concat(payload);
+    let sortKey = 'desc';
     if (state.eventSortOrder === 'Ascending') {
-      newEvents = sort(newEvents).by([
-        { asc: 'timeAsNumber' },
-        { asc: 'sessionId' }
-      ]);
-    } else if (state.eventSortOrder === 'Descending') {
-      newEvents = sort(newEvents).by([
-        { desc: 'timeAsNumber' },
-        { desc: 'sessionId' }
-      ]);
+      sortKey = 'asc';
     }
+    let newEvents = state.data.asMutable().concat(payload);
+    newEvents = sort(newEvents).by([
+      { [sortKey]: 'timeAsNumber' },
+      { [sortKey]: 'sessionId' }
+    ]);
 
     // truncate the array if larger than max
     if (newEvents.length > state.streamLimit) {

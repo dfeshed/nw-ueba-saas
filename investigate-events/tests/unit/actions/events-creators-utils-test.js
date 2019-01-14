@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 
 import {
   calculateNewStartForNextBatch,
-  calculateNextGapAfterFailure,
+  calculateNextStartTimeAfterFailure,
   mergeMetaIntoEvent
 } from 'investigate-events/actions/events-creators-utils';
 
@@ -46,35 +46,41 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
     assert.equal(result, 11209, 'calculated correctly, is previous begin date minus 1 + minus 1');
   });
 
-  test('calculateNextGapAfterFailure calculations', function(assert) {
+  test('calculateNextStartTimeAfterFailure calculations', function(assert) {
+
     const binarySearchData = {
       tooMany: 0,
       noResults: 0
     };
 
-    let gap = calculateNextGapAfterFailure(binarySearchData, 10000, true);
+    let newTime = calculateNextStartTimeAfterFailure(100000, 120000, binarySearchData, true);
     // cut in half then rounded down to even minutes
-    assert.equal(gap, 4980, 'gap cut in half');
-    assert.equal(binarySearchData.tooMany, 10000, 'tracking too many');
+    assert.equal(newTime, 110040, 'gap cut in half and rounded to a minute');
+    assert.equal(binarySearchData.tooMany, 20000, 'tracking too many');
     assert.equal(binarySearchData.noResults, 0, 'tracking too many');
-
-    gap = calculateNextGapAfterFailure(binarySearchData, 4980, true);
-    assert.equal(gap, 2460, 'gap cut in half');
-    assert.equal(binarySearchData.tooMany, 4980, 'tracking too many');
-    assert.equal(binarySearchData.noResults, 0, 'tracking too many');
-
-    gap = calculateNextGapAfterFailure(binarySearchData, 2460, false);
-    assert.equal(gap, 3720, 'gap cut in half');
-    assert.equal(binarySearchData.tooMany, 4980, 'tracking too many');
-    assert.equal(binarySearchData.noResults, 2460, 'tracking too many');
 
     // new check, when immediately 0 results
     binarySearchData.tooMany = 0;
     binarySearchData.noResults = 0;
-    gap = calculateNextGapAfterFailure(binarySearchData, 10000, false);
-    assert.equal(gap, 19980, 'gap doubled');
+    newTime = calculateNextStartTimeAfterFailure(100000, 120000, binarySearchData, false);
+    assert.equal(newTime, 80040, 'gap doubled');
     assert.equal(binarySearchData.tooMany, 0, 'tracking too many');
-    assert.equal(binarySearchData.noResults, 10000, 'tracking too many');
+    assert.equal(binarySearchData.noResults, 20000, 'tracking too many');
+
+    binarySearchData.tooMany = 100;
+    binarySearchData.noResults = 110;
+    newTime = calculateNextStartTimeAfterFailure(9895, 10000, binarySearchData, true);
+    assert.equal(newTime, 9892, 'gap shrunk, not rounded');
+    assert.equal(binarySearchData.tooMany, 105, 'tracking too many');
+    assert.equal(binarySearchData.noResults, 110, 'tracking too many');
+
+    binarySearchData.tooMany = 100;
+    binarySearchData.noResults = 110;
+    newTime = calculateNextStartTimeAfterFailure(9895, 10000, binarySearchData, false);
+    assert.equal(newTime, 9897, 'gap shrunk, not rounded');
+    assert.equal(binarySearchData.tooMany, 100, 'tracking too many');
+    assert.equal(binarySearchData.noResults, 105, 'tracking too many');
+
   });
 
   test('mergeMetaIntoEvent stuffs', function(assert) {
@@ -82,7 +88,7 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
       foo: 1,
       bar: 2
     };
-    mergeMetaIntoEvent(event);
+    mergeMetaIntoEvent(false)(event);
     assert.equal(Object.keys(event).length, 2, 'same two keys');
     assert.equal(event.foo, 1, 'same two keys');
     assert.equal(event.bar, 2, 'same two keys');
@@ -92,7 +98,7 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
       sessionid: 1,
       metas: [['foo', 1], ['bar', 10]]
     };
-    mergeMetaIntoEvent(event);
+    mergeMetaIntoEvent(false)(event);
     assert.equal(Object.keys(event).length, 4, 'correct number of object keys');
     assert.equal(event.metas, undefined, 'metas is gone');
     assert.equal(event.sessionid, undefined, 'sessionid is gone');
@@ -100,5 +106,13 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
     assert.equal(event.bar, 10, 'bar flattened in');
     assert.equal(event.time, 60000, 'time still there');
     assert.deepEqual(event.timeAsNumber, new Date(60000).getTime() / 1000, 'time added as date object');
+
+    event = {
+      time: 60000,
+      sessionid: 1,
+      metas: [['foo', 1], ['bar', 10]]
+    };
+    mergeMetaIntoEvent(true)(event);
+    assert.equal(event.sessionid, 1, 'sessionid is still there');
   });
 });

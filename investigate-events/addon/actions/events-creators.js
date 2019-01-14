@@ -10,11 +10,12 @@ import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getFlattenedColumnList } from 'investigate-events/reducers/investigate/data-selectors';
+import { mostRecentEvent } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   calculateNewStartForNextBatch,
   mergeMetaIntoEvent,
-  calculateNextGapAfterFailure
+  calculateNextStartTimeAfterFailure
 } from './events-creators-utils';
 
 const INITIAL_TIME_WINDOW_IN_SECONDS = 5 * 60;
@@ -54,6 +55,14 @@ const currentStreamState = {
   // between query calls as it only needs to be
   // calculated once
   flattenedColumnList: undefined
+};
+
+// Ember uses sessionId internally, but a user can configure
+// sessionid (all lower case) as a field. We need to know if
+// sessionid is in the list of columns so we can treat it
+// correctly
+const _isSessionIdInColumnList = () => {
+  return currentStreamState.flattenedColumnList.includes('sessionid');
 };
 
 // Anytime a batch needs to be kicked off, _resetForNextBatch
@@ -119,7 +128,7 @@ const _handleEventsStatus = (newStatus) => {
 
 // Prepares and sends events to state
 const _dispatchEvents = () => {
-  currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent);
+  currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
   return {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
     payload: currentStreamState.currentBatchEvents
@@ -144,9 +153,8 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
       }
 
       if (batchWindow > 1) {
-        const newGap = calculateNextGapAfterFailure(
-          currentStreamState.binarySearchBatchStartTime, batchWindow, true);
-        const newStartTime = batchEndTime - newGap;
+        const newStartTime = calculateNextStartTimeAfterFailure(
+          batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, true);
         dispatch(_getEventsBatch(newStartTime, batchEndTime));
       } else {
 
@@ -337,16 +345,13 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // completed with no results? We need to try again with
         // a larger window, because we expect results.
         if (currentStreamState.currentBatchEvents.length === 0) {
-          // calculate a new start time
-          const batchWindow = batchEndTime - batchStartTime;
-          const newGap = calculateNextGapAfterFailure(
-            currentStreamState.binarySearchBatchStartTime, batchWindow, false);
-          let newStartTime = batchEndTime - newGap;
-
           if (window.DEBUG_STREAMS) {
-            console.log('too FEW results, need to try for more, last window was', batchWindow);
+            console.log('too FEW results, need to try for more, last window was', batchEndTime - batchStartTime);
           }
 
+          // calculate a new start time
+          let newStartTime = calculateNextStartTimeAfterFailure(
+            batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, false);
 
           // Don't let the start time be before the actual window
           // start time
@@ -426,7 +431,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         const eventsInState = getState().investigate.eventResults.data;
         let endTimeToUseForCalculations = queryNode.endTime;
         if (eventsInState.length > 0) {
-          endTimeToUseForCalculations = eventsInState[0].timeAsNumber;
+          endTimeToUseForCalculations = mostRecentEvent(getState()).timeAsNumber;
         }
 
         const newStartTime =
@@ -474,11 +479,15 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         currentStreamState.flattenedColumnList
       );
 
-      // Count calls are only accurate if begin/end are rounded to the
-      // minute. If there is less than a minute for the gap, no point
-      // in doing any sort of count checks while streaming.
-      if (batchEndTime - batchStartTime > 60) {
+      // Count calls are only accurate if the time range is rounded
+      // to the minute. A second is subtracted from the end time as
+      // seconds are inclusive, hence 59
+      if ((batchEndTime % 60 === 59) && (batchStartTime % 60 === 0)) {
         _getBatchEventCount(modifiedQueryNode, language, streamLimit, dispatch);
+      } else {
+        if (window.DEBUG_STREAMS) {
+          console.log('Start or end time not rounded to minute, cannot use count call to estimate', batchStartTime % 60, batchEndTime % 60);
+        }
       }
     }
   };
@@ -585,7 +594,7 @@ export const eventsStartOldest = () => {
            (lowerCaseDesc === 'executing' && parseInt(percent, 10) < 100 && payload.length === 0))) {
           return;
         } else {
-          payload.forEach(mergeMetaIntoEvent);
+          payload.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
           dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
 
           const { investigate } = getState();
@@ -634,7 +643,9 @@ export const eventsStartOldest = () => {
       }
     };
 
+
     const state = getState();
+    currentStreamState.flattenedColumnList = getFlattenedColumnList(state);
     const { investigate } = state;
     const { queryNode } = investigate;
     const { language } = investigate.dictionaries;
@@ -645,7 +656,7 @@ export const eventsStartOldest = () => {
       streamLimit,
       streamBatch,
       handlers,
-      getFlattenedColumnList(state)
+      currentStreamState.flattenedColumnList
     );
   };
 };

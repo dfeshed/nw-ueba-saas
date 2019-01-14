@@ -7,7 +7,8 @@ import {
   areEventsStreaming,
   percentageOfEventsDataReturned,
   allExpectedDataLoaded,
-  shouldStartAtOldest
+  shouldStartAtOldest,
+  mostRecentEvent
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -228,6 +229,30 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     areThey = areEventsStreaming(state);
     assert.equal(areThey, false, "not streaming when 'complete'");
+  });
+
+  test('mostRecentEvent should get the correct event', function(assert) {
+    let state = {
+      investigate: {
+        eventResults: {
+          eventSortOrder: 'Descending',
+          data: eventResultsData
+        }
+      }
+    };
+    let event = mostRecentEvent(state);
+    assert.equal(event.sessionId, 1, 'should get first event');
+
+    state = {
+      investigate: {
+        eventResults: {
+          eventSortOrder: 'Ascending',
+          data: eventResultsData
+        }
+      }
+    };
+    event = mostRecentEvent(state);
+    assert.equal(event.sessionId, 3, 'should get first event');
   });
 
   test('shouldStartAtOldest correctly handles preference data', function(assert) {

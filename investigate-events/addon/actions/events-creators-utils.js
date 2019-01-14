@@ -29,31 +29,35 @@ const _roundToMinute = (gap, time) => {
  * @param {object} event
  * @public
  */
-export const mergeMetaIntoEvent = (event) => {
-  if (event) {
-    const { metas } = event;
-    if (!metas) {
-      return;
+export const mergeMetaIntoEvent = (includeSessionId) => {
+  return (event) => {
+    if (event) {
+      const { metas } = event;
+      if (!metas) {
+        return;
+      }
+      const len = metas.length || 0;
+      for (let i = 0; i < len; i++) {
+        const meta = metas[i];
+        event[meta[0]] = meta[1];
+      }
+
+      // convert to something easily sortable later
+      // divide by 1000 as milliseconds have no meaning
+      // in netwitness (for now) and no need to use up
+      // the storage
+      event.timeAsNumber = new Date(event.time).getTime() / 1000;
+
+      // now that we have unraveled the metas
+      // into the object remove the metas
+      delete event.metas;
+
+      if (!includeSessionId) {
+        // Don't need duplicate sessionid
+        delete event.sessionid;
+      }
     }
-    const len = metas.length || 0;
-    for (let i = 0; i < len; i++) {
-      const meta = metas[i];
-      event[meta[0]] = meta[1];
-    }
-
-    // convert to something easily sortable later
-    // divide by 1000 as milliseconds have no meaning
-    // in netwitness (for now) and no need to use up
-    // the storage
-    event.timeAsNumber = new Date(event.time).getTime() / 1000;
-
-    // now that we have unraveled the metas
-    // into the object remove the metas
-    delete event.metas;
-
-    // Don't need duplicate sessionid
-    delete event.sessionid;
-  }
+  };
 };
 
 // The goal of this function is to come up with a new start time that
@@ -107,34 +111,56 @@ export const calculateNewStartForNextBatch = (
 // get too many, so we have to adjust back down. In these cases
 // it becomes a binary search to try and find something in the
 // middle that allows results that are > 0 && < limit.
-export const calculateNextGapAfterFailure = (
-  binarySearchData, lastGap, isReturningTooManyResults
+export const calculateNextStartTimeAfterFailure = (
+  startTime, endTime, binarySearchData, isReturningTooManyResults
 ) => {
-  let newGap;
+  const lastGap = endTime - startTime;
+
+  // newBinaryGap Tracks the gap between both sides in a binary
+  // search. newOverallGap tracks the time between the current
+  // query end time and where the binary search has placed the
+  // start time.
+  //
+  // Overall gap and Binary could be different. If we are doing
+  // a binary search looking for data two weeks ago, the overall
+  // gap would reflect two weeks time. The binary gap would
+  // reflect that two weeks ago we have a very tight window
+  // within which we are trying to discover data.
+  //
+  // Example: Imagine 0 data the last two weeks, but once
+  // data starts there is a HUGE amount of it. The overall gap
+  // reflect two weeks from the end date. But the binary gap
+  // could shrink down to 1 second if the data is suddenly
+  // massive.
+  let newOverallGap, newBinaryGap;
   if (isReturningTooManyResults) {
     // too many results being returned, need to shrink gap
     binarySearchData.tooMany = lastGap;
-    newGap = Math.ceil((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
+    newOverallGap = Math.ceil((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
+    newBinaryGap = binarySearchData.tooMany - newOverallGap;
   } else {
+
     // 0 results being returned, need to increase gap to try to get some
     binarySearchData.noResults = lastGap;
     if (binarySearchData.tooMany) {
       // This failures is because there are no results being returned,
       // but we have also had too many returned in a previous attempt
       // to find results, so pick in the middle of tooMany/noResults
-      newGap = Math.ceil((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
+      newOverallGap = Math.ceil((binarySearchData.tooMany + binarySearchData.noResults) * 0.5);
     } else {
       // haven't hit a case where we have too many results yet,
       // so just double the failure amount to try and get something
       // to come back
-      newGap = binarySearchData.noResults * 2;
+      newOverallGap = binarySearchData.noResults * 2;
     }
+    newBinaryGap = newOverallGap - binarySearchData.noResults;
   }
 
   // Event count calls rely on times being rounded to the minute in
-  // order to be accurate. If we have more than a minute of gap, then
-  // make sure we round to the minute.
-  newGap = _roundToMinute(newGap, newGap);
+  // order to be accurate. If we have more than a minute of gap between
+  // both sides of the binary search, then make sure we round to the
+  // minute.
+  newOverallGap = _roundToMinute(newBinaryGap, newOverallGap);
 
-  return newGap;
+  return endTime - newOverallGap;
 };

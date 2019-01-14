@@ -7,6 +7,7 @@ const { createSelector } = reselect;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
+const _eventSortOrder = (state) => state.investigate.eventResults.eventSortOrder;
 const _eventResultSetStart = (state) => state.investigate.eventResults.eventResultSetStart;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
@@ -17,10 +18,28 @@ const _selectedEventIds = (state) => state.investigate.eventResults.selectedEven
 
 export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
 
+export const SORT_ORDER = {
+  DESC: 'Descending',
+  ASC: 'Ascending'
+};
+
 export const RESULT_SET_START = {
   OLDEST: 'Oldest',
   NEWEST: 'Newest'
 };
+
+export const mostRecentEvent = createSelector(
+  [_eventSortOrder, _resultsData],
+  (eventSortOrder, events) => {
+    // if events are sorted ascending, then the oldest
+    // is the last one
+    if (SORT_ORDER.ASC === eventSortOrder) {
+      return events[events.length - 1];
+    } else {
+      return events[0];
+    }
+  }
+);
 
 export const shouldStartAtOldest = createSelector(
   [_eventResultSetStart],
