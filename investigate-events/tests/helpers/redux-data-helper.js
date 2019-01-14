@@ -150,6 +150,11 @@ export default class DataHelper {
     return this;
   }
 
+  eventResultSetStart(eventsOrder = 'Oldest') {
+    _set(this.state, 'eventResults.eventResultSetStart', eventsOrder);
+    return this;
+  }
+
   queryView(view) {
     _set(this.state, 'queryNode.queryView', view);
     return this;

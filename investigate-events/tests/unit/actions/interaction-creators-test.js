@@ -6,12 +6,72 @@ import ReduxDataHelper from '../../helpers/redux-data-helper';
 import interactionCreators from 'investigate-events/actions/interaction-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 
+let queryIsRunning = true;
+let noMoreEventsAllowed = false;
+let status = 'foo';
+let actionsByType = {};
+let queryResults = [];
+const streamBatch = 250;
+const streamLimit = 1000; // limit of 1000, 500 get returned so stream ends naturally
+let allActionsDispatched = [];
+
+export const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
+
+  const downstreamDispatch = (actionOrThunk) => {
+    if (noMoreEventsAllowed) {
+      assert.ok(false, 'should not have taken in more events');
+      return;
+    }
+
+    if (typeof actionOrThunk === 'function') {
+      // is another thunk, recurse
+      actionOrThunk(downstreamDispatch, getState);
+    } else {
+
+      allActionsDispatched.push(actionOrThunk);
+
+      if (actionOrThunk.type === ACTION_TYPES.QUERY_IS_RUNNING) {
+        queryIsRunning = actionOrThunk.payload;
+      }
+      if (actionOrThunk.type === ACTION_TYPES.INIT_EVENTS_STREAMING) {
+        status = 'streaming';
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE_STATUS) {
+        status = actionOrThunk.payload;
+        if (status === 'complete') {
+          noMoreEventsAllowed = true;
+          actionsByType = {};
+          allActionsDispatched.forEach((action) => {
+            if (actionsByType[action.type]) {
+              actionsByType[action.type].push(action);
+            } else {
+              actionsByType[action.type] = [action];
+            }
+          });
+
+          assert.equal(queryIsRunning === false, true, 'query is running flag should be false');
+          assert.equal(status, 'complete', 'query is complete');
+          asserts(allActionsDispatched, queryResults, actionsByType);
+        }
+      }
+      if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
+        queryResults = queryResults.concat(actionOrThunk.payload);
+      }
+    }
+  };
+
+  return downstreamDispatch;
+};
+
 module('Unit | Actions | interaction creators', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     initialize(this.owner);
+    allActionsDispatched = [];
+    queryIsRunning = true;
+    queryResults = [];
+    actionsByType = {};
   });
-
   test('setQueryView action creator returns proper type and payload', function(assert) {
     const action = interactionCreators.setQueryView('foo');
     assert.equal(action.type, ACTION_TYPES.SET_QUERY_VIEW, 'action has the correct type');
@@ -124,5 +184,62 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
     thunk(dispatch, getState);
   });
+
+  test('setColumnGroup - changing columms triggers off fetchInvestigateData which loads events according to the requested columns - OldestEvents', async function(assert) {
+    const done = assert.async();
+    let count = 0;
+    const getState = () => {
+      return new ReduxDataHelper()
+        .isQueryRunning(queryIsRunning)
+        .columnGroup('SUMMARY')
+        .eventsPreferencesConfig()
+        .streamLimit(streamLimit)
+        .streamBatch(streamBatch)
+        .pillsDataPopulated()
+        .metaFilter()
+        .eventResultsStatus(status)
+        .eventResults(queryResults)
+        .eventCount(undefined)
+        .language()
+        .serviceId()
+        .startTime()
+        .endTime()
+        .eventResultSetStart() // Oldest
+        .build();
+    };
+
+    const setColumnDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(fetchDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.SET_SELECTED_COLUMN_GROUP, 'sent out action to change column groups');
+      }
+    };
+
+    const fetchDispatch = (action) => {
+      if ((count === 2) && typeof action === 'function') {
+        action(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
+      } else {
+        count++;
+      }
+    };
+
+    const asserts = () => {
+      assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
+      assert.equal(queryResults.length, 500, 'total results accumulated');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
+      assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
+      assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 1, 'set status once');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'complete', 'first status call is to indicate between streams');
+      done();
+    };
+
+    const thunk = interactionCreators.setColumnGroup({ id: 2 });
+
+    thunk(setColumnDispatch, getState);
+
+  });
+
 
 });

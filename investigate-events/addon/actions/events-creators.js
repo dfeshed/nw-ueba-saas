@@ -241,7 +241,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
   return (dispatch, getState) => {
     const allState = getState();
     const { investigate } = allState;
-    const { queryNode } = investigate;
+    const queryNode = getActiveQueryNode(getState());
 
     // Need to know if we are on the first stream to
     // properly initialize
@@ -519,7 +519,7 @@ export const eventsStartNewest = () => {
       console.time();
     }
 
-    const { queryNode } = getState().investigate;
+    const queryNode = getActiveQueryNode(getState());
 
     currentStreamState.binarySearchBatchStartTime = { tooMany: 0, noResults: 0 };
     currentStreamState.cancelled = false;
@@ -647,7 +647,7 @@ export const eventsStartOldest = () => {
     const state = getState();
     currentStreamState.flattenedColumnList = getFlattenedColumnList(state);
     const { investigate } = state;
-    const { queryNode } = investigate;
+    const queryNode = getActiveQueryNode(getState());
     const { language } = investigate.dictionaries;
     const { streamLimit, streamBatch } = investigate.eventResults;
     fetchStreamingEvents(

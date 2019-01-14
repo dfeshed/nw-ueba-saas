@@ -3,7 +3,7 @@ import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 
-import { getServiceSummary } from './data-creators';
+import { fetchInvestigateData, getServiceSummary } from './data-creators';
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
@@ -187,6 +187,7 @@ export const setColumnGroup = (selectedGroup) => {
     // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
     const prefService = lookup('service:preferences');
     prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState()), getDefaultPreferences(getState()));
+    dispatch(fetchInvestigateData());
   };
 };
 
