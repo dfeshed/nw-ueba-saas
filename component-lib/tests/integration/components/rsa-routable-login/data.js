@@ -13,4 +13,15 @@ const securitybanner = {
   }]
 };
 
+const securitybannerdisabled = {
+  total: 1,
+  message: 'Settings Loaded',
+  object: null,
+  success: true,
+  data: [{
+    securityBannerEnabled: false
+  }]
+};
+
 export { securitybanner };
+export { securitybannerdisabled };

@@ -113,6 +113,8 @@ export default Component.extend({
 
   isBrowserIeEdge: ieEdgeDetection(),
 
+  userPkiEnabled: null,
+
   @computed('eulaKey')
   displayEula: {
     get(eulaKey) {
@@ -181,7 +183,8 @@ export default Component.extend({
       const auth = config['ember-simple-auth'].authenticate;
 
       localStorage.removeItem('rsa-x-csrf-token');
-      session.authenticate(auth, this.get('username'), this.get('password')).then(
+      // Authenticate based on Credential and Pki Status
+      session.authenticate(auth, this.get('username'), this.get('password'), this.get('userPkiEnabled')).then(
         // Auth succeeded
         () => {
           this.updateLoginProperties(_STATUS.SUCCESS);
@@ -306,24 +309,89 @@ export default Component.extend({
         }
       }
 
-      this.get('ajax').request('/display/security/securitybanner/get').then((response) => {
-        const [config] = response.data;
+      // Find out if the PKI Status is `on` or `off`!
+      // Make a REST Call
+      const promisePki = this.get('ajax').request('/userpkistatus', {
+        dataType: 'html' // Capture the Response body!
+      });
 
+      // Get banner for Security Banner
+      // Make REST call
+      const promiseSecurityBanner = this.get('ajax').request('/display/security/securitybanner/get');
+
+      // Wait for both Promise to return
+      // Once both complete, resolve it
+      Promise.all([promisePki, promiseSecurityBanner]).then((values) => {
+
+        // Get and Set the Pki Status. In case of error as well consider PKi as
+        // False because this is likely to be a Misconfigured NginX
+        this.set('userPkiEnabled', values[0] === 'on');
+
+        // Get the Security Banner Configuration
+        const [config] = values[1].data;
+
+        // Is Security Banner is supposed to be shown on UI?
         if (config.securityBannerEnabled) {
+
+          // If Enabled, get the UI Text
           const bannerTitleHtml = sanitizeHtml(config.securityBannerTitle);
           const bannerTextHtml = sanitizeHtml(config.securityBannerText);
+
+          // Set the Properties as needed
           this.setProperties({
             securityBannerTitle: bannerTitleHtml,
             securityBannerText: bannerTextHtml,
             displaySecurityBanner: true
           });
+
         } else {
+
+          // If Not Enabled, we simply need to Put Focus on Username Input
           this.$('.js-test-login-username-input').focus();
+
+          // If Pki is Enabled, we would like to auto Login
+          // Let the handler figure it out, as we already know if pki is Enabled
+          this.handlePkiEnabledLogin();
         }
       }).catch((error) => {
+        // Highlight UI
         warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
       });
     });
+  },
+
+  /**
+   * Function will make the XHR call to generate OAuth Token automatically when Pki is Enabled. The UI flow is simple,
+   *
+   * First, we make a Call to url "/userpkistatus", if the Response is ON, then we assume that NginX is configured for
+   * Two Way SSL Handshake between Browser and NginX. This would mean that this SSL Session has a Client Certificate
+   * negotiated between Browser and NginX which will be used for User Authentication instead of Credentials. When we
+   * get the response of "/userpkistatus" as 'on', we set the variable {@code userPkiEnabled} as 'true'.
+   *
+   * After we get the Pki Status, we handle the Security Banner if Enabled. If Enabled, we show the banner
+   * and call this function on Accepting the Banner. If Disabled, we call this function instead.
+   *
+   * This function, will check is the variable {@code userPkiEnabled} is set to 'true'. If set, we hide the Credential
+   * inputs and the set the Value of 'username' and 'password' as "pki".
+   *
+   * Finally, we call {@code authenticate} function to kick-in the call to Handle generation of Access Token!
+   *
+   * @see {@code oauth-authenticator.js#authenticate} for more details
+   */
+  handlePkiEnabledLogin() {
+    // See if need to authenticate automatically in case PKI is Enabled on Server!
+    if (this.get('userPkiEnabled')) {
+      // Set any Dummy value for Username so that Any Empty Checks are passed through
+      this.set('username', 'pki');
+      // Set any Dummy value for Password so that Any Empty Checks are passed through
+      this.set('password', 'pki');
+      // We do not need user to input any Credential, So hide the input
+      this.$('.js-test-login-username-input').hide();
+      // We do not need user to input any Credential, So hide the input
+      this.$('.js-test-login-password-input').hide();
+      // Finally make the call to authenticate so that Certificate is sent to NginX
+      this.authenticate();
+    }
   },
 
   actions: {
@@ -333,6 +401,7 @@ export default Component.extend({
 
     acceptSecurityBanner() {
       this.set('displaySecurityBanner', false);
+      this.handlePkiEnabledLogin();
     },
 
     authenticate() {

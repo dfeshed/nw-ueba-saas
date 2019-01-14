@@ -70,9 +70,21 @@ export default OAuth2PasswordGrant.extend(csrfToken, {
     }
   },
 
-  authenticate(identification, password, scope = []) {
+  /**
+   * This function will generate the Access Token by making a call to [ OAuth Token ] URL. In case Pki Authentication is
+   * enabled, we need to send the parameter {@code grant_type} as 'pki' because the Token Endpoint will not accept any
+   * other value for it! In case of PKI being enabled, the {@code username} and {@code password} provided will be
+   * ignored and the Authentication will be performed solely on the basis of the Certificate provided by Browser (user)
+   * while establishing a Two Way SSL Session with NginX. The request for User Certificate and Forwarding of Certificate
+   * to Token Server will be handled by NginX transparently by NginX and it does not require any code changes other than
+   * simple making a XHR call to [ OAuth Token ] URL with parameter {@code grant_type} as 'pki'
+   */
+  authenticate(identification, password, userpkistatus, scope = []) {
     return new RSVP.Promise((resolve, reject) => {
-      const data = { 'grant_type': 'password', username: identification, password };
+      // This is crucial that we send grant_type as PKI in case PKI is enabled on Server
+      // No other value would be accepted otherwise
+      const grantType = (userpkistatus === true) ? 'pki' : 'password';
+      const data = { 'grant_type': grantType, username: identification, password };
       const serverTokenEndpoint = useMockServer ? `${mockServerUrl}${this.get('serverTokenEndpoint')}` : this.get('serverTokenEndpoint');
       const scopesString = makeArray(scope).join(' ');
       if (!isEmpty(scopesString)) {

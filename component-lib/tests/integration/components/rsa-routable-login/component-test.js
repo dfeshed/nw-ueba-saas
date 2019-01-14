@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { findAll, render, waitUntil } from '@ember/test-helpers';
 import { waitForRaf } from '../../../helpers/wait-for-raf';
-import { securitybanner } from './data';
+import { securitybanner, securitybannerdisabled } from './data';
 
 module('Integration | Component | rsa-routable-login', function(hooks) {
   setupRenderingTest(hooks);
@@ -110,18 +110,25 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
   });
 
   test('security header title and text will be sanitized before html is rendered', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     let fetchResolved = false;
     this.owner.register('service:ajax', Service.extend({
       request: (url) => {
-        assert.equal(url, '/display/security/securitybanner/get');
-        return new Promise(function(resolve) {
-          later(() => {
-            resolve(securitybanner);
-            fetchResolved = true;
-          }, 1);
-        });
+        if (url == '/display/security/securitybanner/get') {
+          return new Promise(function(resolve) {
+            later(() => {
+              resolve(securitybanner);
+              fetchResolved = true;
+            }, 1);
+          });
+        } else if (url == '/userpkistatus') {
+          return new Promise(function(resolve) {
+            later(() => {
+              resolve('off');
+            }, 1);
+          });
+        }
       }
     }));
 
@@ -134,6 +141,53 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
 
     assert.equal(findAll('[test-id=securityBannerText]').length, 1);
     assert.equal(document.querySelector('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src="a">');
+  });
+
+  test('if pki is enabled, the Input Fields are hidden automatically', async function(assert) {
+
+    // We are going to assert only THRICE!
+    assert.expect(4);
+
+    // Mark this Variable as Marker for Auto Call
+    let fetchResolved = false;
+
+    // Register Mock Responses for Each Call
+    this.owner.register('service:ajax', Service.extend({
+      request: (url) => {
+
+        if (url == '/display/security/securitybanner/get') {
+          // Mark first Assert
+          assert.equal(1, 1);
+          // In case of Security Banner Setting, mark it as Disabled
+          return new Promise(function(resolve) {
+            later(() => {
+              resolve(securitybannerdisabled);
+              // We are done here!
+              fetchResolved = true;
+            }, 1);
+          });
+        } else if (url == '/userpkistatus') {
+          // Make Second Assert
+          assert.equal(2, 2);
+          // Send the PKI Status as ON
+          return new Promise(function(resolve) {
+            later(() => {
+              resolve('on');
+            }, 1);
+          });
+        }
+      }
+    }));
+
+    // Render UI
+    await render(hbs `{{rsa-routable-login displayEula=false displaySecurityBanner=false}}`);
+
+    // Wait till we get the Token Call
+    await waitUntil(() => fetchResolved === true);
+
+    // Assert that username and password are hidden
+    assert.equal(document.querySelector('[test-id=loginPassword]').style.display, 'none');
+    assert.equal(document.querySelector('[test-id=loginUsername]').style.display, 'none');
   });
 
   test('security header title will render login eula title when displayEula truthy and displaySecurityBanner falsy', async function(assert) {
