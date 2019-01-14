@@ -121,8 +121,8 @@ export const _loadAllEndpointServers = (serverId) => {
       type: ACTION_TYPES.LIST_OF_ENDPOINT_SERVERS,
       promise: fetchEndpointServers(),
       meta: {
-        onSuccess: () => {
-          if (!serverId) {
+        onSuccess: ({ data }) => {
+          if (!serverId || !data.find((d) => d.id === serverId)) {
             // Set the server id and continue with that server id
             const [defaultServer] = getState().endpointServer.serviceData || [{}];
             _setPersistedServerId(defaultServer.id);
