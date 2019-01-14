@@ -15,7 +15,8 @@ class PresidioUpgradeDagBuilder(object):
         directory_name = "%s/versions" % directory_name
         # A sorted list of all the versions that have an upgrade script
         # A file named "11.2.0.5.py" is an upgrade script TO version 11.2.0.5
-        versions = [version[:-3] for version in os.listdir(directory_name)]
+        versions = [version[:-3] for version in os.listdir(directory_name)
+                    if version.endswith(".py") and version != "__init__.py"]
         versions.sort(cmp=presidio_version_comparator)
 
         previous = None
