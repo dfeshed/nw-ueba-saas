@@ -116,4 +116,19 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(findAll('.console-panel .devices-status').length, 1);
   });
 
+  test('it shows proper message when query is canceled by the user', async function(assert) {
+    new ReduxDataHelper(setState)
+      .withPreviousQuery()
+      .queryStats()
+      .queryStatsIsOpen()
+      .eventResultsStatus('canceled')
+      .build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(find('.console-panel .progress .value').textContent.trim(),
+      'User Canceled',
+      'incorrect message displayed if query canceled');
+  });
+
 });

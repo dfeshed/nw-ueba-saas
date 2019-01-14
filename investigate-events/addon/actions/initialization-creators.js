@@ -369,8 +369,8 @@ export const initializeInvestigate = function(
     // 8) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));
 
-    // 9) If we have the minimum required values for querying
-    //    (service id, start time and end time) then kick off the query.
+    // 9) If we have the minimum required values for querying (service id,
+    // start time and end time) specified in the URL, then kick off the query.
     const { serviceId, startTime, endTime } = parsedQueryParams;
     if (serviceId && startTime && endTime) {
       dispatch(fetchInvestigateData());

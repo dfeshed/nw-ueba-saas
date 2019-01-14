@@ -37,7 +37,7 @@
     selectedItems=selectedEventIds
     allItemsSelected=allEventsSelected
     rowComponentClass="events-table-container/row-container"
-    noResultsMessage=(t 'investigate.empty.description')
+    noResultsMessage=noResultsMessage
   }}
 
   {{!--
@@ -59,6 +59,8 @@
           {{t 'investigate.allResultsLoaded'}}
         </div>
       {{/if}}
+    {{else if hasPartialResults}}
+      {{t 'investigate.partialResults'}}
     {{/if}}
   {{/rsa-data-table/load-more}}
 

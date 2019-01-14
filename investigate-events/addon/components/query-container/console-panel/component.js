@@ -11,6 +11,7 @@ import {
   warningsWithServiceName,
   errorsWithServiceName
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { isCanceled } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
@@ -20,6 +21,7 @@ const stateToComputed = (state) => ({
   description: state.investigate.queryStats.description,
   warnings: warningsWithServiceName(state),
   errors: errorsWithServiceName(state),
+  isCanceled: isCanceled(state),
   isComplete: isComplete(state),
   hasError: hasError(state),
   hasWarning: hasWarning(state),

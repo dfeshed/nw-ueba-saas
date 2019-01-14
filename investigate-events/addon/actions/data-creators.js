@@ -106,6 +106,12 @@ export const updateSummaryData = () => {
 export const fetchInvestigateData = () => {
   return (dispatch, getState) => {
     if (canFetchEvents(getState())) {
+      // Alert UI querying has begun
+      dispatch({
+        type: ACTION_TYPES.QUERY_IS_RUNNING,
+        payload: true
+      });
+      // Get event count
       dispatch(getEventCount());
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());

@@ -142,6 +142,41 @@ module('Integration | Component | events-table', function(hooks) {
     );
   });
 
+  test('if events are canceled before any results are returned, a message is displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('canceled')
+      .eventCount(0)
+      .streamLimit(100)
+      .eventResults([])
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner should not be present');
+    assert.equal(find('.no-results-message').textContent.trim(),
+      'Query canceled before any results were returned.',
+      'missing correct cancellation message'
+    );
+  });
+
+  test('if events are canceled, but some results have returned, a message is displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('canceled')
+      .eventCount(1)
+      .streamLimit(100)
+      .eventResults([{ sessionId: 'foo', time: 123 }])
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner should not be present');
+    assert.equal(findAll('.rsa-investigate-events-table-row').length, 1,
+      'missing correct number of rows'
+    );
+    assert.equal(find('.rsa-data-table-load-more').textContent.trim(),
+      'Because the query was canceled, only partial results are displayed.',
+      'missing correct cancellation message when partial results returned'
+    );
+  });
+
   // TODO bring download back
   skip('renders event selection checkboxes only if permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');

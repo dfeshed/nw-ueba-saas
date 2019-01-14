@@ -1,5 +1,5 @@
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
-import computed from 'ember-computed-decorators';
+import computed, { and } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
@@ -7,7 +7,8 @@ import { getColumns } from 'investigate-events/reducers/investigate/data-selecto
 import {
   selectedIndex,
   allExpectedDataLoaded,
-  areEventsStreaming
+  areEventsStreaming,
+  isCanceled
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
@@ -32,7 +33,8 @@ const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
   queryConditions: state.investigate.queryNode.metaFilter,
-  metaFormatMap: metaFormatMap(state.investigate.dictionaries.language)
+  metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
+  isCanceled: isCanceled(state)
 });
 
 const dispatchToActions = {
@@ -67,6 +69,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   metaValue: null,
   selectEvent: () => {},
   accessControl: service(),
+  i18n: service(),
 
   @computed('items')
   hasResults(results) {
@@ -95,6 +98,17 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     }*/
     return columns;
   },
+
+  @computed('isCanceled')
+  noResultsMessage(isCanceled) {
+    const i18n = this.get('i18n');
+    return (isCanceled) ?
+      i18n.t('investigate.empty.canceled') :
+      i18n.t('investigate.empty.description');
+  },
+
+  @and('isCanceled', 'hasResults')
+  hasPartialResults: false,
 
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');

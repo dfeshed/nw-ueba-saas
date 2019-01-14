@@ -41,7 +41,9 @@
     <div class="progress">
       <span class="label">{{t 'investigate.queryStats.progress'}}</span>
       <span class="value">
-        {{#if isComplete}}
+        {{#if isCanceled}}
+          {{t 'investigate.queryStats.canceled'}}
+        {{else if isComplete}}
           {{t 'investigate.queryStats.complete'}}
         {{else}}
           {{description}}

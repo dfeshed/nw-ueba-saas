@@ -18,9 +18,13 @@ import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-st
 
 export const cancelQuery = () => {
   return (dispatch) => {
-    dispatch(cancelEventCountStream());
-    dispatch(cancelEventsStream());
+    cancelEventCountStream();
+    cancelEventsStream();
     dispatch(queryIsRunning(false));
+    dispatch({
+      type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+      payload: 'canceled'
+    });
   };
 };
 

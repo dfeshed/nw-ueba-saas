@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import {
+  isCanceled,
   isEventResultsError,
   eventResultsErrorMessage,
   getDownloadOptions,
@@ -414,6 +415,26 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     hasItAllLoaded = allExpectedDataLoaded(state);
     assert.equal(hasItAllLoaded, true, 'got it all, not at the limit');
+  });
+
+  test('determines if a query has been canceled', function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          status: 'canceled'
+        }
+      }
+    };
+    assert.ok(isCanceled(state), 'should have returned "true"');
+
+    const state2 = {
+      investigate: {
+        eventResults: {
+          status: 'complete'
+        }
+      }
+    };
+    assert.notOk(isCanceled(state2), 'should have returned "false"');
   });
 });
 

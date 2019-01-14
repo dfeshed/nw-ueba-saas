@@ -36,6 +36,13 @@ export const areEventsStreaming = createSelector(
   }
 );
 
+export const isCanceled = createSelector(
+  [_status],
+  (status) => {
+    return status === 'canceled';
+  }
+);
+
 /* Two types of message formats
     - Case one -> 'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454 && time="2018-04-09 15:48:00" - "2018-04-10 15:47:59""'
     - Case two -> rule syntax error: unrecognized key sdcsdcs

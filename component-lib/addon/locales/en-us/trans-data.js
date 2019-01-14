@@ -449,6 +449,7 @@ export default {
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
     notAllLoaded: '{{maxEvents}} event maximum displayed, remaining results not loaded',
+    partialResults: 'Because the query was canceled, only partial results are displayed.',
     allResultsLoaded: 'All results loaded',
     showNextXEvents: 'Show Next {{count}} Events',
     tryAgain: 'Try Again',
@@ -481,7 +482,8 @@ export default {
     },
     empty: {
       title: 'No events found.',
-      description: 'Your filter criteria did not match any records.'
+      description: 'Your filter criteria did not match any records.',
+      canceled: 'Query canceled before any results were returned.'
     },
     error: {
       title: 'Unable to load data.',
@@ -586,6 +588,7 @@ export default {
       between: 'time=',
       progress: 'Progress:',
       complete: 'Complete',
+      canceled: 'User Canceled',
       nestedElapsedTime: '({{time}}s)',
       nestedNoElapsedTime: '(<1s)',
       slowest: 'This is the slowest service in the query.',
