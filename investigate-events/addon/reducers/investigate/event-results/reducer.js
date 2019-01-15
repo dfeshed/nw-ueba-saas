@@ -18,7 +18,7 @@ const _initialState = Immutable.from({
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
-  eventSortOrder: undefined,
+  eventTimeSortOrder: undefined,
   eventResultSetStart: undefined
 });
 
@@ -69,7 +69,7 @@ export default handleActions({
     // Merge the data into the current state data and perform a sort
     // Have to sort it all as data can come in out of order.
     let sortKey = 'desc';
-    if (state.eventSortOrder === 'Ascending') {
+    if (state.eventTimeSortOrder === 'Ascending') {
       sortKey = 'asc';
     }
     let newEvents = state.data.asMutable().concat(payload);
@@ -137,9 +137,9 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const eventSortOrder = _.get(eventAnalysisPreferences, 'eventSortOrder', state);
+    const eventTimeSortOrder = _.get(eventAnalysisPreferences, 'eventTimeSortOrder', state);
     const eventResultSetStart = _.get(eventAnalysisPreferences, 'eventResultSetStart', state);
-    return state.merge({ eventSortOrder, eventResultSetStart });
+    return state.merge({ eventTimeSortOrder, eventResultSetStart });
   }
 }, _initialState);
 

@@ -12,7 +12,7 @@ export const DEFAULT_INITIALIZE = {
     isReconOpen: true,
     isRequestShown: true,
     isResponseShown: true,
-    eventSortOrder: 'Ascending',
+    eventTimeSortOrder: 'Ascending',
     eventResultSetStart: 'Oldest'
   }
 };

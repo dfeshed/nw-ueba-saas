@@ -67,7 +67,7 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
 test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Ascending order of Time', function(assert) {
   const initialState = Immutable.from({
     data: [],
-    eventSortOrder: 'Ascending'
+    eventTimeSortOrder: 'Ascending'
   });
 
   let action = {
@@ -99,7 +99,7 @@ test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in A
 test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Descending order of Time', function(assert) {
   const initialState = Immutable.from({
     data: [],
-    eventSortOrder: 'Descending'
+    eventTimeSortOrder: 'Descending'
   });
 
   let action = {
@@ -132,7 +132,7 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', funct
   const initialState = Immutable.from({
     data: [],
     streamLimit: 2,
-    eventSortOrder: 'Descending'
+    eventTimeSortOrder: 'Descending'
   });
 
   const action = {
@@ -149,7 +149,7 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', funct
 
 test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
   const initialState = Immutable.from({
-    eventSortOrder: 'Ascending',
+    eventTimeSortOrder: 'Ascending',
     eventResultSetStart: 'Oldest'
   });
 
@@ -157,13 +157,13 @@ test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(asser
     type: ACTION_TYPES.SET_PREFERENCES,
     payload: {
       eventAnalysisPreferences: {
-        eventSortOrder: 'Descending',
+        eventTimeSortOrder: 'Descending',
         eventResultSetStart: 'Newest'
       }
     }
   };
   const result = reducer(initialState, action);
-  assert.equal(result.eventSortOrder, 'Descending');
+  assert.equal(result.eventTimeSortOrder, 'Descending');
   assert.equal(result.eventResultSetStart, 'Newest');
 });
 

@@ -85,14 +85,14 @@ export default {
     field: 'eventAnalysisPreferences.autoUpdateSummary'
   },
   {
-    name: 'preferences.investigate-events.eventSortOrder',
+    name: 'preferences.investigate-events.eventTimeSortOrder',
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
       'Descending',
       'Ascending'
     ],
-    field: 'eventAnalysisPreferences.eventSortOrder'
+    field: 'eventAnalysisPreferences.eventTimeSortOrder'
   },
   {
     name: 'preferences.investigate-events.eventResultSetStart',
@@ -113,7 +113,7 @@ export default {
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
       autoUpdateSummary: false,
-      eventSortOrder: 'Ascending',
+      eventTimeSortOrder: 'Ascending',
       eventResultSetStart: 'Oldest'
     },
     eventPreferences: {

@@ -235,7 +235,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     let state = {
       investigate: {
         eventResults: {
-          eventSortOrder: 'Descending',
+          eventTimeSortOrder: 'Descending',
           data: eventResultsData
         }
       }
@@ -246,7 +246,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     state = {
       investigate: {
         eventResults: {
-          eventSortOrder: 'Ascending',
+          eventTimeSortOrder: 'Ascending',
           data: eventResultsData
         }
       }

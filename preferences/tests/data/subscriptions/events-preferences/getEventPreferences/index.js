@@ -20,7 +20,7 @@ export default {
         autoDownloadExtractedFiles: true,
         packetsPageSize: 100,
         autoUpdateSummary: false,
-        eventSortOrder: 'Ascending',
+        eventTimeSortOrder: 'Ascending',
         eventResultSetStart: 'Oldest'
       },
       eventPreferences: {
