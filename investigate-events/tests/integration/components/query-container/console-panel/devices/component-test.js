@@ -24,7 +24,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders the correct dom', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsIsRetrieving().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
@@ -36,7 +36,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders the offline status when a single device is offline', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().queryStatsWithOffline().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsIsRetrieving().queryStatsWithOffline().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
@@ -47,7 +47,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders the offline status when multiple devices are offline', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().queryStatsWithMultipleOffline().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsIsRetrieving().queryStatsWithMultipleOffline().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
@@ -57,28 +57,41 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status div.some-offline i.rsa-icon-report-problem-triangle-filled').length, 1);
   });
 
-  test('renders the summary of the top level device', async function(assert) {
+  test('renders the summary of the top level device when streaming', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+
+    assert.equal(findAll('.devices-status ul.device-hierarchy').length, 1);
+    assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
+    assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s)  10 event(s).'));
+  });
+
+  test('renders the summary of the top level device when complete', async function(assert) {
     new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
+
     assert.equal(findAll('.devices-status ul.device-hierarchy').length, 1);
     assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
     assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('10 event(s)'));
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('2 second(s)'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s) and retrieved (1s)  10 event(s).'));
   });
 
-  test('renders the summary of the top level device when no seconds and no elapsedTime', async function(assert) {
+  test('renders the summary of the top level device when no events', async function(assert) {
     new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsNoTime().eventCount(0).build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('0 event(s) in <1 second.'));
+
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s) 0 event(s).'));
   });
 
   test('renders when hasError', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).queryStatsWithOffline().build();
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsWithOffline().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
@@ -86,7 +99,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders when hasWarning', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).queryStatsHasWarning().build();
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsHasWarning().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
@@ -94,7 +107,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders when with children and open', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).queryStatsWithHierarcy().build();
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsWithHierarcy().build();
     await render(hbs`
       {{query-container/console-panel/devices isExpanded=true}}
     `);
@@ -104,7 +117,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders when with children and closed', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().eventCount(10).queryStatsWithHierarcy().build();
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsWithHierarcy().build();
     await render(hbs`
       {{query-container/console-panel/devices isExpanded=false}}
     `);

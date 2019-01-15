@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 
 import {
-  isProgressBarDisabled,
   slowestInQuery,
   offlineServices,
   offlineServicesPath,
@@ -12,8 +11,10 @@ import {
   warningsWithServiceName,
   warningsPath,
   errorsWithServiceName,
-  isComplete,
-  decoratedDevices
+  isQueryComplete,
+  decoratedDevices,
+  streamingTimeElapsed,
+  queryTimeElapsed
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 module('Unit | Selectors | queryStats');
@@ -401,8 +402,8 @@ test('isConsoleEmpty', function(assert) {
   }), false);
 });
 
-test('isComplete', function(assert) {
-  assert.equal(isComplete({
+test('isQueryComplete', function(assert) {
+  assert.equal(isQueryComplete({
     investigate: {
       queryStats: {
         devices: [{}]
@@ -410,7 +411,7 @@ test('isComplete', function(assert) {
     }
   }), true);
 
-  assert.equal(isComplete({
+  assert.equal(isQueryComplete({
     investigate: {
       queryStats: {
         devices: []
@@ -418,7 +419,7 @@ test('isComplete', function(assert) {
     }
   }), false);
 
-  assert.equal(isComplete({
+  assert.equal(isQueryComplete({
     investigate: {
       queryStats: {
         percent: 100
@@ -426,43 +427,13 @@ test('isComplete', function(assert) {
     }
   }), false);
 
-  assert.equal(isComplete({
+  assert.equal(isQueryComplete({
     investigate: {
       queryStats: {
         errors: [{}]
       }
     }
   }), true);
-});
-
-
-test('isProgressBarDisabled', function(assert) {
-  assert.equal(isProgressBarDisabled({
-    investigate: {
-      queryStats: {
-        description: 'Queued',
-        percent: 0
-      }
-    }
-  }), true);
-
-  assert.equal(isProgressBarDisabled({
-    investigate: {
-      queryStats: {
-        description: 'Queued',
-        percent: 50
-      }
-    }
-  }), false);
-
-  assert.equal(isProgressBarDisabled({
-    investigate: {
-      queryStats: {
-        description: 'Executing',
-        percent: 0
-      }
-    }
-  }), false);
 });
 
 test('warningsWithServiceName', function(assert) {
@@ -568,6 +539,58 @@ test('errorsWithServiceName', function(assert) {
   assert.equal(decoratedErrors[0].serviceName, 'Service Name');
   assert.equal(decoratedErrors[0].error, 'error');
   assert.equal(decoratedErrors[0].serviceId, 'foo');
+});
+
+test('queryTimeElapsed', function(assert) {
+  const timeElapsed = queryTimeElapsed({
+    investigate: {
+      queryStats: {
+        queryStartedTime: 1000,
+        queryEndedTime: 2000
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, 1);
+});
+
+test('queryTimeElapsed without end time', function(assert) {
+  const timeElapsed = queryTimeElapsed({
+    investigate: {
+      queryStats: {
+        queryStartedTime: 1000,
+        queryEndedTime: 0
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, undefined);
+});
+
+test('streamingTimeElapsed', function(assert) {
+  const timeElapsed = streamingTimeElapsed({
+    investigate: {
+      queryStats: {
+        streamingStartedTime: 1000,
+        streamingEndedTime: 2000
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, 1);
+});
+
+test('streamingTimeElapsed without end time', function(assert) {
+  const timeElapsed = streamingTimeElapsed({
+    investigate: {
+      queryStats: {
+        streamingStartedTime: 1000,
+        streamingEndedTime: 0
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, undefined);
 });
 
 test('decoratedDevices', function(assert) {

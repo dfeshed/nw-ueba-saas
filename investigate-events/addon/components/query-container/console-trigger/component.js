@@ -7,7 +7,7 @@ import {
   isConsoleEmpty,
   hasError,
   hasWarning,
-  isComplete
+  isQueryComplete
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 const dispatchToActions = {
@@ -20,7 +20,7 @@ const stateToComputed = (state) => ({
   isOpen: state.investigate.queryStats.isConsoleOpen,
   hasError: hasError(state),
   hasWarning: hasWarning(state),
-  isComplete: isComplete(state)
+  isQueryComplete: isQueryComplete(state)
 });
 
 const ConsoleTrigger = Component.extend({
@@ -32,8 +32,8 @@ const ConsoleTrigger = Component.extend({
     'hasWarning'
   ],
 
-  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isComplete', 'i18n')
-  label: (description, isDisabled, isOpen, hasError, hasWarning, isComplete, i18n) => {
+  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isQueryComplete', 'i18n')
+  label: (description, isDisabled, isOpen, hasError, hasWarning, isQueryComplete, i18n) => {
     let label;
     if (isDisabled) {
       label = i18n.t('investigate.queryStats.disabledLabel');
@@ -41,7 +41,7 @@ const ConsoleTrigger = Component.extend({
       label = i18n.t('investigate.queryStats.hasError');
     } else if (hasWarning) {
       label = i18n.t('investigate.queryStats.hasWarning');
-    } else if (description && isOpen && !isComplete) {
+    } else if (description && isOpen && !isQueryComplete) {
       label = description;
     } else {
       label = i18n.t('investigate.queryStats.openCloseLabel');

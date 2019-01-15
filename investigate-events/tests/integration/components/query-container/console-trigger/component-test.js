@@ -120,7 +120,7 @@ module('Integration | Component | console-trigger', function(hooks) {
   });
 
   test('renders the correct title when completed', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsComplete().build();
+    new ReduxDataHelper(setState).queryStats().queryStatsIsRetrieving().build();
     await render(hbs`
       {{query-container/console-trigger}}
     `);

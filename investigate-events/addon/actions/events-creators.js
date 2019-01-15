@@ -106,7 +106,8 @@ const _done = (errorCode, serverMessage) => {
     } else {
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-        payload: 'complete'
+        payload: 'complete',
+        streamingEndedTime: Date.now()
       });
     }
   };
@@ -114,13 +115,14 @@ const _done = (errorCode, serverMessage) => {
 
 // Ensure we don't dispatch a status update
 // if we do not have an actual update
-const _handleEventsStatus = (newStatus) => {
+const _handleEventsStatus = (newStatus, streamingEndedTime) => {
   return (dispatch, getState) => {
     const { status } = getState().investigate.eventResults;
     if (status !== newStatus) {
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-        payload: newStatus
+        payload: newStatus,
+        streamingEndedTime
       });
     }
   };
@@ -564,7 +566,7 @@ export const eventsStartOldest = () => {
     const handlers = {
       onInit(stopStream) {
         currentStreamState.stopStreamingCallbacks.push(stopStream);
-        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
+        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING, streamingStartedTime: Date.now() });
       },
       onResponse(response) {
         // if we cancelled before this message got back, do not
@@ -616,7 +618,7 @@ export const eventsStartOldest = () => {
               console.log('Query is ending because the limit has been hit');
             }
             dispatch(queryIsRunning(false));
-            dispatch(_handleEventsStatus('complete'));
+            dispatch(_handleEventsStatus('complete', Date.now()));
           }
         }
       },
@@ -635,11 +637,11 @@ export const eventsStartOldest = () => {
         }
 
         dispatch(queryIsRunning(false));
-        dispatch(_handleEventsStatus('complete'));
+        dispatch(_handleEventsStatus('complete', Date.now()));
       },
       onStopped() {
         dispatch(queryIsRunning(false));
-        dispatch(_handleEventsStatus('stopped'));
+        dispatch(_handleEventsStatus('stopped', Date.now()));
       }
     };
 

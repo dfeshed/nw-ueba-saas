@@ -34,7 +34,7 @@ module('Integration | Component | console-panel', function(hooks) {
     new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
 
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
 
     assert.equal(findAll('.console-panel .warnings .warning').length, 0);
@@ -43,26 +43,65 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(findAll('.console-panel .console-content .timerange').length, 1);
     assert.equal(find('.console-panel .console-content .timerange .value .start').textContent.trim(), '"49682-11-11 15:20:00"');
     assert.equal(find('.console-panel .console-content .timerange .value .end').textContent.trim(), '"49682-11-11 15:20:00"');
-    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'foo');
+  });
+
+  test('renders the correct progressLabel when Queued', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats('Queued').queryStatsIsOpen().build();
+
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Queued');
+  });
+
+  test('renders the correct progressLabel when Executing', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats('Executing').queryStatsIsOpen().build();
+
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Executing');
+  });
+
+  test('renders the correct progressLabel', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats('foo').queryStatsIsOpen().build();
+
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Executing - foo');
+  });
+
+  test('renders the correct progressLabel when retrieving', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsRetrieving().queryStatsIsOpen().build();
+
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Retrieving');
   });
 
   test('renders the correct dom hasWarning', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsHasWarning().build();
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel.has-warning .console-content').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'warning');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Executing - warning');
   });
 
   test('renders the correct dom hasError', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().hasRequiredValuesToQuery(true).queryStats().queryStatsHasError().build();
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
     assert.equal(findAll('.console-panel.has-error .console-content .fatal-errors i.rsa-icon-report-problem-triangle-filled').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Complete');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Retrieving');
     assert.ok(find('.console-panel .console-content .fatal-errors').textContent.trim().includes('concentrator'));
     assert.equal(find('.console-panel .console-content .fatal-errors .error-text').textContent.trim(), 'error');
   });
@@ -70,7 +109,7 @@ module('Integration | Component | console-panel', function(hooks) {
   test('renders the correct dom hasError without service', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().hasRequiredValuesToQuery(true).queryStats().queryStatsHasErrorWithoutId().build();
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(find('.console-panel .console-content .fatal-errors').textContent.trim(), 'error');
   });
@@ -78,40 +117,40 @@ module('Integration | Component | console-panel', function(hooks) {
   test('renders warnings', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().hasRequiredValuesToQuery(true).queryStats().queryStatsHasWarning().build();
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel .warnings .warning').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'warning');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'Executing - warning');
   });
 
-  test('renders progress-bar', async function(assert) {
+  test('does not render progress-bar while querying', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
-    `);
-    assert.equal(findAll('.console-panel .progress-bar').length, 1);
-  });
-
-  test('does not renders progress-bar when complete', async function(assert) {
-    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
-    await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel .progress-bar').length, 0);
+  });
+
+  test('renders progress-bar when retrieving', async function(assert) {
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsRetrieving().build();
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+    assert.equal(findAll('.console-panel .progress-bar').length, 1);
   });
 
   test('does not render devices when not complete', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
     await render(hbs`
-      {{query-container/console-panel}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel .devices-status').length, 0);
   });
 
   test('renders devices when complete', async function(assert) {
-    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
+    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsRetrieving().build();
     await render(hbs`
-      {{query-container/console-panel}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(findAll('.console-panel .devices-status').length, 1);
   });
@@ -124,7 +163,7 @@ module('Integration | Component | console-panel', function(hooks) {
       .eventResultsStatus('canceled')
       .build();
     await render(hbs`
-      {{query-container/console-panel}}
+      {{query-container/console-panel timezone=timezone}}
     `);
     assert.equal(find('.console-panel .progress .value').textContent.trim(),
       'User Canceled',

@@ -170,10 +170,16 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
     percent: 100,
     warnings: ['foo'],
     errors: ['foo'],
-    devices: ['foo']
+    devices: ['foo'],
+    queryStartedTime: 1,
+    queryEndedTime: 1,
+    streamingStartedTime: 1,
+    streamingEndedTime: 1
+
   });
   const action = {
-    type: ACTION_TYPES.INITIALIZE_QUERYING
+    type: ACTION_TYPES.INITIALIZE_QUERYING,
+    queryStartedTime: 1
   };
   const result = reducer(prevState, action);
 
@@ -183,6 +189,10 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 0);
   assert.equal(result.devices.length, 0);
+  assert.equal(result.queryStartedTime, 1);
+  assert.equal(result.queryEndedTime, null);
+  assert.equal(result.streamingStartedTime, null);
+  assert.equal(result.streamingEndedTime, null);
 });
 
 test('START_GET_EVENT_COUNT reducer clears errors and warnings', function(assert) {
@@ -199,4 +209,30 @@ test('START_GET_EVENT_COUNT reducer clears errors and warnings', function(assert
 
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 0);
+});
+
+test('INIT_EVENTS_STREAMING sets streamingStartedTime', function(assert) {
+  const prevState = Immutable.from({
+    streamingStartedTime: null
+  });
+  const action = {
+    type: ACTION_TYPES.INIT_EVENTS_STREAMING,
+    streamingStartedTime: 1
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.streamingStartedTime, 1);
+});
+
+test('SET_EVENTS_PAGE_STATUS sets streamingEndedTime', function(assert) {
+  const prevState = Immutable.from({
+    streamingEndedTime: null
+  });
+  const action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+    streamingEndedTime: 1
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.streamingEndedTime, 1);
 });

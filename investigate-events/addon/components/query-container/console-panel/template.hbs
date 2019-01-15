@@ -41,19 +41,13 @@
     <div class="progress">
       <span class="label">{{t 'investigate.queryStats.progress'}}</span>
       <span class="value">
-        {{#if isCanceled}}
-          {{t 'investigate.queryStats.canceled'}}
-        {{else if isComplete}}
-          {{t 'investigate.queryStats.complete'}}
-        {{else}}
-          {{description}}
-        {{/if}}
+        {{progressLabel}}
       </span>
     </div>
 
-    {{#unless isComplete}}
+    {{#if isRetrieving}}
       {{query-container/console-panel/progress-bar}}
-    {{/unless}}
+    {{/if}}
 
     {{#if hasError}}
       <ul class="fatal-errors">

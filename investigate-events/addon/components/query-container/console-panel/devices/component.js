@@ -1,5 +1,11 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+
+import {
+  resultCountAtThreshold
+} from 'investigate-events/reducers/investigate/event-count/selectors';
+
 import {
   hasWarning,
   hasError,
@@ -8,11 +14,15 @@ import {
   warningsWithServiceName,
   slowestInQuery,
   offlineServicesPath,
-  warningsPath
+  warningsPath,
+  queryTimeElapsed,
+  streamingTimeElapsed
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { run } from '@ember/runloop';
 
 const stateToComputed = (state) => ({
+  queryTimeElapsed: queryTimeElapsed(state),
+  streamingTimeElapsed: streamingTimeElapsed(state),
   warningsPath: warningsPath(state),
   offlineServicesPath: offlineServicesPath(state),
   warnings: warningsWithServiceName(state),
@@ -21,7 +31,9 @@ const stateToComputed = (state) => ({
   hasError: hasError(state),
   hasWarning: hasWarning(state),
   devices: decoratedDevices(state),
-  eventCount: state.investigate.eventCount.data
+  eventCount: state.investigate.eventCount.data,
+  eventResultSetStart: state.investigate.eventResults.eventResultSetStart,
+  resultCountAtThreshold: resultCountAtThreshold(state)
 });
 
 const DevicesStatus = Component.extend({
@@ -29,6 +41,13 @@ const DevicesStatus = Component.extend({
   classNameBindings: ['hasError', 'hasWarning'],
   isExpanded: false,
   height: 0,
+
+  @computed('resultCountAtThreshold', 'eventResultSetStart')
+  eventAge: (resultCountAtThreshold, eventResultSetStart) => {
+    if (resultCountAtThreshold && eventResultSetStart) {
+      return eventResultSetStart.toLowerCase();
+    }
+  },
 
   updateHeight() {
     run.schedule('afterRender', () => {

@@ -4,13 +4,15 @@ const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _queryStats = (state) => state.investigate.queryStats;
-const _description = (state) => state.investigate.queryStats.description;
 const _deviceStats = (state) => state.investigate.queryStats.devices;
-const _percent = (state) => state.investigate.queryStats.percent;
 const _errors = (state) => state.investigate.queryStats.errors;
 const _warnings = (state) => state.investigate.queryStats.warnings;
 const _devices = (state) => state.investigate.queryStats.devices;
 const _services = (state) => state.investigate.services.serviceData;
+const _queryStartedTime = (state) => state.investigate.queryStats.queryStartedTime;
+const _queryEndedTime = (state) => state.investigate.queryStats.queryEndedTime;
+const _streamingStartedTime = (state) => state.investigate.queryStats.streamingStartedTime;
+const _streamingEndedTime = (state) => state.investigate.queryStats.streamingEndedTime;
 
 // SELECTOR FUNCTIONS
 
@@ -117,16 +119,9 @@ export const isConsoleEmpty = createSelector(
   }
 );
 
-export const isProgressBarDisabled = createSelector(
-  [_percent, _description],
-  (percent, description) => {
-    return (percent === 0) && description && description.toLowerCase() === 'queued';
-  }
-);
-
 // references devices because we only receive devices data when the query isComplete
 // references errors because errors are fatal and indicate completion
-export const isComplete = createSelector(
+export const isQueryComplete = createSelector(
   [_deviceStats, _errors],
   (devices = [], errors = []) => {
     return errors.length > 0 || devices.length > 0;
@@ -213,6 +208,26 @@ export const decoratedDevices = createSelector(
 
       const updatedDevices = process(devices);
       return updatedDevices;
+    }
+  }
+);
+
+export const queryTimeElapsed = createSelector(
+  [_queryStartedTime, _queryEndedTime],
+  (queryStartedTime, queryEndedTime) => {
+    const diff = queryEndedTime - queryStartedTime;
+    if (diff > 0) {
+      return diff / 1000;
+    }
+  }
+);
+
+export const streamingTimeElapsed = createSelector(
+  [_streamingStartedTime, _streamingEndedTime],
+  (streamingStartedTime, streamingEndedTime) => {
+    const diff = streamingEndedTime - streamingStartedTime;
+    if (diff > 0) {
+      return diff / 1000;
     }
   }
 );

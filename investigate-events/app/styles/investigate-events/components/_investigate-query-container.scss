@@ -222,7 +222,7 @@
           .device-hierarchy {
             color: text-color(primary, lightest);
             display: inline-block;
-            margin-right: rsa-whitespace(most);
+            margin-right: rsa-whitespace(more);
           }
 
           .all-online,
@@ -409,6 +409,7 @@
 
         .progress-bar {
           box-sizing: border-box;
+          margin-right: rsa-whitespace(more);
           @include border(1px, solid, primary, lightest);
           width: 15rem;
           height: 1rem;
@@ -485,7 +486,7 @@
         }
 
         .progress, .service, .timerange {
-          margin: rsa-whitespace(least) rsa-whitespace(most) 0 rsa-whitespace();
+          margin: rsa-whitespace(least) rsa-whitespace(more) 0 rsa-whitespace();
           color: text-color(primary, light);
           white-space: nowrap;
 

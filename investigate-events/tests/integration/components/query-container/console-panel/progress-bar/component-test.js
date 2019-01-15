@@ -29,17 +29,8 @@ module('Integration | Component | Console Panel Progress Bar', function(hooks) {
       {{query-container/console-panel/progress-bar progress="50" isDisabled=false}}
     `);
     assert.equal(findAll('.progress-bar .current-progress').length, 1);
-    assert.equal(find('.progress-bar .current-progress').getAttribute('style').trim(), 'width:50%;');
-    assert.equal(findAll('.progress-bar.is-disabled').length, 0);
-    assert.equal(find('.progress-bar').getAttribute('title').trim(), '50 percent completed');
+    assert.equal(find('.progress-bar .current-progress').getAttribute('style').trim(), 'width:1%;');
+    assert.equal(find('.progress-bar').getAttribute('title').trim(), 'Query 1% completed');
   });
 
-  test('renders the correct dom when isDisabled', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryIsQueued().build();
-
-    await render(hbs`
-      {{query-container/console-panel/progress-bar}}
-    `);
-    assert.equal(findAll('.progress-bar.is-disabled').length, 1);
-  });
 });

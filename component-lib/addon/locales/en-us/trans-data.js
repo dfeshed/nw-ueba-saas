@@ -578,8 +578,9 @@ export default {
       }
     },
     queryStats: {
-      summary: 'returned {{eventCount}} event(s) in {{elapsedTime}} second(s).',
-      summaryNoTime: 'returned {{eventCount}} event(s) in <1 second.',
+      summary: 'found ({{queryTimeElapsed}}s) and retrieved ({{streamingTimeElapsed}}s) {{age}} {{eventCount}} event(s).',
+      summaryNoStreaming: 'found ({{queryTimeElapsed}}s) {{age}} {{eventCount}} event(s).',
+      summaryNoEvents: 'found ({{queryTimeElapsed}}s) 0 event(s).',
       offline: 'This service is offline.',
       allOnline: 'All services are online.',
       oneOffline: '1 service is offline.',
@@ -588,6 +589,8 @@ export default {
       between: 'time=',
       progress: 'Progress:',
       complete: 'Complete',
+      retrieving: 'Retrieving',
+      executing: 'Executing',
       canceled: 'User Canceled',
       nestedElapsedTime: '({{time}}s)',
       nestedNoElapsedTime: '(<1s)',
@@ -600,7 +603,7 @@ export default {
       disabledCopy: 'Click to copy will become available when filters are present.',
       warning: 'Warning',
       error: 'Error',
-      percentCompleted: '{{progress}} percent completed'
+      percentCompleted: 'Query {{progress}}% completed'
     },
     generic: {
       loading: 'Loading data...',

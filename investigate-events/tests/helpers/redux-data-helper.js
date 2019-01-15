@@ -456,10 +456,10 @@ export default class DataHelper {
     return this;
   }
 
-  queryStats() {
+  queryStats(description = 'foo') {
     _set(this.state, 'queryStats', {
+      description,
       isConsoleOpen: false,
-      description: 'foo',
       percent: 0,
       errors: [],
       warnings: [],
@@ -469,19 +469,45 @@ export default class DataHelper {
   }
 
   queryStatsIsPartiallyComplete() {
-    _set(this.state.queryStats, 'percent', 50);
+    _set(this.state, 'eventResults.status', 'streaming');
+    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.streamLimit', 100);
+    _set(this.state, 'eventCount.data', 100);
+    return this;
+  }
+
+  queryStatsIsRetrieving() {
+    _set(this.state, 'eventResults.status', 'streaming');
+    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.streamLimit', 100);
+    _set(this.state, 'eventCount.data', 100);
+    _set(this.state.queryStats, 'percent', 100);
+    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
+    _set(this.state.queryStats, 'queryStartedTime', 1505672580000);
+    _set(this.state.queryStats, 'queryEndedTime', 1505672581000);
+    _set(this.state.queryStats, 'streamingStartedTime', 1505672582000);
     return this;
   }
 
   queryStatsIsComplete() {
+    _set(this.state, 'eventResults.status', 'streaming');
+    _set(this.state, 'eventResults.data', ['foo']);
+    _set(this.state, 'eventResults.streamLimit', 100);
+    _set(this.state, 'eventCount.data', 100);
     _set(this.state.queryStats, 'percent', 100);
     _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
+    _set(this.state.queryStats, 'queryStartedTime', 1505672580000);
+    _set(this.state.queryStats, 'queryEndedTime', 1505672581000);
+    _set(this.state.queryStats, 'streamingStartedTime', 1505672582000);
+    _set(this.state.queryStats, 'streamingEndedTime', 1505672583000);
     return this;
   }
 
   queryStatsNoTime() {
     _set(this.state.queryStats, 'percent', 100);
     _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true }]);
+    _set(this.state.queryStats, 'queryStartedTime', 1505672580000);
+    _set(this.state.queryStats, 'queryEndedTime', 1505672581000);
     return this;
   }
 
