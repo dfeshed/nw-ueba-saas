@@ -53,7 +53,7 @@
 
       .ember-power-select-trigger {
         @include rsa-font(header, large);
-        border-bottom: 0;
+        border: none;
         font-weight: lighter;
         .ember-power-select-status-icon {
           width: 1rem;
