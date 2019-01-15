@@ -130,11 +130,14 @@ const _handleEventsStatus = (newStatus, streamingEndedTime) => {
 
 // Prepares and sends events to state
 const _dispatchEvents = () => {
-  currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
-  return {
-    type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: currentStreamState.currentBatchEvents
-  };
+  // don't bother if there are no events to ship out
+  if (currentStreamState.currentBatchEvents.length > 0) {
+    currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
+    return {
+      type: ACTION_TYPES.SET_EVENTS_PAGE,
+      payload: currentStreamState.currentBatchEvents
+    };
+  }
 };
 
 
@@ -344,9 +347,12 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           }
         }
 
-        // completed with no results? We need to try again with
-        // a larger window, because we expect results.
-        if (currentStreamState.currentBatchEvents.length === 0) {
+        const isAtBeginningOfTimeRange = batchStartTime <= queryNode.startTime;
+
+        // completed with no results and not at the beginning of the range?
+        // We need to try again with a larger window, because we expect results.
+        if (!isAtBeginningOfTimeRange &&
+          currentStreamState.currentBatchEvents.length === 0) {
           if (window.DEBUG_STREAMS) {
             console.log('too FEW results, need to try for more, last window was', batchEndTime - batchStartTime);
           }
@@ -388,7 +394,6 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         const { data, streamLimit } = investigate.eventResults;
         const totalEventsAccumulated = data.length + currentStreamState.currentBatchEvents.length;
         const isAtOrAboveMaxEventsAllowed = totalEventsAccumulated >= streamLimit;
-        const isAtBeginningOfTimeRange = batchStartTime <= queryNode.startTime;
 
         // Have we gone over the max event limit?
         // Or have we backed our way up to the start of the
