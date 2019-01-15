@@ -25,3 +25,18 @@ test('test time formatting', function(assert) {
   opts.timeZone = null;
   assert.equal(formatUtil.text('time', 1516199601341, opts), '2018/01/17T14:33:21', 'time should be formatted properly in UTC');
 });
+
+test('test byte formatting', function(assert) {
+  const aKB = 1024;
+  const aMB = aKB * 1024;
+  const aGB = aMB * 1024;
+  const aTB = aGB * 1024;
+
+  assert.equal(formatUtil.text('size', undefined), '', 'should be an empty string ');
+  assert.equal(formatUtil.text('size', null), '', 'should be an empty string');
+  assert.equal(formatUtil.text('size', 0), '0 bytes', 'should be in bytes');
+  assert.equal(formatUtil.text('size', aKB), '1 KB', 'should be in KBs');
+  assert.equal(formatUtil.text('size', aMB), '1 MB', 'should be in MBs');
+  assert.equal(formatUtil.text('size', aGB), '1 GB', 'should be in GBs');
+  assert.equal(formatUtil.text('size', aTB), '1 TB', 'should be in TBs');
+});

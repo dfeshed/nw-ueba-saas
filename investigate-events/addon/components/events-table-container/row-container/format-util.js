@@ -139,6 +139,11 @@ function _size(value, opts = {}, dontAggregate = false) {
   const precision = opts.precision || 0;
   const i18nSize = (opts.i18n && opts.i18n.size) || {};
 
+  // quick exit if value isn't a number
+  if (value === undefined || value === null) {
+    return '';
+  }
+
   if (dontAggregate || (value < aKB)) {
     return `${value} ${i18nSize.bytes || 'bytes'}`;
   } else if (value < aMB) {
