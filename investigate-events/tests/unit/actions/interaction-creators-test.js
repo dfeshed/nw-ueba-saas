@@ -15,7 +15,7 @@ const streamBatch = 250;
 const streamLimit = 1000; // limit of 1000, 500 get returned so stream ends naturally
 let allActionsDispatched = [];
 
-export const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
+const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
 
   const downstreamDispatch = (actionOrThunk) => {
     if (noMoreEventsAllowed) {
@@ -51,7 +51,7 @@ export const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
 
           assert.equal(queryIsRunning === false, true, 'query is running flag should be false');
           assert.equal(status, 'complete', 'query is complete');
-          asserts(allActionsDispatched, queryResults, actionsByType);
+          asserts();
         }
       }
       if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
@@ -204,6 +204,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
         .serviceId()
         .startTime()
         .endTime()
+        .columnGroups()
         .eventResultSetStart() // Oldest
         .build();
     };
@@ -225,7 +226,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
     };
 
     const asserts = () => {
-      assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
+      assert.equal(allActionsDispatched.length, 6, 'total actions dispatched');
       assert.equal(queryResults.length, 500, 'total results accumulated');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
