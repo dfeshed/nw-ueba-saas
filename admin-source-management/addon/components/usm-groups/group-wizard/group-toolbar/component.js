@@ -21,7 +21,8 @@ import {
   updateGroupStep,
   saveGroup,
   savePublishGroup,
-  updateCriteriaFromCache
+  updateCriteriaFromCache,
+  removePlaceholderPolicyAssignments
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -40,7 +41,8 @@ const dispatchToActions = {
   updateGroupStep,
   saveGroup,
   savePublishGroup,
-  updateCriteriaFromCache
+  updateCriteriaFromCache,
+  removePlaceholderPolicyAssignments
 };
 
 const GroupWizardToolbar = Component.extend(Notifications, {
@@ -52,6 +54,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   step: undefined,
   // closure action required to be passed in
   transitionToStep: undefined,
+  showConfirmationDialog: false,
 
   @computed(
     'step',
@@ -144,6 +147,9 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
     save() {
       this.send('updateCriteriaFromCache');
+      if (this.hasGroupChanged && (this.step.id === 'applyPolicyStep')) {
+        this.send('removePlaceholderPolicyAssignments');
+      }
       if (this.hasGroupChanged && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
@@ -177,6 +183,9 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
     publish() {
       this.send('updateCriteriaFromCache');
+      if (this.hasGroupChanged && (this.step.id === 'applyPolicyStep')) {
+        this.send('removePlaceholderPolicyAssignments');
+      }
       if ((this.hasGroupChanged || this.group.dirty) && this.isWizardValid) {
         const saveCallbacks = {
           onSuccess: () => {
@@ -210,7 +219,19 @@ const GroupWizardToolbar = Component.extend(Notifications, {
 
     cancel() {
       this.get('transitionToClose')();
+    },
+
+    cancelDiscardConfirmationModal() {
+      this.set('showConfirmationDialog', false);
+      // const eventName = `rsa-application-modal-close-confirm-unsaved-group-changes`;
+      // this.get('eventBus').trigger(eventName);
+    },
+
+    discardChanges() {
+      this.set('showConfirmationDialog', false);
+      this.get('transitionToClose')();
     }
+
   }
 
 });

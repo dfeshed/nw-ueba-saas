@@ -260,6 +260,24 @@ export default reduxActions.handleActions({
     return state.setIn(fields, value);
   },
 
+  [ACTION_TYPES.REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS]: (state) => {
+    const assignments = state.group.assignedPolicies;
+    const updatedAssignments = {};
+    for (const key in assignments) {
+      if (assignments.hasOwnProperty(key)) {
+        if (assignments[key].referenceId !== 'placeholder') {
+          // delete assignments.key;
+          updatedAssignments[key] = assignments[key];
+        }
+      }
+    }
+    const editedGroup = {
+      ...state.group,
+      assignedPolicies: updatedAssignments
+    };
+    return state.set('group', editedGroup);
+  },
+
   [ACTION_TYPES.UPDATE_CRITERIA_FROM_CACHE]: (state) => {
     const editedGroup = {
       ...state.group,

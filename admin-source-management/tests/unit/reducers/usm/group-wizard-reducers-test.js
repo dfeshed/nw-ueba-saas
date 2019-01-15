@@ -788,4 +788,41 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(endState, expectedEndState, `group populated & groupStatus is ${groupStatusExpected}`);
   });
 
+  test('on REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS success, group policy assignments are properly set', function(assert) {
+    const initialState = {
+      group: {
+        id: 'group_001',
+        name: 'Zebra 001',
+        assignedPolicies: {
+          edrPolicy: {
+            referenceId: 'policy_001',
+            name: 'Policy 001'
+          },
+          windowsLogPolicy: {
+            name: 'Select a Policy',
+            referenceId: 'placeholder'
+          }
+        }
+      }
+    };
+    const expectedResult = {
+      group: {
+        id: 'group_001',
+        name: 'Zebra 001',
+        assignedPolicies: {
+          edrPolicy: {
+            referenceId: 'policy_001',
+            name: 'Policy 001'
+          }
+        }
+      }
+    };
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS,
+      payload: {}
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(initialState)), action);
+    assert.deepEqual(endState, expectedResult, 'group policy assignments are properly set');
+  });
+
 });

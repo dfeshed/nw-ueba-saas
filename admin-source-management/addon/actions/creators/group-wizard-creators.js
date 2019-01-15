@@ -266,6 +266,12 @@ const savePublishGroup = (group, callbacks = callbacksDefault) => {
   };
 };
 
+const removePlaceholderPolicyAssignments = () => {
+  return {
+    type: ACTION_TYPES.REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS
+  };
+};
+
 const updateCriteriaFromCache = () => {
   return {
     type: ACTION_TYPES.UPDATE_CRITERIA_FROM_CACHE
@@ -288,6 +294,7 @@ export {
   handleAndOrOperator,
   fetchGroupRanking,
   handleSourceType,
+  removePlaceholderPolicyAssignments,
   updateCriteriaFromCache,
   reorderRanking,
   resetRanking,
