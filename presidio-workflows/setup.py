@@ -65,7 +65,7 @@ setup(name='presidio-workflows',
       install_requires=[
           # TODO: verify final version of each dependency
           'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.9.0',
-          'python-dateutil', 'lxml<4.0,>=3.6.0', 'elasticsearch>=5.0.0,<6.0.0','requests-oauthlib>=1.0.0'
+          'python-dateutil', 'lxml<4.0,>=3.6.0', 'elasticsearch>=5.0.0,<6.0.0'
       ],
       cmdclass={'test': Tox},
       setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],
