@@ -491,7 +491,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': 'cda86315-c941-4749-8cdb-43f33497a4f8',
@@ -596,7 +597,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': '3d91b489-8522-486d-aec7-4c3916348e77',
@@ -698,7 +700,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': '6993fa8c-e00a-4afa-9c60-344736deca65',
@@ -799,7 +802,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': '724530a0-6550-4ff4-a392-23cc00f93197',
@@ -900,7 +904,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': '3364e166-512c-43f2-82d6-8bb853b91794',
@@ -1000,7 +1005,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   },
   {
     'id': '66badcbf-0479-4ec5-bcc0-75641f608cb5',
@@ -1099,7 +1105,8 @@ export default {
           ]
         }
       ]
-    }
+    },
+    'groupPolicy': { 'groups': [], 'policyStatus': 'Updated', 'managed': true, 'serverName': 'endpointserver - Endpoint Server' }
   }
   ],
   'pageNumber': 10,

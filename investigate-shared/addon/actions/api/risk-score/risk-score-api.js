@@ -48,6 +48,16 @@ const getHostRiskScoreContext = (data) => {
   });
 };
 
+const getDetailedHostRiskScoreContext = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getDetailHostContext',
+    modelName: 'respond-server',
+    query: { data }
+  });
+};
+
+
 /**
  * Executes a websocket fetch call for host context and returns a Promise.
  *
@@ -60,6 +70,15 @@ const getRiskScoreContext = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileContext',
+    modelName: 'respond-server',
+    query: { data }
+  });
+};
+
+const getDetailedFileRiskScoreContext = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getDetailFileContext',
     modelName: 'respond-server',
     query: { data }
   });
@@ -89,7 +108,9 @@ const getAlertEvents = (alertId) => {
 export default {
   sendDataToResetRiskScore,
   getRiskScoreContext,
+  getDetailedFileRiskScoreContext,
   getHostRiskScoreContext,
+  getDetailedHostRiskScoreContext,
   getAlertEvents,
   sendHostDataToResetRiskScore
 };

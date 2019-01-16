@@ -4,7 +4,7 @@ import fetchStreamingAlertEvents from 'investigate-shared/actions/api/events/ale
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
-import { riskType, eventsLoadingStatus, selectedAlert } from 'investigate-shared/selectors/risk/selectors';
+import { riskType, eventsLoadingStatus, selectedAlert, eventContext, currentEntityId, alertCategory } from 'investigate-shared/selectors/risk/selectors';
 import { warn } from '@ember/debug';
 import RSVP from 'rsvp';
 
@@ -48,6 +48,12 @@ const resetRiskContext = () => {
   };
 };
 
+const _setCurrentEntityId = (id) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.SET_CURRENT_ENTITY_ID, payload: { id }, meta: { belongsTo: riskType(getState()) } });
+  };
+};
+
 const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => {
   const alertCategory = _.upperFirst(severity);
 
@@ -57,6 +63,7 @@ const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => 
     timeStamp: 0
   };
   return (dispatch) => {
+    dispatch(_setCurrentEntityId(id));
     if (!belongsTo) {
       // belongsTo decides the reducer state. If it is not explicitly specified, it is same as riskType
       // This is different only for host files.
@@ -70,6 +77,16 @@ const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => 
       promise: riskType === 'FILE' ? api.getRiskScoreContext(data) : api.getHostRiskScoreContext(data)
     });
   };
+};
+
+const _getRiskScoreDetailContext = (currentReduxState, riskType, alertName) => {
+  const data = {
+    id: currentEntityId(currentReduxState),
+    alertCategory: alertCategory(currentReduxState),
+    alertName
+  };
+  const promise = riskType === 'FILE' ? api.getDetailedFileRiskScoreContext(data) : api.getDetailedHostRiskScoreContext(data);
+  return promise;
 };
 
 const getUpdatedRiskScoreContext = (id, riskType, belongsTo, tabName) => {
@@ -88,9 +105,10 @@ const activeRiskSeverityTab = (tabName) => {
 const setSelectedAlert = (context) => {
   return (dispatch, getState) => {
     const type = riskType(getState());
+    const reduxState = STATE_MAP[type];
 
     // return if events are requested for same alert for which already events are currently loading.
-    if (context.alertName === selectedAlert(getState()[STATE_MAP[type]]) && eventsLoadingStatus(getState()[STATE_MAP[type]]) === 'loading') {
+    if (context.alertName === selectedAlert(getState()[reduxState]) && eventsLoadingStatus(getState()[reduxState]) === 'loading') {
       return;
     }
 
@@ -99,40 +117,49 @@ const setSelectedAlert = (context) => {
     next(() => {
       dispatch({ type: ACTION_TYPES.GET_EVENTS_INITIALIZED, meta: { belongsTo: type } });
       (async() => {
-        for (let i = 0; i < context.context.length; i++) {
-          const event = context.context[i];
-          if (!eventsLoadingStatus(getState()[STATE_MAP[type]]) || !selectedAlert(getState()[STATE_MAP[type]])) {
-            // if already loading events for another alert, CLEAR!
-            dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
-            return;
-          } else {
-            if (event.source === 'Respond') {
-              // High and Critical alerts are fetched from Respond server
-              await api.getAlertEvents(event.id)
-                .then(({ data }) => {
-                  // Data is valid. Notify the reducers to update state.
-                  dispatch({
-                    type: ACTION_TYPES.GET_RESPOND_EVENTS,
-                    payload: { indicatorId: event.id, events: data },
-                    meta: { belongsTo: type }
-                  });
-                })
-                .catch((error) => {
-                  _handleError(ACTION_TYPES.GET_RESPOND_EVENTS, error);
-                });
-            } else if (event.source === 'ESA') {
-              // Medium alerts will be fetch from Decoder
-              alertIdArray.push(event);
-              if (alertIdArray.length === 100 || i === (context.context.length - 1)) {
-                // For every 100 events or on last event, make an api call
-                await getAlertEvents(alertIdArray)
-                  .then((data) => {
-                    dispatch({ type: ACTION_TYPES.GET_ESA_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
+        try {
+          const { data } = await _getRiskScoreDetailContext(getState()[reduxState], type, context.alertName);
+          dispatch({ type: ACTION_TYPES.SET_RISK_SCORE_DETAIL_CONTEXT, payload: { data }, meta: { belongsTo: type } });
+        } catch (error) {
+          _handleError(ACTION_TYPES.SET_RISK_SCORE_DETAIL_CONTEXT, error);
+        }
+        const events = eventContext(getState()[reduxState]);
+        if (events) {
+          for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            if (!eventsLoadingStatus(getState()[reduxState]) || !selectedAlert(getState()[reduxState])) {
+              // if already loading events for another alert, CLEAR!
+              dispatch({ type: ACTION_TYPES.CLEAR_EVENTS, meta: { belongsTo: type } });
+              return;
+            } else {
+              if (event.source === 'Respond') {
+                // High and Critical alerts are fetched from Respond server
+                await api.getAlertEvents(event.id)
+                  .then(({ data }) => {
+                    // Data is valid. Notify the reducers to update state.
+                    dispatch({
+                      type: ACTION_TYPES.GET_RESPOND_EVENTS,
+                      payload: { indicatorId: event.id, events: data },
+                      meta: { belongsTo: type }
+                    });
                   })
-                  .catch((response) => {
-                    _handleError(ACTION_TYPES.GET_ESA_EVENTS, response);
+                  .catch((error) => {
+                    _handleError(ACTION_TYPES.GET_RESPOND_EVENTS, error);
                   });
-                alertIdArray.length = 0;
+              } else if (event.source === 'ESA') {
+                // Medium alerts will be fetch from Decoder
+                alertIdArray.push(event);
+                if (alertIdArray.length === 100 || i === (events.length - 1)) {
+                  // For every 100 events or on last event, make an api call
+                  await getAlertEvents(alertIdArray)
+                    .then((data) => {
+                      dispatch({ type: ACTION_TYPES.GET_ESA_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
+                    })
+                    .catch((response) => {
+                      _handleError(ACTION_TYPES.GET_ESA_EVENTS, response);
+                    });
+                  alertIdArray.length = 0;
+                }
               }
             }
           }

@@ -35,6 +35,10 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/risk/context/file',
         requestDestination: '/ws/respond/risk/context/file'
       },
+      getDetailFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/detail/file',
+        requestDestination: '/ws/respond/risk/context/detail/file'
+      },
       resetRiskScore: {
         subscriptionDestination: '/user/queue/risk/context/file/reset',
         requestDestination: '/ws/respond/risk/context/file/reset'

@@ -10,135 +10,57 @@ export default {
     'All': {
       'Random Critical Endpoint Alert 1': {
         'alertCount': 10,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        }]
+        'eventCount': 10
       },
       'Random High Endpoint Alert 1': {
         'alertCount': 20,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        }]
+        'eventCount': 20
       },
       'Random High Endpoint Alert 2': {
         'alertCount': 30,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        }]
+        'eventCount': 30
       },
       'Random Medium Endpoint Alert 1': {
         'alertCount': 20,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        }]
+        'eventCount': 20
       },
       'Random Medium Endpoint Alert 2': {
         'alertCount': 30,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        }]
+        'eventCount': 30
       },
       'Random Medium Endpoint Alert 3': {
         'alertCount': 10,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        },
-        {
-          'id': 'decoder-id3',
-          'sourceId': '3'
-        }]
+        'eventCount': 10
       }
     },
     'Critical': {
       'Random Critical Endpoint Alert 1': {
         'alertCount': 10,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1',
-          source: 'Respond'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2',
-          source: 'Respond'
-        }]
+        'eventCount': 10
       }
     },
     'High': {
       'Random High Endpoint Alert 1': {
         'alertCount': 20,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        }]
+        'eventCount': 20
       },
       'Random High Endpoint Alert 2': {
         'alertCount': 30,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        }]
+        'eventCount': 30
       }
     },
     'Medium': {
       'Random Medium Endpoint Alert 1': {
         'alertCount': 20,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        }]
+        'eventCount': 20
       },
       'Random Medium Endpoint Alert 2': {
         'alertCount': 30,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        }]
+        'eventCount': 30
       },
       'Random Medium Endpoint Alert 3': {
         'alertCount': 10,
-        'eventContexts': [{
-          'id': 'decoder-id1',
-          'sourceId': '1'
-        },
-        {
-          'id': 'decoder-id2',
-          'sourceId': '2'
-        },
-        {
-          'id': 'decoder-id3',
-          'sourceId': '3'
-        }]
+        'eventCount': 10
       }
     }
   }

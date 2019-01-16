@@ -30,6 +30,10 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/risk/context/host',
         requestDestination: '/ws/respond/risk/context/host'
       },
+      getDetailHostContext: {
+        subscriptionDestination: '/user/queue/risk/context/detail/host',
+        requestDestination: '/ws/respond/risk/context/detail/host'
+      },
       resetHostRiskScore: {
         subscriptionDestination: '/user/queue/risk/context/host/reset',
         requestDestination: '/ws/respond/risk/context/host/reset'
@@ -37,6 +41,10 @@ module.exports = function(environment) {
       getFileContext: {
         subscriptionDestination: '/user/queue/risk/context/file',
         requestDestination: '/ws/respond/risk/context/file'
+      },
+      getDetailFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/detail/file',
+        requestDestination: '/ws/respond/risk/context/detail/file'
       }
     }
   };

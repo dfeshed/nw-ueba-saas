@@ -14,6 +14,7 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.deepEqual(result,
       {
         activeRiskSeverityTab: 'critical',
+        currentEntityId: null,
         alertsError: null,
         eventsData: [],
         eventsLoadingStatus: null,
@@ -22,6 +23,8 @@ module('Unit | Reducers | risk', function(hooks) {
         isRespondServerOffline: false,
         riskScoreContext: null,
         riskScoreContextError: null,
+        eventContext: null,
+        eventContextError: null,
         selectedAlert: null,
         alertsLoadingStatus: null
       });
@@ -111,6 +114,14 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.expandedEventId, null);
   });
 
+  test('The SET_CURRENT_ENTITY_ID action will set the selected alert', function(assert) {
+    const previous = Immutable.from({
+      currentEntityId: '123'
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_CURRENT_ENTITY_ID, payload: { id: '456' } });
+    assert.equal(result.currentEntityId, '456');
+  });
+
   test('The EXPANDED_EVENT action will set expanded event id', function(assert) {
     const previous = Immutable.from({
       expandedEventId: 1
@@ -139,7 +150,10 @@ module('Unit | Reducers | risk', function(hooks) {
       eventsData: [{}, {}],
       expandedEventId: '1',
       alertsError: 'Alerts error',
-      alertsLoadingStatus: 'completed'
+      alertsLoadingStatus: 'completed',
+      currentEntityId: '123',
+      eventContext: [{}, {}],
+      eventContextError: 'Error'
     });
     const result = reducer(previous, { type: ACTION_TYPES.RESET_RISK_CONTEXT });
     assert.equal(result.riskScoreContext, null, 'riskScoreContext is reset');
@@ -151,6 +165,9 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.equal(result.expandedEventId, null, 'expandedEventId is reset');
     assert.equal(result.alertsError, null, 'alertsError is reset');
     assert.equal(result.alertsLoadingStatus, null, 'alertsLoadingStatus is reset');
+    assert.equal(result.currentEntityId, null, 'currentEntityId is reset');
+    assert.equal(result.eventContext, null, 'eventContext is reset');
+    assert.equal(result.eventContextError, null, 'eventContextError is reset');
   });
 
   test('The GET_RISK_SCORE_CONTEXT sets the risk score context ', function(assert) {

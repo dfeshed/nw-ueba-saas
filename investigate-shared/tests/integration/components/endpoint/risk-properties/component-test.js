@@ -28,14 +28,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'Critical': {
           'test alert': {
             'alertCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
+            'eventCount': 10
           }
         }
       }
@@ -55,7 +48,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
       'test alert (10)',
       'Display alert name and alert count for alert context'
     );
-    assert.equal(find('.alert-context__event').textContent.trim(), '2 event(s)', 'Display 2 events for alert context');
+    assert.equal(find('.alert-context__event').textContent.trim(), '10 event(s)', 'Display 10 events for alert context');
   });
 
   test('change landing severity tab if currentActiveTab has 0 alerts', async function(assert) {
@@ -72,14 +65,14 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'High': {
           'test alert': {
             'alertCount': 2,
-            'eventContexts': [{ 'id': 1, 'sourceId': 'decoder-id1' }, { 'id': 2, 'sourceId': 'decoder-id1' }]
+            'eventCount': 2
           }
         }
       }
     };
     this.set('riskState', { activeRiskSeverityTab: 'critical', riskScoreContext });
     this.set('setSelectedAlert', (context) => {
-      assert.equal(context.context.length, 2, '2 events are present');
+      assert.equal(context.eventCount, 2, '2 events are present');
     });
 
     this.set('activate', () => {
@@ -107,14 +100,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'Critical': {
           'test alert': {
             'alertCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
+            'eventCount': 10
           }
         }
       }
@@ -198,14 +184,7 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
         'Critical': {
           'test alert': {
             'alertCount': 10,
-            'eventContexts': [{
-              'id': 'decoder-id1',
-              'sourceId': '1'
-            },
-            {
-              'id': 'decoder-id2',
-              'sourceId': '2'
-            }]
+            'eventContexts': 10
           }
         }
       }

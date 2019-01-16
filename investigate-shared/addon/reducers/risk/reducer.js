@@ -5,12 +5,16 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import fixNormalizedEvents from './util';
 import { transform } from 'investigate-shared/utils/meta-util';
+import _ from 'lodash';
 
 const riskScoreState = Immutable.from({
   isRiskScoreReset: true,
   activeRiskSeverityTab: 'critical',
+  currentEntityId: null, // agentId for host, checksumSha256 for file
   riskScoreContext: null,
   riskScoreContextError: null,
+  eventContext: null,
+  eventContextError: null,
   eventsData: [],
   eventsLoadingStatus: null,
   alertsError: null,
@@ -45,11 +49,21 @@ const riskScoreReducer = handleActions({
       })
     });
   },
+
+  [ACTION_TYPES.SET_RISK_SCORE_DETAIL_CONTEXT]: (state, { payload: { data: { categorizedAlerts } } }) => {
+    const alertCategory = _.upperFirst(state.activeRiskSeverityTab);
+    const { eventContexts } = categorizedAlerts[alertCategory][state.selectedAlert];
+    return state.set('eventContext', eventContexts);
+  },
+
   [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
     return state.merge({
       riskScoreContext: null,
       riskScoreContextError: null,
       activeRiskSeverityTab: 'critical',
+      currentEntityId: null,
+      eventContext: null,
+      eventContextError: null,
       eventsLoadingStatus: null,
       selectedAlert: null,
       eventsData: [],
@@ -60,6 +74,9 @@ const riskScoreReducer = handleActions({
   },
   [ACTION_TYPES.SET_SELECTED_ALERT]: (state, { payload }) => {
     return state.merge({ selectedAlert: payload.alertName, expandedEventId: null });
+  },
+  [ACTION_TYPES.SET_CURRENT_ENTITY_ID]: (state, { payload }) => {
+    return state.merge({ currentEntityId: payload.id });
   },
   [ACTION_TYPES.GET_ESA_EVENTS]: (state, { payload: { indicatorId, events } }) => {
     const { eventsData } = state;

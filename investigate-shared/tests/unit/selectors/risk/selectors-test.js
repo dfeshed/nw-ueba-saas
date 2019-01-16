@@ -7,7 +7,8 @@ import {
   riskScoringServerError,
   isRiskScoreContextEmpty,
   currentSeverityContext,
-  riskType
+  riskType,
+  alertCategory
 } from 'investigate-shared/selectors/risk/selectors';
 
 module('Unit | Selectors | risk', function(hooks) {
@@ -85,13 +86,7 @@ module('Unit | Selectors | risk', function(hooks) {
             Critical: {
               'Enables Login Bypass': {
                 alertCount: 1,
-                eventContexts: [
-                  {
-                    id: '5bd84e048e090168ea067125',
-                    sourceId: '6667a7b8-ad3a-4ce6-b2c2-f96e2f44c7d0',
-                    source: 'Respond'
-                  }
-                ]
+                eventCount: 1
               }
             }
           }
@@ -103,10 +98,7 @@ module('Unit | Selectors | risk', function(hooks) {
     const [data] = currentSeverityContext(state);
     assert.equal(data.alertCount, 1, 'Alert count is correct');
     assert.equal(data.alertName, 'Enables Login Bypass', 'Alert name is correct');
-    assert.equal(data.context.length, 1, 'All alerts are present');
     assert.equal(data.eventCount, 1, 'Event count is correct');
-    assert.equal(data.filesCount, 0, 'Files count is not yet there');
-    assert.equal(data.usersCount, 0, 'Events count is not yet there');
   });
   test('Returns FILE riskType', function(assert) {
     const riskState = Immutable.from({
@@ -128,4 +120,23 @@ module('Unit | Selectors | risk', function(hooks) {
     assert.equal(data, 'HOST', 'Risk Type will be HOST');
   });
 
+  test('returns alertCategory', function(assert) {
+    const riskState = Immutable.from({
+      risk: {
+        activeRiskSeverityTab: 'high'
+      }
+    });
+    const data = alertCategory(riskState);
+    assert.equal(data, 'High', 'Alert category is High');
+  });
+
+  test('returns default alertCategory', function(assert) {
+    const riskState = Immutable.from({
+      risk: {
+        activeRiskSeverityTab: null
+      }
+    });
+    const data = alertCategory(riskState);
+    assert.equal(data, 'Critical', 'Alert category is Critical');
+  });
 });

@@ -14,20 +14,26 @@ export const expandedEventId = (state) => state.risk.expandedEventId;
 export const isRespondServerOffline = (state) => state.risk.isRespondServerOffline;
 export const events = (state) => state.risk.eventsData;
 export const alertsLoadingStatus = (state) => state.risk.alertsLoadingStatus;
+export const eventContext = (state) => state.risk.eventContext;
+export const currentEntityId = (state) => state.risk.currentEntityId;
+
+
+export const alertCategory = createSelector(
+  activeRiskSeverityTab,
+  (activeRiskSeverityTab) => {
+    return _.upperFirst(activeRiskSeverityTab) || 'Critical';
+  }
+);
 
 export const currentSeverityContext = createSelector(
-  [riskScoreContext, activeRiskSeverityTab],
-  (riskScoreContext, activeRiskSeverityTab) => {
-    const severity = _.upperFirst(activeRiskSeverityTab);
-    const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[severity] : null;
+  [riskScoreContext, alertCategory],
+  (riskScoreContext, alertCategory) => {
+    const alertContext = riskScoreContext && riskScoreContext.categorizedAlerts ? riskScoreContext.categorizedAlerts[alertCategory] : null;
     if (alertContext) {
       return Object.keys(alertContext).map((key) => ({
         alertName: key,
         alertCount: alertContext[key].alertCount,
-        eventCount: alertContext[key].eventContexts.length,
-        filesCount: 0,
-        usersCount: 0,
-        context: alertContext[key].eventContexts
+        eventCount: alertContext[key].eventCount
       }));
     }
     return null;
