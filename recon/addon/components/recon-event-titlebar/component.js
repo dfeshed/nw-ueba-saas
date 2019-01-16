@@ -22,7 +22,8 @@ const stateToComputed = ({ recon, recon: { visuals } }) => ({
   isReconExpanded: visuals.isReconExpanded,
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),
-  isStandalone: recon.data.isStandalone
+  isStandalone: recon.data.isStandalone,
+  meta: recon.meta.meta
 });
 
 const dispatchToActions = {

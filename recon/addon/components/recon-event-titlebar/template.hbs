@@ -1,96 +1,97 @@
-<hbox class='heading'>
-  {{#if isLogEvent}}
-    <div class="event-title">{{t 'recon.titleBar.titles.log'}}</div>
-    <hr class="event-title seperator">
-    <div class="tview-heading">
-      <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
-    </div>
-  {{else if isEndpointEvent}}
-    <div class="event-title">{{t 'recon.titleBar.titles.endpoint'}}</div>
-    <hr class="event-title seperator">
-    <div class="tview-heading">
-      <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
-    </div>
-  {{else}}
-    <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
-    <hr class="event-title seperator">
-    <div class="heading-select">
-      {{#power-select
-        triggerClass='recon-view-selector'
-        onchange=(action 'findNewReconstructionView')
-        options=reconViewsConfig
-        placeholder=(t (concat 'recon.titleBar.views.' currentReconView.id))
-        searchEnabled=false as |option|}}
-        {{t (concat 'recon.titleBar.views.' option.id)}}
-        {{#if option.isClassicReconView}}
-          {{rsa-icon style="lined" name="expand-5"}}
-        {{/if}}
-      {{/power-select}}
-    </div>
-    <div class="rsa-nav-tab-group heading-tabs">
-      {{#each reconViewsConfigFull as |viewConfig|}}
-        {{#rsa-nav-tab
-          align='left'
-          isActive=viewConfig.selected
-          click=(action 'findNewReconstructionView' viewConfig)
-        }}
-          <div class="label">
-            {{t (concat 'recon.titleBar.views.' viewConfig.id)}}
-            {{#if viewConfig.isClassicReconView}}
-              {{rsa-icon style="lined" name="expand-5"}}
-            {{/if}}
-          </div>
-        {{/rsa-nav-tab}}
-      {{/each}}
-    </div>
-  {{/if}}
-</hbox>
-
-{{rsa-icon
-  active=isHeaderOpen
-  testId='toggleHeader'
-  class='toggle-header header-toggle'
-  click=(action 'toggleReconHeader')
-  name='layout-6'
-  title=(t 'recon.toggles.header')
-}}
-
-{{#unless isLogBased}}
-  {{rsa-icon
-    active=isRequestShown
-    class='toggle-request header-toggle'
-    click=(action 'toggleRequestData')
-    name='arrow-circle-right-2'
-    title=(t 'recon.toggles.request')}}
+{{#if meta}}
+  <hbox class='heading'>
+    {{#if isLogEvent}}
+      <div class="event-title">{{t 'recon.titleBar.titles.log'}}</div>
+      <hr class="event-title seperator">
+      <div class="tview-heading">
+        <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
+      </div>
+    {{else if isEndpointEvent}}
+      <div class="event-title">{{t 'recon.titleBar.titles.endpoint'}}</div>
+      <hr class="event-title seperator">
+      <div class="tview-heading">
+        <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
+      </div>
+    {{else}}
+      <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
+      <hr class="event-title seperator">
+      <div class="heading-select">
+        {{#power-select
+          triggerClass='recon-view-selector'
+          onchange=(action 'findNewReconstructionView')
+          options=reconViewsConfig
+          placeholder=(t (concat 'recon.titleBar.views.' currentReconView.id))
+          searchEnabled=false as |option|}}
+          {{t (concat 'recon.titleBar.views.' option.id)}}
+          {{#if option.isClassicReconView}}
+            {{rsa-icon style="lined" name="expand-5"}}
+          {{/if}}
+        {{/power-select}}
+      </div>
+      <div class="rsa-nav-tab-group heading-tabs">
+        {{#each reconViewsConfigFull as |viewConfig|}}
+          {{#rsa-nav-tab
+            align='left'
+            isActive=viewConfig.selected
+            click=(action 'findNewReconstructionView' viewConfig)
+          }}
+            <div class="label">
+              {{t (concat 'recon.titleBar.views.' viewConfig.id)}}
+              {{#if viewConfig.isClassicReconView}}
+                {{rsa-icon style="lined" name="expand-5"}}
+              {{/if}}
+            </div>
+          {{/rsa-nav-tab}}
+        {{/each}}
+      </div>
+    {{/if}}
+  </hbox>
 
   {{rsa-icon
-    active=isResponseShown
-    class='toggle-response header-toggle'
-    click=(action 'toggleResponseData')
-    name='arrow-circle-left-2'
-    title=(t 'recon.toggles.response')}}
+    active=isHeaderOpen
+    testId='toggleHeader'
+    class='toggle-header header-toggle'
+    click=(action 'toggleReconHeader')
+    name='layout-6'
+    title=(t 'recon.toggles.header')
+  }}
 
-{{/unless}}
+  {{#unless isLogBased}}
+    {{rsa-icon
+      active=isRequestShown
+      class='toggle-request header-toggle'
+      click=(action 'toggleRequestData')
+      name='arrow-circle-right-2'
+      title=(t 'recon.toggles.request')}}
 
-{{rsa-icon
-  active=isMetaShown
-  class='toggle-meta header-toggle'
-  click=(action 'toggleMetaData')
-  name='layout-2'
-  title=(t 'recon.toggles.meta')}}
-
-{{#unless isStandalone}}
-  <div class="divider"></div>
+    {{rsa-icon
+      active=isResponseShown
+      class='toggle-response header-toggle'
+      click=(action 'toggleResponseData')
+      name='arrow-circle-left-2'
+      title=(t 'recon.toggles.response')}}
+  {{/unless}}
 
   {{rsa-icon
-    class='header-button'
-    click=(action 'toggleReconExpanded')
-    name=toggleEventsClass
-    title=(t toggleEventsTitle)}}
+    active=isMetaShown
+    class='toggle-meta header-toggle'
+    click=(action 'toggleMetaData')
+    name='layout-2'
+    title=(t 'recon.toggles.meta')}}
 
-  {{rsa-icon
-    class='header-button'
-    click=(action 'closeRecon')
-    name='close'
-    title=(t 'recon.toggles.close')}}
-{{/unless}}
+  {{#unless isStandalone}}
+    <div class="divider"></div>
+
+    {{rsa-icon
+      class='header-button'
+      click=(action 'toggleReconExpanded')
+      name=toggleEventsClass
+      title=(t toggleEventsTitle)}}
+
+    {{rsa-icon
+      class='header-button'
+      click=(action 'closeRecon')
+      name='close'
+      title=(t 'recon.toggles.close')}}
+  {{/unless}}
+{{/if}}
