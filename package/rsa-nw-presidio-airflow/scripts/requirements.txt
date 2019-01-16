@@ -4,4 +4,5 @@ elasticsearch>=5.4.0,<6.0.0
 sqlalchemy==1.1.18
 pandas==0.23.3
 requests-oauthlib<=1.0.0
+PyJWT==1.7.1
 apache-airflow[devel,postgres,password,async]==1.9.0
