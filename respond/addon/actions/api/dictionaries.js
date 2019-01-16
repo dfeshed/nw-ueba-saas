@@ -86,7 +86,7 @@ export default {
    * @returns {Promise}
    */
   getAllAlertSources() {
-    const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'User Entity Behavior Analytics', 'Web Threat Detection'];
+    const alertSources = ['Risk Scoring', 'ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'User Entity Behavior Analytics', 'Web Threat Detection'];
     return RSVP.resolve(alertSources);
   },
 
