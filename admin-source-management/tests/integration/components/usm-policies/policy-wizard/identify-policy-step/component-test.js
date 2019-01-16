@@ -127,6 +127,27 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     actionSpy.restore();
   });
 
+  test('Changing the source type select does not clear policy name and description', async function(assert) {
+    const testName = 'test name';
+    const testDesc = 'test desc';
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizSourceType('windowsLogPolicy')
+      .policyWizName(testName)
+      .policyWizDescription(testDesc)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    const translation = this.owner.lookup('service:i18n');
+    const sourceTypeText = translation.t('adminUsm.policyWizard.edrSourceType');
+    await selectChoose('.source-type', '.ember-power-select-option', 0);
+    const [sourceTypeEl] = findAll('.control.source-type .ember-power-select-selected-item');
+    assert.equal(sourceTypeEl.innerText.trim(), sourceTypeText, `Source Type selection is ${sourceTypeText}`);
+    const [nameEl] = findAll('.control .policy-name input');
+    assert.equal(nameEl.value, testName, `Policy Name is ${testName}`);
+    const [descEl] = findAll('.control-with-error .policy-description textarea');
+    assert.equal(descEl.value, testDesc, `Policy Description is ${testDesc}`);
+  });
+
   // TODO skipping this as it suddenly fails most of the time - the spy props are not getting set
   skip('Typing in the policy name control dispatches the editPolicy action creator', async function(assert) {
     const done = assert.async();

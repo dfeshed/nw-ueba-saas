@@ -123,8 +123,14 @@ export const buildInitialState = (state, policyType, isUpdatePolicyType = false)
   // keep things we don't want to refetch or overwrite for UPDATE_POLICY_TYPE
   if (isUpdatePolicyType) {
     mergedInitialState = mergedInitialState.merge({
-      policyList: [...state.policyList]
-    });
+      policyList: [...state.policyList],
+      // preserve the previously entered name and description when sourceType is toggled.
+      visited: [...state.visited],
+      policy: {
+        name: state.policy.name,
+        description: state.policy.description
+      }
+    }, { deep: true }); // deep merge so we don't reset everything
   }
   return mergedInitialState;
 };
