@@ -26,6 +26,15 @@ export default Controller.extend({
     return hasUsmAccess;
   },
 
+  @computed('routing.currentRouteName')
+  isUnifiedSourcesActive(currentRouteName) {
+    let isActive = false;
+    if (currentRouteName.indexOf('admin-source-management') !== -1) {
+      isActive = true;
+    }
+    return isActive;
+  },
+
   actions: {
     // let router handle this
     controllerNavigateToRoute(routeName) {

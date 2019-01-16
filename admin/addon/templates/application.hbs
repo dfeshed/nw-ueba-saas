@@ -1,38 +1,38 @@
 <page class="admin-engine {{routePath}}">
   <div class="rsa-nav-tab-group">
     {{#if accessControl.hasAdminViewAppliancesAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/appliances')}}
-        <div class="label">{{t 'admin.navbar.appliances'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/appliances' class='label'>{{t 'admin.navbar.appliances'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasAdminViewServicesAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/services')}}
-        <div class="label">{{t 'admin.navbar.services'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/services' class='label'>{{t 'admin.navbar.services'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasAdminViewEventSourcesAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/eventsources')}}
-        <div class="label">{{t 'admin.navbar.eventSources'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/eventsources' class='label'>{{t 'admin.navbar.eventSources'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if hasAdminViewUnifiedSourcesAccess}}
-      {{#rsa-nav-tab align='left' class="usmNavTab" isActive=(is-active 'protected.admin.admin-source-management') click=(action 'controllerNavigateToRoute' 'admin-source-management')}}
-        <div class="label">{{t 'admin.navbar.unifiedSources'}}</div>
+      {{#rsa-nav-tab align='left' class="usmNavTab" isActive=isUnifiedSourcesActive}}
+        {{#link-to "admin-source-management" class='label'}}{{t 'admin.navbar.unifiedSources'}}{{/link-to}}
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasAdminHealthWellnessAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/monitoring')}}
-        <div class="label">{{t 'admin.navbar.healthWellness'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/monitoring' class='label'>{{t 'admin.navbar.healthWellness'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasAdminSystemSettingsAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/system')}}
-        <div class="label">{{t 'admin.navbar.system'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/system' class='label'>{{t 'admin.navbar.system'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasAdminSASecurityAccess}}
-      {{#rsa-nav-tab align='left' isActive=false click=(action 'controllerRedirectToUrl' '/admin/security')}}
-        <div class="label">{{t 'admin.navbar.security'}}</div>
+      {{#rsa-nav-tab align='left' isActive=false}}
+        <a href='/admin/security' class='label'>{{t 'admin.navbar.security'}}</a>
       {{/rsa-nav-tab}}
     {{/if}}
   </div>

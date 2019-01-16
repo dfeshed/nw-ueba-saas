@@ -1,10 +1,10 @@
 <page class="admin-usm-engine {{routePath}}">
   <div class="rsa-nav-tab-group">
-    {{#rsa-nav-tab align='left' isActive=isGroupsActive click=(action 'controllerNavigateToRoute' 'groups')}}
-      <div class="label">{{t 'adminUsm.groups.title'}}</div>
+    {{#rsa-nav-tab align='left' isActive=isGroupsActive}}
+      {{#link-to "groups" class='label'}}{{t 'adminUsm.groups.title'}}{{/link-to}}
     {{/rsa-nav-tab}}
-    {{#rsa-nav-tab align='left' isActive=isPoliciesActive click=(action 'controllerNavigateToRoute' 'policies')}}
-      <div class="label">{{t 'adminUsm.policies.title'}}</div>
+    {{#rsa-nav-tab align='left' isActive=isPoliciesActive}}
+      {{#link-to "policies" class='label'}}{{t 'adminUsm.policies.title'}}{{/link-to}}
     {{/rsa-nav-tab}}
   </div>
   {{outlet}}
