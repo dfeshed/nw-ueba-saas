@@ -257,7 +257,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         currentStreamState.stopStreamingCallbacks.push(stopStream);
         if (isFirstStream) {
           dispatch({
-            type: ACTION_TYPES.INIT_EVENTS_STREAMING
+            type: ACTION_TYPES.INIT_EVENTS_STREAMING,
+            streamingStartedTime: Date.now()
           });
         }
       },

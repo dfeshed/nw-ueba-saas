@@ -66,7 +66,7 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status ul.device-hierarchy').length, 1);
     assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
     assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s)  10 event(s).'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~1s)  10 event(s).'));
   });
 
   test('renders the summary of the top level device when complete', async function(assert) {
@@ -78,7 +78,7 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status ul.device-hierarchy').length, 1);
     assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
     assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s) and retrieved (1s)  10 event(s).'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~1s) and retrieved (~1s)  10 event(s).'));
   });
 
   test('renders the summary of the top level device when no events', async function(assert) {
@@ -87,7 +87,7 @@ module('Integration | Component | console-devices', function(hooks) {
       {{query-container/console-panel/devices}}
     `);
 
-    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (1s) 0 event(s).'));
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~1s) 0 event(s).'));
   });
 
   test('renders when hasError', async function(assert) {

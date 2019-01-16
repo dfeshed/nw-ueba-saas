@@ -212,22 +212,28 @@ export const decoratedDevices = createSelector(
   }
 );
 
+const calculateTimeElapsed = (startedTime, endedTime) => {
+  const diff = endedTime - startedTime;
+  if (diff > 0) {
+    const toSeconds = diff / 1000;
+    if (toSeconds < 1) {
+      return '<1';
+    } else {
+      return `~${Math.round(toSeconds)}`;
+    }
+  }
+};
+
 export const queryTimeElapsed = createSelector(
   [_queryStartedTime, _queryEndedTime],
   (queryStartedTime, queryEndedTime) => {
-    const diff = queryEndedTime - queryStartedTime;
-    if (diff > 0) {
-      return diff / 1000;
-    }
+    return calculateTimeElapsed(queryStartedTime, queryEndedTime);
   }
 );
 
 export const streamingTimeElapsed = createSelector(
   [_streamingStartedTime, _streamingEndedTime],
   (streamingStartedTime, streamingEndedTime) => {
-    const diff = streamingEndedTime - streamingStartedTime;
-    if (diff > 0) {
-      return diff / 1000;
-    }
+    return calculateTimeElapsed(streamingStartedTime, streamingEndedTime);
   }
 );

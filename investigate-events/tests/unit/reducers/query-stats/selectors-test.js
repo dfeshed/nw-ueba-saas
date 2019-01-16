@@ -545,13 +545,26 @@ test('queryTimeElapsed', function(assert) {
   const timeElapsed = queryTimeElapsed({
     investigate: {
       queryStats: {
-        queryStartedTime: 1000,
+        queryStartedTime: 750,
         queryEndedTime: 2000
       }
     }
   });
 
-  assert.equal(timeElapsed, 1);
+  assert.equal(timeElapsed, '~1');
+});
+
+test('queryTimeElapsed when sub second difference', function(assert) {
+  const timeElapsed = queryTimeElapsed({
+    investigate: {
+      queryStats: {
+        queryStartedTime: 1500,
+        queryEndedTime: 2000
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, '<1');
 });
 
 test('queryTimeElapsed without end time', function(assert) {
@@ -567,17 +580,30 @@ test('queryTimeElapsed without end time', function(assert) {
   assert.equal(timeElapsed, undefined);
 });
 
-test('streamingTimeElapsed', function(assert) {
+test('streamingTimeElapsed when sub second difference', function(assert) {
   const timeElapsed = streamingTimeElapsed({
     investigate: {
       queryStats: {
-        streamingStartedTime: 1000,
+        streamingStartedTime: 1500,
         streamingEndedTime: 2000
       }
     }
   });
 
-  assert.equal(timeElapsed, 1);
+  assert.equal(timeElapsed, '<1');
+});
+
+test('streamingTimeElapsed', function(assert) {
+  const timeElapsed = streamingTimeElapsed({
+    investigate: {
+      queryStats: {
+        streamingStartedTime: 750,
+        streamingEndedTime: 2000
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, '~1');
 });
 
 test('streamingTimeElapsed without end time', function(assert) {
