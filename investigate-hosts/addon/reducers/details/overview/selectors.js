@@ -238,7 +238,7 @@ const _getscheduledScanConfig = createSelector(
   [_policyDetails],
   (policyDetails) => {
     const { policy } = policyDetails;
-    const edrPolicy = policy ? policyDetails.policy.edrPolicy : {};
+    const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : {};
     const { scheduledScanConfig } = edrPolicy;
     let newScheduledScanConfig = {};
     if (edrPolicy.scheduledScanConfig) {
@@ -280,12 +280,26 @@ const _getscheduledScanConfig = createSelector(
   }
 );
 
+export const _getWindowsLogPolicy = createSelector(
+  [_policyDetails],
+  (policyDetails) => {
+    const { policy } = policyDetails;
+    const windowsLogPolicy = policy && policy.windowsLogPolicy ? policy.windowsLogPolicy : {};
+    const { enabled, sendTestLog } = windowsLogPolicy;
+    return {
+      ...windowsLogPolicy,
+      enabled: enabled ? 'Enabled' : 'Disabled',
+      sendTestLog: sendTestLog ? 'Enabled' : 'Disabled'
+    };
+  }
+);
+
 export const getPoliciesPropertyData = createSelector(
-  [_policyDetails, _hostDetails, _getscheduledScanConfig],
-  (policyDetails, hostDetails, scheduledScanConfig) => {
+  [_policyDetails, _hostDetails, _getscheduledScanConfig, _getWindowsLogPolicy],
+  (policyDetails, hostDetails, scheduledScanConfig, windowsLogPolicy) => {
     const policyStatus = hostDetails.groupPolicy ? hostDetails.groupPolicy.policyStatus : null;
     const { policy, evaluatedTime, message } = policyDetails;
-    const edrPolicy = policy ? policy.edrPolicy : {};
+    const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : {};
     const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
     let newTransportConfig = {};
     if (transportConfig) {
@@ -304,6 +318,7 @@ export const getPoliciesPropertyData = createSelector(
       policyStatus,
       evaluatedTime,
       message,
+      windowsLogPolicy,
       edrPolicy: {
         ...edrPolicy,
         agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',

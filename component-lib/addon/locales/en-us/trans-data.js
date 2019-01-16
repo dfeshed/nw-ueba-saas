@@ -4189,6 +4189,8 @@ export default {
       fileLogSourceType: 'Agent Log Files',
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
+      edrPolicyName: 'EDR Policy Name',
+      windowsLogPolicyName: 'Windows Log Policy Name',
       namePlaceholder: 'Enter a unique policy name',
       dropdownPlaceholder: 'Type in or Pick from list',
       nameRequired: 'Policy name is required',
@@ -4317,7 +4319,9 @@ export default {
         },
         invalidEventId: 'Event ID is invalid',
         invalidChannelFilter: 'Field cannot be empty',
-        channelFiltersSettingsHeader: 'Channel Filter Settings'
+        channelFiltersSettingsHeader: 'Channel Filter Settings',
+        applicationInclude: 'Application Include',
+        name: 'Policy Name'
       }
     },
     policyTypes: {

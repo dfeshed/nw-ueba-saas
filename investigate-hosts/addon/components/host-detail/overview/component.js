@@ -53,7 +53,7 @@ const HostOverview = Component.extend({
     if (tab === 'POLICIES') {
       return {
         propertyData: this.get('policiesPropertyData'),
-        localeNameSpace: 'adminUsm.policyWizard',
+        localeNameSpace: 'adminUsm',
         config: this.get('policiesConfig')
       };
     }

@@ -459,4 +459,31 @@ test('getPoliciesPropertyData', function(assert) {
     },
     'transportConfig': {}
   });
+
+  const state4 = {
+    endpoint: {
+      overview: {
+        hostDetails: {
+          groupPolicy: {}
+        },
+        policyDetails: {
+          policy: {
+            'windowsLogPolicy': {
+              'enabled': true,
+              'sendTestLog': false,
+              'protocol': 'TLS'
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const result4 = getPoliciesPropertyData(Immutable.from(state4));
+
+  assert.deepEqual(result4.windowsLogPolicy, {
+    'enabled': 'Enabled',
+    'sendTestLog': 'Disabled',
+    'protocol': 'TLS'
+  });
 });
