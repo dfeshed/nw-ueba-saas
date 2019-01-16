@@ -1,3 +1,4 @@
+<iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
 {{#rsa-data-table
   lazy=true
   items=files
@@ -47,6 +48,8 @@
         navigateToCertificateView=(action 'toggleCertificateView')
         fileDownloadButtonStatus=fileDownloadButtonStatus
         downloadFiles=downloadFiles
+        saveLocalCopy=saveLocalCopy
+        analyzeFile=analyzeFile
       )
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}

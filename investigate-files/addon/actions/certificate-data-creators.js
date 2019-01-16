@@ -31,6 +31,7 @@ const toggleCertificateView = () => {
       const savedFilter = { id: -1, criteria: { expressionList: filter.expressionList } };
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
     }
+    dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
     dispatch({ type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
     const { isCertificateView } = getState().certificate.list;
     if (isCertificateView) {

@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-hosts/reducers/details/reducer';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 
@@ -56,7 +57,7 @@ test('The SET_DOWNLOAD_FILE_LINK will sets the file download link to the state',
   const previous = Immutable.from({
     downloadLink: 'oldLink'
   });
-  const result = reducer(previous, { type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip' });
+  const result = reducer(previous, { type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip' });
   assert.equal(result.downloadLink, '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip');
 });
 

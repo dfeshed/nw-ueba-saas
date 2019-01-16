@@ -3,6 +3,7 @@ import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 import { normalize } from 'normalizr';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { fileListSchema } from './schema';
 import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
@@ -33,7 +34,8 @@ const fileListState = Immutable.from({
   isRemediationAllowed: true,
   selectedFile: {},
   selectedDetailFile: null,
-  selectedIndex: null
+  selectedIndex: null,
+  downloadLink: null
 });
 const LOADING_STATUS = 'loading';
 
@@ -222,6 +224,8 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SET_SELECTED_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
 
+  [SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK]: (state, { payload }) => state.set('downloadLink', payload),
+
   [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
     areFilesLoading: 'wait',
     loadMoreStatus: 'completed',
@@ -246,7 +250,8 @@ const fileListReducer = handleActions({
     isRemediationAllowed: true,
     selectedFile: {},
     selectedDetailFile: null,
-    selectedIndex: null
+    selectedIndex: null,
+    downloadLink: null
   })
 }, fileListState);
 

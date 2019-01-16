@@ -11,6 +11,10 @@ page.investigate-files-engine {
 
 .rsa-investigate-files {
   height: 100%;
+  .save-files-iframe {
+    height: 0;
+    display: none;
+  }
   .certificates-container, .files-content {
     width: 100%;
     height: 100%;

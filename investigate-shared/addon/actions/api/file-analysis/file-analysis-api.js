@@ -32,8 +32,20 @@ const getFileAnalysisTextFormatData = (data) => {
   });
 };
 
+const saveLocalFileCopy = (hash) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'saveLocalCopy',
+    modelName: 'endpoint',
+    query: {
+      data: hash
+    }
+  });
+};
+
 export default {
   getFileAnalysisData,
   getFileAnalysisStringFormatData,
-  getFileAnalysisTextFormatData
+  getFileAnalysisTextFormatData,
+  saveLocalFileCopy
 };

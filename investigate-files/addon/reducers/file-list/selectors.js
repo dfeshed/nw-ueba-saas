@@ -18,6 +18,7 @@ const _servers = (state) => state.endpointServer.serviceData || [];
 const _fileTotal = (state) => state.files.fileList.totalItems || 0;
 const _hasNext = (state) => state.files.fileList.hasNext;
 const _expressionList = (state) => state.files.filter.expressionList || [];
+const _downloadLink = (state) => state.files.fileList.downloadLink;
 
 export const files = createSelector(
   _files,
@@ -172,5 +173,11 @@ export const fileDownloadButtonStatus = createSelector(
       isDownloadToServerDisabled,
       isSaveLocalAndFileAnalysisDisabled
     };
+  }
+);
+export const downloadLink = createSelector(
+  _downloadLink,
+  (downloadLink) => {
+    return downloadLink ? `${downloadLink}&${Number(new Date())}` : null;
   }
 );

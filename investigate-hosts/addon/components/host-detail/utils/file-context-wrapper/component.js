@@ -15,7 +15,7 @@ import {
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
-import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
+import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
 import {
   setFileContextFileStatus,
@@ -25,7 +25,7 @@ import {
   setRowSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
 
-import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';

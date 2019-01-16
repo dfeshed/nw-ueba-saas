@@ -193,7 +193,7 @@ const setAnomaliesTabView = (tabName) => {
 const changeDetailTab = (tabName) => {
   return (dispatch) => {
     dispatch(toggleFileAnalysisView(false));
-    dispatch({ type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
+    dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
     dispatch({ type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName } });
     dispatch({ type: ACTION_TYPES.CLOSE_PROCESS_DETAILS });
   };
@@ -265,23 +265,6 @@ const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPER
 
 const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
 
-const saveLocalFileCopy = (selectedFile, callback) => {
-  return (dispatch, getState) => {
-    HostDetails.saveLocalFileCopy(selectedFile.checksumSha256)
-      .then(({ data }) => {
-        if (data.id) {
-          const { serverId } = getState().endpointQuery;
-          const url = serverId ? `/rsa/endpoint/${serverId}/file/download?id=${data.id}&filename=${selectedFile.fileName}.zip` : '';
-          dispatch({ type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: url });
-        }
-      })
-      .catch((response) => {
-        const { meta: { message } } = response;
-        callback.onFailure(message);
-      });
-  };
-};
-
 export {
   initializeAgentDetails,
   changeDetailTab,
@@ -297,6 +280,5 @@ export {
   setHostDetailsDataTableSortConfig,
   setAlertTab,
   setPropertyPanelTabView,
-  setHostDetailPropertyTab,
-  saveLocalFileCopy
+  setHostDetailPropertyTab
 };

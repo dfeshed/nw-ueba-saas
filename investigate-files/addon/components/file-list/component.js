@@ -10,7 +10,8 @@ import {
   areFilesLoading,
   nextLoadCount,
   isAnyFileFloatingOrMemoryDll,
-  fileDownloadButtonStatus
+  fileDownloadButtonStatus,
+  downloadLink
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -58,7 +59,8 @@ const stateToComputed = (state) => ({
   servers: state.endpointServer.serviceData,
   nextLoadCount: nextLoadCount(state),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
-  fileDownloadButtonStatus: fileDownloadButtonStatus(state)
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state),
+  downloadLink: downloadLink(state)
 });
 
 const dispatchToActions = {

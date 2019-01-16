@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import Immutable from 'seamless-immutable';
 
 const dataInitialState = Immutable.from({
@@ -36,7 +37,7 @@ const data = handleActions({
 
   [ACTION_TYPES.SET_ANIMATION]: (state, { payload }) => state.set('animation', payload),
 
-  [ACTION_TYPES.SET_DOWNLOAD_FILE_LINK]: (state, { payload }) => state.set('downloadLink', payload),
+  [SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK]: (state, { payload }) => state.set('downloadLink', payload),
 
   [ACTION_TYPES.TOGGLE_DETAIL_RIGHT_PANEL]: (state) => {
     return state.set('isDetailRightPanelVisible', !state.isDetailRightPanelVisible);

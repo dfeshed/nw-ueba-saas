@@ -155,7 +155,11 @@ const filesConfigGen = function(environment) {
       fileAnalysisTextFormat: {
         subscriptionDestination: '/user/queue/endpoint/file/get-encoded-data',
         requestDestination: '/ws/endpoint/file/get-encoded-data'
-      }
+      },
+      saveLocalCopy: {
+        subscriptionDestination: '/user/queue/endpoint/file/export',
+        requestDestination: '/ws/endpoint/file/export'
+      } 
     },
     'endpoint-server': {
       socketUrl,

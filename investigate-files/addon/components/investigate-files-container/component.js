@@ -33,6 +33,8 @@ import { FILTER_TYPES } from './filter-type';
 import CONFIG from '../file-details/base-property-config';
 
 import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
+import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 const callBackOptions = {
   onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
@@ -55,7 +57,9 @@ const stateToComputed = (state) => ({
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,
   fileProperty: state.files.fileList.selectedDetailFile,
-  checksums: checksums(state)
+  checksums: checksums(state),
+  serverId: state.endpointQuery.serverId,
+  selections: state.files.fileList.selectedFileList
 });
 
 const dispatchToActions = {
@@ -70,7 +74,8 @@ const dispatchToActions = {
   deleteFilter,
   resetFilters,
   setSelectedIndex,
-  downloadFilesToServer
+  downloadFilesToServer,
+  saveLocalFileCopy
 };
 
 /**
@@ -103,6 +108,24 @@ const Files = Component.extend({
       const callBackOptions = this.get('callBackOptions');
       const [checksumSha256] = this.get('checksums');
       this.send('downloadFilesToServer', checksumSha256, callBackOptions);
+    },
+
+    onAnalyzeFile() {
+      const [selectedDetailFile] = this.get('selections');
+      if (selectedDetailFile) {
+        const { format, checksumSha256 } = selectedDetailFile;
+        const serverId = this.get('serverId');
+        const fileFormat = componentSelectionForFileType(format).format || '';
+        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serverId}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
+      }
+    },
+
+    onSaveLocalCopy() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+        onFailure: (message) => failure(message, null, false)
+      };
+      this.send('saveLocalFileCopy', this.get('selections')[0], callBackOptions);
     }
   }
 });

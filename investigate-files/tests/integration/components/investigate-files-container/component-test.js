@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, settled, click } from '@ember/test-helpers';
+import { render, find, findAll, settled, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -10,7 +10,73 @@ import Immutable from 'seamless-immutable';
 import files from '../../state/files';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 let initState;
-
+const wormhole = 'wormhole-context-menu';
+const callback = () => {};
+const e = {
+  clientX: 20,
+  clientY: 20,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const selectedFileList = [
+  {
+    id: '7aa02ac1227e1c9817340ed06cb50caf3f93be476bc9d475a6b3a6f80b6743be',
+    fileName: 'smss.exe',
+    machineOsType: 'windows',
+    checksumSha256: '7aa02ac1227e1c9817340ed06cb50caf3f93be476bc9d475a6b3a6f80b6743be',
+    checksumSha1: 'd258d64dd6220ed4515996734e1c73ac8eae692d',
+    checksumMd5: '03ce2ba7d96391aea2bfd935d243260f',
+    signature: {
+      timeStamp: '2018-09-15T01:28:25.811+0000',
+      thumbprint: '99922da31f07a02edb07cd8b60a137f144d1fae7',
+      features: [
+        'microsoft',
+        'signed',
+        'valid'
+      ],
+      signer: 'Microsoft Windows Publisher'
+    },
+    size: 146872,
+    format: 'pe',
+    downloadInfo: {
+      time: '2019-01-02T11:41:39.949+0000',
+      path: '/var/netwitness/endpoint-server/files/7aa02',
+      fileName: '7aa02ac1227e1c9817340ed06cb50caf3f93be476bc9d475a6b3a6f80b6743be',
+      agentId: '6BE09586-1CF6-8539-D08F-CE26C3D1BA74',
+      status: 'Downloaded'
+    }
+  },
+  {
+    id: '2acec9b1bf97912f00300208a46b955719a0a0c55f14c6cf325625e9f1a60ae5',
+    fileName: 'Everything.exe',
+    machineOsType: 'windows',
+    checksumSha256: '2acec9b1bf97912f00300208a46b955719a0a0c55f14c6cf325625e9f1a60ae5',
+    checksumSha1: 'e420e83962a043a8205de6fbe180ad4106e0e94c',
+    checksumMd5: '2c9db41be3dbb47427b6d64114893ab4',
+    signature: {
+      timeStamp: '2017-06-07T01:42:32.000+0000',
+      thumbprint: '5c725f30b2a7647b7469e70103fc77a5cad49772',
+      features: [
+        'signed',
+        'valid'
+      ],
+      signer: 'David Carpenter'
+    },
+    size: 2197608,
+    format: 'pe',
+    downloadInfo: {
+      time: '2019-01-03T05:43:29.618+0000',
+      path: '/var/netwitness/endpoint-server/files/2acec',
+      fileName: '2acec9b1bf97912f00300208a46b955719a0a0c55f14c6cf325625e9f1a60ae5',
+      agentId: '95A3FBDE-96DC-B261-EF90-6F1E241AA83C',
+      status: 'Downloaded'
+    }
+  }
+];
 const endpointServer = {
   serviceData: [
     {
@@ -121,6 +187,51 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
+  });
+
+  hooks.afterEach(function() {
+    const wormholeElement = document.querySelector('#wormhole-context-menu');
+    if (wormholeElement) {
+      document.querySelector('#ember-testing').removeChild(wormholeElement);
+    }
+  });
+
+  test('Context menu rendered', async function(assert) {
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    const { files: { schema: { schema } } } = files;
+    const endpointQuery = {
+      serverId: 'serverId'
+    };
+
+    new ReduxDataHelper(initState)
+      .schema(schema)
+      .fileCount(3)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .setSelectedFileList(selectedFileList)
+      .build();
+
+    await render(hbs`
+      <style>
+      box, section {
+        min-height: 2000px
+      }
+      </style>
+    {{investigate-files-container accessControl=accessControl}}{{context-menu}}`);
+
+    triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[0], 'contextmenu', e);
+
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 9, 'Context menu rendered');
+    });
   });
 
   test('Investigate files container, when files are available', async function(assert) {

@@ -127,17 +127,6 @@ const sendFileDownloadToServerRequest = (selectedFileDetails) => {
   });
 };
 
-const saveLocalFileCopy = (hash) => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'saveLocalCopy',
-    modelName: 'endpoint',
-    query: {
-      data: hash
-    }
-  });
-};
-
 export default {
   getAllSnapShots,
   getHostDetails,
@@ -146,6 +135,5 @@ export default {
   getFileSearchResults,
   policyDetails,
   fetchRemediation,
-  sendFileDownloadToServerRequest,
-  saveLocalFileCopy
+  sendFileDownloadToServerRequest
 };

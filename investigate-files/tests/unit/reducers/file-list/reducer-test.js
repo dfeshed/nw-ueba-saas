@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-files/reducers/file-list/reducer';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 
@@ -78,7 +79,8 @@ module('Unit | Reducers | file-list', function() {
       isRemediationAllowed: true,
       selectedFile: {},
       selectedDetailFile: null,
-      selectedIndex: null
+      selectedIndex: null,
+      downloadLink: null
     });
   });
 
@@ -483,6 +485,14 @@ module('Unit | Reducers | file-list', function() {
     });
     const result = reducer(previous, { type: ACTION_TYPES.AGENT_COUNT_INIT, payload: ['123456', '34567'] });
     assert.equal(result.agentCountMapping['123456'], 'loading');
+  });
+
+  test('The SET_DOWNLOAD_FILE_LINK will sets the file download link to the state', function(assert) {
+    const previous = Immutable.from({
+      downloadLink: 'oldLink'
+    });
+    const result = reducer(previous, { type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip' });
+    assert.equal(result.downloadLink, '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip');
   });
 
 });

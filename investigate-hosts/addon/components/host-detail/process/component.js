@@ -11,7 +11,7 @@ import {
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
-import { setHostDetailPropertyTab, saveLocalFileCopy } from 'investigate-hosts/actions/data-creators/details';
+import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getColumnsConfig, hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
@@ -33,7 +33,7 @@ import {
 } from 'investigate-hosts/actions/data-creators/file-context';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success } from 'investigate-shared/utils/flash-messages';
-import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
 const callBackOptions = (context) => ({

@@ -16,7 +16,8 @@ import {
   fileTotalLabel,
   nextLoadCount,
   isAnyFileFloatingOrMemoryDll,
-  fileDownloadButtonStatus
+  fileDownloadButtonStatus,
+  downloadLink
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -434,4 +435,28 @@ test('fileDownloadButtonStatus', function(assert) {
   });
   const result7 = fileDownloadButtonStatus(Immutable.from(state7));
   assert.deepEqual(result7.isDownloadToServerDisabled, false);
+});
+
+test('downloadLink for save local copy', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        downloadLink: '/test/test.zip'
+      }
+    }
+  });
+  const result = downloadLink(state);
+  assert.equal(result.includes('/test/test.zip'), true);
+});
+
+test('downloadLink for save local copy when null', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        downloadLink: null
+      }
+    }
+  });
+  const result = downloadLink(state);
+  assert.equal(result, null);
 });

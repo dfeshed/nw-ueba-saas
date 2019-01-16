@@ -24,14 +24,18 @@
           {{files-toolbar
             openFilterPanel=(action layout.open 'left')
             closeRiskPanel=(action layout.close 'right')
-            downloadFiles=(action 'onDownloadFilesToServer')}}
+            downloadFiles=(action 'onDownloadFilesToServer')
+            saveLocalCopy=(action 'onSaveLocalCopy')
+            analyzeFile=(action 'onAnalyzeFile')}}
         </section>
         {{#if selectedServiceData.isServiceOnline}}
           <box class="files-body">
             {{file-list
               openRiskPanel=(action layout.open 'right')
               closeRiskPanel=(action layout.close 'right')
-              downloadFiles=(action 'onDownloadFilesToServer')}}
+              downloadFiles=(action 'onDownloadFilesToServer')
+              saveLocalCopy=(action 'onSaveLocalCopy')
+              analyzeFile=(action 'onAnalyzeFile')}}
           </box>
           <box class="files-footer">
             {{file-pager}}

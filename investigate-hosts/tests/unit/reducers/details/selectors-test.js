@@ -5,7 +5,8 @@ import Immutable from 'seamless-immutable';
 import {
   hasScanTime,
   getColumnsConfig,
-  hostDetailPropertyTabs
+  hostDetailPropertyTabs,
+  downloadLink
 } from 'investigate-hosts/reducers/details/selectors';
 
 module('Unit | selectors | details');
@@ -64,4 +65,26 @@ test('hostDetailPropertyTabs', function(assert) {
   }));
 
   assert.equal(result.findBy('name', 'RISK').selected, true, 'RISK Tab should be selected');
+});
+test('downloadLink for save local copy', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        downloadLink: '/test/test.zip'
+      }
+    }
+  });
+  const result = downloadLink(state);
+  assert.equal(result.includes('/test/test.zip'), true);
+});
+test('downloadLink for save local copy when null', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: {
+        downloadLink: null
+      }
+    }
+  });
+  const result = downloadLink(state);
+  assert.equal(result, null);
 });
