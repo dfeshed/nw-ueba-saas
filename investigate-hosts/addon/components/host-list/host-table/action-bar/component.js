@@ -1,9 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import {
-  noHostsSelected,
-  allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+import { noHostsSelected, isScanStartButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 import { deleteHosts, getPageOfMachines, changeEndpointServerSelection } from 'investigate-hosts/actions/data-creators/host';
@@ -13,7 +11,7 @@ import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-cr
 const stateToComputed = (state) => ({
   totalItems: state.endpoint.machines.totalItems,
   noHostsSelected: noHostsSelected(state),
-  allAreEcatAgents: allAreEcatAgents(state),
+  isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   selectedHostList: state.endpoint.machines.selectedHostList,
   serverId: state.endpointQuery.serverId,
   servers: state.endpointServer,
