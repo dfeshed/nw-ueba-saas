@@ -58,3 +58,25 @@ export const fileContextSelectionsData = [
     format: 'pe'
   }
 ];
+
+export const fileContextSelectionsItem = {
+  id: 'imageHooks_12',
+  fileName: 'HookTest_DLL64_0c30.dll',
+  checksumSha1: '5c6ff89eef54b7d5fba72889c2250ee09b04bcab',
+  checksumSha256: '5469da9747d23abd3a1ccffa2bccfe6256938a416f707ed2160d3eda3867c30d',
+  checksumMd5: 'a91f3390e2fadbbcb2a347ba685cb22a',
+  signature: {
+    features: [
+      'unsigned'
+    ]
+  },
+  size: 150528,
+  machineOsType: 'windows',
+  path: 'C:\\Users\\kslp\\AppData\\Local\\Temp\\',
+  downloadInfo: {},
+  features: [
+    'file.dll',
+    'file.arch64'
+  ],
+  format: 'pe'
+};

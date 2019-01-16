@@ -19,7 +19,7 @@ import {
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
-import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
+import { fileContextSelectionsData, fileContextSelectionsItem } from '../../../../integration/components/state/fileContextData';
 
 
 module('Unit | Selectors | File Context', function() {
@@ -598,6 +598,32 @@ module('Unit | Selectors | File Context', function() {
     });
     const result = isAnyFileFloatingOrMemoryDll(state, 'drivers');
     assert.equal(result, true);
+  });
+  test('fileDownloadButtonStatus if number of selected files is more than 100', function(assert) {
+    const testDataWithLengthOver100 = (function() {
+      const over100Selected = [];
+      let count = 101;
+      while (count > 0) {
+        over100Selected.push(fileContextSelectionsItem);
+        count--;
+      }
+      return over100Selected;
+    })();
+    const result = fileDownloadButtonStatus(Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            machineIdentity: {
+              agentMode: 'Advanced'
+            }
+          }
+        },
+        drivers: {
+          fileContextSelections: [...testDataWithLengthOver100]
+        }
+      }
+    }), 'drivers');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
   });
 });
 

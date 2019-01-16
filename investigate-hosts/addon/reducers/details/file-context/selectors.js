@@ -151,7 +151,7 @@ const _isFloatingOrMemoryDll = createSelector(
   fileContextSelections,
   (fileContextSelections) => {
     if (fileContextSelections && fileContextSelections.length) {
-      const filteredList = fileContextSelections.filter((item) => (item.format === 'floating') || item.features.includes('file.memoryHash'));
+      const filteredList = fileContextSelections.filter((item) => (item.format === 'floating') || (item.features && item.features.includes('file.memoryHash')));
       return filteredList.length === fileContextSelections.length;
     }
     return true;
@@ -189,7 +189,7 @@ export const fileDownloadButtonStatus = createSelector(
   (isNotAdvanced, areAllSelectedFloatingOrMemoryDll, areAllFilesNotDownloadedToServer, fileContextSelections) => {
     const selectedFilesLength = fileContextSelections.length;
     // if agent is not advanced and file's downloaded status is true
-    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength > 0) && (!areAllFilesNotDownloadedToServer));
+    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || (selectedFilesLength < 0) || (selectedFilesLength > 100) || (!areAllFilesNotDownloadedToServer);
     // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
     const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
     return {
