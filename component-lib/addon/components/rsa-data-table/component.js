@@ -410,6 +410,25 @@ export default Component.extend(DomWatcher, {
   },
 
   /**
+   * @description Returns the sum height of all rendered grouping labels.
+   * @public
+   */
+  prevGroupingLabelsHeight: computed('selectedIndex', 'groupingSize', 'groupLabelHeight', 'enableGrouping', function() {
+    const {
+      selectedIndex,
+      groupingSize,
+      groupLabelHeight,
+      enableGrouping
+    } = this.getProperties('selectedIndex', 'groupingSize', 'groupLabelHeight', 'enableGrouping');
+
+    if (enableGrouping && (selectedIndex <= groupingSize)) {
+      return 0;
+    } else {
+      return ((selectedIndex / groupingSize) - 1) * groupLabelHeight;
+    }
+  }),
+
+  /**
    * @description Returns a list of all columns sorted by its default order regardless if the user moved columns,
    * nor changed selected columns
    * @public
@@ -433,15 +452,16 @@ export default Component.extend(DomWatcher, {
 
       if ($.isFunction(fn)) {
         let selectedItemIndex, selectedItem, scrollTop;
+        const items = this.get('items');
 
-        if (this.get('selectedIndex') === (this.get('items.length') - 1)) {
+        if (this.get('selectedIndex') === (items.get('length') - 1)) {
           selectedItemIndex = 0;
-          selectedItem = this.get('items').objectAt(0);
+          selectedItem = items.objectAt(0);
           scrollTop = 0;
         } else {
           selectedItemIndex = this.get('selectedIndex') + 1;
-          selectedItem = this.get('items').objectAt(selectedItemIndex);
-          scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+          selectedItem = items.objectAt(selectedItemIndex);
+          scrollTop = (selectedItemIndex * $('.rsa-data-table-body-row').outerHeight()) + this.get('prevGroupingLabelsHeight');
         }
 
         $('.rsa-data-table-body').animate({ scrollTop }, 0);
@@ -475,7 +495,7 @@ export default Component.extend(DomWatcher, {
         } else {
           selectedItemIndex = this.get('selectedIndex') - 1;
           selectedItem = this.get('items').objectAt(selectedItemIndex);
-          scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
+          scrollTop = (selectedItemIndex * $('.rsa-data-table-body-row').outerHeight()) + this.get('prevGroupingLabelsHeight');
         }
 
         $('.rsa-data-table-body').animate({ scrollTop }, 0);
@@ -550,11 +570,16 @@ export default Component.extend(DomWatcher, {
         // This ensures we don't calculate howFarToScrollTable on a negative index.
         if (selectedIndex >= 0 && !!$firstRow) {
           const heightForAllTableRows = this.$('.rsa-data-table-body-rows').height();
-          const howFarToScrollTable = $firstRow.outerHeight() * selectedIndex;
+          let howFarToScrollTable = $firstRow.outerHeight() * selectedIndex;
           // Data could be flowing in over time, so the number of rows in the
           // table may not immediately be enough to scroll to the selected row.
           // If the height of the container surpasses where the item should be,
           // we can scroll to it and exit recursion. Otherwise let it try again later.
+
+          if (selectedIndex > this.get('groupingSize')) {
+            howFarToScrollTable = howFarToScrollTable + this.get('prevGroupingLabelsHeight');
+          }
+
           if (heightForAllTableRows >= howFarToScrollTable) {
             this.$('.rsa-data-table-body').scrollTop(howFarToScrollTable);
             return;

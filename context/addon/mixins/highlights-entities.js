@@ -369,7 +369,7 @@ export default Mixin.create({
    * @returns {null|{ type: String, id: String }} The type & id of the entity, if enabled; null otherwise.
    * @private
    */
-  _highlightEntity($el, types, metas) {
+  _highlightEntity($el, types, metas = {}) {
     // Read the entity type from the DOM node.
     let type = $el.attr(HTML_ATTR_ENTITY_TYPE);
     if (!type) {
