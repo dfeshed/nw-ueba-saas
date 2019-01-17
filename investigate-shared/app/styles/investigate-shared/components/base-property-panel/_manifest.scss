@@ -64,5 +64,9 @@ $panel-width: 200px;
       line-height: 1.25rem;
       color: text-color(primary, lightest);
     }
+    .user-name {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+    }
   }
 }

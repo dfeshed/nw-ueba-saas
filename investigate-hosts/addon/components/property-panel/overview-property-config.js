@@ -117,11 +117,13 @@ export default [
       },
       {
         field: 'ipv4',
-        labelKey: 'machineIdentity.networkInterfaces.ipv4'
+        labelKey: 'machineIdentity.networkInterfaces.ipv4',
+        showRightClick: true
       },
       {
         field: 'ipv6',
-        labelKey: 'machineIdentity.networkInterfaces.ipv6'
+        labelKey: 'machineIdentity.networkInterfaces.ipv6',
+        showRightClick: true
       },
       {
         field: 'gateway',
