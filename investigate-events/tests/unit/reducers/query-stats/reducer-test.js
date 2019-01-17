@@ -171,15 +171,11 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
     warnings: ['foo'],
     errors: ['foo'],
     devices: ['foo'],
-    queryStartedTime: 1,
-    queryEndedTime: 1,
     streamingStartedTime: 1,
     streamingEndedTime: 1
-
   });
   const action = {
-    type: ACTION_TYPES.INITIALIZE_QUERYING,
-    queryStartedTime: 1
+    type: ACTION_TYPES.INITIALIZE_QUERYING
   };
   const result = reducer(prevState, action);
 
@@ -189,8 +185,6 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 0);
   assert.equal(result.devices.length, 0);
-  assert.equal(result.queryStartedTime, 1);
-  assert.equal(result.queryEndedTime, null);
   assert.equal(result.streamingStartedTime, null);
   assert.equal(result.streamingEndedTime, null);
 });

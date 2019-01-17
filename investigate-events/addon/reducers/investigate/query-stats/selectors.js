@@ -9,8 +9,6 @@ const _errors = (state) => state.investigate.queryStats.errors;
 const _warnings = (state) => state.investigate.queryStats.warnings;
 const _devices = (state) => state.investigate.queryStats.devices;
 const _services = (state) => state.investigate.services.serviceData;
-const _queryStartedTime = (state) => state.investigate.queryStats.queryStartedTime;
-const _queryEndedTime = (state) => state.investigate.queryStats.queryEndedTime;
 const _streamingStartedTime = (state) => state.investigate.queryStats.streamingStartedTime;
 const _streamingEndedTime = (state) => state.investigate.queryStats.streamingEndedTime;
 
@@ -212,28 +210,29 @@ export const decoratedDevices = createSelector(
   }
 );
 
-const calculateTimeElapsed = (startedTime, endedTime) => {
-  const diff = endedTime - startedTime;
-  if (diff > 0) {
-    const toSeconds = diff / 1000;
-    if (toSeconds < 1) {
+export const queryTimeElapsed = createSelector(
+  [_devices],
+  (devices = []) => {
+    if (devices[0] && ((devices[0].elapsedTime < 1) || (!devices[0].elapsedTime))) {
       return '<1';
     } else {
-      return `~${Math.round(toSeconds)}`;
+      return `~${devices[0].elapsedTime}`;
     }
-  }
-};
-
-export const queryTimeElapsed = createSelector(
-  [_queryStartedTime, _queryEndedTime],
-  (queryStartedTime, queryEndedTime) => {
-    return calculateTimeElapsed(queryStartedTime, queryEndedTime);
   }
 );
 
 export const streamingTimeElapsed = createSelector(
   [_streamingStartedTime, _streamingEndedTime],
   (streamingStartedTime, streamingEndedTime) => {
-    return calculateTimeElapsed(streamingStartedTime, streamingEndedTime);
+    const diff = streamingEndedTime - streamingStartedTime;
+    if (diff > 0) {
+      const toSeconds = diff / 1000;
+      if (toSeconds < 1) {
+        return '<1';
+      } else {
+        return `~${Math.round(toSeconds)}`;
+      }
+    }
+
   }
 );

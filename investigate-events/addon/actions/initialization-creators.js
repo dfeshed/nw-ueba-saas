@@ -130,8 +130,7 @@ const _getColumnGroups = () => {
 const _intializeQuerying = (hardReset) => {
   if (!hardReset) {
     return {
-      type: ACTION_TYPES.INITIALIZE_QUERYING,
-      queryStartedTime: Date.now()
+      type: ACTION_TYPES.INITIALIZE_QUERYING
     };
   }
 };

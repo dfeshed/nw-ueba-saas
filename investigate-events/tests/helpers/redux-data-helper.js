@@ -483,8 +483,6 @@ export default class DataHelper {
     _set(this.state, 'eventCount.data', 100);
     _set(this.state.queryStats, 'percent', 100);
     _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
-    _set(this.state.queryStats, 'queryStartedTime', 1505672580000);
-    _set(this.state.queryStats, 'queryEndedTime', 1505672581000);
     _set(this.state.queryStats, 'streamingStartedTime', 1505672582000);
     return this;
   }

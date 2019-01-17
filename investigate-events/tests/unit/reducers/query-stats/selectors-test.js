@@ -545,8 +545,9 @@ test('queryTimeElapsed', function(assert) {
   const timeElapsed = queryTimeElapsed({
     investigate: {
       queryStats: {
-        queryStartedTime: 750,
-        queryEndedTime: 2000
+        devices: [{
+          elapsedTime: 1
+        }]
       }
     }
   });
@@ -558,26 +559,14 @@ test('queryTimeElapsed when sub second difference', function(assert) {
   const timeElapsed = queryTimeElapsed({
     investigate: {
       queryStats: {
-        queryStartedTime: 1500,
-        queryEndedTime: 2000
+        devices: [{
+          elapsedTime: 0
+        }]
       }
     }
   });
 
   assert.equal(timeElapsed, '<1');
-});
-
-test('queryTimeElapsed without end time', function(assert) {
-  const timeElapsed = queryTimeElapsed({
-    investigate: {
-      queryStats: {
-        queryStartedTime: 1000,
-        queryEndedTime: 0
-      }
-    }
-  });
-
-  assert.equal(timeElapsed, undefined);
 });
 
 test('streamingTimeElapsed when sub second difference', function(assert) {

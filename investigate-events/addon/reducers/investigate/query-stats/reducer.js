@@ -9,8 +9,6 @@ const _initialState = Immutable.from({
   errors: [],
   warnings: [],
   devices: [],
-  queryStartedTime: null, // time at which a query has been initiated such as load of page, or query button click
-  queryEndedTime: null, // time at which all execution updates have been received
   streamingStartedTime: null, // time at which events begin loading in the browser
   streamingEndedTime: null // time at which all events have been loaded into the browser
 });
@@ -21,11 +19,8 @@ export default handleActions({
     return state.merge(_initialState);
   },
 
-  [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { queryStartedTime }) => {
-    return state.merge({
-      ..._initialState,
-      queryStartedTime
-    });
+  [ACTION_TYPES.INITIALIZE_QUERYING]: (state) => {
+    return state.merge(_initialState);
   },
 
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state) => {
@@ -70,7 +65,6 @@ export default handleActions({
     }
 
     if (payload.devices) {
-      updatedState.queryEndedTime = Date.now();
       updatedState.devices = payload.devices;
     }
 
