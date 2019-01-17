@@ -14,6 +14,8 @@ export default DataTableBodyRow.extend({
 
   accessControl: service(),
 
+  i18n: service(),
+
   showServiceModal: false,
 
   serviceList: null,
@@ -116,9 +118,12 @@ export default DataTableBodyRow.extend({
         {
           label: 'viewCertificate',
           order: 5,
+          tooltip(selection, context) {
+            return context.get('selections').length > 10 ? '1' : '2';
+          },
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
-            return context.get('selections').length > 10;
+            return context.get('isCertificateViewDisabled') || context.get('selections').length > 10;
           },
           action(selection, context) {
             context.navigateToCertificateView();

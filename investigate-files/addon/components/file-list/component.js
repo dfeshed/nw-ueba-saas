@@ -11,7 +11,8 @@ import {
   nextLoadCount,
   isAnyFileFloatingOrMemoryDll,
   fileDownloadButtonStatus,
-  downloadLink
+  downloadLink,
+  isCertificateViewDisabled
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -60,7 +61,8 @@ const stateToComputed = (state) => ({
   nextLoadCount: nextLoadCount(state),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state),
-  downloadLink: downloadLink(state)
+  downloadLink: downloadLink(state),
+  isCertificateViewDisabled: isCertificateViewDisabled(state)
 });
 
 const dispatchToActions = {

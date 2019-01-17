@@ -148,6 +148,7 @@ module('Integration | Component | file list', function(hooks) {
   test('Return the length of items in the datatable', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)
+      .setSelectedFileList([])
       .schema(config)
       .build();
     await render(hbs`
@@ -167,6 +168,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     await render(hbs`{{file-list}}`);
     assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned the number of columns of the datatable');
@@ -179,6 +181,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -194,6 +197,7 @@ module('Integration | Component | file list', function(hooks) {
     new ReduxDataHelper(initState)
       .files({})
       .schema(config)
+      .setSelectedFileList([])
       .build();
     await render(hbs`{{file-list}}`);
     assert.equal(find('.rsa-data-table-body').textContent.trim(), 'No matching files were found', 'No results message rendered for no data items');
@@ -205,6 +209,7 @@ module('Integration | Component | file list', function(hooks) {
       .schema(config)
       .files(dataItems)
       .loadMoreStatus('stopped')
+      .setSelectedFileList([])
       .build();
     await render(hbs`<style>
         box, section {
@@ -244,6 +249,7 @@ module('Integration | Component | file list', function(hooks) {
         disableSort: true,
         title: 'investigateFiles.fields.signature.features'
       }])
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -271,6 +277,7 @@ module('Integration | Component | file list', function(hooks) {
         visibleColumns: ['firstFileName'],
         sortField: '{ "sortField": "firstFileName", "isSortDescending": false }'
       } })
+      .setSelectedFileList([])
       .build();
     await render(hbs`{{file-list}}`);
     const links = findAll('.file-name a');
@@ -290,6 +297,7 @@ module('Integration | Component | file list', function(hooks) {
         visibleColumns: ['size'],
         sortField: '{ "sortField": "size", "isSortDescending": false }'
       } })
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -310,6 +318,7 @@ module('Integration | Component | file list', function(hooks) {
       .schema(config)
       .preferences({ filePreference })
       .serviceList(serviceList)
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -334,6 +343,7 @@ module('Integration | Component | file list', function(hooks) {
         searchable: false,
         wrapperType: 'STRING'
       }])
+      .setSelectedFileList([])
       .build();
     this.render(hbs`
       <style>
@@ -354,6 +364,7 @@ module('Integration | Component | file list', function(hooks) {
       .schema(config)
       .isSchemaLoading(false)
       .loadMoreStatus('stopped')
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -419,6 +430,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
 
     await render(hbs`
@@ -448,6 +460,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
 
     await render(hbs`
@@ -468,6 +481,7 @@ module('Integration | Component | file list', function(hooks) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
+      .setSelectedFileList([])
       .preferences({ filePreference })
       .build();
 
@@ -491,6 +505,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', true);
@@ -504,6 +519,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', true);
@@ -518,6 +534,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     const selectedFiles = [{
       checksumMd5: '6cd1505286a119d0dfde50ad926d2edf',
@@ -618,6 +635,7 @@ module('Integration | Component | file list', function(hooks) {
         visibleColumns: ['downloadInfo.status'],
         sortField: '{ "sortField": "downloadInfo.status", "isSortDescending": false }'
       } })
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -659,6 +677,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .preferences({ filePreference })
+      .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', false);
@@ -675,6 +694,7 @@ module('Integration | Component | file list', function(hooks) {
         searchable: false,
         wrapperType: 'STRING'
       }])
+      .setSelectedFileList([])
       .build();
     this.render(hbs`
       <style>

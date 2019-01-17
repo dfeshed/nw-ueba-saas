@@ -17,7 +17,8 @@ import {
   nextLoadCount,
   isAnyFileFloatingOrMemoryDll,
   fileDownloadButtonStatus,
-  downloadLink
+  downloadLink,
+  isCertificateViewDisabled
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -459,4 +460,54 @@ test('downloadLink for save local copy when null', function(assert) {
   });
   const result = downloadLink(state);
   assert.equal(result, null);
+});
+test('isCertificateViewDisabled ', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        selectedFileList: [{ signature: { features: ['signed'] } }]
+      }
+    }
+  });
+  const result1 = isCertificateViewDisabled(state);
+  const result2 = isCertificateViewDisabled(Immutable.from({
+    files: {
+      fileList: {
+        selectedFileList: [{ signature: { features: ['unsigned'], thumbprint: 'test' } }, { signature: { features: ['unsigned'] } }]
+      }
+    }
+  })
+  );
+  const result3 = isCertificateViewDisabled(Immutable.from({
+    files: {
+      fileList: {
+        selectedFileList: [{ signature: { features: ['unsigned'], thumbprint: 'test' } }, { signature: { features: ['unsigned'] } }]
+      }
+    }
+  })
+  );
+  const selectedFileListData = [
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } },
+    { signature: { features: ['signed'], thumbprint: 'test' } }
+  ];
+  const result4 = isCertificateViewDisabled(Immutable.from({
+    files: {
+      fileList: {
+        selectedFileList: selectedFileListData
+      }
+    }
+  }));
+  assert.equal(result1, true);
+  assert.equal(result2, false);
+  assert.equal(result3, false);
+  assert.equal(result4, true);
 });

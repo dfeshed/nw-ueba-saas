@@ -2,7 +2,13 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { serviceList, checksums, isAnyFileFloatingOrMemoryDll, fileDownloadButtonStatus } from 'investigate-files/reducers/file-list/selectors';
+import {
+  serviceList,
+  checksums,
+  isAnyFileFloatingOrMemoryDll,
+  isCertificateViewDisabled,
+  fileDownloadButtonStatus
+} from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
@@ -34,7 +40,8 @@ const stateToComputed = (state) => ({
   timeRange: timeRange(state),
   certificateLoadStatus: state.certificate.list.certificatesLoadingStatus,
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
-  fileDownloadButtonStatus: fileDownloadButtonStatus(state)
+  fileDownloadButtonStatus: fileDownloadButtonStatus(state),
+  isCertificateViewDisabled: isCertificateViewDisabled(state)
 });
 
 const dispatchToActions = {
@@ -67,14 +74,14 @@ const ToolBar = Component.extend({
   data(fileStatusData) {
     return { ...fileStatusData };
   },
-  @computed('itemList')
-  isCertificateViewDisabled(selectedList) {
-    return selectedList.length > 10;
-  },
-  @computed('itemList')
-  isCertificateViewDisabledTitle(selectedList) {
+  @computed('itemList', 'isCertificateViewDisabled')
+  isCertificateViewDisabledTitle(selectedList, isCertificateViewDisabled) {
     const i18n = this.get('i18n');
-    return selectedList.length > 10 ? i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 10 }).toString() : '';
+    if (isCertificateViewDisabled) {
+      const MORE_THAN_TEN_FILES_SELECTED_TOOLTIP = i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 10 }).toString();
+      const FILES_ARE_NOT_SIGNED_TOOLTIP = i18n.t('investigateFiles.certificate.unsigned.toolTipCertificateViewDisabled').toString();
+      return selectedList.length > 10 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
+    }
   },
   actions: {
     resetRiskScoreAction(itemsList) {

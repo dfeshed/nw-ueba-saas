@@ -92,4 +92,23 @@ module('Integration | Component | Files toolbar', function(hooks) {
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
     assert.equal(find('.view-certificate-button').title, 'Select a maximum of 10 files to view.', 'tooltip added to disabled button');
   });
+
+  test('Certificate view button disabled on selection of unsigned files', async function(assert) {
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(setState)
+      .totalItems(3)
+      .services(services)
+      .setSelectedFileList([{ id: 0 }])
+      .build();
+    this.set('closeRiskPanel', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
+    assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
+    assert.equal(find('.view-certificate-button').title, 'Files are not signed.', 'tooltip added to disabled button');
+  });
 });

@@ -2136,6 +2136,9 @@ export default {
     showNextRecords: 'Show next {{count}} {{label}}',
     certificate: {
       toolTipCertificateViewDisabled: 'Select a maximum of {{count}} files to view.',
+      unsigned: {
+        toolTipCertificateViewDisabled: 'Files are not signed.'
+      },
       editCertificateStatus: {
         actionNote: 'Selected status is applied to all files signed by this certificate.',
         commentLimitError: 'Comment is limited to 900 characters'

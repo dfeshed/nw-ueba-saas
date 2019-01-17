@@ -19,6 +19,18 @@ const _fileTotal = (state) => state.files.fileList.totalItems || 0;
 const _hasNext = (state) => state.files.fileList.hasNext;
 const _expressionList = (state) => state.files.filter.expressionList || [];
 const _downloadLink = (state) => state.files.fileList.downloadLink;
+const _areSelectedFilesHavingThumbprint = createSelector(
+  _selectedFileList,
+  (fileContextSelections) => {
+    if (fileContextSelections && fileContextSelections.length > 0) {
+      const filteredList = fileContextSelections.some((item) => {
+        return item.signature && item.signature.thumbprint;
+      });
+      return filteredList;
+    }
+    return true;
+  }
+);
 
 export const files = createSelector(
   _files,
@@ -179,5 +191,15 @@ export const downloadLink = createSelector(
   _downloadLink,
   (downloadLink) => {
     return downloadLink ? `${downloadLink}&${Number(new Date())}` : null;
+  }
+);
+export const isCertificateViewDisabled = createSelector(
+  _selectedFileList, _areSelectedFilesHavingThumbprint,
+  (fileContextSelections, areSelectedFilesHavingThumbprint) => {
+    const MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW = 10;
+    if (fileContextSelections.length <= MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW && areSelectedFilesHavingThumbprint) {
+      return false;
+    }
+    return true;
   }
 );
