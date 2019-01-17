@@ -36,7 +36,10 @@ const visuals = handleActions({
   },
 
   [ACTION_TYPES.STORE_RECON_VIEW]: (state, { payload: { newView } }) => {
-    return state.set('defaultReconView', newView);
+    // do not store if isClassicReconView
+    // isClassicReconView tabs open in a new window
+    // when this is triggered via selecting a new event in the table, it results in a very jarring ux
+    return !newView.isClassicReconView ? state.set('defaultReconView', newView) : state;
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {

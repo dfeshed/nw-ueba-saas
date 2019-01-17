@@ -126,3 +126,21 @@ test('test STORE_RECON_VIEW action handler', function(assert) {
   const result = reducer(initialState, action);
   assert.equal(result.defaultReconView.name, 'PACKET');
 });
+
+test('test STORE_RECON_VIEW action handler when new view is isClassicReconView', function(assert) {
+  const action = {
+    type: ACTION_TYPES.STORE_RECON_VIEW,
+    payload: {
+      newView: {
+        code: 1,
+        id: 'packet',
+        name: 'PACKET',
+        isClassicReconView: true,
+        component: 'recon-event-detail/packets',
+        dataKey: 'packets.packets'
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.defaultReconView.name, RECON_VIEW_TYPES_BY_NAME.TEXT.name);
+});
