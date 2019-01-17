@@ -1,0 +1,44 @@
+<div class="endpoint-detail-header">
+  <span>
+    {{rsa-icon name='arrow-circle-right-2'}}
+  </span>
+  {{eventCategory}}
+</div>
+<box class="endpoint-detail-content">
+  <hbox class="endpoint-detail-title">
+    <div class="event-time">
+      {{rsa-icon name='clock-2' style='lined'}}
+      {{rsa-content-datetime timestamp=eventTime displayMilliseconds=false}}
+    </div>
+    {{#if hostName}}
+      <div>
+        {{rsa-icon name='computer-notebook-2'}}
+        <span class="hostname meta-value">
+          {{hostName}}
+        </span>
+      </div>
+    {{/if}}
+    {{#if user}}
+      <div>
+        {{rsa-icon name='account-circle-1'}}
+        <span class="user meta-value">
+          {{user}}
+        </span>
+      </div>
+    {{/if}}
+  </hbox>
+  <hbox class="endpoint-detail-description">
+    {{#each endpointMeta as |item|}}
+      {{#if item.value}}
+        {{#if item.label}}
+          <span class='meta-key'>
+            {{t item.label}}
+          </span>
+        {{/if}}
+        <span class='meta-value'>
+          {{item.value}}
+        </span>
+      {{/if}}
+    {{/each}}
+  </hbox>
+</box>

@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { find, render } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-module('Integration | Component | recon-meta-content-item', function(hooks) {
+module('Integration | Component | recon-event-detail/single-text/header', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
@@ -14,7 +14,7 @@ module('Integration | Component | recon-meta-content-item', function(hooks) {
   test('endpoint header should be displayed', async function(assert) {
     this.set('isEndpoint', true);
     await render(hbs `{{recon-event-detail/single-text/header isEndpoint=isEndpoint}}`);
-    assert.equal(find('.recon-request-response-header .text').textContent.trim(), 'Raw Endpoint');
+    assert.equal(find('.recon-request-response-header .text').textContent.trim(), 'Large meta values');
   });
 
   test('log header should be displayed', async function(assert) {

@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import moment from 'moment';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import { getMetaValue } from '../util';
+import ENDPOINT_META_CONFIG from './meta-config';
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -68,6 +69,11 @@ const _determineEventType = (meta) => {
   // Unknown event type? Just return the default.
   return eventType || DEFAULT_EVENT_TYPE;
 };
+
+const _metaMap = createSelector(
+  _eventMeta,
+  (eventMeta) => new Map(eventMeta)
+);
 
 export const isHttpData = createSelector(
   _meta,
@@ -183,5 +189,40 @@ export const isProcessAnalysisDisabled = createSelector(
       return false;
     }
     return true;
+  }
+);
+
+export const eventTime = createSelector(
+  _metaMap,
+  (metaMap) => metaMap.get('event.time') || metaMap.get('starttime')
+);
+
+export const eventCategory = createSelector(
+  _metaMap,
+  (metaMap) => metaMap.get('category')
+);
+
+export const hostName = createSelector(
+  _metaMap,
+  (metaMap) => metaMap.get('alias.host')
+);
+
+export const user = createSelector(
+  _metaMap,
+  (metaMap) => metaMap.get('user.src')
+);
+export const endpointMeta = createSelector(
+  [_metaMap],
+  (metaMap) => {
+    const categoryConfig = ENDPOINT_META_CONFIG[metaMap.get('category')];
+    let requiredFields = {};
+    if (categoryConfig) {
+      const { fields } = categoryConfig;
+      requiredFields = fields.map((field) => {
+        const value = metaMap.get(field.field);
+        return { ...field, value };
+      });
+    }
+    return requiredFields;
   }
 );

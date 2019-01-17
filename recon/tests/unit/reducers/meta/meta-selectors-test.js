@@ -12,7 +12,12 @@ import {
   processAnalysisQueryString,
   isProcessAnalysisDisabled,
   agentId,
-  endpointServiceId
+  endpointServiceId,
+  eventTime,
+  eventCategory,
+  hostName,
+  user,
+  endpointMeta
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta');
@@ -309,4 +314,51 @@ test('endpointServiceId test', function(assert) {
   };
   const result = endpointServiceId(Immutable.from(data));
   assert.equal(result, '610b34a1-eeee-47a3-abec-74d2861bf99e', 'Endpoint service ID is returned after parsing');
+});
+
+test('eventTime', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['event.time', '2019-01-08T04:17:20.000+0000']] } }
+  };
+  const result = eventTime(Immutable.from(data));
+  assert.equal(result, '2019-01-08T04:17:20.000+0000', 'event time is returned');
+});
+
+test('eventCategory', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['category', 'Machine']] } }
+  };
+  const result = eventCategory(Immutable.from(data));
+  assert.equal(result, 'Machine', 'event category is returned');
+});
+
+test('hostName', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['alias.host', 'INENJOHNP3']] } }
+  };
+  const result = hostName(Immutable.from(data));
+  assert.equal(result, 'INENJOHNP3', 'hostName is returned');
+});
+
+test('user', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['user.src', 'INENJOHNP3']] } }
+  };
+  const result = user(Immutable.from(data));
+  assert.equal(result, 'INENJOHNP3', 'user is returned');
+});
+
+test('endpointMeta', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['user.src', 'INENJOHNP3'],
+      ['category', 'Registry Event'],
+      ['filename.src', 'cmd.exe'],
+      ['action', 'modify'],
+      ['registry.key', '/HKEY/WINDOWS/LOCAL']] } }
+  };
+  const result = endpointMeta(Immutable.from(data));
+  assert.equal(result[0].field, 'filename.src', 'first field is filename.src');
+  assert.equal(result[0].value, 'cmd.exe', 'first field value is correct');
+  assert.equal(result[1].value, 'modify', 'action value is modify');
+  assert.equal(result[2].value, '/HKEY/WINDOWS/LOCAL', 'registy.key value is /HKEY/WINDOWS/LOCAL');
 });

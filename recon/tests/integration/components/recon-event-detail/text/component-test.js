@@ -50,14 +50,12 @@ test('text view renders log text', function(assert) {
 
 test('text view renders raw endpoint text', function(assert) {
   new DataHelper(this.get('redux'))
-    .initializeData({ meta: [['medium', 3], ['nwe.callback_id', 23]] })
+    .initializeData({ meta: [['medium', 3], ['nwe.callback_id', 23], ['category', 'File'], ['filename', 'cmd.exe'], ['directory', 'C:\\Users\\']] })
     .setViewToText()
     .populateTexts();
   this.render(hbs`{{recon-event-detail/text-content}}`);
-  return wait().then(() => {
-    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 11);
-    assert.equal(str, 'RawEndpoint');
-  });
+  assert.equal(this.$('.recon-event-detail-endpoint').length, 1, 'Endpoint detail is rendered');
+  assert.equal(this.$('.endpoint-detail-header')[0].textContent.trim(), 'File');
 });
 
 test('renders spinner when data present but in the process of being rendered', function(assert) {

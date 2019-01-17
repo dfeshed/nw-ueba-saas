@@ -59,14 +59,12 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   @computed('renderedText.length', 'numberOfItems')
   hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
 
-  @computed('isEndpointEvent', 'isHttpEvent')
-  noResultsMessage(isEndpointEvent, isHttpEvent) {
+  @computed('isHttpEvent')
+  noResultsMessage(isHttpEvent) {
     const i18n = this.get('i18n');
     let label;
     if (isHttpEvent) {
       label = i18n.t('recon.error.noTextContentDataWithCompressedPayloads');
-    } else if (isEndpointEvent) {
-      label = i18n.t('recon.error.noRawDataEndpoint');
     } else {
       label = i18n.t('recon.error.noTextContentData');
     }

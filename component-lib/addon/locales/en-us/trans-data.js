@@ -283,11 +283,24 @@ export default {
       headerShowing: 'Showing',
       singleMessageTruncated: ' (This message has been truncated)',
       isDownloading: 'Downloading...',
-      rawEndpointHeader: 'Raw Endpoint',
+      rawEndpointHeader: 'Large meta values',
       rawLogHeader: 'Raw Log',
       renderingMore: 'Showing more...',
       renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
-      showRemaining: 'Show Remaining {{remainingPercent}}%'
+      showRemaining: 'Show Remaining {{remainingPercent}}%',
+      endpointDetail: {
+        performed: 'performed',
+        to: 'to',
+        presentIn: 'present in',
+        madeConnectionTo: 'made a network connection to',
+        resolvedTo: 'resolved to',
+        from: 'from',
+        runningAsService: 'is running as a service named',
+        loadedInto: 'is loaded into',
+        runningAsTask: 'is running as a task named',
+        launchedBy: 'is launched by',
+        ran: 'ran'
+      }
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

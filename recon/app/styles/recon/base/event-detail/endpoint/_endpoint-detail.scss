@@ -1,0 +1,52 @@
+.recon-event-detail-endpoint {
+  padding-left: rsa-whitespace();
+  margin-bottom: rsa-whitespace();
+  background: text-color(primary, darker);
+
+  .endpoint-detail-header {
+    padding: rsa-whitespace() 0;
+    color: text-color(secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    .rsa-icon {
+      padding-right: rsa-whitespace(less);
+      font-size: 14px;
+    }
+    span {
+      vertical-align: middle;
+    }
+  }
+
+  .endpoint-detail-content {
+    padding-left: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace();
+    display: inline-block;
+    width: 100%;
+  }
+
+  .endpoint-detail-title {
+    div {
+      padding-bottom: rsa-whitespace(less);
+      padding-right: rsa-whitespace(more);
+      i {
+        vertical-align: -2px;
+      }
+    }
+    @include rsa-font-monospace();
+    margin-bottom: rsa-whitespace();
+  }
+
+  .meta-key {
+    @include rsa-font(header, small);
+    color: text-color(secondary);
+    margin-right: rsa-whitespace(less);
+    line-height: rsa-whitespace();
+  }
+  .meta-value {
+    @include rsa-font-monospace();
+    margin-right: rsa-whitespace(less);
+  }
+}

@@ -1,6 +1,7 @@
 @import "./files/manifest";
 @import "./packets/manifest";
 @import "./text/manifest";
+@import "./endpoint/manifest";
 
 .recon-request-response-header {
   color: text-color(secondary);
@@ -43,16 +44,6 @@
     left: 0;
     right: 0;
     bottom: rsa-whitespace(more);
-
-    // Handles borders for text view
-    // TODO, move packet view so this'll work for it as well
-    > div {
-      @include border-top(1px, solid, secondary);
-
-      &:first-of-type {
-        border-top: none;
-      }
-    }
   }
 
   .rendering-more {
