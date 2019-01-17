@@ -1,0 +1,20 @@
+<h1 class="large centered">Packet Capture</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{#each params.data as |series index|}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=index
+      xScale=params.xScale
+      yScale=params.yScale
+      height=params.graphHeight}}
+  {{/each}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">{{valuesAdapter.capture_rate}} Mbps</h1>
+{{#dashboard-properties-grid}}
+  {{dashboard-property-item propertyName='Packets Captured' propertyValue=valuesAdapter.capture_received type='numeric'}}
+  {{dashboard-property-item propertyName='packets Dropped' propertyValue=valuesAdapter.capture_dropped type='numeric'}}
+  {{dashboard-property-item propertyName='Capture Status' propertyValue=valuesAdapter.capture_status}}
+  {{dashboard-property-item propertyName='Capture Started' propertyValue=valuesAdapter.time_capture.started}}
+  {{dashboard-property-item propertyName='Capture Duration' propertyValue=valuesAdapter.time_capture.duration}}
+{{/dashboard-properties-grid}}

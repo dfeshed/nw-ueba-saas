@@ -1,10 +1,20 @@
-{{#if isDecoder}}{{dashboard-visual monitor=captureRate type="gauge" label="Capture Rate" dataFunction=captureRateFunction display=captureRateDisplay}}{{/if}}
-{{dashboard-visual monitor=cpu type="gauge" label="CPU"}}
-{{dashboard-visual monitor=metaRate type="gauge" label="Meta Rate" dataFunction=metaRateFunction display=metaRateDisplay}}
-{{dashboard-visual monitor=sessionRate type="gauge" label="Session Rate" dataFunction=sessionRateFunction}}
-{{#if isDecoder}}
-  {{dashboard-visual monitor=assemblerMetaRate type="gauge" label="Assembler Meta Rate" dataFunction=assemblerMetaRateFunction}}
-  {{dashboard-visual monitor=packetCapturePool type="graph" label="Packet Capture Queue" dataFunction=packetCapturePoolFunction}}
-  {{dashboard-visual monitor=packetAssemblerPool type="graph" label="Packet Assembler Queue" dataFunction=packetAssemblerPoolFunction}}
-  {{dashboard-visual monitor=packetWritePool type="graph" label="Packet Write Queue" dataFunction=packetWritePoolFunction}}
+{{#if (or isDecoder isLogDecoder)}}
+  {{#if isDecoder}}
+    {{card-packet-capture}}
+  {{else}}
+    {{card-log-capture}}
+  {{/if}}
+  {{card-packet-db}}
+  {{card-meta-db}}
+  {{card-session-db}}
+  {{card-index-db}}
 {{/if}}
+{{#if (or isConcentrator isBroker)}}
+  {{card-aggregation}}
+{{/if}}
+{{#if isConcentrator}}
+  {{card-index-db}}
+  {{card-session-db}}
+  {{card-meta-db}}
+{{/if}}
+{{card-system}}

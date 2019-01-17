@@ -25,7 +25,7 @@
 
   <div class="small-header top-margin">Response (Click text to select)</div>
   {{#if responses.hasPendingOperation}}
-    {{rsa-loader size='medium' label=(concat responses.progress '% ' responses.status)}}
+    {{rsa-loader size='medium' label=(concat responses.progress responses.status)}}
   {{/if}}
 
   <br>

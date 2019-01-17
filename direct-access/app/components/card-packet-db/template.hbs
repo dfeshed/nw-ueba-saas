@@ -1,0 +1,20 @@
+<h1 class="large centered">Packet Database</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{#each params.data as |series index|}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=index
+      xScale=params.xScale
+      yScale=params.yScale
+      height=params.graphHeight}}
+  {{/each}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">{{direct-access-formatted-number size=valuesAdapter.packet_rate}} Packets/Second</h1>
+{{#dashboard-properties-grid}}
+  {{dashboard-property-item propertyName='Total Packet Count' propertyValue=valuesAdapter.packet_total type='numeric'}}
+  {{dashboard-property-item propertyName='Total Packet Bytes' propertyValue=valuesAdapter.packet_bytes type='bytes'}}
+  {{dashboard-property-item propertyName='Oldest Packet File' propertyValue=valuesAdapter.packet_oldest_file_time}}
+  {{dashboard-property-item propertyName='Free Packet Space' propertyValue=valuesAdapter.packet_free_space type='bytes'}}
+  {{dashboard-property-item propertyName='Packet Volume Size' propertyValue=valuesAdapter.packet_volume_bytes type='bytes'}}
+{{/dashboard-properties-grid}}

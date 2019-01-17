@@ -1,0 +1,12 @@
+<div class="property-item">
+  <div class="property-name rsa-font-navigation-small">{{propertyName}}</div>
+  <div class="property-value">
+    {{#if (eq type 'bytes')}}
+      {{direct-access-memsize size=propertyValue}}
+    {{else if (eq type 'numeric')}}
+      {{direct-access-formatted-number size=propertyValue}}
+    {{else}}
+      {{propertyValue}}
+    {{/if}}
+  </div>
+</div>

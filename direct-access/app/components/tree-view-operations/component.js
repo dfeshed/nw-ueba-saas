@@ -20,7 +20,8 @@ const treeViewOperations = Component.extend({
   responses: (operationResponse) => {
     return {
       ...operationResponse,
-      status: operationResponse.status ? `${operationResponse.status} ...` : null,
+      progress: operationResponse.progress ? `${operationResponse.progress}% ` : null,
+      status: operationResponse.status ? `${operationResponse.status}...` : null,
       hasError: !!operationResponse.error,
       hasPendingOperation: operationResponse.complete === false
     };

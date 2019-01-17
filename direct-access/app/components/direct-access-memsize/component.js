@@ -22,6 +22,9 @@ const byteSizing = {
 };
 
 const sizing = [{
+  label: 'TB',
+  bytes: Math.pow(1024, 4)
+}, {
   label: 'GB',
   bytes: Math.pow(1024, 3)
 }, {

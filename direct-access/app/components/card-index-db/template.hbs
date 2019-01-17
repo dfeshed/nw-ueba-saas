@@ -1,0 +1,22 @@
+<h1 class="large centered">Index</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{#each params.data as |series index|}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=index
+      xScale=params.xScale
+      yScale=params.yScale
+      height=params.graphHeight}}
+  {{/each}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+{{! TODO: change this to be active + pending queries }}
+<h1 class="large centered">{{add valuesAdapter.queries_active valuesAdapter.queries_pending}} Queries</h1>
+{{#dashboard-properties-grid}}
+  {{dashboard-property-item propertyName='Query Memory' propertyValue=valuesAdapter.query_memory type='bytes'}}
+  {{dashboard-property-item propertyName='Sessions Since Save' propertyValue=valuesAdapter.sessions_since_save type='numeric'}}
+  {{dashboard-property-item propertyName='Earliest Time' propertyValue=valuesAdapter.time_begin}}
+  {{dashboard-property-item propertyName='Most Recent Time' propertyValue=valuesAdapter.time_end}}
+  {{dashboard-property-item propertyName='Background Indexer' propertyValue=valuesAdapter.updater_state}}
+  {{dashboard-property-item propertyName='Keys Exceeding Value Limit' propertyValue=valuesAdapter.meta_overflow}}
+{{/dashboard-properties-grid}}

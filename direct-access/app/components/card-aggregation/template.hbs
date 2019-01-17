@@ -1,0 +1,17 @@
+<h1 class="large centered">Aggregation</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{#each params.data as |series index|}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=index
+      xScale=params.xScale
+      yScale=params.yScale
+      height=params.graphHeight}}
+  {{/each}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">{{direct-access-formatted-number size=valuesAdapter.session_rate}} Sessions/Second</h1>
+{{#dashboard-properties-grid}}
+  {{dashboard-property-item propertyName='Meta Rate' propertyValue=valuesAdapter.meta_rate type='numeric'}}
+  {{dashboard-property-item propertyName='Status' propertyValue=valuesAdapter.status}}
+{{/dashboard-properties-grid}}

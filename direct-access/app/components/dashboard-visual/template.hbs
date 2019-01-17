@@ -1,9 +1,0 @@
-{{#if isGauge}}
-  {{rsa-gauge value=data label=label animate=animate display=display}}
-{{else if isGraph}}
-  <h1 class="large centered">{{label}}</h1>
-  {{#rsa-chart data=graphAdapter as |params|}}
-    {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-    {{rsa-y-axis scale=params.yScale}}
-  {{/rsa-chart}}
-{{/if}}

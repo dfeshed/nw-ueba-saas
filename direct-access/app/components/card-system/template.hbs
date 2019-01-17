@@ -1,0 +1,19 @@
+<h1 class="large centered">System</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{#each params.data as |series index|}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=index
+      xScale=params.xScale
+      yScale=params.yScale
+      height=params.graphHeight}}
+  {{/each}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">{{valuesAdapter.cpu_process}}</h1>
+{{#dashboard-properties-grid}}
+  {{dashboard-property-item propertyName='Process Memory' propertyValue=valuesAdapter.memory_process type='bytes'}}
+  {{dashboard-property-item propertyName='Status' propertyValue=valuesAdapter.service_status}}
+  {{dashboard-property-item propertyName='Started' propertyValue=valuesAdapter.running_since}}
+  {{dashboard-property-item propertyName='Uptime' propertyValue=valuesAdapter.uptime}}
+{{/dashboard-properties-grid}}
