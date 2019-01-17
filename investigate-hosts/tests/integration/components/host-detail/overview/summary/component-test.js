@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Immutable from 'seamless-immutable';
-import { linux, windows, mac } from '../../../state/overview.hostdetails';
+import { linux, windows } from '../../../state/overview.hostdetails';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 
@@ -24,25 +24,11 @@ moduleForComponent('host-detail/overview/summary', 'Integration | Component | en
   }
 });
 
-test('Number of accordions rendered based on OS selected, Windows : 1', function(assert) {
-  setState(windows);
-  this.render(hbs`{{host-detail/overview/summary}}`);
-  const numberOfnumberAccordions = this.$('.rsa-content-accordion').length;
-  assert.equal(numberOfnumberAccordions, 1, 'Number of accordions rendered when the selected OS is Windows');
-});
-
 test('Number of accordions rendered based on OS selected, Linux : 0', function(assert) {
   setState(linux);
   this.render(hbs`{{host-detail/overview/summary}}`);
   const numberOfnumberAccordions = this.$('.rsa-content-accordion').length;
   assert.equal(numberOfnumberAccordions, 0, 'Number of accordions rendered when the selected OS is Linux');
-});
-
-test('Number of accordions rendered based on OS selected, Mac : 0', function(assert) {
-  setState(mac);
-  this.render(hbs`{{host-detail/overview/summary}}`);
-  const numberOfnumberAccordions = this.$('.rsa-content-accordion').length;
-  assert.equal(numberOfnumberAccordions, 0, 'Number of accordions rendered when the selected OS is Mac');
 });
 
 test('Accordion titles displayed for Windows OS', function(assert) {

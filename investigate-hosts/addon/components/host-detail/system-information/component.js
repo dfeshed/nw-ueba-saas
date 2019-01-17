@@ -5,6 +5,7 @@ import TABS from './tabsConfig';
 import {
   machineOsType,
   selectedSystemInformationData,
+  isSelectedTabSecurityConfig,
   bashHistories } from 'investigate-hosts/reducers/details/system-information/selectors';
 import {
   setSystemInformationTab,
@@ -16,7 +17,8 @@ const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
   systemInformationData: selectedSystemInformationData(state),
   selectedTab: state.endpoint.visuals.activeSystemInformationTab,
-  bashHistories: bashHistories(state)
+  bashHistories: bashHistories(state),
+  isSelectedTabSecurityConfig: isSelectedTabSecurityConfig(state)
 });
 const dispatchToActions = {
   setSystemInformationTab,
@@ -55,14 +57,17 @@ const SystemInformation = Component.extend({
    * @param selectedTab
    * @public
    */
-  @computed('systemInformationData', 'isBashHistorySelected', 'selectedUser')
-  tableData(systemInformationData, isBashHistorySelected, selectedUser) {
-    const { columns, data } = { ...systemInformationData };
-    if (isBashHistorySelected) {
-      const filteredData = selectedUser === 'ALL' ? data : data.filterBy('userName', selectedUser);
-      return { columns, data: filteredData };
+  @computed('systemInformationData', 'isBashHistorySelected', 'selectedUser', 'isSelectedTabSecurityConfig')
+  tableData(systemInformationData, isBashHistorySelected, selectedUser, isSelectedTabSecurityConfig) {
+    if (!isSelectedTabSecurityConfig) {
+      const { columns, data } = { ...systemInformationData };
+      if (isBashHistorySelected) {
+        const filteredData = selectedUser === 'ALL' ? data : data.filterBy('userName', selectedUser);
+        return { columns, data: filteredData };
+      }
+      return { columns, data };
     }
-    return { columns, data };
+    return null;
   },
 
   @computed('selectedTab')

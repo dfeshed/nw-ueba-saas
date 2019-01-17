@@ -124,6 +124,7 @@ const COLUMNS = {
         title: 'investigateHosts.systemInformation.securityProducts.version'
       }
     ]
-  }
+  },
+  'SECURITY_CONFIGURATION': { columns: [] }
 };
 export default COLUMNS;

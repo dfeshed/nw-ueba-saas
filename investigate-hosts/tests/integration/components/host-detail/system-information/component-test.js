@@ -39,18 +39,18 @@ module('Integration | Component | host-detail/system-information', function(hook
 
   // Test for the number of tabs rendered based on the OS selected
   // Mac
-  test('Number of tabs rendered based on the OS selected, Mac : 3', async function(assert) {
+  test('Number of tabs rendered based on the OS selected, Mac : 4', async function(assert) {
     setState(mac);
     await render(hbs`{{host-detail/system-information}}`);
     const numberOfNavTabs = findAll('.system-information-wrapper .host-title-bar > div').length;
-    assert.equal(numberOfNavTabs, 3, 'Number of tabs rendered based on the OS selected');
+    assert.equal(numberOfNavTabs, 4, 'Number of tabs rendered based on the OS selected');
   });
   // Windows
-  test('Number of tabs rendered based on the OS selected, Windows : 4', async function(assert) {
+  test('Number of tabs rendered based on the OS selected, Windows : 5', async function(assert) {
     setState(windows);
     await render(hbs`{{host-detail/system-information}}`);
     const numberOfNavTabs = findAll('.system-information-wrapper .host-title-bar > div').length;
-    assert.equal(numberOfNavTabs, 4, 'Number of tabs rendered based on the OS selected');
+    assert.equal(numberOfNavTabs, 5, 'Number of tabs rendered based on the OS selected');
   });
   // Linux
   test('Number of tabs rendered based on the OS selected, Linux : 3', async function(assert) {
@@ -118,6 +118,18 @@ module('Integration | Component | host-detail/system-information', function(hook
 
     const windowsPatchesResults = findAll('.rsa-data-table-body .rsa-data-table-body-row').length;
     assert.equal(windowsPatchesResults, 4, 'Number of resultant rows for Windows Patches tab');
+  });
+
+  // Security Configuration
+  test('Security Configuration rendered', async function(assert) {
+    setState(windows);
+
+    await render(hbs`{{host-detail/system-information}}`);
+
+    await click('.system-information-wrapper .host-title-bar > div:nth-child(5)');
+
+    const securityConfigurationResult = findAll('.system-information__content').length;
+    assert.equal(securityConfigurationResult, 1, 'Security Configuration rendered');
   });
 
   // *End* Tabs availabe when Windows OS agent is selected

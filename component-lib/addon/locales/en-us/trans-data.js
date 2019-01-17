@@ -2716,6 +2716,7 @@ export default {
       explore: 'Explore',
       securityProducts: 'Security Products',
       windowsPatches: 'Windows Patches',
+      securityConfiguration: 'Security Configuration',
       anomalies: 'Anomalies',
       hooks: 'Image Hooks',
       threads: 'Suspicious Threads',

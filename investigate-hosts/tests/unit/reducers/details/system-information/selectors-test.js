@@ -6,6 +6,7 @@ module('Unit | Selectors | systemInformation');
 
 import {
   hostFileEntries,
+  isSelectedTabSecurityConfig,
   selectedSystemInformationData } from 'investigate-hosts/reducers/details/system-information/selectors';
 
 test('hostFileEntries', function(assert) {
@@ -52,4 +53,23 @@ test('selectedSystemInformationData to get bash history', function(assert) {
       overview: { hostDetails },
       visuals: { activeSystemInformationTab: 'BASH_HISTORY' } } }));
   assert.equal(result.data.length, 0);
+});
+
+test('isSelectedTabSecurityConfig is set true if security config tab is selected', function(assert) {
+  const result1 = isSelectedTabSecurityConfig(Immutable.from({
+    endpoint: {
+      visuals: {
+        activeSystemInformationTab: 'SECURITY_CONFIGURATION'
+      }
+    }
+  }));
+  assert.equal(result1, true);
+  const result2 = isSelectedTabSecurityConfig(Immutable.from({
+    endpoint: {
+      visuals: {
+        activeSystemInformationTab: 'HOST_ENTRIES'
+      }
+    }
+  }));
+  assert.equal(result2, false);
 });

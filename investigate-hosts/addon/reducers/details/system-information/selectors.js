@@ -132,3 +132,8 @@ export const selectedSystemInformationData = createSelector(
     };
   }
 );
+
+export const isSelectedTabSecurityConfig = createSelector(
+  [ _selectedTab ],
+  (selectedTab) => selectedTab === 'SECURITY_CONFIGURATION'
+);

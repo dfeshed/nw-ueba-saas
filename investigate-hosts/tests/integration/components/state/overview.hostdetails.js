@@ -542,6 +542,12 @@ const mac = {
         scanRequestTime: '2017-07-11T05:42:54.000Z',
         scanType: 'standard',
         scanTrigger: 'manual',
+        securityConfigurations: [
+          'kextSigningDisabled',
+          'fileVaultDisabled',
+          'firewallDisabled',
+          'systemIntegrityProtectionDisabled'
+        ],
         users: [
           {
             name: 'root',
@@ -607,7 +613,7 @@ const mac = {
         id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
         group: 'default',
         machineName: 'HarpServer',
-        machineOsType: 'linux',
+        machineOsType: 'mac',
         agentVersion: '1.0.0.0',
         networkInterfaces: [
           {

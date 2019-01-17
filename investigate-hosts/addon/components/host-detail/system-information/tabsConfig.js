@@ -33,6 +33,12 @@ const tabs = [
     name: 'WINDOWS_PATCHES',
     hiddenFor: ['mac', 'linux'],
     id: '6'
+  },
+  {
+    label: 'investigateHosts.tabs.securityConfiguration',
+    name: 'SECURITY_CONFIGURATION',
+    hiddenFor: ['linux'],
+    id: '7'
   }
 ];
 
