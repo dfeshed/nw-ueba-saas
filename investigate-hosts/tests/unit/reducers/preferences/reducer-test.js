@@ -29,7 +29,7 @@ test('should return the initial state', function(assert) {
           'agentStatus.lastSeenTime',
           'agentStatus.scanStatus',
           'groupPolicy.groups.name',
-          'machine.networkInterfaces.ipv4',
+          'machineIdentity.networkInterfaces.ipv4',
           'groupPolicy.policyStatus',
           'machineIdentity.agentMode',
           'machineIdentity.agentVersion',
