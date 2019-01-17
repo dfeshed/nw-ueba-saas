@@ -39,6 +39,8 @@ module('Integration | Component | endpoint/pivot-to-investigate', function(hooks
     await click(findAll('.pivot-to-investigate-button button')[0]);
     assert.ok(actionSpy.calledOnce);
     assert.ok(actionSpy.args[0][0].includes('12345'));
+    // make sure that is navigating to investigate navigate
+    assert.ok(actionSpy.args[0][0].includes('/navigate/query'));
     actionSpy.resetHistory();
     actionSpy.restore();
   });

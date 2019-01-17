@@ -3,7 +3,7 @@ import computed from 'ember-computed-decorators';
 import layout from './template';
 import { inject as service } from '@ember/service';
 
-import { navigateToInvestigateEventsAnalysis } from 'investigate-shared/utils/pivot-util';
+import { navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
 
 export default Component.extend({
   layout,
@@ -54,7 +54,7 @@ export default Component.extend({
         } = this.getProperties('metaName', 'metaValue', 'itemList', 'timeRange');
 
         const { zoneId } = this.get('timezone.selected');
-        navigateToInvestigateEventsAnalysis({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId);
+        navigateToInvestigateNavigate({ metaName, metaValue, itemList }, serviceId, timeRange, zoneId);
       } else {
         this.set('showServiceModal', true);
       }
