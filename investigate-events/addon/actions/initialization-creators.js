@@ -1,5 +1,6 @@
 import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
+import { run } from '@ember/runloop';
 
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
@@ -364,7 +365,9 @@ export const initializeInvestigate = function(
       // 2 conditions where we have to callback this without params fn.
       // a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
       // b) When parsedQueryParams neither has hash or pill data(mf)
-      hashNavigateCallback();
+      run.next(() => {
+        hashNavigateCallback();
+      });
     }
 
     // 8) Initialize the querying state so we can get going
