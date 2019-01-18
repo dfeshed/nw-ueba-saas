@@ -295,6 +295,18 @@ Each API request takes a `streamOptions` object.
 ### Parameters
 * `requireRequestId`, `Boolean`, optional
   * Defaults to `true`
+* `dedicatedSocketName`, `String`, optional
+  * Defaults to `undefined`
+  * -- Use with caution --
+    * This is not to be used unless a very good reason is apparent.
+  * Normally all requests share a socket connection on a per route basis
+  * Sometimes you may want a request to have its own socket to communicate on and not have to share with other requests at that route. There are several reasons.
+    * You may not want large responses that queue up and take awhile to batch to tie up other requests from using the socket.
+    * You may not want multiple large requets competing for a single socket buffer. Two sockets = two buffers.
+  * When a `dedicatedSocketName` is provided a socket connection is open and tied to that name. Every subsequent use that uses the same name will leverage that dedicated socket.
+    * If at any point the dedicated socket is closed, another will be opened if it is requested again.
+    * Dedicated sockets will otherwise behave like any other
+  * Be sure if using a `dedicatedSocketName` that you pair it with a call to `disconnectNamed` so that the socket can be cleaned up when it is no longer needed.
 * `keepAliveOnRouteChange`, `Boolean`, optional
   * Defaults to `false`
   * When set to `false`, will keep track of stream and clean up on route changes.
@@ -322,4 +334,4 @@ Each API request takes a `streamOptions` object.
 
 Run tests like any other Ember project (`ember test`), but first...
 
-* `node tests/server/server.js` to run mock server
+* `node mockserver.js` to run mock server

@@ -484,7 +484,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         streamLimit,
         streamBatch,
         handlers,
-        currentStreamState.flattenedColumnList
+        currentStreamState.flattenedColumnList,
+        'investigate-events-event-stream'
       );
 
       // Count calls are only accurate if the time range is rounded
@@ -664,7 +665,8 @@ export const eventsStartOldest = () => {
       streamLimit,
       streamBatch,
       handlers,
-      currentStreamState.flattenedColumnList
+      currentStreamState.flattenedColumnList,
+      'investigate-events-event-stream'
     );
   };
 };

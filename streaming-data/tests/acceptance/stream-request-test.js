@@ -217,4 +217,35 @@ module('Acceptance | Request | streamRequest', function(hooks) {
     });
   });
 
+  test('a named socket can be created and closed', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+    let doneScheduled = false;
+
+    await visit('/');
+    const request = this.owner.lookup('service:request');
+
+    request.streamRequest({
+      method: 'stream/_13',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        dedicatedSocketName: 'foobarbaz'
+      },
+      onResponse() {
+        assert.ok(true, 'received a response, but there should only be one');
+
+        // killing the socket should result in no more response callbacks
+        // and only one assert called
+        request.disconnectNamed('foobarbaz');
+
+        // end test later, don't want any more asserts to come in
+        if (!doneScheduled) {
+          doneScheduled = true;
+          later(done, 3000);
+        }
+      }
+    });
+  });
+
 });

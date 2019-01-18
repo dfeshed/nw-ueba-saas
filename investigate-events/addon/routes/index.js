@@ -25,6 +25,8 @@ let timerId;
 export default Route.extend({
   contextualHelp: service(),
   redux: service(),
+  request: service(),
+
 
   /**
    * The `queryParams` property controls how changes to query params in the URL
@@ -66,6 +68,7 @@ export default Route.extend({
   },
 
   deactivate() {
+    this.get('request').disconnectNamed('investigate-events-event-stream');
     this.set('contextualHelp.module', null);
     this.set('contextualHelp.topic', null);
     // terminate the continous polling of summary

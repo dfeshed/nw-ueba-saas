@@ -11,6 +11,10 @@ import config from 'ember-get-config';
 import { warn } from '@ember/debug';
 
 import { buildBaseUrl } from '../utils/util';
+
+const DEDICATED_SOCKET_SEP = '|||dedicated|||';
+
+
 /**
  * Hash of requested socket server clients. The hash keys are socket URLs. The hash values
  * are arrays, where each array item is an instance of Client class (imported).
@@ -32,22 +36,28 @@ const _clients = {};
  * and disconnect.
  * @public
  */
-function connect(url, headers) {
-  let client = _clients[url];
+function connect(url, headers, dedicatedSocketName) {
+  let fullUrlName = url;
+  if (dedicatedSocketName) {
+    fullUrlName = `${url}${DEDICATED_SOCKET_SEP}${dedicatedSocketName}`;
+  }
+
+  let client = _clients[fullUrlName];
   const hasStomp = client && client.stompClient;
   const hasStompConnection = hasStomp && client.stompClient.connected;
   const awaitsStompConnection = hasStomp && client.get('isConnecting');
 
   if (!hasStompConnection && !awaitsStompConnection) {
     client = Client.create({ url, headers });
-    _clients[url] = client;
+    _clients[fullUrlName] = client;
   }
   return client.get('promise');
 }
 
 /**
  * Requests a disconnect from a given socket server URL.
- * Looks for all clients to the given URL. If found, calls each of their .disconnect() method; otherwise, exits successfully.
+ * Looks for a clients for the given URL. If found, calls its
+ * .disconnect() method; otherwise, exits successfully.
  * @param url
  * @returns {Promise} A promise that resolves with the disconnected clients after disconnecting successfully.
  * @public
@@ -71,6 +81,20 @@ function disconnectAll() {
 }
 
 /**
+ * Requests a disconnect for a named socket url
+ * @public
+ */
+function disconnectNamed(name) {
+  const foundUrl = Object.keys(_clients).find((clientUrl) => {
+    return clientUrl.indexOf(`${DEDICATED_SOCKET_SEP}${name}`) > 0;
+  });
+
+  if (foundUrl) {
+    disconnect(foundUrl);
+  }
+}
+
+/**
  * Creates a stream from a given socket query whose response may arrive across multiple socket messages.
  * Returns a Stream instance which can then be started and subscribed to.
  *
@@ -87,7 +111,7 @@ function createStream(method, modelName, query, streamOptions = {}) {
     ...streamOptions,
     socketConfig: cfg,
     socketRequestParams: query,
-    fetchSocketClient: () => connect(cfg.socketUrl)
+    fetchSocketClient: () => connect(cfg.socketUrl, undefined, streamOptions.dedicatedSocketName)
   };
   return Stream.create(allStreamOptions);
 }
@@ -133,6 +157,7 @@ export default {
   connect,
   disconnect,
   disconnectAll,
+  disconnectNamed,
   createStream,
   _findSocketConfig // exported for testing purposes
 };

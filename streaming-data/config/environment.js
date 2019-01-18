@@ -105,6 +105,10 @@ module.exports = function(environment) {
           requestDestination: '/test/request/stream/_12',
           cancelDestination: '/test/request/stream/_12'
         },
+        'stream/_13': {
+          subscriptionDestination: '/test/subscription/stream/_13',
+          requestDestination: '/test/request/stream/_13'
+        },
         'paged-stream/_1': {
           subscriptionDestination: '/test/subscription/paged-stream/_1',
           requestDestination: '/test/request/paged-stream/_1'

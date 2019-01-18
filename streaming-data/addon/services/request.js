@@ -129,6 +129,13 @@ export default Service.extend({
    */
   disconnectAll() {
     Socket.disconnectAll();
+  },
+
+  /*
+   * Disconnects a dedicated socket by that sockets name
+   */
+  disconnectNamed(name) {
+    Socket.disconnectNamed(name);
   }
 
 });

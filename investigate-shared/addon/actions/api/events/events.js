@@ -18,7 +18,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function(queryNode, language, limit, batch, handlers, desiredMetas) {
+export default function(queryNode, language, limit, batch, handlers, desiredMetas, dedicatedSocketName) {
   // conditions is legacy
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const query = {
@@ -37,10 +37,16 @@ export default function(queryNode, language, limit, batch, handlers, desiredMeta
     });
   }
 
+  const streamOptions = {};
+  if (dedicatedSocketName) {
+    streamOptions.dedicatedSocketName = dedicatedSocketName;
+  }
+
   return streamingRequest(
     'core-event',
     query,
-    handlers
+    handlers,
+    streamOptions
   );
 }
 
