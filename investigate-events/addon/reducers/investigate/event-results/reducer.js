@@ -4,6 +4,7 @@ import _ from 'lodash';
 import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import { RESULT_SET_START, SORT_ORDER } from './selectors';
 
 export const MAX_EVENTS_ALLOWED = 100000;
 
@@ -69,7 +70,7 @@ export default handleActions({
     // Merge the data into the current state data and perform a sort
     // Have to sort it all as data can come in out of order.
     let sortKey = 'desc';
-    if (state.eventTimeSortOrder === 'Ascending') {
+    if (state.eventTimeSortOrder === SORT_ORDER.ASC) {
       sortKey = 'asc';
     }
     let newEvents = state.data.asMutable().concat(payload);
@@ -84,7 +85,22 @@ export default handleActions({
         // eslint-disable-next-line no-console
         console.log(`Truncating ${newEvents.length} results down to ${state.streamLimit}`);
       }
-      newEvents.length = state.streamLimit;
+
+      // If we have newest data and it is sorted oldest first
+      // then we want to truncate the first items not the last
+      // Example 110k records, oldest records first, the newest
+      // 100k items are items 10k-110k
+      // If it is oldest data, then we are not truncating as we
+      // get the events we want.
+      if (state.eventResultSetStart === RESULT_SET_START.NEWEST &&
+          state.eventTimeSortOrder === SORT_ORDER.ASC) {
+        // remove from the beginning
+        newEvents.splice(0, newEvents.length - state.streamLimit);
+      } else {
+        // just truncate the end
+        newEvents.length = state.streamLimit;
+      }
+
     }
 
     const newState = state.set('data', Immutable.from(newEvents));

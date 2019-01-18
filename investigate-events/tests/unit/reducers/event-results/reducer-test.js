@@ -147,6 +147,26 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', funct
   assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
 });
 
+test('ACTION_TYPES.SET_EVENTS_PAGE will truncate the right side of the results', function(assert) {
+  const initialState = Immutable.from({
+    data: [],
+    streamLimit: 2,
+    eventTimeSortOrder: 'Ascending',
+    eventResultSetStart: 'Newest'
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE,
+    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 9999, sessionId: 6 }, { timeAsNumber: 7777, sessionId: 7 }]
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.data.length, 2, 'Two events left after truncation');
+
+  // the oldest data was the truncated data
+  assert.equal(result.data[0].timeAsNumber, 7777, 'sorted ascending');
+  assert.equal(result.data[1].timeAsNumber, 9999, 'sorted ascending');
+});
+
 test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
   const initialState = Immutable.from({
     eventTimeSortOrder: 'Ascending',
