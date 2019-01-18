@@ -32,8 +32,8 @@ const toggleCertificateView = () => {
     const { files: { filter } } = getState();
     const { files: { fileList: { selectedFileList } } } = getState();
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
-    if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
-      const savedFilter = { id: -1, criteria: { expressionList: filter.expressionList } };
+    if (!filter.selectedFilter || filter.selectedFilter.id === 1) {
+      const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
     }
     dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
@@ -44,7 +44,7 @@ const toggleCertificateView = () => {
         // Allowing max 10 files selection to apply certificates filter.
         if (selectedFileList.length <= 10) {
           const expressionList = _expressionListForThumbprint(selectedFileList);
-          const savedCertificateFilter = { id: -1, criteria: { expressionList } };
+          const savedCertificateFilter = { id: 1, criteria: { expressionList } };
           dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedCertificateFilter, meta: { belongsTo: 'CERTIFICATE' } });
           dispatch({ type: SHARED_ACTION_TYPES.APPLY_FILTER, payload: expressionList, meta: { belongsTo: 'CERTIFICATE' } });
           dispatch(getFirstPageOfCertificates());
