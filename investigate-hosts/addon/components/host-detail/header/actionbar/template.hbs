@@ -18,7 +18,7 @@
   <div class="action-button">
     {{host-scan/scan-command
       modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
-      command='START_SCAN'}}
+      command='START_SCAN' title=actionsDisableMessage}}
   </div>
   <div class="action-button">
     {{#if isJsonExportCompleted}}

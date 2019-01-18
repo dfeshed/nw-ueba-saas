@@ -22,6 +22,8 @@ export default Component.extend({
 
   agentIds: null,
 
+  title: null,
+
   actions: {
 
     handleInitiateScan() {

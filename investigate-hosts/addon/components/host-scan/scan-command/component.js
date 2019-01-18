@@ -6,13 +6,15 @@ import {
   isScanStartButtonDisabled,
   warningMessages,
   scanCount,
-  extractAgentIds } from 'investigate-hosts/reducers/hosts/selectors';
+  extractAgentIds,
+  actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 const stateToComputed = (state) => ({
   warningMessages: warningMessages(state),
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   agentIds: extractAgentIds(state),
-  scanCount: scanCount(state)
+  scanCount: scanCount(state),
+  actionsDisableMessage: actionsDisableMessage(state)
 });
 const ScanCommand = Component.extend({
   tagName: '',

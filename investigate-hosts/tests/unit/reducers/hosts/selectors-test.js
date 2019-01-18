@@ -17,7 +17,8 @@ import {
   hostListPropertyTabs,
   hostTotalLabel,
   nextLoadCount,
-  isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
+  isInsightsAgent,
+  actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -625,4 +626,46 @@ test('isInsightsAgent when focused agent is undefined in current state', functio
   });
   const result = isInsightsAgent(state);
   assert.equal(result, false, 'default value as false should return');
+});
+
+test('actionsDisableMessage', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: []
+      }
+    }
+  });
+  const result1 = actionsDisableMessage(state1);
+  assert.equal(result1, 'Action disabled - No host is selected.');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: new Array(120)
+      }
+    }
+  });
+  const result2 = actionsDisableMessage(state2);
+  assert.equal(result2, 'Action disabled - More than 100 hosts are selected.');
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{ id: '1', version: '4.4', managed: true }]
+      }
+    }
+  });
+  const result3 = actionsDisableMessage(state3);
+  assert.equal(result3, 'Action disabled - 4.4 agent(s) selected.');
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{ id: '1', version: '4.5', managed: false }]
+      }
+    }
+  });
+  const result4 = actionsDisableMessage(state4);
+  assert.equal(result4, 'Action disabled - Selected host(s) not managed by the current server');
 });

@@ -245,3 +245,18 @@ export const isInsightsAgent = createSelector(
     return false;
   }
 );
+
+export const actionsDisableMessage = createSelector(
+  [noHostsSelected, tooManyHostsSelected, allAreEcatAgents, _allAreMigratedHosts],
+  (noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
+    if (noHostsSelected) {
+      return 'Action disabled - No host is selected.';
+    } else if (tooManyHostsSelected) {
+      return 'Action disabled - More than 100 hosts are selected.';
+    } else if (allAreEcatAgents) {
+      return 'Action disabled - 4.4 agent(s) selected.';
+    } else if (allAreMigratedHosts) {
+      return 'Action disabled - Selected host(s) not managed by the current server';
+    }
+  }
+);

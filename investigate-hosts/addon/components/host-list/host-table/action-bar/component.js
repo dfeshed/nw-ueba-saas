@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import { noHostsSelected, isScanStartButtonDisabled } from 'investigate-hosts/reducers/hosts/selectors';
+import { noHostsSelected, isScanStartButtonDisabled, actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 import { deleteHosts, getPageOfMachines, changeEndpointServerSelection } from 'investigate-hosts/actions/data-creators/host';
@@ -15,7 +15,8 @@ const stateToComputed = (state) => ({
   selectedHostList: state.endpoint.machines.selectedHostList,
   serverId: state.endpointQuery.serverId,
   servers: state.endpointServer,
-  selections: state.endpoint.machines.selectedHostList || []
+  selections: state.endpoint.machines.selectedHostList || [],
+  actionsDisableMessage: actionsDisableMessage(state)
 });
 const noop = () => {};
 
