@@ -117,8 +117,9 @@ export const getFlattenedColumnList = createSelector(
     if (columns) {
       columns = columns.map(({ field }) => field);
       // always need sessionid, also always need nwe.callback_id
-      // because it determines if a row is for endpoint
-      columns = [...columns, 'sessionid', 'nwe.callback_id'];
+      // because it determines if a row is for endpoint. Medium
+      // tells us if it is log/network
+      columns = [...columns, 'sessionid', 'nwe.callback_id', 'medium'];
 
       // If we don't have a meta-summary column we are done
       const hasMetaSummaryColumn = columns.some((field) => {

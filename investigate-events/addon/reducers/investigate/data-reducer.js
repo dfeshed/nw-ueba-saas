@@ -63,9 +63,10 @@ export default handleActions({
           // Want to fix certain sizes to certain columns if those
           // columns exist
           columnGroups.forEach((cg) => {
+            // meta-summary goes by a few names
             _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 1000 });
             _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 1000 });
-            _.merge(_.find(cg.columns, { field: 'time' }), { width: 130 });
+            _.merge(_.find(cg.columns, { field: 'time' }), { width: 135 });
           });
 
           return s.merge({ columnGroups });

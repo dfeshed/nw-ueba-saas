@@ -195,6 +195,7 @@ test('flattened list should include fields inside meta-summary and fields always
   });
   const columns = getFlattenedColumnList(state);
 
+  assert.ok(columns.includes('medium'), 'must always include medium');
   assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
@@ -238,6 +239,7 @@ test('flattened list should include fields inside metasummary and fields always 
   });
   const columns = getFlattenedColumnList(state);
 
+  assert.ok(columns.includes('medium'), 'must always include medium');
   assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
