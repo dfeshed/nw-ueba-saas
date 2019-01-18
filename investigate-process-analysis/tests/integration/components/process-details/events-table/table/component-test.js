@@ -85,6 +85,7 @@ module('Integration | Component | process-details/events-table/table', function(
 
     await render(hbs`{{process-details/events-table/table}}`);
     assert.equal(findAll('.title-header').length, 1, 'Header section exists');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 12, 'Move handler exist for all the columns');
   });
 
   test('clicking the header button will call the external action', async function(assert) {

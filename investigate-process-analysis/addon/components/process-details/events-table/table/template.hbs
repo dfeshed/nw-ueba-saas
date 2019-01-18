@@ -15,7 +15,9 @@
 
   lazy=true}}
   {{#rsa-data-table/header enableColumnSelector=true as |column|}}
-    {{column.title}} 
+    <span class='js-move-handle'>
+      {{column.title}}
+    </span>
     {{#if column.enableSort}}
       {{rsa-icon
         click=(action 'sort' column)
