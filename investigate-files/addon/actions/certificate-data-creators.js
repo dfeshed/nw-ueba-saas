@@ -16,11 +16,16 @@ const _expressionListForThumbprint = (selectedFileList) => {
       }
     }
   }).compact();
-  return [{
-    propertyName: 'thumbprint',
-    propertyValues: _.uniqBy(certificateValues, 'value'),
-    restrictionType: 'IN'
-  }];
+
+  if (certificateValues.length) {
+    return [{
+      propertyName: 'thumbprint',
+      propertyValues: _.uniqBy(certificateValues, 'value'),
+      restrictionType: 'IN'
+    }];
+  }
+  return [];
+
 };
 const toggleCertificateView = () => {
   return (dispatch, getState) => {
