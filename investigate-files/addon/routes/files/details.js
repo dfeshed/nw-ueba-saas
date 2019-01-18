@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializerForFileDetailsAndAnalysis } from 'investigate-files/actions/data-creators';
-import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import { next } from '@ember/runloop';
 
 export default Route.extend({
@@ -55,7 +54,6 @@ export default Route.extend({
 
   actions: {
     switchToSelectedFileDetailsTab(tabName, fileFormat) {
-      this.get('redux').dispatch(setNewFileTab(tabName));
       this.transitionTo({
         queryParams: {
           tabName,

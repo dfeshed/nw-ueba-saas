@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
 import { handle } from 'redux-pack';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import * as ACTION_TYPES from 'investigate-files/actions/types';
 
 const initialState = Immutable.from({
   fileData: null,
@@ -29,7 +30,9 @@ const fileAnalyzerReducer = handleActions({
         return s.set('filePropertiesData', action.payload.data);
       }
     });
-  }
+  },
+
+  [ACTION_TYPES.RESET_INPUT_DATA]: (state) => state.merge(initialState)
 
 }, initialState);
 

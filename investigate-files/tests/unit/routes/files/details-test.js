@@ -9,7 +9,6 @@ import FileCreators from 'investigate-files/actions/data-creators';
 import sinon from 'sinon';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-import VisualCreators from 'investigate-files/actions/visual-creators';
 
 let transition, redux;
 
@@ -55,16 +54,13 @@ module('Unit | Route | files.index', function(hooks) {
   });
 
   test('switchToSelectedFileDetailsTab action executed correctly', async function(assert) {
-    assert.expect(2);
-
-    const mock = sinon.stub(VisualCreators, 'setNewFileTab');
+    assert.expect(1);
 
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
 
     await settled();
     await route.send('switchToSelectedFileDetailsTab', 'details', 'text');
-    assert.ok(mock.callCount === 1, 'bootstrapInvestigateFiles method is called');
     assert.ok(transition, 'details');
   });
 

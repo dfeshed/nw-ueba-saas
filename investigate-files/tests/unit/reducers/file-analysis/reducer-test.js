@@ -1,7 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-files/reducers/file-analysis/reducer';
-import * as ACTION_TYPES from 'investigate-shared/actions/types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import * as ACTION_TYPES from 'investigate-files/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 
@@ -26,7 +27,7 @@ module('Unit | Reducers | File Analysis', function() {
     });
 
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA,
+      type: SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_FILE_PROPERTIES_DATA,
       payload: {
         data: { format: 'macho' }
       }
@@ -43,7 +44,7 @@ module('Unit | Reducers | File Analysis', function() {
       'isFileAnalysisView': false
     });
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
+      type: SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_DATA,
       payload: {
         data: { name: 'test data' }
       }
@@ -51,6 +52,17 @@ module('Unit | Reducers | File Analysis', function() {
     const result = reducer(previous, action);
 
     assert.equal(result.fileData.name, 'test data', 'updated with the new file data');
+  });
+
+  test('RESET_INPUT_DATA resets the filedata', function(assert) {
+    const previous = Immutable.from({
+      'fileData': { name: 'test data' },
+      'filePropertiesData': { name: 'test data' },
+      'fileDataLoadingStatus': true
+    });
+    const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.RESET_INPUT_DATA });
+    const result = reducer(previous, action);
+    assert.deepEqual(result, initialState);
   });
 
 });
