@@ -7,6 +7,7 @@ import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import { parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/actions/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchInvestigateData, getServiceSummary } from './data-creators';
+import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 import { fetchServices } from 'investigate-shared/actions/api/services';
@@ -319,6 +320,7 @@ export const initializeInvestigate = function(
     //    this be syncronized with anything else, so can just
     //    kick it off
     dispatch(_getColumnGroups());
+    dispatch(isQueryExecutedByColumnGroup(false));
 
     // 3) Get all the user's preferences
     // 4) Get all the services available to the user. We have

@@ -48,7 +48,11 @@
     {{!-- still streaming, show loader --}}
     {{#if areEventsStreaming}}
       <div class='events-table-footer-status'>
-        {{rsa-loader size="large" label=(t 'investigate.loading')}}
+        {{#if isQueryExecutedByColumnGroup}}
+          {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
+        {{else}}
+          {{rsa-loader size="large" label=(t 'investigate.loading')}}
+        {{/if}}
       </div>
     {{else if (is-equal status 'complete')}}
       {{#if (not allExpectedDataLoaded)}}

@@ -187,7 +187,8 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   test('setColumnGroup - changing columms triggers off fetchInvestigateData which loads events according to the requested columns - OldestEvents', async function(assert) {
     const done = assert.async();
-    let count = 0;
+    let fetchInvestigateDispatchCount = 0;
+    let columngrpDispatchCount = 0;
     const getState = () => {
       return new ReduxDataHelper()
         .isQueryRunning(queryIsRunning)
@@ -212,21 +213,24 @@ module('Unit | Actions | interaction creators', function(hooks) {
     const setColumnDispatch = (action) => {
       if (typeof action === 'function') {
         action(fetchDispatch, getState);
-      } else {
+      } else if (columngrpDispatchCount === 0) {
         assert.equal(action.type, ACTION_TYPES.SET_SELECTED_COLUMN_GROUP, 'sent out action to change column groups');
+        columngrpDispatchCount++;
+      } else {
+        assert.equal(action.type, ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG, 'change flag to represent query executed by column groups');
       }
     };
 
     const fetchDispatch = (action) => {
-      if ((count === 2) && typeof action === 'function') {
+      if ((fetchInvestigateDispatchCount === 4) && typeof action === 'function') {
         action(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
       } else {
-        count++;
+        fetchInvestigateDispatchCount++;
       }
     };
 
     const asserts = () => {
-      assert.equal(allActionsDispatched.length, 6, 'total actions dispatched');
+      assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
       assert.equal(queryResults.length, 500, 'total results accumulated');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');

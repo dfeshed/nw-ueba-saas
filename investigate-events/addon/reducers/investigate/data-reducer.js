@@ -22,7 +22,8 @@ const _initialState = Immutable.from({
   eventsPreferencesConfig: CONFIG,
   eventAnalysisPreferences: null,
   columnGroups: null,
-  columnGroup: null // null avoids rendering the events table before fetching the persisted column group from backend
+  columnGroup: null, // null avoids rendering the events table before fetching the persisted column group from backend,
+  isQueryExecutedByColumnGroup: false
 });
 
 export default handleActions({
@@ -106,5 +107,9 @@ export default handleActions({
 
   [ACTION_TYPES.SET_SELECTED_COLUMN_GROUP]: (state, { payload }) => {
     return state.set('columnGroup', payload);
+  },
+
+  [ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG]: (state, { payload }) => {
+    return state.set('isQueryExecutedByColumnGroup', payload);
   }
 }, _initialState);

@@ -441,6 +441,11 @@ export default class DataHelper {
     return this;
   }
 
+  isQueryExecutedByColumnGroup(flag = true) {
+    _set(this.state, 'data.isQueryExecutedByColumnGroup', flag);
+    return this;
+  }
+
   withPreviousQuery(
     metaFilter = DEFAULT_PILLS_DATA,
     serviceId = '123',

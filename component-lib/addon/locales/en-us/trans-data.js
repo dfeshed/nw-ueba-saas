@@ -459,6 +459,7 @@ export default {
     },
     title: 'Investigate',
     loading: 'Loading',
+    reExecutingQuery: 'Query is being re-executed to fetch different columns',
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
     notAllLoaded: '{{maxEvents}} event maximum displayed, remaining results not loaded',
@@ -2040,7 +2041,7 @@ export default {
       'eventTimeSortOrder-tooltip': 'Select to sort results in descending or ascending order based on collection time.',
       Descending: 'Newest First',
       Ascending: 'Oldest First',
-      eventResultSetStart: 'Over Limit Results Time Window',
+      eventResultSetStart: 'Portion of Results to Retrieve',
       'eventResultSetStart-tooltip': 'If the limit for results is reached for a query, you will not see all results. If the limit is reached, you can choose to see the oldest or newest events within the selected time range.',
       Newest: 'Newest Events',
       Oldest: 'Oldest Events'

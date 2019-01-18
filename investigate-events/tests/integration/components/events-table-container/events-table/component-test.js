@@ -82,13 +82,24 @@ module('Integration | Component | events-table', function(hooks) {
     this.$('.rsa-data-table-header').contextmenu();
   });
 
-  test('if events are streaming, a spinner is displayed', async function(assert) {
+  test('if events are streaming, a spinner is displayed with appropriate message', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('between-streams')
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.ok(find('.rsa-loader'), 'spinner present');
+    assert.equal(find('.rsa-loader').textContent.trim(), 'Loading', 'Displays the correct message on the spinner');
+  });
+
+  test('if events are streaming and the query was re-executed by changing column group, a spinner is displayed with following message', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isQueryExecutedByColumnGroup()
+      .eventResultsStatus('between-streams')
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.equal(find('.rsa-loader').textContent.trim(), 'Query is being re-executed to fetch different columns', 'Displaying the correct message');
   });
 
   test('if events are complete, but hit the limit, a message is displayed', async function(assert) {

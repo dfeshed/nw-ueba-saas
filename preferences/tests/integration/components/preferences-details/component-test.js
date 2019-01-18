@@ -166,7 +166,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.notOk(find('.rsa-form-radio-label.Ascending.checked'));
   });
 
-  test('Preferences panel should change Over Limit Event Results Settings on click', async function(assert) {
+  test('Preferences panel should change Portion of Results to Retrieve Settings on click', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.ok(find('.rsa-form-radio-label.Oldest.checked'));
     assert.notOk(find('.rsa-form-radio-label.Newest.checked'));

@@ -136,3 +136,24 @@ test('SET_PREFERENCES when columnGroup is not present in the payload and current
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.columnGroup, 'SOME_GROUP');
 });
+
+test('SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG should set isQueryExecutedByColumnGroup flag', function(assert) {
+  const previous = Immutable.from({
+    isQueryExecutedByColumnGroup: false
+  });
+
+  let action = {
+    type: ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG,
+    payload: true
+  };
+  let newEndState = reducer(previous, action);
+  assert.ok(newEndState.isQueryExecutedByColumnGroup, 'Contains the correct flag');
+
+  action = {
+    type: ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG,
+    payload: false
+  };
+  newEndState = reducer(previous, action);
+  assert.notOk(newEndState.isQueryExecutedByColumnGroup, 'Contains the correct flag');
+
+});

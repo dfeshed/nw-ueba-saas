@@ -16,15 +16,26 @@ import {
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
-export const cancelQuery = () => {
+/**
+ *
+ * @param {boolean} dispatchStatus
+ * In some cases -- when the user is doing something other than cancelling the query,
+ * we want to programmatically stop all querying without setting a cancel status.
+ * For instance, when we want to restart a new query and before that want to make
+ * sure the previous query is stopped, we pass in dispatchStatus = false.
+ * @public
+ */
+export const cancelQuery = (dispatchStatus = true) => {
   return (dispatch) => {
     cancelEventCountStream();
     cancelEventsStream();
     dispatch(queryIsRunning(false));
-    dispatch({
-      type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-      payload: 'canceled'
-    });
+    if (dispatchStatus) {
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+        payload: 'canceled'
+      });
+    }
   };
 };
 
@@ -187,9 +198,17 @@ export const setColumnGroup = (selectedGroup) => {
     // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
     const prefService = lookup('service:preferences');
     prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState()), getDefaultPreferences(getState()));
+    dispatch(cancelQuery(false));
+    dispatch(setReconClosed());
+    dispatch(isQueryExecutedByColumnGroup(true));
     dispatch(fetchInvestigateData());
   };
 };
+
+export const isQueryExecutedByColumnGroup = (flag) => ({
+  type: ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG,
+  payload: flag
+});
 
 /**
  * Toggles visibility of the query console

@@ -34,7 +34,8 @@ const stateToComputed = (state) => ({
   endTime: state.investigate.queryNode.endTime,
   queryConditions: state.investigate.queryNode.metaFilter,
   metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
-  isCanceled: isCanceled(state)
+  isCanceled: isCanceled(state),
+  isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup
 });
 
 const dispatchToActions = {
