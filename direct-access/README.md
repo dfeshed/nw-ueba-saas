@@ -48,6 +48,8 @@
   - [ ] cards should be fixed width (maybe not?)
   - [ ] car property names/values wrap and flow into property immediately below, add clipping & '...'
   - [ ] monitor mixin pulls 10 minutes of data when anything over 6 *should* be sufficient
+  - [ ] allow gaps in graphs where no values exist (e.g. capture not running)
+  - [ ] show errors for action failures using notifications.js (standard errors SAStyle example not working)
 
 ## Introduction
 `direct-access` is an Ember app which serves as a web interface for the core devices.

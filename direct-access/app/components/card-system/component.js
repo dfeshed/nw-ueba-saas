@@ -58,6 +58,12 @@ export default Component.extend(MonitorMixin, {
         return durationStr;
       }
     }
-  ]
+  ],
 
+  actions: {
+    shutdown() {
+      const transport = this.get('transport');
+      return transport.send('/sys', { message: 'shutdown' });
+    }
+  }
 });

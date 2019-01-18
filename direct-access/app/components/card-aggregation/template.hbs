@@ -14,4 +14,27 @@
 {{#dashboard-properties-grid}}
   {{dashboard-property-item propertyName='Meta Rate' propertyValue=valuesAdapter.meta_rate type='numeric'}}
   {{dashboard-property-item propertyName='Status' propertyValue=valuesAdapter.status}}
+  <div class="property-item">
+    {{#if (or (eq valuesAdapter.status 'started') (eq valuesAdapter.status 'stopping'))}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style="danger"
+          title='Confirm Stop Aggregation'
+          confirmationMessage='Are you sure that you want to stop aggregation?'
+          confirmButtonLabel='Yes'
+          isDisabled=(not-eq valuesAdapter.status 'started')
+          cancelButtonLabel='No'
+          onConfirm=(action 'stopAggregation')}}
+          Stop
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+    {{else}}
+      {{#rsa-form-button
+        style='primary'
+        isDisabled=(not-eq valuesAdapter.status 'stopped')
+        defaultAction=(action 'startAggregation')}}
+        Start
+      {{/rsa-form-button}}
+    {{/if}}
+  </div>
 {{/dashboard-properties-grid}}

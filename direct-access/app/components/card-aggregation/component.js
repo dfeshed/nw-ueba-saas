@@ -23,6 +23,16 @@ export default Component.extend(MonitorMixin, {
       name: 'status',
       path: '/concentrator/stats/status'
     }
-  ]
+  ],
 
+  actions: {
+    startAggregation() {
+      const transport = this.get('transport');
+      return transport.send('/concentrator', { message: 'start' });
+    },
+    stopAggregation() {
+      const transport = this.get('transport');
+      return transport.send('/concentrator', { message: 'stop' });
+    }
+  }
 });

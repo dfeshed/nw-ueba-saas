@@ -36,6 +36,16 @@ export default Component.extend(MonitorMixin, {
       path: '/decoder/stats/time.capture',
       displayFunction: parseTimeCapture
     }
-  ]
+  ],
 
+  actions: {
+    startCapture() {
+      const transport = this.get('transport');
+      return transport.send('/decoder', { message: 'start' });
+    },
+    stopCapture() {
+      const transport = this.get('transport');
+      return transport.send('/decoder', { message: 'stop' });
+    }
+  }
 });

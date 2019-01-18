@@ -17,4 +17,27 @@
   {{dashboard-property-item propertyName='Capture Status' propertyValue=valuesAdapter.capture_status}}
   {{dashboard-property-item propertyName='Capture Started' propertyValue=valuesAdapter.time_capture.started}}
   {{dashboard-property-item propertyName='Capture Duration' propertyValue=valuesAdapter.time_capture.duration}}
+  <div class="property-item">
+    {{#if (or (eq valuesAdapter.capture_status 'started') (eq valuesAdapter.capture_status 'stopping'))}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style="danger"
+          title='Confirm Stop Capture'
+          confirmationMessage='Are you sure that you want to stop capture?'
+          confirmButtonLabel='Yes'
+          isDisabled=(not-eq valuesAdapter.capture_status 'started')
+          cancelButtonLabel='No'
+          onConfirm=(action 'stopCapture')}}
+          Stop
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+    {{else}}
+      {{#rsa-form-button
+        style='primary'
+        isDisabled=(not-eq valuesAdapter.capture_status 'stopped')
+        defaultAction=(action 'startCapture')}}
+        Start
+      {{/rsa-form-button}}
+    {{/if}}
+  </div>
 {{/dashboard-properties-grid}}
