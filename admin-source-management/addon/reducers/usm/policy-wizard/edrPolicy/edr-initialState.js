@@ -25,8 +25,8 @@ export default {
     recurrenceUnit: null, // 'DAYS' | 'WEEKS'
     runOnDaysOfWeek: null, // array containing day name (names eventually) ex. ['MONDAY']
     // scanOptions
-    cpuMax: null, // 75
-    cpuMaxVm: null, // 85
+    cpuMax: null, // 10
+    cpuMaxVm: null, // 25
     // captureFloatingCode: null, // true or false
     scanMbr: null, // true or false
     // filterSignedHooks: null, // true or false
@@ -53,8 +53,8 @@ export default {
     { index: 2, id: 'scanStartDate', label: 'adminUsm.policyWizard.edrPolicy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
     { index: 3, id: 'recurrenceInterval', label: 'adminUsm.policyWizard.edrPolicy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
     { index: 4, id: 'scanStartTime', label: 'adminUsm.policyWizard.edrPolicy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/start-time', defaults: [{ field: 'scanStartTime', value: '09:00' }] },
-    { index: 5, id: 'cpuMax', label: 'adminUsm.policyWizard.edrPolicy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/cpu-max', defaults: [{ field: 'cpuMax', value: 90 }] },
-    { index: 6, id: 'cpuMaxVm', label: 'adminUsm.policyWizard.edrPolicy.vmMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/vm-max', defaults: [{ field: 'cpuMaxVm', value: 90 }] },
+    { index: 5, id: 'cpuMax', label: 'adminUsm.policyWizard.edrPolicy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/cpu-max', defaults: [{ field: 'cpuMax', value: 10 }] },
+    { index: 6, id: 'cpuMaxVm', label: 'adminUsm.policyWizard.edrPolicy.vmMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/vm-max', defaults: [{ field: 'cpuMaxVm', value: 25 }] },
     { index: 7, id: 'agentSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.agentSettings', isHeader: true, isEnabled: true },
     { index: 8, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'ADVANCED' }] },
     { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.advScanSettings', isHeader: true, isEnabled: true },

@@ -4319,7 +4319,7 @@ export default {
         insights: 'Insights',
         advanced: 'Advanced',
         advancedConfig: 'Advanced Configuration',
-        customConfigSetting: 'Setting',
+        customConfigSetting: 'Advanced Setting',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
 
       },
