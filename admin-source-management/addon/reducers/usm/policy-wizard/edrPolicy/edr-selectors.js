@@ -8,6 +8,7 @@ import {
   ALL_RADIO_OPTIONS,
   isBetween
 } from './edr-settings';
+import { VALID_HOSTNAME_REGEX } from '../../util/selector-helpers';
 
 const { createSelector } = reselect;
 
@@ -235,6 +236,36 @@ export const primaryAddressValidator = (state, selectedSettingId) => {
   };
 };
 
+export const primaryAlias = createSelector(
+  policy,
+  (policy) => policy.primaryAlias
+);
+
+/**
+ * User can optionally enter an alternative IP or hostname when selecting an endpoint server.
+ * Validates a primaryAlias value
+ * returns error if value is invalid
+ * @public
+ */
+export const isPrimaryAliasValid = (state) => {
+  const value = primaryAlias(state);
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+
+  // primary alias cannot be an invalid hostname, it can be blank since it is optional
+  if (!isBlank(value) && !(VALID_HOSTNAME_REGEX.test(value))) {
+    error = true;
+    enableMessage = true;
+    message = 'adminUsm.policyWizard.edrPolicy.primaryAliasInvalid';
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
 /**
  * It returns the port value (primaryHttpsPort or primaryUdpPort) from state based on the selectedSettingId.
  * @public
@@ -398,6 +429,7 @@ export const customConfigValidator = (state, selectedSettingId) => {
 export const edrPolicyValidatorFnMap = {
   'scanStartDate': startDateValidator,
   'primaryAddress': primaryAddressValidator,
+  'primaryAlias': isPrimaryAliasValid,
   'primaryHttpsPort': isPortValid,
   'primaryUdpPort': isPortValid,
   'primaryHttpsBeaconInterval': beaconIntervalValueValidator,

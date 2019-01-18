@@ -7,7 +7,9 @@ import {
 import {
   endpointServersList,
   selectedEndpointSever,
-  primaryAddressValidator
+  primaryAddressValidator,
+  primaryAlias,
+  isPrimaryAliasValid
 } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 
 const stateToComputed = function stateToComputed(state) {
@@ -15,7 +17,9 @@ const stateToComputed = function stateToComputed(state) {
   return {
     endpointsList: endpointServersList(state),
     selectedEndpointSever: selectedEndpointSever(state),
-    primaryAddressValidator: primaryAddressValidator(state, selectedSettingId)
+    primaryAddressValidator: primaryAddressValidator(state, selectedSettingId),
+    primaryAlias: primaryAlias(state),
+    isPrimaryAliasValid: isPrimaryAliasValid(state)
   };
 };
 

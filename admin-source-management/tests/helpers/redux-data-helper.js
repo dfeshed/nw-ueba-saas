@@ -151,6 +151,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPrimaryAlias(primaryAlias) {
+    _set(this.state, 'usm.policyWizard.policy.primaryAlias', primaryAlias);
+    return this;
+  }
+
   policyWizAgentMode(agentMode) {
     _set(this.state, 'usm.policyWizard.policy.agentMode', agentMode);
     return this;

@@ -25,3 +25,18 @@
     {{t primaryAddressValidator.errorMessage}}
   {{/if}}
 </div>
+
+<vbox class="primary-address__alias">
+  <span class="text">
+    {{t 'adminUsm.policyWizard.edrPolicy.primaryAlias'}}
+  </span>
+  <span class="rsa-form-input">
+    {{rsa-form-input
+      class='primary-alias'
+      value=(readonly primaryAlias)
+      isError=isPrimaryAliasValid.showError
+      errorMessage=(t isPrimaryAliasValid.errorMessage)
+      focusOut=(action 'updatePolicyProperty' 'primaryAlias')
+    }}
+  </span>
+</vbox>

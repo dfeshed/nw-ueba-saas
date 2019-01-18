@@ -182,5 +182,6 @@ export {
   isNameInList,
   groupExpressionValidator,
   descriptionsForDisplay,
-  sortBy
+  sortBy,
+  VALID_HOSTNAME_REGEX
 };

@@ -26,6 +26,8 @@ import {
   selectedEndpointSever,
   primaryAddress,
   primaryAddressValidator,
+  primaryAlias,
+  isPrimaryAliasValid,
   beaconIntervalValue,
   beaconIntervalValueValidator,
   beaconIntervalUnits,
@@ -413,6 +415,43 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .build();
     const resultPrimaryAddress = primaryAddress(fullState, 'primaryAddress');
     assert.deepEqual(resultPrimaryAddress, primaryAddressExpected, `should return primary address ${primaryAddressExpected}`);
+  });
+
+  test('primaryAlias', function(assert) {
+    const primaryAliasExpected = 'foo';
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAlias(primaryAliasExpected)
+      .build();
+    const resultPrimaryAlias = primaryAlias(fullState, 'primaryAlias');
+    assert.deepEqual(resultPrimaryAlias, primaryAliasExpected, `should return primary alias ${primaryAliasExpected}`);
+  });
+
+  test('isPrimaryAliasValid selector', function(assert) {
+    // invalid value
+    let aliasValue = '@';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAlias(aliasValue)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.edrPolicy.primaryAliasInvalid'
+    };
+    let validActual = isPrimaryAliasValid(fullState);
+    assert.deepEqual(validActual, validExpected, `should return expected value for '${aliasValue}'`);
+
+    // valid value
+    // alias can be empty since it is optional
+    aliasValue = '';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPrimaryAlias(aliasValue)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = isPrimaryAliasValid(fullState);
+    assert.deepEqual(validActual, validExpected, `should return expected value for emty ${aliasValue}`);
   });
 
   test('primaryAddressValidator selector', function(assert) {
