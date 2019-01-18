@@ -68,7 +68,7 @@ const _splitHash = (expressions) => {
   if (expression) {
     const expressionList = HASH_COLUMNS.map((column) => {
       return {
-        restrictionType: 'IN',
+        restrictionType: expression.restrictionType,
         propertyValues: expression.propertyValues,
         propertyName: column
       };
