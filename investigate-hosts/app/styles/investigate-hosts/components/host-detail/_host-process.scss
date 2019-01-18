@@ -2,25 +2,23 @@
   font-weight: 100;
   color: text-color(primary, lightest);
   background-color: $table-panel-header-color;
+  height: 70px;
   .title {
     padding-left: rsa-whitespace();
   }
   .toggle-icon {
     padding-top: 12px;
     float: right;
-    .tree-icon {
-      font-size: 16px;
-      cursor: pointer;
-      color: text-color(primary);
-      margin: 0 rsa-whitespace();
-      padding: rsa-whitespace(less) rsa-whitespace(less);
-      &.active {
-        @include border-bottom(3px, solid, secondary);
-        color: text-color(primary, lightest);
-      }
-      &:hover {
-        color: text-color(primary);
-      }
+    padding-right: 23px;
+    .toggle-tree-view-label {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-right: 10px;
+      margin-bottom: 24px;
     }
   }
   .process-list-actions {

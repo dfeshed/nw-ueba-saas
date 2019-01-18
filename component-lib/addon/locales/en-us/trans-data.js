@@ -2606,6 +2606,11 @@ export default {
         treeView: 'Switch to Tree view',
         listView: 'Switch to Process view'
       },
+      viewType: {
+        listView: 'List view',
+        treeView: 'Tree view',
+        treeViewTooltip: 'Column sorting unavailable in tree view.'
+      },
       message: {
         noResultsMessage: 'No process information was found.'
       },

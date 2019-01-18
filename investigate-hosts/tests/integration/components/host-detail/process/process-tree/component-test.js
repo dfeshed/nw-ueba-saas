@@ -231,6 +231,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(testTree)
       .machineOSType('windows')
       .selectedTab(null)
+      .isTreeView(true)
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -288,7 +289,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree}}`);
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 7, '77 visible items in datatable');
+      assert.equal(findAll('.rsa-process-tree .rsa-data-table-body-row').length, 7, '7 visible items in datatable');
     });
   });
 
@@ -303,6 +304,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .machineOSType('windows')
       .sortField('name')
+      .isTreeView(true)
       .isDescOrder(true)
       .build();
     await render(hbs`
@@ -358,6 +360,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .machineOSType('windows')
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -384,6 +387,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .machineOSType('windows')
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -410,6 +414,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .machineOSType('windows')
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -542,6 +547,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)
+      .isTreeView(true)
       .processTree(processData.processTree)
       .selectedTab(null).build();
     await render(hbs`
@@ -562,6 +568,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -589,6 +596,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('analyzeFile', function() {
@@ -623,6 +631,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -661,6 +670,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
 
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
@@ -716,6 +726,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
@@ -809,6 +820,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     await render(hbs`
       <style>
@@ -860,6 +872,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('analyzeFile', function() {
@@ -915,6 +928,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
@@ -972,6 +986,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .isTreeView(true)
       .build();
 
     await render(hbs`

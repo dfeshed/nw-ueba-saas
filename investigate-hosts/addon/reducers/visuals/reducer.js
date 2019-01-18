@@ -7,7 +7,7 @@ const visualsInitialState = Immutable.from({
   activeAnomaliesTab: 'IMAGEHOOKS',
   activeHostDetailTab: 'OVERVIEW',
   activePropertyPanelTab: 'HOST_DETAILS',
-  isTreeView: true,
+  isTreeView: false,
   showDeleteHostsModal: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
   isProcessDetailsView: false

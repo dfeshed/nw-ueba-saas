@@ -150,7 +150,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     `);
 
     return settled().then(() => {
-      assert.deepEqual(findAll('.toggle-icon').length, 0, 'no toggle icon');
+      assert.deepEqual(findAll('.x-toggle-btn').length, 0, 'no toggle button');
     });
   });
 
@@ -172,8 +172,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     `);
 
     return settled().then(async() => {
-      assert.equal(findAll('.toggle-icon').length, 1, 'toggle icon');
-      await click('.toggle-icon .rsa-icon');
+      assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button');
+      await click('.x-toggle-btn');
       const state = this.owner.lookup('service:redux').getState();
       const { endpoint: { visuals: { isTreeView } } } = state;
       assert.equal(isTreeView, false, 'It should toggle to list view');
@@ -199,8 +199,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     `);
 
     return settled().then(async() => {
-      assert.equal(findAll('.toggle-icon').length, 1, 'toggle icon');
-      await click('.toggle-icon .rsa-icon');
+      assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button');
+      await click('.x-toggle-btn');
       const state = this.owner.lookup('service:redux').getState();
       const { endpoint: { visuals: { isTreeView } } } = state;
       assert.equal(isTreeView, true, 'It should toggle to tree view');
@@ -220,7 +220,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .build();
     await render(hbs`{{host-detail/process}}`);
     return settled().then(async() => {
-      assert.equal(findAll('.toggle-icon').length, 1, 'toggle icon');
+      assert.equal(findAll('.x-toggle-btn').length, 1, 'toggle button');
       await click(findAll('.rsa-data-table-body-row')[0]);
       assert.equal(document.querySelectorAll('.process-property-box:not([hidden])').length, 1);
 
@@ -232,7 +232,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Risk Details', 'Risk details tab is selected');
       assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
 
-      await click('.toggle-icon .rsa-icon');
+      await click('.x-toggle-btn');
       let state = this.owner.lookup('service:redux').getState();
       const { endpoint: { visuals: { isTreeView } } } = state;
       assert.equal(isTreeView, false, 'It should toggle to list view');

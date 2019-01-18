@@ -7,7 +7,21 @@
           <div class="process-list-header">
             {{#if (not isNavigatedFromExplore)}}
               <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-                {{rsa-icon active=isTreeView title= treeIconTooltip class="tree-icon" name='flow-chart-3' is-filled=true}}
+                <label class="toggle-tree-view-label">{{t 'investigateHosts.process.viewType.listView'}}</label>
+                {{#rsa-content-tethered-panel-trigger panel='toggle-treeview-panel'}}
+                  {{#x-toggle
+                    class='toggle-tree-view'
+                    showLabels=true
+                    onLabel=(t 'investigateHosts.process.viewType.treeView')
+                    value=isTreeView
+                    onToggle=(action 'toggleView') as |toggle|}}
+                    {{toggle.switch}}
+                    {{toggle.onLabel}}
+                  {{/x-toggle}}
+                {{/rsa-content-tethered-panel-trigger}}
+                {{#rsa-content-tethered-panel style="primary" position='top' panelId='toggle-treeview-panel'}}
+                  <section>{{t 'investigateHosts.process.viewType.treeViewTooltip'}}</section>
+                {{/rsa-content-tethered-panel}}
               </span>
             {{/if}}
             <div class="process-list-actions analyze-process-button">
