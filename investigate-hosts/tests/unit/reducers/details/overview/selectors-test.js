@@ -7,13 +7,10 @@ module('Unit | Selectors | overview');
 import {
   machineOsType,
   isJsonExportCompleted,
-  getNetworkInterfaces,
-  getLoggedInUsers,
   getSecurityConfigurations,
   sameConfigStatus,
   arrangedSecurityConfigs,
   isEcatAgent,
-  isMachineLinux,
   downloadLink,
   hostWithStatus,
   isMachineWindows,
@@ -27,28 +24,6 @@ test('machineOsType', function(assert) {
 test('isJsonExportCompleted', function(assert) {
   const result = isJsonExportCompleted(Immutable.from({ endpoint: { overview: { exportJSONStatus: 'completed' } } }));
   assert.equal(result, true);
-});
-
-test('getNetworkInferaces', function(assert) {
-  const result = getNetworkInterfaces(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result.length, 2, 'validIPList length');
-  assert.deepEqual(result[1],
-    {
-      'ipv4': [
-        '10.40.15.187',
-        '10.40.12.7'
-      ],
-      'ipv6': [
-        'fe80::250:56ff:fe01:2bb5',
-        'fe80::250:56ff:fe01:4701'
-      ],
-      'macAddress': '00:50:56:01:2B:B5'
-    });
-});
-
-test('getLoggedInUsers', function(assert) {
-  const result = getLoggedInUsers(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result.length, 2);
 });
 
 test('getSecurityConfigurations', function(assert) {
@@ -189,21 +164,7 @@ test('isEcatAgent, when hostDetails.machineIdentity is null', function(assert) {
 
   assert.deepEqual(result, false);
 });
-// isMachineLinux
-test('isMachineLinux, if the OS of the selected agent is undefined', function(assert) {
-  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: {} } } }));
-  assert.equal(result, false, 'machineOsType of the Selected agent is undefined, vlaue is false');
-});
 
-test('isMachineLinux, if the OS of the selected agent is not Linux', function(assert) {
-  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: { machineIdentity: { machineOsType: 'windows' } } } } }));
-  assert.equal(result, false, 'OS of the Selected agent is not Linux, value is false');
-});
-
-test('isMachineLinux, if the OS of the selected agent Linux', function(assert) {
-  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result, true, 'OS of the Selected agent is Linux, value is true');
-});
 // isMachineWindows
 test('isMachineWindows, if the OS of the selected agent is not Windows', function(assert) {
   const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails } } }));

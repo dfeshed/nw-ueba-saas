@@ -86,37 +86,6 @@ export const downloadLink = createSelector(
   }
 );
 
-export const getNetworkInterfaces = createSelector(
-  _hostDetails,
-  ({ machineIdentity }) => {
-    if (machineIdentity) {
-      const networkInterfaces = machineIdentity.networkInterfaces || [];
-      const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => networkInterface.ipv4 && ((networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1));
-      const validIPList = validNetworkInterfaceList.map((networkInterface) => ({
-        ...networkInterface,
-        ipv4: networkInterface.ipv4 ? networkInterface.ipv4.filter((ip) => ip !== '127.0.0.1') : [],
-        ipv6: networkInterface.ipv6 ? networkInterface.ipv6.filter((ip) => ip !== '::1') : []
-      }));
-      return validIPList.map(
-        (ip) => ({ ipv6: ip.ipv6 || '', macAddress: ip.macAddress || '', ipv4: ip.ipv4 || '' })
-      );
-    } else {
-      return [];
-    }
-  }
-);
-
-export const getLoggedInUsers = createSelector(
-  _hostDetails,
-  ({ machine }) => {
-    if (machine) {
-      return machine.users || [];
-    } else {
-      return [];
-    }
-  }
-);
-
 export const getSecurityConfigurations = createSelector(
   _hostDetails,
   ({ machine }) => {
@@ -126,16 +95,6 @@ export const getSecurityConfigurations = createSelector(
       return [];
     }
   }
-);
-
-export const networkInterfacesCount = createSelector(
-  getNetworkInterfaces,
-  (networkInterfaces) => networkInterfaces.length
-);
-
-export const loggedInUsersCount = createSelector(
-  getLoggedInUsers,
-  (loggedInUsers) => loggedInUsers.length
 );
 
 export const _osTypeSecurityConfig = createSelector(
@@ -178,11 +137,6 @@ export const isEcatAgent = createSelector(
     }
     return false;
   }
-);
-
-export const isMachineLinux = createSelector(
-  machineOsType,
-  (machineOsType) => machineOsType && (machineOsType.toLowerCase() === 'linux')
 );
 
 export const isMachineWindows = createSelector(
