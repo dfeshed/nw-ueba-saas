@@ -44,7 +44,7 @@ if len(sys.argv) == 2:
         from_version, to_version = read_presidio_versions()
         dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
         dag = DAG(dag_id=dag_id, schedule_interval="@once", start_date=datetime(2019, 1, 1))
-        dag = presidio_upgrade_dag_builder.build(dag, from_version, to_version)
+        presidio_upgrade_dag_builder.build(dag, from_version, to_version)
 
 # A Chef execution to trigger a Presidio upgrade DAG run
 # sys.argv[0] is the name of this file

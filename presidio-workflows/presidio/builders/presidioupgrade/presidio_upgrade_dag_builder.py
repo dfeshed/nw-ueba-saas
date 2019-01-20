@@ -35,8 +35,6 @@ def build(dag, from_version, to_version):
 
         previous = current
 
-    return dag
-
 
 def version_comparator(first, second):
     """
