@@ -112,9 +112,8 @@ const filesConfigGen = function(environment) {
         requestDestination: '/ws/endpoint/certificate/remediation/allowed'
       },
       downloadFileToServer: {
-        subscriptionDestination: '/user/queue/endpoint/file/request-download',
-        requestDestination: '/ws/endpoint/file/request-download'
-        
+        subscriptionDestination: '/user/queue/endpoint/file/request-file',
+        requestDestination: '/ws/endpoint/file/request-file'
       }
     },
     'context-service': {

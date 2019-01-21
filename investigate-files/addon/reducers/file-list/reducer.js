@@ -35,7 +35,8 @@ const fileListState = Immutable.from({
   selectedFile: {},
   selectedDetailFile: null,
   selectedIndex: null,
-  downloadLink: null
+  downloadLink: null,
+  machineFilePathInfoList: []
 });
 const LOADING_STATUS = 'loading';
 
@@ -226,6 +227,8 @@ const fileListReducer = handleActions({
 
   [SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK]: (state, { payload }) => state.set('downloadLink', payload),
 
+  [ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST]: (state, { payload }) => state.set('machineFilePathInfoList', payload),
+
   [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
     areFilesLoading: 'wait',
     loadMoreStatus: 'completed',
@@ -251,7 +254,8 @@ const fileListReducer = handleActions({
     selectedFile: {},
     selectedDetailFile: null,
     selectedIndex: null,
-    downloadLink: null
+    downloadLink: null,
+    machineFilePathInfoList: []
   })
 }, fileListState);
 

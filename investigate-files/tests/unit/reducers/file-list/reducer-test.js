@@ -80,7 +80,8 @@ module('Unit | Reducers | file-list', function() {
       selectedFile: {},
       selectedDetailFile: null,
       selectedIndex: null,
-      downloadLink: null
+      downloadLink: null,
+      machineFilePathInfoList: []
     });
   });
 
@@ -495,4 +496,12 @@ module('Unit | Reducers | file-list', function() {
     assert.equal(result.downloadLink, '/rsa/endpoint/serverId/file/download?id=id&filename=fileName.zip');
   });
 
+  test('SET_MACHINE_FILE_PATH_LIST', function(assert) {
+    const previous = Immutable.from({
+      machineFilePathInfoList: []
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: [{ id: '123' }] });
+    assert.deepEqual(result.machineFilePathInfoList, [{ id: '123' }]);
+  });
 });
+

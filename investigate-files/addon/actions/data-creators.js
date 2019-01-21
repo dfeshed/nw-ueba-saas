@@ -466,18 +466,82 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
   };
 };
 
-const downloadFilesToServer = (checksumSha256, callbacks) => {
+const _fetchAgentIdsForchecksum = (checksum, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const input = {
-      filter: { value: `(checksum.all = '${checksumSha256}')` },
+      filter: [{ value: `(checksum.src = '${checksum}')` }],
       queryNode,
-      size: 100,
+      size: 5,
       metaName: 'agent.id',
       onComplete: (data) => {
         const agentIds = data ? data.map((d) => d.value) : [];
         if (agentIds.length) {
-          File.sendFileDownloadToServerRequest({ checksumSha256, agentIds })
+          const computedAgentIds = agentIds.map((id) => ({ agentId: id }));
+          dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedAgentIds });
+          dispatch(_fetchPathSrcForAgentId(checksum, callbacks));
+        }
+      }
+    };
+    _getMetaValues(dispatch, input);
+  };
+};
+
+const _fetchPathSrcForAgentId = (checksum, callbacks) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigate;
+    const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
+    for (const info of machineFilePathList) {
+      const input = {
+        filter: [{ value: `(checksum.src = '${checksum}')` }, { value: `(agent.id = '${info.agentId}')` }],
+        queryNode,
+        size: 1,
+        metaName: 'directory.src',
+        onComplete: (data) => {
+          const [pathSrc] = data;
+          if (pathSrc && pathSrc.value) {
+            const computedMachineFileInfoList = machineFilePathList.map((m) => {
+              if (m.agentId === info.agentId) {
+                return { ...m, path: pathSrc.value };
+              } else {
+                return { ...m };
+              }
+            });
+            dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
+            dispatch(_fetchFileNameForPath(checksum, info.agentId, pathSrc.value, callbacks));
+          }
+        }
+      };
+      _getMetaValues(dispatch, input);
+    }
+  };
+};
+
+const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigate;
+    const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
+    const input = {
+      filter: [
+        { value: `(checksum.src = '${checksum}')` },
+        { value: `(agent.id = '${agentId}')` },
+        { value: `(directory.src = '${path}')` }
+      ],
+      queryNode,
+      size: 1,
+      metaName: 'filename.src',
+      onComplete: (data) => {
+        const [file] = data;
+        if (file && file.value) {
+          const computedMachineFileInfoList = machineFilePathList.map((m) => {
+            if (m.agentId === agentId) {
+              return { ...m, fileName: file.value };
+            } else {
+              return { ...m };
+            }
+          });
+          dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
+          File.sendFileDownloadToServerRequest({ checksumSha256: checksum, machineFilePathInfoList: computedMachineFileInfoList })
             .then(() => {
               callbacks.onSuccess();
             }).catch(({ meta: message }) => {
@@ -487,6 +551,12 @@ const downloadFilesToServer = (checksumSha256, callbacks) => {
       }
     };
     _getMetaValues(dispatch, input);
+  };
+};
+
+const downloadFilesToServer = (checksumSha256, callbacks) => {
+  return (dispatch) => {
+    dispatch(_fetchAgentIdsForchecksum(checksumSha256, callbacks));
   };
 };
 
