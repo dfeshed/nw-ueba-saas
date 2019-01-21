@@ -24,6 +24,8 @@ const CertificateStatus = Component.extend({
 
   showModal: false,
 
+  isModelChange: false,
+
   radioButtons: [
     {
       label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
@@ -43,9 +45,9 @@ const CertificateStatus = Component.extend({
   isDisabled(selections) {
     return selections && !selections.length;
   },
-  @computed('data.comment', 'data.certificateStatus')
-  isSaveButtonDisabled(comment, fileStatus) {
-    return isEmpty(comment) || isEmpty(fileStatus);
+  @computed('data.comment', 'data.certificateStatus', 'statusData')
+  isSaveButtonDisabled(comment, fileStatus, currentStatusData) {
+    return isEmpty(comment) || isEmpty(fileStatus) || (comment === currentStatusData.comment && fileStatus === currentStatusData.certificateStatus);
   },
   @computed('data.comment')
   isCharectarLimitReached(comment) {

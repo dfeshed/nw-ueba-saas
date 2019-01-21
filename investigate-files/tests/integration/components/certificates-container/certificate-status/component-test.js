@@ -78,6 +78,7 @@ module('Integration | Component | certificates-container/certificate-status', fu
     new ReduxDataHelper(initState)
       .certificatesItems([])
       .selectedCertificatesList([{ thumbprint: '23' }])
+      .certificateStatusData({})
       .build();
     await render(hbs`{{certificates-container/certificate-status}}`);
     await click('.certificate-status-button button');

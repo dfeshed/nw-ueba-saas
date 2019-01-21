@@ -180,7 +180,7 @@ export default class DataHelper {
     return this;
   }
   certificateStatusData(status) {
-    _set(this.state, 'certificate.list.certificateDataStatus', status);
+    _set(this.state, 'certificate.list.certificateStatusData', status);
     return this;
   }
   isCertificateView(status) {
