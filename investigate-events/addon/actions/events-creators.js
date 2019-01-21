@@ -413,6 +413,15 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
             newStartTime = queryNode.startTime;
           }
 
+          if (newStartTime === batchStartTime) {
+            if (window.DEBUG_STREAMS) {
+              console.log('We are not at the beginning of the range, and within the gap we are using we are expecting results, but we are now attempting to use the same start time again. We will loop.');
+              console.log('This can occur when we expect results due to a count call returning, but since the count call returned the device that should be returning results has disappeared.');
+            }
+            dispatch(_done(1002, 'Device went offline in the middle of the query. Please re-query.'));
+            return;
+          }
+
           dispatch(_getEventsBatch(newStartTime, batchEndTime));
           return;
         }
