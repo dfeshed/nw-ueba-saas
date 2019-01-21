@@ -4,12 +4,12 @@ import { connect } from 'ember-redux';
 import { endpointMeta, eventTime, eventCategory, hostName, user } from 'recon/reducers/meta/selectors';
 
 
-const stateToComputed = (state) => ({
-  endpointMeta: endpointMeta(state),
-  eventTime: eventTime(state),
-  hostName: hostName(state),
-  user: user(state),
-  eventCategory: eventCategory(state)
+const stateToComputed = ({ recon }) => ({
+  endpointMeta: endpointMeta(recon),
+  eventTime: eventTime(recon),
+  hostName: hostName(recon),
+  user: user(recon),
+  eventCategory: eventCategory(recon)
 });
 
 const EndpointRecon = Component.extend({

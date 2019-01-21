@@ -1,7 +1,21 @@
-<div class="scroll-box">
-  {{#if isEndpointEvent}}
+{{#if isEndpointEvent}}
+  <div class="scroll-box">
     {{recon-event-detail/endpoint}}
-  {{/if}}
+    {{#if hasRenderIds}}
+      {{#each renderedText key="firstPacketId" as |text|}}
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isEndpoint=isEndpointEvent
+          isSticky=false
+          metaToHighlight=metaToHighlight
+          packet=text
+          showMoreFinished=(action 'showMoreFinished')
+          updatePercentRendered=(action 'updatePercentRendered')
+        }}
+      {{/each}}
+    {{/if}}
+  </div>
+{{else}}
   {{#if hasRenderIds}}
     {{#if stickyContent}}
       <div class="recon-packet-stuck-header">
@@ -15,30 +29,28 @@
         }}
       </div>
     {{/if}}
-
-    {{!--
-      if we have content, but no visible text, show spinner,
-      working on chewing on data
-    --}}
-    {{#each renderedText key="firstPacketId" as |text|}}
-      {{recon-event-detail/single-text
-        isLog=isLogEvent
-        isEndpoint=isEndpointEvent
-        isSticky=false
-        metaToHighlight=metaToHighlight
-        packet=text
-        showMoreFinished=(action 'showMoreFinished')
-        updatePercentRendered=(action 'updatePercentRendered')
-      }}
-    {{/each}}
-
-    {{#if hasMoreToDisplay}}
-      <centered class='rendering-more'>
-        {{rsa-loader size='large' label=(t 'recon.textView.renderingMore')}}
-      </centered>
-    {{/if}}
-
-
+    <div class="scroll-box">
+      {{!--
+        if we have content, but no visible text, show spinner,
+        working on chewing on data
+      --}}
+      {{#each renderedText key="firstPacketId" as |text|}}
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isEndpoint=isEndpointEvent
+          isSticky=false
+          metaToHighlight=metaToHighlight
+          packet=text
+          showMoreFinished=(action 'showMoreFinished')
+          updatePercentRendered=(action 'updatePercentRendered')
+        }}
+      {{/each}}
+      {{#if hasMoreToDisplay}}
+        <centered class='rendering-more'>
+          {{rsa-loader size='large' label=(t 'recon.textView.renderingMore')}}
+        </centered>
+      {{/if}}
+    </div>
   {{else}}
     {{!--
       If no renderedText, but there is textContent, means either
@@ -54,11 +66,11 @@
           {{rsa-loader size='larger'}}
         </div>
       {{/unless}}
-    {{else if (not isEndpointEvent)}}
+    {{else}}
       {{rsa-panel-message message=noResultsMessage}}
     {{/if}}
   {{/if}}
-</div>
+{{/if}}
 {{recon-pager
   eventIndex=eventIndex
   eventTotal=eventTotal

@@ -291,15 +291,21 @@ export default {
       endpointDetail: {
         performed: 'performed',
         to: 'to',
+        on: 'on',
         presentIn: 'present in',
         madeConnectionTo: 'made a network connection to',
-        resolvedTo: 'resolved to',
+        resolvedTo: 'resolving to',
         from: 'from',
         runningAsService: 'is running as a service named',
         loadedInto: 'is loaded into',
         runningAsTask: 'is running as a task named',
         launchedBy: 'is launched by',
-        ran: 'ran'
+        hookedFunctionIn: 'hooked function in',
+        hooked: 'hooked',
+        colon: '::',
+        loadedIn: 'loaded in',
+        ran: 'ran',
+        triggeredEventTypeIs: 'triggered event type is'
       }
     },
     packetView: {

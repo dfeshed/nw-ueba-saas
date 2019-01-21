@@ -317,48 +317,53 @@ test('endpointServiceId test', function(assert) {
 });
 
 test('eventTime', function(assert) {
-  const data = {
-    recon: { meta: { meta: [['event.time', '2019-01-08T04:17:20.000+0000']] } }
-  };
+  const data = { meta: { meta: [['event.time', '2019-01-08T04:17:20.000+0000']] } };
   const result = eventTime(Immutable.from(data));
   assert.equal(result, '2019-01-08T04:17:20.000+0000', 'event time is returned');
 });
 
+test('eventTime when starttime is present', function(assert) {
+  const data = { meta: { meta: [['starttime', '2019-02-08T04:17:20.000+0000']] } };
+  const result = eventTime(Immutable.from(data));
+  assert.equal(result, '2019-02-08T04:17:20.000+0000', 'start time is returned');
+});
+
 test('eventCategory', function(assert) {
-  const data = {
-    recon: { meta: { meta: [['category', 'Machine']] } }
-  };
+  const data = { meta: { meta: [['category', 'Machine']] } };
   const result = eventCategory(Immutable.from(data));
   assert.equal(result, 'Machine', 'event category is returned');
 });
 
 test('hostName', function(assert) {
-  const data = {
-    recon: { meta: { meta: [['alias.host', 'INENJOHNP3']] } }
-  };
+  const data = { meta: { meta: [['alias.host', 'INENJOHNP3']] } };
   const result = hostName(Immutable.from(data));
   assert.equal(result, 'INENJOHNP3', 'hostName is returned');
 });
 
 test('user', function(assert) {
-  const data = {
-    recon: { meta: { meta: [['user.src', 'INENJOHNP3']] } }
-  };
+  const data = { meta: { meta: [['user.src', 'INENJOHNP3']] } };
   const result = user(Immutable.from(data));
   assert.equal(result, 'INENJOHNP3', 'user is returned');
 });
 
 test('endpointMeta', function(assert) {
-  const data = {
-    recon: { meta: { meta: [['user.src', 'INENJOHNP3'],
-      ['category', 'Registry Event'],
-      ['filename.src', 'cmd.exe'],
-      ['action', 'modify'],
-      ['registry.key', '/HKEY/WINDOWS/LOCAL']] } }
-  };
+  const data = { meta: { meta: [['user.src', 'INENJOHNP3'],
+    ['category', 'Registry Event'],
+    ['filename.src', 'cmd.exe'],
+    ['action', 'modify'],
+    ['registry.key', '/HKEY/WINDOWS/LOCAL']] } };
   const result = endpointMeta(Immutable.from(data));
   assert.equal(result[0].field, 'filename.src', 'first field is filename.src');
   assert.equal(result[0].value, 'cmd.exe', 'first field value is correct');
   assert.equal(result[1].value, 'modify', 'action value is modify');
   assert.equal(result[2].value, '/HKEY/WINDOWS/LOCAL', 'registy.key value is /HKEY/WINDOWS/LOCAL');
+});
+
+test('endpointMeta with no category config', function(assert) {
+  const data = { meta: { meta: [['user.src', 'INENJOHNP3'],
+    ['filename.src', 'cmd.exe'],
+    ['action', 'modify'],
+    ['registry.key', '/HKEY/WINDOWS/LOCAL']] } };
+  const result = endpointMeta(Immutable.from(data));
+  assert.deepEqual(result, {}, 'No fields returned');
 });

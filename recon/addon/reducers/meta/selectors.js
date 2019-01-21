@@ -70,10 +70,10 @@ const _determineEventType = (meta) => {
   return eventType || DEFAULT_EVENT_TYPE;
 };
 
-const _metaMap = createSelector(
-  _eventMeta,
-  (eventMeta) => new Map(eventMeta)
-);
+const findMetaValue = (fieldName, metas) => {
+  const metaPair = metas.find((d) => d[0] === fieldName);
+  return metaPair ? metaPair[1] : '';
+};
 
 export const isHttpData = createSelector(
   _meta,
@@ -193,33 +193,33 @@ export const isProcessAnalysisDisabled = createSelector(
 );
 
 export const eventTime = createSelector(
-  _metaMap,
-  (metaMap) => metaMap.get('event.time') || metaMap.get('starttime')
+  _meta,
+  (meta) => findMetaValue('event.time', meta) || findMetaValue('starttime', meta)
 );
 
 export const eventCategory = createSelector(
-  _metaMap,
-  (metaMap) => metaMap.get('category')
+  _meta,
+  (meta) => findMetaValue('category', meta)
 );
 
 export const hostName = createSelector(
-  _metaMap,
-  (metaMap) => metaMap.get('alias.host')
+  _meta,
+  (meta) => findMetaValue('alias.host', meta)
 );
 
 export const user = createSelector(
-  _metaMap,
-  (metaMap) => metaMap.get('user.src')
+  _meta,
+  (meta) => findMetaValue('user.src', meta)
 );
 export const endpointMeta = createSelector(
-  [_metaMap],
-  (metaMap) => {
-    const categoryConfig = ENDPOINT_META_CONFIG[metaMap.get('category')];
+  _meta,
+  (meta) => {
+    const categoryConfig = ENDPOINT_META_CONFIG[findMetaValue('category', meta)];
     let requiredFields = {};
     if (categoryConfig) {
       const { fields } = categoryConfig;
       requiredFields = fields.map((field) => {
-        const value = metaMap.get(field.field);
+        const value = findMetaValue(field.field, meta);
         return { ...field, value };
       });
     }

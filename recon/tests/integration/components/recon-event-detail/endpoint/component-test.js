@@ -54,7 +54,7 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
 
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags),
-      'cmd.exe performed createProcess to msiexec.exe', 'text is rendered correctly');
+      'cmd.exe performed createProcess on msiexec.exe', 'text is rendered correctly');
   });
 
   test('renders File view', async function(assert) {
@@ -108,7 +108,7 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
 
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags),
-      'ntoskrnl.exe made a network connection to 10.40.15.255 resolved to update.nai.com from 10.40.14.18',
+      'ntoskrnl.exe made a network connection to 10.40.15.255 resolving to update.nai.com from 10.40.14.18',
       'text is rendered correctly');
   });
 
@@ -138,7 +138,7 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
     assert.equal(find(selectors.hostName).textContent.trim(), 'urdhwa-t1', 'hostName is correct');
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags),
-      'ntoskrnl.exe made a network connection to fe80::48f7:f425:19fa:aa0d resolved to update.nai.com from fe80::514d:198f:224e:b089',
+      'ntoskrnl.exe made a network connection to fe80::48f7:f425:19fa:aa0d resolving to update.nai.com from fe80::514d:198f:224e:b089',
       'text is rendered correctly');
   });
 
@@ -300,5 +300,72 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
     assert.equal(find(selectors.header).textContent.trim(), 'Console Event', 'Category is Console Event');
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags), 'cmd.exe ran dtf.exe -dll:ioc.dll', 'text is rendered correctly');
+  });
+
+  test('renders System event view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'System Event'],
+            ['event.type', 'ipChange']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'System Event', 'Category is System Event');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'triggered event type is ipChange', 'text is rendered correctly');
+  });
+
+  test('renders Kernel Hook view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Kernel Hook'],
+            ['filename.src', 'CmgPCS.sys'],
+            ['filename.dst', 'ntoskrnl.exe']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Kernel Hook', 'Category is Kernel Hook');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'CmgPCS.sys hooked function in ntoskrnl.exe', 'text is rendered correctly');
+  });
+
+  test('renders Image Hook view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Image Hook'],
+            ['filename.src', 'CyMemDef64.dll'],
+            ['filename.dst', 'ntdll.dll'],
+            ['filename', 'vpnui.exe'],
+            ['function', 'fileOpen']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Image Hook', 'Category is Image Hook');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'CyMemDef64.dll hooked ntdll.dll :: fileOpen loaded in vpnui.exe', 'text is rendered correctly');
   });
 });

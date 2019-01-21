@@ -1,18 +1,3 @@
-const ProcessFileEventFields = [
-  {
-    field: 'filename.src'
-  },
-  {
-    label: 'recon.textView.endpointDetail.performed',
-    field: 'action'
-  },
-  {
-    label: 'recon.textView.endpointDetail.to',
-    field: 'filename.dst'
-  }
-];
-
-
 export default {
   File: {
     fields: [
@@ -22,6 +7,14 @@ export default {
       {
         label: 'recon.textView.endpointDetail.presentIn',
         field: 'directory'
+      }
+    ]
+  },
+  'System Event': {
+    fields: [
+      {
+        label: 'recon.textView.endpointDetail.triggeredEventTypeIs',
+        field: 'event.type'
       }
     ]
   },
@@ -66,10 +59,34 @@ export default {
     ]
   },
   'Process Event': {
-    fields: ProcessFileEventFields
+    fields: [
+      {
+        field: 'filename.src'
+      },
+      {
+        label: 'recon.textView.endpointDetail.performed',
+        field: 'action'
+      },
+      {
+        label: 'recon.textView.endpointDetail.on',
+        field: 'filename.dst'
+      }
+    ]
   },
   'File Event': {
-    fields: ProcessFileEventFields
+    fields: [
+      {
+        field: 'filename.src'
+      },
+      {
+        label: 'recon.textView.endpointDetail.performed',
+        field: 'action'
+      },
+      {
+        label: 'recon.textView.endpointDetail.to',
+        field: 'filename.dst'
+      }
+    ]
   },
   Autorun: {
     fields: [
@@ -130,6 +147,36 @@ export default {
       {
         label: 'recon.textView.endpointDetail.ran',
         field: 'param.src'
+      }
+    ]
+  },
+  'Kernel Hook': {
+    fields: [
+      {
+        field: 'filename.src'
+      },
+      {
+        label: 'recon.textView.endpointDetail.hookedFunctionIn',
+        field: 'filename.dst'
+      }
+    ]
+  },
+  'Image Hook': {
+    fields: [
+      {
+        field: 'filename.src'
+      },
+      {
+        label: 'recon.textView.endpointDetail.hooked',
+        field: 'filename.dst'
+      },
+      {
+        label: 'recon.textView.endpointDetail.colon',
+        field: 'function'
+      },
+      {
+        label: 'recon.textView.endpointDetail.loadedIn',
+        field: 'filename'
       }
     ]
   }
