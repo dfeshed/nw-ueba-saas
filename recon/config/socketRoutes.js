@@ -4,6 +4,8 @@ const common = require('../../common');
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const contextGen = require('../../context').socketRouteGenerator;
 
+const cancelDestination = '/ws/investigate/cancel';
+
 let mergedConfig;
 const reconValueConfigGen = function(environment) {
 
@@ -14,7 +16,8 @@ const reconValueConfigGen = function(environment) {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events',
-        requestDestination: '/ws/investigate/events/stream'
+        requestDestination: '/ws/investigate/events/stream',
+        cancelDestination
       }
     },
     'core-meta-key': {

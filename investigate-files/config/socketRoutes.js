@@ -5,6 +5,9 @@ const common = require('../../common');
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const licenseConfigGen = require('../../license').socketRouteGenerator;
 const contextConfigGen = require('../../context').socketRouteGenerator;
+
+const cancelDestination = '/ws/investigate/cancel';
+
 let mergedConfig;
 
 const filesConfigGen = function(environment) {
@@ -74,7 +77,8 @@ const filesConfigGen = function(environment) {
       socketUrl: investigateSocketUrl,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events',
-        requestDestination: '/ws/investigate/events/stream'
+        requestDestination: '/ws/investigate/events/stream',
+        cancelDestination
       }
     },
     'files': {
@@ -154,11 +158,7 @@ const filesConfigGen = function(environment) {
       fileAnalysisTextFormat: {
         subscriptionDestination: '/user/queue/endpoint/file/get-encoded-data',
         requestDestination: '/ws/endpoint/file/get-encoded-data'
-      },
-      saveLocalCopy: {
-        subscriptionDestination: '/user/queue/endpoint/file/export',
-        requestDestination: '/ws/endpoint/file/export'
-      } 
+      }
     },
     'endpoint-server': {
       socketUrl,
