@@ -117,8 +117,7 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
   _minScrollHeight(rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight) {
     if (enableGrouping) {
       // ensure enough room is provided for grouping labels
-      return (((rowHeight * itemsLength) + (groupLabelHeight * (itemsLength / groupSize) - 1))) || 0;
-      // return ((rowHeight * (itemsLength + (itemsLength / groupSize) - 1))) || 0;
+      return ((rowHeight * itemsLength) + (((itemsLength / groupSize) - 1) * groupLabelHeight));
     } else {
       return rowHeight * itemsLength || 0;
     }

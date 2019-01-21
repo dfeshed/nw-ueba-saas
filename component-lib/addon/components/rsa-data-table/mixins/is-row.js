@@ -14,7 +14,7 @@ import Mixin from '@ember/object/mixin';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size
@@ -22,6 +22,11 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   @computed('index', 'table.groupingSize', 'table.enableGrouping')
   isAtGroupingSize(index, groupingSize, enableGrouping) {
     return enableGrouping && ((index + 1) % groupingSize === 0);
+  },
+
+  @computed('index', 'table.items.length')
+  isLast(index, length) {
+    return (index + 1) === length;
   },
 
   @computed('top')

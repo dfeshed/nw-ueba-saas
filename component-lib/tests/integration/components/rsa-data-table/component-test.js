@@ -208,6 +208,7 @@ test('it renders declaratively with the correct number of expected elements.', f
   const lastRow = rows.last();
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
+  assert.ok(lastRow.hasClass('is-last'), 'Last row has is-last class.');
 
   assert.equal(this.$('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
   assert.equal(this.$('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
@@ -589,7 +590,7 @@ test('it sets the minHeight of the table body rows when enableGrouping is true',
   const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
   const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
   const length = this.get('items.length');
-  const expectedHeightAsInt = ((rowHeight * length) + (28 * (length / 20) - 1));
+  const expectedHeightAsInt = ((rowHeight * length) + (28 * ((length / 20) - 1)));
 
   assert.equal(expectedHeightAsInt, actualHeightAsInt);
 });
