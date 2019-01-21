@@ -358,6 +358,6 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
       entityId=entityId}}`);
-    assert.equal(findAll('a.disabled')[1].innerText.trim(), 'Pivot to Endpoint');
+    assert.equal(findAll('a.disabled')[1].innerText.trim(), 'Pivot to Investigate-Hosts/Files');
   });
 });
