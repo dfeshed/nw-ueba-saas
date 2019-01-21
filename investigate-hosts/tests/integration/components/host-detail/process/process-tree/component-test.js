@@ -280,6 +280,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .build();
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     await render(hbs`
       <style>
         box, section {
@@ -561,6 +564,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('It renders the context menu', async function(assert) {
+    this.set('closePropertyPanel', () => {});
     new ReduxDataHelper(setState)
       .processList(modifiedList)
       .processTree(modifiedTree)
@@ -576,7 +580,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(() => {
@@ -605,14 +609,16 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('downloadFiles', function() {
       assert.ok('downloadFiles Called');
     });
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
-
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -624,6 +630,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Edit file status modal is opened on clicking the menu button', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     new ReduxDataHelper(setState)
       .processList(modifiedList)
       .processTree(modifiedTree)
@@ -639,7 +648,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -656,6 +665,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Analyze file and save local copy disabled if file not downloaded', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     new ReduxDataHelper(setState)
       .processList(modifiedList)
       .processTree(modifiedTree)
@@ -686,7 +698,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -699,6 +711,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Analyze file and save local copy enabled if files are downloaded', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -741,7 +756,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -754,6 +769,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Right clicking on the row deselect the already selected rows', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -828,7 +846,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
     assert.equal(findAll('.rsa-form-checkbox-label.checked').length, 2);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -845,6 +863,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.expect(1);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -878,16 +899,14 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     this.set('analyzeFile', function() {
       assert.ok('AnalyzeFiles Called');
     });
-    this.set('downloadFiles', function() {
-      assert.ok('downloadFiles Called');
-    });
+    this.set('downloadFiles', function() { });
     await render(hbs`
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -901,6 +920,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.expect(1);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -943,7 +963,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+      {{host-detail/process/process-tree analyzeFile=(action analyzeFile) closePropertyPanel=closePropertyPanel downloadFiles=(action downloadFiles) fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -959,6 +979,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     const actionSpy = sinon.spy(window, 'open');
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .processTree([
@@ -995,7 +1016,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree}}{{context-menu}}`);
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
@@ -1007,6 +1028,314 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.ok(actionSpy.args[0][0].includes('sid=-1'));
       assert.ok(actionSpy.args[0][0].includes('pn=rsyslogd'));
       assert.ok(actionSpy.args[0][0].includes('osType=windows'));
+    });
+
+  });
+
+  test('Right clicking already selected row, will keep row highlighted', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const redux = this.owner.lookup('service:redux');
+    await waitUntil(() => {
+      return !!redux.getState().endpoint.process.selectedProcessId;
+    }, { timeout: 6000 });
+    const { selectedProcessId } = redux.getState().endpoint.process;
+    assert.equal(selectedProcessId, 2, 'Focused host set as first row');
+    triggerEvent(findAll('.rsa-data-table-body-row')[1], 'contextmenu', e);
+    await waitUntil(() => {
+      return !!redux.getState().endpoint.process.selectedProcessId;
+    }, { timeout: 6000 });
+    return settled().then(async() => {
+      const newSelectedProcessId = redux.getState().endpoint.process.selectedProcessId;
+      assert.equal(newSelectedProcessId, 2, 'Focused host remains unchanged');
+    });
+  });
+
+  test('Right clicking non-highlighted row, will remove highlight from that row', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const redux = this.owner.lookup('service:redux');
+    await waitUntil(() => {
+      return !!redux.getState().endpoint.process.selectedProcessId;
+    }, { timeout: 6000 });
+    const { selectedProcessId } = redux.getState().endpoint.process;
+    assert.equal(selectedProcessId, 2, 'Focused host set as first row');
+    triggerEvent(findAll('.machine-count')[0], 'contextmenu', e);
+    await waitUntil(() => {
+      return !!redux.getState().endpoint.process.selectedProcessId;
+    }, { timeout: 6000 });
+    return settled().then(async() => {
+      const newSelectedProcessId = redux.getState().endpoint.process.selectedProcessId;
+      assert.equal(newSelectedProcessId, 2, 'Focused host remains unchanged');
+    });
+  });
+
+  test('selecting an already check-boxed row, opens the right panel', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .selectedProcessList(
+        [
+          {
+            pid: 29332,
+            name: 'rsyslogd',
+            checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+            parentPid: 1,
+            fileProperties: {
+              downloadInfo: {
+                status: 'Downloaded'
+              }
+            }
+          }
+        ]
+      )
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Selected row is highlighted');
+    });
+
+  });
+
+  test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    this.set('openPropertyPanel', function() {
+      assert.ok('open property panel is called.');
+    });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 1,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '3a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a7787e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        },
+        {
+          pid: 3,
+          name: 'test_rsyslogd',
+          checksumSha256: '9645480ea0d12f328a9239a1d34dddf622925171c1a06351h546556',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 4,
+              name: 'test_rsa_audit_onramp',
+              checksumSha256: '8289733ab701bc9a10cee2623536f64a04af0a77e5257868678',
+              parentPid: 2,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .selectedProcessList(
+        [
+          {
+            pid: 29332,
+            name: 'rsyslogd',
+            checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+            parentPid: 1,
+            fileProperties: {
+              downloadInfo: {
+                status: 'Downloaded'
+              }
+            }
+          },
+          {
+            pid: 2,
+            name: 'rsa_audit_onramp',
+            checksumSha256: '3a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a7787e525',
+            parentPid: 1,
+            fileProperties: {
+              downloadInfo: {
+                status: 'Downloaded'
+              }
+            }
+          }
+        ]
+      )
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-data-table-body-row')[3]);
+    return settled().then(() => {
+      const { selectedProcessList } = redux.getState().endpoint.process;
+      const { selectedRowIndex } = redux.getState().endpoint.process;
+      assert.equal(selectedProcessList.length, 1, 'Checkbox is removed from previous selctions and one row is selected.');
+      assert.equal(selectedRowIndex, 3, 'row is focused after the click.');
     });
 
   });

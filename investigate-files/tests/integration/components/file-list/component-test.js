@@ -653,6 +653,7 @@ module('Integration | Component | file list', function(hooks) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .setSelectedFileList([])
+      .setSelectedFile({})
       .schema(config)
       .preferences({ filePreference })
       .build();
@@ -705,6 +706,150 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     return settled().then(() => {
       assert.equal(find('.remediationAction').textContent.trim(), 'Blocked', 'RemediationAction is correct');
+    });
+  });
+
+  test('Right clicking already selected row, will keep row highlighted', async function(assert) {
+    this.set('closeRiskPanel', () => {});
+    this.set('openRiskPanel', () => {});
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list closeRiskPanel=closeRiskPanel openRiskPanel=openRiskPanel}}{{context-menu}}`);
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const { selectedIndex } = redux.getState().files.fileList;
+
+    assert.equal(selectedIndex, 0, 'Focused host set as first row');
+    triggerEvent(findAll('.rsa-data-table-body-row')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const newsetSelectedIndex = redux.getState().files.fileList.selectedIndex;
+      assert.equal(newsetSelectedIndex, 0, 'Focused host remains unchanged');
+    });
+  });
+
+  test('Right clicking non-highlighted row, will remove highlight from that row', async function(assert) {
+    assert.expect(5);
+    this.set('closeRiskPanel', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openRiskPanel', () => {});
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list closeRiskPanel=closeRiskPanel openRiskPanel=openRiskPanel}}{{context-menu}}`);
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const { selectedIndex } = redux.getState().files.fileList;
+    assert.equal(selectedIndex, 1, 'Focused host set as first row');
+    triggerEvent(findAll('.machineCount')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const newsetSelectedIndex = redux.getState().files.fileList.selectedIndex;
+      assert.equal(newsetSelectedIndex, null, 'Focused host remains unchanged');
+    });
+  });
+
+  test('selecting an already check-boxed row, opens the risk panel', async function(assert) {
+    assert.expect(2);
+    this.set('openRiskPanel', function() {
+      assert.ok('open property panel is called.');
+    });
+    this.set('closeRiskPanel', () => {});
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([
+        {
+          'firstFileName': 'vmwgfx.ko',
+          'firstSeenTime': '2015-08-17T03:21:10.000Z',
+          'score': 20,
+          'signature': {
+            'timeStamp': '2016-10-14T07:43:39.000Z',
+            'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
+            'features': ['signed', 'valid'],
+            'signer': 'XYZ'
+          },
+          'id': '2',
+          'checksumsha256': 'def'
+        }
+      ])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list closeRiskPanel=closeRiskPanel openRiskPanel=openRiskPanel}}{{context-menu}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Selected row is highlighted');
+    });
+  });
+
+  test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
+    assert.expect(3);
+    this.set('openRiskPanel', function() {
+      assert.ok('open property panel is called.');
+    });
+    this.set('closeRiskPanel', () => {});
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([
+        {
+          'firstFileName': 'vmwgfx.ko',
+          'firstSeenTime': '2015-08-17T03:21:10.000Z',
+          'score': 20,
+          'signature': {
+            'timeStamp': '2016-10-14T07:43:39.000Z',
+            'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
+            'features': ['signed', 'valid'],
+            'signer': 'XYZ'
+          },
+          'id': '2',
+          'checksumsha256': 'def'
+        }
+      ])
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list closeRiskPanel=closeRiskPanel openRiskPanel=openRiskPanel}}{{context-menu}}`);
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    return settled().then(() => {
+      const { selectedFileList } = redux.getState().files.fileList;
+      const { selectedIndex } = redux.getState().files.fileList;
+      assert.equal(selectedFileList.length, 1, 'Checkbox is removed from previous selctions and one row is selected.');
+      assert.equal(selectedIndex, 0, 'Clicked row is focused.');
     });
   });
 

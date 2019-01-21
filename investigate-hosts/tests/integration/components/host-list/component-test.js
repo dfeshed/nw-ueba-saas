@@ -82,7 +82,8 @@ const endpointState =
       schema: { schema: endpoint.schema },
       machines: {
         hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F' }],
-        hostColumnSort: 'machineIdentity.machineName'
+        hostColumnSort: 'machineIdentity.machineName',
+        focusedHost: null
       }
     },
     preferences: {

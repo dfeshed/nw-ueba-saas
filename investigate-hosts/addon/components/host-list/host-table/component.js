@@ -32,6 +32,7 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   servers: state.endpointServer.serviceData,
+  focusedHost: state.endpoint.machines.focusedHost,
   focusedHostIndex: state.endpoint.machines.focusedHostIndex,
   selections: state.endpoint.machines.selectedHostList || [],
   nextLoadCount: nextLoadCount(state)
@@ -91,8 +92,13 @@ const HostTable = Component.extend({
         this.send('setFocusedHostIndex', index);
 
         if (!isSameRowClicked && openProperties) {
-          this.send('deSelectAllHosts');
-          this.send('toggleMachineSelected', item);
+          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+          // checkbox selected.
+          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
+          if (!this.isAlreadySelected(this.get('selections'), item)) {
+            this.send('deSelectAllHosts');
+            this.send('toggleMachineSelected', item);
+          }
           this.send('onHostSelection', item);
           next(() => {
             this.openProperties();
@@ -107,7 +113,7 @@ const HostTable = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
-      this.send('setFocusedHostIndex', null);
+
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
@@ -117,7 +123,11 @@ const HostTable = Component.extend({
         menu.set('contextItems', []);
       } else {
         menu.set('contextItems', this.get('contextItems'));
-        this.closeProperties();
+        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+        if (this.get('focusedHost') && this.get('focusedHost').id !== item.id) {
+          this.send('setFocusedHostIndex', null);
+          this.closeProperties();
+        }
         if (!this.isAlreadySelected(this.get('selections'), item)) {
           this.send('deSelectAllHosts');
           this.send('toggleMachineSelected', item);

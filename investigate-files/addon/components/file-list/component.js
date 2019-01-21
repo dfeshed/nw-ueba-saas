@@ -47,6 +47,7 @@ const stateToComputed = (state) => ({
   isSortDescending: state.files.fileList.isSortDescending,
   isAllSelected: isAllSelected(state),
   selections: state.files.fileList.selectedFileList,
+  selectedFile: state.files.fileList.selectedFile,
   checksums: checksums(state),
   agentCountMapping: state.files.fileList.agentCountMapping,
   fileStatusData: state.files.fileList.fileStatusData,
@@ -166,8 +167,13 @@ const FileList = Component.extend({
         const openRiskPanel = this.get('openRiskPanel');
         this.send('setSelectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
-          this.send('deSelectAllFiles');
-          this.send('toggleFileSelection', item);
+          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+          // checkbox selected.
+          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
+          if (!this.isAlreadySelected(this.get('selections'), item)) {
+            this.send('deSelectAllFiles');
+            this.send('toggleFileSelection', item);
+          }
           this.send('onFileSelection', item);
           next(() => {
             this.openRiskPanel();
@@ -242,7 +248,6 @@ const FileList = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
-      this.send('setSelectedIndex', null);
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);
@@ -252,8 +257,11 @@ const FileList = Component.extend({
         menu.set('contextItems', []);
       } else {
         menu.set('contextItems', this.get('contextItems'));
-        this.closeRiskPanel();
-
+        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+        if (this.get('selectedFile').id !== item.id) {
+          this.send('setSelectedIndex', null);
+          this.closeRiskPanel();
+        }
         this.set('itemList', [item]);
         if (!this.isAlreadySelected(this.get('selections'), item)) {
           this.send('deSelectAllFiles');

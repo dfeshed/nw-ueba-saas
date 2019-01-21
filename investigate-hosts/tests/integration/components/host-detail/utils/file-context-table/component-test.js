@@ -2,7 +2,7 @@ import { module, test, setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, find, render, waitUntil } from '@ember/test-helpers';
+import { click, findAll, find, render, waitUntil, triggerEvent, settled } from '@ember/test-helpers';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
@@ -92,6 +92,20 @@ const config = [
 
 let initState;
 
+const callback = () => {};
+const e = {
+  clientX: 20,
+  clientY: 20,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+const wormhole = 'wormhole-context-menu';
+
+
 module('Integration | Component | host-detail/utils/file-context-table', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
@@ -103,9 +117,20 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', callback);
     this.set('storeName', 'drivers');
     this.set('tabName', 'DRIVER');
     this.set('columnConfig', config);
+  });
+
+  hooks.afterEach(function() {
+    const wormholeElement = document.querySelector('#wormhole-context-menu');
+    if (wormholeElement) {
+      document.querySelector('#ember-testing').removeChild(wormholeElement);
+    }
   });
 
 
@@ -484,4 +509,159 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     });
   });
 
+  test('Right clicking already selected row, will keep row highlighted', async function(assert) {
+    this.set('closePropertyPanel', () => {});
+    this.set('openPropertyPanel', () => {});
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, '1 row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const redux = this.owner.lookup('service:redux');
+    const { selectedRowId } = redux.getState().endpoint.drivers;
+    assert.equal(selectedRowId, 2, 'Focused host set as first row');
+    triggerEvent(findAll('.rsa-data-table-body-row')[1], 'contextmenu', e);
+    return settled().then(async() => {
+      const newSelectedRowId = redux.getState().endpoint.drivers.selectedRowId;
+      assert.equal(newSelectedRowId, 2, 'Focused host remains unchanged');
+    });
+  });
+
+  test('Right clicking non-highlighted row, will remove highlight from that row', async function(assert) {
+    this.set('closePropertyPanel', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openPropertyPanel', () => {});
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, 'One row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const redux = this.owner.lookup('service:redux');
+    const { selectedRowId } = redux.getState().endpoint.drivers;
+    assert.equal(selectedRowId, 2, 'Focus set on first row');
+    triggerEvent(findAll('.machine-count')[2], 'contextmenu', e);
+    return settled().then(async() => {
+      const newSelectedRowIndex = redux.getState().endpoint.drivers.selectedRowIndex;
+      assert.equal(newSelectedRowIndex, null, 'Focus on previous row is removed.');
+    });
+  });
+
+  test('selecting an already check-boxed row, opens the right panel', async function(assert) {
+    this.set('closePropertyPanel', () => {});
+    this.set('openPropertyPanel', function() {
+      assert.ok('open property panel is called.');
+    });
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed',
+          fileContextSelections: [
+            {
+              checksumMd5: 'test',
+              checksumSha1: 'test',
+              checksumSha256: 'test',
+              fileName: 'test',
+              id: 1
+            }
+          ]
+        }
+      }
+    });
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'No highlighted rows.');
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Selected row is highlighted');
+    });
+  });
+
+  test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
+    this.set('closePropertyPanel', () => {});
+    this.set('openPropertyPanel', function() {
+      assert.ok('open property panel is called.');
+    });
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed',
+          fileContextSelections: [
+            {
+              checksumMd5: 'test',
+              checksumSha1: 'test',
+              checksumSha256: 'test',
+              fileName: 'test',
+              id: 1
+            },
+            {
+              id: 2,
+              fileName: 'test1',
+              timeModified: 12313221,
+              fileProperties: {
+                checksumSha256: 'test',
+                checksumSha1: 'test',
+                checksumMd5: 'test',
+                signature: {
+                  thumbprint: 1
+                }
+              },
+              signature: {
+                features: ['microsoft', 'valid']
+              }
+            }
+          ]
+        }
+      }
+    });
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig closePropertyPanel=closePropertyPanel openPropertyPanel=openPropertyPanel}}{{context-menu}}`);
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    return settled().then(() => {
+      const { fileContextSelections } = redux.getState().endpoint.drivers;
+      const { selectedRowId } = redux.getState().endpoint.drivers;
+      assert.equal(fileContextSelections.length, 1, 'Checkbox is removed from previous selctions and one row is selected.');
+      assert.equal(selectedRowId, 3, 'row with id 3 is focused after the click.');
+    });
+  });
 });

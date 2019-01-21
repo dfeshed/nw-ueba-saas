@@ -94,7 +94,7 @@ const FileContextTable = Component.extend({
   _isAlreadySelected(selections, item) {
     let selected = false;
     if (selections && selections.length) {
-      selected = selections.findBy('checksumSha256', item.checksumSha256);
+      selected = selections.findBy('id', item.id);
     }
     return selected;
   },
@@ -138,8 +138,13 @@ const FileContextTable = Component.extend({
       const { tabName, storeName } = this.getProperties('tabName', 'storeName');
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         if (this.get('selectedRowIndex') !== index) {
-          this.send('deSelectAllSelection', tabName);
-          this.send('toggleRowSelection', tabName, item);
+          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+          // checkbox selected.
+          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
+          if (!this._isAlreadySelected(this.get('fileContextSelections'), item)) {
+            this.send('deSelectAllSelection', tabName);
+            this.send('toggleRowSelection', tabName, item);
+          }
           this.send('onHostFileSelection', tabName, storeName, item, index);
           if (this.openPropertyPanel) {
             this.openPropertyPanel();
@@ -156,6 +161,11 @@ const FileContextTable = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
+      // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+      if (this.get('selectedRowId') !== item.id) {
+        this.closePropertyPanel();
+        this.send('onHostFileSelection', this.get('tabName'), this.get('storeName'), item, null);
+      }
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);

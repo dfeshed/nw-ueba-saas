@@ -55,6 +55,7 @@ const stateToComputed = (state) => ({
   selectedRowIndex: state.endpoint.process.selectedRowIndex,
   agentId: state.endpoint.detailsInput.agentId,
   selectedProcessList: state.endpoint.process.selectedProcessList,
+  selectedProcessId: state.endpoint.process.selectedProcessId,
   isProcessDetailsView: state.endpoint.process.isProcessDetailsView,
   restrictedFileList: state.fileStatus.restrictedFileList,
   processList: processList(state),
@@ -190,8 +191,13 @@ const TreeComponent = Component.extend({
       if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         if (this.get('selectedRowIndex') !== index) {
           this.send('setRowIndex', index);
-          this.send('deSelectAllProcess');
-          this.send('toggleProcessSelection', item);
+          // if clicked row is one among the checkbox selected list, row click will highlight that row keeping others
+          // checkbox selected.
+          // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
+          if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
+            this.send('deSelectAllProcess');
+            this.send('toggleProcessSelection', item);
+          }
           if (this.openPropertyPanel) {
             this.openPropertyPanel();
           }
@@ -219,6 +225,11 @@ const TreeComponent = Component.extend({
       } else {
         menu.set('contextItems', this.get('contextItems'));
 
+        // Highlight is removed and right panel is closed when right clicked on non-highlighted row
+        if (this.get('selectedProcessId') !== item.pid) {
+          this.closePropertyPanel();
+          this.send('setRowIndex', null);
+        }
         this.set('itemList', [item]);
         if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
           this.send('deSelectAllProcess');

@@ -215,6 +215,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .endpointServer(endpointServer)
       .endpointQuery(endpointQuery)
       .setSelectedFileList(selectedFileList)
+      .setSelectedFile({})
       .build();
 
     await render(hbs`
