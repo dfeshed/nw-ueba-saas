@@ -32,14 +32,15 @@ const ContextTooltipComponent = Component.extend({
   clickDataAction: null,
 
   didReceiveAttrs() {
+    this._super(...arguments);
     next(() => {
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.get('context').services().then(({ data }) => {
-          if (data.length > 0) {
+      this.get('context').services().then(({ data }) => {
+        if (data.length > 0) {
+          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             this.send('isEndpointServerAvailable', true);
           }
-        });
-      }
+        }
+      });
     });
   },
 
