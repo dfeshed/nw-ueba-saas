@@ -334,6 +334,30 @@ table {
 .rsa-chart {
   width: 100%;
   height: 150px;
+
+  .rsa-x-axis line {
+    stroke: text-color(primary);
+  }
+
+  .rsa-x-axis path {
+    stroke: text-color(primary);
+  }
+
+  .rsa-x-axis text {
+    fill: text-color(primary);
+  }
+
+  .rsa-y-axis line {
+    stroke: text-color(primary);
+  }
+
+  .rsa-y-axis path {
+    stroke: text-color(primary);
+  }
+
+  .rsa-y-axis text {
+    fill: text-color(primary);
+  }
 }
 
 .dashboard-card {

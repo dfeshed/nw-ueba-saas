@@ -33,12 +33,14 @@ export default Component.extend({
   isChartParent: true,
   // Adjust margins so that the axes fit
   margin: { top: 5, bottom: 30, left: 30, right: 0 },
-  xAxisStartsAtZero: false,
   xProp: 'x',
   xScaleFn: scaleTime,
   yProp: 'y',
-  yAxisStartsAtZero: true,
   yScaleFn: scaleLinear,
+
+  // object describing x & y min & max domain extents, all entries optional
+  // default to lower bound of y-axis fixed at 0, all others dynamic
+  domainExtents: { y: { fixed: [0] } },
 
   @computed('elementId')
   clipId: (id) => `clip-${id}`,
@@ -55,11 +57,11 @@ export default Component.extend({
     return Math.max(calculatedHeight, 0);
   },
 
-  @computed('data', 'xProp', 'xAxisStartsAtZero')
-  xDomain: (data, xProp, zeroed) => computeExtent(data, (d) => d[xProp], zeroed),
+  @computed('data', 'xProp', 'domainExtents')
+  xDomain: (data, xProp, domainExtents) => computeExtent(data, (d) => d[xProp], domainExtents[xProp]),
 
-  @computed('data', 'yProp', 'yAxisStartsAtZero')
-  yDomain: (data, yProp, zeroed) => computeExtent(data, (d) => d[yProp], zeroed),
+  @computed('data', 'yProp', 'domainExtents')
+  yDomain: (data, yProp, domainExtents) => computeExtent(data, (d) => d[yProp], domainExtents[yProp]),
 
   @computed('graphWidth')
   xRange: (graphWidth) => [0, graphWidth],

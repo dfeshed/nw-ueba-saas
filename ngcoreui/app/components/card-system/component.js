@@ -8,6 +8,10 @@ export default Component.extend(MonitorMixin, {
   tagName: 'vbox',
   classNames: ['dashboard-card', 'border-panel'],
 
+  domainExtents: {
+    y: { fixed: [ 0, 100 ] }
+  },
+
   monitor: [
     {
       name: 'cpu_process',

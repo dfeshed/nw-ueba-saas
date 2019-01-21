@@ -46,11 +46,21 @@ export function maximum(data, accessorFn = undefined) {
  * @param  {Array}    data       An Array of Arrays i.e. [[], []]
  * @param  {Function} accessorFn A function run against each Object in an Array
  *                               to retrieve the property of interest
- * @param  {Boolean}  zeroed     Should the extent be zero-based. i.e. [0, N]
+ * @param  {object}  extents     optional { fixed: [min, max] }
  * @return {Array}               A 2 element Array with min/max values
  */
-export function computeExtent(data, accessorFn, zeroed) {
-  return [zeroed ? 0 : minimum(data, accessorFn), maximum(data, accessorFn)];
+export function computeExtent(data, accessorFn, extents) {
+  let range = [];
+  if (extents && extents.fixed) {
+    range = extents.fixed;
+  }
+  if (range.length === 0) {
+    range.push(minimum(data, accessorFn));
+  }
+  if (range.length === 1) {
+    range.push(maximum(data, accessorFn));
+  }
+  return range;
 }
 
 /**

@@ -1,13 +1,11 @@
 <h1 class="large centered">Packet Capture</h1>
 {{#rsa-chart data=graphAdapter as |params|}}
-  {{#each params.data as |series index|}}
-    {{rsa-line-series
-      data=params.data
-      dataIndex=index
-      xScale=params.xScale
-      yScale=params.yScale
-      height=params.graphHeight}}
-  {{/each}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=0
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
   {{rsa-y-axis scale=params.yScale tickCount=3}}
 {{/rsa-chart}}
 <h1 class="large centered">{{valuesAdapter.capture_rate}} Mbps</h1>
