@@ -28,10 +28,19 @@ const currentStreamState = {
   stopStreamingCallbacks: [],
 
   // An accumulation of all the events that have come in
-  // for the current stream. If the stream finishes and
-  // the events in this array are under the limit, they
-  // will be sent to state.
+  // for the current stream batch. If the stream finishes
+  // and the events in this array are under the limit,
+  // they will be dispatched to state.
   currentBatchEvents: [],
+
+  // The number of events that have been dispatched to
+  // state during this stream
+  eventsDispatchedCount: 0,
+
+  // The number of batches that have come in since the
+  // last time currentBatchEvents has been flushed to
+  // state
+  interimBatchCount: 0,
 
   // When we need to do a binary search with the batch
   // start time in order to find a set of results that is
@@ -48,7 +57,7 @@ const currentStreamState = {
     noResults: 0
   },
 
-  // whether or not the user has cancelled the search
+  // whether or not the user has cancelled the stream
   cancelled: false,
 
   // Keeps track of the columns needed for the query
@@ -65,19 +74,46 @@ const _isSessionIdInColumnList = () => {
   return currentStreamState.flattenedColumnList.includes('sessionid');
 };
 
-// Anytime a batch needs to be kicked off, _resetForNextBatch
+// Calculate the total events we've acquired so far
+const _totalEvents = () => {
+  return currentStreamState.eventsDispatchedCount + currentStreamState.currentBatchEvents.length;
+};
+
+// Accumulate events and increment batch count and dispatch events
+// to state if enough events have accumulated and if the calling
+// function allows it
+const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatchNow) => {
+  return (dispatch) => {
+    currentStreamState.currentBatchEvents.push(...newBatchEvents);
+    currentStreamState.interimBatchCount++;
+
+    // >= because the caller may let many more batches than
+    // accumulate before it allows events to be dispatched.
+    // We want to dispatch a few batches at a time to avoid
+    // throttling state with too many state updates
+    const shouldDispatch = dispatchNow || currentStreamState.interimBatchCount >= 5;
+    if (canDispatch && shouldDispatch) {
+      dispatch(_dispatchEvents());
+    }
+  };
+};
+
+
+// Anytime a batch needs to be kicked off, _resetForNextBatches
 // makes sure that everything that needs to be reset is reset
 // and that previous streams are stopped/unsubscribed.
-const _resetForNextBatch = () => {
+const _resetForNextBatches = () => {
   if (currentStreamState.stopStreamingCallbacks.length > 0) {
     currentStreamState.stopStreamingCallbacks.forEach((cb) => cb());
     currentStreamState.stopStreamingCallbacks.length = 0;
   }
   currentStreamState.currentBatchEvents.length = 0;
+  currentStreamState.interimBatchCount = 0;
 };
 
-// Called if there's an error or if all batching is complete and we are done
-// with the entire query. This is not called when we cancel.
+// Called if there's an error or if all batching is complete
+// and we are done with the entire query. This is not called
+// when we cancel.
 const _done = (errorCode, serverMessage) => {
   return (dispatch) => {
     if (window.DEBUG_STREAMS) {
@@ -85,14 +121,12 @@ const _done = (errorCode, serverMessage) => {
       console.log('ALL DONE');
     }
 
+    // dispatch any events that have accumulated and have
+    // not already been sent to state
+    dispatch(_dispatchEvents());
+
     // Set queryIsRunning to false so UI can react
     dispatch(queryIsRunning(false));
-
-    // currentBatchEvents is a temporary holding spot for
-    // events, we want clear out that memory ASAP
-    // because it could be holding 100k events. Rather
-    // not wait for garbage collection.
-    currentStreamState.currentBatchEvents.length = 0;
 
     if (errorCode) {
       dispatch({
@@ -130,14 +164,24 @@ const _handleEventsStatus = (newStatus, streamingEndedTime) => {
 
 // Prepares and sends events to state
 const _dispatchEvents = () => {
-  // don't bother if there are no events to ship out
-  if (currentStreamState.currentBatchEvents.length > 0) {
-    currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
-    return {
-      type: ACTION_TYPES.SET_EVENTS_PAGE,
-      payload: currentStreamState.currentBatchEvents
-    };
-  }
+  return (dispatch) => {
+    // don't bother if there are no events to ship out
+    if (currentStreamState.currentBatchEvents.length > 0) {
+      currentStreamState.currentBatchEvents.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
+
+      if (window.DEBUG_STREAMS) {
+        console.log(`Sending ${currentStreamState.currentBatchEvents.length} events to be rendered`);
+      }
+
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE,
+        payload: currentStreamState.currentBatchEvents
+      });
+      currentStreamState.eventsDispatchedCount += currentStreamState.currentBatchEvents.length;
+      currentStreamState.currentBatchEvents.length = 0;
+      currentStreamState.interimBatchCount = 0;
+    }
+  };
 };
 
 
@@ -167,11 +211,10 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
           console.log(`window was all the way down to ${batchWindow}, just going with what we have and end search`);
         }
 
-        // So we have a window that is 0 or 1 second long, and in that window
-        // we have too many results. We can't get smaller. So just dispatch
-        // the events and get outta Dodge. The user won't get the "latest" events
-        // within that second, but there's just no way to do that.
-        dispatch(_dispatchEvents());
+        // So we have a window that is 0 or 1 second long, and in that
+        // window we have too many results. We are done! The user won't
+        // get the  "latest" events within that second, but there's just
+        // no way to do that.
         dispatch(_done());
       }
     }
@@ -232,7 +275,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
     return;
   }
 
-  _resetForNextBatch();
+  _resetForNextBatches();
 
   // In order for counts to work properly, everything has to
   // be evenly a minute and sometimes because the entire range
@@ -293,8 +336,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           }
 
           // Add events to cache of current requests events
-          currentStreamState.currentBatchEvents =
-            [...currentStreamState.currentBatchEvents, ...payload];
+          dispatch(_addEventsToResponseCache(payload));
 
           // eager clearing out of memory
           response.data.length = 0;
@@ -380,21 +422,14 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // We can process these results into state and figure out
         // whether we need to run another query or if we are done.
 
-        if (window.DEBUG_STREAMS) {
-          console.log(
-            `Happy with batch result, sending ${currentStreamState.currentBatchEvents.length} records to state for rendering`
-          );
-        }
-
         // reset the failures tracker since this was a success
         currentStreamState.binarySearchBatchStartTime = { tooMany: 0, noResults: 0 };
 
         // Preprocess and send these results to state
         dispatch(_dispatchEvents());
 
-        const { data, streamLimit } = investigate.eventResults;
-        const totalEventsAccumulated = data.length + currentStreamState.currentBatchEvents.length;
-        const isAtOrAboveMaxEventsAllowed = totalEventsAccumulated >= streamLimit;
+        const { streamLimit } = investigate.eventResults;
+        const isAtOrAboveMaxEventsAllowed = currentStreamState.eventsDispatchedCount >= streamLimit;
 
         // Have we gone over the max event limit?
         // Or have we backed our way up to the start of the
@@ -404,14 +439,14 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           return;
         }
 
-        if (window.DEBUG_STREAMS) {
-          console.log(`But we are not done, need more, accumulated ${totalEventsAccumulated}, event count ${eventCount}`);
-        }
-
         // IF WE ARE THIS FAR...
         // We are NOT done. We have results, but we both are not at the max
         // AND we have not reached the end of the time range. Need to go
         // get more events.
+
+        if (window.DEBUG_STREAMS) {
+          console.log(`But we are not done, need more, accumulated ${currentStreamState.eventsDispatchedCount}, event count ${eventCount}`);
+        }
 
         const isEventCountLessThanStreamLimit = !!eventCount && eventCount < streamLimit;
         if (isEventCountLessThanStreamLimit) {
@@ -446,7 +481,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           calculateNewStartForNextBatch(
             batchStartTime,
             endTimeToUseForCalculations,
-            totalEventsAccumulated,
+            currentStreamState.eventsDispatchedCount,
             streamLimit
           );
 
@@ -510,7 +545,7 @@ export const cancelEventsStream = () => {
   if (window.DEBUG_STREAMS) {
     console.log('Cancelling Streams');
   }
-  _resetForNextBatch();
+  _resetForNextBatches();
   currentStreamState.cancelled = true;
 };
 
@@ -532,6 +567,7 @@ export const eventsStartNewest = () => {
 
     currentStreamState.binarySearchBatchStartTime = { tooMany: 0, noResults: 0 };
     currentStreamState.cancelled = false;
+    currentStreamState.eventsDispatchedCount = 0;
     currentStreamState.flattenedColumnList = getFlattenedColumnList(getState());
 
     let startTimeForFirstBatch = queryNode.endTime - INITIAL_TIME_WINDOW_IN_SECONDS;
@@ -565,10 +601,14 @@ export const eventsStartOldest = () => {
   }
 
   currentStreamState.cancelled = false;
+  currentStreamState.eventsDispatchedCount = 0;
+  let isFirstEventPayload = true;
 
-  _resetForNextBatch();
+  _resetForNextBatches();
 
   return (dispatch, getState) => {
+
+    const { streamLimit } = getState().investigate.eventResults;
 
     const handlers = {
       onInit(stopStream) {
@@ -577,7 +617,8 @@ export const eventsStartOldest = () => {
       },
       onResponse(response) {
         // if we cancelled before this message got back, do not
-        // bother processing it
+        // bother processing it, no need to exit with _done as
+        // cancel cleans up
         if (currentStreamState.cancelled) {
           return;
         }
@@ -603,48 +644,39 @@ export const eventsStartOldest = () => {
            (lowerCaseDesc === 'executing' && parseInt(percent, 10) < 100 && payload.length === 0))) {
           return;
         } else {
-          payload.forEach(mergeMetaIntoEvent(_isSessionIdInColumnList()));
-          dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
-
-          const { investigate } = getState();
-          const { data, streamLimit } = investigate.eventResults;
-
-          const totalEvents = data.length;
-          const areEventsAtLimit = totalEvents >= streamLimit;
-
           if (window.DEBUG_STREAMS) {
-            console.log(`Received batch of ${payload.length} to make ${totalEvents}`);
+            console.log(`Received batch of ${payload.length}`);
             console.timeEnd();
             console.time();
           }
 
+          // Add events to cache of current requests events, want to force
+          // a dispatch of the very first batch so the users see something
+          // quickly
+          dispatch(_addEventsToResponseCache(payload, true, isFirstEventPayload));
+          isFirstEventPayload = false;
+
           // The stream does not indicate it is 'complete' if it hits the limit
           // so we have to detect that and jump to complete.
+          const areEventsAtLimit = _totalEvents() >= streamLimit;
           if (areEventsAtLimit) {
             if (window.DEBUG_STREAMS) {
               console.log('Query is ending because the limit has been hit');
             }
-            dispatch(queryIsRunning(false));
-            dispatch(_handleEventsStatus('complete', Date.now()));
+
+            dispatch(_done());
           }
         }
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-          payload: { status: 'error', reason: errorCode, message: serverMessage }
-        });
-        dispatch(queryIsRunning(false));
+        dispatch(_done(errorCode, serverMessage));
       },
       onCompleted() {
         if (window.DEBUG_STREAMS) {
-          console.timeEnd();
           console.log('Query is ending because we received all results');
         }
-
-        dispatch(queryIsRunning(false));
-        dispatch(_handleEventsStatus('complete', Date.now()));
+        dispatch(_done());
       },
       onStopped() {
         dispatch(queryIsRunning(false));
@@ -658,7 +690,7 @@ export const eventsStartOldest = () => {
     const { investigate } = state;
     const queryNode = getActiveQueryNode(getState());
     const { language } = investigate.dictionaries;
-    const { streamLimit, streamBatch } = investigate.eventResults;
+    const { streamBatch } = investigate.eventResults;
     fetchStreamingEvents(
       queryNode,
       language,
