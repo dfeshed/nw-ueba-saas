@@ -1,5 +1,5 @@
 import { setupRenderingTest } from 'ember-qunit';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { settled, waitUntil, click, findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -46,7 +46,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     noResultsMessage: '.rsa-explorer-table .no-results-message .message'
   };
 
-  test('The rsa-alerts component renders to the DOM', async function(assert) {
+  skip('The rsa-alerts component renders to the DOM', async function(assert) {
     const done = assert.async();
     setState();
     await render(hbs`{{rsa-alerts}}`);

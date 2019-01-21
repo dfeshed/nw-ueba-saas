@@ -11,6 +11,12 @@ import { typeOf } from '@ember/utils';
 import { warn } from '@ember/debug';
 import config from 'ember-get-config';
 
+// creates a random number between 1 - 10000 that is used when creating
+// subscription IDs. The random number prevents possible collision of IDs
+// between tabs, which, if it occurs, allows one tab to cancel another
+// tab's requests
+const REQUEST_ID_RANDOMIZER = Math.ceil(Math.random() * 100000);
+
 /**
  * Default limit on the number of records that a stream will transmit from server.
  * Used to avoid excessive memory consumption on browser. Can be overwritten by each
@@ -99,7 +105,8 @@ export default EmberObject.extend({
 
     // Auto-generate a request id, if needed.
     if (this.get('requireRequestId')) {
-      params.id = params.id || `req-${_requestCounter}`;
+      const newRequestId = `${REQUEST_ID_RANDOMIZER}${_requestCounter}`;
+      params.id = params.id || `req-${newRequestId}`;
       _requestCounter++;
     }
 
