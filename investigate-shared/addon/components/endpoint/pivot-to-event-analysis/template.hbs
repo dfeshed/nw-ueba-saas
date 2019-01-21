@@ -1,5 +1,9 @@
 <hbox class="rsa-button-group">
-  {{#rsa-form-button class="event-analysis" defaultAction=(action 'processEventAnalysis') isDisabled=isDisabled}}
+  {{#rsa-form-button
+     title=(if isDisabled (t 'investigateShared.endpoint.fileActions.pivotToInvestigateDisableToolTip'))
+     class="event-analysis"
+     defaultAction=(action 'processEventAnalysis')
+     isDisabled=isDisabled}}
     {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
     {{t 'investigateShared.endpoint.fileActions.pivotToInvestigate'}}
   {{/rsa-form-button}}

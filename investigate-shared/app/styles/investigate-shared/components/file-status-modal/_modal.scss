@@ -27,6 +27,17 @@ $whitelistAlertWidth: 362px;
     }
     .comment-box {
       margin-top: rsa-whitespace(less);
+      .comment-box-label {
+        color: text-color(primary, light);
+        font-size: .7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        span {
+          color: red;
+        }
+      }
     }
     .radio-controls, .comment-box {
       font-weight: 400;
@@ -61,11 +72,11 @@ $whitelistAlertWidth: 362px;
       }
       p.remediation-action-note {
         line-height: 1.2rem;
-        padding: rsa-whitespace(least) 0 rsa-whitespace(less) 0;
+        padding: rsa-whitespace(least) 0 1.5rem 0;
         color: text-color(primary, light)
       }
       box {
-        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
+        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
         font-weight: 400;
         font-size: 1rem;
         line-height: 1rem;
@@ -91,7 +102,7 @@ $whitelistAlertWidth: 362px;
       }
     }
     .blacklist-category-title {
-      padding-top: rsa-whitespace(less);
+      padding-top: rsa-whitespace();
     }
     .whitelist-alert-icon {
       color:text-color(accentFour);

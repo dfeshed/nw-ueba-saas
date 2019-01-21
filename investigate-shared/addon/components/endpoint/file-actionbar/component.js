@@ -98,6 +98,7 @@ export default Component.extend({
     // Translated titles added.
     return fileActionConfClone.map((item) => {
       const title = i18n.t(`investigateShared.endpoint.fileActions.${item.name}`).string;
+      const disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`).string;
       let { subItems } = item;
       if (subItems) {
         subItems = subItems.map((subItem) => {
@@ -106,7 +107,7 @@ export default Component.extend({
         });
         return { ...item, title, subItems };
       }
-      return { ...item, title };
+      return { ...item, title, disabledTooltip };
     });
   },
 

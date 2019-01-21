@@ -23,12 +23,9 @@ const COLUMN_WIDTH = {
 
 const SUPPORTED_SORT_TYPES = [
   'firstFileName',
-  'firstSeenTime',
   'reputationStatus',
   'score',
-  'size',
   'format',
-  'signature.features',
   'pe.resources.company',
   'fileStatus',
   'remediationAction',

@@ -239,6 +239,8 @@ page.investigate-files-engine {
       padding-left: 5rem;
       padding-right: 5rem;
       font-size: 1rem;
+      position: relative;
+      top: 1rem;
     }
   }
   .machine-count, .machine-count * {
@@ -274,6 +276,11 @@ page.investigate-files-engine {
     }
     .loader_icon {
       height: 70vh;
+    }
+  }
+  .left-zone {
+    .rsa-header {
+      padding: 1rem;
     }
   }
   .right-zone {

@@ -39,6 +39,8 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
+
   });
 
   test('More action external lookup for google', async function(assert) {
@@ -171,6 +173,34 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await click('.rsa-dropdown-action-list .panel3');
   });
 
+  test('More action, Download to server disable tooltip', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: true });
+
+    this.set('downloadFiles', function() {
+      assert.ok('External function called on click of button');
+    });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      downloadFiles=downloadFiles
+      accessControl=accessControl
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list .panel3')[0].title, 'Maximum of 100 files can be downloaded at a time.', 'download file to server tooltip should present');
+    assert.equal(findAll('.rsa-dropdown-action-list .panel4')[0].title, 'Download the file to server to save a local copy.', 'Save a local copy tooltip should present');
+    assert.equal(findAll('.rsa-dropdown-action-list .panel5')[0].title, 'Download the file to server to analyze.', 'Analyze file tooltip should present');
+
+  });
   test('More action, Save local copy', async function(assert) {
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },

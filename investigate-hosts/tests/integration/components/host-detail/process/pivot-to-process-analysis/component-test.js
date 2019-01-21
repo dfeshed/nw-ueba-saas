@@ -35,6 +35,8 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
   test('Analyze process is disabled, for multiple selection', async function(assert) {
     await render(hbs`{{host-detail/process/pivot-to-process-analysis item=[{ a:1 }, { a:1 }] }}`);
     assert.equal(findAll('.rsa-form-button-wrapper')[0].classList.contains('is-disabled'), true, 'Analyze process is disabled when multiple items are selected');
+    assert.equal(findAll('.rsa-form-button-wrapper')[0].classList.contains('is-disabled'), true, 'Analyze process is disabled when multiple items are selected');
+    assert.equal(findAll('.rsa-form-button-wrapper')[0].title, 'Select a single file to analyze.', 'tooltop should be Select a single file to analyze.');
   });
 
   test('Analyze process enabled for single item selction', async function(assert) {

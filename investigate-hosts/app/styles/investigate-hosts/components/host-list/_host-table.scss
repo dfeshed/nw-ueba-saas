@@ -62,6 +62,9 @@
 }
 
 .host-table__toolbar {
+  .title-header {
+    margin-bottom: 0px;
+  }
   background-color: background-color(primary, darkest, somewhat-opaque);
   color: text-color(primary, lightest);
   label {
@@ -91,6 +94,21 @@
 
   .scan-modal {
     display: none;
+  }
+  .rsa-investigate-query-container {
+    &__service-selector {
+      margin-right: rsa-whitespace(less);
+      .js-test-service {
+        width: 100px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rsa-form-button {
+        max-height: 30px;
+      }
+    }
   }
 }
 

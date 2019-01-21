@@ -53,12 +53,18 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
     }
     .close-zone {
       margin-right: 0.5rem;
+      .rsa-form-button i {
+        font-size: 1rem;
+      }
     }
     .actionbar-pivot-to-investigate {
       padding-left: rsa-whitespace(less);
     }
     .certificate-status-button {
       margin-right: 7px;
+    }
+    .pivot-to-event-analysis {
+      height: 30px;
     }
   }
   .certificates-footer {

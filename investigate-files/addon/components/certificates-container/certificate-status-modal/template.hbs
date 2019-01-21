@@ -23,9 +23,13 @@
       {{/each}}
     </box>
     <box class="comment-box">
+      <label class="comment-box-label">
+        {{t 'investigateFiles.editFileStatus.commentTitle'}}
+        <span>*</span>
+      </label>
       {{rsa-form-textarea
-        label=(t 'investigateFiles.editFileStatus.commentTitle')
         value=data.comment
+        placeholder=(t 'investigateFiles.editFileStatus.placeholder')
         maxlength=900
       }}
       {{#if isCharectarLimitReached}}

@@ -33,15 +33,15 @@
         </label>
       {{/if}}
       <div class="rsa-btn-group align-right rsa-m-md">
+        {{#rsa-form-button class= "cancel-filter" click=(action 'closeSaveFilterModal')}}
+          {{t 'investigateFiles.button.cancel'}}
+        {{/rsa-form-button}}
         {{#rsa-form-button
           style='primary'
           class= "rsa-m-r-md save-filter"
           isDisabled=disableSaveButton
           click=(action 'saveFilter')}}
           {{t 'investigateFiles.button.save'}}
-        {{/rsa-form-button}}
-        {{#rsa-form-button class= "cancel-filter" click=(action 'closeSaveFilterModal')}}
-          {{t 'investigateFiles.button.cancel'}}
         {{/rsa-form-button}}
       </div>
     </div>

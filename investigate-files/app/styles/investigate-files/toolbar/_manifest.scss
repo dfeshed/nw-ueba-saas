@@ -11,6 +11,21 @@
     .rsa-form-button-wrapper .rsa-form-button i {
       margin-right: 0px;
     }
+    .rsa-investigate-query-container {
+      &__service-selector {
+        margin-right: rsa-whitespace(less);
+        .js-test-service {
+          width: 100px;
+          display: inline-block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .rsa-form-button {
+          max-height: 30px;
+        }
+      }
+    }
   }
   hbox {
     align-items: center;
@@ -23,6 +38,7 @@
   }
    .file-actionbar {
      padding: 0;
+     padding-bottom: 3px;
    }
   .toolbar-button {
     padding: rsa-whitespace(less);
@@ -36,6 +52,7 @@
   .toolbar-actions {
     display: inline-flex;
     flex-wrap: wrap;
+    margin-top: -1px;
     .divider {
       @include border-left(1px, solid, primary);
       height: 2rem;

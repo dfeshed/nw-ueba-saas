@@ -66,10 +66,14 @@
     </box>
 
     <box class="comment-box">
+      <label class="comment-box-label">
+        {{t 'investigateFiles.editFileStatus.commentTitle'}}
+        <span>*</span>
+      </label>
       {{rsa-form-textarea
-        label=(t 'investigateFiles.editFileStatus.commentTitle')
         value=formData.comment
         maxlength=900
+        placeholder=(t 'investigateFiles.editFileStatus.placeholder')
       }}
       {{#if isCharacterLimitReached}}
         <span class='limit-reached'>

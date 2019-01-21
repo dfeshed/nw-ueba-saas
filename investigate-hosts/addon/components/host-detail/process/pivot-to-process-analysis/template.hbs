@@ -1,5 +1,6 @@
 {{#rsa-form-button
   isDisabled=disableAnalyzeButton
+  title=(if disableAnalyzeButton (t 'investigateHosts.process.analyzeProcessDisabledTooltip'))
   click=(action 'toggleServiceSelection' item)}}
   {{rsa-icon name='expand-6' style='filled' size='small'}}
   {{t 'investigateHosts.process.analyzeProcess'}}

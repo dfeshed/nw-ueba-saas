@@ -11,6 +11,12 @@
     margin-right: 30px;
     padding-left: rsa-whitespace();
     line-height: rsa-whitespace();
+    &__label {
+      height: 15px;
+    }
+    &--disabled {
+      color: text-color(primary);
+    }
   }
   .show-divider {
     @include border-top(1px, solid, primary, base, opaque);

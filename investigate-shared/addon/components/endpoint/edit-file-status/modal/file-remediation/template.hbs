@@ -6,6 +6,7 @@
     {{#power-select
       searchEnabled=false
       triggerClass="inline"
+      placeholder=(t 'investigateFiles.editFileStatus.blacklistCategoryPlaceholder')
       options=fileCategories
       onchange=(action 'setFileCategory')
       selected=data.category as |option|}}

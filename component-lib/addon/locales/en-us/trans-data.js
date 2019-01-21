@@ -2379,6 +2379,7 @@ export default {
       successMessage: 'File status updated successfully',
       title: 'Change File Status',
       blacklistCategory: 'Category',
+      blacklistCategoryPlaceholder: 'Select category',
       fileStatusTitle: 'Status',
       fileStatusOptions: {
         neutral: 'Neutral',
@@ -2409,7 +2410,8 @@ export default {
         blockQuarantineFile: 'Block and Quarantine'
       },
       certificateStatusTitle: 'Certificate Status',
-      commentTitle: 'Comments*',
+      commentTitle: 'Comments ',
+      placeholder: 'Enter comments',
       saveBtn: 'Save',
       cancelBtn: 'Cancel',
       blacklistCertificate: 'Blacklist Certificate',
@@ -2601,6 +2603,7 @@ export default {
       backToProcesses: 'Processes',
       processDetails: 'Process Details',
       analyzeProcess: 'Analyze Process',
+      analyzeProcessDisabledTooltip: 'Select a single file to analyze.',
       machineCount: 'Active On',
       toolTip: {
         openProcessDetails: 'Open Process details',
@@ -2611,7 +2614,7 @@ export default {
       viewType: {
         listView: 'List view',
         treeView: 'Tree view',
-        treeViewTooltip: 'Column sorting unavailable in tree view.'
+        treeViewTooltip: 'Sorting in not possible in tree view.'
       },
       message: {
         noResultsMessage: 'No process information was found.'
@@ -3610,6 +3613,7 @@ export default {
       fileActions: {
         editFileStatus: 'Change File Status',
         pivotToInvestigate: 'Analyze Events',
+        pivotToInvestigateDisableToolTip: 'Select a single file to analyze',
         watch: 'Watch',
         downloadToServer: 'Download File to Server',
         more: 'More',
@@ -3628,7 +3632,12 @@ export default {
         processEvents: 'Process Events',
         registryEvents: 'Registry Events',
         viewCertificate: 'View Certificates',
-        analyzeUser: 'Analyze User'
+        analyzeUser: 'Analyze User',
+        tooltips: {
+          downloadToServer: 'Maximum of 100 files can be downloaded at a time.',
+          saveLocalCopy: 'Download the file to server to save a local copy.',
+          analyzeFile: 'Download the file to server to analyze.'
+        }
       },
       savedFilters: 'Saved Filters',
       filter: {
