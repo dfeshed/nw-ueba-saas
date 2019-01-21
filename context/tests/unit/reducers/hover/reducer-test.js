@@ -17,11 +17,13 @@ const entitySummary = [
 ];
 
 const initialState = Immutable.from({
-  modelSummary: null
+  modelSummary: null,
+  isEndpointServerAvailable: false
 });
 
 const resultState = Immutable.from({
-  modelSummary: entitySummary
+  modelSummary: entitySummary,
+  isEndpointServerAvailable: true
 });
 
 let result;
@@ -37,4 +39,9 @@ const reducerFunction = (type, payload) => {
 test('test GET_SUMMARY_DATA', function(assert) {
   result = reducerFunction(ACTION_TYPES.GET_SUMMARY_DATA, resultState);
   assert.deepEqual(result.modelSummary, resultState);
+});
+
+test('test SET_ENDPOINT_SERVER_AVAILABLE', function(assert) {
+  result = reducerFunction(ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE, resultState);
+  assert.deepEqual(result.isEndpointServerAvailable, resultState);
 });

@@ -43,7 +43,7 @@ module('Unit | Route | files.index', function(hooks) {
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
 
-    await route.model();
+    await route.model({});
 
     await settled();
 

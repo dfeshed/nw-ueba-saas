@@ -167,6 +167,44 @@ const pivotToInvestigateUrl = (entityType, entityId, metas) => {
   return `/investigation/choosedevice/navigate/query/${encodeURIComponent(encodeURIComponent(query))}`;
 };
 
+const FILE_META = ['FILE_NAME', 'FILE_HASH'];
+
+const pivotToEndpointUrl = (entityType, entityId) => {
+  const query = '';
+  if (isEmpty(entityType) || isEmpty(entityId)) {
+    return query;
+  }
+  if (FILE_META.includes(entityType)) {
+    return `/investigate/files?query=${(encodeURIComponent(_prepareQuery(entityType, entityId)))}`;
+  } else {
+    return `/investigate/hosts?query=${(encodeURIComponent(_prepareQuery(entityType, entityId)))}`;
+  }
+};
+
+const _prepareQuery = (entityType, entityId) => {
+  let query = '';
+  switch (entityType) {
+    case 'FILE_NAME':
+      query = `filename = ${entityId}`;
+      break;
+    case 'FILE_HASH':
+      query = `checksum = ${entityId}`;
+      break;
+    case 'IP':
+      query = `alias.ip = ${entityId}`;
+      break;
+    case 'HOST':
+      query = `alias.host = ${entityId}`;
+      break;
+    case 'MAC_ADDRESS':
+      query = `alias.mac = ${entityId}`;
+      break;
+    default:
+      query = '';
+  }
+  return query;
+};
+
 const getMetaUrl = (entityId, entityType) => {
   switch (entityType) {
     case 'IP':
@@ -196,6 +234,7 @@ export {
   getTabs,
   getSortedData,
   pivotToInvestigateUrl,
+  pivotToEndpointUrl,
   getOrder,
   getWarningInfo
 };

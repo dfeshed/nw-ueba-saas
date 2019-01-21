@@ -1,19 +1,55 @@
 import { module, test } from 'qunit';
 
-import { addFilter, parseQueryString } from 'investigate-shared/utils/query-util';
+import { addFilter, parseQueryString, isValidIPV6 } from 'investigate-shared/utils/query-util';
 
 module('Unit | Utils | Query Util', function() {
 
-  test('Parse the query string', function(assert) {
+  test('Parse the query string of IP related query params', function(assert) {
+    // when ip.src is valid ipv4
     let queryString = 'ip.src%20%3D%201.1.1.1';
-    const [parsedString] = parseQueryString(queryString);
+    let [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.ipv4');
     assert.equal(parsedString.propertyValues[0].value, '1.1.1.1');
 
-    queryString = 'alias.host%20%3D%20%27Test_Machine%27';
+    // when alias.ip is valid ipv6
+    queryString = 'alias.ip%20%3D%20fe80::49f4:9ee4:c2ae:ef0a';
+    [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.ipv6');
+    assert.equal(parsedString.propertyValues[0].value, 'fe80::49f4:9ee4:c2ae:ef0a');
+  });
+
+  test('Parse the query string of alias.host query param', function(assert) {
+    const queryString = 'alias.host%20%3D%20%27Test_Machine%27';
     const [newParsedString] = parseQueryString(queryString);
     assert.equal(newParsedString.propertyName, 'machineIdentity.machineName');
     assert.equal(newParsedString.propertyValues[0].value, 'Test_Machine');
+  });
+
+  test('Parse the query string of alias.mac query param', function(assert) {
+    const queryString = 'alias.mac%20%3D%2000:50:56:01:1B:BC';
+    const [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.macAddress');
+    assert.equal(parsedString.propertyValues[0].value, '00:50:56:01:1B:BC');
+  });
+
+  test('Parse the query string of checksum query param', function(assert) {
+    const queryString = 'checksum%20%3D%20568c5cbf9877f6b9e39d1e7ca0ff0a36';
+    const [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString.propertyName, 'fileHash');
+    assert.equal(parsedString.propertyValues[0].value, '568c5cbf9877f6b9e39d1e7ca0ff0a36');
+  });
+
+  test('Parse the query string of filename query param', function(assert) {
+    const queryString = 'filename%20%3D%20lsass.exe';
+    const [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString.propertyName, 'firstFileName');
+    assert.equal(parsedString.propertyValues[0].value, 'lsass.exe');
+  });
+
+  test('Parse the query string when query is empty', function(assert) {
+    const queryString = '';
+    const [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString, undefined, 'should return undefined when query is empty.');
   });
 
   test('addFilter split the hashes in to three columns', function(assert) {
@@ -109,5 +145,21 @@ module('Unit | Utils | Query Util', function() {
     assert.equal(result.criteria.criteriaList.length, 2);
     assert.equal(result.criteria.criteriaList[0].expressionList.length, 1);
     assert.equal(result.criteria.criteriaList[1].expressionList.length, 3);
+  });
+
+  test('isValidIPV6 returns true for valid ipv6', function(assert) {
+    const value = 'fe80::49f4:9ee4:c2ae:ef0a';
+    const result = isValidIPV6(value);
+    assert.ok(result);
+  });
+
+  test('isValidIPV6 returns false for empty/invalid ipv6', function(assert) {
+    let value = null;
+    let result = isValidIPV6(value);
+    assert.notOk(result);
+
+    value = '1.2.3.4';
+    result = isValidIPV6(value);
+    assert.notOk(result);
   });
 });

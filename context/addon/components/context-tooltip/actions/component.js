@@ -4,12 +4,13 @@ import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
-import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
+import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/util/context-data-modifier';
 import { getSummaryData } from 'context/actions/model-summary';
 import { inject as service } from '@ember/service';
 
-const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
-  modelSummary
+const stateToComputed = ({ context: { hover: { modelSummary, isEndpointServerAvailable } } }) => ({
+  modelSummary,
+  isEndpointServerAvailable
 });
 
 const dispatchToActions = {
@@ -58,7 +59,7 @@ const ContextToolTipActions = Component.extend({
    * @private
   */
   @computed('entityType', 'entityId')
-  showEndpointLink(entityType, entityId) {
+  showEndpointThickClientLink(entityType, entityId) {
     return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS/));
   },
 
@@ -73,6 +74,16 @@ const ContextToolTipActions = Component.extend({
   },
 
   /**
+   * Indicates whether or not to show the link to NetWitness Endpoint.
+   * @type {Boolean}
+   * @private
+   */
+  @computed('entityType', 'entityType')
+  showEndpointLink(entityType, entityId) {
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS|FILE_HASH|FILE_NAME/));
+  },
+
+  /**
    * This URL will navigate the user to the Classic Investigate UI with a query for the entity, but
    * without any particular device (Concentrator/Broker) selected; the user will be prompted to select the device
    * before the query is executed.
@@ -80,6 +91,8 @@ const ContextToolTipActions = Component.extend({
    * @private
    */
   pivotToInvestigateUrl: '',
+
+  pivotToEndpointUrl: '',
 
   /**
    * This URL will navigate the user to the Archer Device Page if user is logged in or Archer Log in Page
@@ -119,6 +132,7 @@ const ContextToolTipActions = Component.extend({
 
         // We need both an entity type & id for pivot.
         this.set('pivotToInvestigateUrl', '');
+        this.set('pivotToEndpointUrl', '');
       } else {
 
         // Fetch the list of meta keys that correspond to this entity type.
@@ -131,6 +145,8 @@ const ContextToolTipActions = Component.extend({
             const metaKeys = data[entityType];
             const url = pivotToInvestigateUrl(entityType, entityId, metaKeys);
             this.set('pivotToInvestigateUrl', url);
+            const endpointUrl = pivotToEndpointUrl(entityType, entityId);
+            this.set('pivotToEndpointUrl', endpointUrl);
           });
       }
     }

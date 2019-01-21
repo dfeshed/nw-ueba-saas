@@ -66,7 +66,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
 
     assert.equal(findAll('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
-    assert.equal(findAll('.action').length, 4, 'Expected to find 4 action menu options');
+    assert.equal(findAll('.action').length, 5, 'Expected to find 5 action menu options');
     // Click the first option, that's the Add To List option
     await click(findAll('.action')[0]);
   });
@@ -262,7 +262,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
       entityId=entityId
     }}`);
 
-    assert.notOk(findAll('a.disabled').length, 'Expected not to find Pivot To Archer link disabled');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link a.disabled').length, 'Expected not to find Pivot To Archer link disabled');
     assert.equal(findAll('span')[1].title, '', 'Expected not to find tooltip for Pivot To Archer link');
 
     // Test Model Summary to be dispatched to context-tooltip actions to disable pivot to archer link in hover over
@@ -280,5 +280,84 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
     assert.ok(findAll('a.disabled').length, 'Expected to find Pivot To Archer link disabled');
     assert.equal(findAll('span')[1].title, 'Add or enable Archer or Data is not available.', 'Expected to find tooltip for Pivot To Archer link');
+  });
+
+  test('it only shows the Pivot to Endpoint link for IPs, HOSTs, FILE_HASHs, FILE_NAMEs, MAC addresses', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+
+    redux.dispatch({
+      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
+      payload: true
+    });
+
+    this.setProperties({
+      entityType: 'IP',
+      entityId: '10.20.30.40'
+    });
+
+    await render(hbs`{{context-tooltip/actions
+      entityType=entityType
+      entityId=entityId}}`);
+    assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 1, 'Expected to find endpoint link for IP');
+
+    this.setProperties({
+      entityType: 'HOST',
+      entityId: 'MACHINE1'
+    });
+    assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 1, 'Expected to find endpoint link for HOST');
+
+    this.setProperties({
+      entityType: 'DOMAIN',
+      entityId: 'www.g00gle.com'
+    });
+    assert.notOk(findAll('.js-test-pivot-to-endpoint-link').length, 'Expected to NOT find endpoint link for DOMAIN');
+
+    this.setProperties({
+      entityType: 'USER',
+      entityId: 'username1'
+    });
+    assert.notOk(findAll('.js-test-pivot-to-endpoint-link').length, 'Expected to NOT find endpoint link for USER');
+
+    this.setProperties({
+      entityType: 'FILE_NAME',
+      entityId: 'foo.pdf'
+    });
+    assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 'Expected to find endpoint link for FILE_NAME');
+
+  });
+
+  test('Enable/Disable Pivot to Endpoint link based on state', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+
+    redux.dispatch({
+      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
+      payload: true
+    });
+
+    this.setProperties({
+      entityType: 'IP',
+      entityId: '10.20.30.40'
+    });
+
+    await render(hbs`{{context-tooltip/actions
+      entityType=entityType
+      entityId=entityId}}`);
+    assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 1, 'Expected to find endpoint link for IP');
+
+
+    redux.dispatch({
+      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
+      payload: false
+    });
+
+    this.setProperties({
+      entityType: 'IP',
+      entityId: '10.20.30.40'
+    });
+
+    await render(hbs`{{context-tooltip/actions
+      entityType=entityType
+      entityId=entityId}}`);
+    assert.equal(findAll('a.disabled')[1].innerText.trim(), 'Pivot to Endpoint');
   });
 });

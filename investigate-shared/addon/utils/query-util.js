@@ -1,9 +1,12 @@
 import { isBlank } from '@ember/utils';
 
 const HASH_COLUMNS = ['checksumSha256', 'checksumMd5', 'checksumSha1'];
+const IP_COLUMNS = ['machineIdentity.networkInterfaces.ipv4', 'machineIdentity.networkInterfaces.ipv6'];
 const ENDPOINT_IP_MAPPING = 'machineIdentity.networkInterfaces.ipv4';
 const ENDPOINT_MAC_NAME_MAPPING = 'machineIdentity.networkInterfaces.macAddress';
 const ENDPOINT_HOST_MAPPING = 'machineIdentity.machineName';
+const ENDPOINT_FILE_NAME_MAPPING = 'firstFileName';
+const ENDPOINT_FILE_HASH_MAPPING = 'checksumSha256';
 
 const INVESTIGATE_ENDPOINT_META_MAPPING = {
   'alias.host': ENDPOINT_HOST_MAPPING,
@@ -18,12 +21,23 @@ const INVESTIGATE_ENDPOINT_META_MAPPING = {
   'alias.ip': ENDPOINT_IP_MAPPING,
   'alias.mac': ENDPOINT_MAC_NAME_MAPPING,
   'eth.src': ENDPOINT_MAC_NAME_MAPPING,
-  'eth.dst': ENDPOINT_MAC_NAME_MAPPING
+  'eth.dst': ENDPOINT_MAC_NAME_MAPPING,
+  'filename': ENDPOINT_FILE_NAME_MAPPING,
+  'checksum': ENDPOINT_FILE_HASH_MAPPING
 };
 
 const MONGO_OPERATOR_MAPPING = {
   '=': 'EQUAL',
   'contains': 'LIKE'
+};
+
+// IPv6 sources:
+// http://shop.oreilly.com/product/0636920023630.do
+// https://stackoverflow.com/questions/23483855/javascript-regex-to-validate-ipv4-and-ipv6-address-no-hostnames
+const VALID_IPV6_REGEX = /^((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?$/;
+
+const isValidIPV6 = (value) => {
+  return value ? VALID_IPV6_REGEX.test(value) : false;
 };
 
 /**
@@ -42,8 +56,18 @@ const parseQueryString = (queryString) => {
     .map((queryString) => {
       const [ meta, operator, ...valuePieces ] = queryString.split(' ');
       const value = valuePieces.join(' ').replace(/^'(.*)'$/, '$1'); // Replace the start and end single quotes
-      const propertyName = INVESTIGATE_ENDPOINT_META_MAPPING[meta];
+      let propertyName = INVESTIGATE_ENDPOINT_META_MAPPING[meta];
       const restrictionType = MONGO_OPERATOR_MAPPING[operator];
+
+      // for HASH_COLUMNS related properties use propertyName as 'fileHash' for filter
+      if (HASH_COLUMNS.includes(propertyName)) {
+        propertyName = 'fileHash';
+      } else if (IP_COLUMNS.includes(propertyName)) {
+        propertyName = IP_COLUMNS[0];
+        if (isValidIPV6(value)) {
+          propertyName = IP_COLUMNS[1];
+        }
+      }
       return { propertyName, propertyValues: [ { value } ], restrictionType };
     });
 };
@@ -213,5 +237,6 @@ const addFilter = (query, expressionList, type = 'file') => {
 export {
   addSortBy,
   addFilter,
-  parseQueryString
+  parseQueryString,
+  isValidIPV6
 };

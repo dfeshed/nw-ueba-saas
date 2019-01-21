@@ -13,6 +13,7 @@ import { warn, debug } from '@ember/debug';
 import * as ACTION_TYPES from './types';
 import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
+import { isEmpty } from '@ember/utils';
 import { lookup } from 'ember-dependency-lookup';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
@@ -28,6 +29,7 @@ import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/fi
 import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import { parseQueryString } from 'investigate-shared/utils/query-util';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -40,7 +42,7 @@ const _handleError = (response, type) => {
  * Bootstraping investigate files page, loads all the endpoint server and checks for availability
  * @returns {Function}
  */
-const bootstrapInvestigateFiles = () => {
+const bootstrapInvestigateFiles = (query) => {
   return async(dispatch) => {
     try {
       // 1. Wait for endpoint server to load and availability
@@ -49,7 +51,7 @@ const bootstrapInvestigateFiles = () => {
       // 2.1. Wait for user preference to load
       await dispatch(initializeFilesPreferences());
       // 2.2. Load list of files
-      dispatch(getFirstPageOfFiles());
+      dispatch(getFirstPageOfFiles(query));
       // 3. Fetch remaining required data
       dispatch(getFilter(() => {}, 'FILE'));
       dispatch(getRestrictedFileList('FILE'));
@@ -78,8 +80,15 @@ const changeEndpointServerSelection = (server) => {
  * @private
  * @returns {function(*, *)}
  */
-const _fetchFiles = (type) => {
+const _fetchFiles = (type, query) => {
   return (dispatch, getState) => {
+
+    if (query && !isEmpty(query)) {
+      const expression = parseQueryString(query);
+      const savedFilter = { id: -1, criteria: { expressionList: expression } };
+      dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
+    }
+
     const { systemFilter, sortField, isSortDescending, pageNumber } = getState().files.fileList;
     const { expressionList } = getState().files.filter;
     dispatch({
@@ -128,11 +137,11 @@ const getPageOfFiles = () => {
  * @returns {function(*)}
  * @private
  */
-const getFirstPageOfFiles = () => {
+const getFirstPageOfFiles = (query) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.RESET_FILES });
     dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
-    dispatch(_fetchFiles(ACTION_TYPES.FETCH_ALL_FILES));
+    dispatch(_fetchFiles(ACTION_TYPES.FETCH_ALL_FILES, query));
   };
 };
 

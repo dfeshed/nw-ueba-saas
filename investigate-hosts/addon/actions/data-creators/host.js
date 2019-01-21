@@ -28,7 +28,7 @@ const bootstrapInvestigateHosts = (query) => {
       // 2. Endpoint server is online do other action
       // 2.1. Wait for user preference to load
       await dispatch(initializeHostsPreferences());
-      // 2.2. Load list of files
+      // 2.2. Load list of machines
       dispatch(getPageOfMachines(query));
       // 3. Remaining data
       dispatch(getFilter(() => {}, 'MACHINE'));

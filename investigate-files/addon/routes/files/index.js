@@ -7,11 +7,20 @@ import * as ACTION_TYPES from '../../actions/types';
 export default Route.extend({
   redux: service(),
 
-  model() {
+  model({ query }) {
     next(() => {
       const redux = this.get('redux');
-      redux.dispatch(bootstrapInvestigateFiles());
+      redux.dispatch(bootstrapInvestigateFiles(query));
     });
+  },
+
+  resetController(controller, isExiting) {
+    if (isExiting) {
+      const queryParams = controller.get('queryParams');
+      for (let i = 0; i < queryParams.length; i++) {
+        controller.set(queryParams[i], null);
+      }
+    }
   },
 
   deactivate() {
