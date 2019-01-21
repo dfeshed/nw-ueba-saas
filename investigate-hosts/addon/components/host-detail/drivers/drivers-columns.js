@@ -13,7 +13,8 @@ const defaultColumns = [
   {
     field: 'fileName',
     title: 'Filename',
-    format: 'FILENAME'
+    format: 'FILENAME',
+    width: '150px'
   },
   {
     field: 'fileProperties.score',
@@ -27,29 +28,34 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'Reputation'
+    title: 'Reputation',
+    width: '130px'
   },
   {
     'field': 'fileProperties.fileStatus',
     'title': 'File Status',
     'label': 'investigateHosts.files.fields.fileStatus',
-    'disableSort': false
+    'disableSort': false,
+    width: '150px'
   },
   {
     field: 'signature',
     title: 'Signature',
-    format: 'SIGNATURE'
+    format: 'SIGNATURE',
+    width: '200px'
   },
   {
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
     label: 'investigateHosts.files.fields.downloaded',
     disableSort: true,
-    format: 'DOWNLOADSTATUS'
+    format: 'DOWNLOADSTATUS',
+    width: '150px'
   },
   {
     field: 'path',
-    title: 'Path'
+    title: 'Path',
+    width: '200px'
   }
 ];
 
@@ -59,7 +65,7 @@ const machineOsBasedConfig = {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
       format: 'DATE',
-      width: '20%'
+      width: '150px'
     }
   ],
   windows: [
@@ -67,7 +73,7 @@ const machineOsBasedConfig = {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
       format: 'DATE',
-      width: '20%'
+      width: '150px'
     }
   ],
   linux: []
