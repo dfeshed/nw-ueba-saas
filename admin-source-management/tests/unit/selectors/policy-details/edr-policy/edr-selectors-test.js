@@ -3,59 +3,65 @@ import Immutable from 'seamless-immutable';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
 
 import {
   focusedPolicy,
   selectedEdrPolicy
 } from 'admin-source-management/reducers/usm/policy-details/edr-policy/edr-selectors';
 
+let setState;
+
+const testPolicy = {
+  id: 'policy_014',
+  policyType: 'edrPolicy',
+  name: 'EMC Reston! 014',
+  description: 'EMC Reston 014 of policy policy_014',
+  dirty: false,
+  defaultPolicy: false,
+  lastPublishedOn: 1527489158739,
+  createdBy: 'admin',
+  createdOn: 1540318426092,
+  lastModifiedBy: 'admin',
+  lastModifiedOn: 1540318426092,
+  lastPublishedCopy: null,
+  associatedGroups: [],
+  scanType: 'ENABLED',
+  scanStartDate: null,
+  scanStartTime: null,
+  recurrenceInterval: 1,
+  recurrenceUnit: 'WEEKS',
+  runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
+  cpuMax: 75,
+  cpuMaxVm: 85,
+  primaryAddress: '10.10.10.10',
+  primaryNwServiceId: 'id1',
+  primaryHttpsPort: 443,
+  primaryHttpsBeaconInterval: 3,
+  primaryHttpsBeaconIntervalUnit: 'HOURS',
+  primaryUdpPort: 444,
+  primaryUdpBeaconInterval: 3,
+  primaryUdpBeaconIntervalUnit: 'MINUTES'
+};
+
 module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
     initialize(this.owner);
   });
 
   test('selectedEdrPolicy selector', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        associatedGroups: [],
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '10.10.10.10',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyAgentMode('ADVANCED')
       .build();
     assert.expect(12);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -75,45 +81,15 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
   });
 
   test('selectedEdrPolicy, ignore blank properties', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyPrimaryAddress('')
+      .setPolicyAgentMode('ADVANCED')
       .build();
     assert.expect(8);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -137,38 +113,23 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     }), false, 'primary address is ignored since it does not have a value');
   });
 
-  test('selectedEdrPolicy no scan settings section', function(assert) {
-    const state = new ReduxDataHelper()
+  test('selectedEdrPolicy no scan schedule section', function(assert) {
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyAgentMode('ADVANCED')
+      .setPolicyScanType('')
+      .setPolicyScanStartDate('')
+      .setPolicyScanStartTime('')
+      .setPolicyRecurInterval('')
+      .setPolicyRecurUnit('')
+      .setPolicyRunDaysOfWeek([])
+      .setPolicyCpuMax('')
+      .setPolicyCpuVm('')
       .build();
     assert.expect(2);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -180,42 +141,13 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     }), false, 'No Scan schedule section as expected');
   });
 
-  test('selectedEdrPolicy no adv scan settings section', function(assert) {
-    const state = new ReduxDataHelper()
+  test('selectedEdrPolicy no scan settings section', function(assert) {
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        blockingEnabled: false,
-        primaryAddress: '',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'MINUTES',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyBlockingEnabled(true)
+      .setPolicyAgentMode('ADVANCED')
       .build();
     assert.expect(2);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -224,48 +156,17 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails.includes({
       header: 'adminUsm.policyWizard.edrPolicy.advScanSettings',
       props: []
-    }), false, 'No Advanced Scan settings section as expected');
+    }), false, 'No Scan settings section as expected');
   });
 
-  test('selectedEdrPolicy no invasive action settings section', function(assert) {
-    const state = new ReduxDataHelper()
+  test('selectedEdrPolicy no response action settings section', function(assert) {
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        primaryAddress: '',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyAgentMode('ADVANCED')
       .build();
     assert.expect(2);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -274,41 +175,26 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails.includes({
       header: 'adminUsm.policyWizard.edrPolicy.invasiveActions',
       props: []
-    }), false, 'No Invasive Action settings section as expected');
+    }), false, 'No Response Action settings section as expected');
   });
 
   test('selectedEdrPolicy no endpoint settings section', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        agentMode: 'ADVANCED'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanType('ENABLED')
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyAgentMode('ADVANCED')
+      .setPolicyPrimaryAddress('')
+      .setPolicyPrimaryHttpsPort('')
+      .setPolicyPrimaryUdpPort('')
+      .setPolicyPrimaryUdpBeaconInterval('')
+      .setPolicyPrimaryUdpBeaconIntervalUnit('')
+      .setPolicyPrimaryHttpsBeaconInterval('')
+      .setPolicyPrimaryHttpsBeaconIntervalUnit('')
       .build();
     assert.expect(2);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -321,44 +207,13 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
   });
 
   test('selectedEdrPolicy no agent settings section', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedCopy: null,
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
       .build();
     assert.expect(3);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -375,44 +230,19 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
   });
 
   test('selectedEdrPolicy has advanced config settings section', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: 'policy_003',
-        policyType: 'edrPolicy',
-        name: 'EMC Bangalore! 013',
-        description: 'EMC Bangalore 013 of policy policy_013',
-        dirty: true,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        associatedGroups: [],
-        scanType: 'DISABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: null,
-        recurrenceUnit: null,
-        runOnDaysOfWeek: null,
-        cpuMax: null,
-        cpuMaxVm: null,
-        scanMbr: true,
-        requestScanOnRegistration: false,
-        blockingEnabled: false,
-        primaryAddress: '10.10.10.12',
-        primaryNwServiceId: 'id2',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 5,
-        primaryHttpsBeaconIntervalUnit: 'MINUTES',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 5,
-        primaryUdpBeaconIntervalUnit: 'SECONDS',
-        agentMode: 'ADVANCED',
-        customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyPrimaryHttpsBeaconInterval(5)
+      .setPolicyPrimaryHttpsBeaconIntervalUnit('MINUTES')
+      .setPolicyPrimaryUdpBeaconInterval(5)
+      .setPolicyPrimaryUdpBeaconIntervalUnit('SECONDS')
+      .setPolicyAgentMode('ADVANCED')
+      .setPolicyCustomConfig('"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}')
       .build();
     assert.expect(5);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -422,49 +252,27 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[5].props[0].value.nonTruncated,
       '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}',
       'custom setting value returned as expected');
-    assert.equal(policyDetails[4].props[2].value, '5 Minutes', 'https beacon interval unit is as expected');
-    assert.equal(policyDetails[4].props[4].value, '5 Seconds', 'udp beacon interval unit is as expected');
+    assert.equal(policyDetails[4].props[0].value, '5 Minutes', 'https beacon interval unit is as expected');
+    assert.equal(policyDetails[4].props[1].value, '5 Seconds', 'udp beacon interval unit is as expected');
   });
 
   test('default EDR policy has default endpoint server', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizEndpointServers()
-      .focusedPolicy({
-        id: '__default_edr_policy',
-        policyType: 'edrPolicy',
-        name: 'Default EDR Policy',
-        description: 'Default EDR Policy __default_edr_policy',
-        dirty: false,
-        defaultPolicy: true,
-        lastPublishedCopy: {},
-        lastPublishedOn: 1540318459759,
-        createdOn: 0,
-        lastModifiedOn: 0,
-        associatedGroups: [],
-        scanType: 'ENABLED',
-        scanStartDate: '2018-09-09',
-        scanStartTime: '10:23',
-        recurrenceInterval: 1,
-        recurrenceUnit: 'DAYS',
-        runOnDaysOfWeek: null,
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: false,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: false,
-        blockingEnabled: false,
-        primaryAddress: '',
-        primaryNwServiceId: '',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: null,
-        primaryHttpsBeaconIntervalUnit: null,
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: null,
-        primaryUdpBeaconIntervalUnit: null,
-        agentMode: 'INSIGHTS'
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyDefaultPolicy(true)
+      .setPolicyScanType('ENABLED')
+      .setPolicyScanMbr(false)
+      .setPolicyRequestScan(true)
+      .setPolicyBlockingEnabled(false)
+      .setPolicyPrimaryAddress('')
+      .setPolicyPrimaryHttpsBeaconInterval(5)
+      .setPolicyPrimaryHttpsBeaconIntervalUnit('MINUTES')
+      .setPolicyPrimaryUdpBeaconInterval(5)
+      .setPolicyPrimaryUdpBeaconIntervalUnit('SECONDS')
+      .setPolicyAgentMode('ADVANCED')
+      .setPolicyCustomConfig('')
       .build();
     assert.expect(5);
     const policyForDetails = focusedPolicy(Immutable.from(state));

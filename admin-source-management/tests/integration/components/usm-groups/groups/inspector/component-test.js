@@ -9,6 +9,38 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 
 let setState;
 
+const testGroup = {
+  'id': 'group_001',
+  'name': 'Zebra 001',
+  'description': 'Zebra 001 of group group_001',
+  'createdBy': 'admin',
+  'createdOn': 1523655354337,
+  'dirty': false,
+  'lastPublishedCopy': null,
+  'lastPublishedOn': 0,
+  'lastModifiedBy': 'admin',
+  'lastModifiedOn': 1523655354337,
+  'sourceCount': 10,
+  'assignedPolicies': {
+    'edrPolicy': {
+      'referenceId': 'policy_001',
+      'name': 'EMC 001'
+    }
+  },
+  groupCriteria: {
+    conjunction: 'AND',
+    criteria: [
+      [
+        'osType',
+        'IN',
+        [
+          'Linux'
+        ]
+      ]
+    ]
+  }
+};
+
 module('Integration | Component | Group Inspector', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
@@ -30,37 +62,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
 
   test('It shows the common sections for history and applied policies', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedGroup({
-        'id': 'group_001',
-        'name': 'Zebra 001',
-        'description': 'Zebra 001 of group group_001',
-        'createdBy': 'admin',
-        'createdOn': 1523655354337,
-        'dirty': false,
-        'lastPublishedCopy': null,
-        'lastPublishedOn': 0,
-        'lastModifiedBy': 'admin',
-        'lastModifiedOn': 1523655354337,
-        'sourceCount': 10,
-        'assignedPolicies': {
-          'edrPolicy': {
-            'referenceId': 'policy_001',
-            'name': 'EMC 001'
-          }
-        },
-        groupCriteria: {
-          conjunction: 'AND',
-          criteria: [
-            [
-              'osType',
-              'IN',
-              [
-                'Linux'
-              ]
-            ]
-          ]
-        }
-      }).build();
+      .focusedGroup(testGroup).build();
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 4, 'expected headings are shown');
@@ -82,41 +84,31 @@ module('Integration | Component | Group Inspector', function(hooks) {
   test('It does not show the applied policies section when no assigned policies', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .focusedGroup({
-        'id': 'group_005',
-        'name': 'Volleyball 005',
-        'description': 'Volleyball 005 of group group_005',
-        'createdBy': 'admin',
-        'createdOn': 1523655354337,
-        'dirty': false,
-        'lastPublishedCopy': null,
-        'lastPublishedOn': 1523655354337,
-        'lastModifiedBy': 'admin',
-        'lastModifiedOn': 1523655354337,
-        'assignedPolicies': {},
-        'sourceCount': -1,
-        'groupCriteria': {
-          'conjunction': 'OR',
-          'criteria': [
+      .focusedGroup(testGroup)
+      .setGroupCriteria({
+        'conjunction': 'OR',
+        'criteria': [
+          [
+            'ipv4',
+            'BETWEEN',
             [
-              'ipv4',
-              'BETWEEN',
-              [
-                '10.40.14.0',
-                '10.40.14.255'
-              ]
-            ],
+              '10.40.14.0',
+              '10.40.14.255'
+            ]
+          ],
+          [
+            'ipv4',
+            'BETWEEN',
             [
-              'ipv4',
-              'BETWEEN',
-              [
-                '10.40.68.0',
-                '10.40.68.255'
-              ]
+              '10.40.68.0',
+              '10.40.68.255'
             ]
           ]
-        }
-      }).build();
+        ]
+      })
+      .setGroupSourceCount(-1)
+      .setGroupAssignedPolicies({})
+      .build();
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
@@ -132,80 +124,19 @@ module('Integration | Component | Group Inspector', function(hooks) {
   test('It shows the history properties with values', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .focusedGroup({
-        'id': 'group_004',
-        'name': 'Wonder Woman 004',
-        'description': 'Wonder Woman 004 of group group_004',
-        'createdBy': '',
-        'createdOn': 1523655354337,
-        'dirty': false,
-        'lastPublishedCopy': null,
-        'lastPublishedOn': 0,
-        'lastModifiedBy': '',
-        'lastModifiedOn': 0,
-        'sourceCount': -2,
-        'assignedPolicies': {},
-        groupCriteria: {
-          conjunction: 'AND',
-          criteria: [
-            [
-              'osType',
-              'IN',
-              [
-                'Windows'
-              ]
-            ],
-            [
-              'osType',
-              'IN',
-              [
-                'Windows'
-              ]
-            ],
-            [
-              'osDescription',
-              'ENDS_WITH',
-              [
-                'hebjc'
-              ]
-            ],
-            [
-              'ipv4',
-              'NOT_IN',
-              [
-                '125.1.1.227,125.1.1.78\n'
-              ]
-            ],
-            [
-              'hostname',
-              'EQUAL',
-              [
-                'trbkx'
-              ]
-            ],
-            [
-              'osDescription',
-              'CONTAINS',
-              [
-                'xltbk'
-              ]
-            ],
-            [
-              'ipv4',
-              'NOT_BETWEEN',
-              [
-                '1.1.1.45',
-                '1.1.2.193'
-              ]
-            ]
-          ]
-        }
-      }).build();
+      .focusedGroup(testGroup)
+      .setGroupSourceCount(-2)
+      .setGroupCreatedBy('')
+      .setGroupLastPublishedOn(0)
+      .setGroupLastModifiedOn(0)
+      .setGroupLastModifiedBy('')
+      .setGroupAssignedPolicies({})
+      .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
-    assert.equal(findAll('.usm-groups-inspector .title').length, 8, 'expected titles shown');
-    assert.equal(findAll('.usm-groups-inspector .value').length, 9, 'expected values shown');
-    assert.equal(findAll('.usm-groups-inspector .value')[8].innerText, '2018-04-13 05:35', 'created on value shows as expected');
+    assert.equal(findAll('.usm-groups-inspector .title').length, 3, 'expected titles shown');
+    assert.equal(findAll('.usm-groups-inspector .value').length, 4, 'expected values shown');
+    assert.equal(findAll('.usm-groups-inspector .value')[3].innerText, '2018-04-13 05:35', 'created on value shows as expected');
     assert.equal(findAll('.usm-groups-inspector .createdBy').length, 0, 'created by value not shown as expected');
     assert.equal(findAll('.usm-groups-inspector .lastModifiedOn').length, 0, 'last updated on value not shown as expected');
     assert.equal(findAll('.usm-groups-inspector .lastModifiedBy').length, 0, 'last updated by is missing as expected');
@@ -218,41 +149,9 @@ module('Integration | Component | Group Inspector', function(hooks) {
   test('It shows the source count when special case', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .focusedGroup({
-        'id': 'group_005',
-        'name': 'Volleyball 005',
-        'description': 'Volleyball 005 of group group_005',
-        'createdBy': 'admin',
-        'createdOn': 1523655354337,
-        'dirty': false,
-        'lastPublishedCopy': null,
-        'lastPublishedOn': 1523655354337,
-        'lastModifiedBy': 'admin',
-        'lastModifiedOn': 1523655354337,
-        'assignedPolicies': {},
-        'sourceCount': -3,
-        'groupCriteria': {
-          'conjunction': 'OR',
-          'criteria': [
-            [
-              'ipv4',
-              'BETWEEN',
-              [
-                '10.40.14.0',
-                '10.40.14.255'
-              ]
-            ],
-            [
-              'ipv4',
-              'BETWEEN',
-              [
-                '10.40.68.0',
-                '10.40.68.255'
-              ]
-            ]
-          ]
-        }
-      }).build();
+      .focusedGroup(testGroup)
+      .setGroupSourceCount(-3)
+      .build();
 
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
@@ -263,33 +162,11 @@ module('Integration | Component | Group Inspector', function(hooks) {
   test('It shows the source count when unpublished edit case', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .focusedGroup({
-        id: 'group_002',
-        'name': 'Awesome! 012',
-        'description': 'Awesome! 012 of group group_012',
-        'createdBy': 'admin',
-        'createdOn': 1523655368173,
-        'dirty': true,
-        'lastPublishedCopy': null,
-        'lastPublishedOn': 1523655368173,
-        'lastModifiedBy': 'admin',
-        'lastModifiedOn': 1523655368173,
-        'sourceCount': 30,
-        'assignedPolicies': {},
-        groupCriteria: {
-          conjunction: 'AND',
-          criteria: [
-            [
-              'ipv4',
-              'BETWEEN',
-              [
-                '123',
-                '22'
-              ]
-            ]
-          ]
-        }
-      })
+      .focusedGroup(testGroup)
+      .setGroupLastPublishedOn(1523655368173)
+      .setGroupLastModifiedOn(1523655368173)
+      .setGroupSourceCount(30)
+      .setGroupDirty(true)
       .build();
     await render(hbs`{{usm-groups/groups/inspector}}`);
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');

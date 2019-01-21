@@ -9,6 +9,52 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 
 let setState;
 
+const testPolicy = {
+  id: 'policy_014',
+  policyType: 'edrPolicy',
+  name: 'EMC Reston! 014',
+  description: 'EMC Reston 014 of policy policy_014',
+  dirty: false,
+  defaultPolicy: false,
+  lastPublishedOn: 1527489158739,
+  createdBy: 'admin',
+  createdOn: 1540318426092,
+  lastModifiedBy: 'admin',
+  lastModifiedOn: 1540318426092,
+  associatedGroups: [
+    {
+      referenceId: '5b7d886500319b5520f4b67d',
+      name: 'Group 01'
+    },
+    {
+      referenceId: '5b7d886500319b5520f4b672',
+      name: 'Group 02'
+    }
+  ],
+  scanType: 'ENABLED',
+  scanStartDate: null,
+  scanStartTime: null,
+  recurrenceInterval: 1,
+  recurrenceUnit: 'WEEKS',
+  runOnDaysOfWeek: ['WEDNESDAY'],
+  cpuMax: 75,
+  cpuMaxVm: 85,
+  // captureFloatingCode: true,
+  scanMbr: false,
+  // filterSignedHooks: false,
+  requestScanOnRegistration: true,
+  blockingEnabled: false,
+  primaryAddress: '10.10.10.10',
+  primaryNwServiceId: 'id1',
+  primaryHttpsPort: 443,
+  primaryHttpsBeaconInterval: 3,
+  primaryHttpsBeaconIntervalUnit: 'HOURS',
+  primaryUdpPort: 444,
+  primaryUdpBeaconInterval: 3,
+  primaryUdpBeaconIntervalUnit: 'MINUTES',
+  agentMode: 'ADVANCED'
+};
+
 module('Integration | Component | Policy Inspector', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
@@ -30,51 +76,7 @@ module('Integration | Component | Policy Inspector', function(hooks) {
 
   test('It shows the common sections for history and groups', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        associatedGroups: [
-          {
-            referenceId: '5b7d886500319b5520f4b67d',
-            name: 'Group 01'
-          },
-          {
-            referenceId: '5b7d886500319b5520f4b672',
-            name: 'Group 02'
-          }
-        ],
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '10.10.10.10',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      }).build();
+      .focusedPolicy(testPolicy).build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');
@@ -91,42 +93,9 @@ module('Integration | Component | Policy Inspector', function(hooks) {
 
   test('It does not show the groups section when no groups', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 1527489158739,
-        createdBy: 'admin',
-        createdOn: 0,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        associatedGroups: [],
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '10.10.10.10',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      }).build();
+      .focusedPolicy(testPolicy)
+      .setPolicyGroups([])
+      .build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 6, 'expected headings are shown');
@@ -135,51 +104,22 @@ module('Integration | Component | Policy Inspector', function(hooks) {
 
   test('It shows the history properties with values', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedPolicy({
-        id: 'policy_014',
-        policyType: 'edrPolicy',
-        name: 'EMC Reston! 014',
-        description: 'EMC Reston 014 of policy policy_014',
-        dirty: false,
-        defaultPolicy: false,
-        lastPublishedOn: 0,
-        createdBy: 'admin',
-        createdOn: 0,
-        lastModifiedBy: '',
-        lastModifiedOn: 1540318426092,
-        associatedGroups: [
-          {
-            referenceId: '5b7d886500319b5520f4b67d',
-            name: 'Group 01'
-          },
-          {
-            referenceId: '5b7d886500319b5520f4b672',
-            name: 'Group 02'
-          }
-        ],
-        scanType: 'ENABLED',
-        scanStartDate: null,
-        scanStartTime: null,
-        recurrenceInterval: 1,
-        recurrenceUnit: 'WEEKS',
-        runOnDaysOfWeek: ['WEDNESDAY'],
-        cpuMax: 75,
-        cpuMaxVm: 85,
-        // captureFloatingCode: true,
-        scanMbr: false,
-        // filterSignedHooks: false,
-        requestScanOnRegistration: true,
-        blockingEnabled: false,
-        primaryAddress: '10.10.10.10',
-        primaryNwServiceId: 'id1',
-        primaryHttpsPort: 443,
-        primaryHttpsBeaconInterval: 3,
-        primaryHttpsBeaconIntervalUnit: 'HOURS',
-        primaryUdpPort: 444,
-        primaryUdpBeaconInterval: 3,
-        primaryUdpBeaconIntervalUnit: 'MINUTES',
-        agentMode: 'ADVANCED'
-      }).build();
+      .focusedPolicy(testPolicy)
+      .setPolicyLastPublishedOn(0)
+      .setPolicyCreatedBy('admin')
+      .setPolicyCreatedOn(0)
+      .setPolicyLastModifiedBy('')
+      .setPolicyGroups([
+        {
+          referenceId: '5b7d886500319b5520f4b67d',
+          name: 'Group 01'
+        },
+        {
+          referenceId: '5b7d886500319b5520f4b672',
+          name: 'Group 02'
+        }
+      ])
+      .build();
 
     await render(hbs`{{usm-policies/policies/inspector}}`);
     assert.equal(findAll('.usm-policies-inspector .heading').length, 7, 'expected headings are shown');

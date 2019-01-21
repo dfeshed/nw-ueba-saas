@@ -9,6 +9,28 @@ import { patchReducer } from '../../../../../../helpers/vnext-patch';
 
 let setState;
 
+const testPolicy = {
+  id: 'policy_WL001',
+  policyType: 'windowsLogPolicy',
+  name: 'WL001',
+  description: 'Windows Log Policy # WL001',
+  dirty: true,
+  defaultPolicy: false,
+  createdBy: 'admin',
+  createdOn: 1540318426092,
+  lastModifiedBy: 'admin',
+  lastModifiedOn: 1540318426092,
+  lastPublishedOn: 0,
+  lastPublishedCopy: null,
+  enabled: true,
+  protocol: 'TCP',
+  sendTestLog: false,
+  primaryDestination: 'LD_01',
+  secondaryDestination: 'LD_02',
+  channelFilters: [],
+  associatedGroups: []
+};
+
 module('Integration | Component | Policy Inspector | Windows Log Policy', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
@@ -30,43 +52,25 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
 
   test('It shows the correct sections for properties', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        enabled: true,
-        protocol: 'TCP',
-        sendTestLog: false,
-        primaryDestination: 'LD_01',
-        secondaryDestination: 'LD_02',
-        channelFilters: [
-          {
-            eventId: '1234',
-            channel: 'System',
-            filterType: 'include'
-          },
-          {
-            eventId: '5678',
-            channel: 'Security',
-            filterType: 'include'
-          },
-          {
-            eventId: '7789',
-            channel: 'Application',
-            filterType: 'exclude'
-          }
-        ],
-        associatedGroups: []
-      }).build();
+      .focusedPolicy(testPolicy)
+      .setPolicyChannels([
+        {
+          eventId: '1234',
+          channel: 'System',
+          filterType: 'include'
+        },
+        {
+          eventId: '5678',
+          channel: 'Security',
+          filterType: 'include'
+        },
+        {
+          eventId: '7789',
+          channel: 'Application',
+          filterType: 'exclude'
+        }
+      ])
+      .build();
 
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 2, '2 headings are shown');
@@ -78,32 +82,14 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
     assert.equal(findAll('.value')[5].innerText, '1234', 'channel value is as expected');
   });
 
-  test('When no channles it shows only one section', async function(assert) {
+  test('When no channels it shows only one section', async function(assert) {
     new ReduxDataHelper(setState)
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        enabled: true,
-        protocol: 'TCP',
-        sendTestLog: false,
-        primaryDestination: 'LD_01',
-        secondaryDestination: 'LD_02',
-        channelFilters: [],
-        associatedGroups: []
-      }).build();
+      .focusedPolicy(testPolicy)
+      .setPolicyChannels([])
+      .build();
 
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
-    assert.equal(findAll('.heading').length, 1, '1 headings are shown');
+    assert.equal(findAll('.heading').length, 1, '1 heading is shown');
     assert.equal(findAll('.heading')[0].innerText, 'Windows Log Settings', 'first heading is as expected');
     assert.equal(findAll('.title').length, 5, '5 property names are shown');
     assert.equal(findAll('.value').length, 5, '5 value elements are shown');

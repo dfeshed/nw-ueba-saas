@@ -432,6 +432,55 @@ export default class DataHelper {
     return this;
   }
 
+  // ====================================================================
+  // group details single attribute setters
+  // ====================================================================
+
+  setGroupLastPublishedOn(config) {
+    _set(this.state, 'usm.groups.focusedItem.lastPublishedOn', config);
+    return this;
+  }
+
+  setGroupCreatedBy(config) {
+    _set(this.state, 'usm.groups.focusedItem.createdBy', config);
+    return this;
+  }
+
+  setGroupCreatedOn(config) {
+    _set(this.state, 'usm.groups.focusedItem.createdOn', config);
+    return this;
+  }
+
+  setGroupLastModifiedBy(config) {
+    _set(this.state, 'usm.groups.focusedItem.lastModifiedBy', config);
+    return this;
+  }
+
+  setGroupLastModifiedOn(config) {
+    _set(this.state, 'usm.groups.focusedItem.lastModifiedOn', config);
+    return this;
+  }
+
+  setGroupAssignedPolicies(config) {
+    _set(this.state, 'usm.groups.focusedItem.assignedPolicies', config);
+    return this;
+  }
+
+  setGroupCriteria(config) {
+    _set(this.state, 'usm.groups.focusedItem.groupCriteria', config);
+    return this;
+  }
+
+  setGroupSourceCount(config) {
+    _set(this.state, 'usm.groups.focusedItem.sourceCount', config);
+    return this;
+  }
+
+  setGroupDirty(config) {
+    _set(this.state, 'usm.groups.focusedItem.dirty', config);
+    return this;
+  }
+
   groupsPolicyList(policyList) {
     _set(this.state, 'usm.groups.policyList', policyList);
     return this;
@@ -459,6 +508,175 @@ export default class DataHelper {
 
   focusedPolicy(config) {
     _set(this.state, 'usm.policies.focusedItem', config);
+    return this;
+  }
+
+  // ====================================================================
+  // policy details single attribute setters
+  // ====================================================================
+
+  setPolicyCustomConfig(config) {
+    _set(this.state, 'usm.policies.focusedItem.customConfig', config);
+    return this;
+  }
+
+  setPolicyGroups(config) {
+    _set(this.state, 'usm.policies.focusedItem.associatedGroups', config);
+    return this;
+  }
+
+  setPolicyDefaultPolicy(config) {
+    _set(this.state, 'usm.policies.focusedItem.defaultPolicy', config);
+    return this;
+  }
+
+  setPolicyLastPublishedOn(config) {
+    _set(this.state, 'usm.policies.focusedItem.lastPublishedOn', config);
+    return this;
+  }
+
+  setPolicyCreatedBy(config) {
+    _set(this.state, 'usm.policies.focusedItem.createdBy', config);
+    return this;
+  }
+
+  setPolicyCreatedOn(config) {
+    _set(this.state, 'usm.policies.focusedItem.createdOn', config);
+    return this;
+  }
+
+  setPolicyLastModifiedBy(config) {
+    _set(this.state, 'usm.policies.focusedItem.lastModifiedBy', config);
+    return this;
+  }
+
+  setPolicyLastModifiedOn(config) {
+    _set(this.state, 'usm.policies.focusedItem.lastModifiedOn', config);
+    return this;
+  }
+
+  setPolicyPrimaryAddress(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryAddress', config);
+    return this;
+  }
+
+  setPolicyPrimaryHttpsPort(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryHttpsPort', config);
+    return this;
+  }
+
+  setPolicyPrimaryUdpPort(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryUdpPort', config);
+    return this;
+  }
+
+  setPolicyPrimaryHttpsBeaconInterval(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryHttpsBeaconInterval', config);
+    return this;
+  }
+
+  setPolicyPrimaryHttpsBeaconIntervalUnit(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryHttpsBeaconIntervalUnit', config);
+    return this;
+  }
+
+  setPolicyPrimaryUdpBeaconInterval(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryUdpBeaconInterval', config);
+    return this;
+  }
+
+  setPolicyPrimaryUdpBeaconIntervalUnit(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryUdpBeaconIntervalUnit', config);
+    return this;
+  }
+
+  setPolicyScanType(config) {
+    _set(this.state, 'usm.policies.focusedItem.scanType', config);
+    return this;
+  }
+
+  setPolicyScanStartDate(config) {
+    _set(this.state, 'usm.policies.focusedItem.scanStartDate', config);
+    return this;
+  }
+
+  setPolicyScanStartTime(config) {
+    _set(this.state, 'usm.policies.focusedItem.scanStartTime', config);
+    return this;
+  }
+
+  setPolicyRecurInterval(config) {
+    _set(this.state, 'usm.policies.focusedItem.recurrenceInterval', config);
+    return this;
+  }
+
+  setPolicyRecurUnit(config) {
+    _set(this.state, 'usm.policies.focusedItem.recurrenceUnit', config);
+    return this;
+  }
+
+  setPolicyRunDaysOfWeek(config) {
+    _set(this.state, 'usm.policies.focusedItem.runOnDaysOfWeek', config);
+    return this;
+  }
+
+  setPolicyCpuMax(config) {
+    _set(this.state, 'usm.policies.focusedItem.cpuMax', config);
+    return this;
+  }
+
+  setPolicyCpuVm(config) {
+    _set(this.state, 'usm.policies.focusedItem.cpuMaxVm', config);
+    return this;
+  }
+
+  setPolicyRequestScan(config) {
+    _set(this.state, 'usm.policies.focusedItem.requestScanOnRegistration', config);
+    return this;
+  }
+
+  setPolicyScanMbr(config) {
+    _set(this.state, 'usm.policies.focusedItem.scanMbr', config);
+    return this;
+  }
+
+  setPolicyBlockingEnabled(config) {
+    _set(this.state, 'usm.policies.focusedItem.blockingEnabled', config);
+    return this;
+  }
+
+  setPolicyAgentMode(config) {
+    _set(this.state, 'usm.policies.focusedItem.agentMode', config);
+    return this;
+  }
+
+  setPolicyChannels(config) {
+    _set(this.state, 'usm.policies.focusedItem.channelFilters', config);
+    return this;
+  }
+
+  setPolicyWindowsPrimaryDest(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryDestination', config);
+    return this;
+  }
+
+  setPolicyWindowsSecondaryDest(config) {
+    _set(this.state, 'usm.policies.focusedItem.secondaryDestination', config);
+    return this;
+  }
+
+  setPolicyWindowsProtocol(config) {
+    _set(this.state, 'usm.policies.focusedItem.protocol', config);
+    return this;
+  }
+
+  setPolicyWindowsEnabled(config) {
+    _set(this.state, 'usm.policies.focusedItem.enabled', config);
+    return this;
+  }
+
+  setPolicyWindowsSendTestLog(config) {
+    _set(this.state, 'usm.policies.focusedItem.sendTestLog', config);
     return this;
   }
 

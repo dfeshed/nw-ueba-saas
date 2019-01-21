@@ -3,59 +3,67 @@ import Immutable from 'seamless-immutable';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
 
 import {
   focusedPolicy,
   selectedWindowsLogPolicy
 } from 'admin-source-management/reducers/usm/policy-details/windows-log-policy/windows-log-selectors';
 
+let setState;
+
+const testPolicy = {
+  id: 'policy_WL001',
+  policyType: 'windowsLogPolicy',
+  name: 'WL001',
+  description: 'Windows Log Policy # WL001',
+  dirty: true,
+  defaultPolicy: false,
+  createdBy: 'admin',
+  createdOn: 1540318426092,
+  lastModifiedBy: 'admin',
+  lastModifiedOn: 1540318426092,
+  lastPublishedOn: 0,
+  lastPublishedCopy: null,
+  channelFilters: [
+    {
+      eventId: '1234',
+      channel: 'System',
+      filterType: 'include'
+    },
+    {
+      eventId: '5678',
+      channel: 'Security',
+      filterType: 'include'
+    },
+    {
+      eventId: '7789',
+      channel: 'Application',
+      filterType: 'exclude'
+    }
+  ],
+  associatedGroups: []
+};
+
 module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Selectors', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
     initialize(this.owner);
   });
 
   test('selectedWindowsLogPolicy selector', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        enabled: true,
-        protocol: 'TCP',
-        sendTestLog: false,
-        primaryDestination: '10.10.10.10',
-        secondaryDestination: '10.10.10.12',
-        channelFilters: [
-          {
-            eventId: '1234',
-            channel: 'System',
-            filterType: 'include'
-          },
-          {
-            eventId: '5678',
-            channel: 'Security',
-            filterType: 'include'
-          },
-          {
-            eventId: '7789',
-            channel: 'Application',
-            filterType: 'exclude'
-          }
-        ],
-        associatedGroups: []
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyWindowsEnabled(true)
+      .setPolicyWindowsProtocol('TCP')
+      .setPolicyWindowsSendTestLog(false)
+      .setPolicyWindowsPrimaryDest('10.10.10.10')
+      .setPolicyWindowsSecondaryDest('10.10.10.12')
       .build();
     assert.expect(10);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -72,47 +80,16 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
     assert.equal(policyDetails[1].channels[0].value, '1234', 'first channel value is as expected');
   });
 
-  test('selectedWindowsLogPolicy ignore blank values', function(assert) {
-    const state = new ReduxDataHelper()
+  test('selectedWindowsLogPolicy ignores blank values', function(assert) {
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        enabled: true,
-        protocol: '',
-        sendTestLog: false,
-        primaryDestination: '',
-        secondaryDestination: '',
-        channelFilters: [
-          {
-            eventId: '1234',
-            channel: 'System',
-            filterType: 'include'
-          },
-          {
-            eventId: '5678',
-            channel: 'Security',
-            filterType: 'include'
-          },
-          {
-            eventId: '7789',
-            channel: 'Application',
-            filterType: 'exclude'
-          }
-        ],
-        associatedGroups: []
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyWindowsEnabled(true)
+      .setPolicyWindowsProtocol('')
+      .setPolicyWindowsSendTestLog(false)
+      .setPolicyWindowsPrimaryDest('')
+      .setPolicyWindowsSecondaryDest('')
       .build();
     assert.expect(6);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -135,41 +112,27 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
   });
 
   test('selectedWindowsLogPolicy no basic settings', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        channelFilters: [
-          {
-            eventId: '1234',
-            channel: 'System',
-            filterType: 'include'
-          },
-          {
-            eventId: '5678',
-            channel: 'Security',
-            filterType: 'include'
-          },
-          {
-            eventId: '7789',
-            channel: 'Application',
-            filterType: 'exclude'
-          }
-        ],
-        associatedGroups: []
-      })
+      .focusedPolicy()
+      .setPolicyChannels([
+        {
+          eventId: '1234',
+          channel: 'System',
+          filterType: 'include'
+        },
+        {
+          eventId: '5678',
+          channel: 'Security',
+          filterType: 'include'
+        },
+        {
+          eventId: '7789',
+          channel: 'Application',
+          filterType: 'exclude'
+        }
+      ])
       .build();
     assert.expect(4);
     const policyForDetails = focusedPolicy(Immutable.from(state));
@@ -179,34 +142,21 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
       header: 'adminUsm.policies.detail.windowsLogSettings',
       props: []
     }), false, 'No Log settings section as expected');
-    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section  is as expected');
-    assert.equal(policyDetails[0].channels.length, 3, 'second section has 3 channels');
+    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.channelFilterSettings', 'first section  is as expected');
+    assert.equal(policyDetails[0].channels.length, 3, 'channels section has 3 channels');
   });
 
   test('selectedWindowsLogPolicy no channels section', function(assert) {
-    const state = new ReduxDataHelper()
+    const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizWinLogLogServers()
-      .focusedPolicy({
-        id: 'policy_WL001',
-        policyType: 'windowsLogPolicy',
-        name: 'WL001',
-        description: 'Windows Log Policy # WL001',
-        dirty: true,
-        defaultPolicy: false,
-        createdBy: 'admin',
-        createdOn: 1540318426092,
-        lastModifiedBy: 'admin',
-        lastModifiedOn: 1540318426092,
-        lastPublishedOn: 0,
-        lastPublishedCopy: null,
-        enabled: true,
-        protocol: 'TCP',
-        sendTestLog: false,
-        primaryDestination: 'LD_01',
-        secondaryDestination: '2.2.2.2',
-        associatedGroups: []
-      })
+      .focusedPolicy(testPolicy)
+      .setPolicyChannels([])
+      .setPolicyWindowsEnabled(true)
+      .setPolicyWindowsProtocol('TCP')
+      .setPolicyWindowsSendTestLog(false)
+      .setPolicyWindowsPrimaryDest('LD_01')
+      .setPolicyWindowsSecondaryDest('2.2.2.2')
       .build();
     assert.expect(5);
     const policyForDetails = focusedPolicy(Immutable.from(state));
