@@ -27,7 +27,7 @@ const ALL_SUBMODULES = [
   'investigate-process-analysis',
   'rsa-context-menu',
   'rsa-data-filters',
-  'direct-access'
+  'ngcoreui'
 ];
 
 // A configuration that lists each submodule with
@@ -57,7 +57,7 @@ const saModuleDependants = {
     'investigate-process-analysis',
     'rsa-context-menu',
     'rsa-data-filters',
-    'direct-access'
+    'ngcoreui'
   ],
   docs: [], // lol
   'mock-server': [
@@ -171,7 +171,7 @@ const saModuleDependants = {
   ],
   'ember-cli-document-title': [],
   'hosts-scan-configure': ['sa', 'configure'],
-  'direct-access': [],
+  'ngcoreui': [],
   'ember-computed-decorators': []
 };
 

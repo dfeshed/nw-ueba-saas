@@ -52,7 +52,7 @@ nukeNode broccoli-theme
 nukeNode investigate-process-analysis
 nukeNode rsa-context-menu
 nukeNode rsa-data-filters
-nukeNode direct-access
+nukeNode ngcoreui
 nukeNode sa
 
 red "                               ________________

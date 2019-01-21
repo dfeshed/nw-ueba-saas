@@ -232,7 +232,7 @@ yarn
 cd $CWD
 
 buildMockServer
-. ./scripts/jenkins/direct-access.sh
+. ./scripts/jenkins/ngcoreui.sh
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
 buildEmberApp packager false true true

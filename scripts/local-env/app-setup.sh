@@ -52,7 +52,7 @@ yarn link
 
 # da-mock-server is also just Yarn install
 info "Running install for direct access mock server"
-cd ../direct-access/da-mock-server
+cd ../ngcoreui/da-mock-server
 yarn
 # prepareApp expects to be only one folder level deep when it starts
 cd ..
@@ -84,7 +84,7 @@ prepareApp test-helpers
 prepareApp ember-cli-document-title
 prepareApp broccoli-theme
 prepareApp investigate-process-analysis
-prepareApp direct-access
+prepareApp ngcoreui
 prepareApp sa
 
 cd $CWD
