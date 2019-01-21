@@ -49,13 +49,6 @@ const submodulesAffected = (submoduleList) => {
       return false;
     }
 
-    // temporarily filter out any `direct-access` files as they have been removed
-    // and no entry in the `changedSubmodules` list should be created
-    // this block will be removed in a PR following the merge of this PR
-    if (file.startsWith('direct-access')) {
-      return false;
-    }
-
     return true;
   });
 
