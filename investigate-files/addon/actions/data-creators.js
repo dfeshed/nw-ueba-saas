@@ -470,7 +470,7 @@ const _fetchAgentIdsForchecksum = (checksum, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const input = {
-      filter: [{ value: `(checksum.src = '${checksum}')` }],
+      filter: { value: `(checksum.src = '${checksum}')` },
       queryNode,
       size: 5,
       metaName: 'agent.id',
@@ -493,7 +493,7 @@ const _fetchPathSrcForAgentId = (checksum, callbacks) => {
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
     for (const info of machineFilePathList) {
       const input = {
-        filter: [{ value: `(checksum.src = '${checksum}')` }, { value: `(agent.id = '${info.agentId}')` }],
+        filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${info.agentId}')` },
         queryNode,
         size: 1,
         metaName: 'directory.src',
@@ -522,11 +522,7 @@ const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
     const queryNode = getState().investigate;
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
     const input = {
-      filter: [
-        { value: `(checksum.src = '${checksum}')` },
-        { value: `(agent.id = '${agentId}')` },
-        { value: `(directory.src = '${path}')` }
-      ],
+      filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${agentId}') && (directory.src = '${path.replace(/\\\\?(?!')/g, '\\\\')}')` },
       queryNode,
       size: 1,
       metaName: 'filename.src',
