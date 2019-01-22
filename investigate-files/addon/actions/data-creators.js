@@ -500,15 +500,16 @@ const _fetchPathSrcForAgentId = (checksum, callbacks) => {
         onComplete: (data) => {
           const [pathSrc] = data;
           if (pathSrc && pathSrc.value) {
+            const path = pathSrc.value.replace(/\\\\?(?!')/g, '\\\\');
             const computedMachineFileInfoList = machineFilePathList.map((m) => {
               if (m.agentId === info.agentId) {
-                return { ...m, path: pathSrc.value };
+                return { ...m, path };
               } else {
                 return { ...m };
               }
             });
             dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
-            dispatch(_fetchFileNameForPath(checksum, info.agentId, pathSrc.value, callbacks));
+            dispatch(_fetchFileNameForPath(checksum, info.agentId, path, callbacks));
           }
         }
       };
@@ -522,7 +523,7 @@ const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
     const queryNode = getState().investigate;
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
     const input = {
-      filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${agentId}') && (directory.src = '${path.replace(/\\\\?(?!')/g, '\\\\')}')` },
+      filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${agentId}') && (directory.src = '${path}')` },
       queryNode,
       size: 1,
       metaName: 'filename.src',
@@ -531,18 +532,21 @@ const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
         if (file && file.value) {
           const computedMachineFileInfoList = machineFilePathList.map((m) => {
             if (m.agentId === agentId) {
-              return { ...m, fileName: file.value };
+              return { ...m, agentId: agentId.toUpperCase(), fileName: file.value };
             } else {
               return { ...m };
             }
           });
           dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
-          File.sendFileDownloadToServerRequest({ checksumSha256: checksum, machineFilePathInfoList: computedMachineFileInfoList })
-            .then(() => {
-              callbacks.onSuccess();
-            }).catch(({ meta: message }) => {
-              callbacks.onFailure(message.message);
-            });
+          // wait for all the filenames to load
+          if (computedMachineFileInfoList.filter((m) => m.fileName).length === computedMachineFileInfoList.length) {
+            File.sendFileDownloadToServerRequest({ checksumSha256: checksum, machineFilePathInfoList: computedMachineFileInfoList })
+              .then(() => {
+                callbacks.onSuccess();
+              }).catch(({ meta: message }) => {
+                callbacks.onFailure(message.message);
+              });
+          }
         }
       }
     };
