@@ -114,3 +114,8 @@ $result-text-color: text-color(primary, light);
   width: 93%;
   overflow-x: hidden;
 }
+
+.search-result-note {
+  color:text-color(accentFour);
+  padding: rsa-whitespace();
+}

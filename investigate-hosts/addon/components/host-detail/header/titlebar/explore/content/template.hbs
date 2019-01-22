@@ -1,3 +1,9 @@
+{{#if isDataTruncated}}
+  <span class='search-result-note'>
+    {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+    {{t 'investigateHosts.hosts.explore.truncatedNote'}}
+  </span>
+{{/if}}
 {{#if enahancedSearchResult.length}}
   {{#each enahancedSearchResult as |res index|}}
     <div>

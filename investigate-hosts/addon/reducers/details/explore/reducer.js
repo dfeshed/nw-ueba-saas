@@ -9,7 +9,8 @@ const initialState = Immutable.from({
   searchStatus: null,
   selectedTab: null,
   showSearchResults: false,
-  componentName: 'host-detail/header/titlebar/explore/search-field'
+  componentName: 'host-detail/header/titlebar/explore/search-field',
+  isDataTruncated: false
 });
 
 const _handleFileSearchPage = (state, { payload: { data, meta = {}, request } }) => {
@@ -49,7 +50,7 @@ const hostSummary = reduxActions.handleActions({
 
   [ACTION_TYPES.START_FILE_SEARCH]: (state) => state.merge({ showSearchResults: true, searchStatus: 'wait' }),
 
-  [ACTION_TYPES.FILE_SEARCH_END]: (state) => state.set('searchStatus', 'complete'),
+  [ACTION_TYPES.FILE_SEARCH_END]: (state, { payload: { isDataTruncated } }) => state.merge({ searchStatus: 'complete', isDataTruncated }),
 
   [ACTION_TYPES.SELECTED_TAB_DATA]: (state, { payload }) => state.set('selectedTab', payload),
 

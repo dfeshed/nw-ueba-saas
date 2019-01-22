@@ -355,4 +355,8 @@ export default class DataHelper {
     _set(this.state, 'visuals.isProcessDetailsView', value);
     return this;
   }
+  isDataTruncated(flag) {
+    _set(this.state, 'explore.isDataTruncated', flag);
+    return this;
+  }
 }

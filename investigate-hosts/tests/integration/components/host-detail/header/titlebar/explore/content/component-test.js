@@ -72,3 +72,10 @@ test('Search results not found block test', function(assert) {
   this.render(hbs`{{host-detail/header/titlebar/explore/content }}`);
   assert.equal($('.host-explore__no-results').is(':visible'), true, 'For no results host-explore__no-results panel validated');
 });
+
+test('It displays the warning message', function(assert) {
+  this.get('timezone').set('_selected', { zoneId: 'Kwajalein' });
+  new ReduxDataHelper(setState).exploreData(exploreData.explore).isDataTruncated(true).build();
+  this.render(hbs`{{host-detail/header/titlebar/explore/content }}`);
+  assert.equal($('.search-result-note').length, 1);
+});

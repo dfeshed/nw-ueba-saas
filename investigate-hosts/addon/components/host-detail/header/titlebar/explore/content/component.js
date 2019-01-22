@@ -9,6 +9,7 @@ import moment from 'moment';
 
 const stateToComputed = (state) => ({
   fileSearchResults: state.endpoint.explore.fileSearchResults,
+  isDataTruncated: state.endpoint.explore.isDataTruncated,
   searchResultNotFound: searchResultNotFound(state)
 });
 

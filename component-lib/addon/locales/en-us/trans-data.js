@@ -2873,7 +2873,8 @@ export default {
           minimumtext: {
             required: 'For filename or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
           }
-        }
+        },
+        truncatedNote: 'Search result is limited to 100 entries for some of the snapshot, refine your search'
       },
       footerLabel: {
         autoruns: 'autoruns',

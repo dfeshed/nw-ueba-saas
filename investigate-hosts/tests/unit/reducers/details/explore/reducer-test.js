@@ -14,7 +14,8 @@ const initialState = Immutable.from({
   searchStatus: null,
   selectedTab: null,
   showSearchResults: false,
-  componentName: 'host-detail/header/titlebar/explore/search-field'
+  componentName: 'host-detail/header/titlebar/explore/search-field',
+  isDataTruncated: false
 });
 
 test('should return the initial state', function(assert) {
@@ -34,9 +35,10 @@ test('The START_FILE_SEARCH will reset the previous search result state', functi
 
 test('The FILE_SEARCH_END will reset the previous search result state', function(assert) {
   const previous = Immutable.from({
-    searchStatus: 'wait'
+    searchStatus: 'wait',
+    isDataTruncated: false
   });
-  const result = reducer(previous, { type: ACTION_TYPES.FILE_SEARCH_END });
+  const result = reducer(previous, { type: ACTION_TYPES.FILE_SEARCH_END, payload: { isDataTruncated: true } });
   assert.equal(result.searchStatus, 'complete');
 });
 

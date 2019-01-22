@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import { getHostFiles } from './files';
 import { debug } from '@ember/debug';
 
+let stopItemsStream;
 /**
  * Subscribe to fetching the search results.
  * @public
@@ -17,9 +18,22 @@ const getFileSearchResults = (filterStr) => {
     HostDetails.getFileSearchResults(
       filterObj,
       {
-        onInit: () => dispatch({ type: ACTION_TYPES.START_FILE_SEARCH }),
-        onCompleted: () => dispatch({ type: ACTION_TYPES.FILE_SEARCH_END }),
-        onResponse: (payload) => dispatch({ type: ACTION_TYPES.FILE_SEARCH_PAGE, payload }),
+        onInit: (stopStream) => {
+          stopItemsStream = stopStream;
+          dispatch({ type: ACTION_TYPES.START_FILE_SEARCH });
+        },
+        onResponse: (payload) => {
+          const { meta } = payload;
+          const { totalSnapshots, truncated } = meta;
+          dispatch({ type: ACTION_TYPES.FILE_SEARCH_PAGE, payload });
+
+          // Check have you got all the data
+          const { endpoint: { explore: { fileSearchResults = [] } } } = getState();
+          if (totalSnapshots === fileSearchResults.length) {
+            stopItemsStream();
+            dispatch({ type: ACTION_TYPES.FILE_SEARCH_END, payload: { isDataTruncated: truncated } });
+          }
+        },
         onError: (err) => {
           const debugError = JSON.stringify(err);
           debug(`onError: getFileSearchResults ${debugError}`);
