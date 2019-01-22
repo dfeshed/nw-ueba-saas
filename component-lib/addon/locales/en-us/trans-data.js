@@ -1993,7 +1993,7 @@ export default {
       ecat: 'Pivot to Endpoint Thick Client',
       events: 'Pivot to Events',
       archer: 'Pivot to Archer',
-      endpoint: 'Pivot to Investigate-Hosts/Files',
+      endpoint: 'Pivot to Investigate > Hosts/Files',
       contextUnavailable: 'No context data available at this time.',
       archerToolTip: 'Add or enable Archer or Data is not available.',
       dataSourceNames: {

@@ -263,7 +263,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     }}`);
 
     assert.notOk(findAll('.js-test-pivot-to-archer-link a.disabled').length, 'Expected not to find Pivot To Archer link disabled');
-    assert.equal(findAll('span')[1].title, '', 'Expected not to find tooltip for Pivot To Archer link');
+    assert.equal(findAll('span')[3].title, '', 'Expected not to find tooltip for Pivot To Archer link');
 
     // Test Model Summary to be dispatched to context-tooltip actions to disable pivot to archer link in hover over
     modelSummary = { name: 'Archer', count: null, url: null };
@@ -279,7 +279,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     });
 
     assert.ok(findAll('a.disabled').length, 'Expected to find Pivot To Archer link disabled');
-    assert.equal(findAll('span')[1].title, 'Add or enable Archer or Data is not available.', 'Expected to find tooltip for Pivot To Archer link');
+    assert.equal(findAll('span')[2].title, 'Add or enable Archer or Data is not available.', 'Expected to find tooltip for Pivot To Archer link');
   });
 
   test('it only shows the Pivot to Endpoint link for IPs, HOSTs, FILE_HASHs, FILE_NAMEs, MAC addresses', async function(assert) {
@@ -326,7 +326,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
   });
 
-  test('Enable/Disable Pivot to Endpoint link based on state', async function(assert) {
+  test('Enable/Disable Pivot to Investigate > Hosts/Files link based on state', async function(assert) {
     const redux = this.owner.lookup('service:redux');
 
     redux.dispatch({
@@ -358,6 +358,6 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
       entityId=entityId}}`);
-    assert.equal(findAll('a.disabled')[1].innerText.trim(), 'Pivot to Investigate-Hosts/Files');
+    assert.equal(findAll('a.disabled')[0].innerText.trim(), 'Pivot to Investigate > Hosts/Files');
   });
 });

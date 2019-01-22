@@ -1,4 +1,4 @@
-$contextTooltipDatumWidth: 75px;
+$contextTooltipDatumWidth: 80px;
 $contextTooltipDatumPadding: 0px;
 .rsa-context-tooltip {
   background-color: background-color(primary, darkest);
@@ -58,7 +58,7 @@ $contextTooltipDatumPadding: 0px;
     padding: rsa-whitespace(least) 0;
     color: text-color(primary, lighter);
     cursor: pointer;
-    max-width: 190px;
+    max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

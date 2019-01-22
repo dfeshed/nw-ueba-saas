@@ -12,6 +12,24 @@
     </li>
   </a>
 {{/if}}
+{{#if showEndpointLink}}
+  <a href="{{pivotToEndpointUrl}}" class="{{unless isEndpointServerAvailable "disabled"}}" target="_blank" rel="noopener noreferrer">
+    <li class="action js-test-pivot-to-endpoint-link">
+      {{rsa-icon name="search" size="small"}}
+      <span>
+        {{t 'context.tooltip.endpoint'}}
+      </span>
+    </li>
+  </a>
+{{/if}}
+{{#if showEndpointThickClientLink}}
+  <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank" rel="noopener noreferrer">
+    <li class="action js-test-endpoint-link">
+      {{rsa-icon name="search" size="small"}}
+      {{t 'context.tooltip.ecat'}}
+    </li>
+  </a>
+{{/if}}
 {{#if showArcherLink}}
   <span title="{{unless pivotToArcherUrl (t 'context.tooltip.archerToolTip')}}">
     <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank" rel="noopener noreferrer">
@@ -24,21 +42,4 @@
     </a>
   </span>
 {{/if}}
-{{#if showEndpointThickClientLink}}
-  <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank" rel="noopener noreferrer">
-    <li class="action js-test-endpoint-link">
-      {{rsa-icon name="search" size="small"}}
-      {{t 'context.tooltip.ecat'}}
-    </li>
-  </a>
-{{/if}}
-{{#if showEndpointLink}}
-  <a href="{{pivotToEndpointUrl}}" class="{{unless isEndpointServerAvailable "disabled"}}" target="_blank" rel="noopener noreferrer">
-    <li class="action js-test-pivot-to-endpoint-link">
-      {{rsa-icon name="search" size="small"}}
-      <span>
-        {{t 'context.tooltip.endpoint'}}
-      </span>
-    </li>
-  </a>
-{{/if}}
+
