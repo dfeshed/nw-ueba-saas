@@ -22,7 +22,8 @@ const _getAllSnapShots = (agentId) => {
         onSuccess: ({ data }) => {
           const [scanTime] = data.length ? data : [{}];
           dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: scanTime.scanStartTime });
-          dispatch(_getHostDetails(true, scanTime.serviceId));
+          // take serverid from the state if snapshots is an empty array
+          dispatch(_getHostDetails(true, scanTime.serviceId || serverId));
         },
         onFailure: (response) => {
           const debugResponse = JSON.stringify(response);
@@ -69,6 +70,8 @@ const _getHostDetails = (forceRefresh, serviceId) => {
         meta: {
           onSuccess: (response) => {
             const { data } = response;
+            request.registerPersistentStreamOptions({ socketUrlPostfix: data.serviceId, requiredSocketUrl: 'endpoint/socket' });
+            dispatch(setSelectedMachineServerId(data.serviceId));
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(setFocusedHost(data));
             dispatch(_fetchDataForSelectedTab());
