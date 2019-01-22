@@ -66,8 +66,7 @@ test('transform returns fields from map or specific object', function(assert) {
   assert.equal(keys[15], 'event_source', 'event_source_id is present');
   assert.equal(keys[16], 'source', 'source info is present');
   assert.equal(keys[17], 'destination', 'destination info is present');
-  assert.equal(keys[18], 'detector', 'detector info is present');
-  assert.equal(keys[19], 'related_links', 'related_links info is present');
+  assert.equal(keys[18], 'related_links', 'related_links info is present');
 
   assert.equal(result.related_links.length, 2, '2 related links present');
   assert.equal(result.related_links[0].url, '/investigation/host/10.40.14.108:50005/navigate/event/AUTO/116414', 'Original event link is correct');

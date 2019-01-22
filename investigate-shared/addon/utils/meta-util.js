@@ -7,6 +7,7 @@ const META_MAP = {
   'action': 'action',
   'alias.host': 'hostname',
   'user': 'user_account',
+  'owner': 'user_account',
   'checksum.src': 'file_SHA256',
   'ip.all': 'IP',
   'user.all': 'user',
@@ -56,7 +57,6 @@ export const transform = (event) => {
     const srcUser = {};
     const dstUser = {};
     const destination = {};
-    const detector = {};
 
     const len = (metas && metas.length) || 0;
     let i;
@@ -119,10 +119,8 @@ export const transform = (event) => {
     newEvent.event_source = `${forwardIp}:50005`;
     source.user = srcUser;
     destination.user = dstUser;
-    detector.product_name = newEvent.device_type;
     newEvent.source = source;
     newEvent.destination = destination;
-    newEvent.detector = detector;
     newEvent.related_links = _prepareQueryString(newEvent);
   }
   return newEvent;
