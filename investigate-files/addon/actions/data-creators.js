@@ -466,7 +466,7 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
   };
 };
 
-const _fetchAgentIdsForchecksum = (checksum, callbacks) => {
+const _fetchAgentIdsForchecksum = (checksum, serviceId, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const input = {
@@ -479,7 +479,7 @@ const _fetchAgentIdsForchecksum = (checksum, callbacks) => {
         if (agentIds.length) {
           const computedAgentIds = agentIds.map((id) => ({ agentId: id }));
           dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedAgentIds });
-          dispatch(_fetchPathSrcForAgentId(checksum, callbacks));
+          dispatch(_fetchPathSrcForAgentId(checksum, serviceId, callbacks));
         }
       }
     };
@@ -487,7 +487,7 @@ const _fetchAgentIdsForchecksum = (checksum, callbacks) => {
   };
 };
 
-const _fetchPathSrcForAgentId = (checksum, callbacks) => {
+const _fetchPathSrcForAgentId = (checksum, serviceId, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
@@ -509,7 +509,7 @@ const _fetchPathSrcForAgentId = (checksum, callbacks) => {
               }
             });
             dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
-            dispatch(_fetchFileNameForPath(checksum, info.agentId, path, callbacks));
+            dispatch(_fetchFileNameForPath(checksum, info.agentId, path, serviceId, callbacks));
           }
         }
       };
@@ -518,7 +518,7 @@ const _fetchPathSrcForAgentId = (checksum, callbacks) => {
   };
 };
 
-const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
+const _fetchFileNameForPath = (checksum, agentId, path, serviceId, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
@@ -540,7 +540,7 @@ const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
           dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
           // wait for all the filenames to load
           if (computedMachineFileInfoList.filter((m) => m.fileName).length === computedMachineFileInfoList.length) {
-            File.sendFileDownloadToServerRequest({ checksumSha256: checksum, machineFilePathInfoList: computedMachineFileInfoList })
+            File.sendFileDownloadToServerRequest({ checksumSha256: checksum, machineFilePathInfoList: computedMachineFileInfoList }, serviceId)
               .then(() => {
                 callbacks.onSuccess();
               }).catch(({ meta: message }) => {
@@ -554,9 +554,9 @@ const _fetchFileNameForPath = (checksum, agentId, path, callbacks) => {
   };
 };
 
-const downloadFilesToServer = (checksumSha256, callbacks) => {
+const downloadFilesToServer = (checksumSha256, serviceId, callbacks) => {
   return (dispatch) => {
-    dispatch(_fetchAgentIdsForchecksum(checksumSha256, callbacks));
+    dispatch(_fetchAgentIdsForchecksum(checksumSha256, serviceId, callbacks));
   };
 };
 

@@ -107,9 +107,10 @@ const Files = Component.extend({
     },
 
     onDownloadFilesToServer() {
+      const [selectedDetailFile] = this.get('selections');
       const callBackOptions = this.get('callBackOptions');
       const [checksumSha256] = this.get('checksums');
-      this.send('downloadFilesToServer', checksumSha256, callBackOptions);
+      this.send('downloadFilesToServer', checksumSha256, selectedDetailFile.serviceId, callBackOptions);
     },
 
     onAnalyzeFile() {

@@ -59,14 +59,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5, features, format, downloadInfo } = payload;
+  const { id, firstFileName, signature, size, machineOsType, checksumSha256, checksumSha1, checksumMd5, features, format, downloadInfo, serviceId } = payload;
   let selectedList = [];
   // Previously selected file
 
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size, features, format, downloadInfo }];
+    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size, features, format, downloadInfo, serviceId }];
   }
   return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {}, isRemediationAllowed: true });
 
@@ -204,9 +204,9 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SELECT_ALL_FILES]: (state) => {
     const selectedList = Object.values(state.fileData).map((file) => {
-      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5, machineOsType, pe, format, downloadInfo } = file;
+      const { id, firstFileName, signature, size, checksumSha256, checksumSha1, checksumMd5, machineOsType, pe, format, downloadInfo, serviceId } = file;
       const features = pe ? pe.features : [];
-      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size, machineOsType, features, format, downloadInfo };
+      return { id, fileName: firstFileName, checksumSha256, checksumSha1, checksumMd5, signature, size, machineOsType, features, format, downloadInfo, serviceId };
     });
     return state.set('selectedFileList', selectedList);
   },

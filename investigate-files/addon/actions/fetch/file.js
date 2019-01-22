@@ -162,12 +162,15 @@ const getSelectedFileProperties = (checksum) => {
   });
 };
 
-const sendFileDownloadToServerRequest = (selectedFileDetails) => {
+const sendFileDownloadToServerRequest = (selectedFileDetails, serviceId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'downloadFileToServer',
     modelName: 'files',
-    query: { data: selectedFileDetails }
+    query: { data: selectedFileDetails },
+    streamOptions: {
+      socketUrlPostfix: serviceId
+    }
   });
 };
 
