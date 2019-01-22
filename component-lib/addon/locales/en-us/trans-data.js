@@ -762,11 +762,15 @@ export default {
       riskScoring: {
         header: 'Risk Scoring Settings',
         labels: {
+          enabled: 'Enabled',
+          disabled: 'Disabled',
+          fileThresholdEnabled: 'Create Alerts and Incidents For Files',
           fileThreshold: 'File Alert Threshold',
-          fileTimeWindow: 'File Time Window',
+          fileTimeWindow: 'File Incident Time Window',
           fileTimeWindowUnit: 'File Time Window Unit (days or hours)',
+          hostThresholdEnabled: 'Create Alerts and Incidents For Hosts',
           hostThreshold: 'Host Alert Threshold',
-          hostTimeWindow: 'Host Time Window',
+          hostTimeWindow: 'Host Incident Time Window',
           hostTimeWindowUnit: 'Host Time Window Unit (days or hours)'
         },
         validations: {

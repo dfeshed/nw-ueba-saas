@@ -9,13 +9,14 @@ import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { formModel, anotherModel } from './data';
 import { selectors } from './selectors';
 import formValidations from './validations';
-import { formGroup, formGroupSync } from './helpers';
+import { formGroup, formGroupSync, fieldsetSync } from './helpers';
 import { FormElement } from './shim';
+import { Promise } from 'rsvp';
 
 const ENTER_KEY = 13;
 const timeout = 10000;
 
-let group, label, input, select, options, selectedItem, validation, groupValidation, inlineMessages, submitted;
+let group, label, input, select, radioOne, labelOne, radioTwo, labelTwo, legend, inputGroupOne, inputGroupTwo, options, selectedItem, validation, groupValidation, inlineMessages, submitted, radioShapeOne, radioShapeTwo;
 
 module('Integration | Component | Form Element', function(hooks) {
   setupRenderingTest(hooks, {
@@ -48,10 +49,23 @@ module('Integration | Component | Form Element', function(hooks) {
           {{input.component}}
         {{/form.input}}
 
+        {{#form.radio property="enabled" legend="legenndd" as |radio|}}
+          {{radio.component value=true label="enabled"}}
+          {{radio.component value=false label="disabled"}}
+        {{/form.radio}}
+
+        {{#form.input property="optional" label="optional" as |input|}}
+          {{input.component}}
+        {{/form.input}}
+
         {{form.save}}
         {{form.reset}}
       {{/forms/form-element}}
     `);
+  });
+
+  hooks.afterEach(async function() {
+    submitted = undefined;
   });
 
   test('form element provided with sensible defaults', async function(assert) {
@@ -77,6 +91,27 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(options[0].textContent.trim(), '');
     assert.equal(options[1].textContent.trim(), 'x');
     assert.equal(options[2].textContent.trim(), 'y');
+  });
+
+  test('form element provides radio button element under fieldset', async function(assert) {
+    assert.expect(11);
+
+    ({ legend, labelOne, radioOne, radioShapeOne, labelTwo, radioTwo, radioShapeTwo } = fieldsetSync(1));
+    assert.equal(legend.textContent.trim(), 'legenndd');
+    assert.equal(labelOne.textContent.trim(), 'enabled');
+    assert.equal(radioOne.value, 'true');
+    assert.equal(radioOne.getAttribute('aria-checked'), null);
+    assert.equal(radioShapeOne.getAttribute('focusable'), 'false');
+
+    assert.equal(labelTwo.textContent.trim(), 'disabled');
+    assert.equal(radioTwo.value, 'false');
+    assert.equal(radioTwo.getAttribute('aria-checked'), '');
+    assert.equal(radioShapeTwo.getAttribute('focusable'), 'false');
+
+    await click(radioOne);
+
+    assert.equal(radioOne.getAttribute('aria-checked'), '');
+    assert.equal(radioTwo.getAttribute('aria-checked'), null);
   });
 
   test('form provided save and reset buttons update when locale is changed', async function(assert) {
@@ -160,6 +195,25 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(find(selectors.resetButton).disabled, true);
   });
 
+  test('when radio changes back to the original value reset and save buttons disable', async function(assert) {
+    assert.expect(6);
+
+    assert.equal(find(selectors.saveButton).disabled, true);
+    assert.equal(find(selectors.resetButton).disabled, true);
+
+    ({ legend, labelOne, radioOne, labelTwo, radioTwo } = fieldsetSync(1));
+    await click(radioOne);
+
+    assert.equal(find(selectors.saveButton).disabled, false);
+    assert.equal(find(selectors.resetButton).disabled, false);
+
+    ({ legend, labelOne, radioOne, labelTwo, radioTwo } = fieldsetSync(1));
+    await click(radioTwo);
+
+    assert.equal(find(selectors.saveButton).disabled, true);
+    assert.equal(find(selectors.resetButton).disabled, true);
+  });
+
   test('after input changed submit action includes changes without side effecting original formModel', async function(assert) {
     assert.expect(4);
 
@@ -173,8 +227,10 @@ module('Integration | Component | Form Element', function(hooks) {
 
     await settled().then(() => {
       assert.deepEqual(submitted, {
+        enabled: false,
         zip: 'x',
         wat: 'm',
+        optional: 'xor',
         foo: {
           bar: {
             baz: 'w'
@@ -182,8 +238,10 @@ module('Integration | Component | Form Element', function(hooks) {
         }
       });
       assert.deepEqual(formModel, {
+        enabled: false,
         zip: 'x',
         wat: 'm',
+        optional: 'xor',
         foo: {
           bar: {
             baz: 'y'
@@ -206,8 +264,10 @@ module('Integration | Component | Form Element', function(hooks) {
 
     await settled().then(() => {
       assert.deepEqual(submitted, {
+        enabled: false,
         zip: 'y',
         wat: 'm',
+        optional: 'xor',
         foo: {
           bar: {
             baz: 'y'
@@ -215,8 +275,47 @@ module('Integration | Component | Form Element', function(hooks) {
         }
       });
       assert.deepEqual(formModel, {
+        enabled: false,
         zip: 'x',
         wat: 'm',
+        optional: 'xor',
+        foo: {
+          bar: {
+            baz: 'y'
+          }
+        }
+      });
+    });
+  });
+
+  test('after radio changed submit action includes changes without side effecting original formModel', async function(assert) {
+    assert.expect(4);
+
+    ({ radioOne } = fieldsetSync(1));
+    await click(radioOne);
+
+    assert.equal(find(selectors.saveButton).disabled, false);
+    assert.equal(find(selectors.resetButton).disabled, false);
+
+    await click(selectors.saveButton);
+
+    await settled().then(() => {
+      assert.deepEqual(submitted, {
+        enabled: true,
+        zip: 'x',
+        wat: 'm',
+        optional: 'xor',
+        foo: {
+          bar: {
+            baz: 'y'
+          }
+        }
+      });
+      assert.deepEqual(formModel, {
+        enabled: false,
+        zip: 'x',
+        wat: 'm',
+        optional: 'xor',
         foo: {
           bar: {
             baz: 'y'
@@ -227,7 +326,7 @@ module('Integration | Component | Form Element', function(hooks) {
   });
 
   test('when new model is pushed down the form is set to clean state with new values', async function(assert) {
-    assert.expect(12);
+    assert.expect(16);
 
     assert.equal(find(selectors.saveButton).disabled, true);
     assert.equal(find(selectors.resetButton).disabled, true);
@@ -254,6 +353,12 @@ module('Integration | Component | Form Element', function(hooks) {
     ({ label, input } = await formGroup(3));
     assert.equal(label.textContent.trim(), 'wat');
     assert.equal(input.value, 'u');
+
+    ({ radioOne, radioTwo } = fieldsetSync(1));
+    assert.equal(radioOne.value, 'true');
+    assert.equal(radioOne.getAttribute('aria-checked'), '');
+    assert.equal(radioTwo.value, 'false');
+    assert.equal(radioTwo.getAttribute('aria-checked'), null);
   });
 
   test('form group will set label input and validation ids and aria attributes', async function(assert) {
@@ -272,6 +377,23 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(select.getAttribute('id'), `${selectGuid}-input`);
     assert.equal(select.getAttribute('aria-describedby'), `${selectGuid}-description`);
     assert.equal(groupValidation.getAttribute('id'), `${selectGuid}-description`);
+  });
+
+  test('fieldset with radio buttons will set label input and aria attributes', async function(assert) {
+    assert.expect(7);
+
+    ({ inputGroupOne, labelOne, radioOne, inputGroupTwo, labelTwo, radioTwo } = fieldsetSync(1));
+    const radioOneGuid = inputGroupOne.getAttribute('id');
+    assert.equal(labelOne.getAttribute('for'), `${radioOneGuid}-input`);
+    assert.equal(radioOne.getAttribute('id'), `${radioOneGuid}-input`);
+    assert.equal(radioOne.getAttribute('aria-describedby'), `${radioOneGuid}-description`);
+
+    const radioTwoGuid = inputGroupTwo.getAttribute('id');
+    assert.equal(labelTwo.getAttribute('for'), `${radioTwoGuid}-input`);
+    assert.equal(radioTwo.getAttribute('id'), `${radioTwoGuid}-input`);
+    assert.equal(radioTwo.getAttribute('aria-describedby'), `${radioTwoGuid}-description`);
+
+    assert.notEqual(radioOneGuid, radioTwoGuid);
   });
 
   test('inline validation messages show up when form is invalid after input changed', async function(assert) {
@@ -493,5 +615,79 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(inlineMessages.length, 1);
     assert.equal(inlineMessages[0].textContent.trim(), 'Wat can\'t be blank');
     assert.equal(validation.classList.contains('is-invalid'), true);
+  });
+
+  test('optional validation works for elements that depend on radio button selection', async function(assert) {
+    assert.expect(22);
+
+    ({ radioOne, radioTwo } = fieldsetSync(1));
+
+    await click(radioOne);
+
+    ({ input, validation, inlineMessages } = formGroupSync(4));
+
+    assert.equal(input.value, 'xor');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await fillIn(input, '');
+
+    ({ input, validation, inlineMessages } = formGroupSync(4));
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await click(selectors.saveButton);
+
+    await Promise.resolve();
+    assert.deepEqual(submitted, undefined);
+
+    await waitUntil(() => {
+      ({ inlineMessages } = formGroupSync(4));
+      return inlineMessages && inlineMessages[0].textContent.trim() !== '';
+    }, { timeout });
+
+    ({ input, validation, inlineMessages } = formGroupSync(4));
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), 'Optional can\'t be blank');
+    assert.equal(validation.classList.contains('is-invalid'), true);
+
+    await click(radioTwo);
+
+    ({ input, validation, inlineMessages } = formGroupSync(4));
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), 'Optional can\'t be blank');
+    assert.equal(validation.classList.contains('is-invalid'), true);
+    // note: this^ UX is likely to evolve as more use cases are discovered
+
+    await click(selectors.saveButton);
+
+    await settled();
+
+    assert.deepEqual(submitted, {
+      enabled: false,
+      zip: 'x',
+      wat: 'm',
+      optional: '',
+      foo: {
+        bar: {
+          baz: 'y'
+        }
+      }
+    });
+
+    ({ input, validation, inlineMessages } = formGroupSync(4));
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
   });
 });

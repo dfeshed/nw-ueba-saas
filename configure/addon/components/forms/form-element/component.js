@@ -63,14 +63,17 @@ export default Component.extend({
       changeset.rollback();
       set(this, 'submitted', false);
       this.notifyPropertyChange('submitted');
+
+      const passiveReset = get(this, 'passiveReset');
+      if (passiveReset) {
+        passiveReset();
+      }
     },
     save(changeset) {
       set(this, 'submitted', true);
       this.notifyPropertyChange('submitted');
-      const model = get(this, 'model');
       const snapshot = changeset.snapshot();
       return changeset
-        .cast(Object.keys(model))
         .validate()
         .then(() => {
           if (get(changeset, 'isValid')) {

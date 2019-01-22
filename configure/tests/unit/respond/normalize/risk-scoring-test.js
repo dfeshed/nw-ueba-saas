@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
-import { denormalizeRiskScoringSettings, normalizeRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/normalize';
+import { resetRiskScoringWhenDisabled, denormalizeRiskScoringSettings, normalizeRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/normalize';
+import { getRiskScoringSettings } from '../../../integration/component/respond/risk-scoring/data';
 
 module('Unit | Utility | Respond Risk Scoring Normalize');
 
@@ -34,12 +35,14 @@ test('normalize will not explode when incoming settings are incomplete', functio
     x: {
       threshold: '',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: true
     },
     file: {
       threshold: '2',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: true
     }
   });
 });
@@ -58,7 +61,8 @@ test('normalize will not explode when incoming settings are incorrect', function
       bar: '2',
       timeWindow: [{
         name: 'x'
-      }]
+      }],
+      enabled: false
     }
   ]);
 
@@ -66,12 +70,14 @@ test('normalize will not explode when incoming settings are incorrect', function
     undefined: {
       threshold: '',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: true
     },
     file: {
       threshold: '',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: false
     }
   });
 });
@@ -83,12 +89,14 @@ test('denormalize will transform settings to array of key values', function(asse
     host: {
       threshold: '75',
       timeWindow: '1',
-      timeWindowUnit: 'd'
+      timeWindowUnit: 'd',
+      enabled: true
     },
     file: {
       threshold: '80',
       timeWindow: '24',
-      timeWindowUnit: 'h'
+      timeWindowUnit: 'h',
+      enabled: false
     }
   });
 
@@ -96,12 +104,130 @@ test('denormalize will transform settings to array of key values', function(asse
     {
       type: 'HOST',
       threshold: 75,
-      timeWindow: '1d'
+      timeWindow: '1d',
+      enabled: true
     },
     {
       type: 'FILE',
       threshold: 80,
-      timeWindow: '24h'
+      timeWindow: '24h',
+      enabled: false
+    }
+  ];
+
+  assert.deepEqual(result, expected);
+});
+
+test('resetRiskScoringWhenDisabled will reset any file threshold and time related values when file disabled', function(assert) {
+  assert.expect(1);
+
+  const settings = getRiskScoringSettings();
+
+  const result = resetRiskScoringWhenDisabled({
+    host: {
+      threshold: '75',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: true
+    },
+    file: {
+      threshold: '',
+      timeWindow: '9',
+      timeWindowUnit: 'd',
+      enabled: false
+    }
+  }, settings);
+
+  const expected = {
+    host: {
+      threshold: '75',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: true
+    },
+    file: {
+      threshold: '80',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: false
+    }
+  };
+
+  assert.deepEqual(result, expected);
+});
+
+test('resetRiskScoringWhenDisabled will reset any host threshold and time related values when host disabled', function(assert) {
+  assert.expect(1);
+
+  const settings = getRiskScoringSettings();
+
+  const result = resetRiskScoringWhenDisabled({
+    host: {
+      threshold: '64',
+      timeWindow: '3',
+      timeWindowUnit: 'h',
+      enabled: false
+    },
+    file: {
+      threshold: '80',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: true
+    }
+  }, settings);
+
+  const expected = {
+    host: {
+      threshold: '75',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: false
+    },
+    file: {
+      threshold: '80',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: true
+    }
+  };
+
+  assert.deepEqual(result, expected);
+});
+
+test('reset settings and denormalize are api compatible', function(assert) {
+  assert.expect(1);
+
+  const settings = getRiskScoringSettings();
+
+  const resetSettings = resetRiskScoringWhenDisabled({
+    host: {
+      threshold: '75',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: true
+    },
+    file: {
+      threshold: '',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: false
+    }
+  }, settings);
+
+  const result = denormalizeRiskScoringSettings(resetSettings);
+
+  const expected = [
+    {
+      type: 'HOST',
+      threshold: 75,
+      timeWindow: '1d',
+      enabled: true
+    },
+    {
+      type: 'FILE',
+      threshold: 80,
+      timeWindow: '24h',
+      enabled: false
     }
   ];
 
@@ -131,7 +257,8 @@ test('denormalize will not explode when incoming settings are incomplete', funct
     file: {
       threshold: null,
       timeWindow: null,
-      timeWindowUnit: null
+      timeWindowUnit: null,
+      enabled: false
     }
   });
 
@@ -139,17 +266,19 @@ test('denormalize will not explode when incoming settings are incomplete', funct
     {
       type: 'UNDEFINED',
       threshold: 0,
-      timeWindow: ''
+      timeWindow: '',
+      enabled: true
     },
     {
       type: 'FILE',
       threshold: 0,
-      timeWindow: ''
+      timeWindow: '',
+      enabled: false
     }
   ]);
 });
 
-test('normalize will lowercase incoming configuration type', function(assert) {
+test('normalize will lowercase incoming configuration type and default enabled to true', function(assert) {
   assert.expect(1);
 
   const result = normalizeRiskScoringSettings([
@@ -159,7 +288,8 @@ test('normalize will lowercase incoming configuration type', function(assert) {
     },
     {
       type: 'FILE',
-      threshold: '3'
+      threshold: '3',
+      enabled: false
     }
   ]);
 
@@ -167,12 +297,48 @@ test('normalize will lowercase incoming configuration type', function(assert) {
     host: {
       threshold: '2',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: true
     },
     file: {
       threshold: '3',
       timeWindow: '',
-      timeWindowUnit: ''
+      timeWindowUnit: '',
+      enabled: false
+    }
+  });
+});
+
+test('normalize will accept both true and false for enabled', function(assert) {
+  assert.expect(1);
+
+  const result = normalizeRiskScoringSettings([
+    {
+      type: 'host',
+      threshold: 88,
+      timeWindow: '1d',
+      enabled: false
+    },
+    {
+      type: 'file',
+      threshold: 90,
+      timeWindow: '24h',
+      enabled: true
+    }
+  ]);
+
+  assert.deepEqual(result, {
+    host: {
+      threshold: '88',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: false
+    },
+    file: {
+      threshold: '90',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: true
     }
   });
 });

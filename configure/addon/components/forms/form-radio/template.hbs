@@ -1,0 +1,17 @@
+{{#forms/form-validation property=property submitted=props.submitted changeset=props.changeset validateProperty=props.validateProperty}}
+  <fieldset>
+    <legend>{{legend}}</legend>
+    {{yield
+      (hash
+        component=(
+          component "forms/fieldset-input"
+          componentName="radio-button"
+          shapeComponentName="forms/form-radio/shape"
+          value=value
+          changed=(action "radioChange")
+          groupValue=(get props.changeset property)
+        )
+      )
+    }}
+  </fieldset>
+{{/forms/form-validation}}

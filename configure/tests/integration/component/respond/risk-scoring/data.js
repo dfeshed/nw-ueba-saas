@@ -6,12 +6,14 @@ export const normalizedState = {
           host: {
             threshold: '75',
             timeWindow: '1',
-            timeWindowUnit: 'd'
+            timeWindowUnit: 'd',
+            enabled: true
           },
           file: {
             threshold: '80',
             timeWindow: '24',
-            timeWindowUnit: 'h'
+            timeWindowUnit: 'h',
+            enabled: true
           }
         },
         riskScoringStatus: 'wait',
@@ -20,6 +22,22 @@ export const normalizedState = {
       }
     }
   }
+};
+
+export const getRiskScoringSettings = function() {
+  const {
+    configure: {
+      respond: {
+        riskScoring: {
+          riskScoringSettings
+        }
+      }
+    }
+  } = normalizedState;
+
+  return {
+    ...riskScoringSettings
+  };
 };
 
 export const normalizedStateExpanded = {

@@ -61,3 +61,63 @@
     @include border-bottom(1px, solid, accentOne);
   }
 }
+
+fieldset {
+  padding-bottom: rsa-whitespace(least);
+
+  legend {
+    padding-bottom: rsa-whitespace(less);
+    padding-top: rsa-whitespace();
+    color: text-color(primary, light);
+    text-transform: uppercase;
+    display: block;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 1px;
+    font-size: .7rem;
+    font-style: normal;
+  }
+
+  .fieldset-input {
+    label {
+      &:hover {
+        cursor: pointer;
+
+        span {
+          color: text-color(secondary);
+        }
+
+        svg > circle:nth-child(1) {
+          stroke: text-color(secondary);
+        }
+      }
+    }
+
+    svg {
+      overflow: visible;
+    }
+
+    input:checked~label circle:nth-child(1) {
+      stroke: text-color(secondary);
+    }
+
+    input:not(checked)~label circle:nth-child(1) {
+      stroke: text-color(neutral);
+    }
+
+    input:checked~label circle:nth-child(2) {
+      fill: text-color(secondary);
+    }
+
+    label span {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.45;
+      font-style: normal;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      padding-top: rsa-whitespace(least);
+      color: text-color(primary, lightest);
+    }
+  }
+}
