@@ -1097,6 +1097,7 @@ const storyLineEvents = {
               host_src: 'test_host_src',
               hostname: 'INENMENONS4L2C',
               operating_system: 'windows',
+              process_vid: '3646183813079877108',
               port_dst: '',
               related_links: [
                 {
@@ -2161,6 +2162,13 @@ export const getEndpointAlertSelection = () => {
       endpointAlertSelectionId
     ]
   };
+};
+
+export const getServices = () => {
+  return [
+    { 'id': '555d9a6fe4b0d37c827d402d', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR', 'version': '11.2.0.0', 'host': '10.63.0.117', 'port': 56005 },
+    { 'id': '555d9a6fe4b0d37c827d4021', 'displayName': 'loki-broker', 'name': 'BROKER', 'version': '11.1.0.0', 'host': '10.4.61.28', 'port': 56003 }
+  ];
 };
 
 export { storyLineEvents };

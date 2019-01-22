@@ -273,7 +273,7 @@ export default {
       downloadCsv: 'Download CSV',
       downloadEndpointEvent: 'Download Endpoint',
       pivotToEndpoint: 'Pivot to Endpoint Thick Client',
-      pivotToProcessAnalysis: 'Process Analysis',
+      pivotToProcessAnalysis: 'Analyze Process',
       pivotToProcessAnalysisTitle: 'Process relationship and event view of source process',
       pivotToHostOverview: 'Pivot to Host Overview',
       pivotToEndpointTitle: 'Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',

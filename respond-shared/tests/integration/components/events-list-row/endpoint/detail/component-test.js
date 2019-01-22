@@ -3,8 +3,9 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { emptyEndpointEvent } from '../../empty-data';
-import { endpointRelatedLinkOne, endpointRelatedLinkTwo, endpointEventId, getAllEvents } from '../../../events-list/data';
+import { endpointRelatedLinkOne, endpointRelatedLinkTwo, endpointEventId, getAllEvents, getServices } from '../../../events-list/data';
 import * as endpoint from '../../generic/detail/helpers';
+import moment from 'moment';
 
 module('Integration | Component | events-list-row/endpoint/detail', function(hooks) {
   setupRenderingTest(hooks);
@@ -21,8 +22,16 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
 
     this.set('expandedId', endpointEventId);
     this.set('item', item);
+    this.set('services', getServices());
 
-    await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
+    const now = moment();
+    const endDate = now.unix();
+    const startDate = now.subtract(7, 'days').unix();
+    const timeStr = `st=${startDate}&et=${endDate}`;
+
+    const endpointRelatedLinkThree = `/investigate/process-analysis?checksum=6fccf2a31310ea8b1eb2f4607ae881551c6b9df8755384d7a7f71b5f22124ad6&sid=555d9a6fe4b0d37c827d402d&aid=C593263F-E2AB-9168-EFA4-C683E066A035&pn=dtf.exe&osType=windows&vid=3646183813079877108&${timeStr}`;
+
+    await render(hbs`{{events-list-row item=item expandedId=expandedId expand=(action expand) services=services}}`);
 
     endpoint.assertDetailColumns(assert, {
       total: 13,
@@ -321,11 +330,13 @@ module('Integration | Component | events-list-row/endpoint/detail', function(hoo
       row: 1,
       values: [
         'Investigate Original Event',
-        'Investigate Destination Domain'
+        'Investigate Destination Domain',
+        'Analyze Process'
       ],
       urls: [
         endpointRelatedLinkOne,
-        endpointRelatedLinkTwo
+        endpointRelatedLinkTwo,
+        endpointRelatedLinkThree
       ]
     });
   });

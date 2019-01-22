@@ -45,7 +45,7 @@ export default Component.extend(HighlightsEntities, {
       const modifiedItem = { ...item };
 
       modifiedItem.related_links = modifiedItem.related_links.concat({
-        type: 'process_analysis',
+        type: 'analyze_process',
         url: processAnalysisLink
       });
       return modifiedItem;
