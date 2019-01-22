@@ -486,13 +486,20 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           endTimeToUseForCalculations = mostRecentEvent(getState()).timeAsNumber;
         }
 
-        const newStartTime =
+        let newStartTime =
           calculateNewStartForNextBatch(
             batchStartTime,
             endTimeToUseForCalculations,
             currentStreamState.eventsDispatchedCount,
             streamLimit
           );
+
+        if (newStartTime < queryNode.startTime) {
+          if (window.DEBUG_STREAMS) {
+            console.log('new calulcated start time is before the query start time, set to query start time of ', queryNode.startTime);
+          }
+          newStartTime = queryNode.startTime;
+        }
 
         // subtract 1 because time ranges are inclusive. If we do not subtract
         // then the first second of the last range will duplicate with the
