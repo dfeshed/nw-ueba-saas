@@ -31,15 +31,12 @@ const getAllSnapShots = (data, serverId) => {
  * @public
  * @returns {Promise}
  */
-const getHostDetails = (data, serverId) => {
+const getHostDetails = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getHostDetails',
     modelName: 'endpoint',
-    query: { data },
-    streamOptions: {
-      socketUrlPostfix: serverId
-    }
+    query: { data }
   });
 };
 

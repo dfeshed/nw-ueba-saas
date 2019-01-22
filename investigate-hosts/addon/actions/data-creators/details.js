@@ -19,9 +19,10 @@ const _getAllSnapShots = (agentId) => {
       type: ACTION_TYPES.FETCH_ALL_SNAP_SHOTS,
       promise: HostDetails.getAllSnapShots({ agentId }, serverId),
       meta: {
-        onSuccess: (response) => {
-          dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: response.data[0] });
-          dispatch(_getHostDetails(true));
+        onSuccess: ({ data }) => {
+          const [{ scanStartTime, serviceId }] = data.length ? data : [{}];
+          dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: scanStartTime });
+          dispatch(_getHostDetails(true, serviceId));
         },
         onFailure: (response) => {
           const debugResponse = JSON.stringify(response);
@@ -55,22 +56,21 @@ const exportFileContext = (data) => (
 const setScanTime = (time) => ({ type: ACTION_TYPES.SET_SCAN_TIME, payload: time });
 const setTransition = (type) => ({ type: ACTION_TYPES.SET_ANIMATION, payload: type });
 
-const _getHostDetails = (forceRefresh) => {
+const _getHostDetails = (forceRefresh, serviceId) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
-    const { serverId } = getState().endpointQuery;
     if (forceRefresh) {
+      const request = lookup('service:request');
+      request.registerPersistentStreamOptions({ socketUrlPostfix: serviceId, requiredSocketUrl: 'endpoint/socket' });
+      dispatch(setSelectedMachineServerId(serviceId));
       dispatch({
         type: ACTION_TYPES.FETCH_HOST_DETAILS,
-        promise: HostDetails.getHostDetails({ agentId, scanTime }, serverId),
+        promise: HostDetails.getHostDetails({ agentId, scanTime }),
         meta: {
           onSuccess: (response) => {
             const { data } = response;
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
-            const request = lookup('service:request');
-            request.registerPersistentStreamOptions({ socketUrlPostfix: response.data.serviceId, requiredSocketUrl: 'endpoint/socket' });
             dispatch(setFocusedHost(data));
-            dispatch(setSelectedMachineServerId(response.data.serviceId));
             dispatch(_fetchDataForSelectedTab());
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(getAllServices());
@@ -202,6 +202,7 @@ const changeDetailTab = (tabName) => {
 const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
   return (dispatch, getState) => {
     const { isTreeView } = getState().endpoint.visuals;
+    const { selectedMachineServerId } = getState().endpointQuery;
     dispatch(setScanTime(scanTime));
     dispatch(changeDetailTab(tabName));
     if (tabName === 'PROCESS' && !isTreeView) {
@@ -214,7 +215,7 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
         dispatch(setAnomaliesTabView(secondaryTab));
       }
     } else {
-      dispatch(_getHostDetails(true));
+      dispatch(_getHostDetails(true, selectedMachineServerId));
     }
     dispatch(toggleExploreSearchResults(false));
   };
