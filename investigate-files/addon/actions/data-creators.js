@@ -108,7 +108,7 @@ const initializeFileDetails = (checksum) => {
   return (dispatch, getState) => {
     const { files: { filter } } = getState();
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
-    if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
+    if (!filter.selectedFilter || filter.selectedFilter.id === 1) {
       const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
     }

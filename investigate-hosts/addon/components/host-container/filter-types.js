@@ -36,7 +36,11 @@ const FILTER_TYPES = [
     'validations': {
       format: {
         validator: (value) => {
-          return !(/^([!-~\s])*$/.test(value));
+          const groupNames = value.split('||');
+          const isValidGroupNames = groupNames.map((agentVersion) => {
+            return (/^([!-~\s])*$/.test(agentVersion.trim()));
+          });
+          return isValidGroupNames.includes(false);
         },
         message: 'investigateHosts.hosts.filters.invalidGroup'
       }
@@ -100,7 +104,11 @@ const FILTER_TYPES = [
       format: {
         exclude: ['LIKE'],
         validator: (value) => {
-          return !(/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(value));
+          const macAddress = value.split('||');
+          const isValidMacAddress = macAddress.map((mac) => {
+            return (/^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/.test(mac.trim()));
+          });
+          return isValidMacAddress.includes(false);
         },
         message: 'investigateHosts.hosts.filters.invalidMacAddress'
       }
@@ -166,7 +174,11 @@ const FILTER_TYPES = [
     'validations': {
       format: {
         validator: (value) => {
-          return !(/^[A-Za-z0-9-]*$/.test(value));
+          const ids = value.split('||');
+          const isValidIds = ids.map((id) => {
+            return (/^[A-Za-z0-9-]*$/.test(id.trim()));
+          });
+          return isValidIds.includes(false);
         },
         message: 'investigateHosts.hosts.filters.invalidAgentID'
       }
@@ -180,7 +192,11 @@ const FILTER_TYPES = [
     'validations': {
       format: {
         validator: (value) => {
-          return !(/^[0-9.]*$/.test(value));
+          const agentVersions = value.split('||');
+          const isValidAgentVersions = agentVersions.map((agentVersion) => {
+            return (/^[0-9.]*$/.test(agentVersion.trim()));
+          });
+          return isValidAgentVersions.includes(false);
         },
         message: 'investigateHosts.hosts.filters.invalidAgentVersion'
       }
