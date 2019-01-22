@@ -31,7 +31,7 @@ const _expressionList = (state) => state.endpoint.filter.expressionList || [];
 const _hasNext = (state) => state.endpoint.machines.hasNext;
 const _focusedHost = (state) => state.endpoint.machines.focusedHost;
 
-const _allAreMigratedHosts = createSelector(
+export const allAreMigratedHosts = createSelector(
   _selectedHostList,
   (selectedHostList) => selectedHostList.every((host) => host && !host.managed)
 );
@@ -183,7 +183,7 @@ export const warningMessages = createSelector(
 );
 
 export const isScanStartButtonDisabled = createSelector(
-  [tooManyHostsSelected, allAreEcatAgents, _allAreMigratedHosts],
+  [tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts],
   (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
     return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts;
   }
@@ -247,7 +247,7 @@ export const isInsightsAgent = createSelector(
 );
 
 export const actionsDisableMessage = createSelector(
-  [noHostsSelected, tooManyHostsSelected, allAreEcatAgents, _allAreMigratedHosts],
+  [noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts],
   (noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
     if (noHostsSelected) {
       return 'Action disabled - No host is selected.';

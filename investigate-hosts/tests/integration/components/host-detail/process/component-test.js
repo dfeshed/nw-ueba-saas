@@ -415,6 +415,11 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .selectedHostList([{
+        id: 1,
+        version: '4.3.0.0',
+        managed: true
+      }])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -444,6 +449,11 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .selectedHostList([{
+        id: 1,
+        version: '4.3.0.0',
+        managed: true
+      }])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');

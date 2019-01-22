@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
 import _ from 'lodash';
+import { allAreMigratedHosts } from 'investigate-hosts/reducers/hosts/selectors';
 
 const _fileContext = (state, name) => state.endpoint[name].fileContext;
 const _sortConfig = (state, name) => state.endpoint[name].sortConfig;
@@ -185,13 +186,13 @@ const _areAllFilesNotDownloadedToServer = createSelector(
 );
 
 export const fileDownloadButtonStatus = createSelector(
-  [_isNotAdvanced, _isFloatingOrMemoryDll, _areAllFilesNotDownloadedToServer, fileContextSelections],
-  (isNotAdvanced, areAllSelectedFloatingOrMemoryDll, areAllFilesNotDownloadedToServer, fileContextSelections) => {
+  [_isNotAdvanced, _isFloatingOrMemoryDll, _areAllFilesNotDownloadedToServer, fileContextSelections, allAreMigratedHosts],
+  (isNotAdvanced, areAllSelectedFloatingOrMemoryDll, areAllFilesNotDownloadedToServer, fileContextSelections, allAreMigratedHosts) => {
     const selectedFilesLength = fileContextSelections.length;
     // if agent is not advanced and file's downloaded status is true
-    const isDownloadToServerDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || (selectedFilesLength < 0) || (selectedFilesLength > 100) || (!areAllFilesNotDownloadedToServer);
+    const isDownloadToServerDisabled = allAreMigratedHosts || isNotAdvanced || areAllSelectedFloatingOrMemoryDll || (selectedFilesLength < 0) || (selectedFilesLength > 100) || (!areAllFilesNotDownloadedToServer);
     // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
-    const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
+    const isSaveLocalAndFileAnalysisDisabled = allAreMigratedHosts || isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
     return {
       isDownloadToServerDisabled,
       isSaveLocalAndFileAnalysisDisabled

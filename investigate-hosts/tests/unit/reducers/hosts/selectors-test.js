@@ -18,6 +18,7 @@ import {
   hostTotalLabel,
   nextLoadCount,
   isInsightsAgent,
+  allAreMigratedHosts,
   actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -626,6 +627,43 @@ test('isInsightsAgent when focused agent is undefined in current state', functio
   });
   const result = isInsightsAgent(state);
   assert.equal(result, false, 'default value as false should return');
+});
+
+test('allAreMigratedHosts returns true if the selected agent has been migrated', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: 2,
+            version: '4.3.0.0',
+            managed: false
+          }
+        ]
+      }
+    }
+  });
+  const result1 = allAreMigratedHosts(state1);
+  assert.equal(result1, true, 'Returns true as agent is migrated');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: 1,
+          version: '4.3.0.0',
+          managed: true
+        },
+        {
+          id: 2,
+          version: '4.3.0.0',
+          managed: true
+        }]
+      }
+    }
+  });
+  const result2 = allAreMigratedHosts(state2);
+  assert.equal(result2, false, 'Returns false as agent is not migrated');
 });
 
 test('actionsDisableMessage', function(assert) {

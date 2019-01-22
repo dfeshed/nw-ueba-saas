@@ -379,6 +379,13 @@ module('Unit | Selectors | File Context', function() {
   test('fileDownloadButtonStatus if agent mode is not Advanced', function(assert) {
     const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -397,6 +404,13 @@ module('Unit | Selectors | File Context', function() {
   test('fileDownloadButtonStatus if agent mode is Advanced', function(assert) {
     const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -415,6 +429,13 @@ module('Unit | Selectors | File Context', function() {
   test('fileDownloadButtonStatus if not all selected files are memorydlls or floating code', function(assert) {
     const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -433,6 +454,13 @@ module('Unit | Selectors | File Context', function() {
   test('fileDownloadButtonStatus if all selected files are memorydlls or floating code', function(assert) {
     const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -489,6 +517,13 @@ module('Unit | Selectors | File Context', function() {
   test('isAnyFileFloatingOrMemoryDll', function(assert) {
     const state = Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -546,6 +581,13 @@ module('Unit | Selectors | File Context', function() {
   test('isAnyFileFloatingOrMemoryDll when file has only memory dll, in one of the selections', function(assert) {
     const state = Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {
@@ -611,6 +653,13 @@ module('Unit | Selectors | File Context', function() {
     })();
     const result = fileDownloadButtonStatus(Immutable.from({
       endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
         overview: {
           hostDetails: {
             machineIdentity: {

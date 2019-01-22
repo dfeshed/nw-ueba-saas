@@ -286,7 +286,17 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    const selectedHostList = [{
+      id: 1,
+      version: '4.3.0.0',
+      managed: true
+    }];
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections)
+      .selectedHostList(selectedHostList)
+      .build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     assert.expect(3);
@@ -360,7 +370,18 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     const endpointQuery = {
       serverId: 'serverId'
     };
-    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).endpointQuery(endpointQuery).build();
+    const selectedHostList = [{
+      id: 1,
+      version: '4.3.0.0',
+      managed: true
+    }];
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections)
+      .endpointQuery(endpointQuery)
+      .selectedHostList(selectedHostList)
+      .build();
     await render(hbs`
     <style>
         box, section {
@@ -479,7 +500,17 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    const selectedHostList = [{
+      id: 1,
+      version: '4.3.0.0',
+      managed: true
+    }];
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections)
+      .selectedHostList(selectedHostList)
+      .build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     await click('.more-action-button');
@@ -578,7 +609,17 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
         format: 'pe'
       }
     ];
-    new ReduxDataHelper(setState).drivers(drivers).host(hostDetails).fileContextSelections(fileContextSelections).build();
+    const selectedHostList = [{
+      id: 1,
+      version: '4.3.0.0',
+      managed: true
+    }];
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections)
+      .selectedHostList(selectedHostList)
+      .build();
     await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     await click('.more-action-button');
