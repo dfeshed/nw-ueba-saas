@@ -569,7 +569,7 @@ test('it sets the minHeight of the table body rows when enableGrouping is false'
   assert.equal(expectedHeightAsInt, actualHeightAsInt);
 });
 
-test('it sets the minHeight of the table body rows when enableGrouping is true', function(assert) {
+test('it sets the minHeight of the table body rows when enableGrouping is true and has enough items to render a label', function(assert) {
   this.setProperties({
     items: mockItems,
     columnsConfig: mockColumnsConfig
@@ -591,6 +591,32 @@ test('it sets the minHeight of the table body rows when enableGrouping is true',
   const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
   const length = this.get('items.length');
   const expectedHeightAsInt = ((rowHeight * length) + (28 * ((length / 20) - 1)));
+
+  assert.equal(expectedHeightAsInt, actualHeightAsInt);
+});
+
+test('it sets the minHeight of the table body rows when enableGrouping is true and but not enough items to render a label', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=true groupingSize=100 lazy=true}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
+  const length = this.get('items.length');
+  const expectedHeightAsInt = (rowHeight * length);
 
   assert.equal(expectedHeightAsInt, actualHeightAsInt);
 });
