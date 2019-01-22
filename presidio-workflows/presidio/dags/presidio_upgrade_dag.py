@@ -32,34 +32,38 @@ def read_presidio_versions():
     return from_version, to_version
 
 
-##########################################################
-# A Chef execution to trigger a Presidio upgrade DAG run #
-##########################################################
+def handle_chef_execution(command_line_arguments):
+    """
+    Handle a Chef execution to trigger a Presidio upgrade DAG run
+    :param command_line_arguments: [0] The name of this file
+                                   [1] The previously installed version of Presidio
+                                   [2] The currently installed version of Presidio
+    :type command_line_arguments: list
+    """
+    from_version = command_line_arguments[1]
+    to_version = command_line_arguments[2]
 
-# sys.argv[0] is the name of this file
-# sys.argv[1] is the previously installed version of Presidio
-# sys.argv[2] is the currently installed version of Presidio
-if len(sys.argv) == 3:
-    from_version = sys.argv[1]
-    to_version = sys.argv[2]
     if from_version != "None":
         write_presidio_versions(from_version, to_version)
-    sys.exit()
 
 
-####################################################################
-# An Airflow execution to dynamically build a Presidio upgrade DAG #
-####################################################################
+def handle_airflow_execution():
+    """
+    Handle an Airflow execution to dynamically build a Presidio upgrade DAG
+    :return: The Presidio upgrade DAG if there was a Chef execution to trigger a Presidio upgrade DAG run
+             None if there hasn't been a Chef execution to trigger a Presidio upgrade DAG run yet
+    :rtype: DAG or NoneType
+    """
+    if os.path.isfile(PRESIDIO_VERSIONS_FILE_NAME):
+        from airflow import DAG
+        from datetime import datetime
+        from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
 
-# There hasn't been a Chef execution to trigger a Presidio upgrade DAG run yet
-if not os.path.isfile(PRESIDIO_VERSIONS_FILE_NAME):
-    sys.exit()
+        from_version, to_version = read_presidio_versions()
+        dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
+        dag = DAG(dag_id=dag_id, schedule_interval="@once", start_date=datetime(2019, 1, 1))
+        presidio_upgrade_dag_builder.build(dag, from_version, to_version)
+        return dag
 
-# There was a Chef execution to trigger a Presidio upgrade DAG run
-from airflow import DAG
-from datetime import datetime
-from presidio.builders.presidioupgrade import presidio_upgrade_dag_builder
-from_version, to_version = read_presidio_versions()
-dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
-dag = DAG(dag_id=dag_id, schedule_interval="@once", start_date=datetime(2019, 1, 1))
-presidio_upgrade_dag_builder.build(dag, from_version, to_version)
+
+dag = handle_chef_execution(sys.argv) if len(sys.argv) == 3 else handle_airflow_execution()
