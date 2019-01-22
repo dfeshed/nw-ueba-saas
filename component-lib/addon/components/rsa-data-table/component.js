@@ -4,9 +4,9 @@ import $ from 'jquery';
 import { assert } from '@ember/debug';
 import computed from 'ember-computed';
 import Component from '@ember/component';
-import EmberObject, { get, set } from '@ember/object';
+import EmberObject, { get, set, observer } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import { run } from '@ember/runloop';
+import { run, once } from '@ember/runloop';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
 
 const DEFAULT_COLUMN_WIDTH = 100;
@@ -438,6 +438,17 @@ export default Component.extend(DomWatcher, {
   }),
 
   /**
+   * @description Calls _scrollToInitial when new data is loaded into the table.
+   * The intent is to keep the selectedRow in view if new records push it out of view.
+   * @private
+   */
+  _scrollTopWillChange: observer('items.length', function() {
+    once(this, () => {
+      this._scrollToInitial();
+    });
+  }),
+
+  /**
    * @description Respond to the user pressing down on the keyboard
    * if a dropdown is not in view, proceed with the following
    * if nothing is selected, select first record
@@ -559,10 +570,11 @@ export default Component.extend(DomWatcher, {
     let _callCount = 0;
     return function() {
       // Don't want to try forever, if this recurses too much, just stop
-      if (_callCount < 100) {
+      if (_callCount < this.get('items.length')) {
         // selectedIndex can change (essentially from not found to found)
         // as data flows in, so pull each time through scrollToInitial
         const selectedIndex = this.get('selectedIndex');
+
         // First row needed to measure height of items so can calculate how far
         // to scroll
         const $firstRow = this.$('.rsa-data-table-body-row:first-child');
@@ -576,7 +588,7 @@ export default Component.extend(DomWatcher, {
           // If the height of the container surpasses where the item should be,
           // we can scroll to it and exit recursion. Otherwise let it try again later.
 
-          if (selectedIndex > this.get('groupingSize')) {
+          if (this.get('enableGrouping') && (selectedIndex > this.get('groupingSize'))) {
             howFarToScrollTable = howFarToScrollTable + this.get('prevGroupingLabelsHeight');
           }
 

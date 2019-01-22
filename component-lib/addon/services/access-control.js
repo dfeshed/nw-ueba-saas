@@ -286,7 +286,7 @@ export default Service.extend({
   // End Admin Permissions
 
   @computed('authorities.[]')
-  hasUEBAAccess(authorities) {
+  hasUEBAAccess(authorities = []) {
     return authorities.includes('Administrators') || authorities.includes('UEBA_Analysts');
   },
 

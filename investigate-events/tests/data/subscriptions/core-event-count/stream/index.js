@@ -64,10 +64,10 @@ export default {
         }
 
         sendMessage({
-          data: data.length,
+          data: data().length,
           meta
         });
-      }, i * 500, i);
+      }, i * 100, i);
     }
   }
 };

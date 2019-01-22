@@ -71,7 +71,7 @@ const currentStreamState = {
 // sessionid is in the list of columns so we can treat it
 // correctly
 const _isSessionIdInColumnList = () => {
-  return currentStreamState.flattenedColumnList.includes('sessionid');
+  return currentStreamState && currentStreamState.flattenedColumnList && currentStreamState.flattenedColumnList.includes('sessionid');
 };
 
 // Calculate the total events we've acquired so far

@@ -640,3 +640,27 @@ test('it does not render the group-label when enableGrouping is false', function
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
   assert.equal(this.$('.group-label').length, 0, '.group-label dom element found.');
 });
+
+test('_scrollTopWillChange is called when items.length is updated', function(assert) {
+  assert.expect(1);
+
+  this.setProperties({
+    items: null,
+    columnsConfig: mockColumnsConfig,
+    _scrollTopWillChange: () => {
+      assert.ok(true, '_scrollTopWillChange called');
+    }
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig _scrollTopWillChange=_scrollTopWillChange}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  this.set('items', mockItems);
+});
