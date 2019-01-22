@@ -11,7 +11,7 @@ module('Unit | Actions | Dictionary | Creators', function(hooks) {
     const result = await dictionaryCreators.getAllAlertSources();
 
     return result.promise.then((sources) => {
-      assert.deepEqual(sources, ['Risk Scoring', 'ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'User Entity Behavior Analytics', 'Web Threat Detection']);
+      assert.deepEqual(sources, ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'Risk Scoring', 'User Entity Behavior Analytics', 'Web Threat Detection']);
     });
   });
 
