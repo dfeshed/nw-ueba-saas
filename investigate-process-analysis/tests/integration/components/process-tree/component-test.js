@@ -1,13 +1,14 @@
 import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, waitUntil, settled } from '@ember/test-helpers';
+import { render, find, findAll, waitUntil, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { selectAll } from 'd3-selection';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import sinon from 'sinon';
 
 let setState;
 
@@ -96,7 +97,7 @@ module('Integration | Component | process-tree', function(hooks) {
     document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
-      assert.equal(findAll('.process-hover-key').length, 6, '6 fields are displayed on hovering over a process.');
+      assert.equal(findAll('.process-hover-key').length, 7, '7 fields are displayed on hovering over a process.');
     });
 
   });
@@ -123,6 +124,32 @@ module('Integration | Component | process-tree', function(hooks) {
       return settled().then(() => {
         assert.equal(findAll('.panel-content').length, 0, 'Expected to hide tether panel');
       });
+    });
+
+  });
+
+  test('Copying the launch arguments', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '4',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    const spy = sinon.spy(document, 'execCommand');
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
+    return settled().then(async() => {
+      assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
+      await click('.copy-icon .rsa-icon');
+      assert.ok(spy.withArgs('copy').calledOnce);
+      spy.restore();
     });
 
   });

@@ -2665,7 +2665,9 @@ export default {
         reputationStatus: 'Reputation',
         fileStatus: 'File Status',
         directoryDst: 'File Path',
-        paramDst: 'Launch Arguments'
+        paramDst: 'Launch Arguments',
+        userAll: 'Username',
+        copyLaunchArguments: 'Copy Launch Arguments'
       }
     },
     anomalies: {

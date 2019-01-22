@@ -17,6 +17,7 @@ import { resetFilterValue } from 'investigate-process-analysis/actions/creators/
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 import { truncateText } from './util/data';
 import zoomed from './helpers/zoomed';
+import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
 
 import {
   isStreaming,
@@ -149,7 +150,7 @@ const TreeComponent = Component.extend({
 
   @computed('fileProperty', 'process')
   processData(fileProperty, process) {
-    const properties = ['signature', 'reputationStatus', 'fileStatus', 'directoryDst', 'paramDst'];
+    const properties = ['userAll', 'signature', 'reputationStatus', 'fileStatus', 'directoryDst', 'paramDst'];
     const displayProperties = {};
     properties.forEach(function(prop) {
       if (prop === 'signature') {
@@ -162,6 +163,7 @@ const TreeComponent = Component.extend({
     });
     displayProperties.directoryDst = process.directoryDst;
     displayProperties.paramDst = process.paramDst;
+    displayProperties.userAll = process.userAll;
     return displayProperties;
   },
 
@@ -635,6 +637,12 @@ const TreeComponent = Component.extend({
   },
   willDestroyElement() {
     freeIdCounter = 0;
+  },
+
+  actions: {
+    copyLaunchArgument(launchArguments) {
+      copyToClipboard(launchArguments);
+    }
   }
 });
 

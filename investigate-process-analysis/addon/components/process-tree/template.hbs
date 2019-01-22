@@ -37,7 +37,16 @@
   {{#each-in processData as |key value|}}
     <hbox fit class='process-hover-content align-center col-xs-12'>
       <hbox class='process-hover-key col-xs-6'>{{t (concat 'investigateHosts.process.processData.' key)}}</hbox>
-      <hbox class='process-hover-value col-xs-6'>{{value}}</hbox>
+      {{#if (eq key 'paramDst')}}
+        <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
+        <hbox class='copy-icon'>
+          {{rsa-icon name="copy-1" click=(action 'copyLaunchArgument' value)}}
+          <span> {{t 'investigateHosts.process.processData.copyLaunchArguments'}} </span>
+        </hbox>
+      {{else}}
+        <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
+      {{/if}}
+
     </hbox>
   {{/each-in}}
 

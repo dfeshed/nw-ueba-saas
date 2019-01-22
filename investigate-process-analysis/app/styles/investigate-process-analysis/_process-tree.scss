@@ -127,27 +127,53 @@ section {
 .process-hover-content {
   padding-top: rsa-whitespace();
   min-height: 1.7rem;
+  .copy-icon {
+    cursor: pointer;
+    position: absolute;
+    bottom: -15px;
+    right: 2.5%;
+    margin-right: -10px;
+    padding-top: 10px;
+  }
+  .rsa-icon {
+    padding-right: 5px;
+  }
 }
 
 .process-hover-key {
   display: block;
   text-align: right;
   min-height: 1.7rem;
-  margin-top: 0.2rem;
   padding-right: rsa-whitespace();
   color: text-color(primary, light);
 }
 .process-hover-value {
+  padding-right: 10px;
   display: block;
   text-align: left;
   min-height: 1.7rem;
   margin-top: 0.2rem;
   word-break: break-word;
+  line-height: 1.2rem;
+}
+
+.process-hover-value.paramDst {
+  line-height: 1.5rem;
+  display: -webkit-box;
+  margin: 0 auto;
+  -webkit-line-clamp: 4;
+  // autoprefixer removes '-webkit-box-orient', hence disabling autoprefixer
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 5px;
 }
 
 .process-tool-tip {
-  width: 300px;
-  padding: rsa-whitespace();
+  width: 350px;
+  padding: rsa-whitespace(more);
 }
 
 .process-title {
