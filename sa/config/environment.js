@@ -117,7 +117,7 @@ module.exports = function(environment) {
       'integration-server.*',
       'content-server.*',
       'source-server.*',
-      'endpoint-server.machine.read'
+      'endpoint-server.agent.read'
     ];
 
     // ENV.APP.LOG_RESOLVER = true;
@@ -147,7 +147,7 @@ module.exports = function(environment) {
       'integration-server.*',
       'content-server.*',
       'source-server.*',
-      'endpoint-server.machine.read'
+      'endpoint-server.agent.read'
     ];
 
     // Testem prefers this...

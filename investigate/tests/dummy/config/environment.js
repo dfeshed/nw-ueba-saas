@@ -68,7 +68,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.roles = ['investigate-server.*', 'endpoint-server.machine.read'];
+    ENV.roles = ['investigate-server.*', 'endpoint-server.agent.read'];
   }
 
   if (environment === 'test') {
@@ -80,7 +80,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.roles = ['investigate-server.*', 'endpoint-server.machine.read'];
+    ENV.roles = ['investigate-server.*', 'endpoint-server.agent.read'];
   }
 
   // if (environment === 'production') {

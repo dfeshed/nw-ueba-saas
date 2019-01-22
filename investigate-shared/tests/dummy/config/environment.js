@@ -47,7 +47,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.roles = ['endpoint-server.machine.read', 'accessInvestigationModule', 'endpoint-server.filter.manage'];
+    ENV.roles = ['endpoint-server.agent.read', 'accessInvestigationModule', 'endpoint-server.filter.manage'];
   }
 
   if (environment === 'production') {

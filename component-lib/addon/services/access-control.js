@@ -43,7 +43,7 @@ export default Service.extend({
     'investigate-server.content.export',
     'investigate-server.content.reconstruct',
     'investigate-server.predicate.read',
-    'endpoint-server.machine.read'
+    'endpoint-server.agent.read'
   ],
   investigationClassicRoles: [
     '*',
@@ -178,14 +178,14 @@ export default Service.extend({
   @computed('roles.[]')
   hasInvestigateHostsAccess(roles) {
     // this permission is same for both hosts and files
-    const hasEndpointMachineRead = this._hasPermission(roles, 'endpoint-server.machine.read');
+    const hasEndpointMachineRead = this._hasPermission(roles, 'endpoint-server.agent.read');
     const hasInvestigationModule = this._hasPermission(roles, 'accessInvestigationModule');
     return hasInvestigationModule && hasEndpointMachineRead;
   },
 
   @computed('roles.[]')
   endpointCanManageFiles(roles) {
-    return this._hasPermission(roles, 'endpoint-server.machine.manage');
+    return this._hasPermission(roles, 'endpoint-server.agent.manage');
   },
 
   @computed('roles.[]')

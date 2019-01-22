@@ -17,7 +17,7 @@ export default {
         'respond-server.*',
         'investigate-server.*',
         'integration-server.*',
-        'endpoint-server.machine.read'
+        'endpoint-server.agent.read'
       ]
     };
   }

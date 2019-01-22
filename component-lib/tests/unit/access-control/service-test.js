@@ -162,7 +162,7 @@ module('Unit | Service | access control', function(hooks) {
   test('hasInvestigateHostsAccess is set when required roles are included', function(assert) {
     const service = this.owner.lookup('service:access-control');
     assert.equal(service.get('hasInvestigateHostsAccess'), false);
-    service.set('roles', ['endpoint-server.machine.read', 'accessInvestigationModule']);
+    service.set('roles', ['endpoint-server.agent.read', 'accessInvestigationModule']);
     assert.equal(service.get('hasInvestigateHostsAccess'), true);
   });
 
