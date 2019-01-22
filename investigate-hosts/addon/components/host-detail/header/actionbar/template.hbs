@@ -9,7 +9,7 @@
       selected=scanTime
       onchange=(action 'setSelect') as |option|}}
       {{#if option}}
-        {{rsa-content-datetime timestamp=option }}
+        {{rsa-content-datetime timestamp=option.scanStartTime }}
       {{/if}}
     {{/power-select}}
   </label>

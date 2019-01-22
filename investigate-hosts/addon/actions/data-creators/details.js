@@ -20,9 +20,9 @@ const _getAllSnapShots = (agentId) => {
       promise: HostDetails.getAllSnapShots({ agentId }, serverId),
       meta: {
         onSuccess: ({ data }) => {
-          const [{ scanStartTime, serviceId }] = data.length ? data : [{}];
-          dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: scanStartTime });
-          dispatch(_getHostDetails(true, serviceId));
+          const [scanTime] = data.length ? data : [{}];
+          dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: scanTime.scanStartTime });
+          dispatch(_getHostDetails(true, scanTime.serviceId));
         },
         onFailure: (response) => {
           const debugResponse = JSON.stringify(response);
@@ -223,7 +223,7 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
 
 const initializeAgentDetails = (input, loadSnapshot) => {
   return (dispatch, getState) => {
-    const { agentId, scanTime } = input;
+    const { agentId, scanTime } = input; // scanTime here will contain snapshot object
     const { endpoint: { detailsInput: dataState, filter } } = getState();
 
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
@@ -233,12 +233,12 @@ const initializeAgentDetails = (input, loadSnapshot) => {
     }
 
     // If selected host/agentId is same as previously loaded then don't load the data as it already in the state
-    if (dataState.agentId !== agentId || (scanTime && scanTime !== dataState.scanTime)) {
-      dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: input });
+    if (dataState.agentId !== agentId || (scanTime && scanTime.scanStartTime !== dataState.scanTime)) {
+      dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanTime ? scanTime.scanStartTime : null } });
       if (loadSnapshot) {
         dispatch(_getAllSnapShots(agentId));
       } else {
-        dispatch(_getHostDetails(true));
+        dispatch(_getHostDetails(true, scanTime.serviceId));
       }
     }
   };
