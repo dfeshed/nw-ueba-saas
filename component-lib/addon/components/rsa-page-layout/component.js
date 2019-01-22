@@ -1,6 +1,11 @@
 import Component from '@ember/component';
 import layout from './template';
 
+const isSmallScreen = () => {
+  const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  return w <= 1800;
+};
+
 export default Component.extend({
   layout,
   tagName: 'hbox',
@@ -10,9 +15,11 @@ export default Component.extend({
   showRightZone: true,
   onClose: null,
   isRightOverlay: false,
-
   actions: {
     open(side) {
+      if (isSmallScreen()) {
+        this.send('close', side === 'left' ? 'right' : 'left');
+      }
       if (side === 'left') {
         this.set('showLeftZone', true);
       } else if (side === 'right') {

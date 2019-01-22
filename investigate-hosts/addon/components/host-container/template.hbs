@@ -1,5 +1,5 @@
 <vbox class="host-container-list">
-  {{#rsa-page-layout showRightZone=false onClose=(action 'setFocusedHostIndex' null) as |layout|}}
+  {{#rsa-page-layout showRightZone=false onClose=(action 'onPanelClose') as |layout|}}
     {{#layout.left as |leftPanel|}}
       {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
       {{endpoint/filters-wrapper

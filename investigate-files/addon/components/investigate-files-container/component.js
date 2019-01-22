@@ -100,8 +100,10 @@ const Files = Component.extend({
   },
 
   actions: {
-    onPanelClose() {
-      this.send('setSelectedIndex', null);
+    onPanelClose(side) {
+      if (side === 'right') {
+        this.send('setSelectedIndex', null);
+      }
     },
 
     onDownloadFilesToServer() {

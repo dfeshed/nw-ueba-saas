@@ -63,6 +63,13 @@ const Container = Component.extend({
   click(event) {
     // this trigger is required to open start/stop scan modal window
     this.get('eventBus').trigger('rsa-application-click', event.target);
+  },
+  actions: {
+    onPanelClose(side) {
+      if (side === 'right') {
+        this.send('setFocusedHostIndex', null);
+      }
+    }
   }
 });
 

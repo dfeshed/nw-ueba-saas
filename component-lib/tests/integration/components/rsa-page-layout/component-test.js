@@ -91,4 +91,39 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
     `);
     assert.equal(findAll('.center-zone .rsa-header').length, 0, 'header is not rendered in center zone');
   });
+
+  test('on smaller screen close the left panel if open', async function(assert) {
+    await render(hbs`
+      {{#rsa-page-layout showRightZone=false as |layout|}}
+        {{layout.right}}
+        {{#layout.center}}
+          {{#rsa-form-button isIconOnly=true defaultAction=(action layout.open 'right')}}
+            {{rsa-icon name='close'}}
+          {{/rsa-form-button}}
+        {{/layout.center}}
+      {{/rsa-page-layout}}
+    `);
+    assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 0, 'right panel is visible by default');
+
+    await click('.center-zone .rsa-icon-close-filled');
+    assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 0, 'right panel is close');
+  });
+
+  test('on smaller screen close the right panel if open', async function(assert) {
+    await render(hbs`
+      {{#rsa-page-layout showLeftZone=false as |layout|}}
+        {{layout.right}}
+        {{#layout.center}}
+          {{#rsa-form-button isIconOnly=true defaultAction=(action layout.open 'left')}}
+            {{rsa-icon name='close'}}
+          {{/rsa-form-button}}
+        {{/layout.center}}
+      {{/rsa-page-layout}}
+    `);
+    assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible by default');
+
+    await click('.center-zone .rsa-icon-close-filled');
+    assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'rigth panel is close');
+  });
+
 });

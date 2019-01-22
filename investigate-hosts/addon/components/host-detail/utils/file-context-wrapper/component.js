@@ -94,8 +94,10 @@ const ContextWrapper = Component.extend({
 
   actions: {
 
-    onPropertyPanelClose() {
-      this.send('setRowSelection', this.get('tabName'), null, null);
+    onPropertyPanelClose(side) {
+      if (side === 'right') {
+        this.send('setRowSelection', this.get('tabName'), null, null);
+      }
     },
 
     onDownloadFilesToServer() {

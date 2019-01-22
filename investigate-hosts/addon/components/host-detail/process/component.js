@@ -125,8 +125,10 @@ const Container = Component.extend({
       this.send('toggleProcessView');
     },
 
-    onPropertyPanelClose() {
-      this.send('setRowIndex', null);
+    onPropertyPanelClose(side) {
+      if (side === 'right') {
+        this.send('setRowIndex', null);
+      }
     },
 
     resetRiskScoreAction() {
