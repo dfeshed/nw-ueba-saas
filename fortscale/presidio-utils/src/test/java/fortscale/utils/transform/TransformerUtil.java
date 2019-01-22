@@ -41,7 +41,7 @@ public class TransformerUtil {
 
         JSONObject retJsonObject = transformer.transform(new JSONObject(jsonObject.toString()));
         if(!isFilteredOut) {
-            Assert.assertNotNull(retJsonObject);
+            Assert.assertNotNull(String.format("failed transformer: %s",transformer.getName()),retJsonObject);
         } else {
             Assert.assertNull("The event was expected to be filtered out.",retJsonObject);
         }

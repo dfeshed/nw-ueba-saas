@@ -52,14 +52,148 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
     private static final String EXPLICIT_CREDENTIALS_LOGON = "EXPLICIT_CREDENTIALS_LOGON";
-    public static final String SESSION_ID_FIELD_NAME = "sessionid";
-    public static final String EC_OUTCOME_FIELD_NAME = "ec_outcome";
-    public static final String EC_ACTIVITY_FIELD_NAME = "ec.activity";
-    public static final String RSAACESRV_DEVICE_TYPE = "rsaacesrv";
+    private static final String SESSION_ID_FIELD_NAME = "sessionid";
+    private static final String EC_OUTCOME_FIELD_NAME = "ec_outcome";
+    private static final String EC_ACTIVITY_FIELD_NAME = "ec.activity";
+    private static final String RSAACESRV_DEVICE_TYPE = "rsaacesrv";
+    private static final String ACTION_FIELD_NAME = "action";
+    private static final String USER_SRC_FIELD_NAME = "user_src";
+    private static final String RHLINUX_DEVICE_TYPE = "rhlinux";
 
 
     private String wrapWithDollar(String fieldName) {
         return String.format("${%s}", fieldName);
+    }
+
+
+    private IJsonObjectTransformer buildAuthenticationLinuxAuthTransformer() {
+        List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
+
+        //filter non auth actions
+        JsonObjectRegexPredicate actionIsAuth = new JsonObjectRegexPredicate("action-is-login-or-sshd", ACTION_FIELD_NAME, "\\/usr\\/bin\\/login|\\/usr\\/sbin\\/sshd");
+        FilterTransformer filterNonAuthActions =
+                new FilterTransformer("action-is-auth-filter", actionIsAuth, true);
+        transformerChainList.add(filterNonAuthActions);
+        //filter empty user.src
+        JsonObjectRegexPredicate unkonwnUser = new JsonObjectRegexPredicate("user-unknown", USER_SRC_FIELD_NAME, "^$|\\(unknown\\)");
+        FilterTransformer filterUnknownUser=
+                new FilterTransformer("user-is-unknown", unkonwnUser, false);
+        transformerChainList.add(filterUnknownUser);
+        // filter irrelevant auth events (session start and end)
+        JsonObjectRegexPredicate authEventType = new JsonObjectRegexPredicate("event-type-is-auth", EVENT_TYPE_FIELD_NAME, "USER_LOGIN|CRED_ACQ|USER_AUTH");
+        FilterTransformer filterEventType=
+                new FilterTransformer("event-type-is-auth", authEventType, true);
+        transformerChainList.add(filterEventType);
+
+        //Convert time field from EPOCH millis to EPOCH seconds
+        EpochTimeToNanoRepresentationTransformer dateTimeMillisToSeconds =
+                new EpochTimeToNanoRepresentationTransformer("date-time-millis-to-nano-representation", EVENT_TIME_FIELD_NAME, DATE_TIME_FIELD_NAME);
+        transformerChainList.add(dateTimeMillisToSeconds);
+
+        //Create capture and format list for source machines and destination machines
+        CaptureAndFormatConfiguration machineIdNormalizationZeroPattern =
+                new CaptureAndFormatConfiguration("-", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationFirstPattern =
+                new CaptureAndFormatConfiguration(".*:.*", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationSecondPattern =
+                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "", null);
+        CaptureAndFormatConfiguration machineIdNormalizationThirdPattern =
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration machineIdNormalizationFourthPattern =
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+
+        List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(
+                machineIdNormalizationZeroPattern,
+                machineIdNormalizationFirstPattern,
+                machineIdNormalizationSecondPattern,
+                machineIdNormalizationThirdPattern,
+                machineIdNormalizationFourthPattern);
+
+        // Normalize the srcMachineId values
+        RegexCaptorAndFormatter srcMachineIdNormalization =
+                new RegexCaptorAndFormatter("src-machine-id-normalization",
+                        HOST_SRC_FIELD_NAME,
+                        SRC_MACHINE_ID_FIELD_NAME,
+                        srcAndDstMachineCaptureAndFormatConfigurationList);
+        transformerChainList.add(srcMachineIdNormalization);
+
+
+        // Normalize the userId values
+        CaptureAndFormatConfiguration userNormalizationFirstPattern = new CaptureAndFormatConfiguration("CN=([^,]+)", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationSecondPattern = new CaptureAndFormatConfiguration("CN=([^,]+),.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationThirdPattern = new CaptureAndFormatConfiguration("(.+\\\\)+(.+)@.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationFourthPattern = new CaptureAndFormatConfiguration("(.+\\\\)+([^@]+)", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationFifthPattern = new CaptureAndFormatConfiguration("(.+)@.+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
+        CaptureAndFormatConfiguration userNormalizationSixthPattern = new CaptureAndFormatConfiguration(".+", "%s",
+                Collections.singletonList(new CapturingGroupConfiguration(0, "LOWER")));
+        RegexCaptorAndFormatter userIdNormalization = new RegexCaptorAndFormatter("user-id-normalization", USER_SRC_FIELD_NAME, USER_ID_FIELD_NAME,
+                Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
+                        userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
+        transformerChainList.add(userIdNormalization);
+
+        //Normalize the result values
+        CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
+        CaptureAndFormatConfiguration resultSuccessPattern = new CaptureAndFormatConfiguration(".*(?i:succ).*", RESULT_SUCCESS, null);
+        RegexCaptorAndFormatter resultNormalizationTransformer =
+                new RegexCaptorAndFormatter("result-normalization", RESULT_FIELD_NAME, RESULT_FIELD_NAME,
+                        Arrays.asList(resultFailedPattern, resultSuccessPattern));
+
+        transformerChainList.add(resultNormalizationTransformer);
+
+
+        CopyValueTransformer copyEventTypeToOperationType=
+                new CopyValueTransformer(
+                        "copy-operation-type",
+                        EVENT_TYPE_FIELD_NAME,
+                        false,
+                        Arrays.asList(OPERATION_TYPE_FIELD_NAME));
+        transformerChainList.add(copyEventTypeToOperationType);
+
+
+        //rename sessionId to eventId
+        CopyValueTransformer renameSessionIdToEventId =
+                new CopyValueTransformer(
+                        "rename-session-id-to-event-id",
+                        SESSION_ID_FIELD_NAME,
+                        true,
+                        Collections.singletonList(EVENT_ID_FIELD_NAME));
+        transformerChainList.add(renameSessionIdToEventId);
+
+        //rename action to dataSource
+        CopyValueTransformer renameActionToDataSource =
+                new CopyValueTransformer(
+                        "rename-action-to-data-source",
+                        ACTION_FIELD_NAME,
+                        true,
+                        Collections.singletonList(DATA_SOURCE_FIELD_NAME));
+        transformerChainList.add(renameActionToDataSource);
+
+        // copy user_id to userName
+        CopyValueTransformer copyUserId =
+                new CopyValueTransformer(
+                        "copy-user-id",
+                        USER_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME, USERNAME_FIELD_NAME));
+        transformerChainList.add(copyUserId);
+
+        CopyValueTransformer copySrcMachineName=
+                new CopyValueTransformer("copy-src-machine-name",
+                        SRC_MACHINE_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(SRC_MACHINE_NAME_FIELD_NAME));
+        transformerChainList.add(copySrcMachineName);
+
+        //The SecureId Transformer that chain all the transformers together.
+        return new JsonObjectChainTransformer("auth-linux-transformer", transformerChainList);
+
     }
 
     private IJsonObjectTransformer buildAuthenticationSecureIdTransformer() {
@@ -192,12 +326,17 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
     }
 
     private IJsonObjectTransformer buildAuthTransformer() {
+        IJsonObjectTransformer authenticationLinuxAuthTransformer = buildAuthenticationLinuxAuthTransformer();
         IJsonObjectTransformer authenticationSecureIdTransformer = buildAuthenticationSecureIdTransformer();
         IJsonObjectTransformer authenticationWindowsAuditTransformer = buildAuthenticationWindowsAuditTransformer();
         JsonObjectRegexPredicate deviceTypeEqualRsaacesrv =
-                new JsonObjectRegexPredicate("device-type-equal-rsaacesrv", DEVICE_TYPE_FIELD_NAME, "rsaacesrv");
+                new JsonObjectRegexPredicate("device-type-equal-rsaacesrv", DEVICE_TYPE_FIELD_NAME, RSAACESRV_DEVICE_TYPE);
+        JsonObjectRegexPredicate deviceTypeEqualRhlinux =
+                new JsonObjectRegexPredicate("device-type-equal-rhlinux", DEVICE_TYPE_FIELD_NAME, RHLINUX_DEVICE_TYPE);
 
-        return new IfElseTransformer("device-type-secureid", deviceTypeEqualRsaacesrv, authenticationSecureIdTransformer, authenticationWindowsAuditTransformer);
+        IfElseTransformer rhlinuxIfElseTransformer =
+                new IfElseTransformer("device-type-rhlinux", deviceTypeEqualRhlinux, authenticationLinuxAuthTransformer, authenticationWindowsAuditTransformer);
+        return new IfElseTransformer("device-type-secureid", deviceTypeEqualRsaacesrv, authenticationSecureIdTransformer, rhlinuxIfElseTransformer);
     }
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
@@ -486,6 +625,28 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         return jsonObject;
     }
 
+    private JSONObject buildAuthLinuxLogonJsonObject(
+            String sessionId,
+            String userSrc,
+            Long eventTime,
+            String hostSrc,
+            String eventType,
+            String action,
+            String result
+    ){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(SESSION_ID_FIELD_NAME, sessionId);
+        jsonObject.put(USER_SRC_FIELD_NAME, userSrc);
+        jsonObject.put(DEVICE_TYPE_FIELD_NAME, RHLINUX_DEVICE_TYPE);
+        jsonObject.put(HOST_SRC_FIELD_NAME, hostSrc);
+        jsonObject.put(RESULT_FIELD_NAME, result);
+        jsonObject.put(EVENT_TIME_FIELD_NAME, eventTime);
+        jsonObject.put(EVENT_TYPE_FIELD_NAME, eventType);
+        jsonObject.put(ACTION_FIELD_NAME, action);
+
+        return jsonObject;
+    }
+
     private JSONObject buildAuthSecureIdJsonObject(
             String sessionId,
             String userDst,
@@ -547,6 +708,76 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         Assert.assertEquals("wrong data source", RSAACESRV_DEVICE_TYPE, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
 
         System.out.println(retJsonObject.toString());
+    }
+
+    @Test
+    public void event_logon_succesful_logon_test() throws JsonProcessingException{
+        IJsonObjectTransformer transformer = buildAuthTransformer();
+
+        String sessionId = "1835299306";
+        String usersrc = "gandalf";
+        String hostsrc = "gandalf-srv";
+        long eventTime = 1528124556000L;
+        String eventType = "USER_AUTH";
+        String result = "success";
+        String action = "/usr/sbin/sshd";
+        String operationType = eventType;
+
+        JSONObject jsonObject = buildAuthLinuxLogonJsonObject(sessionId, usersrc,
+                eventTime*1000, hostsrc, eventType, action, result);
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+        Assert.assertEquals("wrong event id", sessionId, retJsonObject.get(EVENT_ID_FIELD_NAME));
+        Assert.assertEquals("wrong dateTime", new Double(eventTime), retJsonObject.get(DATE_TIME_FIELD_NAME));
+        Assert.assertEquals("username normalization did not work", usersrc, retJsonObject.get(USER_ID_FIELD_NAME));
+        Assert.assertEquals("wrong username", usersrc, retJsonObject.get(USERNAME_FIELD_NAME));
+        Assert.assertEquals("wrong userDisplayName", usersrc, retJsonObject.get(USER_DISPLAY_NAME_FIELD_NAME));
+        Assert.assertEquals("source machine id is not as expected", hostsrc, retJsonObject.opt(SRC_MACHINE_ID_FIELD_NAME));
+        Assert.assertEquals("source machine name is not as expected", hostsrc, retJsonObject.opt(SRC_MACHINE_NAME_FIELD_NAME));
+        Assert.assertEquals("result normalization did not work", RESULT_SUCCESS, retJsonObject.get(RESULT_FIELD_NAME));
+        Assert.assertEquals("operation type logic according the accesses field did not work", operationType, retJsonObject.get(OPERATION_TYPE_FIELD_NAME));
+        Assert.assertEquals("wrong data source", action, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
+
+        System.out.println(retJsonObject.toString());
+    }
+
+    @Test
+    public void event_logon_unknown_user_logon_test() throws JsonProcessingException{
+        IJsonObjectTransformer transformer = buildAuthTransformer();
+
+        String sessionId = "1835299306";
+        String usersrc = "";
+        String hostsrc = "gandalf-srv";
+        long eventTime = 1528124556000L;
+        String eventType = "USER_AUTH";
+        String result = "success";
+        String action = "/usr/sbin/sshd";
+
+        JSONObject jsonObject = buildAuthLinuxLogonJsonObject(sessionId, usersrc,
+                eventTime*1000, hostsrc, eventType, action, result);
+        Assert.assertNull(transform(transformer, jsonObject,true));
+
+        JSONObject jsonObject2 = buildAuthLinuxLogonJsonObject(sessionId, "(unknown)",
+                eventTime*1000, hostsrc, eventType, action, result);
+        Assert.assertNull(transform(transformer, jsonObject2,true));
+    }
+
+    @Test
+    public void event_logon_filtered_event_type_logon_test() throws JsonProcessingException{
+        IJsonObjectTransformer transformer = buildAuthTransformer();
+
+        String sessionId = "1835299306";
+        String usersrc = "gandalf";
+        String hostsrc = "gandalf-srv";
+        long eventTime = 1528124556000L;
+        String eventType = "USER_START";
+        String result = "success";
+        String action = "/usr/sbin/sshd";
+
+        JSONObject jsonObject = buildAuthLinuxLogonJsonObject(sessionId, usersrc,
+                eventTime*1000, hostsrc, eventType, action, result);
+        Assert.assertNull(transform(transformer, jsonObject,true));
+
     }
 
     @Test
