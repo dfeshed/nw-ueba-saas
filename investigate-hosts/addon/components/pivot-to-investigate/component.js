@@ -47,7 +47,8 @@ const PivotToInvestigate = Component.extend({
       {
         label: 'Analyze Events',
         action() {
-          cntx.send('pivotToInvestigate');
+          const serviceId = cntx.get('serviceId');
+          cntx.send('pivotToInvestigateNavigate', serviceId);
         }
       }
     ];

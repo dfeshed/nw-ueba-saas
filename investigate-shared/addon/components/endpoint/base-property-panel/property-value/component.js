@@ -41,8 +41,11 @@ export default Component.extend({
           prefix: 'investigateShared.endpoint.fileActions.',
           action([selection]) {
             if (selection) {
-              const userName = selection.split('\\');
-              const path = `${window.location.origin}/investigate/users?ueba=/username/${userName[1]}`;
+              let userName = selection;
+              if (selection.includes('\\')) {
+                userName = selection.split('\\')[1];
+              }
+              const path = `${window.location.origin}/investigate/users?ueba=/username/${userName}`;
               window.open(path);
             }
           }
