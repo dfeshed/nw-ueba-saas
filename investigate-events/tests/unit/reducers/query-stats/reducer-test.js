@@ -43,6 +43,7 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
     code: 0,
+    time: Date.now(),
     payload: {
       description: 'foo',
       percent: 50,
@@ -72,7 +73,8 @@ test('QUERY_STATS reducer updates stats', function(assert) {
 
   const lastResult = reducer(nextResult, {
     type: ACTION_TYPES.QUERY_STATS,
-    payload: {}
+    payload: {},
+    time: Date.now()
   });
 
   assert.equal(lastResult.description, 'foo');
@@ -87,6 +89,7 @@ test('QUERY_STATS reducer updates percent to 99 when percent is 100', function(a
   });
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
+    time: Date.now(),
     payload: {
       percent: 100
     }
@@ -107,6 +110,7 @@ test('QUERY_STATS reducer updates errors when code/message passed', function(ass
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
     code: 1,
+    time: Date.now(),
     payload: {
       message: 'error message',
       code: 1
@@ -133,12 +137,59 @@ test('QUERY_STATS reducer does not update errors when 0 code passed', function(a
   const action = {
     type: ACTION_TYPES.QUERY_STATS,
     code: 0,
+    time: Date.now(),
     payload: {
       message: 'message'
     }
   };
   const result = reducer(prevState, action);
   assert.equal(result.errors.length, 0);
+});
+
+test('QUERY_STATS reducer does not update streamingStartedTime when no devices passed', function(assert) {
+  const prevState = Immutable.from({
+    description: null,
+    percent: 0,
+    errors: [],
+    warnings: [],
+    streamingStartedTime: null
+  });
+  const action = {
+    type: ACTION_TYPES.QUERY_STATS,
+    code: 0,
+    time: Date.now(),
+    payload: {
+      message: 'message'
+    }
+  };
+  const result = reducer(prevState, action);
+  assert.equal(result.streamingStartedTime, null);
+});
+
+test('QUERY_STATS reducer does update streamingStartedTime when devices passed', function(assert) {
+  const time = Date.now();
+
+  const prevState = Immutable.from({
+    description: null,
+    percent: 0,
+    errors: [],
+    warnings: [],
+    devices: [],
+    streamingStartedTime: null
+  });
+  const action = {
+    type: ACTION_TYPES.QUERY_STATS,
+    code: 0,
+    time,
+    payload: {
+      message: 'message',
+      devices: [{
+        serviceId: 'baz'
+      }]
+    }
+  };
+  const result = reducer(prevState, action);
+  assert.equal(result.streamingStartedTime, time);
 });
 
 test('INITIALIZE_INVESTIGATE reducer clears state', function(assert) {
@@ -203,19 +254,6 @@ test('START_GET_EVENT_COUNT reducer clears errors and warnings', function(assert
 
   assert.equal(result.errors.length, 0);
   assert.equal(result.warnings.length, 0);
-});
-
-test('INIT_EVENTS_STREAMING sets streamingStartedTime', function(assert) {
-  const prevState = Immutable.from({
-    streamingStartedTime: null
-  });
-  const action = {
-    type: ACTION_TYPES.INIT_EVENTS_STREAMING,
-    streamingStartedTime: 1
-  };
-  const result = reducer(prevState, action);
-
-  assert.equal(result.streamingStartedTime, 1);
 });
 
 test('SET_EVENTS_PAGE_STATUS sets streamingEndedTime', function(assert) {

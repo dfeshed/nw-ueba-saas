@@ -42,15 +42,11 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state, { streamingStartedTime }) => {
-    return streamingStartedTime ? state.merge({ streamingStartedTime }) : state;
-  },
-
   [ACTION_TYPES.SET_EVENTS_PAGE_STATUS]: (state, { streamingEndedTime }) => {
     return streamingEndedTime ? state.merge({ streamingEndedTime }) : state;
   },
 
-  [ACTION_TYPES.QUERY_STATS]: (state, { payload, code }) => {
+  [ACTION_TYPES.QUERY_STATS]: (state, { payload, code, time }) => {
     const updatedState = {};
 
     if (payload.description) {
@@ -65,6 +61,7 @@ export default handleActions({
     }
 
     if (payload.devices) {
+      updatedState.streamingStartedTime = time;
       updatedState.devices = payload.devices;
     }
 

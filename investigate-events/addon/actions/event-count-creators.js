@@ -44,7 +44,8 @@ export default function getEventCount() {
         dispatch({
           type: ACTION_TYPES.QUERY_STATS,
           payload: response.meta,
-          code: response.code
+          code: response.code,
+          time: Date.now()
         });
 
         // devices and message (fatal error) represent a completed stream
@@ -67,7 +68,8 @@ export default function getEventCount() {
           dispatch({
             type: ACTION_TYPES.QUERY_STATS,
             payload: response.meta,
-            code: response.code
+            code: response.code,
+            time: Date.now()
           });
         }
 

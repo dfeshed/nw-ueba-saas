@@ -300,8 +300,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         currentStreamState.stopStreamingCallbacks.push(stopStream);
         if (isFirstStream) {
           dispatch({
-            type: ACTION_TYPES.INIT_EVENTS_STREAMING,
-            streamingStartedTime: Date.now()
+            type: ACTION_TYPES.INIT_EVENTS_STREAMING
           });
         }
       },
@@ -629,7 +628,7 @@ export const eventsStartOldest = () => {
     const handlers = {
       onInit(stopStream) {
         currentStreamState.stopStreamingCallbacks.push(stopStream);
-        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING, streamingStartedTime: Date.now() });
+        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
       },
       onResponse(response) {
         // if we cancelled before this message got back, do not
