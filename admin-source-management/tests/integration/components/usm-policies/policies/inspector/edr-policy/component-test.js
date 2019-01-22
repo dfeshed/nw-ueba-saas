@@ -45,6 +45,7 @@ const testPolicy = {
   requestScanOnRegistration: true,
   blockingEnabled: false,
   primaryAddress: '10.10.10.10',
+  primaryAlias: 'id1-alias',
   primaryNwServiceId: 'id1',
   primaryHttpsPort: 443,
   primaryHttpsBeaconInterval: 3,
@@ -83,8 +84,8 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
     assert.equal(findAll('.heading').length, 5, '5 headings are shown');
     assert.equal(findAll('.heading')[0].innerText, 'Scan Schedule', 'first heading is as expected');
     // assert.equal(findAll('.value')[4].innerText, 'Enabled', 'capture floating code shows expected value');
-    assert.equal(findAll('.title').length, 13, '13 property names are shown');
-    assert.equal(findAll('.value').length, 13, '13 value elements are shown');
+    assert.equal(findAll('.title').length, 14, '14 property names are shown');
+    assert.equal(findAll('.value').length, 14, '14 value elements are shown');
   });
 
   test('Custom config setting and its tooltip is shown', async function(assert) {
@@ -97,9 +98,9 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
     await render(hbs`{{usm-policies/policies/inspector/edr-policy}}`);
     assert.equal(findAll('.heading').length, 6, '6 headings are shown');
     assert.equal(findAll('.heading')[5].innerText, 'Advanced Configuration', 'advanced setting heading as expected');
-    assert.equal(findAll('.title').length, 14, '14 property names are shown');
-    assert.equal(findAll('.value').length, 14, '14 value elements are shown');
-    assert.equal(findAll('.value')[13].innerText.trim(),
+    assert.equal(findAll('.title').length, 15, '15 property names are shown');
+    assert.equal(findAll('.value').length, 15, '15 value elements are shown');
+    assert.equal(findAll('.value')[14].innerText.trim(),
       expectedCustomSetting,
       'custom config value is as expected');
     await triggerEvent('.value .tooltip-text', 'mouseover');

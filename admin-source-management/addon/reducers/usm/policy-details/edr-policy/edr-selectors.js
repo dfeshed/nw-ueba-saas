@@ -217,6 +217,10 @@ const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints) => {
       name: 'adminUsm.policyWizard.edrPolicy.primaryAddress',
       value: _getDisplayName(prop, focusedPolicy[prop], listOfEndpoints)
     },
+    primaryAlias: {
+      name: 'adminUsm.policyWizard.edrPolicy.primaryAlias',
+      value: focusedPolicy[prop]
+    },
     primaryHttpsPort: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort',
       value: focusedPolicy[prop]

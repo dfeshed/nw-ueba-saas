@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import { isBlank, isEmpty } from '@ember/utils';
 import { lookup } from 'ember-dependency-lookup';
+import { isArray } from '@ember/array';
 import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
@@ -213,8 +214,15 @@ export const isDefinePolicyStepValid = createSelector(
       const selectedSettingId = el.id;
       const validator = validatorFnMap[policy.policyType][selectedSettingId];
       if (!el.isHeader && validator) {
-        // call validator function
-        isValid = isValid && validator(_state, selectedSettingId).isError === false;
+        if (isArray(validator)) {
+          // call validator for each validator fn in the array
+          validator.forEach((entry) => {
+            isValid = isValid && entry(_state, selectedSettingId).isError === false;
+          });
+        } else {
+          // call validator function
+          isValid = isValid && validator(_state, selectedSettingId).isError === false;
+        }
       }
     }
     return isValid;

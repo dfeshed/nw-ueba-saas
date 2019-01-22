@@ -407,6 +407,24 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
     assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'endpoint server is invalid');
 
+    // endpoint server alias selected but invalid
+    selectedSettingsExpected = [
+      { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
+      { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/primary-address', defaults: [{ field: 'primaryAddress', value: '' }, { field: 'primaryNwServiceId', value: '' }, { field: 'primaryAlias', value: '' }] }
+    ];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizPrimaryAddress('10.10.10.10')
+      .policyWizPrimaryAlias('@foo')
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = false;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'Endpoint server alias is invalid');
+
     // ports selected but invalid
     selectedSettingsExpected = [
       { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },

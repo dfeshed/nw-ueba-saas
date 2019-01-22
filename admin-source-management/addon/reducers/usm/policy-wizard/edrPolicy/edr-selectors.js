@@ -424,12 +424,12 @@ export const customConfigValidator = (state, selectedSettingId) => {
 
 /**
  * Map to hold all EDR Policy validator functions for settings
+ * An array of validator fns can also be passed
  * @public
  */
 export const edrPolicyValidatorFnMap = {
   'scanStartDate': startDateValidator,
-  'primaryAddress': primaryAddressValidator,
-  'primaryAlias': isPrimaryAliasValid,
+  'primaryAddress': [ primaryAddressValidator, isPrimaryAliasValid ],
   'primaryHttpsPort': isPortValid,
   'primaryUdpPort': isPortValid,
   'primaryHttpsBeaconInterval': beaconIntervalValueValidator,
