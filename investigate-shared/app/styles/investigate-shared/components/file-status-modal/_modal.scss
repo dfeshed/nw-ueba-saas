@@ -27,6 +27,7 @@ $whitelistAlertWidth: 362px;
     }
     .comment-box {
       margin-top: rsa-whitespace(less);
+      padding-top: 1rem;
       .comment-box-label {
         color: text-color(primary, light);
         font-size: .7rem;
@@ -72,11 +73,11 @@ $whitelistAlertWidth: 362px;
       }
       p.remediation-action-note {
         line-height: 1.2rem;
-        padding: rsa-whitespace(least) 0 1.5rem 0;
+        padding: rsa-whitespace(least) 0 1rem 0;
         color: text-color(primary, light)
       }
       box {
-        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+        padding: 0 rsa-whitespace() 1.5rem rsa-whitespace();
         font-weight: 400;
         font-size: 1rem;
         line-height: 1rem;

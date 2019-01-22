@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
 
 import {
   fileContextFileProperty,
@@ -91,6 +92,14 @@ const ContextWrapper = Component.extend({
   flashMessage: service(),
 
   callBackOptions,
+
+  @computed('tabName')
+  isDisplayTabLabel(tabName) {
+    const tabsToDisplayLabels = ['FILE', 'DRIVER', 'LIBRARY'];
+    return tabsToDisplayLabels.some((tab) => {
+      return tab === tabName;
+    });
+  },
 
   actions: {
 

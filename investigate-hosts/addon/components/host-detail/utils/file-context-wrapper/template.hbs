@@ -18,7 +18,9 @@
         fileDownloadButtonStatus=fileDownloadButtonStatus
         downloadFiles=(action 'onDownloadFilesToServer')
         saveLocalCopy=(action 'onSaveLocalCopy')
-        analyzeFile=(action 'onAnalyzeFile')}}
+        analyzeFile=(action 'onAnalyzeFile')
+        isDisplayTabLabel=isDisplayTabLabel
+        tabLabel=(t (concat 'investigateHosts.tabs.' tabName))}}
       {{host-detail/utils/file-context-table
         isPaginated=isPaginated
         storeName=storeName

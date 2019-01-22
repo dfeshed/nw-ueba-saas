@@ -44,7 +44,8 @@ export default {
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus'
+    title: 'reputationStatus',
+    width: '15vw'
   },
   {
     field: 'hookedProcess',
@@ -53,10 +54,12 @@ export default {
   },
   {
     field: 'hookedFileName',
-    title: 'hookFileName'
+    title: 'hookFileName',
+    width: '20vw'
   },
   {
     field: 'symbol',
-    title: 'hookedSymbol'
+    title: 'hookedSymbol',
+    width: '15vw'
   }]
 };

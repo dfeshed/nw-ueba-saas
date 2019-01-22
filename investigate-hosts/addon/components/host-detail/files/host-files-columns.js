@@ -97,7 +97,7 @@ const defaultColumns = [
     'title': 'File Status',
     'label': 'investigateHosts.files.fields.fileStatus',
     'disableSort': true,
-    'width': 53
+    'width': 100
   },
   {
     'field': 'fileProperties.size',
@@ -105,7 +105,7 @@ const defaultColumns = [
     'label': 'investigateHosts.files.fields.size',
     'disableSort': false,
     'format': 'SIZE',
-    'width': 65
+    'width': 165
   },
   {
     'field': 'fileProperties.downloadInfo',
@@ -113,13 +113,13 @@ const defaultColumns = [
     'label': 'investigateHosts.files.fields.downloaded',
     'disableSort': true,
     'format': 'DOWNLOADSTATUS',
-    'width': 100
+    'width': 200
   },
   {
     'field': 'path',
     'title': 'Path',
     'label': 'investigateHosts.files.fields.path',
-    'width': 400
+    'width': 800
   }
 ];
 

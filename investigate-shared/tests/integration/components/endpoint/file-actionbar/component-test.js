@@ -196,7 +196,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
-    assert.equal(findAll('.rsa-dropdown-action-list .panel3')[0].title, 'Maximum of 100 files can be downloaded at a time.', 'download file to server tooltip should present');
     assert.equal(findAll('.rsa-dropdown-action-list .panel4')[0].title, 'Download the file to server to save a local copy.', 'Save a local copy tooltip should present');
     assert.equal(findAll('.rsa-dropdown-action-list .panel5')[0].title, 'Download the file to server to analyze.', 'Analyze file tooltip should present');
 
@@ -293,7 +292,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
-    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    await click(findAll('.rsa-dropdown-action-list li')[5]);
     assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
   });
 
@@ -339,7 +338,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
-    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    await click(findAll('.rsa-dropdown-action-list li')[5]);
     assert.equal(findAll('.modal-content.reset-risk-score .max-limit-info').length, 1, 'Info message is present in reset confirmation dialog box');
   });
 
@@ -362,7 +361,32 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
-    await click(findAll('.rsa-dropdown-action-list li')[2]);
+    await click(findAll('.rsa-dropdown-action-list li')[5]);
     assert.equal(findAll('.modal-content.reset-risk-score .max-limit-info').length, 0, 'Info message is not present in reset confirmation dialog box');
+  });
+
+  test('Tab label will diplay in the action bar', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('isMaxResetRiskScoreLimit', false);
+    this.set('isDisplayTabLabel', true);
+    this.set('tabLabel', 'test label');
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      accessControl=accessControl
+      fileDownloadButtonStatus=fileDownloadButtonStatus
+      isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      isDisplayTabLabel=isDisplayTabLabel
+      tabLabel=tabLabel
+    }}`);
+    assert.equal(findAll('.tab-label')[0].textContent.trim(), 'test label', 'label displayed in the file action bar');
   });
 });

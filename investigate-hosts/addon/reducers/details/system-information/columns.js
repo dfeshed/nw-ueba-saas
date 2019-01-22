@@ -20,7 +20,7 @@ const COLUMNS = {
       {
         field: 'path',
         title: 'investigateHosts.systemInformation.path',
-        width: 100
+        width: 800
       },
       {
         field: 'fileSystem',
@@ -29,11 +29,12 @@ const COLUMNS = {
       {
         field: 'remotePath',
         title: 'investigateHosts.systemInformation.remotePath',
-        width: '15%'
+        width: 600
       },
       {
         field: 'options',
-        title: 'investigateHosts.systemInformation.options'
+        title: 'investigateHosts.systemInformation.options',
+        width: 1200
       }
     ]
   },

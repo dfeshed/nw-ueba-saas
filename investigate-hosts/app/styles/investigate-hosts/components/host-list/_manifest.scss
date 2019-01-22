@@ -92,7 +92,10 @@ $filter-panel-width: 250px;
   }
   .left-zone {
     .rsa-header {
-      padding: 1rem;
+      padding-bottom: 1rem;
+      padding-right: 1rem;
+      padding-left: 0;
+      padding-top: 0.7rem;
     }
   }
   .insights-host {

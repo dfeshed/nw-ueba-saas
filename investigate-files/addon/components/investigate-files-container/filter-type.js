@@ -36,6 +36,14 @@ const FILTER_TYPES = [
     ]
   },
   {
+    name: 'remediationAction',
+    label: 'investigateFiles.fields.remediationAction',
+    type: 'list',
+    listOptions: [
+      { name: 'Block', label: 'investigateFiles.remediationAction.Block' }
+    ]
+  },
+  {
     name: 'reputationStatus',
     label: 'investigateFiles.fields.reputationStatus',
     type: 'list',
@@ -46,14 +54,6 @@ const FILTER_TYPES = [
       { name: 'Known', label: 'investigateFiles.filter.reputationStatus.Known' },
       { name: 'Known Good', label: 'investigateFiles.filter.reputationStatus.Known_Good' },
       { name: 'Invalid', label: 'investigateFiles.filter.reputationStatus.Invalid' }
-    ]
-  },
-  {
-    name: 'remediationAction',
-    label: 'investigateFiles.fields.remediationAction',
-    type: 'list',
-    listOptions: [
-      { name: 'Block', label: 'investigateFiles.remediationAction.Block' }
     ]
   },
   {

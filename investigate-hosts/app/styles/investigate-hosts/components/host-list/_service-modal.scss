@@ -40,7 +40,7 @@ $footerHeight: 43px;
     .modal-footer-buttons {
       justify-content: flex-end;
       .rsa-form-button-wrapper {
-        margin: 0 0 0 rsa-whitespace();
+        margin: 0 0 0 rsa-whitespace(less);
       }
     }
   }

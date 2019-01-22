@@ -2158,7 +2158,7 @@ export default {
     certificate: {
       toolTipCertificateViewDisabled: 'Select a maximum of {{count}} files to view.',
       unsigned: {
-        toolTipCertificateViewDisabled: 'Files are not signed.'
+        toolTipCertificateViewDisabled: 'No certificates available for the selected files.'
       },
       editCertificateStatus: {
         actionNote: 'Selected status is applied to all files signed by this certificate.',
@@ -2385,7 +2385,7 @@ export default {
       successMessage: 'File status updated successfully',
       title: 'Change File Status',
       blacklistCategory: 'Category',
-      blacklistCategoryPlaceholder: 'Select category',
+      blacklistCategoryPlaceholder: 'Select',
       fileStatusTitle: 'Status',
       fileStatusOptions: {
         neutral: 'Neutral',
@@ -2733,9 +2733,12 @@ export default {
     tabs: {
       overview: 'Details',
       process: 'Processes',
+      PROCESS: 'Processes',
       autoruns: 'Autoruns',
       files: 'Files',
+      FILE: 'Files',
       drivers: 'Drivers',
+      DRIVER: 'Drivers',
       systemInformation: 'System Information',
       services: 'Services',
       tasks: 'Tasks',
@@ -2744,6 +2747,7 @@ export default {
       networkShares: 'Network Shares',
       bashHistories: 'Bash History',
       libraries: 'Libraries',
+      LIBRARY: 'Libraries',
       explore: 'Explore',
       securityProducts: 'Security Products',
       windowsPatches: 'Windows Patches',
@@ -3367,12 +3371,12 @@ export default {
           description: 'Select the type of scan for the selected host(s).',
           error1: '*Select at least one host',
           error2: 'Maximum 100 hosts allowed to start scan',
-          infoMessage: 'Some of the selected hosts are already being scanned, so a new scan will not be started for them.',
+          infoMessage: 'Some of the selected hosts are already being scanned and a fresh scan will not be started for them.',
           ecatAgentMessage: 'Some of the selected hosts are 4.4 agents, this feature is not supported for them.',
           migratedHostMessage: 'Some of the selected hosts are not managed by the current server, so a scan will not start for them.',
           quickScan: {
             label: 'Quick Scan (Default)',
-            description: 'Performs a quick scan of all executable modules loaded in memory. Takes approximately 10 minutes.'
+            description: 'Performs a quick scan of all executable files loaded in memory. Takes approximately 10 minutes.'
           }
         },
         success: 'Scan initiated successfully',
@@ -3381,7 +3385,7 @@ export default {
       cancelScan: {
         modal: {
           title: 'Stop Scan for {{count}} host(s)',
-          description: 'Are you sure, you want to stop scanning the selected host(s)?',
+          description: 'Are you sure you want to stop the scan?',
           error1: '*Select at least one host'
         },
         success: 'Stop scan initiated successfully',
@@ -3389,11 +3393,11 @@ export default {
       },
       deleteHosts: {
         modal: {
-          title: 'Delete {{count}} host(s)',
+          title: 'Delete {{count}} hosts',
           message: 'Delete the host if the host scan data is no longer required or the agent is uninstalled. ' +
             'All scan data associated with the host will be deleted. Do you want to continue? '
         },
-        success: 'Host(s) are deleted successfully',
+        success: 'Hosts deleted successfully',
         error: 'Host(s) deletion failed'
       },
       resetHosts: {
@@ -3643,7 +3647,7 @@ export default {
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
         tooltips: {
-          downloadToServer: 'Maximum of 100 files can be downloaded at a time.',
+          downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',
           analyzeFile: 'Download the file to server to analyze.'
         }

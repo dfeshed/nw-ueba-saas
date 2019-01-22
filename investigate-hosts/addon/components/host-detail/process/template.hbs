@@ -7,7 +7,6 @@
           <div class="process-list-header">
             {{#if (not isNavigatedFromExplore)}}
               <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-                <label class="toggle-tree-view-label">{{t 'investigateHosts.process.viewType.listView'}}</label>
                 {{#rsa-content-tethered-panel-trigger panel='toggle-treeview-panel'}}
                   {{#x-toggle
                     class='toggle-tree-view'
@@ -25,6 +24,9 @@
               </span>
             {{/if}}
             <div class="process-list-actions analyze-process-button">
+              <span class="process-tab-label">
+                <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
+              </span>
               {{host-detail/process/pivot-to-process-analysis
                 item=selectedProcessList
                 serviceList=serviceList

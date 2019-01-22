@@ -38,7 +38,8 @@ const defaultColumns = [
   },
   {
     field: 'path',
-    title: 'FILE PATH'
+    title: 'FILE PATH',
+    width: '20vw'
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -59,13 +60,15 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '10vw'
     }
   ],
   windows: [
     {
       field: 'serviceName',
-      title: 'SERVICE NAME'
+      title: 'SERVICE NAME',
+      width: '10vw'
     },
     {
       field: 'state',
@@ -75,17 +78,20 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      format: 'DATE'
+      format: 'DATE',
+      width: '10vw'
     }
   ],
   linux: [
     {
       field: 'fileName',
-      title: 'SERVICE NAME'
+      title: 'SERVICE NAME',
+      width: '10vw'
     },
     {
       field: 'status',
-      title: 'RUNNING STATUS'
+      title: 'RUNNING STATUS',
+      width: '10vw'
     },
     {
       field: 'timeModified',
@@ -94,7 +100,8 @@ let columnsConfig = {
     },
     {
       field: 'type',
-      title: 'Type'
+      title: 'Type',
+      width: '10vw'
     }
   ]
 };

@@ -44,7 +44,8 @@ const defaultColumns = [
   },
   {
     field: 'path',
-    title: 'FILE PATH'
+    title: 'FILE PATH',
+    width: 600
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -56,7 +57,8 @@ const defaultColumns = [
   },
   {
     field: 'checksumSha256',
-    title: 'HASH'
+    title: 'HASH',
+    width: 500
   }
 ];
 let columnsConfig = {

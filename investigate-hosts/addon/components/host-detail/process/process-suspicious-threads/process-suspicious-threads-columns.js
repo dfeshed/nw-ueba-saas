@@ -12,12 +12,12 @@ export default {
       field: 'signature',
       title: 'investigateHosts.process.suspiciousThreads.signature',
       format: 'SIGNATURE',
-      width: '10vw'
+      width: '20vw'
     },
     {
       field: 'startAddress',
       title: 'investigateHosts.process.suspiciousThreads.startAddress',
-      width: '10vw'
+      width: '15vw'
     },
     {
       field: 'tid',
@@ -27,6 +27,6 @@ export default {
     {
       field: 'teb',
       title: 'investigateHosts.process.suspiciousThreads.teb',
-      width: '15vw'
+      width: '30vw'
     }]
 };

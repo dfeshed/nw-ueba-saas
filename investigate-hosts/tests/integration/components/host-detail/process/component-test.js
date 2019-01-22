@@ -390,8 +390,8 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3].textContent.trim(), 'Download File to Server', 'File download option present in more actions.');
-      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[4].textContent.trim(), 'Save a Local Copy', 'Save a Local Copy option present in more actions.');
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[2].textContent.trim(), 'Download File to Server', 'File download option present in more actions.');
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3].textContent.trim(), 'Save a Local Copy', 'Save a Local Copy option present in more actions.');
     });
   });
 
@@ -423,7 +423,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
-    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[3]);
+    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[2]);
     return settled().then(() => {
       assert.equal(downloadFilesToServerSpy.callCount, 1, 'The downloadFilesToServerSpy action creator was called once');
     });
@@ -457,7 +457,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
-    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[5]);
+    await click(findAll('.file-action-selector-panel .rsa-dropdown-action-list li')[4]);
     return settled().then(() => {
       assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
     });

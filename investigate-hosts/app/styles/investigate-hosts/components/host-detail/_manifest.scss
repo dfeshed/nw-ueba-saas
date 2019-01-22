@@ -113,5 +113,18 @@
   .divider {
     height: 0;
   }
+  .file-actionbar {
+    height: 70px;
+    padding-bottom: 1rem;
+    padding-right: 1rem;
+    padding-left: 0;
+    padding-top: 1.5rem;
+    .pivot-to-event-analysis {
+      .button-menu.expanded {
+        display: block;
+        min-width: 176px;
+      }
+    }
+  }
 }
 

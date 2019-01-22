@@ -27,6 +27,6 @@ export default {
       field: 'signature',
       title: 'investigateHosts.process.imageHooks.signature',
       format: 'SIGNATURE',
-      width: '9vw'
+      width: '37vw'
     }]
 };

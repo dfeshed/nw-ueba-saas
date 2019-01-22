@@ -13,16 +13,18 @@ export default {
   {
     field: 'startAddress',
     title: 'startAddress',
-    width: 100
+    width: '10vw'
   },
   {
     field: 'fileName',
     title: 'dllFileName',
-    format: 'FILENAME'
+    format: 'FILENAME',
+    width: 500
   },
   {
     field: 'fileProperties.score',
-    title: 'score'
+    title: 'score',
+    width: '12vw'
   },
   {
     field: 'machineCount',
@@ -36,7 +38,8 @@ export default {
   },
   {
     field: 'process',
-    title: 'process'
+    title: 'process',
+    width: '10vw'
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -52,11 +55,11 @@ export default {
   },
   {
     field: 'tid',
-    title: 'tid',
-    width: '15vw'
+    title: 'tid'
   },
   {
     field: 'teb',
-    title: 'teb'
+    title: 'teb',
+    width: '20vw'
   }]
 };

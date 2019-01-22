@@ -23,8 +23,7 @@ const FileActionConf = [
       { name: 'sha1', type: 'VirusTotal' },
       { name: 'sha256', type: 'VirusTotal' }
     ]
-  },
-  { panelId: 'panel6', name: 'resetRiskScore' }
+  }
 ];
 
 export default Component.extend({
@@ -35,6 +34,8 @@ export default Component.extend({
   classNames: ['file-actionbar flexi-fit'],
 
   i18n: service(),
+
+  isDisplayTabLabel: false,
 
   accessControl: service(),
 
@@ -94,6 +95,8 @@ export default Component.extend({
         { panelId: 'panel5', name: 'analyzeFile', disabled: isSaveLocalAndFileAnalysisDisabled }
       ];
     }
+    // Reset riskscore option Adding last
+    fileActionConfClone.push({ panelId: 'panel6', name: 'resetRiskScore' });
 
     // Translated titles added.
     return fileActionConfClone.map((item) => {

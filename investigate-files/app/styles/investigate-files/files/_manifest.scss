@@ -104,7 +104,7 @@ page.investigate-files-engine {
 
   .rsa-data-filters {
     .content-body {
-      height: calc(100vh - 260px);
+      height: calc(100vh - 280px);
     }
   }
   .risk-property-zone {
@@ -280,7 +280,10 @@ page.investigate-files-engine {
   }
   .left-zone {
     .rsa-header {
-      padding: 1rem;
+      padding-bottom: 1rem;
+      padding-right: 1rem;
+      padding-left: 0;
+      padding-top: 0.7rem;
     }
   }
   .right-zone {

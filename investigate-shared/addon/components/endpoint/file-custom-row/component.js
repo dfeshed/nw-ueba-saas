@@ -44,7 +44,7 @@ export default DataTableBodyRow.extend({
           context.retrieveRemediationStatus(context.get('selections'));
           context.editFileStatus(context.get('item'));
         },
-        order: 1
+        order: 2
       },
       {
         label: 'googleLookup',
@@ -101,15 +101,6 @@ export default DataTableBodyRow.extend({
             }
           }
         ]
-      },
-      {
-        label: 'resetRiskScore',
-        order: 6,
-        prefix: 'investigateShared.endpoint.fileActions.',
-        showDivider: true,
-        action(selection, context) {
-          context.resetRiskScore(context.get('selections'));
-        }
       }
     ];
 
@@ -226,6 +217,15 @@ export default DataTableBodyRow.extend({
       };
       contextConf.push(pivot);
     }
+    contextConf.push({
+      label: 'resetRiskScore',
+      order: 10,
+      prefix: 'investigateShared.endpoint.fileActions.',
+      showDivider: true,
+      action(selection, context) {
+        context.resetRiskScore(context.get('selections'));
+      }
+    });
 
     return contextConf.sortBy('order');
   }

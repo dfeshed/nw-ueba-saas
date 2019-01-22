@@ -654,7 +654,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[0].id}`); // Edit file status
+      await click(`#${menuItems[1].id}`); // Edit file status
       return settled().then(() => {
         assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
       });
@@ -969,7 +969,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[8].id}`); // Edit file status
+      await click(`#${menuItems[7].id}`); // Edit file status
     });
 
   });
@@ -1022,7 +1022,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[1].id}`); // Edit file status
+      await click(`#${menuItems[0].id}`); // analyze prcess status
       assert.ok(actionSpy.calledOnce, 'Window.open is called');
       assert.ok(actionSpy.args[0][0].includes('/investigate/process-analysis?checksum='));
       assert.ok(actionSpy.args[0][0].includes('sid=-1'));

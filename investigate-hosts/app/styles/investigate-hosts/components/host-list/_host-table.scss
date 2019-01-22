@@ -64,6 +64,10 @@
 .host-table__toolbar {
   .title-header {
     margin-bottom: 0px;
+    .rsa-form-button-wrapper {
+      margin-right: 0;
+    }
+
   }
   background-color: background-color(primary, darkest, somewhat-opaque);
   color: text-color(primary, lightest);

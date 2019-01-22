@@ -13,12 +13,13 @@ export default {
   {
     field: 'type',
     title: 'type',
-    width: 100
+    width: 200
   },
   {
     field: 'driverFileName',
     title: 'driverFileName',
-    format: 'FILENAME'
+    format: 'FILENAME',
+    width: 300
   },
   {
     field: 'fileProperties.score',
@@ -37,7 +38,8 @@ export default {
   {
     field: 'signature',
     title: 'signature',
-    format: 'SIGNATURE'
+    format: 'SIGNATURE',
+    width: '15vw'
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -49,10 +51,11 @@ export default {
   {
     field: 'objectFunction',
     title: 'objectFunction',
-    width: '15vw'
+    width: '25vw'
   },
   {
     field: 'hookedFileName',
-    title: 'hookedFileName'
+    title: 'hookedFileName',
+    width: 300
   }]
 };

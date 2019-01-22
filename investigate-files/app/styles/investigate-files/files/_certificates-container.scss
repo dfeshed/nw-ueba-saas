@@ -66,6 +66,10 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
     .pivot-to-event-analysis {
       height: 30px;
     }
+    .button-menu.expanded {
+      display: block;
+      min-width: 176px;
+    }
   }
   .certificates-footer {
     max-height: 2rem;

@@ -53,7 +53,8 @@ let columnsConfig = {
   windows: [
     {
       field: 'registryPath',
-      title: 'REGISTRY PATH'
+      title: 'REGISTRY PATH',
+      width: '45vw'
     }
   ],
   linux: [

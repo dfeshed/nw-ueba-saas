@@ -26,7 +26,7 @@ const CATEGORIES = [
 const menuOffsetsStyle = (el) => {
   if (el) {
     const elRect = el.getBoundingClientRect();
-    return htmlSafe(`top: ${elRect.height - 1}px`);
+    return htmlSafe(`top: ${elRect.height - 2}px`);
   } else {
     return null;
   }

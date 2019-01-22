@@ -109,6 +109,6 @@ module('Integration | Component | Files toolbar', function(hooks) {
     });
     await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
-    assert.equal(find('.view-certificate-button').title, 'Files are not signed.', 'tooltip added to disabled button');
+    assert.equal(find('.view-certificate-button').title, 'No certificates available for the selected files.', 'tooltip added to disabled button');
   });
 });

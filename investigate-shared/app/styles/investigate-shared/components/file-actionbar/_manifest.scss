@@ -12,15 +12,24 @@
   }
   .file-status-more-actions {
     margin-left: 1px;
+    height: fit-content;
   }
   .file-status-more-actions.disabled {
     pointer-events: none;
+  }
+  .tab-label {
+    float: left;
+    padding: 0.5rem 0rem 1rem 1rem;
+    font-size: 1.28rem;
+    font-weight: 100;
+  }
+  .pivot-to-event-analysis {
+    height: fit-content;
   }
 }
 
 .file-action-selector-panel {
   .rsa-dropdown-action-list {
-    padding: rsa-whitespace() 0;
     .disabled, li.disabled:hover {
       color: text-color(primary);
       .rsa-content-tethered-panel-trigger {
@@ -47,7 +56,7 @@
 }
 
 .filter-wrapper {
-  height: calc(100% - 95px);
+  height: calc(100% - 116px)
 }
 
 .ember-power-select-option {
@@ -90,11 +99,10 @@
     color: text-color(primary, lightest);
   }
 }
-
 .actionSeperator {
-  margin: 0.5rem rsa-whitespace();
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
 }
-
 .saved-filter-name {
   white-space: nowrap;
   overflow: hidden;

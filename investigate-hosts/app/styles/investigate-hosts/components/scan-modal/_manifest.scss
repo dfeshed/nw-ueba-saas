@@ -4,10 +4,22 @@ $footerHeight: 43px;
 .rsa-application-modal.scan-modal footer {
   display: none;
 }
-
+.rsa-application-modal-content.confirmation-modal {
+  max-height: 195px;
+}
+.rsa-application-modal-content.confirmation-modal footer {
+  background-color: transparent;
+  padding-right: 1rem;
+  padding-bottom: 3rem;
+  .modal-footer-buttons {
+    .rsa-form-button-wrapper {
+      margin: 0 7px 0px 0px;
+    }  
+  }
+}
 .rsa-application-modal-content.scan-modal {
-  width: 40%;
-  min-height: 165px;
+  width: 36rem;
+  min-height: 155px;
   height: auto;
 
   .modal-content {
@@ -24,7 +36,7 @@ $footerHeight: 43px;
       padding: rsa-whitespace();
     }
     .info-message {
-      margin: rsa-whitespace();
+      margin-top: rsa-whitespace();
     }
   }
 
@@ -35,11 +47,13 @@ $footerHeight: 43px;
     bottom: 0;
     width: 100%;
     padding: rsa-whitespace(less);
+    padding-right: 1rem;
+    padding-bottom: 3rem;
 
     .modal-footer-buttons {
       justify-content: flex-end;
       .rsa-form-button-wrapper {
-        margin: 0 0 0 rsa-whitespace();
+        margin: 0 0 0 rsa-whitespace(less);
       }
     }
   }

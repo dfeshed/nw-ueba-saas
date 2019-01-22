@@ -1,8 +1,18 @@
 .info-message {
   list-style-type: none;
-  color: text-color(primary, lightest);
+  color: text-color(primary, light);
+  box {
+    max-width: 21px;
+    max-height: 24px;
+    margin-top: 4px;
+  }
   padding: rsa-whitespace();
   i {
     color: text-color(secondary);
+  }
+  .message {
+    color: text-color(primary, light);
+    height: 21px;
+    line-height: normal;
   }
 }
