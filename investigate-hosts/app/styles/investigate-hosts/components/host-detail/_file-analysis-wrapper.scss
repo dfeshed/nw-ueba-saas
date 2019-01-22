@@ -9,13 +9,18 @@
   @include rsa-vendor-prefix(transition-duration, 0.4s);
   .file-analysis-header {
     width: calc(100vw - 500px);
-    padding: 20px;
-    .backButton {
-      text-transform: capitalize;
+    padding: 19px 20px;
+    letter-spacing: 0.05rem;
+    .rsa-form-button {
+      padding: 0.5rem 0.75rem;
+      .backButton {
+        text-transform: capitalize;
+        letter-spacing: 0.05rem;
+      }
     }
     .file-analysis-title {
-      border-left: 1px solid;
-      height: 28px;
+      @include border-left(1px, solid, primary);
+      height: 30px;
       display: inline-block;
       line-height: 2rem;
       padding: 0 0 0 10px;
@@ -25,7 +30,6 @@
     }
     .view-type {
       font-size: 1.2rem;
-      padding-right: 14px;
       font-weight: 100;
     }
   }
@@ -33,6 +37,7 @@
     max-width: 550px;
     h3.title {
       margin: 0 auto;
+      font-size: 1rem;
     }
     > .rsa-header {
       height: 69px;
@@ -50,7 +55,7 @@
     width: 320px;
     display: inline-block;
     margin-left: 23px;
-    height: 34px;
+    height: 32px;
     label {
       display: inline-block;
       width: 210px;

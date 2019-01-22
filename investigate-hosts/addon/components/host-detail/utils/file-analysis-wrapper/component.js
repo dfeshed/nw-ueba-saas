@@ -27,6 +27,11 @@ const FileAnalysisWrapper = Component.extend({
     return format === 'string';
   },
 
+  @computed('activeHostDetailTab')
+  backToActiveHostDatailTab(activeHostDetailTab) {
+    return `investigateHosts.tabs.${activeHostDetailTab}`;
+  },
+
   actions: {
     closeFileAnalysis() {
       this.set('searchText', '');

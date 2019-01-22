@@ -3,19 +3,19 @@ export default [
     field: 'text',
     title: 'String',
     disableSort: true,
-    width: 400
+    width: 450
   },
   {
     field: 'offset',
     title: 'Offset',
     disableSort: true,
-    width: 250
+    width: 200
   },
   {
     field: 'unicode',
     title: 'Unicode',
     disableSort: true,
-    width: '15%',
+    width: '10%',
     format: 'UNICODE'
   },
   {

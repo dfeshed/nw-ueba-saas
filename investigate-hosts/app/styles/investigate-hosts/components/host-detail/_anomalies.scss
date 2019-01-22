@@ -1,5 +1,11 @@
 .registry-discrepancies {
   margin-top: rsa-whitespace();
+  .host-detail__datatable {
+    max-height: calc(100vh - 216px);
+    .rsa-data-table {
+      height: calc(100% - 63px);
+    }
+  }
   .rsa-data-table-body {
     height: 900px;
   }

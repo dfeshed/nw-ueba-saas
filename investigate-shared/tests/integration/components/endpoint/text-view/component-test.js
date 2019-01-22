@@ -26,24 +26,20 @@ module('Integration | Component | endpoint/text-view', function(hooks) {
 
     await render(hbs`{{endpoint/text-view fileData=fileData}}`);
 
-    assert.equal(findAll('textarea.text-view').length, 1, 'text view component has rendered.');
+    assert.equal(findAll('pre.text-view').length, 1, 'text view component has rendered.');
   });
 
   test('Text-view component renders base64 data set in unicode', async function(assert) {
     const fileData = {
       hash: 'a873a7d3b90c6f2d156e5026b72a5652d4893081cd188300141a95dc38cba56b',
       fileName: 'gatherNetworkInfo.vbs',
-      encodedData: [
-        'ZGFua29nYWk=',
-        '5bCP6aO85by+',
-        '4pyTIMOgIGxhIG1vZGUK'
-      ]
+      encodedData: ['JGkrKyAgV3JpdGUtSG9zdCBXZSBoYXZlIGNvdW50ZWQgdXAgdG8gJGkKCg==']
     };
     this.set('fileData', fileData);
 
     await render(hbs`{{endpoint/text-view fileData=fileData}}`);
 
-    assert.equal(find('textarea.text-view').textContent.trim(), 'dankogai小飼弾✓ à la mode', 'Array of base64 strings converted into unicode');
+    assert.equal(find('pre.text-view').textContent.trim(), '$i++  Write-Host We have counted up to $i', 'Array of base64 strings converted into unicode');
   });
 
 });

@@ -2,9 +2,10 @@
   word-break: break-all;
   padding: 15px;
   overflow: auto;
-  height: calc(100vh - 305px);
+  height: calc(100vh - 316px);
   background-color: background-color(primary, darker);
-  color: text-color(primary, light);
+  color: text-color(primary, lightest);
   border: 0px;
   font-size: 1rem;
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
 }

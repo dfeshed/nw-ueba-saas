@@ -1,9 +1,17 @@
 .global-files.file-analysis-wrapper {
   position: static;
-  .file-analysis-header .file-analysis-title {
-    border-left: 0px;
-    padding: 0;
-    margin: 0;
+  max-height: calc(100vh - 217px);
+  .string-view {
+    .rsa-data-table {
+      height: calc(100vh - 318px);
+    }
+  }
+  .file-analysis-header {
+    .view-type {
+      height: 34px;
+      display: inline-block;
+      line-height: 2.5rem;
+    }
   }
   .right-zone .rsa-nav-tab{
     line-height: 10rem;

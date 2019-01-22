@@ -23,7 +23,8 @@
     {{/rsa-data-table/body-cell}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
-
-<box class="files-footer" fit>
-  {{t 'investigateHosts.hosts.footerLabel.strings' count=filteredDataWithLength.length total=fileData.length}}
-</box>
+<section class="file-pager">
+  <div class="file-info lighter right">
+    {{t 'investigateHosts.hosts.footerLabel.strings' count=filteredDataWithLength.length total=fileData.length}}
+  </div>
+</section>
