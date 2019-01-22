@@ -126,11 +126,11 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault, event
             dispatch({ type: ACTION_TYPES.SET_SERVER_ID, payload: node.nweCallbackId });
             dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: node.processVidSrc });
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: newData.uniqBy('processId') });
-            done = true;
           } else {
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: [] });
             dispatch({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
           }
+          done = true;
         }
       }
     };
