@@ -294,7 +294,7 @@
     {
       "type": "copy_value",
       "name": "rename-process-categories",
-      "sourceKey": "filetype",
+      "sourceKey": "file_cat_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "processCategories"
