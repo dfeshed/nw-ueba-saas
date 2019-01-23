@@ -41,7 +41,8 @@ const saveLocalFileCopy = (hash, serverId) => {
       data: hash
     },
     streamOptions: {
-      socketUrlPostfix: serverId
+      socketUrlPostfix: serverId,
+      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };

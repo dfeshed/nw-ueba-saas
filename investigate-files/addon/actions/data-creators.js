@@ -113,9 +113,6 @@ const initializeFileDetails = (checksum) => {
       dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedFilter, meta: { belongsTo: 'FILE' } });
     }
 
-    dispatch(getServiceId('FILE', () => {
-      dispatch(_fetchHostNameList(checksum));
-    }));
     dispatch(getRespondServerStatus());
     dispatch(getRiskScoreContext(checksum, 'FILE'));
   };
@@ -444,12 +441,18 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
     const request = lookup('service:request');
     dispatch({ type: ACTION_TYPES.RESET_INPUT_DATA });
     dispatch(resetRiskContext());
-    request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
+
     const { files: { fileList: { selectedDetailFile } } } = getState();
 
     if (!selectedDetailFile) {
+      request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
       dispatch(_getSelectedFileProperties(checksum));
     }
+
+    dispatch(getAllServices());
+    dispatch(getServiceId('FILE', () => {
+      dispatch(_fetchHostNameList(checksum));
+    }));
 
     if (tabName === 'ANALYSIS') {
       const callBackOptions = {
@@ -457,9 +460,7 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
       };
       dispatch(getFileAnalysisData(checksum, fileFormat, callBackOptions));
       dispatch(setNewFileTab(tabName));
-
     } else {
-      dispatch(getAllServices());
       dispatch(setSelectedEndpointServer(sid));
       dispatch(initializeFileDetails(checksum));
     }

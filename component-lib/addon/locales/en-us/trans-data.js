@@ -3700,7 +3700,7 @@ export default {
         macho: {
           architecture: 'Architecture',
           entryPoint: 'Entry Point',
-          importedDlls: 'Imported DLLs',
+          importedDlls: 'Imported DyLib',
           segmentNames: 'Segment Names {{count}}',
           subSystem: 'Subsystem',
           entryPointValid: 'Entry Point Valid',
