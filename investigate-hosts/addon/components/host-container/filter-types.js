@@ -94,7 +94,10 @@ const FILTER_TYPES = [
   {
     'name': 'machineIdentity.agent.driverErrorCode',
     'label': 'investigateHosts.hosts.column.machineIdentity.agent.driverErrorCode',
-    'type': 'text'
+    'type': 'number',
+    'operators': [
+      { label: 'Equal', type: 'EQUAL' }
+    ]
   },
   {
     'name': 'machineIdentity.networkInterfaces.macAddress',

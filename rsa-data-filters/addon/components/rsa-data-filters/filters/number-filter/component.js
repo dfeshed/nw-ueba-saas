@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
 import computed from 'ember-computed-decorators';
-import { debounce } from '@ember/runloop';
+import { debounce, next } from '@ember/runloop';
 
 export default Component.extend({
 
@@ -82,21 +82,22 @@ export default Component.extend({
     const { onChange, filterValue, options: { name } } = this.getProperties('onChange', 'filterValue', 'options');
     const { operator, value, unit } = filterValue;
     if (onChange) {
-      onChange({ operator: operator.type, value, unit: unit.type, name });
+      onChange({ operator: operator.type, value, unit: unit ? unit.type : null, name });
     }
   },
 
   _handleFilterChange(value) {
     const isOperatorBetween = this.get('isOperatorBetween');
     if (isOperatorBetween) {
-      const start = this.element.querySelector('.number-input.start input').value;
-      const end = this.element.querySelector('.number-input.end input').value;
+      const start = this.element.querySelector('.number-input.start input').value * 1;
+      const end = this.element.querySelector('.number-input.end input').value * 1;
       this.set('filterValue.value', [start, end]);
     } else {
-      this.set('filterValue.value', [value]);
+      this.set('filterValue.value', [value * 1]);
     }
-
-    this._onFilterChange();
+    next(() => {
+      this._onFilterChange();
+    });
   },
 
   actions: {
