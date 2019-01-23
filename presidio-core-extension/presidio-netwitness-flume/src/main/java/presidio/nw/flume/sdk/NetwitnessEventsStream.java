@@ -30,6 +30,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
     protected static final String CONNECTION_TIMEOUT = "connectionTimeout";
     protected static final String SOCKET_TIMEOUT = "socketTimeout";
     protected static final String FAILURE_RETRY_INTERVAL = "failureRetryInterval";
+    protected static final String MULTI_VALUED = "multiValued";
 
     private static final String DEFAULT_FAILURE_RETRY_INTERVAL = "60000";
 
@@ -61,6 +62,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private String connectionTimeout;
         private String socketTimeout;
         private String failureRetryInterval;
+        private String multiValued;
       
         public EventsStreamIterator(Schema schema, Instant startTime, Instant endTime, List<String> sources, Map<String, String> configurations ) {
             try {
@@ -70,6 +72,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 this.timeField = configurations.get(TIME_FIELD);
                 this.connectionTimeout = configurations.get(CONNECTION_TIMEOUT);
                 this.socketTimeout = configurations.get(SOCKET_TIMEOUT);
+                this.multiValued = configurations.get(MULTI_VALUED);
                 this.timeFieldMetaKey = timeField.replace('.','_');
                 this.failureRetryInterval = configurations.getOrDefault(FAILURE_RETRY_INTERVAL, DEFAULT_FAILURE_RETRY_INTERVAL);
                 this.stream = initializeStream(sources);
@@ -128,6 +131,10 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
                 uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
                 uriBuilder.addParameter(NwParameter.SkipQueryValidation.name(),Boolean.TRUE.toString());
+
+                if (StringUtils.isNotEmpty(multiValued)) {
+                    uriBuilder.addParameter(NwParameter.MultiValued.name(), multiValued);
+                }
 
                 // timeout parameters
                 if (StringUtils.isNotEmpty(connectionTimeout)){
