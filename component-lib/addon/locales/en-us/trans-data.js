@@ -760,7 +760,7 @@ export default {
         none: '(Unassigned)'
       },
       riskScoring: {
-        header: 'Risk Scoring Settings',
+        header: 'Risk Scoring Threshold Settings For Endpoint',
         labels: {
           enabled: 'Enabled',
           disabled: 'Disabled',
