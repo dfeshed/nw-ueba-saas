@@ -266,6 +266,12 @@ const savePublishGroup = (group, callbacks = callbacksDefault) => {
   };
 };
 
+const discardGroupChanges = () => {
+  return {
+    type: ACTION_TYPES.DISCARD_GROUP_CHANGES
+  };
+};
+
 const removePlaceholderPolicyAssignments = () => {
   return {
     type: ACTION_TYPES.REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS
@@ -287,8 +293,9 @@ export {
   editGroup,
   updateGroupStep,
   saveGroup,
-  updateGroupCriteria,
   savePublishGroup,
+  discardGroupChanges,
+  updateGroupCriteria,
   addCriteria,
   removeCriteria,
   handleAndOrOperator,

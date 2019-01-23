@@ -91,8 +91,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
   });
 
   test('Identify Group Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(2);
-    assert.expect(7);
+    const done = assert.async(1);
+    assert.expect(6);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
       .groupWizGroup(groupPayloadIdentifyGroupStep)
@@ -121,15 +121,6 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     });
     const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
-
-    // clicking the cancel-button should call transitionToClose()
-    // update transitionToClose for cancel-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
-    await click(cancelBtnEl);
   });
 
   const groupPayloadDefineGroupStep = {
@@ -185,8 +176,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
   });
 
   test('Define Group Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(3);
-    assert.expect(8);
+    const done = assert.async(2);
+    assert.expect(7);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
       .groupWizGroup(groupPayloadDefineGroupStep)
@@ -224,15 +215,6 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     });
     const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
-
-    // clicking the cancel-button should call transitionToClose()
-    // update transitionToClose for cancel-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
-    await click(cancelBtnEl);
   });
 
   const groupPayloadApplyPolicyStepInvalidData = {
@@ -316,8 +298,8 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
   });
 
   test('Apply Policy Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(4);
-    assert.expect(9);
+    const done = assert.async(3);
+    assert.expect(8);
     const state = new ReduxDataHelper(setState)
       .groupWiz()
       .groupWizGroup(groupPayloadApplyPolicyStep)
@@ -364,6 +346,30 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     });
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
+  });
+
+  test('On selecting the Cancel button with no changes does closure action', async function(assert) {
+    const done = assert.async(1);
+    assert.expect(6);
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadIdentifyGroupStep, true)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
 
     // clicking the cancel-button should call transitionToClose()
     // update transitionToClose for cancel-button
@@ -375,6 +381,38 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     await click(cancelBtnEl);
   });
 
+  test('On selecting the Cancel button with valid data prompts user with confirmation dialog to confirm', async function(assert) {
+    assert.expect(7);
+    const translation = this.owner.lookup('service:i18n');
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayloadDefineGroupStep)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+    this.set('step', state.usm.groupWizard.steps[2]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-groups/group-wizard/group-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+
+    // clicking the cancel-button with changed data should call confirmation-modal
+    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
+    await click(cancelBtnEl);
+    const expectedMessage = translation.t('adminUsm.groupWizard.modals.discardChanges.confirm');
+    await settled();
+    assert.ok(findAll('.confirmation-modal.is-open').length, 1, 'Modal Confirmation is showing');
+    assert.equal(findAll('.confirmation-modal .modal-content p')[0].innerText.trim(), expectedMessage, 'Confirm message is incorrect');
+    await click('.modal-footer-buttons .is-primary button');
+  });
 
   test('On failing to save a group, an error flash message is shown', async function(assert) {
     const done = assert.async();

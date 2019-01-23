@@ -152,6 +152,13 @@ const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
   };
 };
 
+const discardPolicyChanges = () => {
+  return {
+    type: ACTION_TYPES.DISCARD_POLICY_CHANGES
+  };
+};
+
+
 /**
  * define-policy-step...
  * This gets called when the user clicks on the plus sign in the available settings section on the left.
@@ -317,6 +324,7 @@ export {
   updatePolicyStep,
   savePolicy,
   savePublishPolicy,
+  discardPolicyChanges,
   initializePolicyType,
   addToSelectedSettings,
   removeFromSelectedSettings,

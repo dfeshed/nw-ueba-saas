@@ -34,6 +34,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       .policyWiz()
       .policyWizPolicyStatus('complete')
       .policyWizScanStartDate(null)
+      .policyWizPolicyOrig()
       .build().usm.policyWizard;
     const action = { type: ACTION_TYPES.NEW_POLICY };
     const endState = reducers(Immutable.from(initialStateEdr), action);
@@ -720,6 +721,35 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     });
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateWinLog)), action);
     assert.deepEqual(endState, expectedEndState, 'log servers list is populated');
+  });
+
+  test('on DISCARD_POLICY_CHANGES success, policy is equal to policyOrig', function(assert) {
+    const initialState = {
+      policy: {
+        id: 'changed_id',
+        name: 'changed_name'
+      },
+      policyOrig: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      }
+    };
+    const expectedResult = {
+      policy: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      },
+      policyOrig: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      }
+    };
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.DISCARD_POLICY_CHANGES,
+      payload: {}
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(initialState)), action);
+    assert.deepEqual(endState, expectedResult, 'policy is equal to policyOrig after discard-changes');
   });
 
 });

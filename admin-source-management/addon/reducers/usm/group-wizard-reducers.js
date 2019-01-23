@@ -179,6 +179,7 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.NEW_GROUP]: (state /* , action */) => {
     const newState = state.merge({
       ...initialState,
+      groupOrig: initialState.group,
       groupStatus: 'complete'
     });
     return newState;
@@ -258,6 +259,10 @@ export default reduxActions.handleActions({
     const { field, value } = action.payload;
     const fields = field.split('.');
     return state.setIn(fields, value);
+  },
+
+  [ACTION_TYPES.DISCARD_GROUP_CHANGES]: (state) => {
+    return state.set('group', state.groupOrig);
   },
 
   [ACTION_TYPES.REMOVE_PLACEHOLDER_POLICY_ASSIGNMENTS]: (state) => {

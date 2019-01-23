@@ -162,38 +162,40 @@ export const channelFiltersValidator = (state) => {
   let invalidEntry = '';
   const value = channels(state);
 
-  // channels is an array of objects, loop through each obj and validate
-  value.every((obj) => {
-    const { eventId, filterType, channel } = obj;
-    const isEventIdString = typeof eventId === 'string';
-    let hasInvalidEventId = false;
-    // if the field is blank, show an error message
-    if (isBlank(channel) || isBlank(filterType) || isBlank(eventId)) {
-      error = true;
-      invalidEntry = '';
-      message = 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter';
-      return false;
-    }
-    // If Event ID is a string, it should be 'ALL'
-    // any other string is treated as invalid
-    if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filterType.toUpperCase() !== 'EXCLUDE')) {
+  if (value) {
+    // channels is an array of objects, loop through each obj and validate
+    value.every((obj) => {
+      const { eventId, filterType, channel } = obj;
+      const isEventIdString = typeof eventId === 'string';
+      let hasInvalidEventId = false;
+      // if the field is blank, show an error message
+      if (isBlank(channel) || isBlank(filterType) || isBlank(eventId)) {
+        error = true;
+        invalidEntry = '';
+        message = 'adminUsm.policyWizard.windowsLogPolicy.invalidChannelFilter';
+        return false;
+      }
+      // If Event ID is a string, it should be 'ALL'
+      // any other string is treated as invalid
+      if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filterType.toUpperCase() !== 'EXCLUDE')) {
+        return true;
+      }
+
+      // If multiple event ids are entered, make sure they dont have invalid characters
+      const arrayOfEvents = eventId.split(',');
+      hasInvalidEventId = arrayOfEvents.some((event) => {
+        return !VALID_EVENT_PATTERN.test(event.trim());
+      });
+
+      if (hasInvalidEventId) {
+        error = true;
+        message = 'adminUsm.policyWizard.windowsLogPolicy.invalidEventId';
+        invalidEntry = eventId;
+        return false;
+      }
       return true;
-    }
-
-    // If multiple event ids are entered, make sure they dont have invalid characters
-    const arrayOfEvents = eventId.split(',');
-    hasInvalidEventId = arrayOfEvents.some((event) => {
-      return !VALID_EVENT_PATTERN.test(event.trim());
     });
-
-    if (hasInvalidEventId) {
-      error = true;
-      message = 'adminUsm.policyWizard.windowsLogPolicy.invalidEventId';
-      invalidEntry = eventId;
-      return false;
-    }
-    return true;
-  });
+  }
   return {
     isError: error,
     errorMessage: message,

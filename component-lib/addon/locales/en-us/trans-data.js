@@ -4193,6 +4193,14 @@ export default {
       cancel: 'Cancel',
       addCondition: 'Add Condition',
       maxTenCriteria: 'This group contains the maximum number of conditions',
+      modals: {
+        discardChanges: {
+          title: 'Discard Changes',
+          confirm: 'Discard the unsaved changes?',
+          discardChanges: 'Discard Changes',
+          continueEditing: 'Continue Editing'
+        }
+      },
       actionMessages: {
         prevFailure: 'Please fix all the validation errors before navigating back to the previous step.',
         prevEmptyFailure: 'At least one condition is required before navigating back to the previous step.',
@@ -4265,6 +4273,14 @@ export default {
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel',
+      modals: {
+        discardChanges: {
+          title: 'Discard Changes',
+          confirm: 'Discard the unsaved changes?',
+          discardChanges: 'Discard Changes',
+          continueEditing: 'Continue Editing'
+        }
+      },
       actionMessages: {
         prevFailure: 'Please fix all the validation errors before navigating back to the previous step.',
         prevEmptyFailure: 'At least one condition is required before navigating back to the previous step.',

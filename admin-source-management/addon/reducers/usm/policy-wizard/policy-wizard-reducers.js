@@ -187,7 +187,12 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.NEW_POLICY]: (state /* , action */) => {
     // reset everything from common initialState & type specific initialState
     const mergedInitialState = buildInitialState(state, state.policy.policyType);
-    return mergedInitialState.set('policyStatus', 'complete');
+    const newState = state.merge({
+      ...mergedInitialState,
+      policyOrig: mergedInitialState.policy,
+      policyStatus: 'complete'
+    });
+    return newState;
   },
 
   [ACTION_TYPES.FETCH_POLICY]: (state, action) => (
@@ -253,6 +258,10 @@ export default reduxActions.handleActions({
     const { field, value } = action.payload;
     const fields = field.split('.');
     return state.setIn(fields, value);
+  },
+
+  [ACTION_TYPES.DISCARD_POLICY_CHANGES]: (state) => {
+    return state.set('policy', state.policyOrig);
   },
 
   // define-policy-step - add an available setting (left col) as a selected setting (right col)

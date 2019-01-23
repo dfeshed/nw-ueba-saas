@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { run } from '@ember/runloop';
+import { run, next } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 import {
   group,
@@ -21,6 +21,7 @@ import {
   updateGroupStep,
   saveGroup,
   savePublishGroup,
+  discardGroupChanges,
   updateCriteriaFromCache,
   removePlaceholderPolicyAssignments
 } from 'admin-source-management/actions/creators/group-wizard-creators';
@@ -41,6 +42,7 @@ const dispatchToActions = {
   updateGroupStep,
   saveGroup,
   savePublishGroup,
+  discardGroupChanges,
   updateCriteriaFromCache,
   removePlaceholderPolicyAssignments
 };
@@ -48,13 +50,14 @@ const dispatchToActions = {
 const GroupWizardToolbar = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['group-wizard-toolbar'],
-  i18n: inject(),
+  i18n: service(),
+  eventBus: service(),
 
   // step object required to be passed in
   step: undefined,
   // closure action required to be passed in
   transitionToStep: undefined,
-  showConfirmationDialog: false,
+  _showConfirmationModal: false,
 
   @computed(
     'step',
@@ -218,20 +221,46 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     },
 
     cancel() {
-      this.get('transitionToClose')();
-    },
-
-    cancelDiscardConfirmationModal() {
-      this.set('showConfirmationDialog', false);
-      // const eventName = `rsa-application-modal-close-confirm-unsaved-group-changes`;
-      // this.get('eventBus').trigger(eventName);
+      if (this.hasGroupChanged) {
+        this._showDiscardConfirmation();
+      } else {
+        this.get('transitionToClose')();
+      }
     },
 
     discardChanges() {
-      this.set('showConfirmationDialog', false);
+      this.send('discardGroupChanges');
+      this._closeModal();
       this.get('transitionToClose')();
-    }
+    },
 
+    continueEditing() {
+      this._closeModal();
+    },
+
+    onModalClose() {
+      this.set('_showConfirmationModal', false);
+    }
+  },
+
+  _showDiscardConfirmation() {
+    this.set('_showConfirmationModal', true);
+    next(() => {
+      this.get('eventBus').trigger('rsa-application-modal-open-confirm-modal');
+    });
+  },
+
+  _closeModal() {
+    this.get('eventBus').trigger('rsa-application-modal-close-confirm-modal');
+  },
+
+  listen() {
+    this.get('eventBus').on('rsa-application-modal-open-discard-group-changes', this, '_showDiscardConfirmation');
+  },
+
+  init() {
+    this.listen();
+    this._super(arguments);
   }
 
 });

@@ -71,6 +71,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicyOrig() {
+    _set(this.state, 'usm.policyWizard.policyOrig', this.state.usm.policyWizard.policy);
+    return this;
+  }
+
   policyWizSourceType(type) {
     _set(this.state, 'usm.policyWizard.policy.policyType', type);
     return this;

@@ -39,3 +39,25 @@
 }}
   {{t 'adminUsm.policyWizard.cancel'}}
 {{/rsa-form-button}}
+
+{{#if _showConfirmationModal}}
+  {{#rsa-application-modal
+    style='standard confirmation-modal'
+    eventId='confirm-modal'
+    label=(t 'adminUsm.policyWizard.modals.discardChanges.title')
+    onClose=(action 'onModalClose')}}
+    <div class='modal-content'>
+      <p>{{t 'adminUsm.policyWizard.modals.discardChanges.confirm'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='continueEditing'}}
+          {{t 'adminUsm.policyWizard.modals.discardChanges.continueEditing'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='primary' click=(action 'discardChanges')}}
+          {{t 'adminUsm.policyWizard.modals.discardChanges.discardChanges'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

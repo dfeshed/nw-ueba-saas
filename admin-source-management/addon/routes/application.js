@@ -1,9 +1,13 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
+import { hasPolicyChanged } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import { hasGroupChanged } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 export default Route.extend({
   accessControl: service(),
   contextualHelp: service(),
+  eventBus: service(),
 
   beforeModel() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
@@ -27,6 +31,26 @@ export default Route.extend({
     },
     redirectToUrl(relativeUrl) {
       window.location.href = relativeUrl;
+    },
+    willTransition(transition) {
+      let state = null;
+      /* eslint-disable */
+      const currentPath = this._router.currentPath;
+      /* eslint-enable */
+      if (currentPath.includes('admin-source-management.policy-wizard')) {
+        state = getOwner(this).lookup('service:redux').getState();
+        if (hasPolicyChanged(state)) {
+          transition.abort();
+          this.get('eventBus').trigger('rsa-application-modal-open-discard-policy-changes');
+        }
+      } else if (currentPath.includes('admin-source-management.group-wizard')) {
+        state = getOwner(this).lookup('service:redux').getState();
+        if (hasGroupChanged(state)) {
+          transition.abort();
+          this.get('eventBus').trigger('rsa-application-modal-open-discard-group-changes');
+        }
+      }
+      return true;
     }
   },
   activate() {

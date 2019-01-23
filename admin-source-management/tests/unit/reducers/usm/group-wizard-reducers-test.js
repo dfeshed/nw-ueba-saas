@@ -825,4 +825,33 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(endState, expectedResult, 'group policy assignments are properly set');
   });
 
+  test('on DISCARD_GROUP_CHANGES success, group is equal to groupOrig', function(assert) {
+    const initialState = {
+      group: {
+        id: 'changed_id',
+        name: 'changed_name'
+      },
+      groupOrig: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      }
+    };
+    const expectedResult = {
+      group: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      },
+      groupOrig: {
+        id: 'orignal_id',
+        name: 'orignal_name'
+      }
+    };
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.DISCARD_GROUP_CHANGES,
+      payload: {}
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(initialState)), action);
+    assert.deepEqual(endState, expectedResult, 'group is equal to groupOrig after discard-changes');
+  });
+
 });

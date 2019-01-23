@@ -32,6 +32,17 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.equal(findAll('.policy-wizard-toolbar').length, 1, 'The component appears in the DOM');
   });
 
+  const policyPayload = {
+    id: 'policy_002',
+    name: 'Policy 002',
+    policyType: 'edrPolicy',
+    description: 'policy policy_002',
+    lastPublishedOn: 1527489158739,
+    dirty: false,
+    defaultPolicy: false,
+    blockingEnabled: false
+  };
+
   test('Identify Policy Step - Toolbar appearance with invalid data', async function(assert) {
     assert.expect(5);
     const state = new ReduxDataHelper(setState).policyWiz().build();
@@ -48,7 +59,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.expect(5);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizName('test name')
+      .policyWizPolicy(policyPayload, false)
       .build();
     this.set('step', state.usm.policyWizard.steps[0]);
     await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
@@ -60,11 +71,11 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Identify Policy Step - Toolbar closure with valid data', async function(assert) {
-    const done = assert.async(2);
-    assert.expect(7);
+    const done = assert.async(1);
+    assert.expect(6);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizName('test name')
+      .policyWizPolicy(policyPayload, false)
       .build();
     this.set('step', state.usm.policyWizard.steps[0]);
     this.set('transitionToStep', () => {});
@@ -89,15 +100,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     });
     const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
-
-    // clicking the cancel-button should call transitionToClose()
-    // update transitionToClose for cancel-button
-    this.set('transitionToClose', () => {
-      assert.ok('transitionToClose() was properly triggered');
-      done();
-    });
-    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
-    await click(cancelBtnEl);
   });
 
   test('Define Policy Step - Toolbar appearance with invalid data', async function(assert) {
@@ -135,16 +137,16 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
 
   // Test working locally, failing on PR build system.
   skip('Define Policy Step - Toolbar closure actions with valid data', async function(assert) {
-    const done = assert.async(4);
-    assert.expect(9);
+    const done = assert.async(3);
+    assert.expect(8);
     const newSelectedSettings = [
       { index: 13, id: 'blockingEnabled', label: 'adminUsm.policy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
     ];
     const state = new ReduxDataHelper(setState)
       .policyWiz()
-      .policyWizName('test name')
-      .policyWizBlockingEnabled(true)
+      .policyWizPolicy(policyPayload, false)
       .policyWizSelectedSettings(newSelectedSettings)
+      .policyWizBlockingEnabled(true)
       .build();
     this.set('step', state.usm.policyWizard.steps[1]);
     this.set('transitionToStep', () => {});
@@ -187,6 +189,29 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     });
     const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
+  });
+
+  test('On selecting the Cancel button with no changes does closure action', async function(assert) {
+    const done = assert.async(1);
+    assert.expect(6);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizPolicy(policyPayload, true)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[1]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
 
     // clicking the cancel-button should call transitionToClose()
     // update transitionToClose for cancel-button
@@ -196,6 +221,38 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     });
     const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
     await click(cancelBtnEl);
+  });
+
+  test('On selecting the Cancel button with valid data prompts user with confirmation dialog to confirm', async function(assert) {
+    assert.expect(7);
+    const translation = this.owner.lookup('service:i18n');
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizPolicy(policyPayload, false)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[1]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    await settled();
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');
+    assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The Publish button appears in the DOM and is enabled');
+    assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+
+    // clicking the cancel-button with changed data should call confirmation-modal
+    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
+    await click(cancelBtnEl);
+    const expectedMessage = translation.t('adminUsm.policyWizard.modals.discardChanges.confirm');
+    await settled();
+    assert.ok(findAll('.confirmation-modal.is-open').length, 1, 'Modal Confirmation is showing');
+    assert.equal(findAll('.confirmation-modal .modal-content p')[0].innerText.trim(), expectedMessage, 'Confirm message is incorrect');
+    await click('.modal-footer-buttons .is-primary button');
   });
 
   test('On failing to save a policy, an error flash message is shown', async function(assert) {
