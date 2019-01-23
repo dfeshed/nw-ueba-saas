@@ -32,13 +32,16 @@ const getFileAnalysisTextFormatData = (data) => {
   });
 };
 
-const saveLocalFileCopy = (hash) => {
+const saveLocalFileCopy = (hash, serverId) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'saveLocalCopy',
     modelName: 'endpoint',
     query: {
       data: hash
+    },
+    streamOptions: {
+      socketUrlPostfix: serverId
     }
   });
 };

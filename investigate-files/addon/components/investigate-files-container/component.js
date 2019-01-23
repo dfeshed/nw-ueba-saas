@@ -115,20 +115,22 @@ const Files = Component.extend({
 
     onAnalyzeFile() {
       const [selectedDetailFile] = this.get('selections');
-      if (selectedDetailFile) {
+      const { serviceId } = selectedDetailFile;
+      if (serviceId) {
         const { format, checksumSha256 } = selectedDetailFile;
-        const serverId = this.get('serverId');
         const fileFormat = componentSelectionForFileType(format).format || '';
-        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serverId}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
+        window.open(`${window.location.origin}/investigate/files/${checksumSha256}?checksum=${checksumSha256}&sid=${serviceId}&fileFormat=${fileFormat}&tabName=ANALYSIS`, '_self');
       }
     },
 
     onSaveLocalCopy() {
+      const [selectedDetailFile] = this.get('selections');
+      const { serviceId } = selectedDetailFile;
       const callBackOptions = {
         onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
         onFailure: (message) => failure(message, null, false)
       };
-      this.send('saveLocalFileCopy', this.get('selections')[0], callBackOptions);
+      this.send('saveLocalFileCopy', selectedDetailFile, callBackOptions, serviceId);
     }
   }
 });

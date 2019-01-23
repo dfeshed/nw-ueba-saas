@@ -41,12 +41,12 @@ const getFileAnalysisData = (data, format, callback) => {
   };
 };
 
-const saveLocalFileCopy = (selectedFile, callback) => {
+const saveLocalFileCopy = (selectedFile, callback, serviceIdFromFiles) => {
   return (dispatch, getState) => {
-    api.saveLocalFileCopy(selectedFile.checksumSha256)
+    const serverId = serviceIdFromFiles ? serviceIdFromFiles : getState().endpointQuery.serverId;
+    api.saveLocalFileCopy(selectedFile.checksumSha256, serverId)
       .then(({ data }) => {
         if (data.id) {
-          const { serverId } = getState().endpointQuery;
           const url = serverId ? `/rsa/endpoint/${serverId}/file/download?id=${data.id}&filename=${selectedFile.fileName}.zip` : '';
           dispatch({ type: ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: url });
         }
