@@ -28,30 +28,6 @@ export default Component.extend({
     const key = keyMapping[property.field];
     const item = {};
     item[key] = property.value[0];
-    if (property.field === 'name') {
-      return [
-        {
-          label: 'Copy',
-          action([item]) {
-            copyToClipboard(item);
-          }
-        },
-        {
-          label: 'analyzeUser',
-          prefix: 'investigateShared.endpoint.fileActions.',
-          action([selection]) {
-            if (selection) {
-              let userName = selection;
-              if (selection.includes('\\')) {
-                userName = selection.split('\\')[1];
-              }
-              const path = `${window.location.origin}/investigate/users?ueba=/username/${userName}`;
-              window.open(path);
-            }
-          }
-        }
-      ];
-    }
     return [
       {
         label: 'Copy',
@@ -99,5 +75,16 @@ export default Component.extend({
   @computed('property')
   propertyValueLength({ value }) {
     return Array.isArray(value) ? `(${value.length})` : '';
+  },
+
+  actions: {
+    navigateToUEBA(user) {
+      if (user.includes('\\')) {
+        user = user.split('\\')[1];
+      }
+      const path = `${window.location.origin}/investigate/users?ueba=/username/${user}`;
+      window.open(path);
+
+    }
   }
 });

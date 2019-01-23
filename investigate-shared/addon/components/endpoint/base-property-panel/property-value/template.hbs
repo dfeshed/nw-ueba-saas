@@ -31,6 +31,8 @@
         contextSelection=property.value}}
         <span class="user-name">{{property.value}}</span>
       {{/rsa-context-menu}}
+    {{else if property.showAsLink}}
+      <span class='userLink' {{action 'navigateToUEBA' property.value}}>{{property.value}}</span>
     {{else}}
       {{property.value}}
     {{/if}}

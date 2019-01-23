@@ -68,5 +68,10 @@ $panel-width: 200px;
       text-decoration: underline;
       text-decoration-style: dashed;
     }
+    .userLink {
+      cursor: pointer;
+      text-decoration: underline;
+      color: text-color(secondary);
+    }
   }
 }

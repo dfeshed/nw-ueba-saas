@@ -16,7 +16,7 @@ export default [
       {
         field: 'name',
         labelKey: 'machine.users.name',
-        showRightClick: true
+        showAsLink: true
       },
       {
         field: 'sessionId',

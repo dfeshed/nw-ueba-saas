@@ -117,11 +117,11 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
     assert.equal(findAll('.properties__accordion__item').length, 3);
   });
 
-  test('it renders the context menu', async function(assert) {
+  test('it open UEBA link, when clicked on the username', async function(assert) {
     const field = {
       field: 'name',
       value: 'corp\\raghs',
-      showRightClick: true
+      showAsLink: true
     };
     this.set('field', field);
     const actionSpy = sinon.spy(window, 'open');
@@ -133,17 +133,11 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
       </style>
       {{endpoint/base-property-panel/property-value property=field}}{{context-menu}}
     `);
-    triggerEvent(findAll('.user-name')[0], 'contextmenu', e);
+    await click('.userLink');
     return settled().then(async() => {
-      const selector = '.context-menu';
-      const menuItems = findAll(`${selector} > .context-menu__item`);
-      assert.equal(menuItems.length, 2, '2 Context menu items rendered');
-      await click(`#${menuItems[1].id}`);
-      return settled().then(() => {
-        assert.ok(actionSpy.calledOnce, 'Window.open is called');
-        assert.ok(actionSpy.args[0][0].includes('investigate/users?ueba=/username/raghs'), 'valid link');
-        actionSpy.restore();
-      });
+      assert.ok(actionSpy.calledOnce, 'Window.open is called');
+      assert.ok(actionSpy.args[0][0].includes('investigate/users?ueba=/username/raghs'), 'valid link');
+      actionSpy.restore();
     });
   });
 
