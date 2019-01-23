@@ -9,6 +9,8 @@ export default Component.extend(MonitorMixin, {
   tagName: 'vbox',
   classNames: ['dashboard-card', 'border-panel'],
 
+  isLogDecoder: false,
+
   monitor: [
     {
       name: 'capture_rate',
@@ -47,5 +49,16 @@ export default Component.extend(MonitorMixin, {
       const transport = this.get('transport');
       return transport.send('/decoder', { message: 'stop' });
     }
+  },
+
+  init() {
+    // set the correct paths for log decoder stats
+    if (this.isLogDecoder) {
+      this.monitor[0].path = '/decoder/stats/capture.packet.rate';
+      this.monitor[1].path = '/decoder/stats/capture.packet.rate.max';
+    }
+
+    this._super(...arguments);
   }
+
 });

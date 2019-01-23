@@ -146,7 +146,7 @@ const selectedNodeRequiresRestart = createSelector(
   }
 );
 
-const _module = createSelector(
+const moduleName = createSelector(
   [ _deviceInfo ],
   (deviceInfo) => {
     return deviceInfo ? deviceInfo.module : null;
@@ -169,7 +169,7 @@ const isDevelopmentBuild = createSelector(
 
 const _isModule = (_mod) => {
   return createSelector(
-    [ _module ],
+    [ moduleName ],
     (mod) => {
       return mod ? mod === _mod : false;
     }
@@ -201,5 +201,6 @@ export {
   isBroker,
   isConcentrator,
   isDecoder,
-  isLogDecoder
+  isLogDecoder,
+  moduleName
 };

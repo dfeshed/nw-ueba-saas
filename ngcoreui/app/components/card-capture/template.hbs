@@ -1,4 +1,10 @@
-<h1 class="large centered">Log Capture</h1>
+<h1 class="large centered">
+  {{#if isLogDecoder}}
+    Log Capture
+  {{else}}
+    Packet Capture
+  {{/if}}
+</h1>
 {{#rsa-chart data=graphAdapter as |params|}}
   {{rsa-line-series
     data=params.data
@@ -8,10 +14,21 @@
     height=params.graphHeight}}
   {{rsa-y-axis scale=params.yScale tickCount=3}}
 {{/rsa-chart}}
-<h1 class="large centered">{{ngcoreui-formatted-number size=valuesAdapter.capture_rate}} EPS</h1>
+<h1 class="large centered">
+  {{#if isLogDecoder}}
+    {{ngcoreui-formatted-number size=valuesAdapter.capture_rate}} EPS
+  {{else}}
+    {{valuesAdapter.capture_rate}} Mbps
+  {{/if}}
+</h1>
 {{#dashboard-properties-grid}}
-  {{dashboard-property-item propertyName='Events Captured' propertyValue=valuesAdapter.capture_received type='numeric'}}
-  {{dashboard-property-item propertyName='Events Dropped' propertyValue=valuesAdapter.capture_dropped type='numeric'}}
+  {{#if isLogDecoder}}
+    {{dashboard-property-item propertyName='Events Captured' propertyValue=valuesAdapter.capture_received type='numeric'}}
+    {{dashboard-property-item propertyName='Events Dropped' propertyValue=valuesAdapter.capture_dropped type='numeric'}}
+  {{else}}
+    {{dashboard-property-item propertyName='Packets Captured' propertyValue=valuesAdapter.capture_received type='numeric'}}
+    {{dashboard-property-item propertyName='packets Dropped' propertyValue=valuesAdapter.capture_dropped type='numeric'}}
+  {{/if}}
   {{dashboard-property-item propertyName='Capture Status' propertyValue=valuesAdapter.capture_status}}
   {{dashboard-property-item propertyName='Capture Started' propertyValue=valuesAdapter.time_capture.started}}
   {{dashboard-property-item propertyName='Capture Duration' propertyValue=valuesAdapter.time_capture.duration}}

@@ -14,12 +14,16 @@
     height=params.graphHeight}}
   {{rsa-y-axis scale=params.yScale tickCount=3}}
 {{/rsa-chart}}
-<h1 class="large centered">{{add valuesAdapter.queries_active valuesAdapter.queries_pending}} Queries</h1>
+<h1 class="large centered">{{totalQueries}} Queries</h1>
 {{#dashboard-properties-grid}}
-  {{dashboard-property-item propertyName='Query Memory' propertyValue=valuesAdapter.query_memory type='bytes'}}
-  {{dashboard-property-item propertyName='Sessions Since Save' propertyValue=valuesAdapter.sessions_since_save type='numeric'}}
+  {{#if (not isBroker)}}
+    {{dashboard-property-item propertyName='Query Memory' propertyValue=valuesAdapter.query_memory type='bytes'}}
+    {{dashboard-property-item propertyName='Sessions Since Save' propertyValue=valuesAdapter.sessions_since_save type='numeric'}}
+  {{/if}}
   {{dashboard-property-item propertyName='Earliest Time' propertyValue=valuesAdapter.time_begin}}
   {{dashboard-property-item propertyName='Most Recent Time' propertyValue=valuesAdapter.time_end}}
-  {{dashboard-property-item propertyName='Background Indexer' propertyValue=valuesAdapter.updater_state}}
-  {{dashboard-property-item propertyName='Keys Exceeding Value Limit' propertyValue=valuesAdapter.meta_overflow}}
+  {{#if (not isBroker)}}
+    {{dashboard-property-item propertyName='Background Indexer' propertyValue=valuesAdapter.updater_state}}
+    {{dashboard-property-item propertyName='Keys Exceeding Value Limit' propertyValue=valuesAdapter.meta_overflow}}
+  {{/if}}
 {{/dashboard-properties-grid}}

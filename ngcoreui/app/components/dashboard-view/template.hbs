@@ -1,19 +1,15 @@
 {{#if (or isDecoder isLogDecoder)}}
-  {{#if isDecoder}}
-    {{card-packet-capture}}
-  {{else}}
-    {{card-log-capture}}
-  {{/if}}
+  {{card-capture isLogDecoder=isLogDecoder}}
   {{card-packet-db}}
   {{card-meta-db}}
   {{card-session-db}}
   {{card-index-db}}
 {{/if}}
 {{#if (or isConcentrator isBroker)}}
-  {{card-aggregation}}
+  {{card-aggregation moduleName=moduleName}}
+  {{card-index-db isBroker=isBroker}}
 {{/if}}
 {{#if isConcentrator}}
-  {{card-index-db}}
   {{card-session-db}}
   {{card-meta-db}}
 {{/if}}

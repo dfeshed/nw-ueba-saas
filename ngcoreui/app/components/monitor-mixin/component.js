@@ -16,9 +16,10 @@ export default Mixin.create({
   intervalHandle: null,
   nodes: null,
   data: null,
+  valuesAdapter: null,
   transport: service(),
 
-  dataFunction: parseFloat,
+  dataFunction: null,
 
   /**
    * @private
@@ -27,30 +28,11 @@ export default Mixin.create({
    */
   @computed('data')
   graphAdapter: (data) => {
-    if (!data) {
-      return [];
-    }
-
     return data.map((d) => {
       return d.map((point, index) => {
         return { x: index, y: point };
       });
     });
-  },
-
-  @computed('nodes', 'monitor')
-  valuesAdapter: (nodes, monitor) => {
-    const values = {};
-    monitor.forEach((mon) => {
-      if (mon.name) {
-        let value = nodes[mon.path];
-        if (value && mon.displayFunction) {
-          value = mon.displayFunction(value);
-        }
-        values[mon.name] = value;
-      }
-    });
-    return values;
   },
 
   /**
@@ -67,12 +49,12 @@ export default Mixin.create({
     this._super(...arguments);
     this.setProperties({
       monitorHandles: {},
-      nodes: {}
+      nodes: {},
+      valuesAdapter: {},
+      data: [],
+      dataFunction: parseFloat
     });
     const monitor = this.get('monitor');
-
-    // initiate monitoring of *all* values
-    monitor.forEach((mon) => this.getInitialValue(mon.path));
 
     // initiate monitoring of *all* values
     monitor.forEach((mon) => this.startMonitoring(mon.path));
@@ -114,24 +96,12 @@ export default Mixin.create({
 
   /**
    * @private
-   */
-  getInitialValue(path) {
-    const { transport, nodes } = this.getProperties('transport', 'nodes');
-    transport.send(path, { message: 'get' })
-      .then((message) => {
-        nodes[path] = message.string;
-        this.set('nodes', Immutable.from(nodes));
-      });
-  },
-
-  /**
-   * @private
    * Makes the API call to start receiving updates when nodes
    * are changed.
    */
   startMonitoring(path) {
-    const { transport, monitorHandles, nodes } = this.getProperties(
-      'transport', 'monitorHandles', 'nodes'
+    const { transport, monitorHandles, nodes, valuesAdapter } = this.getProperties(
+      'transport', 'monitorHandles', 'nodes', 'valuesAdapter'
     );
     monitorHandles[path] = transport.stream({
       path,
@@ -139,9 +109,12 @@ export default Mixin.create({
         message: 'mon'
       },
       messageCallback: (message) => {
-        const values = message.nodes ? message.nodes : [ message.node ];
-        values.forEach((value) => nodes[value.path] = value.value);
-        this.set('nodes', Immutable.from(nodes));
+        const updates = message.nodes ? message.nodes : [ message.node ];
+        if (updates && updates.length > 0) {
+          updates.forEach((value) => nodes[value.path] = value.value);
+          this.set('nodes', Immutable.from(nodes));
+          this.updateValues(nodes, valuesAdapter);
+        }
       },
       errorCallback: () => {
         throw new Error('Unexpected transport API error');
@@ -184,5 +157,22 @@ export default Mixin.create({
       this.set('data', Immutable.from(data));
       return;
     });
+  },
+
+  /**
+   * @private
+   */
+  updateValues(nodes, values) {
+    const monitor = this.get('monitor');
+    monitor.forEach((mon) => {
+      if (mon.name) {
+        let value = nodes[mon.path];
+        if (value && mon.displayFunction) {
+          value = mon.displayFunction(value);
+        }
+        values[mon.name] = value;
+      }
+    });
+    this.set('valuesAdapter', Immutable.from(values));
   }
 });

@@ -1,13 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { isArchiver, isBroker, isConcentrator, isDecoder, isLogDecoder } from 'ngcoreui/reducers/selectors';
+import { isArchiver, isBroker, isConcentrator, isDecoder, isLogDecoder, moduleName } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   isArchiver: isArchiver(state),
   isBroker: isBroker(state),
   isConcentrator: isConcentrator(state),
   isDecoder: isDecoder(state),
-  isLogDecoder: isLogDecoder(state)
+  isLogDecoder: isLogDecoder(state),
+  moduleName: moduleName(state)
 });
 
 const dashboardView = Component.extend({

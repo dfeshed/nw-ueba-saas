@@ -1,5 +1,6 @@
 import MonitorMixin from '../monitor-mixin/component';
 import Component from '@ember/component';
+import computed from 'ember-computed-decorators';
 
 export default Component.extend(MonitorMixin, {
   label: null,
@@ -43,6 +44,13 @@ export default Component.extend(MonitorMixin, {
       name: 'updater_state',
       path: '/index/stats/updater.state'
     }
-  ]
+  ],
+
+  @computed('valuesAdapter')
+  totalQueries: (valuesAdapter) => {
+    const active = valuesAdapter.queries_active || '0';
+    const pending = valuesAdapter.queries_pending || '0';
+    return parseFloat(active) + parseFloat(pending);
+  }
 
 });
