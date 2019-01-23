@@ -180,7 +180,12 @@ test('columns should not include meta-details column', function(assert) {
 
   assert.equal(columns.length, 4);
   columns.forEach((col) => {
-    assert.ok(col.field !== 'custom.meta-details', 'Should not be a meta-details column in list');
+    assert.ok(![
+      'custom.logdata',
+      'custom.source',
+      'custom.destination',
+      'custom.meta-details'
+    ].includes(col.field), 'Should not have a restricted column in list');
   });
 });
 

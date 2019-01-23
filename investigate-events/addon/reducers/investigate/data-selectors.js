@@ -104,7 +104,15 @@ export const getColumns = createSelector(
       // of every single meta and 1) it looks horrible and has likely
       // never been tested and 2) it causes us to keep all of the meta
       // for every event in memory and that is no beuno
-      return mutableColumns.filter((col) => col.field !== 'custom.meta-details');
+
+      return mutableColumns.filter((col) => {
+        return ![
+          'custom.logdata',
+          'custom.source',
+          'custom.destination',
+          'custom.meta-details'
+        ].includes(col.field);
+      });
     }
   }
 );

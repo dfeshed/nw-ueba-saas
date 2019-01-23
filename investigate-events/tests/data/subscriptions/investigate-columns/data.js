@@ -12,6 +12,15 @@ export default [
         field: 'service',
         title: 'Service Type'
       }, {
+        field: 'custom.logdata',
+        title: 'Log Data'
+      }, {
+        field: 'custom.source',
+        title: 'Source'
+      }, {
+        field: 'custom.destination',
+        title: 'Destination'
+      }, {
         field: 'orig_ip',
         title: 'Originating IP Address'
       }, {
