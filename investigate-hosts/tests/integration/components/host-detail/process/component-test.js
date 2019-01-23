@@ -93,7 +93,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     `);
 
     return settled().then(() => {
-      assert.deepEqual(findAll('.process-property-box').length, 0, 'process property box is present');
+      assert.deepEqual(findAll('.process-property-box').length, 1, 'process property box is present');
     });
   });
   test('it renders data when isProcessDataEmpty is true', async function(assert) {
@@ -105,6 +105,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .isProcessDetailsView(true)
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`

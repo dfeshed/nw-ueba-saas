@@ -1,95 +1,93 @@
 <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
 {{#unless isProcessDetailsView}}
-  {{#unless isProcessDataEmpty}}
-    {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
-      {{#layout.center}}
-        <box class="process-list-box scroll-box">
-          <div class="process-list-header">
-            {{#if (not isNavigatedFromExplore)}}
-              <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
-                {{#rsa-content-tethered-panel-trigger panel='toggle-treeview-panel'}}
-                  {{#x-toggle
-                    class='toggle-tree-view'
-                    showLabels=true
-                    onLabel=(t 'investigateHosts.process.viewType.treeView')
-                    value=isTreeView
-                    onToggle=(action 'toggleView') as |toggle|}}
-                    {{toggle.switch}}
-                    {{toggle.onLabel}}
-                  {{/x-toggle}}
-                {{/rsa-content-tethered-panel-trigger}}
-                {{#rsa-content-tethered-panel style="primary" position='top' panelId='toggle-treeview-panel'}}
-                  <section>{{t 'investigateHosts.process.viewType.treeViewTooltip'}}</section>
-                {{/rsa-content-tethered-panel}}
-              </span>
-            {{/if}}
-            <div class="process-list-actions analyze-process-button">
-              <span class="process-tab-label">
-                <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
-              </span>
-              {{host-detail/process/pivot-to-process-analysis
-                item=selectedProcessList
-                serviceList=serviceList
-                agentId=agentId
-                osType=osType
-                hostName=hostName}}
-            </div>
-            {{endpoint/file-actionbar
-              onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
-              getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
-              resetRiskScore = (action 'resetRiskScoreAction')
+  {{#rsa-page-layout showLeftZone=false showRightZone=false onClose=(action 'onPropertyPanelClose')  as |layout|}}
+    {{#layout.center}}
+      <box class="process-list-box scroll-box">
+        <div class="process-list-header">
+          {{#if (not isNavigatedFromExplore)}}
+            <span class="toggle-icon" {{action 'toggleView' (action layout.close 'right')}}>
+              {{#rsa-content-tethered-panel-trigger panel='toggle-treeview-panel'}}
+                {{#x-toggle
+                  class='toggle-tree-view'
+                  showLabels=true
+                  onLabel=(t 'investigateHosts.process.viewType.treeView')
+                  value=isTreeView
+                  onToggle=(action 'toggleView') as |toggle|}}
+                  {{toggle.switch}}
+                  {{toggle.onLabel}}
+                {{/x-toggle}}
+              {{/rsa-content-tethered-panel-trigger}}
+              {{#rsa-content-tethered-panel style="primary" position='top' panelId='toggle-treeview-panel'}}
+                <section>{{t 'investigateHosts.process.viewType.treeViewTooltip'}}</section>
+              {{/rsa-content-tethered-panel}}
+            </span>
+          {{/if}}
+          <div class="process-list-actions analyze-process-button">
+            <span class="process-tab-label">
+              <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
+            </span>
+            {{host-detail/process/pivot-to-process-analysis
+              item=selectedProcessList
               serviceList=serviceList
-              metaName='checksumSha256'
-              itemList=selectedProcessList
-              serviceId=serviceId
-              timeRange=timeRange
-              fileStatusData=fileStatus
-              selectedFileCount=selectedFileCount
-              restrictedFileList=restrictedFileList
-              isRemediationAllowed=isRemediationAllowed
-              retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-              fileDownloadButtonStatus=fileDownloadButtonStatus
-              isFloatingOrMemoryDll=isFloatingOrMemoryDll
-              downloadFiles=(action 'onDownloadFilesToServer')
-              saveLocalCopy=(action 'onSaveLocalCopy')
-              analyzeFile=(action 'onAnalyzeFile')}}
+              agentId=agentId
+              osType=osType
+              hostName=hostName}}
           </div>
-          {{host-detail/process/process-tree
+          {{endpoint/file-actionbar
+            onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
+            getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
+            resetRiskScore = (action 'resetRiskScoreAction')
+            serviceList=serviceList
+            metaName='checksumSha256'
+            itemList=selectedProcessList
+            serviceId=serviceId
+            timeRange=timeRange
+            fileStatusData=fileStatus
+            selectedFileCount=selectedFileCount
+            restrictedFileList=restrictedFileList
+            isRemediationAllowed=isRemediationAllowed
+            retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
+            fileDownloadButtonStatus=fileDownloadButtonStatus
+            isFloatingOrMemoryDll=isFloatingOrMemoryDll
+            downloadFiles=(action 'onDownloadFilesToServer')
+            saveLocalCopy=(action 'onSaveLocalCopy')
+            analyzeFile=(action 'onAnalyzeFile')}}
+        </div>
+        {{host-detail/process/process-tree
           openPropertyPanel=(action layout.open 'right')
           closePropertyPanel=(action layout.close 'right')
           fileDownloadButtonStatus=fileDownloadButtonStatus
           downloadFiles=(action 'onDownloadFilesToServer')
           saveLocalCopy=(action 'onSaveLocalCopy')
           analyzeFile=(action 'onAnalyzeFile')}}
-        </box>
-      {{/layout.center}}
-      {{#layout.right as |right|}}
-        {{#right.header}}
-          {{endpoint/entity-details
-            title=selectedProcessName
-            tabs= hostDetailPropertyTabs
-            setTabAction=(action 'setHostDetailPropertyTab' )
-            closeAction=(action layout.close 'right')
-          }}
-        {{/right.header}}
-        {{#if (eq activeHostDetailPropertyTab 'RISK')}}
-          {{endpoint/risk-properties
-            defaultAction=(action 'getUpdatedRiskScoreContext')
-            riskState=risk
-            riskType='FILE'
-            belongsTo='HOST'
-          }}
-        {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
-          <box class="process-property-box scroll-box">
-            {{endpoint/file-property-panel
+      </box>
+    {{/layout.center}}
+    {{#layout.right as |right|}}
+      {{#right.header}}
+        {{endpoint/entity-details
+          title=selectedProcessName
+          tabs= hostDetailPropertyTabs
+          setTabAction=(action 'setHostDetailPropertyTab' )
+          closeAction=(action layout.close 'right')
+        }}
+      {{/right.header}}
+      {{#if (eq activeHostDetailPropertyTab 'RISK')}}
+        {{endpoint/risk-properties
+          defaultAction=(action 'getUpdatedRiskScoreContext')
+          riskState=risk
+          riskType='FILE'
+          belongsTo='HOST'
+        }}
+      {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
+        <box class="process-property-box scroll-box">
+          {{endpoint/file-property-panel
             config=propertyConfig
             localeNameSpace='investigateHosts.property.file'
             data=process}}
-          </box>
-        {{/if}}
-      {{/layout.right}}
-    {{/rsa-page-layout}}
-  {{/unless}}
+        </box>
+      {{/if}}
+    {{/layout.right}}
+  {{/rsa-page-layout}}
 {{/unless}}
 
 

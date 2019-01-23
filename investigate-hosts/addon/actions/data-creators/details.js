@@ -94,7 +94,7 @@ const _getHostDetails = (forceRefresh, serviceId) => {
 
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
-    const { endpoint: { drivers, autoruns, libraries, process, visuals } } = getState();
+    const { endpoint: { drivers, autoruns, libraries, visuals } } = getState();
     const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
     switch (activeHostDetailTab) {
       case 'ANOMALIES':
@@ -107,9 +107,7 @@ const _fetchDataForSelectedTab = () => {
         }
         break;
       case 'PROCESS':
-        if (!process.processList) {
-          dispatch(getAllProcess());
-        }
+        dispatch(getAllProcess());
         break;
       case 'AUTORUNS':
         if (activeAutorunTab === 'AUTORUNS' && !autoruns.autorun) {

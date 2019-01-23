@@ -6,7 +6,6 @@ import {
   getProcessData,
   isNavigatedFromExplore,
   isProcessLoading,
-  noProcessData,
   selectedFileChecksums,
   selectedProcessName } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
@@ -51,7 +50,6 @@ const stateToComputed = (state) => ({
   isNavigatedFromExplore: isNavigatedFromExplore(state),
   summaryConfig: getColumnsConfig(state, summaryItems),
   isProcessLoading: isProcessLoading(state),
-  isProcessDataEmpty: noProcessData(state),
   isMachineWindows: isMachineWindows(state),
   selectedProcessList: state.endpoint.process.selectedProcessList,
   selectedProcessName: selectedProcessName(state),

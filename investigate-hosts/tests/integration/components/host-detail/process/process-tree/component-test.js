@@ -339,7 +339,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('Should apply rsa-loader if process tree is loading', async function(assert) {
     new ReduxDataHelper(setState).isProcessTreeLoading(true).machineOSType('windows').build();
     await render(hbs`{{host-detail/process/process-tree}}`);
-    assert.equal(find('.rsa-loader').classList.contains('is-medium'), true, 'rsa-loader applied when process tree is loading');
+    assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'rsa-loader applied when process tree is loading');
   });
 
   test('Should not apply rsa-loader if process tree loading is complete', async function(assert) {

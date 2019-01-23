@@ -88,12 +88,12 @@ module('Unit | Reducers | process', function() {
   test('The GET_PROCESS_TREE sets server response to the list', function(assert) {
     const previous = Immutable.from({
       processTree: [],
-      isProcessTreeLoading: false
+      selectedProcessList: [{}]
     });
 
     const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_PROCESS_TREE });
     const startEndState = reducer(previous, startAction);
-    assert.deepEqual(startEndState.isProcessTreeLoading, true);
+    assert.deepEqual(startEndState.selectedProcessList.length, 0);
 
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.GET_PROCESS_TREE,
