@@ -50,17 +50,18 @@ export function maximum(data, accessorFn = undefined) {
  * @return {Array}               A 2 element Array with min/max values
  */
 export function computeExtent(data, accessorFn, extents) {
-  let range = [];
+  let min = undefined;
+  let max = undefined;
   if (extents && extents.fixed) {
-    range = extents.fixed;
+    [min, max] = extents.fixed;
   }
-  if (range.length === 0) {
-    range.push(minimum(data, accessorFn));
+  if (!min) {
+    min = minimum(data, accessorFn);
   }
-  if (range.length === 1) {
-    range.push(maximum(data, accessorFn));
+  if (!max) {
+    max = maximum(data, accessorFn);
   }
-  return range;
+  return [min, max];
 }
 
 /**
