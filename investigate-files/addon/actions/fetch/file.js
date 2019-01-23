@@ -169,7 +169,8 @@ const sendFileDownloadToServerRequest = (selectedFileDetails, serviceId) => {
     modelName: 'files',
     query: { data: selectedFileDetails },
     streamOptions: {
-      socketUrlPostfix: serviceId
+      socketUrlPostfix: serviceId,
+      requiredSocketUrl: 'endpoint/socket'
     }
   });
 };
