@@ -103,6 +103,10 @@ const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatch
 // makes sure that everything that needs to be reset is reset
 // and that previous streams are stopped/unsubscribed.
 const _resetForNextBatches = () => {
+  if (window.DEBUG_STREAMS) {
+    console.log('Cleaning up streams, total streams to clean up:', currentStreamState.stopStreamingCallbacks.length);
+  }
+
   if (currentStreamState.stopStreamingCallbacks.length > 0) {
     currentStreamState.stopStreamingCallbacks.forEach((cb) => cb());
     currentStreamState.stopStreamingCallbacks.length = 0;
@@ -296,8 +300,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
     const isFirstStream = queryNode.endTime === batchEndTime;
 
     const handlers = {
-      onInit(stopStream) {
-        currentStreamState.stopStreamingCallbacks.push(stopStream);
+      onInit(_stopStream) {
+        currentStreamState.stopStreamingCallbacks.push(_stopStream);
         if (isFirstStream) {
           dispatch({
             type: ACTION_TYPES.INIT_EVENTS_STREAMING

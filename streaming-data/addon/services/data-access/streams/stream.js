@@ -249,24 +249,40 @@ export default EmberObject.extend({
    *   cancels a request) or if it has come to a natural end.
    * @private
    */
-  unsubscribe(isClientInitiated) {
-    if (this.get('websocketClient')) {
-      // If it is client initiated, then need to send cancel request,
-      // otherwise the unsub is ocurring because the server indicated
-      // it is done, no cancel needed.
-      if (isClientInitiated) {
-        const dest = this.get('socketConfig.cancelDestination');
-        const id = this.get('resolvedSocketRequestParams.id');
+  unsubscribe(isClientInitiated, attempts = 0) {
 
-        if (dest && id) {
-          this.get('websocketClient').send(dest, {}, { id, cancel: true });
-        }
-      }
-
-      // Release this STOMP client subscription, but don't disconnect the STOMP client
-      // because it may be re-used by other requests.
-      this.get('socketSubscriptionPromise').then((subscription) => subscription.unsubscribe());
+    // have attemped to unsubscribe several times
+    // but the websocketClient just isn't available,
+    // so give up
+    if (attempts === 20) {
+      return;
     }
+
+    // if no websocket client, then we may be trying to
+    // cancel something that hasn't quite properly started
+    // yet, wait a little and try again
+    if (!this.get('websocketClient')) {
+      run.later(() => {
+        this.unsubscribe(isClientInitiated, ++attempts);
+      }, 100);
+      return;
+    }
+
+    // If it is client initiated, then need to send cancel request,
+    // otherwise the unsub is ocurring because the server indicated
+    // it is done, no cancel needed.
+    if (isClientInitiated) {
+      const dest = this.get('socketConfig.cancelDestination');
+      const id = this.get('resolvedSocketRequestParams.id');
+
+      if (dest && id) {
+        this.get('websocketClient').send(dest, {}, { id, cancel: true });
+      }
+    }
+
+    // Release this STOMP client subscription, but don't disconnect the STOMP client
+    // because it may be re-used by other requests.
+    this.get('socketSubscriptionPromise').then((subscription) => subscription.unsubscribe());
   },
 
   /**
