@@ -29,7 +29,63 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  test('renders Process Event view', async function(assert) {
+  test('renders Process Event view with no filename', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Process Event'],
+            ['action', 'createProcess'],
+            ['filename.dst', 'msiexec.exe'],
+            ['user.src', 'URDHWA-T1\\admin']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Process Event', 'Category is process event');
+    assert.equal(find(selectors.hostName).textContent.trim(), 'urdhwa-t1', 'hostName is correct');
+    assert.equal(find(selectors.user).textContent.trim(), 'URDHWA-T1\\admin', 'user is rendered');
+
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags),
+      'performed createProcess  msiexec.exe', 'text is rendered correctly');
+  });
+
+  test('renders Process Event view with non script file when multiple filename.src present', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Process Event'],
+            ['filename.src', 'cmd.exe'],
+            ['filename.src', 'text.exe'],
+            ['action', 'createProcess'],
+            ['filename.dst', 'msiexec.exe'],
+            ['user.src', 'URDHWA-T1\\admin']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Process Event', 'Category is process event');
+    assert.equal(find(selectors.hostName).textContent.trim(), 'urdhwa-t1', 'hostName is correct');
+    assert.equal(find(selectors.user).textContent.trim(), 'URDHWA-T1\\admin', 'user is rendered');
+
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags),
+      'text.exe performed createProcess  msiexec.exe', 'text is rendered correctly');
+  });
+
+  test('renders Process Event view when single filename.src present which is a script file', async function(assert) {
     const state = {
       recon: {
         meta: {
@@ -54,7 +110,35 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
 
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags),
-      'cmd.exe performed createProcess on msiexec.exe', 'text is rendered correctly');
+      'cmd.exe performed createProcess  msiexec.exe', 'text is rendered correctly');
+  });
+
+  test('renders Process Event view when single filename.src present which is not a script file', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Process Event'],
+            ['filename.src', 'test.exe'],
+            ['action', 'createProcess'],
+            ['filename.dst', 'msiexec.exe'],
+            ['user.src', 'URDHWA-T1\\admin']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Process Event', 'Category is process event');
+    assert.equal(find(selectors.hostName).textContent.trim(), 'urdhwa-t1', 'hostName is correct');
+    assert.equal(find(selectors.user).textContent.trim(), 'URDHWA-T1\\admin', 'user is rendered');
+
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags),
+      'test.exe performed createProcess  msiexec.exe', 'text is rendered correctly');
   });
 
   test('renders File view', async function(assert) {
@@ -289,6 +373,7 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
             ['event.time', '2019-01-14T06:55:07.000+0000'],
             ['alias.host', 'urdhwa-t1'],
             ['category', 'Console Event'],
+            ['param.src', 'cmd.exe'],
             ['param.src', 'dtf.exe -dll:ioc.dll'],
             ['filename.src', 'cmd.exe']
           ]

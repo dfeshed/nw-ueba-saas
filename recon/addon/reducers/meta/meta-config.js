@@ -68,7 +68,7 @@ export default {
         field: 'action'
       },
       {
-        label: 'recon.textView.endpointDetail.on',
+        icon: 'arrow-right-1',
         field: 'filename.dst'
       }
     ]
@@ -83,7 +83,7 @@ export default {
         field: 'action'
       },
       {
-        label: 'recon.textView.endpointDetail.to',
+        label: 'recon.textView.endpointDetail.on',
         field: 'filename.dst'
       }
     ]

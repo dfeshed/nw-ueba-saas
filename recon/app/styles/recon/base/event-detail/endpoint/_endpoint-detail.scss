@@ -39,14 +39,18 @@
     margin-bottom: rsa-whitespace();
   }
 
-  .meta-key {
-    @include rsa-font(header, small);
-    color: text-color(secondary);
-    margin-right: rsa-whitespace(less);
-    line-height: rsa-whitespace();
-  }
-  .meta-value {
-    @include rsa-font-monospace();
-    margin-right: rsa-whitespace(less);
+  .endpoint-detail-description {
+    span {
+      line-height: 1.75rem;
+    }
+    .meta-key {
+      @include rsa-font(header, small);
+      color: text-color(secondary);
+      margin-right: rsa-whitespace(less);
+    }
+    .meta-value {
+      @include rsa-font-monospace();
+      margin-right: rsa-whitespace(less);
+    }
   }
 }

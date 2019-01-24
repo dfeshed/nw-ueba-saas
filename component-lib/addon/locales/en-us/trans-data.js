@@ -290,7 +290,6 @@ export default {
       showRemaining: 'Show Remaining {{remainingPercent}}%',
       endpointDetail: {
         performed: 'performed',
-        to: 'to',
         on: 'on',
         presentIn: 'present in',
         madeConnectionTo: 'made a network connection to',

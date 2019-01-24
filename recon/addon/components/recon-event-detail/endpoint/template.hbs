@@ -30,6 +30,11 @@
   <hbox class="endpoint-detail-description">
     {{#each endpointMeta as |item|}}
       {{#if item.value}}
+        {{#if item.icon}}
+          <span class='meta-key'>
+            {{rsa-icon name=item.icon}}
+          </span>
+        {{/if}}
         {{#if item.label}}
           <span class='meta-key'>
             {{t item.label}}
