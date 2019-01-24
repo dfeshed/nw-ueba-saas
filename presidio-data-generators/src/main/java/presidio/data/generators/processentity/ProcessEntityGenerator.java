@@ -24,8 +24,8 @@ public class ProcessEntityGenerator implements IProcessEntityGenerator {
 
     public ProcessEntityGenerator() throws GeneratorException {
         processFileGenerator = new ProcessFileEntityGenerator();
-        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"SOME_USUAL_DIR_GROUP"});
-        processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"SOME_USUAL_PROCESS"});
+        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"WINDOWS"});
+        processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"WINDOWS_PROCESS"});
         processCertificateIssuerGenerator = new CertificateIssuerDefaultGenerator();
 
     }
