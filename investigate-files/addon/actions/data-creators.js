@@ -499,10 +499,11 @@ const _fetchPathSrcForAgentId = (checksum, serviceId, callbacks) => {
         size: 1,
         metaName: 'directory.src',
         onComplete: (data) => {
+          const machineFilePathListUpdated = getState().files.fileList.machineFilePathInfoList;
           const [pathSrc] = data;
           if (pathSrc && pathSrc.value) {
             const path = pathSrc.value.replace(/\\\\?(?!')/g, '\\\\');
-            const computedMachineFileInfoList = machineFilePathList.map((m) => {
+            const computedMachineFileInfoList = machineFilePathListUpdated.map((m) => {
               if (m.agentId === info.agentId) {
                 return { ...m, path };
               } else {
@@ -522,13 +523,13 @@ const _fetchPathSrcForAgentId = (checksum, serviceId, callbacks) => {
 const _fetchFileNameForPath = (checksum, agentId, path, serviceId, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
-    const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
     const input = {
       filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${agentId}') && (directory.src = '${path}')` },
       queryNode,
       size: 1,
       metaName: 'filename.src',
       onComplete: (data) => {
+        const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
         const [file] = data;
         if (file && file.value) {
           const computedMachineFileInfoList = machineFilePathList.map((m) => {

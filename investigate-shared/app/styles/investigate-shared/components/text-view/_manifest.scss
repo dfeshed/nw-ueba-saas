@@ -1,6 +1,6 @@
 .text-view {
   word-break: break-all;
-  padding: 15px;
+  padding: 25px 15px 15px;
   overflow: auto;
   height: calc(100vh - 316px);
   background-color: background-color(primary, darker);
@@ -8,4 +8,5 @@
   border: 0px;
   font-size: 1rem;
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  line-height: 1.75rem;
 }
