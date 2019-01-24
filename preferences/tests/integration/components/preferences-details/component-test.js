@@ -44,7 +44,7 @@ const renderApplicationContent = async function(ctx, assert) {
   `);
   await click('.rsa-icon-settings-1-filled');
   // TODO bring download back. Add meta download preference back
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 8, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -77,7 +77,6 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
     assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
-    assert.ok(find('.rsa-form-radio-label.Oldest.checked'));
   });
 
   test('Preferences panel should show Time format Settings', async function(assert) {
@@ -166,15 +165,6 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.notOk(find('.rsa-form-radio-label.Ascending.checked'));
   });
 
-  test('Preferences panel should change Portion of Results to Retrieve Settings on click', async function(assert) {
-    await renderApplicationContent(this, assert);
-    assert.ok(find('.rsa-form-radio-label.Oldest.checked'));
-    assert.notOk(find('.rsa-form-radio-label.Newest.checked'));
-    await click('.rsa-form-radio-label.Newest');
-    await waitUntil(() => find('.rsa-form-radio-label.Newest.checked'), { timeout: 3000 });
-    assert.notOk(find('.rsa-form-radio-label.Oldest.checked'));
-  });
-
   test('Preferences panel should uncheck the Download automatically checkbox on click', async function(assert) {
     await renderApplicationContent(this, assert);
     await click('.rsa-form-checkbox-label');
@@ -202,6 +192,5 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await renderApplicationContent(this, assert);
     await assertForPreferencesInfoIcon(assert, 0, false, 'No Info icon for Date Time Format');
     await assertForPreferencesInfoIcon(assert, 1, true, 'Event Sort Order has info icon');
-    await assertForPreferencesInfoIcon(assert, 2, true, 'Over Limit Time Window has info icon');
   });
 });

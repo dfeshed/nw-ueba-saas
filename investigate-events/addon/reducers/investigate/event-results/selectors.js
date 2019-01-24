@@ -9,7 +9,6 @@ const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _eventTimeSortOrder = (state) => state.investigate.eventResults.eventTimeSortOrder;
-const _eventResultSetStart = (state) => state.investigate.eventResults.eventResultSetStart;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
@@ -24,28 +23,10 @@ export const SORT_ORDER = {
   ASC: 'Ascending'
 };
 
-export const RESULT_SET_START = {
-  OLDEST: 'Oldest',
-  NEWEST: 'Newest'
-};
-
-export const mostRecentEvent = createSelector(
-  [_eventTimeSortOrder, _resultsData],
-  (eventTimeSortOrder, events) => {
-    // if events are sorted ascending, then the oldest
-    // is the last one
-    if (SORT_ORDER.ASC === eventTimeSortOrder) {
-      return events[events.length - 1];
-    } else {
-      return events[0];
-    }
-  }
-);
-
 export const shouldStartAtOldest = createSelector(
-  [_eventResultSetStart],
-  (eventResultSetStart) => {
-    return eventResultSetStart === RESULT_SET_START.OLDEST;
+  [_eventTimeSortOrder],
+  (_eventTimeSortOrder) => {
+    return _eventTimeSortOrder === SORT_ORDER.ASC;
   }
 );
 

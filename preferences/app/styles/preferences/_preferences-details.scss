@@ -5,6 +5,10 @@
     .rsa-form-radio-group-label {
       margin-bottom: rsa-whitespace();
     }
+    .sort-order-default-text {
+      @include rsa-font(light, small);
+      padding-left: rsa-whitespace(least);
+    }
     .rsa-form-checkbox-label {
       vertical-align: bottom;
       box-sizing: border-box;

@@ -10,7 +10,7 @@ import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getFlattenedColumnList } from 'investigate-events/reducers/investigate/data-selectors';
-import { mostRecentEvent } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   calculateNewStartForNextBatch,
@@ -82,7 +82,7 @@ const _totalEvents = () => {
 // Accumulate events and increment batch count and dispatch events
 // to state if enough events have accumulated and if the calling
 // function allows it
-const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatchNow) => {
+const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatchNow, isOldestEvents = false) => {
   return (dispatch) => {
     currentStreamState.currentBatchEvents.push(...newBatchEvents);
     currentStreamState.interimBatchCount++;
@@ -93,7 +93,7 @@ const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatch
     // throttling state with too many state updates
     const shouldDispatch = dispatchNow || currentStreamState.interimBatchCount >= 5;
     if (canDispatch && shouldDispatch) {
-      dispatch(_dispatchEvents());
+      dispatch(_dispatchEvents(isOldestEvents));
     }
   };
 };
@@ -115,10 +115,17 @@ const _resetForNextBatches = () => {
   currentStreamState.interimBatchCount = 0;
 };
 
-// Called if there's an error or if all batching is complete
-// and we are done with the entire query. This is not called
-// when we cancel.
-const _done = (errorCode, serverMessage) => {
+/**
+ *
+ * @param {object} errorCode
+ * @param {object} serverMessage
+ * @param {object} isOldestEvents is false by default. Need to make sure
+ * that we always dispatch true from eventsStartOldest.
+ * Called if there's an error or if all batching is complete
+ * and we are done with the entire query. This is not called
+ * when we cancel.
+ */
+const _done = ({ errorCode, serverMessage, isOldestEvents = false }) => {
   return (dispatch) => {
     if (window.DEBUG_STREAMS) {
       console.timeEnd();
@@ -127,7 +134,7 @@ const _done = (errorCode, serverMessage) => {
 
     // dispatch any events that have accumulated and have
     // not already been sent to state
-    dispatch(_dispatchEvents());
+    dispatch(_dispatchEvents(isOldestEvents));
 
     // Set queryIsRunning to false so UI can react
     dispatch(queryIsRunning(false));
@@ -167,7 +174,7 @@ const _handleEventsStatus = (newStatus, streamingEndedTime) => {
 };
 
 // Prepares and sends events to state
-const _dispatchEvents = () => {
+const _dispatchEvents = (isOldestEvents) => {
   return (dispatch) => {
     // don't bother if there are no events to ship out
     if (currentStreamState.currentBatchEvents.length > 0) {
@@ -179,7 +186,10 @@ const _dispatchEvents = () => {
 
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE,
-        payload: currentStreamState.currentBatchEvents
+        payload: {
+          eventsBatch: currentStreamState.currentBatchEvents,
+          sortOrderPreference: (isOldestEvents) ? SORT_ORDER.ASC : SORT_ORDER.DESC
+        }
       });
       currentStreamState.eventsDispatchedCount += currentStreamState.currentBatchEvents.length;
       currentStreamState.currentBatchEvents.length = 0;
@@ -219,7 +229,7 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
         // window we have too many results. We are done! The user won't
         // get the  "latest" events within that second, but there's just
         // no way to do that.
-        dispatch(_done());
+        dispatch(_done({}));
       }
     }
   };
@@ -361,7 +371,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch(_done(errorCode, serverMessage));
+        dispatch(_done({ errorCode, serverMessage }));
       },
       onCompleted() {
         const { investigate } = getState();
@@ -371,7 +381,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // this query will never return any results, so indicate
         // we are done and escape
         if (eventCount === 0) {
-          dispatch(_done());
+          dispatch(_done({}));
           return;
         }
 
@@ -388,7 +398,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           const { data: currentData } = investigate.eventResults;
           const haveAllData = currentData.length >= eventCount;
           if (haveAllData) {
-            dispatch(_done());
+            dispatch(_done({}));
             return;
           }
         }
@@ -421,7 +431,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
               console.log('We are not at the beginning of the range, and within the gap we are using we are expecting results, but we are now attempting to use the same start time again. We will loop.');
               console.log('This can occur when we expect results due to a count call returning, but since the count call returned the device that should be returning results has disappeared.');
             }
-            dispatch(_done(1002, 'Device went offline in the middle of the query. Please re-query.'));
+            dispatch(_done({ errorCode: 1002, serverMessage: 'Device went offline in the middle of the query. Please re-query.' }));
             return;
           }
 
@@ -447,7 +457,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // Or have we backed our way up to the start of the
         // time range? If so, we are done, ship it.
         if (isAtOrAboveMaxEventsAllowed || isAtBeginningOfTimeRange) {
-          dispatch(_done());
+          dispatch(_done({}));
           return;
         }
 
@@ -486,7 +496,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         const eventsInState = getState().investigate.eventResults.data;
         let endTimeToUseForCalculations = queryNode.endTime;
         if (eventsInState.length > 0) {
-          endTimeToUseForCalculations = mostRecentEvent(getState()).timeAsNumber;
+          endTimeToUseForCalculations = eventsInState[0].timeAsNumber;
         }
 
         let newStartTime =
@@ -672,7 +682,7 @@ export const eventsStartOldest = () => {
           // Add events to cache of current requests events, want to force
           // a dispatch of the very first batch so the users see something
           // quickly
-          dispatch(_addEventsToResponseCache(payload, true, isFirstEventPayload));
+          dispatch(_addEventsToResponseCache(payload, true, isFirstEventPayload, true));
           isFirstEventPayload = false;
 
           // The stream does not indicate it is 'complete' if it hits the limit
@@ -683,19 +693,19 @@ export const eventsStartOldest = () => {
               console.log('Query is ending because the limit has been hit');
             }
 
-            dispatch(_done());
+            dispatch(_done({ isOldestEvents: true }));
           }
         }
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch(_done(errorCode, serverMessage));
+        dispatch(_done({ errorCode, serverMessage, isOldestEvents: true }));
       },
       onCompleted() {
         if (window.DEBUG_STREAMS) {
           console.log('Query is ending because we received all results');
         }
-        dispatch(_done());
+        dispatch(_done({ isOldestEvents: true }));
       },
       onStopped() {
         dispatch(queryIsRunning(false));

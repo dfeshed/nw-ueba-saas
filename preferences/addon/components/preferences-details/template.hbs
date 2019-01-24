@@ -37,6 +37,9 @@
                 groupValue=(readonly (get preferences item.field))
                 changed=(action 'saveNewPreferences' item.field option) }}
               {{t (concat item.fieldPrefix '.' option)}}
+              {{#if (eq option 'Ascending')}}
+                <span class="sort-order-default-text">{{t 'preferences.investigate-events.sortOrderDefaultText'}}</span>
+              {{/if}}
             </label>
           {{/each}}
         </div>

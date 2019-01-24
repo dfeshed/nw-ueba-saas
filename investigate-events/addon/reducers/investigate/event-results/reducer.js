@@ -4,7 +4,7 @@ import _ from 'lodash';
 import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
-import { RESULT_SET_START, SORT_ORDER } from './selectors';
+import { SORT_ORDER } from './selectors';
 
 export const MAX_EVENTS_ALLOWED = 100000;
 
@@ -19,8 +19,7 @@ const _initialState = Immutable.from({
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
-  eventTimeSortOrder: undefined,
-  eventResultSetStart: undefined
+  eventTimeSortOrder: undefined
 });
 
 // * `data` is an array of objects with the following properties
@@ -66,14 +65,14 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload }) => {
+  [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload: { eventsBatch, sortOrderPreference } }) => {
     // Merge the data into the current state data and perform a sort
     // Have to sort it all as data can come in out of order.
     let sortKey = 'desc';
-    if (state.eventTimeSortOrder === SORT_ORDER.ASC) {
+    if (sortOrderPreference === SORT_ORDER.ASC) {
       sortKey = 'asc';
     }
-    let newEvents = state.data.asMutable().concat(payload);
+    let newEvents = state.data.asMutable().concat(eventsBatch);
     newEvents = sort(newEvents).by([
       { [sortKey]: 'timeAsNumber' },
       { [sortKey]: 'sessionId' }
@@ -92,8 +91,7 @@ export default handleActions({
       // 100k items are items 10k-110k
       // If it is oldest data, then we are not truncating as we
       // get the events we want.
-      if (state.eventResultSetStart === RESULT_SET_START.NEWEST &&
-          state.eventTimeSortOrder === SORT_ORDER.ASC) {
+      if (state.eventTimeSortOrder === SORT_ORDER.ASC) {
         // remove from the beginning
         newEvents.splice(0, newEvents.length - state.streamLimit);
       } else {
@@ -154,8 +152,7 @@ export default handleActions({
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const eventTimeSortOrder = _.get(eventAnalysisPreferences, 'eventTimeSortOrder', state);
-    const eventResultSetStart = _.get(eventAnalysisPreferences, 'eventResultSetStart', state);
-    return state.merge({ eventTimeSortOrder, eventResultSetStart });
+    return state.set('eventTimeSortOrder', eventTimeSortOrder);
   }
 }, _initialState);
 

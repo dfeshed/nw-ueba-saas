@@ -32,7 +32,7 @@ const stateToComputed = (state) => ({
   hasWarning: hasWarning(state),
   devices: decoratedDevices(state),
   eventCount: state.investigate.eventCount.data,
-  eventResultSetStart: state.investigate.eventResults.eventResultSetStart,
+  eventTimeSortOrder: state.investigate.eventResults.eventTimeSortOrder,
   resultCountAtThreshold: resultCountAtThreshold(state)
 });
 
@@ -42,10 +42,10 @@ const DevicesStatus = Component.extend({
   isExpanded: false,
   height: 0,
 
-  @computed('resultCountAtThreshold', 'eventResultSetStart')
-  eventAge: (resultCountAtThreshold, eventResultSetStart) => {
-    if (resultCountAtThreshold && eventResultSetStart) {
-      return eventResultSetStart.toLowerCase();
+  @computed('resultCountAtThreshold', 'eventTimeSortOrder')
+  eventAge: (resultCountAtThreshold, eventTimeSortOrder) => {
+    if (resultCountAtThreshold && eventTimeSortOrder) {
+      return (eventTimeSortOrder === 'Ascending') ? 'oldest' : 'newest';
     }
   },
 

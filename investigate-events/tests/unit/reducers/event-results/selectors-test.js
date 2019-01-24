@@ -7,9 +7,7 @@ import {
   getDownloadOptions,
   isCanceled,
   isEventResultsError,
-  mostRecentEvent,
-  percentageOfEventsDataReturned,
-  shouldStartAtOldest
+  percentageOfEventsDataReturned
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -230,62 +228,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     areThey = areEventsStreaming(state);
     assert.equal(areThey, false, "not streaming when 'complete'");
-  });
-
-  test('mostRecentEvent should get the correct event', function(assert) {
-    let state = {
-      investigate: {
-        eventResults: {
-          eventTimeSortOrder: 'Descending',
-          data: eventResultsData
-        }
-      }
-    };
-    let event = mostRecentEvent(state);
-    assert.equal(event.sessionId, 1, 'should get first event');
-
-    state = {
-      investigate: {
-        eventResults: {
-          eventTimeSortOrder: 'Ascending',
-          data: eventResultsData
-        }
-      }
-    };
-    event = mostRecentEvent(state);
-    assert.equal(event.sessionId, 3, 'should get first event');
-  });
-
-  test('shouldStartAtOldest correctly handles preference data', function(assert) {
-    let state = {
-      investigate: {
-        eventResults: {
-          eventResultSetStart: 'Oldest'
-        }
-      }
-    };
-    let shouldI = shouldStartAtOldest(state);
-    assert.equal(shouldI, true, 'should start at oldest');
-
-    state = {
-      investigate: {
-        eventResults: {
-          eventResultSetStart: 'Newest'
-        }
-      }
-    };
-    shouldI = shouldStartAtOldest(state);
-    assert.equal(shouldI, false, 'should not start at oldest');
-
-    state = {
-      investigate: {
-        eventResults: {
-          eventResultSetStart: 'poop'
-        }
-      }
-    };
-    shouldI = shouldStartAtOldest(state);
-    assert.equal(shouldI, false, 'should not start at oldest');
   });
 
   test('percentageOfEventsDataReturned returns correct percentage', function(assert) {

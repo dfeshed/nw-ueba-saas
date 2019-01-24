@@ -150,8 +150,8 @@ export default class DataHelper {
     return this;
   }
 
-  eventResultSetStart(eventsOrder = 'Oldest') {
-    _set(this.state, 'eventResults.eventResultSetStart', eventsOrder);
+  eventTimeSortOrder(order = 'Ascending') {
+    _set(this.state, 'eventResults.eventTimeSortOrder', order);
     return this;
   }
 

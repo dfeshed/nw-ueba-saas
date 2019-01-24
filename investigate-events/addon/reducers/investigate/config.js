@@ -95,16 +95,6 @@ export default {
       'Ascending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
-  },
-  {
-    name: 'preferences.investigate-events.eventResultSetStart',
-    info: true, // for preferences that need additional information
-    type: 'radio',
-    options: [
-      'Newest',
-      'Oldest'
-    ],
-    field: 'eventAnalysisPreferences.eventResultSetStart'
   }],
   defaultPreferences: {
     queryTimeFormat: 'DB',
@@ -116,8 +106,7 @@ export default {
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
       autoUpdateSummary: false,
-      eventTimeSortOrder: 'Ascending',
-      eventResultSetStart: 'Oldest'
+      eventTimeSortOrder: 'Ascending'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

@@ -2048,13 +2048,10 @@ export default {
       autoUpdateSummary: 'Update time window automatically',
       'autoUpdateSummary-tooltip': 'Enable this option to automatically update the time range window in the breadcrumb when the service is polled and sends fresh results. When the time range is updated, you can see the Submit Query button activated and click to get the fresh results. To keep the time range window in the breadcrumb synchronized with the current results, do not enable this option.',
       eventTimeSortOrder: 'Event Sort Order',
-      'eventTimeSortOrder-tooltip': 'Select to sort results in descending or ascending order based on collection time.',
+      'eventTimeSortOrder-tooltip': 'Sort events in descending or ascending order based on collection time. If results exceed the events limit, not all events can be loaded. The portion of returned events (oldest or newest) that is loaded will match the sort order preference (oldest or newest).',
       Descending: 'Newest First',
       Ascending: 'Oldest First',
-      eventResultSetStart: 'Portion of Results to Retrieve',
-      'eventResultSetStart-tooltip': 'If the limit for results is reached for a query, you will not see all results. If the limit is reached, you can choose to see the oldest or newest events within the selected time range.',
-      Newest: 'Newest Events',
-      Oldest: 'Oldest Events'
+      sortOrderDefaultText: '(default)'
     },
     'endpoint-preferences': {
       visibleColumns: 'Visible Columns',
