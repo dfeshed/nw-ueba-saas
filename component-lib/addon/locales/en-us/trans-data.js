@@ -543,6 +543,7 @@ export default {
       },
       error: 'An unexpected error occurred when executing this query.',
       fatalSummaryError: 'The service is unavailable',
+      deviceDownRequery: 'Service went offline in the middle of the query. Please re-query.',
       shrink: 'Shrink Events Panel',
       expand: 'Expand Events Panel',
       close: 'Close Events Panel',

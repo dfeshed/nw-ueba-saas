@@ -3,6 +3,8 @@
 
 window.DEBUG_STREAMS = true;
 
+import { lookup } from 'ember-dependency-lookup';
+
 import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import { queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { fetchLog } from './fetch/logs';
@@ -97,7 +99,6 @@ const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatch
     }
   };
 };
-
 
 // Anytime a batch needs to be kicked off, _resetForNextBatches
 // makes sure that everything that needs to be reset is reset
@@ -199,38 +200,32 @@ const _dispatchEvents = (isOldestEvents) => {
 };
 
 
-// Checks to see if the count provided is over the streamLimit,
-// if it is, then we need to re-execute another batch with a smaller
-// time window.
-const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) => {
-  return (dispatch, getState) => {
-    const { investigate } = getState();
-    const { streamLimit } = investigate.eventResults;
+// An event call resulted in too many events in the window,
+// need to check for requery
+const _eventsOverLimit = (batchStartTime, batchEndTime) => {
+  return (dispatch) => {
+    // too many results, need better gap
+    const batchWindow = batchEndTime - batchStartTime;
 
-    if (countToCheck >= streamLimit) {
-      // too many results, need better gap
-      const batchWindow = batchEndTime - batchStartTime;
+    if (window.DEBUG_STREAMS) {
+      console.log('too MANY results, need to try for less, last window was', batchWindow);
+    }
+
+    if (batchWindow > 1) {
+      const newStartTime = calculateNextStartTimeAfterFailure(
+        batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, true);
+      dispatch(_getEventsBatch(newStartTime, batchEndTime));
+    } else {
 
       if (window.DEBUG_STREAMS) {
-        console.log('too MANY results, need to try for less, last window was', batchWindow);
+        console.log(`window was all the way down to ${batchWindow}, just going with what we have and end search`);
       }
 
-      if (batchWindow > 1) {
-        const newStartTime = calculateNextStartTimeAfterFailure(
-          batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, true);
-        dispatch(_getEventsBatch(newStartTime, batchEndTime));
-      } else {
-
-        if (window.DEBUG_STREAMS) {
-          console.log(`window was all the way down to ${batchWindow}, just going with what we have and end search`);
-        }
-
-        // So we have a window that is 0 or 1 second long, and in that
-        // window we have too many results. We are done! The user won't
-        // get the  "latest" events within that second, but there's just
-        // no way to do that.
-        dispatch(_done({}));
-      }
+      // So we have a window that is 0 or 1 second long, and in that
+      // window we have too many results. We are done! The user won't
+      // get the  "latest" events within that second, but there's just
+      // no way to do that.
+      dispatch(_done({}));
     }
   };
 };
@@ -238,7 +233,7 @@ const _determineEventsOverLimit = (batchStartTime, batchEndTime, countToCheck) =
 // We do an event counts call with every batch that has a time range
 // larger than 1 minute. (Less than one minute and the event counts
 // call is not accurate.) When the event counts call returns, we
-// delegate to _determineEventsOverLimit to decide what to do, if
+// delegate to _eventsOverLimit to decide what to do, if
 // anything, with the result.
 const _getBatchEventCount = (queryNode, language, streamLimit, dispatch) => {
   const handlers = {
@@ -256,9 +251,9 @@ const _getBatchEventCount = (queryNode, language, streamLimit, dispatch) => {
         // Don't need to keep the event count stream going, kill it
         _stopStream();
         // check if the count is over the limit and react
-        dispatch(
-          _determineEventsOverLimit(queryNode.startTime, queryNode.endTime, response.data)
-        );
+        if (response.data >= streamLimit) {
+          dispatch(_eventsOverLimit(queryNode.startTime, queryNode.endTime));
+        }
       }
     }
   };
@@ -354,19 +349,34 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           // eager clearing out of memory
           response.data.length = 0;
 
+          // Mixed mode alert!
+          //
+          // In <= 11.2...
+          //
           // If the stream limit is reached, onCompleted and onStopped are
           // not called, so have to catch over-max issues in onResponse
           //
-          // If the CURRENT query (not the accumulation of all the queries)
-          // has reached the stream limit, that's not good. It means we
-          // didn't get to the end of the query's results and we need to,
-          // because the end of the query is where the most recent records
-          // are. So, we need to re-execute the previous query with a
-          // smaller time range which scraps any events we had accumulated
-          // with the query that went over the limit.
-          dispatch(
-            _determineEventsOverLimit(batchStartTime, batchEndTime, currentStreamState.currentBatchEvents.length)
-          );
+          // If the accumulation of all the queries has reached the stream
+          // limit, that's not good. It means we didn't get to the end of
+          // the query's results and we need to, because the end of the
+          // query is where the most recent records are. So, we need to
+          // re-execute the previous query with a smaller time range which
+          // scraps any events we had accumulated with the query that went
+          // over the limit.
+          //
+          // In > 11.3...
+          //
+          // When the stream limit is reached, the middle-tier passes a
+          // complete flag and the onCompleted callback is called. So in those
+          // cases we do not need/want to process hitting the stream limit
+          // right here
+          if (meta.complete === undefined) {
+            const { investigate } = getState();
+            const { streamLimit } = investigate.eventResults;
+            if (currentStreamState.currentBatchEvents.length >= streamLimit) {
+              dispatch(_eventsOverLimit(batchStartTime, batchEndTime));
+            }
+          }
         }
       },
       onError(response = {}) {
@@ -375,11 +385,19 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       },
       onCompleted() {
         const { investigate } = getState();
-        const { data: eventCount } = investigate.eventCount;
+        const { streamLimit } = investigate.eventResults;
+
+        // Check if we have reached the stream limit with our results
+        // if we have, we need get out of here and attempt another query
+        if (currentStreamState.currentBatchEvents.length >= streamLimit) {
+          dispatch(_eventsOverLimit(batchStartTime, batchEndTime));
+          return;
+        }
 
         // has the event count come back with 0? then we know
         // this query will never return any results, so indicate
         // we are done and escape
+        const { data: eventCount } = investigate.eventCount;
         if (eventCount === 0) {
           dispatch(_done({}));
           return;
@@ -431,7 +449,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
               console.log('We are not at the beginning of the range, and within the gap we are using we are expecting results, but we are now attempting to use the same start time again. We will loop.');
               console.log('This can occur when we expect results due to a count call returning, but since the count call returned the device that should be returning results has disappeared.');
             }
-            dispatch(_done({ errorCode: 1002, serverMessage: 'Device went offline in the middle of the query. Please re-query.' }));
+            const deviceDownRequeryMessage = lookup('service:i18n').t('investigate.events.deviceDownRequery');
+            dispatch(_done({ errorCode: 1002, serverMessage: deviceDownRequeryMessage.string }));
             return;
           }
 
@@ -450,13 +469,28 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // Preprocess and send these results to state
         dispatch(_dispatchEvents());
 
-        const { streamLimit } = investigate.eventResults;
         const isAtOrAboveMaxEventsAllowed = currentStreamState.eventsDispatchedCount >= streamLimit;
 
         // Have we gone over the max event limit?
         // Or have we backed our way up to the start of the
         // time range? If so, we are done, ship it.
         if (isAtOrAboveMaxEventsAllowed || isAtBeginningOfTimeRange) {
+
+          // Catch if we did get as many events as we expected.
+          // If we didn't, then something went down in between the
+          // count call and the query range completion
+          if (isAtBeginningOfTimeRange) {
+            if (!!eventCount && eventCount > currentStreamState.eventsDispatchedCount) {
+              if (window.DEBUG_STREAMS) {
+                console.log('We are at the beginning of the range, and we do not have as many events as the event count says we should have.');
+                console.log('This can occur when an event count is based on a device that then goes offline.');
+              }
+              const deviceDownRequeryMessage = lookup('service:i18n').t('investigate.events.deviceDownRequery');
+              dispatch(_done({ errorCode: 1002, serverMessage: deviceDownRequeryMessage.string }));
+              return;
+            }
+          }
+
           dispatch(_done({}));
           return;
         }
@@ -542,6 +576,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       if (window.DEBUG_STREAMS) {
         console.log(`Running query with gap of ${batchEndTime - batchStartTime}`);
       }
+
       fetchStreamingEvents(
         modifiedQueryNode,
         language,
