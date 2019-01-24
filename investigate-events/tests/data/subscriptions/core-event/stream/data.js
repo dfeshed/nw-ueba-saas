@@ -13,16 +13,18 @@ const randInt = function(min, max) {
   return parseInt(min + (max - min) * Math.random(), 10);
 };
 
-const logAndNetworkMetas = [
-  [ 'service', faker.random.arrayElement(SERVICES) ],
-  [ 'size', randInt(15, 2000) ],
-  [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
-  [ 'ip.src', faker.internet.ip() ],
-  [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
-  [ 'ip.dst', faker.internet.ip() ],
-  [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ],
-  [ 'medium', faker.random.arrayElement([1, 32]) ]
-];
+const logAndNetworkMetas = function() {
+  return [
+    [ 'service', faker.random.arrayElement(SERVICES) ],
+    [ 'size', randInt(15, 2000) ],
+    [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
+    [ 'ip.src', faker.internet.ip() ],
+    [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
+    [ 'ip.dst', faker.internet.ip() ],
+    [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ],
+    [ 'medium', faker.random.arrayElement([1, 32]) ]
+  ];
+};
 
 const endpointMetas = [
   [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
@@ -42,7 +44,7 @@ const logAndNetworkFactory = function(i) {
   return {
     sessionId: i,
     time: oneDayAgo(new Date()),
-    metas: logAndNetworkMetas
+    metas: logAndNetworkMetas()
   };
 };
 

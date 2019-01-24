@@ -1,6 +1,5 @@
 import { get } from '@ember/object';
 
-
 export const doesStateHaveViewData =
   (state, type) => !!get(state, type.dataKey);
 

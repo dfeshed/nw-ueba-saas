@@ -1,9 +1,13 @@
 import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
-
-import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
+import {
+  RECON_VIEW_TYPES,
+  RECON_VIEW_TYPES_BY_NAME
+} from 'recon/utils/reconstruction-types';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import { handleSetTo, handlePreference } from 'recon/reducers/util';
+import { warn } from '@ember/debug';
 
 const visualsInitialState = Immutable.from({
   defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
@@ -18,6 +22,8 @@ const visualsInitialState = Immutable.from({
   defaultPacketFormat: 'PCAP'
 });
 
+const _getViewByName = (type) => RECON_VIEW_TYPES.findBy('name', type);
+
 const visuals = handleActions({
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
     let reducerState = {};
@@ -25,6 +31,28 @@ const visuals = handleActions({
       reducerState = payload.recon.visuals;
     }
     return state.merge(reducerState);
+  },
+
+  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
+    // if we know what type of event this is, let's set that up now
+    if (payload.eventType && typeof(payload.eventType) === 'string') {
+      let newView;
+      switch (payload.eventType) {
+        case EVENT_TYPES.ENDPOINT:
+        case EVENT_TYPES.LOG:
+          newView = _getViewByName('TEXT');
+          break;
+        case EVENT_TYPES.NETWORK:
+          newView = _getViewByName('PACKET');
+          break;
+        default:
+          warn(`Unsupported reconstruction type: "${payload.eventType}"`, false, { id: 'recon.visuals.initialize' });
+      }
+      if (newView) {
+        return state.set('currentReconView', newView);
+      }
+    }
+    return state;
   },
 
   [ACTION_TYPES.OPEN_RECON]: (state) => state.set('isReconOpen', true),

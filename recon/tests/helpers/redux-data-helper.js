@@ -44,6 +44,11 @@ export default class DataHelper {
     return this;
   }
 
+  eventType(type) {
+    _set(this.state, 'data.eventType', type);
+    return this;
+  }
+
   // META
 
   meta(meta) {

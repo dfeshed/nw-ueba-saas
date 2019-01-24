@@ -358,6 +358,8 @@ test('eventHasPayload', function(assert) {
 });
 
 test('metaHighlightCount', function(assert) {
+  const data = { eventType: null };
+
   const text = {
     textContent: augmentedTextData,
     renderIds: augmentedTextData.map((t) => t.firstPacketId)
@@ -380,11 +382,13 @@ test('metaHighlightCount', function(assert) {
 
   const tests = {
     hasMetaToHighlight: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals,
       meta
     })),
     hasMetaToHighlightForLog: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals,
       meta: {
@@ -395,6 +399,7 @@ test('metaHighlightCount', function(assert) {
       }
     })),
     hasBogusMeta: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals,
       meta: {
@@ -405,6 +410,7 @@ test('metaHighlightCount', function(assert) {
       }
     })),
     hasMetaForOtherEventType: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals,
       meta: {
@@ -415,6 +421,7 @@ test('metaHighlightCount', function(assert) {
       }
     })),
     noMetaToHighlight: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals,
       meta: {
@@ -422,6 +429,7 @@ test('metaHighlightCount', function(assert) {
       }
     })),
     notTextView: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals: {
         isRequestShown: true,
@@ -433,6 +441,7 @@ test('metaHighlightCount', function(assert) {
       meta
     })),
     rrHidden: metaHighlightCount(Immutable.from({
+      data,
       text,
       visuals: {
         isRequestShown: false,
@@ -444,6 +453,7 @@ test('metaHighlightCount', function(assert) {
       meta
     })),
     noRenderIds: metaHighlightCount(Immutable.from({
+      data,
       text: {
         textContent: augmentedTextData,
         renderIds: []

@@ -64,8 +64,8 @@ const _retrieveMeta = (dataState) => {
       promise: fetchMeta(dataState),
       meta: {
         onSuccess(data) {
-          // have new meta, now need to possibly set to new recon view
-          // and fetch data for that view
+          // if we didn't receive an eventType when Recon was initialized, we
+          // can use the new meta to set the recon view.
           dispatch(determineReconView(data));
         },
         onFailure(response) {
@@ -367,12 +367,12 @@ const initializeRecon = (reconInputs) => {
       type: ACTION_TYPES.OPEN_RECON
     });
 
-    // Truncating eventId after decimal, if user enter a decimal eventId
-    // This is just one particular case that we are handling here, not fair to the numerous other edge cases
-    // In the future, we should display an error message if the user tries to alter the url
-    // and not try to present something relevant if user purposely manipulates it
-    const truncatedEvent = reconInputs.eventId;
-    reconInputs.eventId = truncatedEvent.toString().replace(/[.][0-9]+$/, '');
+    // Truncating eventId after decimal, if user enter a decimal eventId. This
+    // is just one particular case that we are handling here, not fair to the
+    // numerous other edge cases. In the future, we should display an error
+    // message if the user tries to alter the url and not try to present
+    // something relevant if user purposely manipulates it
+    reconInputs.eventId = Number.parseInt(reconInputs.eventId, 10);
 
     // If its the same eventId, there is nothing to do
     // as previous state will be intact

@@ -1,7 +1,7 @@
 import { assert } from '@ember/debug';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed, { and } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import { observer } from '@ember/object';
 import { later, next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -24,7 +24,8 @@ const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) =>
   isReconOpen: visuals.isReconOpen,
   stopNotifications: notifications.stopNotifications,
   status: files.fileExtractStatus,
-  apiFatalErrorCode: recon.data.apiFatalErrorCode
+  apiFatalErrorCode: recon.data.apiFatalErrorCode,
+  meta: recon.meta.meta
 });
 
 const dispatchToActions = {
@@ -48,6 +49,7 @@ const ReconContainer = Component.extend({
   // BEGIN Component inputs
   endpointId: null,
   eventId: null,
+  eventType: null, // network, log, or endpoint
   index: null,
   meta: null,
   total: null,
@@ -67,8 +69,10 @@ const ReconContainer = Component.extend({
   isAnimationDone: false,
   size: 'max',
 
-  @and('isViewReady', 'isAnimationDone')
-  isReady: false,
+  @computed('isViewReady', 'isAnimationDone', 'meta', 'eventType')
+  isReady(isViewReady, isAnimationDone, meta, eventType) {
+    return isViewReady && isAnimationDone && (meta || eventType);
+  },
 
   @computed('i18n', 'apiFatalErrorCode', 'eventId')
   errorMessage(i18n, code, eventId) {
@@ -110,7 +114,7 @@ const ReconContainer = Component.extend({
       index,
       total
     } = this.getProperties('oldEventId', 'index', 'total');
-    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
+    const inputs = this.getProperties('endpointId', 'eventId', 'eventType', 'language', 'meta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
 
     // Checking whether or not Recon is open in standalone mode by checking
     // if closeAction is present or not. If a parent/containing addon/engine

@@ -83,14 +83,9 @@ module('Unit | Actions | Data Creators', function(hooks) {
   const getStateWithNetworkEventType = () => {
     return Immutable.from({
       recon: {
-        meta: {
-          meta: ['medium', 1]
-        },
-        visuals: {
-          currentReconView: {
-            name: 'PACKET'
-          }
-        }
+        data: { eventType: null },
+        meta: { meta: [['medium', 1]] },
+        visuals: { currentReconView: { name: 'PACKET' } }
       }
     });
   };
@@ -98,16 +93,9 @@ module('Unit | Actions | Data Creators', function(hooks) {
   const getStateWithLogEventType = () => {
     return Immutable.from({
       recon: {
-        meta: {
-          meta: [
-            ['medium', 32]
-          ]
-        },
-        visuals: {
-          currentReconView: {
-            name: 'PACKET'
-          }
-        }
+        data: { eventType: null },
+        meta: { meta: [['medium', 32]] },
+        visuals: { currentReconView: { name: 'PACKET' } }
       }
     });
   };

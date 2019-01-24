@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
 
 const { createSelector } = reselect;
 
@@ -124,6 +125,28 @@ export const selectedIndex = createSelector(
       idx = _indexOfBy(data, 'sessionId', sessionId);
     }
     return idx;
+  }
+);
+
+export const eventType = createSelector(
+  selectedIndex, _resultsData,
+  (index, data) => {
+    const event = data ? data[index] : null;
+    let type = null;
+    if (event) {
+      const {
+        medium,
+        'nwe.callback_id': callBackId
+      } = event;
+      if (medium === 32) {
+        type = EVENT_TYPES.LOG;
+      } else if (callBackId) {
+        type = EVENT_TYPES.ENDPOINT;
+      } else {
+        type = EVENT_TYPES.NETWORK;
+      }
+    }
+    return type;
   }
 );
 

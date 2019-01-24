@@ -3,6 +3,7 @@ import moment from 'moment';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import { getMetaValue } from '../util';
 import ENDPOINT_META_CONFIG from './meta-config';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -13,7 +14,7 @@ import ENDPOINT_META_CONFIG from './meta-config';
  * - medium {int} the code for the event type
  * - forcedView {object} an entry from RECON_VIEW_TYPES_BY_NAME or null if you do not want to force a view
  */
-const EVENT_TYPES = [
+const EVENT_VIEW_TYPES = [
   {
     name: 'LOG',
     medium: 32,
@@ -26,48 +27,40 @@ const EVENT_TYPES = [
   }
 ];
 const EVENT_TYPES_BY_NAME = {};
-EVENT_TYPES.forEach((t) => EVENT_TYPES_BY_NAME[t.name] = t);
+EVENT_VIEW_TYPES.forEach((t) => EVENT_TYPES_BY_NAME[t.name] = t);
 const DEFAULT_EVENT_TYPE = EVENT_TYPES_BY_NAME.NETWORK;
 const HTTP_DATA = 80;
 
 // Takes meta array directly rather than part of redux state object
 const _metaDirect = (meta) => meta;
 
-// TODO, once Immutable.find is a thing, remove this asMutable call
-const _meta = (state) => {
-  return state.meta.asMutable().meta || [];
-};
-
-// Takes meta from state
+// ACCESSOR FUNCTIONS
+const _endpointId = (state) => state.recon.data.endpointId;
 const _eventMeta = (state) => state.recon.meta.meta || [];
-
-// Takes queryInputs from state
+const _eventType = (state) => state.data.eventType;
+// TODO, once Immutable.find is a thing, remove this asMutable call
+const _meta = (state) => state.meta.asMutable().meta || [];
 const _queryInputs = (state) => state.recon.data.queryInputs || {};
-
-// Takes queryNode from state
 const _queryNode = (state) => state.investigate ? state.investigate.queryNode : {};
 
-const _reconData = (state) => state.recon ? state.recon.data : null;
-
-const _determineEventType = (meta) => {
+const _determineEventType = (meta, eventType) => {
+  let type = DEFAULT_EVENT_TYPE;
   if (!meta || meta.length === 0) {
-    // network event type is default
-    return DEFAULT_EVENT_TYPE;
+    // No meta, see if eventType was defined and use that instead
+    if (eventType === EVENT_TYPES.LOG) {
+      type = EVENT_TYPES_BY_NAME.LOG;
+    }
+  } else {
+    // Have meta, determine from that
+    const medium = meta.find((entry) => entry[0] === 'medium');
+    if (medium) {
+      const matchedEventType = EVENT_VIEW_TYPES.findBy('medium', medium[1]);
+      if (matchedEventType) {
+        type = matchedEventType;
+      }
+    }
   }
-
-  const medium = meta.find((entry) => {
-    return entry[0] === 'medium';
-  });
-
-  // handle odd case where there just is no medium
-  if (!medium) {
-    return DEFAULT_EVENT_TYPE;
-  }
-
-  const eventType = EVENT_TYPES.findBy('medium', medium[1]);
-
-  // Unknown event type? Just return the default.
-  return eventType || DEFAULT_EVENT_TYPE;
+  return type;
 };
 
 const findMetaValue = (fieldName, metas) => {
@@ -97,7 +90,7 @@ const getSrcParam = (metas) => {
 
 
 export const isHttpData = createSelector(
-  _meta,
+  [_meta],
   (meta) => {
     const service = meta.find((d) => d[0] === 'service');
     return !!service && service[1] === HTTP_DATA;
@@ -105,23 +98,24 @@ export const isHttpData = createSelector(
 );
 
 export const eventType = createSelector(
-  _meta,
+  [_meta, _eventType],
   _determineEventType
 );
 
 export const eventTypeFromMetaArray = createSelector(
-  _metaDirect,
+  [_metaDirect],
   _determineEventType
 );
 
 export const isEndpointEvent = createSelector(
-  _meta,
-  (meta) => meta.some((d) => d[0] === 'nwe.callback_id')
+  [_eventType, _meta],
+  (eventType, meta) => {
+    return (eventType) ? eventType === EVENT_TYPES.ENDPOINT : meta.some((d) => d[0] === 'nwe.callback_id');
+  }
 );
 
 export const nweCallbackId = createSelector(
-  isEndpointEvent,
-  _meta,
+  [isEndpointEvent, _meta],
   (isEndpointEvent, meta) => {
     if (isEndpointEvent) {
       const [ client ] = meta.filter((d) => d[0] === 'agent.id');
@@ -131,9 +125,14 @@ export const nweCallbackId = createSelector(
 );
 
 export const isLogEvent = createSelector(
-  eventType,
-  isEndpointEvent,
-  (eventType, isEndpointEvent) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name && !isEndpointEvent
+  [_eventType, _meta, isEndpointEvent],
+  (eventType, meta, isEndpointEvent) => {
+    if (eventType) {
+      return eventType === EVENT_TYPES.LOG;
+    }
+    const type = _determineEventType(meta);
+    return type === EVENT_TYPES_BY_NAME.LOG && !isEndpointEvent;
+  }
 );
 
 /**
@@ -143,26 +142,19 @@ export const isLogEvent = createSelector(
  * @public
  */
 export const processAnalysisQueryString = createSelector(
-  _eventMeta,
-  _queryInputs,
-  _queryNode,
-  _reconData,
-  (eventMeta, queryInputs, queryNode, reconData) => {
+  [_eventMeta, _queryInputs, _queryNode, _endpointId],
+  (eventMeta, queryInputs, queryNode, endpointId) => {
     const agentId = getMetaValue('agent.id', eventMeta);
     const checksumSha256 = getMetaValue('checksum.src', eventMeta);
     const fileName = getMetaValue('filename.src', eventMeta);
     const hostName = getMetaValue('alias.host', eventMeta);
     const osType = getMetaValue('OS', eventMeta);
     const pvid = getMetaValue('process.vid.src', eventMeta);
-    let serviceId, timeStr;
-
     // The serviceId could be in queryNode if Recon was spawned from
-    // Investigate Events, or in reconData if spawned from Respond.
-    if (queryNode && queryNode.serviceId) {
-      serviceId = queryNode.serviceId;
-    } else if (reconData && reconData.endpointId) {
-      serviceId = reconData.endpointId;
-    }
+    // Investigate Events, or in recon.data.endpointId if spawned from Respond.
+    const serviceId = (queryNode && queryNode.serviceId) ? queryNode.serviceId : endpointId;
+    let timeStr;
+
 
     // If the time range is not defined in queryInputs, we'll set it to the
     // last 7 days
@@ -189,14 +181,14 @@ export const processAnalysisQueryString = createSelector(
 );
 
 export const agentId = createSelector(
-  _eventMeta,
+  [_eventMeta],
   (eventMeta) => {
     return getMetaValue('agent.id', eventMeta);
   }
 );
 
 export const endpointServiceId = createSelector(
-  _eventMeta,
+  [_eventMeta],
   (eventMeta) => {
     const sid = getMetaValue('nwe.callback_id', eventMeta) || '';
     return sid.substring(6);
@@ -204,7 +196,7 @@ export const endpointServiceId = createSelector(
 );
 
 export const isProcessAnalysisDisabled = createSelector(
-  _eventMeta,
+  [_eventMeta],
   (eventMeta) => {
     if (getMetaValue('process.vid.src', eventMeta)) {
       return false;
@@ -214,26 +206,26 @@ export const isProcessAnalysisDisabled = createSelector(
 );
 
 export const eventTime = createSelector(
-  _meta,
+  [_meta],
   (meta) => findMetaValue('event.time', meta) || findMetaValue('starttime', meta)
 );
 
 export const eventCategory = createSelector(
-  _meta,
+  [_meta],
   (meta) => findMetaValue('category', meta)
 );
 
 export const hostName = createSelector(
-  _meta,
+  [_meta],
   (meta) => findMetaValue('alias.host', meta)
 );
 
 export const user = createSelector(
-  _meta,
+  [_meta],
   (meta) => findMetaValue('user.src', meta)
 );
 export const endpointMeta = createSelector(
-  _meta,
+  [_meta],
   (meta) => {
     const categoryConfig = ENDPOINT_META_CONFIG[findMetaValue('category', meta)];
     let requiredFields = {};

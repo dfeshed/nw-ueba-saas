@@ -36,11 +36,28 @@ module('Integration | Component | recon event titlebar', function(hooks) {
   });
   // recon view
 
-  test('Does not display anything in the titlebar if meta is not set', async function(assert) {
+  test('Display correct title and buttons in the titlebar if eventType is set to "LOG"', async function(assert) {
+    new ReduxDataHelper(setState).eventType('LOG').build();
     await render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(findAll('.heading').length, 0, 'Nothing gets displayed if meta is not set');
-    assert.equal(findAll('.event-title').length, 0, 'Nothing gets displayed if meta is not set');
-    assert.equal(findAll('.rsa-icon').length, 0, 'Nothing gets displayed if meta is not set');
+    assert.equal(find('.event-title').textContent.trim(), 'Log Event Details', 'title was incorrect');
+    assert.notOk(find('.ember-power-select-trigger'), 'a power select to change the view should not be rendered');
+    assert.ok(findAll('.rsa-icon').length, 'missing icons');
+  });
+
+  test('Display correct title and buttons in the titlebar if eventType is set to "ENDPOINT"', async function(assert) {
+    new ReduxDataHelper(setState).eventType('ENDPOINT').build();
+    await render(hbs`{{recon-event-titlebar}}`);
+    assert.equal(find('.event-title').textContent.trim(), 'Endpoint Event Details', 'title was incorrect');
+    assert.notOk(find('.ember-power-select-trigger'), 'a power select to change the view should not be rendered');
+    assert.ok(findAll('.rsa-icon').length, 'missing icons');
+  });
+
+  test('Display correct title and buttons in the titlebar if eventType is set to "NETWORK"', async function(assert) {
+    new ReduxDataHelper(setState).eventType('NETWORK').build();
+    await render(hbs`{{recon-event-titlebar}}`);
+    assert.equal(find('.event-title').textContent.trim(), 'Network Event Details', 'title was incorrect');
+    assert.ok(findAll('.ember-power-select-trigger').length, 'a power select to change the view was not rendered');
+    assert.ok(findAll('.rsa-icon').length, 'missing icons');
   });
 
   test('Display titlebar buttons once meta has been loaded so that we dont have to show/hide again n again', async function(assert) {

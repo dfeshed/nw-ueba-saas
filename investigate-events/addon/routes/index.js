@@ -181,10 +181,6 @@ export default Route.extend({
           window.open(path, '_blank');
         }
       } else {
-        // Will be closing recon, so set meta
-        // panel back to default size
-        qp.mps = META_PANEL_SIZES.DEFAULT;
-
         redux.dispatch(setReconClosed());
         this.set('nextQueryParams', qp);
         this.runInvestigateQuery(qp, true);

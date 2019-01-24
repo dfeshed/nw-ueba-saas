@@ -1,14 +1,15 @@
 import { module, test } from 'qunit';
 import {
+  allExpectedDataLoaded,
+  areEventsStreaming,
+  eventResultsErrorMessage,
+  eventType,
+  getDownloadOptions,
   isCanceled,
   isEventResultsError,
-  eventResultsErrorMessage,
-  getDownloadOptions,
-  areEventsStreaming,
+  mostRecentEvent,
   percentageOfEventsDataReturned,
-  allExpectedDataLoaded,
-  shouldStartAtOldest,
-  mostRecentEvent
+  shouldStartAtOldest
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -460,6 +461,38 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     assert.notOk(isCanceled(state2), 'should have returned "false"');
+  });
+
+  test('is correct event type determined', function(assert) {
+    const eventResults = {
+      data: [
+        { sessionId: 1, medium: 32 },
+        { sessionId: 2, 'nwe.callback_id': true },
+        { sessionId: 3 }
+      ]
+    };
+    const logState = {
+      investigate: {
+        queryNode: { sessionId: 1 },
+        eventResults
+      }
+    };
+    const endpointState = {
+      investigate: {
+        queryNode: { sessionId: 2 },
+        eventResults
+      }
+    };
+    const networkState = {
+      investigate: {
+        queryNode: { sessionId: 3 },
+        eventResults
+      }
+    };
+
+    assert.equal(eventType(logState), 'LOG', 'wrong type returned');
+    assert.equal(eventType(endpointState), 'ENDPOINT', 'wrong type returned');
+    assert.equal(eventType(networkState), 'NETWORK', 'wrong type returned');
   });
 });
 

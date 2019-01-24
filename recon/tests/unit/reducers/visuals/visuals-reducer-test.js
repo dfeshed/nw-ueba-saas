@@ -19,6 +19,25 @@ const initialState = Immutable.from({
   defaultPacketFormat: 'PCAP'
 });
 
+test('test INITIALIZE action handler', function(assert) {
+  const state = Immutable.from({});
+  const initializeAsNetwork = {
+    type: ACTION_TYPES.INITIALIZE,
+    payload: { eventType: 'NETWORK' }
+  };
+  const initializeAsLog = {
+    type: ACTION_TYPES.INITIALIZE,
+    payload: { eventType: 'LOG' }
+  };
+  const initializeAsEndpoint = {
+    type: ACTION_TYPES.INITIALIZE,
+    payload: { eventType: 'ENDPOINT' }
+  };
+  assert.equal(reducer(state, initializeAsNetwork).currentReconView.name, 'PACKET', 'incorrect view type for network event type');
+  assert.equal(reducer(state, initializeAsLog).currentReconView.name, 'TEXT', 'incorrect view type for log event type');
+  assert.equal(reducer(state, initializeAsEndpoint).currentReconView.name, 'TEXT', 'incorrect view type for endpoint event type');
+});
+
 test('test SET_PREFERENCES action handler', function(assert) {
   const action = {
     type: ACTION_TYPES.SET_PREFERENCES,
