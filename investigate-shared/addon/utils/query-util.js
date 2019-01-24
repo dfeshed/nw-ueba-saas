@@ -1,6 +1,7 @@
 import { isBlank } from '@ember/utils';
 
 const HASH_COLUMNS = ['checksumSha256', 'checksumMd5', 'checksumSha1'];
+const AGENT_VERSION_FILTER = ['machineIdentity.agentVersion', 'machine.agentVersion'];
 const IP_COLUMNS = ['machineIdentity.networkInterfaces.ipv4', 'machineIdentity.networkInterfaces.ipv6'];
 const ENDPOINT_IP_MAPPING = 'machineIdentity.networkInterfaces.ipv4';
 const ENDPOINT_MAC_NAME_MAPPING = 'machineIdentity.networkInterfaces.macAddress';
@@ -103,6 +104,22 @@ const _splitHash = (expressions) => {
   }
 };
 
+
+const _modifiedAgentVersionExpression = (expressions) => {
+  const [expression] = expressions.filterBy('propertyName', 'machineIdentity.agentVersion');
+  if (expression) {
+    const expressionList = AGENT_VERSION_FILTER.map((field) => {
+      return {
+        restrictionType: expression.restrictionType,
+        propertyValues: expression.propertyValues,
+        propertyName: field
+      };
+    });
+    return expressionList;
+  } else {
+    return [];
+  }
+};
 /**
  * For risk score, when user select min value as 0 we have to include 0 to max as well as null
  * in the filter critieria since in UI we are displayed null risk score as 0
@@ -171,8 +188,10 @@ const _getCriteriaList = (list, type) => {
   const result = [];
   const scores = _modifiedRiskScoreExpression(list);
   const fileDownloadStatus = _modifiedDownloadStatusExpression(list);
+  const agentVersionExpression = _modifiedAgentVersionExpression(list);
   const newList = list.filter((property) => {
-    return property.propertyName !== 'fileHash' && property.propertyName !== 'score' && property.propertyName !== 'downloadInfo.status';
+    return property.propertyName !== 'fileHash' && property.propertyName !== 'score' &&
+      property.propertyName !== 'downloadInfo.status' && property.propertyName !== 'machineIdentity.agentVersion';
   });
   if (newList.length) {
     result.push({
@@ -202,6 +221,12 @@ const _getCriteriaList = (list, type) => {
   if (fileDownloadStatus.length) {
     result.push({
       expressionList: fileDownloadStatus,
+      predicateType: 'OR'
+    });
+  }
+  if (agentVersionExpression.length) {
+    result.push({
+      expressionList: agentVersionExpression,
       predicateType: 'OR'
     });
   }

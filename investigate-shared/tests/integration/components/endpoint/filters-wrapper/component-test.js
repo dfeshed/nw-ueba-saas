@@ -24,6 +24,17 @@ const FILTER_TYPE = [
     }
   }
 ];
+const agentModeFilter = [
+  {
+    'name': 'machineIdentity.agentMode',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agentMode',
+    'listOptions': [
+      { name: 'insights', label: 'investigateHosts.hosts.filters.agentMode.insights' },
+      { name: 'advanced', label: 'investigateHosts.hosts.filters.agentMode.advanced' }
+    ],
+    type: 'list'
+  }
+];
 module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -262,5 +273,34 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await click(document.querySelector('.save-filter-button button'));
   });
 
+
+  test('Filter expression list includes, userModeOnly when insights is applied', async function(assert) {
+    assert.expect(1);
+    this.set('showSaveFilterButton', true);
+    this.set('createCustomSearch', () => { });
+    this.set('applyFilter', function(filters) {
+      const [filter] = filters.filterBy('propertyName', 'machineIdentity.agentMode');
+      const { propertyValues } = filter;
+      const value = propertyValues.filterBy('value', 'userModeOnly');
+      assert.equal(value.length, 1, 'userModeOnly has been added in expressionList values when insights is checked for filtering.');
+    });
+    this.set('filterState', { filter: {}, expressionList: [] });
+    this.set('filterTypes', agentModeFilter);
+    await render(hbs`
+    <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes
+        createCustomSearch=(action createCustomSearch)
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
+    await click(findAll('.list-filter-content .rsa-form-checkbox-label')[0]);
+  });
 
 });

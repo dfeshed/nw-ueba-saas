@@ -162,4 +162,18 @@ module('Unit | Utils | Query Util', function() {
     result = isValidIPV6(value);
     assert.notOk(result);
   });
+
+  test('addFilter will add, machine.agentVersion to expresionList', function(assert) {
+
+    const expressionList = [
+      {
+        propertyName: 'machineIdentity.agentVersion',
+        propertyValues: [{ value: 11.1 }],
+        restrictionType: 'IN'
+      }
+    ];
+    const result = addFilter({}, expressionList);
+    assert.equal(result.criteria.criteriaList.length, 1);
+    assert.equal(result.criteria.criteriaList[0].expressionList.length, 2);
+  });
 });

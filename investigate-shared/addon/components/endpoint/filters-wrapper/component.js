@@ -38,6 +38,9 @@ const parseFilters = (filters) => {
       if (DATE_COLUMNS.includes(name)) {
         propertyValues = _dateValues(propertyValues, unit);
       }
+      if (name === 'machineIdentity.agentMode' && value.includes('insights')) {
+        propertyValues.push({ value: 'userModeOnly' });
+      }
       return {
         restrictionType: operator,
         propertyValues,
