@@ -16,8 +16,7 @@ export default Component.extend({
     filterOnBlur: false,
     operators: [
       { type: 'IN', label: 'Equals' },
-      { type: 'LIKE', label: 'Contains' },
-      { type: 'EQUAL', label: 'Equals' }
+      { type: 'LIKE', label: 'Contains' }
     ],
     filterValue: {
       operator: 'IN',

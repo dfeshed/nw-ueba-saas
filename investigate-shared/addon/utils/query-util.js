@@ -28,7 +28,7 @@ const INVESTIGATE_ENDPOINT_META_MAPPING = {
 };
 
 const MONGO_OPERATOR_MAPPING = {
-  '=': 'EQUAL',
+  '=': 'IN',
   'contains': 'LIKE'
 };
 

@@ -10,19 +10,22 @@ module('Unit | Utils | Query Util', function() {
     let [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.ipv4');
     assert.equal(parsedString.propertyValues[0].value, '1.1.1.1');
+    assert.equal(parsedString.restrictionType, 'IN');
 
     // when alias.ip is valid ipv6
     queryString = 'alias.ip%20%3D%20fe80::49f4:9ee4:c2ae:ef0a';
     [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.ipv6');
     assert.equal(parsedString.propertyValues[0].value, 'fe80::49f4:9ee4:c2ae:ef0a');
+    assert.equal(parsedString.restrictionType, 'IN');
   });
 
   test('Parse the query string of alias.host query param', function(assert) {
     const queryString = 'alias.host%20%3D%20%27Test_Machine%27';
-    const [newParsedString] = parseQueryString(queryString);
-    assert.equal(newParsedString.propertyName, 'machineIdentity.machineName');
-    assert.equal(newParsedString.propertyValues[0].value, 'Test_Machine');
+    const [parsedString] = parseQueryString(queryString);
+    assert.equal(parsedString.propertyName, 'machineIdentity.machineName');
+    assert.equal(parsedString.propertyValues[0].value, 'Test_Machine');
+    assert.equal(parsedString.restrictionType, 'IN');
   });
 
   test('Parse the query string of alias.mac query param', function(assert) {
@@ -30,6 +33,7 @@ module('Unit | Utils | Query Util', function() {
     const [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'machineIdentity.networkInterfaces.macAddress');
     assert.equal(parsedString.propertyValues[0].value, '00:50:56:01:1B:BC');
+    assert.equal(parsedString.restrictionType, 'IN');
   });
 
   test('Parse the query string of checksum query param', function(assert) {
@@ -37,6 +41,7 @@ module('Unit | Utils | Query Util', function() {
     const [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'fileHash');
     assert.equal(parsedString.propertyValues[0].value, '568c5cbf9877f6b9e39d1e7ca0ff0a36');
+    assert.equal(parsedString.restrictionType, 'IN');
   });
 
   test('Parse the query string of filename query param', function(assert) {
@@ -44,6 +49,7 @@ module('Unit | Utils | Query Util', function() {
     const [parsedString] = parseQueryString(queryString);
     assert.equal(parsedString.propertyName, 'firstFileName');
     assert.equal(parsedString.propertyValues[0].value, 'lsass.exe');
+    assert.equal(parsedString.restrictionType, 'IN');
   });
 
   test('Parse the query string when query is empty', function(assert) {
