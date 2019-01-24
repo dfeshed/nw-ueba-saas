@@ -83,7 +83,7 @@ test('it should show error message when failed to start scan', function(assert) 
 
   patchFlash((flash) => {
     assert.equal(flash.type, 'error');
-    assert.equal(flash.message, 'test');
+    assert.equal(flash.message.string, 'Scan failed. Contact your system administrator.');
   });
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { startScan } from 'investigate-hosts/actions/data-creators/host';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 export default Component.extend({
 
@@ -28,8 +29,12 @@ export default Component.extend({
 
     handleInitiateScan() {
       const callBackOptions = {
-        onSuccess: () => this.get('flashMessage').showFlashMessage('investigateHosts.hosts.initiateScan.success'),
-        onFailure: (message) => this.get('flashMessage').showErrorMessage(message)
+        onSuccess: () => {
+          success('investigateHosts.hosts.initiateScan.success');
+        },
+        onFailure: () => {
+          failure('investigateHosts.hosts.initiateScan.failure');
+        }
       };
       startScan(this.get('agentIds'), callBackOptions);
     },

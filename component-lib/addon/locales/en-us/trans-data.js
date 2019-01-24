@@ -3383,7 +3383,8 @@ export default {
           }
         },
         success: 'Scan initiated successfully',
-        error: 'Scan initiate failed'
+        error: 'Scan initiate failed',
+        failure: 'Scan failed. Contact your system administrator.'
       },
       cancelScan: {
         modal: {
@@ -3392,7 +3393,7 @@ export default {
           error1: '*Select at least one host'
         },
         success: 'Stop scan initiated successfully',
-        error: 'Stop Scan initiate failed'
+        error: 'Stop scan initiate failed'
       },
       deleteHosts: {
         modal: {

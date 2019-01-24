@@ -59,6 +59,10 @@
   height: calc(100% - 116px)
 }
 
+.save-filter.rsa-form-button-wrapper{
+  padding-left: rsa-whitespace();
+}
+
 .ember-power-select-option {
   &[aria-current="true"] {
     .delete-filter {
@@ -109,6 +113,7 @@
   text-overflow: ellipsis;
   display: inline-block;
   width: 90%;
+  vertical-align: top;
 }
 
 .license-banner.show + .main-zone, .host-engine {
