@@ -1,3 +1,26 @@
+# [10.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.5.0)
+## Features
+* [ASOC-60739](https://bedfordjira.na.rsa.net/browse/ASOC-60739):&emsp;Integration and QE Verification - Investigate-server
+* [ASOC-61957](https://bedfordjira.na.rsa.net/browse/ASOC-61957):&emsp;Add configurable row number indicator to data table
+* [ASOC-64116](https://bedfordjira.na.rsa.net/browse/ASOC-64116):&emsp;Validate Free-Form Pill
+* [ASOC-66742](https://bedfordjira.na.rsa.net/browse/ASOC-66742):&emsp;Enable Incident Aggregation Rules by Default
+* [ASOC-68804](https://bedfordjira.na.rsa.net/browse/ASOC-68804):&emsp;[Automation] Migrate Investigate -> Files UI page objects to nw-e2e
+* [ASOC-70355](https://bedfordjira.na.rsa.net/browse/ASOC-70355):&emsp;Risk score calculation on Hot/warm AdminServer
+* [ASOC-70422](https://bedfordjira.na.rsa.net/browse/ASOC-70422):&emsp;Pivot to Endpoint
+* [ASOC-70535](https://bedfordjira.na.rsa.net/browse/ASOC-70535):&emsp;Remove Pagination Controls From UI
+* [ASOC-70536](https://bedfordjira.na.rsa.net/browse/ASOC-70536):&emsp;Fetch New Results if Column Group is Updated
+* [ASOC-70539](https://bedfordjira.na.rsa.net/browse/ASOC-70539):&emsp;Limit required for Context collections
+* [ASOC-70611](https://bedfordjira.na.rsa.net/browse/ASOC-70611):&emsp;Introduce Preference for which Direction to Sort the Results
+* [ASOC-70612](https://bedfordjira.na.rsa.net/browse/ASOC-70612):&emsp;Leverage Sort Order Preference
+* [ASOC-70613](https://bedfordjira.na.rsa.net/browse/ASOC-70613):&emsp;View Oldest Data in Time Range
+* [ASOC-70614](https://bedfordjira.na.rsa.net/browse/ASOC-70614):&emsp;Introduce Preference to Determine which End of the Time Range
+* [ASOC-70698](https://bedfordjira.na.rsa.net/browse/ASOC-70698):&emsp;ESA rule name in Risk Scoring configuration yml file should be case insensitive
+* [ASOC-70716](https://bedfordjira.na.rsa.net/browse/ASOC-70716):&emsp;Final updates to Risk Score setting
+* [ASOC-70960](https://bedfordjira.na.rsa.net/browse/ASOC-70960):&emsp;Update Doc for Icon changes and Events List - cont'd
+* [ASOC-71332](https://bedfordjira.na.rsa.net/browse/ASOC-71332):&emsp;Performance Improvement for loading alert context
+* [ASOC-71351](https://bedfordjira.na.rsa.net/browse/ASOC-71351):&emsp;Change Investigate Original Event Link to Land into View Meta
+
+
 # [10.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.4.0)
 ## Features
 * [ASOC-60778](https://bedfordjira.na.rsa.net/browse/ASOC-60778):&emsp;PSR Testing on Risk score calculation - Phase 1
@@ -85,7 +108,7 @@
 * [ASOC-66079](https://bedfordjira.na.rsa.net/browse/ASOC-66079):&emsp;Spike - Respond - UEBA - Storyline & Nodal
 * [ASOC-66184](https://bedfordjira.na.rsa.net/browse/ASOC-66184):&emsp;Data Privacy - Automation
 * [ASOC-66282](https://bedfordjira.na.rsa.net/browse/ASOC-66282):&emsp;Automation for Download Events
-* [ASOC-66504](https://bedfordjira.na.rsa.net/browse/ASOC-66504):&emsp;Normalization restructure of source/target fields	User Story
+* [ASOC-66504](https://bedfordjira.na.rsa.net/browse/ASOC-66504):&emsp;Normalization restructure of source/target fields
 
 
 # [9.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.5.0)
