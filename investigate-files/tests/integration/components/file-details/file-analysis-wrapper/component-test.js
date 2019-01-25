@@ -3,7 +3,7 @@ import { module, test, setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, find, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
@@ -183,6 +183,27 @@ module('Integration | Component | file-details/file-analysis-wrapper', function(
     await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
     assert.equal(findAll('.rsa-loader').length, 0, 'loader not present');
+  });
+
+  test('Error message should load when the fileDataLoadingStatus status is failed', async function(assert) {
+    const fileAnalysis = {
+      'fileData': null,
+      'filePropertiesData': null,
+      'isFileAnalysisView': true,
+      'fileDataLoadingStatus': 'failed'
+    };
+
+    new ReduxDataHelper(setState)
+      .activeDataSourceTab('FILE_DETAILS')
+      .selectedDetailFile(sampleData)
+      .isFilePropertyPanelVisible(true)
+      .fileAnalysis(fileAnalysis)
+      .build();
+
+    await render(hbs`{{file-details/file-analysis-wrapper}}`);
+
+    assert.equal(findAll('.fileNotDownloadedError .rsa-icon.rsa-icon-report-problem-triangle-filled').length, 1, 'triangle icon present');
+    assert.equal(find('.fileNotDownloadedError span').textContent.trim(), 'Download the file to server to analyze.', 'Error message present');
   });
 
 });

@@ -17,4 +17,11 @@
     line-height: 11rem;
     height: 105px;
   }
+  .fileNotDownloadedError {
+    margin: auto;
+    .rsa-icon {
+      color: text-color(accentFour, light);
+      margin-right: 5px;
+    }
+  }
 }

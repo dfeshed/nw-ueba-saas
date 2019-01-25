@@ -25,4 +25,10 @@
       {{endpoint/file-analysis-properties filePropertiesData=filePropertiesData}}
     {{/layout.right}}
   {{/rsa-page-layout}}
+{{else}}
+  {{#if (eq fileDataLoadingStatus 'failed')}}
+    <div class='fileNotDownloadedError'>
+      {{rsa-icon name="report-problem-triangle"}}<span>{{t 'investigateShared.endpoint.fileActions.tooltips.analyzeFile'}}</span>
+    </div>
+  {{/if}}
 {{/if}}

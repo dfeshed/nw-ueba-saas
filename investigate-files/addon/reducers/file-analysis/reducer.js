@@ -16,7 +16,7 @@ const fileAnalyzerReducer = handleActions({
     return handle(state, action, {
       start: (s) => s.set('fileDataLoadingStatus', 'loading'),
       failure: (s) => {
-        return s.merge({ 'fileData': null, 'fileDataLoadingStatus': null });
+        return s.merge({ 'fileData': null, 'fileDataLoadingStatus': 'failed' });
       },
       success: (s) => {
         return s.merge({ 'fileData': action.payload.data, 'fileDataLoadingStatus': 'completed' });

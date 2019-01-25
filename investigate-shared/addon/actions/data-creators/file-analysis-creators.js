@@ -1,13 +1,15 @@
 import * as ACTION_TYPES from 'investigate-shared/actions/types';
 import api from 'investigate-shared/actions/api/file-analysis/file-analysis-api';
 
+
+const NOOP = () => ({});
 const toggleFileAnalysisView = (payload) => ({ type: ACTION_TYPES.TOGGLE_FILE_ANALYZER, payload });
 /**
  * An action creator for getting the saved filter information
  * @returns {function(*)}
  * @public
  */
-const getFileAnalysisData = (data, format, callback) => {
+const getFileAnalysisData = (data, format, callback = { onSuccess: NOOP, onFailure: NOOP }) => {
   return (dispatch) => {
 
     dispatch({
