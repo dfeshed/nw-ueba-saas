@@ -24,7 +24,8 @@ const stateToComputed = (state) => ({
   snapShots: state.endpoint.detailsInput.snapShots,
   downloadLink: downloadLink(state),
   isExportDisabled: !isSnapshotsAvailable(state),
-  isJsonExportCompleted: isJsonExportCompleted(state)
+  isJsonExportCompleted: isJsonExportCompleted(state),
+  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView
 });
 
 const dispatchToActions = {

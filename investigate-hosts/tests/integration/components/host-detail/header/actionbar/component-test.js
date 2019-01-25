@@ -125,4 +125,15 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     await render(hbs `{{host-detail/header/actionbar}}`);
     assert.equal(find('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').textContent.trim(), 'Export to JSON', 'In initial state and when previous export is completed, button is active');
   });
+
+  test('snapshot selection is disabled when process details is active', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isProcessDetailsView(true)
+      .snapShot(snapShot)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await clickTrigger();
+    assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
+    assert.equal(findAll('.actionbar .ember-power-select-trigger[aria-disabled=true]').length, 1);
+  });
 });
