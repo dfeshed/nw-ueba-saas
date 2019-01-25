@@ -4,7 +4,7 @@ import { isBrokerView } from 'investigate-shared/selectors/endpoint-server/selec
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 
 // Contains all the expression saved + newly added expression from the UI
-const _files = (state) => state.files.fileList.fileData ? Object.values(state.files.fileList.fileData) : [];
+const _files = (state) => state.files.fileList.fileData;
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _serviceList = (state) => state.files.fileList.listOfServices;
 const _context = (state) => state.files.fileList.lookupData;
@@ -34,8 +34,8 @@ const _areSelectedFilesHavingThumbprint = createSelector(
 
 export const files = createSelector(
   _files,
-  (files) => {
-    return files;
+  (files = {}) => {
+    return Object.values(files);
   }
 );
 
@@ -47,14 +47,14 @@ export const areFilesLoading = createSelector(
 );
 
 export const fileCount = createSelector(
-  _files,
+  files,
   (files) => {
     return files.length;
   }
 );
 
 export const hasFiles = createSelector(
-  _files,
+  files,
   (files) => {
     return !!files.length;
   }
@@ -91,7 +91,7 @@ export const getContext = createSelector(
 );
 
 export const isAllSelected = createSelector(
-  [_files, _selectedFileList],
+  [files, _selectedFileList],
   (files, selectedFileList) => {
     if (selectedFileList && selectedFileList.length) {
       return files.length === selectedFileList.length;
@@ -141,7 +141,7 @@ export const fileTotalLabel = createSelector(
   }
 );
 export const nextLoadCount = createSelector(
-  [_files],
+  [files],
   (files) => {
     const ONE_PAGE_MAX_LENGTH = 100;
     const loadCount = files.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : files.length;
