@@ -1,80 +1,90 @@
-import { call, all, put, takeLatest, select } from 'redux-saga/effects';
-import * as ACTION_TYPES from 'investigate-hosts/actions/types';
-import fetchDistinctCount from 'investigate-shared/actions/api/events/event-count-distinct';
+import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
+import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
+import { put, all, call, takeLatest, select } from 'redux-saga/effects';
+import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import _ from 'lodash';
 
 const MAX_PENDING_QUERIES = 2; // SDK configuration, currently hardcoded for UI
-/**
- * For each child process getting the children count.
- * Iterating over the list of children and invoking the fetchEventCount api for each children and waiting for all the
- * request to complete. Once request is complete updating the state with count and invoking the onComplete callBack
- *
- * Response payload will have following structure
- *  {
- *    checksum: <fetchEvent count response>
- *  }
- *
- *  ex:
- *  {
- *    12323131313123132: { data: 1 },
- *    12313131321231311: { data: 2 }
- *  }
- *
- *
- * @param action
- * @returns {IterableIterator<*>}
- * @public
- */
-function* fetchAgentCountAsync({ payload, meta }) {
+
+const getMetaValues = ({ filter, queryNode, metaName, size = 1 }) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const query = { ...queryNode };
+
+    if (query.timeRange) {
+      const { timeRange: { value, unit } } = query;
+      const timeZone = lookup('service:timezone');
+      const { zoneId } = timeZone.get('selected');
+      const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+      query.startTime = startTime;
+      query.endTime = endTime;
+    }
+
+    query.metaFilter = {
+      conditions: [
+        {
+          meta: 'device.type',
+          operator: '=',
+          value: '\'nwendpoint\''
+        },
+        filter
+      ]
+    };
+
+    const handlers = {
+      onError() {
+        reject();
+      },
+      onResponse() {
+
+      },
+      onCompleted(response) {
+        resolve(response.data);
+      }
+    };
+    fetchMetaValue(query, metaName, size, null, 10000, 10000, handlers, 0);
+  });
+};
+
+function* fetchHostNameList({ payload }) {
   const state = yield select();
   try {
-    const { serviceId, timeRange: { value, unit } } = state.investigate;
-    const timeZone = lookup('service:timezone');
-    const { zoneId } = timeZone.get('selected');
-    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+    const queryNode = state.investigate;
+    const { serviceId } = queryNode;
     if (serviceId && serviceId !== '-1') {
-      // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
-      // children into chunks
+      const input = {
+        queryNode,
+        size: 300000,
+        metaName: 'alias.host'
+
+      };
       const childrenChunks = _.chunk(payload, MAX_PENDING_QUERIES);
+      let finalResult = {};
       for (let i = 0; i < childrenChunks.length; i++) {
         put({ type: ACTION_TYPES.AGENT_COUNT_INIT, payload: childrenChunks[i] });
-        const result = yield all(getAPICalls(serviceId, startTime, endTime, childrenChunks[i]));
-        payload = { ...payload, ...result };
+        const result = yield all(getAPICalls(input, childrenChunks[i]));
+        finalResult = { ...finalResult, ...result };
       }
-      if (meta && meta.belongsTo) {
-        yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: _.mapValues(payload, 'data'), meta });
-      } else {
-        yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: _.mapValues(payload, 'data') });
+      const result2 = {};
+      for (const key in finalResult) {
+        result2[key] = finalResult[key].length;
       }
+      yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: result2 });
     }
   } catch (e) {
     yield put({ type: ACTION_TYPES.SET_AGENT_COUNT_FAILED });
   }
+
 }
 
-const getAPICalls = (serviceId, startTime, endTime, checksums) => {
+const getAPICalls = (input, checksums) => {
   const apiCalls = checksums.reduce((result, checksum) => {
-    const conditions = [
-      {
-        meta: 'device.type',
-        operator: '=',
-        value: '\'nwendpoint\''
-      },
-      { value: `(checksum.all = '${checksum}')` }
-    ];
-    // call api response will stored as key and value
+    const query = { ...input };
+    query.filter = { value: `(checksum.all = '${checksum}')` };
     result[checksum] = call(
-      fetchDistinctCount,
-      'agent.id',
-      serviceId,
-      startTime,
-      endTime,
-      conditions,
-      null,
-      null,
-      false
+      getMetaValues,
+      query
     );
     return result;
   }, {});
@@ -82,7 +92,6 @@ const getAPICalls = (serviceId, startTime, endTime, checksums) => {
 };
 
 export function* fetchAgentCount() {
-  yield takeLatest(ACTION_TYPES.GET_AGENTS_COUNT_SAGA, fetchAgentCountAsync);
+  yield takeLatest(ACTION_TYPES.GET_AGENTS_COUNT_SAGA, fetchHostNameList);
 }
-
 
