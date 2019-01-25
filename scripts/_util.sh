@@ -40,7 +40,7 @@ function pathExists {
 # variables required for NPM installs to function properly
 # Comment these out if running locally
 function setWebProxy {
-  export http_proxy=http://10.253.136.253:82
+  export http_proxy=http://inprtvdrmrsa1p.corp.emc.com
 }
 
 function unsetWebProxy {
@@ -48,7 +48,7 @@ function unsetWebProxy {
 }
 
 function setHttpsProxy {
-  export https_proxy=http://10.253.136.253:82
+  export https_proxy=http://inprtvdrmrsa1p.corp.emc.com
 }
 
 function unsetHttpsProxy {
