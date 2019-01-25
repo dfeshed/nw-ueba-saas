@@ -76,7 +76,7 @@
     height: 100%;
     min-height: 100%;
     .process-name a {
-      color: text-color(secondary, light);
+      color: text-color(secondary, lightest);
       text-decoration: underline;
       cursor: pointer;
       label {
@@ -103,6 +103,9 @@
 
   .right-zone {
     min-height: 100%;
+    .close-zone {
+      padding-top: 1.5rem;
+    }
   }
 }
 .header-section {

@@ -30,6 +30,9 @@ $filter-panel-width: 250px;
       position: relative;
       top: 1rem;
     }
+    .close-zone {
+      padding-top: 1.5rem;
+    }
   }
   .filters {
     @include border-bottom(1px, solid, primary, dark);

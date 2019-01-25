@@ -3628,7 +3628,7 @@ export default {
       fileActions: {
         editFileStatus: 'Change File Status',
         pivotToInvestigate: 'Analyze Events',
-        pivotToInvestigateDisableToolTip: 'Select a single file to analyze',
+        pivotToInvestigateDisableToolTip: 'Select a single {{label}} to analyze',
         watch: 'Watch',
         downloadToServer: 'Download File to Server',
         more: 'More',

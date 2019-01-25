@@ -15,6 +15,9 @@
     }
     &--disabled {
       color: text-color(primary);
+      &::after {
+        color: text-color(primary);
+      }
     }
     &:hover {
       color: text-color(primary);

@@ -135,7 +135,7 @@ const FILTER_TYPES = [
         message: 'investigateHosts.hosts.filters.invalidIP'
       }
     },
-    'placeholder': 'e.g., 0.0.0.0'
+    'placeholder': 'e.g., 1.1.1.1||1.1.1.1'
   },
   {
     'name': 'machine.securityConfigurations',

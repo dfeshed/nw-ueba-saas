@@ -62,6 +62,9 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
     }
     .certificate-status-button {
       margin-right: 7px;
+      button i {
+        font-size: 1rem;
+      }
     }
     .pivot-to-event-analysis {
       height: 30px;

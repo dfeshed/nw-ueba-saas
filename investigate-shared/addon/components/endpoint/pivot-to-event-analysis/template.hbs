@@ -1,6 +1,6 @@
 <hbox class="rsa-button-group">
   {{#rsa-form-button
-     title=(if isDisabled (t 'investigateShared.endpoint.fileActions.pivotToInvestigateDisableToolTip'))
+     title=(if isDisabled (t 'investigateShared.endpoint.fileActions.pivotToInvestigateDisableToolTip' label=label))
      class="event-analysis"
      defaultAction=(action 'processEventAnalysis')
      isDisabled=isDisabled}}
