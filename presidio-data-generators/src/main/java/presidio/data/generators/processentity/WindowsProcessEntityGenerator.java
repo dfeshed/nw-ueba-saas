@@ -15,16 +15,16 @@ import java.util.List;
  * Default generator for Process entity.
  *
  * **/
-public class ProcessEntityGenerator implements IProcessEntityGenerator {
+public class WindowsProcessEntityGenerator implements IProcessEntityGenerator {
 
     IFileEntityGenerator processFileGenerator;
     IStringListGenerator processDirectoryGroupsGenerator;
     IStringListGenerator processCategoriesGenerator;
     ICertificateIssuerGenerator processCertificateIssuerGenerator;
 
-    public ProcessEntityGenerator() throws GeneratorException {
+    public WindowsProcessEntityGenerator() throws GeneratorException {
         processFileGenerator = new ProcessFileEntityGenerator();
-        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"WINDOWS"});
+        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"WINDOWS_SYSTEM32","WINDOWS"});
         processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"WINDOWS_PROCESS"});
         processCertificateIssuerGenerator = new CertificateIssuerDefaultGenerator();
 
