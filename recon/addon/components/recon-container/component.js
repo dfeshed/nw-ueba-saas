@@ -24,8 +24,7 @@ const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) =>
   isReconOpen: visuals.isReconOpen,
   stopNotifications: notifications.stopNotifications,
   status: files.fileExtractStatus,
-  apiFatalErrorCode: recon.data.apiFatalErrorCode,
-  meta: recon.meta.meta
+  apiFatalErrorCode: recon.data.apiFatalErrorCode
 });
 
 const dispatchToActions = {
@@ -46,32 +45,30 @@ const ReconContainer = Component.extend({
   flashMessages: service(),
   i18n: service(),
 
-  // BEGIN Component inputs
+  // BEGIN Component API
+  aliases: null,
   endpointId: null,
   eventId: null,
-  eventType: null, // network, log, or endpoint
+  eventType: null,
   index: null,
+  language: null,
   meta: null,
   total: null,
-
-  // Lookups
-  aliases: null,
-  language: null,
 
   // Actions
   closeAction: null,
   expandAction: null,
-  shrinkAction: null,
   linkToFileAction: null,
-  // END Component inputs
+  shrinkAction: null,
+  // END Component API
 
-  oldEventId: null,
-  isAnimationDone: false,
-  size: 'max',
+  _defaultSize: 'max',
+  _isAnimationDone: false,
+  _previousEventId: undefined,
 
-  @computed('isViewReady', 'isAnimationDone', 'meta', 'eventType')
-  isReady(isViewReady, isAnimationDone, meta, eventType) {
-    return isViewReady && isAnimationDone && (meta || eventType);
+  @computed('isViewReady', '_isAnimationDone', 'meta', 'eventType')
+  isReady(isViewReady, _isAnimationDone, meta, eventType) {
+    return isViewReady && _isAnimationDone && (meta || eventType);
   },
 
   @computed('i18n', 'apiFatalErrorCode', 'eventId')
@@ -110,11 +107,12 @@ const ReconContainer = Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     const {
-      oldEventId,
+      _previousEventId,
       index,
       total
-    } = this.getProperties('oldEventId', 'index', 'total');
-    const inputs = this.getProperties('endpointId', 'eventId', 'eventType', 'language', 'meta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
+    } = this.getProperties('_previousEventId', 'index', 'total');
+    const inputs = this.getProperties('endpointId', 'eventId', 'eventType',
+      'language', 'meta', 'aliases', 'linkToFileAction', '_defaultSize', 'queryInputs');
 
     // Checking whether or not Recon is open in standalone mode by checking
     // if closeAction is present or not. If a parent/containing addon/engine
@@ -126,11 +124,10 @@ const ReconContainer = Component.extend({
 
     // guard against re-running init on any redux state change,
     // if same id, no need to do anything
-    if (!oldEventId || (oldEventId && inputs.eventId !== oldEventId)) {
+    if (inputs.eventId !== _previousEventId) {
+      this.set('_previousEventId', inputs.eventId);
       this.send('initializeRecon', inputs);
     }
-
-    this.set('oldEventId', inputs.eventId);
 
     this.send('setIndexAndTotal', index, total);
   },
@@ -152,7 +149,7 @@ const ReconContainer = Component.extend({
     // This does not delay any API calls/data fetching.
     later(this, () => {
       if (!this.isDestroyed) {
-        this.set('isAnimationDone', true);
+        this.set('_isAnimationDone', true);
       }
     }, 2000);
   },
