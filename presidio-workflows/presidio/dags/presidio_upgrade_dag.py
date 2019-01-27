@@ -1,7 +1,39 @@
 import os
+import subprocess
 import sys
 
 PRESIDIO_VERSIONS_FILE_NAME = "/var/lib/netwitness/presidio/presidio_versions.txt"
+
+
+def is_presidio_version(version):
+    """
+    :return: True if the given argument is a string representation of a Presidio version, False otherwise
+    :rtype: bool
+    """
+    version = version.split(".")
+
+    if len(version) != 4:
+        return False
+
+    for i in range(4):
+        if not version[i].isdigit():
+            return False
+
+    return True
+
+
+def is_chef_execution(command_line_arguments):
+    """
+    :return: True if the current execution of this Python script is a Chef execution, False otherwise
+    :rtype: bool
+    """
+    if len(command_line_arguments) != 3:
+        return False
+
+    # command_line_arguments[0] is the name of this file
+    from_version = command_line_arguments[1]
+    to_version = command_line_arguments[2]
+    return is_presidio_version(from_version) and is_presidio_version(to_version)
 
 
 def write_presidio_versions(from_version, to_version):
@@ -16,6 +48,7 @@ def write_presidio_versions(from_version, to_version):
     presidio_versions_file.write(from_version + "\n")
     presidio_versions_file.write(to_version + "\n")
     presidio_versions_file.close()
+    subprocess.call(["chown", "presidio:presidio", PRESIDIO_VERSIONS_FILE_NAME])
 
 
 def read_presidio_versions():
@@ -42,9 +75,7 @@ def handle_chef_execution(command_line_arguments):
     """
     from_version = command_line_arguments[1]
     to_version = command_line_arguments[2]
-
-    if from_version != "None":
-        write_presidio_versions(from_version, to_version)
+    write_presidio_versions(from_version, to_version)
 
 
 def handle_airflow_execution():
@@ -66,4 +97,4 @@ def handle_airflow_execution():
         return dag
 
 
-dag = handle_chef_execution(sys.argv) if len(sys.argv) == 3 else handle_airflow_execution()
+dag = handle_chef_execution(sys.argv) if is_chef_execution(sys.argv) else handle_airflow_execution()
