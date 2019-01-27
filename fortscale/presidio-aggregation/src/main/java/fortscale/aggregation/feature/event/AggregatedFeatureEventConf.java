@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunction;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -140,5 +141,10 @@ public class AggregatedFeatureEventConf implements Serializable {
     public void setType(String type) {
         Assert.hasText(type, "type cannot be blank.");
         this.type = type;
+    }
+
+    @Override
+    public String toString(){
+        return ToStringBuilder.reflectionToString(this);
     }
 }

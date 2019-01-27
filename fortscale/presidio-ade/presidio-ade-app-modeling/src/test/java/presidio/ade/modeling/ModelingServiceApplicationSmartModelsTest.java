@@ -256,15 +256,29 @@ public class ModelingServiceApplicationSmartModelsTest {
         Double oneBeforeCurrentAvgWeight = 0.0;
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
+        List<String> prevFeatures = null;
         for (List<AggregatedFeatureEventConf> aggregatedFeatureEventConf : featuresGroupToScoreAndProbabilityMap.keySet()) {
             List<String> features = aggregatedFeatureEventConf.stream().map(AggregatedFeatureEventConf::getName).collect(Collectors.toList());
 
             //suppose that each cluster contains 1 feature
             List<ClusterConf> filteredClusterConf = clusterConfs.stream().filter(clusterConf -> features.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
             Double avgFeaturesWeight = filteredClusterConf.stream().mapToDouble(ClusterConf::getWeight).average().getAsDouble();
-
-            Assert.assertTrue(oneBeforeCurrentAvgWeight < avgFeaturesWeight);
+            if(prevFeatures != null && oneBeforeCurrentAvgWeight >= avgFeaturesWeight){
+                StringBuilder builder = new StringBuilder();
+                builder.append(String.format("oneBeforeCurrentAvgWeight: %f, avgFeaturesWeight:%f\n", oneBeforeCurrentAvgWeight, avgFeaturesWeight));
+                builder.append("prevFeatures: " + prevFeatures+ "\n");
+                builder.append("features: " + features + "\n");
+                builder.append(String.format("featuresGroupToScoreAndProbabilityMap (class: %s):\n",featuresGroupToScoreAndProbabilityMap.getClass()));
+                for(Map.Entry<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> entry: featuresGroupToScoreAndProbabilityMap.entrySet()){
+                    builder.append(String.format("list class: %s \n", entry.getKey().getClass()));
+                    List<String> featuresTmp = entry.getKey().stream().map(AggregatedFeatureEventConf::getName).collect(Collectors.toList());
+                    builder.append(String.format("features: %s\n", featuresTmp));
+                    builder.append(String.format("score: %f prob:%d\n", entry.getValue().getKey(), entry.getValue().getValue()));
+                }
+                Assert.fail(builder.toString());
+            }
             oneBeforeCurrentAvgWeight = avgFeaturesWeight;
+            prevFeatures = features;
         }
     }
 
