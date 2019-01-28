@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -31,6 +31,6 @@ module('Integration | Component | process-details/events-table/table/body-cell',
 
     await render(hbs`{{process-details/events-table/table/body-cell item=item column=column}}`);
     assert.equal(this.element.querySelector('.rsa-data-table-body-cell').textContent.trim(), '45328', 'Should display cell sessionid');
-
+    assert.equal(find('.rsa-data-table-body-cell div').getAttribute('title').trim(), '45328');
   });
 });
