@@ -39,6 +39,9 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    };
     // Testem prefers this...
     ENV.locationType = 'none';
 

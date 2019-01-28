@@ -47,7 +47,7 @@ const getMetaValues = ({ filter, queryNode, metaName, size = 1 }) => {
   });
 };
 
-function* fetchHostNameList({ payload }) {
+function* fetchHostNameList({ payload, meta }) {
   const state = yield select();
   try {
     const queryNode = state.investigate;
@@ -62,7 +62,7 @@ function* fetchHostNameList({ payload }) {
       const childrenChunks = _.chunk(payload, MAX_PENDING_QUERIES);
       let finalResult = {};
       for (let i = 0; i < childrenChunks.length; i++) {
-        put({ type: ACTION_TYPES.AGENT_COUNT_INIT, payload: childrenChunks[i] });
+        put({ type: ACTION_TYPES.AGENT_COUNT_INIT, payload: childrenChunks[i], meta });
         const result = yield all(getAPICalls(input, childrenChunks[i]));
         finalResult = { ...finalResult, ...result };
       }
@@ -70,10 +70,10 @@ function* fetchHostNameList({ payload }) {
       for (const key in finalResult) {
         result2[key] = finalResult[key].length;
       }
-      yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: result2 });
+      yield put({ type: ACTION_TYPES.SET_AGENT_COUNT, payload: result2, meta });
     }
   } catch (e) {
-    yield put({ type: ACTION_TYPES.SET_AGENT_COUNT_FAILED });
+    yield put({ type: ACTION_TYPES.SET_AGENT_COUNT_FAILED, meta });
   }
 
 }

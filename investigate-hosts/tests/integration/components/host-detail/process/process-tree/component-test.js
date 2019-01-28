@@ -1340,4 +1340,32 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   });
 
+  test('Clicking on a column in the column selector, toggles the visibility of the column in the table', async function(assert) {
+    new ReduxDataHelper(setState)
+      .agentId(1)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .isTreeView(true)
+      .sortField('score')
+      .isDescOrder(true)
+      .selectedTab(null).build();
+    await render(hbs`
+     <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/process/process-tree}}
+    `);
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
+    await click('.rsa-data-table-header__column-selector');
+    return settled().then(async() => {
+      await click(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3]);
+      return settled().then(() => {
+        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 10, '10 columns in header, including the checkbox');
+      });
+    });
+  });
+
 });
