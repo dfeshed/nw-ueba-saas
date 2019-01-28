@@ -1,6 +1,5 @@
 import { HostDetails } from '../api';
 import * as ACTION_TYPES from '../types';
-import { getHostFiles } from './files';
 import { debug } from '@ember/debug';
 
 let stopItemsStream;
@@ -53,18 +52,11 @@ const setSelectedTabData = (option) => ({ type: ACTION_TYPES.SELECTED_TAB_DATA, 
 
 /**
  * Action for resetting the explore state
- * @method resetExploredResults
+ * @method resetExploreSearch
  * @public
  * @returns {Object}
  */
-const resetExploredResults = () => ({ type: ACTION_TYPES.RESET_EXPLORED_RESULTS });
-
-const resetExploreSearch = () => {
-  return (dispatch) => {
-    dispatch(resetExploredResults());
-    dispatch(getHostFiles());
-  };
-};
+const resetExploreSearch = () => ({ type: ACTION_TYPES.RESET_EXPLORED_RESULTS });
 
 export {
   getFileSearchResults,

@@ -24,10 +24,6 @@ module.exports = function(env) {
         subscriptionDestination: '/user/queue/endpoint/machine/export',
         requestDestination: '/ws/endpoint/machine/export'
       },
-      getHostFilesPages: {
-        subscriptionDestination: '/user/queue/endpoint/filecontext/list-page',
-        requestDestination: '/ws/endpoint/filecontext/list-page'
-      },
       fileContextSearch: {
         subscriptionDestination: '/user/queue/endpoint/filecontext/search',
         requestDestination: '/ws/endpoint/filecontext/search/stream'

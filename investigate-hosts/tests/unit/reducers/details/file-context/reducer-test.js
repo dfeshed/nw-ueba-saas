@@ -17,7 +17,6 @@ const initialState = {
   sortConfig: null,
   fileStatus: {},
   totalItems: null,
-  pageNumber: -1,
   hasNext: false,
   isRemediationAllowed: true,
   agentCountMapping: {},
@@ -271,14 +270,6 @@ module('Unit | Reducers | File Context', function() {
     });
     const endState = reducer(previous, action);
     assert.equal(endState.fileStatus, 'Blacklist');
-  });
-
-  test('The INCREMENT_PAGE_NUMBER will increment page number sets the state', function(assert) {
-    const previous = Immutable.from({
-      pageNumber: 0
-    });
-    const result = reducer(previous, { type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
-    assert.equal(result.pageNumber, 1);
   });
 
   test('FILE_CONTEXT_RESET_SELECTION should selected all drivers', function(assert) {

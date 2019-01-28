@@ -15,7 +15,6 @@ const initialState = Immutable.from({
   sortConfig: null, // Column sort configuration
   fileStatus: {}, // File status for selected file
   totalItems: null, // Total number of file context items
-  pageNumber: -1,
   hasNext: false,
   isRemediationAllowed: true,
   agentCountMapping: {},
@@ -125,8 +124,6 @@ const fileContext = reduxActions.handleActions({
       }
     });
   },
-
-  [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
 
   [ACTION_TYPES.FETCH_REMEDIATION_STATUS]: (state, action) => {
     return handle(state, action, {
