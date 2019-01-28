@@ -250,4 +250,3 @@ const _getIdsForEventType = (eventType, selectedEventIds, resultsData) => {
   const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? 'LOG' : 'NETWORK'));
   return selectedEventsOfType.map((event) => event.sessionId);
 };
-

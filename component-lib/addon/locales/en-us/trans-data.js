@@ -513,7 +513,11 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
-      title: 'Events',
+      titleThreshold: '{{age}} {{count}} Events ({{sort}})',
+      title: '{{count}} Events ({{sort}})',
+      oldest: 'oldest',
+      newest: 'newest',
+      titleThresholdTooltip: 'Displaying {{age}} {{count}} events in {{sort}} order.',
       isAtThreshold: 'The event count reached the query threshold.',
       tableGroupLabel: 'Displaying events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {

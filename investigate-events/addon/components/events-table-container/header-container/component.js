@@ -7,12 +7,19 @@ import { later } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
 
 const stateToComputed = (state) => ({
+  eventCount: state.investigate.eventCount.data,
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
+  eventTimeSortOrder: state.investigate.eventResults.eventTimeSortOrder,
   columnGroups: state.investigate.data.columnGroups,
-  selectedColumnGroup: getSelectedColumnGroup(state)
+  selectedColumnGroup: getSelectedColumnGroup(state),
+  count: state.investigate.eventCount.data,
+  isAtThreshold: resultCountAtThreshold(state),
+  shouldStartAtOldest: shouldStartAtOldest(state)
 });
 
 const dispatchToActions = {
@@ -25,6 +32,11 @@ const HeaderContainer = Component.extend({
   i18n: service(),
   toggleReconSize: () => {},
   toggleSlaveFullScreen: () => {},
+
+  @computed('shouldStartAtOldest', 'i18n')
+  eventResultSetStart(shouldStartAtOldest, i18n) {
+    return shouldStartAtOldest ? i18n.t('investigate.events.oldest') : i18n.t('investigate.events.newest');
+  },
 
   @computed('columnGroups', 'i18n.locale')
   localizedColumnGroups(columnGroups) {

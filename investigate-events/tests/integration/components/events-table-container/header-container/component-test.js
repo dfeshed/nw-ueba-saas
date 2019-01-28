@@ -14,11 +14,10 @@ let setState;
 const columnSelector = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
 
 const renderDefaultHeaderContainer = async(assert) => {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
   await render(hbs`{{events-table-container/header-container}}`);
   // TODO bring download back. power-select for download is not available as of now
   assert.equal(findAll('.ember-power-select-trigger').length, 1, 'only 1 power-select available. There is no option to select default column group.');
-  assert.equal(find('.rsa-investigate-event-counter').textContent.trim(), '55');
 };
 
 module('Integration | Component | header-container', function(hooks) {
@@ -36,13 +35,20 @@ module('Integration | Component | header-container', function(hooks) {
     accessControl.set('hasInvestigateContentExportAccess', true);
   });
 
+  test('render the events header with data at threshold', async function(assert) {
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(100000).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100000Events(Ascending)', 'rendered event header title');
+    assert.ok(find('.rsa-investigate-events-table__header__container .at-threshold'), 'at threshold icon is present');
+  });
+
   test('render the events header with required fields ', async function(assert) {
     await renderDefaultHeaderContainer(assert);
     assert.ok(find('.rsa-investigate-events-table__header__container'), 'render event header container');
     assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements');
     // TODO bring download back.
     assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 2, 'rendered with three elements');
-    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'Events55', 'rendered event header title');
+    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Ascending)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     // TODO bring download back.
     // assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
