@@ -15,7 +15,7 @@ const DEFAULT_COLUMN_VISIBILITY = true;
 export default Component.extend(DomWatcher, {
   tagName: 'section',
   classNames: 'rsa-data-table',
-  classNameBindings: ['fitToWidth'],
+  classNameBindings: ['fitToWidth', 'enableGrouping'],
   whitespace: 14,
   groupLabelHeight: 28,
 

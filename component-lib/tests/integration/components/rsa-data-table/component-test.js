@@ -645,6 +645,7 @@ test('it renders the group-label when enableGrouping is true', function(assert) 
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
   assert.equal(this.$('.group-label').length, 1, '.group-label dom element found.');
+  assert.equal(this.$('.enable-grouping').length, 1, '.enable-grouping dom element found.');
 });
 
 test('it does not render the group-label when enableGrouping is false', function(assert) {
@@ -665,6 +666,7 @@ test('it does not render the group-label when enableGrouping is false', function
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
   assert.equal(this.$('.group-label').length, 0, '.group-label dom element found.');
+  assert.equal(this.$('.enable-grouping').length, 0, '.enable-grouping dom element found.');
 });
 
 test('_scrollTopWillChange is called when items.length is updated', function(assert) {
