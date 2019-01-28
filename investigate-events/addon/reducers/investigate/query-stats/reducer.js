@@ -19,10 +19,6 @@ export default handleActions({
     return state.merge(_initialState);
   },
 
-  [ACTION_TYPES.INITIALIZE_QUERYING]: (state) => {
-    return state.merge(_initialState);
-  },
-
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state) => {
     return state.merge({
       isConsoleOpen: false
