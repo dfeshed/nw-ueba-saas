@@ -289,6 +289,7 @@ export default Component.extend({
   onError: () => {},
 
   actions: {
+    // capture invalid start and end times to persist in state, so that error notification is justified
     onChangeStart(start) {
       this.setProperties({
         startErrors: [], // reset the start errors array since the start of the range has no errors
@@ -299,8 +300,8 @@ export default Component.extend({
         onChange(start, endTimestamp);
       } else {
         // invoke onError since this may be a date range error (end before start)
-        const { onError, errors } = this.getProperties('onError', 'errors');
-        onError(errors);
+        const { onError, errors, endTimestamp } = this.getProperties('onError', 'errors', 'endTimestamp');
+        onError(errors, start, endTimestamp);
       }
     },
     onChangeEnd(end) {
@@ -313,19 +314,21 @@ export default Component.extend({
         onChange(startTimestamp, end);
       } else {
         // invoke onError since this may be a date range error (end before start)
-        const { onError, errors } = this.getProperties('onError', 'errors');
-        onError(errors);
+        const { onError, errors, startTimestamp } = this.getProperties('onError', 'errors', 'startTimestamp');
+        onError(errors, startTimestamp, end);
       }
     },
     onStartError(errors) {
       const onError = this.get('onError');
       this.set('startErrors', errors);
-      onError(this.get('errors'));
+      const { startTimestamp, endTimestamp } = this.getProperties('startTimestamp', 'endTimestamp');
+      onError(this.get('errors'), startTimestamp, endTimestamp);
     },
     onEndError(errors) {
       const onError = this.get('onError');
       this.set('endErrors', errors);
-      onError(this.get('errors'));
+      const { startTimestamp, endTimestamp } = this.getProperties('startTimestamp', 'endTimestamp');
+      onError(this.get('errors'), startTimestamp, endTimestamp);
     }
   }
 });

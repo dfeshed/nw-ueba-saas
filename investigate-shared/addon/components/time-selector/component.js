@@ -143,10 +143,12 @@ const TimeSelector = Component.extend({
       this.get('onIndividualTimeUnitChange')(start, end);
     },
     // called when the start, end times is changed manually in the component.
-    // no need to capture the actual error object, as the tooltip
-    // provides feedback on what the error is.
-    timeRangeError() {
-      this.get('onTimeRangeError')();
+    // Although the tooltip provides feedback on what the error is,
+    // need to capture the invalid start/end time that need to persist for the error validation to be justified
+    // else the invalid time selection reverts to previous valid time selection, leaving the user confused
+    // why the red border persists with the correct time.
+    timeRangeError(error, start, end) {
+      this.get('onTimeRangeError')(error, start, end);
     },
     // called from the dropdown that has the options "Last 5 mins, Last 1 hr, All Data etc".
     onEntireTimeRangeSelection(range) {

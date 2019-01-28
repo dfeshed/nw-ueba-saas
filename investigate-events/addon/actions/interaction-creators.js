@@ -131,12 +131,17 @@ export const setCustomTimeRange = (start, end) => {
  * Errors can be date errors (out of bounds), range errors (start time greater than end time) etc.
  * Error state can only be achieved when the user manually sets an incorrect date/time unit.
  * So dispatch CUSTOM ID when we detect an error.
+ * Also dispatch the invalid time selections to justify the error notification,
+ * else the invalid time selection reverts to previous valid time selection, leaving the user confused
+ * why the red border persists with the correct time.
  * @public
  */
-export const setTimeRangeError = () => {
+export const setTimeRangeError = (error, start, end) => {
   return {
     type: ACTION_TYPES.SET_TIME_RANGE_ERROR,
     payload: {
+      startTime: start / 1000,
+      endTime: end / 1000,
       selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
     }
   };

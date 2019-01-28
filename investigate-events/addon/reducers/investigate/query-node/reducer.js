@@ -371,11 +371,18 @@ export default handleActions({
     });
   },
 
+  /**
+   * Need to set the invalid time selections in state to justify the error notification,
+   * else the invalid time selection reverts to previous valid time selection, leaving the user confused
+   * why the red border persists with the correct time.
+   */
   [ACTION_TYPES.SET_TIME_RANGE_ERROR]: (state, { payload }) => {
     const { previouslySelectedTimeRanges, serviceId } = state;
     const newRange = {};
     newRange[serviceId] = payload.selectedTimeRangeId;
     return state.merge({
+      endTime: payload.endTime,
+      startTime: payload.startTime,
       timeRangeInvalid: true,
       previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
     });

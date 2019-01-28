@@ -120,22 +120,51 @@ test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   assert.equal(result.queryView, 'freeForm');
 });
 
-test('SET_TIME_RANGE_ERROR reducer sets the time range to invalid', function(assert) {
+test('SET_QUERY_TIME_RANGE set time range', function(assert) {
   const prevState = Immutable.from({
     previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
-    timeRangeInvalid: false
+    serviceId: '1',
+    startTime: null,
+    endTime: null
   });
+
+  const action = {
+    type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
+    payload: {
+      startTime: 1,
+      endTime: 2,
+      selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
+    }
+  };
+
+  const result = reducer(prevState, action);
+
+  assert.equal(result.startTime, 1, 'Correct Start Time');
+  assert.equal(result.endTime, 2, 'Correct End Time');
+});
+
+test('SET_TIME_RANGE_ERROR reducer sets the time range to invalid, persists wrong selections', function(assert) {
+  const prevState = Immutable.from({
+    previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
+    timeRangeInvalid: false,
+    startTime: null,
+    endTime: null
+  });
+
   const action = {
     type: ACTION_TYPES.SET_TIME_RANGE_ERROR,
     payload: {
-      queryParams: {
-        selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
-      }
+      startTime: 2,
+      endTime: 1,
+      selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
     }
   };
+
   const result = reducer(prevState, action);
 
   assert.equal(result.timeRangeInvalid, true);
+  assert.equal(result.startTime, 2, 'Correct invalid Start Time');
+  assert.equal(result.endTime, 1, 'Correct invalid End Time');
 });
 
 test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer being edited', function(assert) {

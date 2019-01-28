@@ -116,8 +116,8 @@ module('Integration | Component | query-container', function(hooks) {
 
   test('Make the timerange invalid, then select from custom dropdown - error should go away', async function(assert) {
     assert.expect(5);
-    const startTimeinSec = 1508091780; // Oct 15 2017 18:23
-    const endTimeinSec = 1508178179; // Oct 16 2017 18:22
+    const startTimeinSec = 1508091780; // Oct 15 2017 18:23:00
+    const endTimeinSec = 1508178179; // Oct 16 2017 18:22:59
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
       .queryStats()
