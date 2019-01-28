@@ -327,7 +327,7 @@
     {
       "type": "copy_value",
       "name": "os-type",
-      "sourceKey": "OS",
+      "sourceKey": "OS[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.osType"
