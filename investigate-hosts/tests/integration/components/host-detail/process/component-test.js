@@ -362,7 +362,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li').length, 3, 'File download options are not present in more actions.');
+      assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li').length, 2, 'File download options are not present in more actions.');
     });
   });
 

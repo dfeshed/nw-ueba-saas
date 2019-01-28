@@ -77,8 +77,8 @@ export default Component.extend({
     return {};
   },
 
-  @computed('fileDownloadButtonStatus')
-  fileActionOptions(fileDownloadButtonStatus) {
+  @computed('fileDownloadButtonStatus', 'showResetRiskScore')
+  fileActionOptions(fileDownloadButtonStatus, showResetRiskScore) {
 
     const i18n = this.get('i18n');
     const canManageFiles = this.get('accessControl.endpointCanManageFiles');
@@ -96,7 +96,9 @@ export default Component.extend({
       ];
     }
     // Reset riskscore option Adding last
-    fileActionConfClone.push({ panelId: 'panel6', name: 'resetRiskScore' });
+    if (showResetRiskScore) {
+      fileActionConfClone.push({ panelId: 'panel6', name: 'resetRiskScore' });
+    }
 
     // Translated titles added.
     return fileActionConfClone.map((item) => {

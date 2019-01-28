@@ -78,8 +78,8 @@
         {{#if (eq fileAction.name 'downloadToServer')}}
           <hr class="divider actionSeperator">
         {{/if}}
-        <li title="{{if fileAction.disabled fileAction.disabledTooltip}}" 
-        class="{{fileAction.panelId}}{{if fileAction.disabled ' disabled'}}" 
+        <li title="{{if fileAction.disabled fileAction.disabledTooltip}}"
+        class="{{fileAction.panelId}}{{if fileAction.disabled ' disabled'}}"
         {{action 'onFileDownloadOptions' fileAction.name fileAction.disabled}}>
           {{fileAction.title}}
         </li>

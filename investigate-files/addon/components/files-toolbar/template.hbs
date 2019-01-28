@@ -6,8 +6,8 @@
 </h2>
 <div class="toolbar-actions">
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'handleServiceSelection')}}
-  {{#rsa-form-button 
-     isDisabled=isCertificateViewDisabled 
+  {{#rsa-form-button
+     isDisabled=isCertificateViewDisabled
      title=isCertificateViewDisabledTitle
      class="view-certificate-button" click=(action 'toggleCertificateView')}}
     {{#if (and (eq certificateLoadStatus 'wait') (not-eq servers.isSummaryRetrieveError true))}}
@@ -26,6 +26,7 @@
     serviceId=serviceId
     timeRange=timeRange
     fileStatusData=data
+    showResetRiskScore=true
     selectedFileCount=selectedFileCount
     getAllServices=(action 'getAllServices')
     restrictedFileList=restrictedFileList

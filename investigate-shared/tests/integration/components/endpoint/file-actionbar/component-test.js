@@ -57,6 +57,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       accessControl=accessControl
+      showResetRiskScore=true
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
@@ -95,6 +96,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar
       itemList=itemList
       showIcons=false
+      showResetRiskScore=true
       selectedFileCount=2}}`);
 
     await click('.more-action-button');
@@ -116,6 +118,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       showIcons=false
       selectedFileCount=2
       accessControl=accessControl
+      showResetRiskScore=true
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -138,6 +141,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      showResetRiskScore=true
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
@@ -166,6 +170,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       selectedFileCount=2
       downloadFiles=downloadFiles
       accessControl=accessControl
+      showResetRiskScore=true
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -192,6 +197,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       selectedFileCount=2
       downloadFiles=downloadFiles
       accessControl=accessControl
+      showResetRiskScore=true
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -218,6 +224,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       selectedFileCount=2
       saveLocalCopy=saveLocalCopy
       accessControl=accessControl
+      showResetRiskScore=true
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
 
     await click('.more-action-button');
@@ -240,6 +247,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      showResetRiskScore=true
       analyzeFile=analyzeFile
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
@@ -287,6 +295,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      showResetRiskScore=true
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
@@ -302,7 +311,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus showResetRiskScore=true}}`);
     await click('.more-action-button');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
     assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
@@ -312,7 +321,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   test('Reset Risk score is disabled', async function(assert) {
     this.set('itemList', [ { firstFileName: 'abc' } ]);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false}}`);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false showResetRiskScore=true}}`);
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, 'All the list options should render.');
     assert.equal(findAll('.rsa-dropdown-action-list hr')[0].className, 'divider actionSeperator', 'Seperator is available for reset Risk score button');
@@ -332,6 +341,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       itemList=itemList
       showIcons=false
       selectedFileCount=2
+      showResetRiskScore=true
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus
       isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
@@ -355,6 +365,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar
       itemList=itemList
       showIcons=false
+      showResetRiskScore=true
       selectedFileCount=2
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus
@@ -388,5 +399,28 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       tabLabel=tabLabel
     }}`);
     assert.equal(findAll('.tab-label')[0].textContent.trim(), 'test label', 'label displayed in the file action bar');
+  });
+
+  test('Reset risk score button is not present', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('isMaxResetRiskScoreLimit', true);
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      showResetRiskScore=false
+      accessControl=accessControl
+      fileDownloadButtonStatus=fileDownloadButtonStatus
+    }}`);
+    assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render except reset risk score.');
   });
 });

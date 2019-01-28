@@ -586,7 +586,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 6, 'Context menu not rendered');
+      assert.equal(items.length, 5, 'Context menu not rendered');
     });
   });
 
@@ -623,7 +623,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 9, 'Context menu rendered');
+      assert.equal(items.length, 8, 'Context menu rendered');
     });
   });
 

@@ -297,7 +297,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       .fileContextSelections(fileContextSelections)
       .selectedHostList(selectedHostList)
       .build();
-    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await render(hbs`{{host-detail/utils/file-context-wrapper storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
     assert.expect(3);
 
@@ -325,6 +325,112 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
     await click('.more-action-button');
     await click('.rsa-dropdown-action-list .panel3');
+  });
+
+  test('Reset Risk Score Action is not present', async function(assert) {
+    const hostDetails = {
+      machineIdentity: {
+        agentMode: 'Advanced'
+      }
+    };
+    const fileContextSelections = [
+      {
+        id: 'drivers_13',
+        fileName: 'acpi.sys',
+        checksumSha1: '79a1a29d267d6480138d2768041c46430f77bcf5',
+        checksumSha256: 'ae69c142dc2210a4ae657c23cea4a6e7cb32c4f4eba039414123cac52157509b',
+        checksumMd5: 'cea80c80bed809aa0da6febc04733349',
+        signature: {
+          timeStamp: '2010-11-20T12:29:16.000+0000',
+          thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
+          features: [
+            'microsoft',
+            'signed',
+            'valid'
+          ],
+          signer: 'Microsoft Windows'
+        },
+        size: 274304,
+        machineOsType: 'windows',
+        downloadInfo: { 'status': 'Error' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
+      },
+      {
+        id: 'drivers_73',
+        fileName: 'afd.sys',
+        checksumSha1: '96c00157276e982c7d883bec5478eb1fb242cf1f',
+        checksumSha256: '673c2b498744c7eb846f6bd4fdc852b0a9722377d75fd694f7f78e727adf4563',
+        checksumMd5: '1151fd4fb0216cfed887bfde29ebd516',
+        signature: {
+          timeStamp: '2010-11-20T15:32:51.000+0000',
+          thumbprint: '02eceea9d5e0a9f3e39b6f4ec3f7131ed4e352c4',
+          features: [
+            'microsoft',
+            'signed',
+            'valid',
+            'catalog'
+          ],
+          signer: 'Microsoft Windows'
+        },
+        size: 338944,
+        machineOsType: 'windows',
+        downloadInfo: { 'status': 'Downloaded' },
+        features: [
+          'file.arch64',
+          'file.subsystemNative',
+          'file.versionInfoPresent',
+          'file.resourceDirectoryPresent',
+          'file.relocationDirectoryPresent',
+          'file.debugDirectoryPresent',
+          'file.richSignaturePresent',
+          'file.codeSectionWritable',
+          'file.companyNameContainsText',
+          'file.descriptionContainsText',
+          'file.versionContainsText',
+          'file.internalNameContainsText',
+          'file.legalCopyrightContainsText',
+          'file.originalFilenameContainsText',
+          'file.productNameContainsText',
+          'file.productVersionContainsText',
+          'file.standardVersionMetaPresent'
+        ],
+        format: 'pe'
+      }
+    ];
+    const selectedHostList = [{
+      id: 1,
+      version: '4.3.0.0',
+      managed: true
+    }];
+
+    new ReduxDataHelper(setState)
+      .drivers(drivers)
+      .host(hostDetails)
+      .fileContextSelections(fileContextSelections)
+      .selectedHostList(selectedHostList)
+      .build();
+    await render(hbs`{{host-detail/utils/file-context-wrapper accessControl=accessControl storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list .panel6').length, 0, 'Reset Risk Score Action is not present');
   });
 
   test('Context menu rendered', async function(assert) {
@@ -355,7 +461,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 8, 'Context menu rendered');
+      assert.equal(items.length, 7, 'Context menu rendered');
     });
   });
 

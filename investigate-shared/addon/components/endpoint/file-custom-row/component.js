@@ -217,15 +217,18 @@ export default DataTableBodyRow.extend({
       };
       contextConf.push(pivot);
     }
-    contextConf.push({
-      label: 'resetRiskScore',
-      order: 10,
-      prefix: 'investigateShared.endpoint.fileActions.',
-      showDivider: true,
-      action(selection, context) {
-        context.resetRiskScore(context.get('selections'));
-      }
-    });
+
+    if (this.get('showResetRiskScore')) {
+      contextConf.push({
+        label: 'resetRiskScore',
+        order: 10,
+        prefix: 'investigateShared.endpoint.fileActions.',
+        showDivider: true,
+        action(selection, context) {
+          context.resetRiskScore(context.get('selections'));
+        }
+      });
+    }
 
     return contextConf.sortBy('order');
   }

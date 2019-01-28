@@ -34,6 +34,7 @@
           component 'endpoint/file-custom-row'
           serviceList=serviceList
           selections=fileContextSelections
+          showResetRiskScore = false
           beforeContextMenuShow=(action 'beforeContextMenuShow')
           editFileStatus=(action 'showEditFileStatus')
           pivotToInvestigate=(action 'pivotToInvestigate')
@@ -47,7 +48,6 @@
           analyzeFile=analyzeFile
           retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
           onSaveFileStatus = (action 'setFileContextFileStatus' tabName checksums fileContextSelections)
-          resetRiskScore=(action 'showRiskScoreModal')
         )
         noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{#if column.componentClass}}
