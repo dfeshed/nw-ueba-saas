@@ -64,7 +64,7 @@
         </div>
       {{/if}}
     {{else if hasPartialResults}}
-      {{t 'investigate.partialResults'}}
+      {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
     {{/if}}
   {{/rsa-data-table/load-more}}
 

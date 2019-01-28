@@ -468,7 +468,7 @@ export default {
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
     notAllLoaded: '{{maxEvents}} event maximum displayed, remaining results not loaded',
-    partialResults: 'Because the query was canceled, only partial results are displayed.',
+    partialResults: 'Because the query was canceled, only {{actualEventCount}} results of {{totalCount}} are displayed.',
     allResultsLoaded: 'All results loaded',
     showNextXEvents: 'Show Next {{count}} Events',
     tryAgain: 'Try Again',

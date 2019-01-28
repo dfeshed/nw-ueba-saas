@@ -7,7 +7,8 @@ import {
   getDownloadOptions,
   isCanceled,
   isEventResultsError,
-  percentageOfEventsDataReturned
+  percentageOfEventsDataReturned,
+  actualEventCount
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -435,6 +436,44 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(eventType(logState), 'LOG', 'wrong type returned');
     assert.equal(eventType(endpointState), 'ENDPOINT', 'wrong type returned');
     assert.equal(eventType(networkState), 'NETWORK', 'wrong type returned');
+  });
+
+  test('actualEventCount returns the correct value', function(assert) {
+    let state = {
+      investigate: {
+        eventResults: {
+          status: 'stopped',
+          data: [
+            { sessionId: 1, medium: 32 },
+            { sessionId: 2, 'nwe.callback_id': true },
+            { sessionId: 3 }
+          ]
+        },
+        eventCount: {
+          data: 3
+        }
+      }
+    };
+    let actualCount = actualEventCount(state);
+    assert.equal(actualCount, 3, 'This is the eventCount value');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'canceled',
+          data: [
+            { sessionId: 1, medium: 32 },
+            { sessionId: 2, 'nwe.callback_id': true },
+            { sessionId: 3 }
+          ]
+        },
+        eventCount: {
+          data: 5
+        }
+      }
+    };
+    actualCount = actualEventCount(state);
+    assert.equal(actualCount, 3, 'This is the eventResults.data.length value');
   });
 });
 

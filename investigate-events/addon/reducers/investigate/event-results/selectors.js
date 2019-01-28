@@ -212,6 +212,16 @@ export const getDownloadOptions = createSelector(
 );
 
 /**
+ * Finds the actual count of events.
+ * Comes in handy when search is cancelled.
+ * @public
+ */
+export const actualEventCount = createSelector(
+  [isCanceled, _eventResultCount, _resultsData],
+  (isCanceled, eventCount, eventsArray) => (isCanceled) ? eventsArray.length : eventCount
+);
+
+/**
  * Finds and returns the index of the first array member whose key matches a
  * given value. Will use `Array.findIndex()` if supported.
  * @param {array} arr The array to be searched

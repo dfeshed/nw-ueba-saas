@@ -8,7 +8,8 @@ import {
   selectedIndex,
   allExpectedDataLoaded,
   areEventsStreaming,
-  isCanceled
+  isCanceled,
+  actualEventCount
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
@@ -35,7 +36,9 @@ const stateToComputed = (state) => ({
   queryConditions: state.investigate.queryNode.metaFilter,
   metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
   isCanceled: isCanceled(state),
-  isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup
+  isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
+  totalCount: state.investigate.eventCount.data,
+  actualEventCount: actualEventCount(state)
 });
 
 const dispatchToActions = {

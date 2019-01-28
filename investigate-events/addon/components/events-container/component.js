@@ -3,7 +3,12 @@ import { connect } from 'ember-redux';
 import config from 'ember-get-config';
 import computed from 'ember-computed-decorators';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
-import { eventType, selectedIndex, isEventResultsError, eventResultsErrorMessage } from 'investigate-events/reducers/investigate/event-results/selectors';
+import {
+  eventType,
+  selectedIndex,
+  isEventResultsError,
+  eventResultsErrorMessage,
+  actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getServices } from 'investigate-events/actions/initialization-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
@@ -24,7 +29,7 @@ const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
   selectedIndex: selectedIndex(state),
   sessionId: state.investigate.queryNode.sessionId,
-  totalCount: state.investigate.eventCount.data
+  totalCount: actualEventCount(state)
 });
 
 const dispatchToActions = { getServices };

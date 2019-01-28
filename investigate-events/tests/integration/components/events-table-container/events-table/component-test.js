@@ -172,7 +172,7 @@ module('Integration | Component | events-table', function(hooks) {
   test('if events are canceled, but some results have returned, a message is displayed', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('canceled')
-      .eventCount(1)
+      .eventCount(2)
       .streamLimit(100)
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
@@ -183,7 +183,7 @@ module('Integration | Component | events-table', function(hooks) {
       'missing correct number of rows'
     );
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(),
-      'Because the query was canceled, only partial results are displayed.',
+      'Because the query was canceled, only 1 results of 2 are displayed.',
       'missing correct cancellation message when partial results returned'
     );
   });
