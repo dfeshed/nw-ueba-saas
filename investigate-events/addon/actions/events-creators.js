@@ -101,10 +101,8 @@ const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatch
   };
 };
 
-// Anytime a batch needs to be kicked off, _resetForNextBatches
-// makes sure that everything that needs to be reset is reset
-// and that previous streams are stopped/unsubscribed.
-const _resetForNextBatches = () => {
+// Cleans up any streams that are currently open
+const _cleanUpStreams = () => {
   if (currentStreamState.countStreamCallback) {
     if (window.DEBUG_STREAMS) {
       console.log('Cleaning up count stream');
@@ -120,8 +118,13 @@ const _resetForNextBatches = () => {
     currentStreamState.eventStreamCallback();
     currentStreamState.eventStreamCallback = undefined;
   }
+};
 
-
+// Anytime a batch needs to be kicked off, _resetForNextBatches
+// makes sure that everything that needs to be reset is reset
+// and that previous streams are stopped/unsubscribed.
+const _resetForNextBatches = () => {
+  _cleanUpStreams();
   currentStreamState.currentBatchEvents.length = 0;
   currentStreamState.interimBatchCount = 0;
 };
@@ -140,6 +143,8 @@ const _done = (errorCode, serverMessage) => {
       console.timeEnd();
       console.log('ALL DONE');
     }
+
+    _cleanUpStreams();
 
     // dispatch any events that have accumulated and have
     // not already been sent to state
@@ -605,6 +610,12 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       // to the minute. A second is subtracted from the end time as
       // seconds are inclusive, hence 59
       if ((batchEndTime % 60 === 59) && (batchStartTime % 60 === 0)) {
+        if (window.DEBUG_STREAMS) {
+          if (currentStreamState.binarySearchBatchStartTime.tooMany !== 0 &&
+            currentStreamState.binarySearchBatchStartTime.noResults !== 0) {
+            console.log('Running a binary search but getting the count, this is not normal', currentStreamState.binarySearchBatchStartTime);
+          }
+        }
         _getBatchEventCount(modifiedQueryNode, language, streamLimit, dispatch);
       } else {
         if (window.DEBUG_STREAMS) {
