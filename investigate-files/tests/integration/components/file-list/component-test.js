@@ -171,8 +171,8 @@ module('Integration | Component | file list', function(hooks) {
       .setSelectedFileList([])
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 6, 'Returned the number of columns of the datatable');
-    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 5, '5 movable columns present');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 5, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 4, '4 movable columns present');
     assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
   });
 
@@ -190,7 +190,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length, 12, 'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 10, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -259,8 +259,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[9].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[22].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[8].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[20].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -375,7 +375,7 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'initial file count is 2');
     find('.rsa-data-table-load-more button.rsa-form-button').click();
-    await waitUntil(() => findAll('.rsa-data-table-body-row').length === 13);
+    await waitUntil(() => findAll('.rsa-data-table-body-row').length === 13, { timeout: 10000 });
     assert.equal(findAll('.rsa-data-table-body-row').length, 13, 'After load file count is 13');
   });
 
@@ -444,8 +444,8 @@ module('Integration | Component | file list', function(hooks) {
 
     await settled();
 
-    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
-    findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'initial visible column count is 5');
+    findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[10].click();
     await waitUntil(() => findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 5);
     assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visible column is 5');
   });
@@ -764,7 +764,7 @@ module('Integration | Component | file list', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
     const { selectedIndex } = redux.getState().files.fileList;
     assert.equal(selectedIndex, 1, 'Focused host set as first row');
-    triggerEvent(findAll('.machineCount')[0], 'contextmenu', e);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const newsetSelectedIndex = redux.getState().files.fileList.selectedIndex;
       assert.equal(newsetSelectedIndex, null, 'Focused host remains unchanged');

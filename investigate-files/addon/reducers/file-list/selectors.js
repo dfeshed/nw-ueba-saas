@@ -121,6 +121,13 @@ export const hostList = createSelector(
   }
 );
 
+export const hostListCount = createSelector(
+  [hostList],
+  (hostList = []) => {
+    return hostList.length;
+  }
+);
+
 export const isExportButtonDisabled = createSelector(
   [hasFiles, _servers, _serverId],
   (hasFiles, servers, serverId) => {

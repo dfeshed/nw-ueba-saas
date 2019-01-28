@@ -23,14 +23,5 @@ export default [
     field: 'score',
     searchable: false,
     title: 'investigateFiles.fields.score'
-  },
-  {
-    dataType: 'string',
-    width: 100,
-    visible: true,
-    field: 'machineCount',
-    searchable: false,
-    disableSort: true,
-    title: 'investigateFiles.fields.machineCount'
   }
 ];

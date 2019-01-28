@@ -10,6 +10,14 @@ const FILE_LIST_COLUMNS_CONFIG = [
     dataType: 'INT'
   },
   {
+    dataType: 'string',
+    width: 100,
+    field: 'machineCount',
+    name: 'machineCount',
+    searchable: false,
+    disableSort: true
+  },
+  {
     name: 'fileStatus',
     description: '',
     dataType: 'STRING'

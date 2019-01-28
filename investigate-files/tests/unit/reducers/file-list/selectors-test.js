@@ -18,7 +18,8 @@ import {
   isAnyFileFloatingOrMemoryDll,
   fileDownloadButtonStatus,
   downloadLink,
-  isCertificateViewDisabled
+  isCertificateViewDisabled,
+  hostListCount
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -510,4 +511,16 @@ test('isCertificateViewDisabled ', function(assert) {
   assert.equal(result2, false);
   assert.equal(result3, false);
   assert.equal(result4, true);
+});
+
+test('hostListCount test', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        hostNameList: [{ value: 'Machine1', count: 5 }]
+      }
+    }
+  });
+  const result = hostListCount(state);
+  assert.equal(result, 1);
 });

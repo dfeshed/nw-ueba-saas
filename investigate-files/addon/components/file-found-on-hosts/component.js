@@ -1,8 +1,9 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { serviceList, hostList } from 'investigate-files/reducers/file-list/selectors';
+import { serviceList, hostList, hostListCount } from 'investigate-files/reducers/file-list/selectors';
 import { getAllServices, fetchAgentId } from 'investigate-files/actions/data-creators';
 import { serviceId } from 'investigate-shared/selectors/investigate/selectors';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
@@ -10,7 +11,8 @@ const stateToComputed = (state) => ({
   items: hostList(state),
   serverId: state.endpointQuery.serverId,
   isHostListLoading: state.files.fileList.fetchMetaValueLoading,
-  serviceId: serviceId(state)
+  serviceId: serviceId(state),
+  hostListCount: hostListCount(state)
 });
 
 const dispatchToActions = {
@@ -29,6 +31,11 @@ const fileHosts = Component.extend({
   showOnlyIcons: true,
 
   metaName: 'machineIdentity.machineName',
+
+  @computed('hostListCount')
+  countLabelKey(count) {
+    return 1 < count ? 'investigateShared.machineCount.plural' : 'investigateShared.machineCount.singular';
+  },
 
   init() {
     this._super(arguments);

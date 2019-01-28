@@ -13,7 +13,15 @@ const FilesTableBody = DataTableBody.extend({
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {
-    run.debounce(this, this._fetchMachineCount, 100);
+
+    // If active on column in not visible do get the count
+    const visibleColumns = this.get('table.visibleColumns');
+    const machineCountColumn = visibleColumns.filter((column) => {
+      return column.field === 'machineCount' && column.visible;
+    });
+    if (machineCountColumn.length) {
+      run.debounce(this, this._fetchMachineCount, 100);
+    }
   }),
 
   _fetchMachineCount() {

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, waitUntil } from '@ember/test-helpers';
+import { render, findAll, click, waitUntil, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -79,5 +79,23 @@ module('Integration | Component | file found on machines', function(hooks) {
       .build();
     await render(hbs`{{file-found-on-hosts}}`);
     assert.equal(findAll('.rsa-loader').length, 1, 'loader icon is present.');
+  });
+
+
+  test('host info label is displayed', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostNameList(hosts)
+      .build();
+    await render(hbs`{{file-found-on-hosts}}`);
+    assert.equal(findAll('.host_details_link').length, 4, '4 Machines are listed.');
+    assert.equal(find('.count-info').textContent.trim(), 'Active On 4 hosts', 'Analyze Events button appears with each machine.');
+  });
+
+  test('host info label is displayed correctly', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostNameList([{ value: 'test' }])
+      .build();
+    await render(hbs`{{file-found-on-hosts}}`);
+    assert.equal(find('.count-info').textContent.trim(), 'Active On 1 host', 'Analyze Events button appears with each machine.');
   });
 });

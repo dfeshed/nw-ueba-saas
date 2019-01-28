@@ -35,7 +35,7 @@ const SCHEMA = Immutable.from({
 test('columns', function(assert) {
   const result = columns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 48, 'should return 48 columns + checkbox column');
+  assert.equal(result.length, 49, 'should return 48 columns + checkbox column');
   assert.equal(result[0].visible, true, 'entropy field is not visible');
   assert.equal(result[1].visible, false, 'firstFileName field is visible');
 });
@@ -51,7 +51,7 @@ test('empty file preferences', function(assert) {
   });
   const result = columns(schema);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 48, 'should return 48 columns + checkbox column');
+  assert.equal(result.length, 49, 'should return 48 columns + checkbox column');
   assert.equal(result[0].visible, false, 'entropy field is not visible');
 });
 

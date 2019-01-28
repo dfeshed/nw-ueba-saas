@@ -353,22 +353,11 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
     onError(dispatch) {
       dispatch({ type: ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR });
     },
-
-    onResponse(response) {
+    onResponse() {},
+    onCompleted(response) {
       if (response) {
-        const { data: _payload, meta } = response || {};
-        const payload = Array.isArray(_payload) ? _payload : [];
-        const description = meta ? meta.description : null;
-        const percent = meta ? meta.percent : 0;
-        if (description === 'Queued' || (description === 'Executing' || percent < 100 && payload.length === 0)) {
-          return;
-        } else {
-          if (response.data) {
-            dispatch({ type: ACTION_TYPES.META_VALUE_COMPLETE });
-            onComplete(response.data);
-          }
-
-        }
+        dispatch({ type: ACTION_TYPES.META_VALUE_COMPLETE });
+        onComplete(response.data);
       }
     }
   };
@@ -381,7 +370,7 @@ const _fetchHostNameList = (checksum) => {
 
     // Get the size for mata value
     const { fileList: { agentCountMapping } } = getState().files;
-    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 200;
+    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 300000;
     const input = {
       filter: { value: `(checksum.all = '${checksum}')` },
       queryNode,
