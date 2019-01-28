@@ -18,7 +18,7 @@ $dragPadHighlightedColor: background-color(primary, lighter);
 }
 
 .rsa-incident-rules {
-   height: calc(100vh - #{$navbarHeight});
+   height: calc(100vh - 133px);
 
   .incident-rule-list {
     overflow: auto;
