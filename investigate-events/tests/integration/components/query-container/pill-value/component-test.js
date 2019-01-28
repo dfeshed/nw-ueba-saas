@@ -273,4 +273,25 @@ module('Integration | Component | Pill Value', function(hooks) {
     await typeInSearch('foobar');
     await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
   });
+
+  test('if there are quoted strings within a complex pill, do not remove the outer quotes', async function(assert) {
+    const done = assert.async();
+    const inputString = "'GET' || action = 'PUT'";
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, [inputString, 'pill-value'], 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch(inputString);
+    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
+  });
 });

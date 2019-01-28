@@ -168,6 +168,7 @@ export default Component.extend({
     onInput(input, powerSelectAPI) {
       this.set('_searchString', input);
       const match = complexOperators.find((d) => input.includes(d));
+      this.set('_isComplex', !!match);
       const option = (match) ? FREE_FORM_PILL : QUERY_PILL;
       next(this, () => powerSelectAPI.actions.highlight(option));
     },
@@ -197,8 +198,14 @@ export default Component.extend({
     onChange(selection, powerSelectAPI/* event */) {
       if (selection !== null) {
         const { actions, searchText } = powerSelectAPI;
-        const trimmedInput = stripOuterSingleQuotes(searchText).trim();
-        const value = escapeSingleQuotes(escapeBackslash(trimmedInput));
+        const isComplex = this.get('_isComplex');
+        let value;
+        if (isComplex) {
+          value = searchText.trim();
+        } else {
+          const trimmedInput = stripOuterSingleQuotes(searchText).trim();
+          value = escapeSingleQuotes(escapeBackslash(trimmedInput));
+        }
         // cleanup
         this.set('_searchString', undefined);
         this.set('_isAutoFocus', true);
