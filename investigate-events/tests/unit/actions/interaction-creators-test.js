@@ -55,7 +55,7 @@ const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
         }
       }
       if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
-        queryResults = queryResults.concat(actionOrThunk.payload.eventsBatch);
+        queryResults = queryResults.concat(actionOrThunk.payload);
       }
     }
   };

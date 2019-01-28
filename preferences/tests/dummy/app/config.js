@@ -4,9 +4,7 @@
  * There are four parts in config.
  *
  * modelName:: Determine which socket to fetch or save preferences.
- * fieldPrefix:: This is prefix used for proper translation of items.options. Used in preferences/preferences-details
- *   Ex: For options 'TEXT' to be properly translated, make sure preferences.investigate-events.TEXT (fieldPrefix+option)
- *   is present in translation file
+ * fieldPrefix: This is prefix used for item field names. For proper translation.
  * addtionalFilterKey:: This property provide flexibility to send query data back for server API.
  * items: Preferences to display along with field details to pull field value from data json.
  * defaultPreferences: In case data is not pulled from server or first time preferences not available.
@@ -77,9 +75,24 @@ export default {
     field: 'queryTimeFormat'
   },
   {
+    name: 'preferences.investigate-events.eventTimeSortOrder',
+    info: true, // for preferences that need additional information
+    type: 'radio',
+    options: [
+      'Descending',
+      'Ascending'
+    ],
+    field: 'eventAnalysisPreferences.eventTimeSortOrder'
+  },
+  {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
     field: 'eventAnalysisPreferences.autoDownloadExtractedFiles'
+  },
+  {
+    name: 'preferences.investigate-events.autoUpdateSummary',
+    type: 'checkbox',
+    field: 'eventAnalysisPreferences.autoUpdateSummary'
   }],
   defaultPreferences: {
     queryTimeFormat: 'DB',
@@ -89,7 +102,8 @@ export default {
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
-      packetsPageSize: 100
+      autoUpdateSummary: false,
+      eventTimeSortOrder: 'Ascending'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

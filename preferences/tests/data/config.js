@@ -75,16 +75,6 @@ export default {
     field: 'queryTimeFormat'
   },
   {
-    name: 'preferences.investigate-events.autoDownloadExtractedFiles',
-    type: 'checkbox',
-    field: 'eventAnalysisPreferences.autoDownloadExtractedFiles'
-  },
-  {
-    name: 'preferences.investigate-events.autoUpdateSummary',
-    type: 'checkbox',
-    field: 'eventAnalysisPreferences.autoUpdateSummary'
-  },
-  {
     name: 'preferences.investigate-events.eventTimeSortOrder',
     info: true, // for preferences that need additional information
     type: 'radio',
@@ -93,6 +83,16 @@ export default {
       'Ascending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
+  },
+  {
+    name: 'preferences.investigate-events.autoDownloadExtractedFiles',
+    type: 'checkbox',
+    field: 'eventAnalysisPreferences.autoDownloadExtractedFiles'
+  },
+  {
+    name: 'preferences.investigate-events.autoUpdateSummary',
+    type: 'checkbox',
+    field: 'eventAnalysisPreferences.autoUpdateSummary'
   }],
   defaultPreferences: {
     queryTimeFormat: 'DB',

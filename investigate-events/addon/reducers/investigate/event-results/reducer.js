@@ -19,7 +19,9 @@ const _initialState = Immutable.from({
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
-  eventTimeSortOrder: undefined
+  eventTimeSortOrder: undefined,
+  // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
+  eventTimeSortOrderPreferenceWhenQueried: undefined
 });
 
 // * `data` is an array of objects with the following properties
@@ -56,23 +58,24 @@ export default handleActions({
     return state.set('selectedEventIds', _.without(state.selectedEventIds, payload));
   },
 
-  [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
+  [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state, { payload: { eventTimeSortOrderPreferenceWhenQueried } }) => {
     return state.merge({
       data: [],
       message: undefined,
       reason: undefined,
-      status: 'streaming'
+      status: 'streaming',
+      eventTimeSortOrderPreferenceWhenQueried
     });
   },
 
-  [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload: { eventsBatch, sortOrderPreference } }) => {
+  [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload }) => {
     // Merge the data into the current state data and perform a sort
     // Have to sort it all as data can come in out of order.
     let sortKey = 'desc';
-    if (sortOrderPreference === SORT_ORDER.ASC) {
+    if (state.eventTimeSortOrderPreferenceWhenQueried === SORT_ORDER.ASC) {
       sortKey = 'asc';
     }
-    let newEvents = state.data.asMutable().concat(eventsBatch);
+    let newEvents = state.data.asMutable().concat(payload);
     newEvents = sort(newEvents).by([
       { [sortKey]: 'timeAsNumber' },
       { [sortKey]: 'sessionId' }
@@ -91,7 +94,7 @@ export default handleActions({
       // 100k items are items 10k-110k
       // If it is oldest data, then we are not truncating as we
       // get the events we want.
-      if (state.eventTimeSortOrder === SORT_ORDER.ASC) {
+      if (state.eventTimeSortOrderPreferenceWhenQueried === SORT_ORDER.ASC) {
         // remove from the beginning
         newEvents.splice(0, newEvents.length - state.streamLimit);
       } else {

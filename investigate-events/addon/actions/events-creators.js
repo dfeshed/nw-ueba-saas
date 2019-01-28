@@ -12,7 +12,6 @@ import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getFlattenedColumnList, hasMetaSummaryColumn } from 'investigate-events/reducers/investigate/data-selectors';
-import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   calculateNewStartForNextBatch,
@@ -129,15 +128,13 @@ const _resetForNextBatches = () => {
 
 /**
  *
- * @param {object} errorCode
- * @param {object} serverMessage
- * @param {object} isOldestEvents is false by default. Need to make sure
- * that we always dispatch true from eventsStartOldest.
+ * @param errorCode
+ * @param serverMessage
  * Called if there's an error or if all batching is complete
  * and we are done with the entire query. This is not called
  * when we cancel.
  */
-const _done = ({ errorCode, serverMessage, isOldestEvents = false }) => {
+const _done = (errorCode, serverMessage) => {
   return (dispatch) => {
     if (window.DEBUG_STREAMS) {
       console.timeEnd();
@@ -146,7 +143,7 @@ const _done = ({ errorCode, serverMessage, isOldestEvents = false }) => {
 
     // dispatch any events that have accumulated and have
     // not already been sent to state
-    dispatch(_dispatchEvents(isOldestEvents));
+    dispatch(_dispatchEvents());
 
     // Set queryIsRunning to false so UI can react
     dispatch(queryIsRunning(false));
@@ -186,7 +183,7 @@ const _handleEventsStatus = (newStatus, streamingEndedTime) => {
 };
 
 // Prepares and sends events to state
-const _dispatchEvents = (isOldestEvents) => {
+const _dispatchEvents = () => {
   return (dispatch) => {
     // don't bother if there are no events to ship out
     if (currentStreamState.currentBatchEvents.length > 0) {
@@ -198,10 +195,7 @@ const _dispatchEvents = (isOldestEvents) => {
 
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE,
-        payload: {
-          eventsBatch: currentStreamState.currentBatchEvents,
-          sortOrderPreference: (isOldestEvents) ? SORT_ORDER.ASC : SORT_ORDER.DESC
-        }
+        payload: currentStreamState.currentBatchEvents
       });
       currentStreamState.eventsDispatchedCount += currentStreamState.currentBatchEvents.length;
       currentStreamState.currentBatchEvents.length = 0;
@@ -231,7 +225,7 @@ const _eventsOverLimit = (batchStartTime, batchEndTime) => {
       if (window.DEBUG_STREAMS) {
         console.log('New calculated window is the same as the last calculated window, going with the data we have accumulated');
       }
-      dispatch(_done({}));
+      dispatch(_done());
       return;
     }
 
@@ -322,7 +316,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         currentStreamState.eventStreamCallback = _stopStream;
         if (isFirstStream) {
           dispatch({
-            type: ACTION_TYPES.INIT_EVENTS_STREAMING
+            type: ACTION_TYPES.INIT_EVENTS_STREAMING,
+            payload: { eventTimeSortOrderPreferenceWhenQueried: 'Descending' }
           });
         }
       },
@@ -394,7 +389,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch(_done({ errorCode, serverMessage }));
+        dispatch(_done(errorCode, serverMessage));
       },
       onCompleted() {
         // stream already closed since it completed, can null async callback
@@ -415,7 +410,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         // we are done and escape
         const { data: eventCount } = investigate.eventCount;
         if (eventCount === 0) {
-          dispatch(_done({}));
+          dispatch(_done());
           return;
         }
 
@@ -432,7 +427,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
           const { data: currentData } = investigate.eventResults;
           const haveAllData = currentData.length >= eventCount;
           if (haveAllData) {
-            dispatch(_done({}));
+            dispatch(_done());
             return;
           }
         }
@@ -466,7 +461,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
               console.log('This can occur when we expect results due to a count call returning, but since the count call returned the device that should be returning results has disappeared.');
             }
             const deviceDownRequeryMessage = lookup('service:i18n').t('investigate.events.deviceDownRequery');
-            dispatch(_done({ errorCode: 1002, serverMessage: deviceDownRequeryMessage.string }));
+            dispatch(_done(1002, deviceDownRequeryMessage.string));
             return;
           }
 
@@ -503,12 +498,12 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
                 console.log('This can occur when an event count is based on a device that then goes offline.');
               }
               const deviceDownRequeryMessage = lookup('service:i18n').t('investigate.events.deviceDownRequery');
-              dispatch(_done({ errorCode: 1002, serverMessage: deviceDownRequeryMessage.string }));
+              dispatch(_done(1002, deviceDownRequeryMessage.string));
               return;
             }
           }
 
-          dispatch(_done({}));
+          dispatch(_done());
           return;
         }
 
@@ -696,7 +691,10 @@ export const eventsStartOldest = () => {
     const handlers = {
       onInit(_stopStream) {
         currentStreamState.eventStreamCallback = _stopStream;
-        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
+        dispatch({
+          type: ACTION_TYPES.INIT_EVENTS_STREAMING,
+          payload: { eventTimeSortOrderPreferenceWhenQueried: 'Ascending' }
+        });
       },
       onResponse(response) {
         // if we cancelled before this message got back, do not
@@ -747,13 +745,13 @@ export const eventsStartOldest = () => {
               console.log('Query is ending because the limit has been hit');
             }
 
-            dispatch(_done({ isOldestEvents: true }));
+            dispatch(_done());
           }
         }
       },
       onError(response = {}) {
         const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
-        dispatch(_done({ errorCode, serverMessage, isOldestEvents: true }));
+        dispatch(_done(errorCode, serverMessage));
       },
       onCompleted() {
         // stream already closed since it completed, can null async callback
@@ -762,7 +760,7 @@ export const eventsStartOldest = () => {
         if (window.DEBUG_STREAMS) {
           console.log('Query is ending because we received all results');
         }
-        dispatch(_done({ isOldestEvents: true }));
+        dispatch(_done());
       },
       onStopped() {
         dispatch(queryIsRunning(false));

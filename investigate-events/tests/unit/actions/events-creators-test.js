@@ -78,7 +78,7 @@ const downstreamNewestDispatchCreator = (assert, asserts) => {
         }
       }
       if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
-        queryResults = queryResults.concat(actionOrThunk.payload.eventsBatch);
+        queryResults = queryResults.concat(actionOrThunk.payload);
       }
     }
   };
@@ -126,7 +126,7 @@ const downstreamOldestDispatchCreator = (assert, asserts) => {
         }
       }
       if (actionOrThunk.type === ACTION_TYPES.SET_EVENTS_PAGE) {
-        queryResults = queryResults.concat(actionOrThunk.payload.eventsBatch);
+        queryResults = queryResults.concat(actionOrThunk.payload);
       }
     }
   };
