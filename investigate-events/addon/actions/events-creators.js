@@ -23,11 +23,13 @@ import {
 const INITIAL_TIME_WINDOW_IN_SECONDS = 5 * 60;
 
 const currentStreamState = {
-  // stopStreaming callbacks for events and event count,
-  // used to stop calls mid-stream if we aren't happy
-  // with what they are returning or if the user
-  // cancels the request
-  stopStreamingCallbacks: [],
+  // tracks the callback function for the count stream
+  // in the event we need to async cancel it
+  countStreamCallback: undefined,
+
+  // tracks the callback function for the event stream
+  // in the event we need to async cancel it
+  eventStreamCallback: undefined,
 
   // An accumulation of all the events that have come in
   // for the current stream batch. If the stream finishes
@@ -104,14 +106,23 @@ const _addEventsToResponseCache = (newBatchEvents, canDispatch = false, dispatch
 // makes sure that everything that needs to be reset is reset
 // and that previous streams are stopped/unsubscribed.
 const _resetForNextBatches = () => {
-  if (window.DEBUG_STREAMS) {
-    console.log('Cleaning up streams, total streams to clean up:', currentStreamState.stopStreamingCallbacks.length);
+  if (currentStreamState.countStreamCallback) {
+    if (window.DEBUG_STREAMS) {
+      console.log('Cleaning up count stream');
+    }
+    currentStreamState.countStreamCallback();
+    currentStreamState.countStreamCallback = undefined;
   }
 
-  if (currentStreamState.stopStreamingCallbacks.length > 0) {
-    currentStreamState.stopStreamingCallbacks.forEach((cb) => cb());
-    currentStreamState.stopStreamingCallbacks.length = 0;
+  if (currentStreamState.eventStreamCallback) {
+    if (window.DEBUG_STREAMS) {
+      console.log('Cleaning up event stream');
+    }
+    currentStreamState.eventStreamCallback();
+    currentStreamState.eventStreamCallback = undefined;
   }
+
+
   currentStreamState.currentBatchEvents.length = 0;
   currentStreamState.interimBatchCount = 0;
 };
@@ -211,22 +222,22 @@ const _eventsOverLimit = (batchStartTime, batchEndTime) => {
       console.log('too MANY results, need to try for less, last window was', batchWindow);
     }
 
-    if (batchWindow > 1) {
-      const newStartTime = calculateNextStartTimeAfterFailure(
-        batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, true);
-      dispatch(_getEventsBatch(newStartTime, batchEndTime));
-    } else {
+    const newStartTime = calculateNextStartTimeAfterFailure(
+      batchStartTime, batchEndTime, currentStreamState.binarySearchBatchStartTime, true);
 
+    // if window is tiny, or new window is the same as previous window, the we have to
+    // stop trying to look for data, call it quits with what we have
+    if (batchWindow <= 1 || (batchEndTime - newStartTime) === batchWindow) {
       if (window.DEBUG_STREAMS) {
-        console.log(`window was all the way down to ${batchWindow}, just going with what we have and end search`);
+        console.log('New calculated window is the same as the last calculated window, going with the data we have accumulated');
       }
-
-      // So we have a window that is 0 or 1 second long, and in that
-      // window we have too many results. We are done! The user won't
-      // get the  "latest" events within that second, but there's just
-      // no way to do that.
       dispatch(_done({}));
+      return;
     }
+
+    // Go look for better data!
+    dispatch(_handleEventsStatus('between-streams'));
+    dispatch(_getEventsBatch(newStartTime, batchEndTime));
   };
 };
 
@@ -237,9 +248,8 @@ const _eventsOverLimit = (batchStartTime, batchEndTime) => {
 // anything, with the result.
 const _getBatchEventCount = (queryNode, language, streamLimit, dispatch) => {
   const handlers = {
-    onInit(stopStream) {
-      // Stash the count stop in case the onResponse isn't called
-      currentStreamState.stopStreamingCallbacks.push(stopStream);
+    onInit(_stopStream) {
+      currentStreamState.countStreamCallback = _stopStream;
     },
     onResponse(response, _stopStream) {
       // protect against null data while query is being processed
@@ -248,8 +258,11 @@ const _getBatchEventCount = (queryNode, language, streamLimit, dispatch) => {
         if (window.DEBUG_STREAMS) {
           console.log('Count returned, it is', response.data);
         }
+
         // Don't need to keep the event count stream going, kill it
+        currentStreamState.countStreamCallback = undefined;
         _stopStream();
+
         // check if the count is over the limit and react
         if (response.data >= streamLimit) {
           dispatch(_eventsOverLimit(queryNode.startTime, queryNode.endTime));
@@ -306,7 +319,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
 
     const handlers = {
       onInit(_stopStream) {
-        currentStreamState.stopStreamingCallbacks.push(_stopStream);
+        currentStreamState.eventStreamCallback = _stopStream;
         if (isFirstStream) {
           dispatch({
             type: ACTION_TYPES.INIT_EVENTS_STREAMING
@@ -384,6 +397,9 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         dispatch(_done({ errorCode, serverMessage }));
       },
       onCompleted() {
+        // stream already closed since it completed, can null async callback
+        currentStreamState.eventStreamCallback = undefined;
+
         const { investigate } = getState();
         const { streamLimit } = investigate.eventResults;
 
@@ -454,6 +470,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
             return;
           }
 
+          dispatch(_handleEventsStatus('between-streams'));
           dispatch(_getEventsBatch(newStartTime, batchEndTime));
           return;
         }
@@ -503,6 +520,8 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         if (window.DEBUG_STREAMS) {
           console.log(`But we are not done, need more, accumulated ${currentStreamState.eventsDispatchedCount}, event count ${eventCount}`);
         }
+
+        dispatch(_handleEventsStatus('between-streams'));
 
         const isEventCountLessThanStreamLimit = !!eventCount && eventCount < streamLimit;
         if (isEventCountLessThanStreamLimit) {
@@ -675,8 +694,8 @@ export const eventsStartOldest = () => {
     const { streamLimit } = getState().investigate.eventResults;
 
     const handlers = {
-      onInit(stopStream) {
-        currentStreamState.stopStreamingCallbacks.push(stopStream);
+      onInit(_stopStream) {
+        currentStreamState.eventStreamCallback = _stopStream;
         dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
       },
       onResponse(response) {
@@ -737,6 +756,9 @@ export const eventsStartOldest = () => {
         dispatch(_done({ errorCode, serverMessage, isOldestEvents: true }));
       },
       onCompleted() {
+        // stream already closed since it completed, can null async callback
+        currentStreamState.eventStreamCallback = undefined;
+
         if (window.DEBUG_STREAMS) {
           console.log('Query is ending because we received all results');
         }
