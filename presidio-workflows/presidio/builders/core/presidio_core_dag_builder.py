@@ -39,8 +39,6 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         output_sub_dag_operator = self._get_output_group_connector_operator(presidio_core_dag)
 
-        self._push_forwarding(output_sub_dag_operator, presidio_core_dag)
-
         ade_modeling_sub_dag_operator = self._get_ade_modeling_group_connector_operator(presidio_core_dag)
 
         input_sub_dag_operator >> ade_scoring_sub_dag_operator >> output_sub_dag_operator
@@ -48,13 +46,6 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         return presidio_core_dag
 
-    def _push_forwarding(self, output_sub_dag_operator, presidio_core_dag):
-        default_args = presidio_core_dag.default_args
-        enable_output_forwarder = default_args.get("enable_output_forwarder")
-        self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
-        if enable_output_forwarder == 'true':
-            push_forwarding_task = PushForwarderTaskBuilder().build(presidio_core_dag)
-            output_sub_dag_operator >> push_forwarding_task
 
     def _get_input_group_connector_operator(self, presidio_core_dag):
         input_dag_id = 'input_dag'

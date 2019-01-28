@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from presidio.builders.output.push_forwarder_task_builder import PushForwarderTaskBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
@@ -107,7 +108,14 @@ class OutputDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_sequential_sensor(user_score_operator)
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
 
-        #defining the dependencies between the operators
-        hourly_output_operator >> daily_short_circuit_operator
+        self._push_forwarding(hourly_output_operator,daily_short_circuit_operator, output_dag)
 
         return output_dag
+
+    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, output_dag):
+        default_args = output_dag.default_args
+        enable_output_forwarder = default_args.get("enable_output_forwarder")
+        self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
+        if enable_output_forwarder == 'true':
+            push_forwarding_task = PushForwarderTaskBuilder().build(output_dag)
+            hourly_output_operator >> push_forwarding_task >> daily_short_circuit_operator
