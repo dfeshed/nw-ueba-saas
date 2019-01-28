@@ -116,12 +116,6 @@ const ServiceSelector = Component.extend({
    * Bumped up the coreServiceNotUpdated message to the top
    * as summary call will always return an error when in mixed mode.
    * And so it was never showing up the coreDeviceNotUpdated message
-   *
-   * The error message from the server is trimmed like so:
-   * Before - rsa.com.nextgen.classException: Failed to connect to broker:50003
-   * After  - Failed to connect to broker:50003
-   * Before - java.lang.NullPointerException
-   * After  - java.lang.NullPointerException
    * @public
    */
   @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n', 'i18n.locale')
@@ -134,10 +128,7 @@ const ServiceSelector = Component.extend({
     } else if (isServicesRetrieveError) {
       title = i18n.t('investigate.services.error.description');
     } else if (isSummaryDataInvalid && summaryErrorMessage) {
-      // Regex explained - `.*?` Makes the `.*` quantifier lazy, causing it to
-      // match as few characters as possible.
-      const classPath = /(.*?:)/;
-      title = summaryErrorMessage.replace(classPath, '');
+      title = summaryErrorMessage;
     } else if (!hasSummaryData) {
       title = i18n.t('investigate.services.noData');
     }

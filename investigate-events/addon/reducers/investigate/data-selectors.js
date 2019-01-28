@@ -117,11 +117,20 @@ export const getColumns = createSelector(
   }
 );
 
+export const hasMetaSummaryColumn = createSelector(
+  [getColumns],
+  (columns) => {
+    return columns.some((col) => {
+      return col.field === 'custom.metasummary' || col.field === 'custom.meta-summary';
+    });
+  }
+);
+
 // returns a list of this column names involved in the creation of the events
 // table. This includes flattening the `meta-summary` column.
 export const getFlattenedColumnList = createSelector(
-  [getColumns],
-  (columns) => {
+  [getColumns, hasMetaSummaryColumn],
+  (columns, hasMetaSummaryColumn) => {
     if (columns) {
       columns = columns.map(({ field }) => field);
       // always need sessionid, also always need nwe.callback_id
@@ -130,9 +139,6 @@ export const getFlattenedColumnList = createSelector(
       columns = [...columns, 'sessionid', 'nwe.callback_id', 'medium'];
 
       // If we don't have a meta-summary column we are done
-      const hasMetaSummaryColumn = columns.some((field) => {
-        return field === 'custom.meta-summary' || field === 'custom.metasummary';
-      });
       if (!hasMetaSummaryColumn) {
         return columns;
       }

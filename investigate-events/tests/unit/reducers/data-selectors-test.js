@@ -7,7 +7,8 @@ import {
   getSelectedColumnGroup,
   getColumns,
   hasColumnGroups,
-  getFlattenedColumnList
+  getFlattenedColumnList,
+  hasMetaSummaryColumn
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 
@@ -274,4 +275,69 @@ test('Should set hasColumnGroups', function(assert) {
       })
     ), 'hasColumnGroups should be false'
   );
+});
+
+test('hasMetaSummaryColumn should return true if it has metasummary', function(assert) {
+  const columnGroups = [{
+    id: 'SUMMARY',
+    name: 'Summary List',
+    ootb: true,
+    columns: [
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' },
+      { field: 'custom.meta-summary', title: 'Summary', width: null }
+    ]
+  }, {
+    id: 'Email',
+    name: 'Email Analysis',
+    ootb: true,
+    columns: [
+      { field: 'some' },
+      { field: 'foo' }
+    ]
+  }];
+
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups
+      }
+    }
+  });
+
+  const found = hasMetaSummaryColumn(state);
+  assert.ok(found, 'Found the meta column');
+});
+
+test('hasMetaSummaryColumn should return false if it does not have metasummary', function(assert) {
+  const columnGroups = [{
+    id: 'SUMMARY',
+    name: 'Summary List',
+    ootb: true,
+    columns: [
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' }
+    ]
+  }, {
+    id: 'Email',
+    name: 'Email Analysis',
+    ootb: true,
+    columns: [
+      { field: 'some' },
+      { field: 'foo' }
+    ]
+  }];
+
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups
+      }
+    }
+  });
+
+  const found = hasMetaSummaryColumn(state);
+  assert.notOk(found, 'Did not find the meta column');
 });

@@ -11,7 +11,7 @@ import { fetchLog } from './fetch/logs';
 import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { getFlattenedColumnList } from 'investigate-events/reducers/investigate/data-selectors';
+import { getFlattenedColumnList, hasMetaSummaryColumn } from 'investigate-events/reducers/investigate/data-selectors';
 import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
@@ -832,9 +832,14 @@ export const eventsLogsGet = (events = []) => {
       }
     };
 
-    dispatch({
-      type: ACTION_TYPES.GET_LOG,
-      promise: fetchLog(serviceId, sessionIds, handlers)
-    });
+    // check if meta-summary is present in any of the columns.
+    // Fetch logs if it is present, otherwise be done with it.
+    const shouldMakeLogCalls = hasMetaSummaryColumn(getState());
+    if (shouldMakeLogCalls) {
+      dispatch({
+        type: ACTION_TYPES.GET_LOG,
+        promise: fetchLog(serviceId, sessionIds, handlers)
+      });
+    }
   };
 };
