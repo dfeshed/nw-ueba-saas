@@ -312,7 +312,7 @@
       "sourceKey": "checksum_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.checksumId"
+        "additionalInfo.srcChecksumId"
       ]
     },
     {
@@ -348,7 +348,7 @@
       "sourceKey": "process_vid_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.processVidSrc"
+        "additionalInfo.srcProcessVid"
       ]
     },
     {
@@ -357,7 +357,7 @@
       "sourceKey": "process_vid_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.processVidDst"
+        "additionalInfo.dstProcessVid"
       ]
     }
   ]
