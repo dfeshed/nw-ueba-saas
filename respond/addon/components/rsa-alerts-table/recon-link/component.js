@@ -4,6 +4,7 @@ import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
 import { getServices } from 'respond/reducers/respond/recon/selectors';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
 
 const stateToComputed = (state) => ({
   services: getServices(state)
@@ -23,6 +24,17 @@ const ReconLink = Component.extend({
   @computed('services', 'item.event_source')
   endpointId(services, eventSource) {
     return lookupCoreDevice(services, eventSource);
+  },
+
+  @computed('item.type', 'item.device_type')
+  eventType(type, deviceType) {
+    if (deviceType === 'nwendpoint') {
+      return EVENT_TYPES.ENDPOINT;
+    } else if (type === 'Network') {
+      return EVENT_TYPES.NETWORK;
+    } else {
+      return EVENT_TYPES.LOG;
+    }
   },
 
   @computed('eventId', 'endpointId', 'hasPermissions')

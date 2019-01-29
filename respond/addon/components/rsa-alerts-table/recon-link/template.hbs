@@ -1,5 +1,5 @@
 {{#if show}}
-  <span>{{#link-to "incident.recon" (query-params endpointId=endpointId eventId=eventId selection=item.id) class="recon-link-to"}}{{item.type}}{{/link-to}}</span>
+  <span>{{#link-to "incident.recon" (query-params endpointId=endpointId eventId=eventId eventType=eventType selection=item.id) class="recon-link-to"}}{{item.type}}{{/link-to}}</span>
 {{else}}
   <span>{{item.type}}</span>
 {{/if}}

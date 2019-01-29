@@ -39,6 +39,8 @@ const dispatchToActions = {
 const TitlebarComponent = Component.extend({
   layout,
   tagName: 'hbox',
+  testId: 'reconEventTitlebar',
+  attributeBindings: ['testId:test-id'],
   classNames: ['recon-event-titlebar'],
 
   /**

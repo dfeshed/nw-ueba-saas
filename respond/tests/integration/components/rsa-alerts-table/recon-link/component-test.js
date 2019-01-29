@@ -8,7 +8,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, render, findAll, find } from '@ember/test-helpers';
 
-const transitions = [];
+let transitions = [];
 const eventType = 'Instant IOC';
 const linkTo = '.recon-link-to';
 const selector = '[test-id=respondReconLink]';
@@ -52,6 +52,10 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     }));
   });
 
+  hooks.afterEach(function() {
+    transitions = [];
+  });
+
   test('event_source_id and event_source must be available and found in core services to render link', async function(assert) {
     assert.expect(9);
 
@@ -73,6 +77,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     assert.deepEqual(transitions, [{
       name: 'incident.recon',
       queryParams: {
+        eventType: 'LOG',
         endpointId: '555d9a6fe4b0d37c827d402d',
         eventId: '150',
         selection: '586ecf95ecd25950034e1312:0'
@@ -320,5 +325,58 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
 
     assert.equal(find(selector).textContent.trim(), eventType);
     assert.equal(findAll(linkTo).length, 0);
+  });
+
+  test('eventType is ENDPOINT when device_type property is nwendpoint', async function(assert) {
+    assert.expect(1);
+
+    this.set('item', {
+      id: '586ecf95ecd25950034e1312:0',
+      indicatorId: '586ecf95ecd25950034e1312',
+      event_source: '10.4.61.33:56005',
+      event_source_id: '150',
+      device_type: 'nwendpoint',
+      type: 'Network'
+    });
+
+    await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
+
+    await click('.recon-link-to');
+
+    assert.deepEqual(transitions, [{
+      name: 'incident.recon',
+      queryParams: {
+        eventType: 'ENDPOINT',
+        endpointId: '555d9a6fe4b0d37c827d402d',
+        eventId: '150',
+        selection: '586ecf95ecd25950034e1312:0'
+      }
+    }]);
+  });
+
+  test('eventType is NETWORK when device_type property is not nwendpoint and type is Network', async function(assert) {
+    assert.expect(1);
+
+    this.set('item', {
+      id: '586ecf95ecd25950034e1312:0',
+      indicatorId: '586ecf95ecd25950034e1312',
+      event_source: '10.4.61.33:56005',
+      event_source_id: '150',
+      type: 'Network'
+    });
+
+    await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
+
+    await click('.recon-link-to');
+
+    assert.deepEqual(transitions, [{
+      name: 'incident.recon',
+      queryParams: {
+        eventType: 'NETWORK',
+        endpointId: '555d9a6fe4b0d37c827d402d',
+        eventId: '150',
+        selection: '586ecf95ecd25950034e1312:0'
+      }
+    }]);
   });
 });

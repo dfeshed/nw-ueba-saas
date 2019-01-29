@@ -55,16 +55,18 @@ test('incident details storyline events open event analysis on click', function(
     return wait().then(() => {
       assert.equal(find(reconWrapperSelector).length, 1);
 
-      const queryParamsRegex = new RegExp(/respond\/incident\/INC-123\/recon\?endpointId=555d9a6fe4b0d37c827d402d&eventId=150&selection=(.*)/);
+      const queryParamsRegex = new RegExp(/respond\/incident\/INC-123\/recon\?endpointId=555d9a6fe4b0d37c827d402d&eventId=150&eventType=NETWORK&selection=(.*)/);
       const theCurrentUrl = currentURL();
       const urlHadQueryParams = theCurrentUrl.match(queryParamsRegex);
       assert.ok(!!urlHadQueryParams, 'The route has changed to recon and includes queryParams for eventId, endpointId and selection');
 
-      run(() => {
-        click(closeReconButton);
-        return waitUntil(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
-          assert.ok(true, 'The route has dropped the queryParams because recon was closed');
-          return wait().then(() => done());
+      return waitUntil(() => find('[test-id=reconEventTitlebar]').length === 1, { timeout: 20000 }).then(() => {
+        run(() => {
+          click(closeReconButton);
+          return waitUntil(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
+            assert.ok(true, 'The route has dropped the queryParams because recon was closed');
+            return wait().then(() => done());
+          });
         });
       });
     });

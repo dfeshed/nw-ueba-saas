@@ -7,6 +7,9 @@ export default Route.extend({
   redux: service(),
   accessControl: service(),
   queryParams: {
+    eventType: {
+      refreshModel: false
+    },
     eventId: {
       refreshModel: false
     },
