@@ -178,7 +178,7 @@ export default class DataHelper {
   }
   hostName(value) {
     const machineIdentity = { machineName: value };
-    _set(this.state, 'overview.hostDetails', { machineIdentity });
+    _set(this.state, 'overview.hostOverview', { machineIdentity });
     return this;
   }
   isProcessTreeLoading(value) {
@@ -190,7 +190,7 @@ export default class DataHelper {
     return this;
   }
   machineOSType(value) {
-    _set(this.state, 'overview.hostDetails.machineIdentity.machineOsType', value);
+    _set(this.state, 'overview.hostOverview.machineIdentity.machineOsType', value);
     return this;
   }
   registryDiscrepancies(value) {

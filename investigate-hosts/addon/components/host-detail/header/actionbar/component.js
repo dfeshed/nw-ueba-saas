@@ -6,7 +6,8 @@ import {
   isJsonExportCompleted,
   isSnapshotsAvailable,
   downloadLink,
-  hostName
+  hostName,
+  selectedSnapshot
 } from 'investigate-hosts/reducers/details/overview/selectors';
 
 import {
@@ -19,6 +20,7 @@ import {
 const stateToComputed = (state) => ({
   hostName: hostName(state),
   scanTime: state.endpoint.detailsInput.scanTime,
+  selectedSnapshot: selectedSnapshot(state),
   host: state.endpoint.overview.hostDetails,
   agentId: state.endpoint.detailsInput.agentId,
   snapShots: state.endpoint.detailsInput.snapShots,
@@ -51,7 +53,7 @@ const ActionBar = Component.extend({
       const oldTime = this.get('scanTime');
       this.send('initializeAgentDetails', { agentId: this.get('agentId'), scanTime: option });
 
-      if (moment(oldTime).unix() > moment(option).unix()) {
+      if (moment(oldTime).unix() > moment(option.scanStartTime).unix()) {
         this.send('setTransition', 'toUp');
       } else {
         this.send('setTransition', 'toDown');

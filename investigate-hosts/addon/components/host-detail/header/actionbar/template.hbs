@@ -6,8 +6,8 @@
       searchEnabled=false
       triggerClass="inline"
       options=snapShots
-      selected=scanTime
       disabled=isProcessDetailsView
+      selected=selectedSnapshot
       onchange=(action 'setSelect') as |option|}}
       {{#if option}}
         {{rsa-content-datetime timestamp=option.scanStartTime }}

@@ -5,7 +5,9 @@ import { secondsToMinutesConverter } from 'investigate-hosts/reducers/details/se
 const { createSelector } = reselect;
 
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || [];
+const _hostOverview = (state) => state.endpoint.overview.hostOverview || {};
 const _snapShots = (state) => state.endpoint.detailsInput.snapShots;
+const _scanTime = (state) => state.endpoint.detailsInput.scanTime;
 const _exportJsonStatus = (state) => state.endpoint.overview.exportJSONStatus;
 const _agentStatus = (state) => state.endpoint.machines.agentStatus;
 const _downloadId = (state) => state.endpoint.overview.downloadId;
@@ -15,34 +17,34 @@ const _serverId = (state) => state.endpointQuery.serverId;
 const _selectedMachineServerId = (state) => state.endpointQuery.selectedMachineServerId;
 
 const _hostAgentStatus = createSelector(
-  _hostDetails,
-  (hostDetails) => {
-    return hostDetails && hostDetails.agentStatus;
+  _hostOverview,
+  (hostOverview) => {
+    return hostOverview && hostOverview.agentStatus;
   }
 );
 
 export const machineOsType = createSelector(
-  _hostDetails,
-  (hostDetails) => {
-    if (hostDetails && hostDetails.machineIdentity) {
-      return hostDetails.machineIdentity.machineOsType;
+  _hostOverview,
+  (hostOverview) => {
+    if (hostOverview && hostOverview.machineIdentity) {
+      return hostOverview.machineIdentity.machineOsType;
     }
     return 'windows';
   }
 );
 
 export const hostWithStatus = createSelector(
-  _hostDetails, _hostAgentStatus, _agentStatus,
-  (hostDetails, hostAgentStatus, agentStatus) => {
+  _hostOverview, _hostAgentStatus, _agentStatus,
+  (hostOverview, hostAgentStatus, agentStatus) => {
     if (hostAgentStatus) {
-      if (hostDetails.id === (agentStatus ? agentStatus.agentId : null)) {
+      if (hostOverview.id === (agentStatus ? agentStatus.agentId : null)) {
         return {
-          ...hostDetails,
+          ...hostOverview,
           agentStatus
         };
       } else {
         return {
-          ...hostDetails,
+          ...hostOverview,
           agentStatus: hostAgentStatus
         };
       }
@@ -52,8 +54,8 @@ export const hostWithStatus = createSelector(
 );
 
 export const hostName = createSelector(
-  _hostDetails,
-  (hostDetails) => hostDetails && hostDetails.machineIdentity ? hostDetails.machineIdentity.machineName : ''
+  _hostOverview,
+  (hostOverview) => hostOverview && hostOverview.machineIdentity ? hostOverview.machineIdentity.machineName : ''
 );
 
 export const lastScanTime = createSelector(
@@ -129,10 +131,10 @@ export const sameConfigStatus = createSelector(
  * @public
  */
 export const isEcatAgent = createSelector(
-  _hostDetails,
-  (hostDetails) => {
-    if (hostDetails && hostDetails.machineIdentity) {
-      const { machineIdentity: { agentVersion } } = hostDetails;
+  _hostOverview,
+  (hostOverview) => {
+    if (hostOverview && hostOverview.machineIdentity) {
+      const { machineIdentity: { agentVersion } } = hostOverview;
       return agentVersion && agentVersion.startsWith('4.4');
     }
     return false;
@@ -145,8 +147,8 @@ export const isMachineWindows = createSelector(
 );
 
 export const getPropertyData = createSelector(
-  [_policyDetails, _hostDetails],
-  (policyDetails, hostDetails) => {
+  [_policyDetails, _hostOverview],
+  (policyDetails, hostOverview) => {
     const edrPolicy = policyDetails.policy ? policyDetails.policy.edrPolicy : {};
     if (edrPolicy.scheduledScanConfig &&
       edrPolicy.scheduledScanConfig.recurrentSchedule &&
@@ -171,7 +173,7 @@ export const getPropertyData = createSelector(
         scanOptions
       };
       return {
-        ...hostDetails, scheduleConfig
+        ...hostOverview, scheduleConfig
       };
     } else {
       const scheduleConfig = {
@@ -182,7 +184,7 @@ export const getPropertyData = createSelector(
         scanOptions: ''
       };
       return {
-        ...hostDetails, scheduleConfig
+        ...hostOverview, scheduleConfig
       };
     }
   }
@@ -249,9 +251,9 @@ export const _getWindowsLogPolicy = createSelector(
 );
 
 export const getPoliciesPropertyData = createSelector(
-  [_policyDetails, _hostDetails, _getscheduledScanConfig, _getWindowsLogPolicy],
-  (policyDetails, hostDetails, scheduledScanConfig, windowsLogPolicy) => {
-    const policyStatus = hostDetails.groupPolicy ? hostDetails.groupPolicy.policyStatus : null;
+  [_policyDetails, _hostOverview, _getscheduledScanConfig, _getWindowsLogPolicy],
+  (policyDetails, hostOverview, scheduledScanConfig, windowsLogPolicy) => {
+    const policyStatus = hostOverview.groupPolicy ? hostOverview.groupPolicy.policyStatus : null;
     const { policy, evaluatedTime, message } = policyDetails;
     const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : {};
     const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
@@ -288,3 +290,7 @@ export const getPoliciesPropertyData = createSelector(
     };
   }
 );
+
+export const selectedSnapshot = createSelector(
+  [_scanTime, _snapShots],
+  (scanTime, snapShots) => snapShots ? snapShots.find((snapshot) => snapshot.scanStartTime === scanTime) : null);

@@ -1,5 +1,23 @@
 const linux = {
   overview: {
+    hostOverview: {
+      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+      machine: {
+        machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        machineName: 'HarpServer',
+        scanStartTime: '2017-07-11T05:42:54.000Z',
+        scanRequestTime: '2017-07-11T05:42:54.000Z',
+        scanType: 'standard',
+        scanTrigger: 'manual'
+      },
+      machineIdentity: {
+        id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        group: 'default',
+        machineName: 'HarpServer',
+        agentVersion: '1.0.0.0',
+        machineOsType: 'linux'
+      }
+    },
     hostDetails: {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       machine: {
@@ -164,6 +182,20 @@ const linux = {
 
 const windows = {
   overview: {
+    hostOverview: {
+      id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+      machine: {
+        machineAgentId: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+        scanStartTime: 1515150192676
+      },
+      machineIdentity: {
+        id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+        group: 'default',
+        machineName: 'INENKUMARP10L8C',
+        machineOsType: 'windows',
+        agentVersion: '11.1.0.0'
+      }
+    },
     hostDetails: {
       id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
       machine: {
@@ -534,6 +566,23 @@ const windows = {
 
 const mac = {
   overview: {
+    hostOverview: {
+      machineIdentity: {
+        id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        group: 'default',
+        machineName: 'HarpServer',
+        machineOsType: 'mac',
+        agentVersion: '1.0.0.0'
+      },
+      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+      machine: {
+        machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
+        scanStartTime: '2017-07-11T05:42:54.000Z',
+        scanRequestTime: '2017-07-11T05:42:54.000Z',
+        scanType: 'standard',
+        scanTrigger: 'manual'
+      }
+    },
     hostDetails: {
       id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
       machine: {

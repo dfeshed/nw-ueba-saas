@@ -14,10 +14,11 @@ import {
   downloadLink,
   hostWithStatus,
   isMachineWindows,
-  getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
+  getPoliciesPropertyData,
+  selectedSnapshot } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
-  const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  const result = machineOsType(Immutable.from({ endpoint: { overview: { hostOverview: { machineIdentity: { machineOsType: 'linux' } } } } }));
   assert.equal(result, 'linux');
 });
 
@@ -107,7 +108,7 @@ test('isEcatAgent to check the agent is 4.4 agent', function(assert) {
   const result = isEcatAgent(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           machine: {},
           machineIdentity: {
             machineOsType: 'windows',
@@ -125,7 +126,7 @@ test('isEcatAgent to check the agent is not 4.4 agent', function(assert) {
   const result = isEcatAgent(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           machine: {},
           machineIdentity: {
             machineOsType: 'windows',
@@ -139,11 +140,11 @@ test('isEcatAgent to check the agent is not 4.4 agent', function(assert) {
   assert.deepEqual(result, false);
 });
 
-test('isEcatAgent, when hostDetails is null', function(assert) {
+test('isEcatAgent, when hostOverview is null', function(assert) {
   const result = isEcatAgent(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: null
+        hostOverview: null
       }
     }
   }));
@@ -151,11 +152,11 @@ test('isEcatAgent, when hostDetails is null', function(assert) {
   assert.deepEqual(result, false);
 });
 
-test('isEcatAgent, when hostDetails.machineIdentity is null', function(assert) {
+test('isEcatAgent, when hostOverview.machineIdentity is null', function(assert) {
   const result = isEcatAgent(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           machineIdentity: null
         }
       }
@@ -167,12 +168,12 @@ test('isEcatAgent, when hostDetails.machineIdentity is null', function(assert) {
 
 // isMachineWindows
 test('isMachineWindows, if the OS of the selected agent is not Windows', function(assert) {
-  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostOverview: { machineIdentity: { machineOsType: 'linux' } } } } }));
   assert.equal(result, false, 'OS of the Selected agent is not Windows, value is false');
 });
 
 test('isMachineWindows, if the OS of the selected agent is Windows', function(assert) {
-  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails: { machineIdentity: { machineOsType: 'windows' } } } } }));
+  const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostOverview: { machineIdentity: { machineOsType: 'windows' } } } } }));
   assert.equal(result, true, 'OS of the Selected agent is Windows, value is true');
 });
 
@@ -221,7 +222,7 @@ test('hostWithStatus', function(assert) {
   let result = hostWithStatus(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           id: 1,
           agentStatus: {
             agentId: 1,
@@ -242,7 +243,7 @@ test('hostWithStatus', function(assert) {
   result = hostWithStatus(Immutable.from({
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           id: 1,
           agentStatus: {
             agentId: 1,
@@ -266,7 +267,7 @@ test('getPoliciesPropertyData', function(assert) {
   const state1 = {
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           groupPolicy: {
             policyStatus: 'Updated'
           }
@@ -344,7 +345,7 @@ test('getPoliciesPropertyData', function(assert) {
   const state2 = {
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           groupPolicy: {}
         },
         policyDetails: {
@@ -390,7 +391,7 @@ test('getPoliciesPropertyData', function(assert) {
   const state3 = {
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           groupPolicy: {}
         },
         policyDetails: {
@@ -424,7 +425,7 @@ test('getPoliciesPropertyData', function(assert) {
   const state4 = {
     endpoint: {
       overview: {
-        hostDetails: {
+        hostOverview: {
           groupPolicy: {}
         },
         policyDetails: {
@@ -447,4 +448,39 @@ test('getPoliciesPropertyData', function(assert) {
     'sendTestLog': 'Disabled',
     'protocol': 'TLS'
   });
+});
+
+test('selectedSnapshot', function(assert) {
+  const result1 = selectedSnapshot(Immutable.from({
+    endpoint: {
+      detailsInput: {
+        snapShots: [
+          {
+            serviceId: '123',
+            scanStartTime: '2019-01-23T09:23:12:422Z'
+          },
+          {
+            serviceId: '13',
+            scanStartTime: '2019-01-24T09:23:12:422Z'
+          }
+        ],
+        scanTime: '2019-01-23T09:23:12:422Z',
+        agentId: 'awe2312'
+      }
+    }
+  }));
+  assert.deepEqual(result1, {
+    serviceId: '123',
+    scanStartTime: '2019-01-23T09:23:12:422Z'
+  });
+  const result2 = selectedSnapshot(Immutable.from({
+    endpoint: {
+      detailsInput: {
+        snapShots: null,
+        scanTime: '2019-01-23T09:25:12:422Z',
+        agentId: 'awe2312'
+      }
+    }
+  }));
+  assert.deepEqual(result2, null);
 });

@@ -13,7 +13,8 @@ const initialState = {
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
   policyDetails: null,
-  activeAlertTab: 'critical'
+  activeAlertTab: 'critical',
+  hostOverview: null
 };
 
 test('should return the initial state', function(assert) {
@@ -113,4 +114,16 @@ test('FETCH_AGENT_STATUS', function(assert) {
     { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: null });
 
   assert.equal(result3.hostDetails.agentStatus.scanStatus, 'scanning', 'scanStatus is not updated');
+});
+
+test('FETCH_HOST_OVERVIEW', function(assert) {
+  const previous = Immutable.from({
+    hostOverview: null
+  });
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_HOST_OVERVIEW,
+    payload: { data: { items: [{ id: '123' }] } }
+  });
+  const endState = reducer(previous, newAction);
+  assert.deepEqual(endState.hostOverview, { id: '123' });
 });

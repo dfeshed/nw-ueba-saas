@@ -1,7 +1,7 @@
 import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
-import { HostDetails } from '../api';
+import { HostDetails, Machines } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
 import { getFileContext } from './file-context';
@@ -75,11 +75,6 @@ const _getHostDetails = (forceRefresh, serviceId) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(setFocusedHost(data));
             dispatch(_fetchDataForSelectedTab());
-            dispatch(_fetchPolicyDetails(agentId));
-            dispatch(getAllServices());
-            dispatch(getServiceId('MACHINE'));
-            dispatch(fetchHostContext(data.machineIdentity.machineName));
-            dispatch(setSelectedHost(data));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
           },
@@ -222,11 +217,14 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
   };
 };
 
-const initializeAgentDetails = (input, loadSnapshot) => {
+const initializeAgentDetails = (input, loadSnapshot, loadMachineSearch) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = input; // scanTime here will contain snapshot object
     const { endpoint: { detailsInput: dataState, filter } } = getState();
 
+    if (loadMachineSearch) {
+      dispatch(_getMachineSearchForAgent(agentId));
+    }
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
     if (!filter.selectedFilter || filter.selectedFilter.id === -1) {
       const savedFilter = { id: 1, criteria: { expressionList: filter.expressionList } };
@@ -266,6 +264,28 @@ const setAlertTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_ALERT_TAB, payload
 const setPropertyPanelTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPERTY_PANEL_TAB, payload: { tabName } });
 
 const setHostDetailPropertyTab = (tabName) => ({ type: ACTION_TYPES.SET_HOST_DETAIL_PROPERTY_TAB, payload: { tabName } });
+
+const _getMachineSearchForAgent = (agentId) => {
+  return (dispatch, getState) => {
+    const expressionList = [{ propertyName: 'id', restrictionType: 'IN', propertyValues: [{ value: agentId }] }];
+    const { hostColumnSort } = getState().endpoint.machines;
+    dispatch({
+      type: ACTION_TYPES.FETCH_HOST_OVERVIEW,
+      promise: Machines.getPageOfMachines(-1, hostColumnSort, expressionList),
+      meta: {
+        onSuccess: ({ data }) => {
+          const [item] = data.items;
+          dispatch(_fetchPolicyDetails(agentId));
+          dispatch(setSelectedHost(item));
+          dispatch(getAllServices());
+          dispatch(getServiceId('MACHINE'));
+          dispatch(fetchHostContext(item.machineIdentity.machineName));
+        }
+      }
+    });
+
+  };
+};
 
 export {
   initializeAgentDetails,

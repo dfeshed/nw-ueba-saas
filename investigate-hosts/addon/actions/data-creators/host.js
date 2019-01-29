@@ -51,7 +51,7 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     dispatch(resetHostDownloadLink());
     dispatch(resetRiskContext());
     dispatch(getRiskScoreContext(machineId, 'HOST'));
-    dispatch(initializeAgentDetails({ agentId: machineId }, true));
+    dispatch(initializeAgentDetails({ agentId: machineId }, true, true));
     dispatch(changeDetailTab(tabName));
     // To redirect to the Process details panel in the process tab
     next(() => {

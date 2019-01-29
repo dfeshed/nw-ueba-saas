@@ -9,7 +9,8 @@ const initialState = Immutable.from({
   exportJSONStatus: 'completed',
   arrangeSecurityConfigsBy: 'alphabetical',
   policyDetails: null,
-  activeAlertTab: 'critical'
+  activeAlertTab: 'critical',
+  hostOverview: null
 });
 
 /**
@@ -61,7 +62,13 @@ const hostDetails = reduxActions.handleActions({
 
   [ACTION_TYPES.CHANGE_ALERT_TAB]: (state, { payload: { tabName } }) => state.set('activeAlertTab', tabName),
 
-  [ACTION_TYPES.FETCH_AGENT_STATUS]: (state, action) => _updateAgentStatus(state, action)
+  [ACTION_TYPES.FETCH_AGENT_STATUS]: (state, action) => _updateAgentStatus(state, action),
+
+  [ACTION_TYPES.FETCH_HOST_OVERVIEW]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('hostOverview', action.payload.data.items[0])
+    });
+  }
 
 }, initialState);
 
