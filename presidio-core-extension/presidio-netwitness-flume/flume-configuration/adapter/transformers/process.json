@@ -312,7 +312,16 @@
       "sourceKey": "checksum_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.checksumId"
+        "additionalInfo.srcChecksumId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "checksum-dst",
+      "sourceKey": "checksum_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstChecksumId"
       ]
     },
     {
@@ -339,7 +348,16 @@
       "sourceKey": "process_vid_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.processVidSrc"
+        "additionalInfo.srcProcessVid"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-dst",
+      "sourceKey": "process_vid_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstProcessVid"
       ]
     }
   ]
