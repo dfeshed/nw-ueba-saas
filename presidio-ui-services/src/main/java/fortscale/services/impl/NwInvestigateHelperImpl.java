@@ -82,7 +82,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     }
 
     @Override
-    public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps, Boolean isSourceProcess) {
+    public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps, boolean isSourceProcess) {
 
         Configurations conf = getConfigurations();
 
