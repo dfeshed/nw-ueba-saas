@@ -130,7 +130,7 @@ public class AlertServiceImpl implements AlertService {
     private Map<String, Number> createIndicatorNameToContributionMap(List<Indicator> indicators) {
         Map<String, Number> map = new HashMap<>();
         indicators.forEach(indicator -> {
-            map.put(indicator.getName(), indicator.getScoreContribution());
+            map.merge(indicator.getName(), indicator.getScoreContribution(), (v1, v2) -> v1.doubleValue() + v2.doubleValue());
         });
         return map;
     }
