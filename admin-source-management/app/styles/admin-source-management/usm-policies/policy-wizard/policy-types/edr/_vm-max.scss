@@ -13,6 +13,9 @@
       margin-right: rsa-whitespace(more);
       margin-left: rsa-whitespace(more);
     }
+    .is-greyed-out {
+      pointer-events: none;
+    }
   }
   .noUi-horizontal {
     max-width: 80%;
