@@ -19,7 +19,7 @@ const _initialState = Immutable.from({
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
-  eventTimeSortOrder: undefined,
+  eventTimeSortOrder: 'Ascending',
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined
 });
@@ -151,12 +151,12 @@ export default handleActions({
     // replace event in array
     const newData = _update(state.data, sessionId, updatedItem);
     return state.set('data', newData);
-  },
-
-  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+  }
+  // NewestFirst code commented out
+  /* [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const eventTimeSortOrder = _.get(eventAnalysisPreferences, 'eventTimeSortOrder', state);
     return state.set('eventTimeSortOrder', eventTimeSortOrder);
-  }
+  } */
 }, _initialState);
 
 const _find = (data, sessionId) => data.find((d) => d.sessionId === sessionId);

@@ -74,7 +74,8 @@ export default {
     ],
     field: 'queryTimeFormat'
   },
-  {
+  // NewestFirst code commented out
+  /* {
     name: 'preferences.investigate-events.eventTimeSortOrder',
     info: true, // for preferences that need additional information
     type: 'radio',
@@ -83,7 +84,7 @@ export default {
       'Ascending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
-  },
+  }, */
   {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
@@ -102,8 +103,8 @@ export default {
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
-      autoUpdateSummary: false,
-      eventTimeSortOrder: 'Ascending'
+      autoUpdateSummary: false
+      // eventTimeSortOrder: 'Ascending' // NewestFirst code commented out
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

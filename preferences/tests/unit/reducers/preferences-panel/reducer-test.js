@@ -27,8 +27,8 @@ const preferences = {
   isReconExpanded: true,
   isReconOpen: true,
   isRequestShown: true,
-  isResponseShown: true,
-  eventTimeSortOrder: 'Ascending'
+  isResponseShown: true
+  // eventTimeSortOrder: 'Ascending' // NewestFirst code commented out
 };
 
 let result;

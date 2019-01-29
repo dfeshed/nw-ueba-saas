@@ -1,4 +1,4 @@
-import { test, module } from 'qunit';
+import { test, module, skip } from 'qunit';
 import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
@@ -166,7 +166,8 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate the right side of the results',
   assert.equal(result.data[1].timeAsNumber, 9999, 'sorted ascending');
 });
 
-test('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
+// NewestFirst code commented out
+skip('ACTION_TYPES.SET_PREFERENCES will set correct preferences', function(assert) {
   const initialState = Immutable.from({
     eventTimeSortOrder: 'Ascending'
   });

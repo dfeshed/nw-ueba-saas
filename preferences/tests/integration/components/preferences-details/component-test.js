@@ -44,7 +44,7 @@ const renderApplicationContent = async function(ctx, assert) {
   `);
   await click('.rsa-icon-settings-1-filled');
   // TODO bring download back. Add meta download preference back
-  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 7, { timeout: 3000 });
+  await waitUntil(() => findAll('.rsa-preferences-field-content').length === 6, { timeout: 3000 });
   assert.ok(find('.is-expanded'), 'Preference Panel opened.');
 };
 
@@ -76,7 +76,9 @@ module('Integration | Component | Preferences Details', function(hooks) {
     // assert.equal(str, 'Download Text');
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
     assert.ok(find('.rsa-form-checkbox-label.checked'));
-    assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
+
+    // NewestFirst code commented out
+    // assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
   });
 
   test('Preferences panel should show Time format Settings', async function(assert) {
@@ -156,7 +158,8 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.notOk(find('.rsa-form-radio-label.DB.checked'));
   });
 
-  test('Preferences panel should change Sort Event Settings on click', async function(assert) {
+  // NewestFirst code commented out
+  skip('Preferences panel should change Sort Event Settings on click', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
     assert.notOk(find('.rsa-form-radio-label.Descending.checked'));
@@ -188,7 +191,8 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await waitUntil(() => checkboxForTimeWindow.className.trim() === 'rsa-form-checkbox-label checked', { timeout: 3000 });
   });
 
-  test('renders info icon where information is needed', async function(assert) {
+  // NewestFirst code commented out
+  skip('renders info icon where information is needed', async function(assert) {
     await renderApplicationContent(this, assert);
     await assertForPreferencesInfoIcon(assert, 0, false, 'No Info icon for Date Time Format');
     await assertForPreferencesInfoIcon(assert, 1, true, 'Event Sort Order has info icon');
