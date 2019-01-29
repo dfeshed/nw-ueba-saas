@@ -1,11 +1,16 @@
 $panel-width: 200px;
+$panel-max-width: 400px;
+$panel-max-height: 250px;
 
 .tool-tip-value {
   @include rsa-font(body);
   padding: rsa-whitespace();
-  width: $panel-width;
+  min-width: $panel-width;
+  max-width: $panel-max-width;
   line-height: 1.25rem;
   word-wrap: break-word;
+  max-height: $panel-max-height;
+  overflow: auto;
   .copy-icon {
     float: right;
   }
