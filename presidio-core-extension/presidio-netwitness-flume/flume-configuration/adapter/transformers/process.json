@@ -317,6 +317,15 @@
     },
     {
       "type": "copy_value",
+      "name": "checksum-dst",
+      "sourceKey": "checksum_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstChecksumId"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "agent-id",
       "sourceKey": "agent_id",
       "isRemoveSourceKey": true,
@@ -340,6 +349,15 @@
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.processVidSrc"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-dst",
+      "sourceKey": "process_vid_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.processVidDst"
       ]
     }
   ]
