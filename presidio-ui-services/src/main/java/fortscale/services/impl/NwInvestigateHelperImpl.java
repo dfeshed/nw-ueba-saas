@@ -82,7 +82,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     }
 
     @Override
-    public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps) {
+    public String getLinkToInvestigateProcess(Object value, Object machineId,Map<String,Object> maps, Boolean isSourceProcess) {
 
         Configurations conf = getConfigurations();
 
@@ -93,22 +93,24 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
 
         Object agentId = maps.get("agentId");
         Object osType = maps.get("osType");
-        Object vid = maps.get("processVidSrc");
-        Object checksum = maps.get("checksumId");
+        Object srcProcessVid = maps.get("srcProcessVid");
+        Object dstProcessVid = maps.get("dstProcessVid");
+        Object dstChecksumId = maps.get("dstChecksumId");
+        Object srcChecksumId = maps.get("srcChecksumId");
         if (null == osType) {
             osType = "windows";
         }
-        if (null == agentId || null == vid || null == checksum) {
+        if (null == agentId || null == dstProcessVid || null == srcProcessVid) {
             return null;
         }
         return url.queryParam(SID,conf.getBrokerId())
-                .queryParam(CHECKSUM, checksum)
+                .queryParam(CHECKSUM, isSourceProcess ? srcChecksumId : dstChecksumId)
                 .queryParam(SERVER_ID,conf.getBrokerId())
                 .queryParam("aid",agentId)
                 .queryParam("hn",machineId)
                 .queryParam("pn",value)
                 .queryParam("osType", osType)
-                .queryParam("vid", vid)
+                .queryParam("vid", isSourceProcess ? srcProcessVid : dstProcessVid)
                 .queryParam("et",LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
                 .queryParam("st",LocalDateTime.now().minusDays(7).toEpochSecond(ZoneOffset.UTC))
                 .toString();

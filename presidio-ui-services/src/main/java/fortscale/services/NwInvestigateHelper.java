@@ -9,5 +9,5 @@ public interface NwInvestigateHelper {
 
     String getLinkToInvestigateHost(Object value);
 
-    String getLinkToInvestigateProcess(Object value, Object hostName, Map<String,Object> maps);
+    String getLinkToInvestigateProcess(Object value, Object hostName, Map<String,Object> map, Boolean isSourceProcess);
 }
