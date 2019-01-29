@@ -100,7 +100,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
         if (null == osType) {
             osType = "windows";
         }
-        if (null == agentId || null == dstProcessVid || null == srcProcessVid) {
+        if (null == agentId || (isSourceProcess ? (null == srcChecksumId || null == srcProcessVid) : (null == dstChecksumId || null == dstProcessVid))) {
             return null;
         }
         return url.queryParam(SID,conf.getBrokerId())
