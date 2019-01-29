@@ -30,7 +30,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     private ConfigrationServerClientUtils configrationServerClientUtils;
     private Configurations latestKnownConfiguration = new Configurations();
     private final String PATH_TEMPLATE = "investigation/{0}/events/date/{1}/{2}";
-    private final String PATH_TEMPLATE_HOST = "/investigate/host";
+    private final String PATH_TEMPLATE_HOST = "/investigate/hosts";
     private final String MACHINE_ID = "machineId";
     private final String PATH_TEMPLATE_PROCESS = "/investigate/process-analysis";
     private final String SID = "sid";
@@ -72,9 +72,10 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
         String url =  new JerseyUriBuilder()
                 .scheme(URL_SCHEMA)
                 .host(conf.getBaseLinkDestinationHostname())
-                .path(PATH_TEMPLATE_HOST)
+                .path(PATH_TEMPLATE_HOST+"/"+value)
                 .queryParam(MACHINE_ID, value)
                 .queryParam(SID,conf.getBrokerId())
+                .queryParam("tabName","OVERVIEW")
                 .toString();
 
         return url;
