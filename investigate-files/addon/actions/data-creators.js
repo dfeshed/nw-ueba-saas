@@ -166,7 +166,7 @@ const fetchSchemaInfo = () => {
 const initializeFilesPreferences = () => {
   return (dispatch) => {
     const prefService = lookup('service:preferences');
-    prefService.getPreferences('endpoint-preferences').then((data) => {
+    prefService.getPreferences('endpoint-preferences', null, { socketUrlPostfix: 'any' }).then((data) => {
       if (data && data.filePreference) {
         // Only if preferences is sent from api, set the preference state.
         // Otherwise, initial state will be used.
@@ -226,7 +226,7 @@ const _getVisibleColumnNames = (getState) => {
 const _setPreferences = (getState) => {
   const prefService = lookup('service:preferences');
   const { preferences } = getState().preferences;
-  prefService.setPreferences('endpoint-preferences', null, { ...preferences });
+  prefService.setPreferences('endpoint-preferences', null, { ...preferences }, null, { socketUrlPostfix: 'any' });
 };
 
 const updateColumnVisibility = (column) => {

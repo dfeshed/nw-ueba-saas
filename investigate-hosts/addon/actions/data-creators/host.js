@@ -227,7 +227,7 @@ const _getVisibleColumnNames = (getState) => {
 const _setPreferences = (getState) => {
   const prefService = lookup('service:preferences');
   const { preferences } = getState().preferences;
-  prefService.setPreferences('endpoint-preferences', null, { ...preferences });
+  prefService.setPreferences('endpoint-preferences', null, { ...preferences }, null, { socketUrlPostfix: 'any' });
 };
 
 const updateColumnVisibility = (column) => {
@@ -287,7 +287,7 @@ const _stringifyObject = (data) => {
 const initializeHostsPreferences = () => {
   return async(dispatch) => {
     const prefService = lookup('service:preferences');
-    await prefService.getPreferences('endpoint-preferences').then((data) => {
+    await prefService.getPreferences('endpoint-preferences', null, { socketUrlPostfix: 'any' }).then((data) => {
       if (data && data.machinePreference) {
         // Only if preferences is sent from api, set the preference state.
         // Otherwise, initial state will be used.

@@ -22,8 +22,8 @@ export default Service.extend({
    * @returns {Promise}
    * @public
    */
-  getPreferences(preferenceFor, additionalFilters) {
-    return fetchPreferences(preferenceFor, additionalFilters);
+  getPreferences(preferenceFor, additionalFilters, streamOptions) {
+    return fetchPreferences(preferenceFor, additionalFilters, streamOptions);
   },
 
   /**
@@ -42,10 +42,10 @@ export default Service.extend({
    * @returns {Promise}
    * @public
    */
-  setPreferences(preferenceFor, additionalFilters, preferences, defaultPreferences) {
+  setPreferences(preferenceFor, additionalFilters, preferences, defaultPreferences, streamOptions) {
     return fetchPreferences(preferenceFor, additionalFilters).then((data) => {
       const preferenceForSave = _.assign(data || defaultPreferences, preferences);
-      return savePreferences(preferenceFor, preferenceForSave);
+      return savePreferences(preferenceFor, preferenceForSave, streamOptions);
     }).catch(() => {
       // TODO:: Need to handle error gracefully.
       debug('Unable to save preferences.');

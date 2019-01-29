@@ -1,7 +1,7 @@
 import rsvp from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 
-const fetchPreferences = (preferenceFor, data) => {
+const fetchPreferences = (preferenceFor, data, streamOptions) => {
   const requestPayload = {
     modelName: preferenceFor,
     method: 'getPreferences',
@@ -9,6 +9,10 @@ const fetchPreferences = (preferenceFor, data) => {
       data
     }
   };
+
+  if (streamOptions) {
+    requestPayload.streamOptions = streamOptions;
+  }
   return new rsvp.Promise(function(resolve) {
     const request = lookup('service:request');
     request.promiseRequest(requestPayload).then(({ data }) => {
@@ -19,7 +23,7 @@ const fetchPreferences = (preferenceFor, data) => {
   });
 };
 
-const savePreferences = (preferenceFor, preferences) => {
+const savePreferences = (preferenceFor, preferences, streamOptions) => {
   const requestPayload = {
     modelName: preferenceFor,
     method: 'setPreferences',
@@ -27,6 +31,11 @@ const savePreferences = (preferenceFor, preferences) => {
       data: preferences
     }
   };
+
+  if (streamOptions) {
+    requestPayload.streamOptions = streamOptions;
+  }
+
   return new rsvp.Promise(function(resolve, reject) {
     const request = lookup('service:request');
     request.promiseRequest(requestPayload).then(() => {
