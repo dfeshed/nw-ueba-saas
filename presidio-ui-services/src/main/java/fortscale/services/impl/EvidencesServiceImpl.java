@@ -344,7 +344,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 					if (linkedFieldName.equals(MACHINE_ID)) {
 						link = nwInvestigateHelper.getLinkToInvestigateHost(unnormalizedValue);
 					} else if (linkedFieldName.endsWith(PROCESS_FILE_NAME)) {
-						link = nwInvestigateHelper.getLinkToInvestigateProcess(unnormalizedValue,getFromAnyMap(MACHINE_ID, event), (Map<String, Object>) getFromAnyMap("additionalInfo", event));
+						boolean isSourceProcess = linkedFieldName.startsWith("src");
+						link = nwInvestigateHelper.getLinkToInvestigateProcess(unnormalizedValue,getFromAnyMap(MACHINE_ID, event), (Map<String, Object>) getFromAnyMap("additionalInfo", event), isSourceProcess);
 					} else {
 						link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
 					}
