@@ -93,7 +93,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
 
         Object agentId = maps.get("agentId");
         Object osType = maps.get("osType");
-            Object vid = maps.get("processVidSrc");
+        Object vid = maps.get("processVidSrc");
         Object checksum = maps.get("checksumId");
         if (null == osType) {
             osType = "windows";
