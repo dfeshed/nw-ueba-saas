@@ -163,9 +163,9 @@ section {
   margin: 0 auto;
   -webkit-line-clamp: 4;
   // autoprefixer removes '-webkit-box-orient', hence disabling autoprefixer
-  /* autoprefixer: off */
+  /*! autoprefixer: off */
   -webkit-box-orient: vertical;
-  /* autoprefixer: on */
+  /*! autoprefixer: on */
   overflow: hidden;
   text-overflow: ellipsis;
   padding-bottom: 5px;

@@ -58,7 +58,7 @@ test('Should be styled appropriately if scanStatus is set cancelPending', functi
 
   this.set('hostDetails', hostDetails);
   this.render(hbs`{{host-scan-status agent=hostDetails}}`);
-  assert.equal(this.$('.rsa-agent-scan-status').get(0).innerText.trim(), 'Stopping scan', 'When scan status is cancelPending');
+  assert.equal(this.$('.rsa-agent-scan-status').get(0).innerText.trim(), 'Cancelling', 'When scan status is cancelPending');
 });
 
 test('Should be styled appropriately if scanStatus is set scanPending', function(assert) {
@@ -76,7 +76,7 @@ test('Should be styled appropriately if scanStatus is set scanPending', function
 
   this.set('hostDetails', hostDetails);
   this.render(hbs`{{host-scan-status agent=hostDetails}}`);
-  assert.equal(this.$('.rsa-agent-scan-status').get(0).innerText.trim(), 'Starting scan', 'When scan status is scanPending');
+  assert.equal(this.$('.rsa-agent-scan-status').get(0).innerText.trim(), 'Pending', 'When scan status is scanPending');
 });
 
 test('Should be styled appropriately if agentVersion is 4.4', function(assert) {

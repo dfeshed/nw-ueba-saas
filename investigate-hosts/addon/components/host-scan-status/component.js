@@ -4,8 +4,8 @@ import { inject as service } from '@ember/service';
 
 const statusMapping = {
   scanning: 'Scanning',
-  scanPending: 'Starting scan',
-  cancelPending: 'Stopping scan',
+  scanPending: 'Pending',
+  cancelPending: 'Cancelling',
   idle: 'Idle'
 };
 

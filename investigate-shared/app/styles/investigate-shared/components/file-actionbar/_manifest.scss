@@ -31,6 +31,7 @@
 .file-action-selector-panel {
   .rsa-dropdown-action-list {
     .disabled, li.disabled:hover {
+      background: background-color(primary, darkest);
       color: text-color(primary);
       .rsa-content-tethered-panel-trigger {
         color: text-color(primary);
