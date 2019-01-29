@@ -15,8 +15,12 @@
         <span title={{get item column.field}}>{{get item column.field}}</span>
       </a>
     </div>
-  {{else if (eq column.field "alert.source")}}
+  {{else if (eq column.field 'alert.source')}}
     {{t (concat 'context.alerts.sourceName.' (get item column.field)) }}
+  {{else if (and (eq column.field 'assignee.name') (not (get item column.field)))}}
+    <span title={{get item 'assignee.id'}}>
+      {{get item 'assignee.id'}}
+    </span>
   {{else}}
     <span title={{get item column.field}}>
       {{get item column.field}}

@@ -239,7 +239,8 @@ export default [
           '$date': '2016-02-09T04:17:06.156Z'
         },
         'assignee': {
-          'name': 'Administrator'
+          'id': 'admin',
+          'name': null
         },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
