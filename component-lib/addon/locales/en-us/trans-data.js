@@ -764,16 +764,16 @@ export default {
         none: '(Unassigned)'
       },
       riskScoring: {
-        header: 'Risk Scoring Threshold Settings For Endpoint',
+        header: 'Endpoint Risk Scoring Settings',
         labels: {
           enabled: 'Enabled',
           disabled: 'Disabled',
           fileThresholdEnabled: 'Create Alerts and Incidents For Files',
-          fileThreshold: 'File Alert Threshold',
+          fileThreshold: 'File Risk Score Threshold',
           fileTimeWindow: 'File Incident Time Window',
           fileTimeWindowUnit: 'File Time Window Unit (days or hours)',
           hostThresholdEnabled: 'Create Alerts and Incidents For Hosts',
-          hostThreshold: 'Host Alert Threshold',
+          hostThreshold: 'Host Risk Score Threshold',
           hostTimeWindow: 'Host Incident Time Window',
           hostTimeWindowUnit: 'Host Time Window Unit (days or hours)'
         },

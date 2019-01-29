@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/investigate/languages',
   requestDestination: '/ws/investigate/languages',
   message(/* frame */) {
