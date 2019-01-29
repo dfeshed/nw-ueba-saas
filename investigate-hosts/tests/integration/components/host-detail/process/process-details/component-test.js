@@ -112,6 +112,24 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     assert.equal(findAll('.process-content-box__accordion-content .is-collapsed').length, 2, 'On click only one accordion should expand');
 
   });
+  test('process-details accordions in linux machine expand test', async function(assert) {
+    new ReduxDataHelper(initState)
+      .agentId(1)
+      .dllList(dllListData)
+      .scanTime(123456789)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .isProcessDetailsView(true)
+      .machineOSType('linux')
+      .processDetails(data)
+      .build();
+
+    await render(hbs`{{host-detail/process/process-details}}`);
+    await waitUntil(() => findAll('.process-content-box').length > 0, { timeout: 6000 });
+    assert.equal(findAll('.process-content-box__accordion-content').length, 1, 'for linux one accordions should expand by default');
+
+  });
   test('Property panel on process-details', async function(assert) {
     new ReduxDataHelper(initState)
       .agentId(1)

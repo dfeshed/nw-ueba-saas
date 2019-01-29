@@ -18,10 +18,11 @@
       &::after {
         color: text-color(primary);
       }
+      &:hover {
+        color: text-color(primary);
+      }
     }
-    &:hover {
-      color: text-color(primary);
-    }
+   
   }
   .show-divider {
     @include border-top(1px, solid, primary, base, opaque);

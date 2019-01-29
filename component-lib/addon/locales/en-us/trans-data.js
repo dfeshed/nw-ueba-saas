@@ -3655,7 +3655,9 @@ export default {
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',
-          analyzeFile: 'Download the file to server to analyze.'
+          analyzeFile: 'Download the file to server to analyze.',
+          changeFileStatusDisabled: 'Select {{label}} to change the status',
+          moreActionDisabled: 'Select {{label}} to enable More actions'
         }
       },
       savedFilters: 'Saved Filters',

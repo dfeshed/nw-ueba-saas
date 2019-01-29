@@ -41,6 +41,10 @@ const ProcessDetails = Component.extend({
 
   selectedAccordion: '',
 
+  @computed('isMachineWindows', 'selectedAccordion')
+  selectedAccordionName(isMachineWindows, selectedAccordion) {
+    return selectedAccordion === '' && !isMachineWindows ? 'dll' : selectedAccordion;
+  },
   @computed('process')
   loadedDLLNote({ machineOsType }) {
     if (machineOsType && machineOsType !== 'linux') {

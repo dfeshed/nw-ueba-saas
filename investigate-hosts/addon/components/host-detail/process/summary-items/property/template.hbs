@@ -4,7 +4,7 @@
   {{#rsa-content-definition label=(t item.label) value=item.value}}
     {{#if (eq item.field 'fileName')}}
       <a title={{t 'investigateHosts.process.toolTip.openFileDetails'}} class='file-name-link' href='/investigate/files/file?checksum={{item.checksum}}&sid={{sid}}' target='_blank' rel='noopener noreferrer'>
-        {{endpoint/base-property-panel/property-value property=item}}
+        {{item.value}}
       </a>
     {{else}}
       {{endpoint/base-property-panel/property-value property=item }}

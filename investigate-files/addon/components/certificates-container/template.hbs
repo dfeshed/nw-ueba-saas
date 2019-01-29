@@ -32,7 +32,7 @@
         {{t 'investigateFiles.certificatePageTitle'}}
       </label>
       {{certificates-container/certificate-status}}
-      {{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=(action 'pivotToInvestigate')}}
+      {{endpoint/pivot-to-event-analysis label='certificate' selections=selections pivotToInvestigate=(action 'pivotToInvestigate')}}
       {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
         {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
       {{/rsa-form-button}}

@@ -30,6 +30,11 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
     assert.equal(findAll('.file-status-button')[0].classList.contains('is-disabled'), true, 'Edit files status Button is disabled');
   });
 
+  test('it should disable the edit-file-status button', async function(assert) {
+    await render(hbs`{{endpoint/edit-file-status isDisabled=true}}`);
+    assert.equal(findAll('.file-status-button')[0].title, 'Select files to change the status', 'Tooltip should display');
+  });
+
   test('it should enable the edit-file-status button', async function(assert) {
     await render(hbs`{{endpoint/edit-file-status isDisabled=false}}`);
     assert.equal(findAll('.file-status-button')[0].classList.contains('is-disabled'), false, 'Edit files status Button is enabled');

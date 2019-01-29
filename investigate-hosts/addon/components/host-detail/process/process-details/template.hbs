@@ -12,24 +12,24 @@
             <vbox class='process-content-box-wrapper'>
               {{host-detail/process/summary-items config=summaryConfig data=process}}
               <box class="process-content-box__accordion-content">
-                {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'dll') click=(action 'selectAccordion' 'dll') class='accordion-content-title' label=(t 'investigateHosts.process.dll.title' count=dllList.length)}}
+                {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordionName 'dll') click=(action 'selectAccordion' 'dll') class='accordion-content-title' label=(t 'investigateHosts.process.dll.title' count=dllList.length)}}
                   <div class="process-dll-note">{{loadedDLLNote}}</div>
-                  {{#if (eq selectedAccordion 'dll')}}
+                  {{#if (eq selectedAccordionName 'dll')}}
                     {{host-detail/process/process-dll-list openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
                   {{/if}}  
                 {{/rsa-content-accordion}}
               </box>
               {{#if isMachineWindows}}
                 <box class="process-content-box__accordion-content">
-                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'image-hooks') click=(action 'selectAccordion' 'image-hooks') class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title' count=hookList.length)}}
-                    {{#if (eq selectedAccordion 'image-hooks') }}
+                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordionName 'image-hooks') click=(action 'selectAccordion' 'image-hooks') class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title' count=hookList.length)}}
+                    {{#if (eq selectedAccordionName 'image-hooks') }}
                       {{host-detail/process/process-image-hooks openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
                     {{/if}}
                   {{/rsa-content-accordion}}
                 </box>
                 <box class="process-content-box__accordion-content">
-                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordion 'threads') click=(action 'selectAccordion' 'threads') class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title' count=threadList.length)}}
-                    {{#if (eq selectedAccordion 'threads')}}
+                  {{#rsa-content-accordion isCollapsed=(not-eq selectedAccordionName 'threads') click=(action 'selectAccordion' 'threads') class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title' count=threadList.length)}}
+                    {{#if (eq selectedAccordionName 'threads')}}
                       {{host-detail/process/process-suspicious-threads openPropertyPanel=(action layout.open 'right') closePropertyPanel=(action layout.close 'right')}}
                     {{/if}}
                   {{/rsa-content-accordion}}
