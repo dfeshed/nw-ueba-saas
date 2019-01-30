@@ -7,7 +7,7 @@ mock
 sqlalchemy==1.1.18
 psycopg2
 nose
-apache-airflow[devel]==1.9.0
+apache-airflow[devel]==1.10.2
 python-dateutil
 lxml<4.0,>=3.6.0
 setuptools-scm==2.1.0

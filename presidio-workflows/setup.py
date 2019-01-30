@@ -64,7 +64,7 @@ setup(name='presidio-workflows',
       packages=find_packages(),
       install_requires=[
           # TODO: verify final version of each dependency
-          'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.9.0',
+          'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.10.2',
           'python-dateutil', 'lxml<4.0,>=3.6.0', 'elasticsearch>=5.0.0,<6.0.0'
       ],
       cmdclass={'test': Tox},
