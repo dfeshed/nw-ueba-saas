@@ -70,7 +70,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       right: 0;
       top: 0;
       border-left: 1px solid border-color(neutral, dark);
-      z-index: 99;
+      z-index: 2;
       background-color: $applicationBodyBackgroundColor;
 
       i {

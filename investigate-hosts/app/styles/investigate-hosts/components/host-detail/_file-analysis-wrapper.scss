@@ -84,7 +84,13 @@
     margin: 20% auto;
   }
 }
-
+.host-detail-wrapper {
+  .file-analysis-wrapper {
+    .close-zone {
+      padding-top: 0;
+    }
+  }
+}
 .is-show-file-analysis {
   .file-analysis-wrapper {
     left: 0;

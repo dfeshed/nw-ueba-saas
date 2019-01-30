@@ -32,7 +32,7 @@ import {
 import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
-import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import FIXED_COLUMNS from './file-list-fixed-columns';
 
@@ -53,7 +53,6 @@ const stateToComputed = (state) => ({
   fileStatusData: state.files.fileList.fileStatusData,
   remediationStatus: state.files.fileList.isRemediationAllowed,
   restrictedFileList: state.fileStatus.restrictedFileList,
-  serviceId: serviceId(state),
   timeRange: timeRange(state),
   isCertificateView: state.certificate.list.isCertificateView,
   selectedIndex: state.files.fileList.selectedIndex,

@@ -65,7 +65,7 @@
         {{#rsa-data-table/body-cell column=column}}
           {{#if (eq column.field 'firstFileName')}}
             <div class="file-name">
-              {{#link-to 'files.details' (get item 'checksumSha256') (query-params sid=serverId checksum=(get item 'checksumSha256'))}}
+              {{#link-to 'files.details' (get item 'checksumSha256') (query-params sid=(get item 'serviceId') checksum=(get item 'checksumSha256') tabName='OVERVIEW')}}
                 {{get item column.field}}
               {{/link-to}}
             </div>

@@ -451,8 +451,33 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
     }
   };
 };
+const _fetchAgentIdsByChecksum = (checksum, serviceId, callbacks) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigate;
+    const input = {
+      filter: { value: `(checksum = '${checksum}')` },
+      queryNode,
+      size: 5,
+      metaName: 'agent.id',
+      onComplete: (data) => {
+        const agentIds = data ? data.map((d) => d.value) : [];
+        if (agentIds.length) {
+          const metaSelectorConfig = {
+            checksum: 'checksum',
+            fileName: 'filename',
+            directory: 'directory'
+          };
+          const computedAgentIds = agentIds.map((id) => ({ agentId: id }));
+          dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedAgentIds });
+          dispatch(_fetchFileNameForChecksum(checksum, serviceId, callbacks, metaSelectorConfig));
+        }
+      }
+    };
+    _getMetaValues(dispatch, input);
+  };
+};
 
-const _fetchAgentIdsForchecksum = (checksum, serviceId, callbacks) => {
+const _fetchAgentIdsByChecksumSource = (checksum, serviceId, callbacks) => {
   return (dispatch, getState) => {
     const queryNode = getState().investigate;
     const input = {
@@ -463,9 +488,16 @@ const _fetchAgentIdsForchecksum = (checksum, serviceId, callbacks) => {
       onComplete: (data) => {
         const agentIds = data ? data.map((d) => d.value) : [];
         if (agentIds.length) {
+          const metaSelectorConfig = {
+            checksum: 'checksum.src',
+            fileName: 'filename.src',
+            directory: 'directory.src'
+          };
           const computedAgentIds = agentIds.map((id) => ({ agentId: id }));
           dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedAgentIds });
-          dispatch(_fetchFileNameForChecksum(checksum, serviceId, callbacks));
+          dispatch(_fetchFileNameForChecksum(checksum, serviceId, callbacks, metaSelectorConfig));
+        } else {
+          dispatch(_fetchAgentIdsByChecksum(checksum, serviceId, callbacks));
         }
       }
     };
@@ -473,16 +505,17 @@ const _fetchAgentIdsForchecksum = (checksum, serviceId, callbacks) => {
   };
 };
 
-const _fetchFileNameForChecksum = (checksum, serviceId, callbacks) => {
+const _fetchFileNameForChecksum = (checksum, serviceId, callbacks, metaSelectorConfig) => {
   return (dispatch, getState) => {
+    const { checksum: checksumSrc, fileName } = metaSelectorConfig;
     const queryNode = getState().investigate;
     const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
     for (const info of machineFilePathList) {
       const input = {
-        filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${info.agentId}')` },
+        filter: { value: `(${checksumSrc} = '${checksum}') && (agent.id = '${info.agentId}')` },
         queryNode,
         size: 1,
-        metaName: 'filename.src',
+        metaName: fileName,
         onComplete: (data) => {
           const machineFilePathListUpdated = getState().files.fileList.machineFilePathInfoList;
           const [file] = data;
@@ -496,7 +529,7 @@ const _fetchFileNameForChecksum = (checksum, serviceId, callbacks) => {
               }
             });
             dispatch({ type: ACTION_TYPES.SET_MACHINE_FILE_PATH_LIST, payload: computedMachineFileInfoList });
-            dispatch(_fetchPathSrcForFileName(checksum, info.agentId, fileName, serviceId, callbacks));
+            dispatch(_fetchPathSrcForFileName(checksum, info.agentId, fileName, serviceId, callbacks, metaSelectorConfig));
           }
         }
       };
@@ -505,14 +538,15 @@ const _fetchFileNameForChecksum = (checksum, serviceId, callbacks) => {
   };
 };
 
-const _fetchPathSrcForFileName = (checksum, agentId, fileName, serviceId, callbacks) => {
+const _fetchPathSrcForFileName = (checksum, agentId, fileName, serviceId, callbacks, metaSelectorConfig) => {
   return (dispatch, getState) => {
+    const { checksum: checksumSrc, fileName: fileNameSrc, directory } = metaSelectorConfig;
     const queryNode = getState().investigate;
     const input = {
-      filter: { value: `(checksum.src = '${checksum}') && (agent.id = '${agentId}') && (filename.src = '${fileName}')` },
+      filter: { value: `(${checksumSrc} = '${checksum}') && (agent.id = '${agentId}') && (${fileNameSrc} = '${fileName}')` },
       queryNode,
       size: 1,
-      metaName: 'directory.src',
+      metaName: directory,
       onComplete: (data) => {
         const machineFilePathList = getState().files.fileList.machineFilePathInfoList;
         const [pathSrc] = data;
@@ -544,7 +578,7 @@ const _fetchPathSrcForFileName = (checksum, agentId, fileName, serviceId, callba
 
 const downloadFilesToServer = (checksumSha256, serviceId, callbacks) => {
   return (dispatch) => {
-    dispatch(_fetchAgentIdsForchecksum(checksumSha256, serviceId, callbacks));
+    dispatch(_fetchAgentIdsByChecksumSource(checksumSha256, serviceId, callbacks));
   };
 };
 
