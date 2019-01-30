@@ -977,6 +977,21 @@
     content: $rsa-icon-cursor-choose-filled;
   }
 }
+.rsa-icon-file-zipped-filled {
+  &:before {
+    content: $rsa-icon-file-zipped-filled;
+  }
+}
+.rsa-icon-close-shield-filled {
+  &:before {
+    content: $rsa-icon-close-shield-filled;
+  }
+}
+.rsa-icon-check-shield-filled {
+  &:before {
+    content: $rsa-icon-check-shield-filled;
+  }
+}
 .rsa-icon-account-circle-1-lined {
   &:before {
     content: $rsa-icon-account-circle-1-lined;
@@ -1897,3 +1912,14 @@
     content: $rsa-icon-zoom-out-lined;
   }
 }
+.rsa-icon-close-shield-lined {
+  &:before {
+    content: $rsa-icon-close-shield-lined;
+  }
+}
+.rsa-icon-check-shield-lined {
+  &:before {
+    content: $rsa-icon-check-shield-lined;
+  }
+}
+
