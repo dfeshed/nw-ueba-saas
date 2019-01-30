@@ -71,7 +71,7 @@ const ConsoleTrigger = Component.extend({
   _appClick(e) {
     const clickedEl = e.target;
     let parentClass;
-    if (clickedEl && clickedEl.parentElement) {
+    if (clickedEl && clickedEl.parentElement && (typeof clickedEl.parentElement.className === 'string')) {
       parentClass = clickedEl.parentElement.className;
     } else {
       parentClass = '';

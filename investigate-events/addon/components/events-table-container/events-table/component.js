@@ -38,7 +38,8 @@ const stateToComputed = (state) => ({
   isCanceled: isCanceled(state),
   isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
   totalCount: state.investigate.eventCount.data,
-  actualEventCount: actualEventCount(state)
+  actualEventCount: actualEventCount(state),
+  threshold: state.investigate.eventCount.threshold
 });
 
 const dispatchToActions = {

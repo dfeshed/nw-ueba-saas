@@ -119,7 +119,7 @@ export const getColumns = createSelector(
 
 export const hasMetaSummaryColumn = createSelector(
   [getColumns],
-  (columns) => {
+  (columns = []) => {
     return columns.some((col) => {
       return col.field === 'custom.metasummary' || col.field === 'custom.meta-summary';
     });
