@@ -3589,7 +3589,8 @@ export default {
           'mongo.connection.failed': 'Database is not reachable. Retry after sometime.',
           emptyContext: 'Risk Score is 0. Reasons could be whitelisting/reset of the file or no alerts.',
           noEvents: 'No Events are available for this file.',
-          insightAgentRiskError: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.'
+          insightAgentRiskError: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',
+          accessDeniedError: 'Require permissions to view risk score details. Contact the Administrator.'
         },
         errorPage: {
           serviceDown: 'Respond Server is offline',

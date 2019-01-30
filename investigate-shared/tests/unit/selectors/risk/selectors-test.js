@@ -39,6 +39,19 @@ module('Unit | Selectors | risk', function(hooks) {
     assert.equal(data, null);
   });
 
+  test('risk scoring server returns access denied error when user do not have permission to access risk details', function(assert) {
+    const state = Immutable.from({
+      risk: {
+        riskScoreContextError: {
+          message: 'Access is denied'
+        }
+      }
+    });
+    const data = riskScoringServerError(state);
+    assert.notEqual(data.length, 0);
+    assert.ok(data.includes('accessDeniedError'));
+  });
+
   test('check risk score context is empty or not', function(assert) {
     let state = Immutable.from({
       risk: {

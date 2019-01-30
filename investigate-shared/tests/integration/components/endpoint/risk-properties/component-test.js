@@ -208,4 +208,19 @@ module('Integration | Component | endpoint/risk-properties', function(hooks) {
 
     assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for Risk Score feature not available for insight agent.');
   });
+
+  test('relevant error message is displayed when user do not have permission to access risk score details.', async function(assert) {
+
+    this.set('state', {
+      riskScoreContextError: {
+        message: 'Access is denied'
+      },
+      isRespondServerOffline: false
+    });
+
+    await render(hbs`{{endpoint/risk-properties
+      riskState=state}}`);
+
+    assert.equal(find('.rsa-panel-message').textContent.trim(), 'Require permissions to view risk score details. Contact the Administrator.');
+  });
 });

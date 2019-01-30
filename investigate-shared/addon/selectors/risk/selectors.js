@@ -55,6 +55,9 @@ export const riskScoringServerError = createSelector(
   riskScoreContextError,
   (riskScoreContextError) => {
     if (riskScoreContextError) {
+      if (riskScoreContextError.message && riskScoreContextError.message === 'Access is denied') {
+        return 'investigateShared.endpoint.riskProperties.error.accessDeniedError';
+      }
       return `investigateShared.endpoint.riskProperties.error.${riskScoreContextError.error}`;
     }
     return null;
