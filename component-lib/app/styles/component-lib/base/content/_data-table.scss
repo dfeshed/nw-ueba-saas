@@ -33,6 +33,32 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
   }
 
+  &.enable-grouping {
+    .rsa-data-table-body-row {
+      &.is-at-grouping-size,
+      &.is-last {
+        .rsa-data-table-body-cell {
+          border-bottom: 1px solid border-color(primary, dark);
+        }
+      }
+
+      &.is-last:not(.is-at-grouping-size) {
+        .rsa-data-table-body-cell {
+          padding-bottom: 28px;
+        }
+      }
+    }
+  }
+
+  &:not(.enable-grouping) {
+    .rsa-data-table-body-row {
+      &.is-last {
+        border-bottom: 1px solid border-color(primary, dark);
+      }
+    }
+  }
+
+
   .rsa-form-checkbox-label {
     letter-spacing: 0;
 
@@ -146,13 +172,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-font(paragraph, small);
     color: text-color(primary, lightest);
     border-top: 1px solid border-color(primary, dark);
-
-    &.is-at-grouping-size,
-    &.is-last {
-      .rsa-data-table-body-cell {
-        border-bottom: 1px solid border-color(primary, dark);
-      }
-    }
 
     &:hover {
         background-color: background-color(primary, darker);
