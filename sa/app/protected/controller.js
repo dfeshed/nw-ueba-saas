@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 
+
 const contextAddToListModalId = 'addToList';
 
 export default Controller.extend({
@@ -9,6 +10,9 @@ export default Controller.extend({
 
   iframedIntoClassic: false,
   eventBus: service(),
+
+  request: service(),
+
   actions: {
     openContextPanel(entity) {
       const { type, id } = entity || {};

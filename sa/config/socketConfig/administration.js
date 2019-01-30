@@ -5,6 +5,7 @@ var determineSocketUrl = require('../../../common').determineSocketUrl;
 module.exports = function(environment) {
 
   var socketUrl = determineSocketUrl(environment, '/administration/socket');
+  const investigateSocketUrl = determineSocketUrl(environment, '/investigate/socket');
 
   return {
     preferences: {
@@ -56,6 +57,14 @@ module.exports = function(environment) {
       getPolicies: {
         subscriptionDestination: '/user/queue/administration/security/password/policyMessages',
         requestDestination: '/ws/administration/security/password/policyMessages'
+      }
+    },
+
+    'investigate-server': {
+      socketUrl: investigateSocketUrl,
+      findServicesByName: {
+        subscriptionDestination: '/user/queue/investigate/services/name',
+        requestDestination: '/ws/investigate/services/name'
       }
     }
   };

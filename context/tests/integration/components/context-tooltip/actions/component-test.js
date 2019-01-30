@@ -283,21 +283,30 @@ module('Integration | Component | context tooltip actions', function(hooks) {
   });
 
   test('it only shows the Pivot to Endpoint link for IPs, HOSTs, FILE_HASHs, FILE_NAMEs, MAC addresses', async function(assert) {
-    const redux = this.owner.lookup('service:redux');
 
-    redux.dispatch({
-      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
-      payload: true
-    });
+    const endpointServices = [
+      {
+        'id': '7c46af08-c62f-4756-b7cc-521e44be104a',
+        'name': 'endpoint-server',
+        'displayName': 'EndpointHybridI - Endpoint Server',
+        'host': '10.40.12.27',
+        'port': 7050,
+        'useTls': true,
+        'version': '11.3.0.0',
+        'family': 'launch'
+      }
+    ];
 
     this.setProperties({
       entityType: 'IP',
-      entityId: '10.20.30.40'
+      entityId: '10.20.30.40',
+      endpointServices
     });
 
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
-      entityId=entityId}}`);
+      entityId=entityId
+      endpointServices=endpointServices}}`);
     assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 1, 'Expected to find endpoint link for IP');
 
     this.setProperties({
@@ -326,30 +335,36 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
   });
 
-  test('Enable/Disable Pivot to Investigate > Hosts/Files link based on state', async function(assert) {
-    const redux = this.owner.lookup('service:redux');
-
-    redux.dispatch({
-      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
-      payload: true
-    });
+  test('Pivot to Investigate > Hosts/Files link is enabled', async function(assert) {
+    const endpointServices = [
+      {
+        'id': '7c46af08-c62f-4756-b7cc-521e44be104a',
+        'name': 'endpoint-server',
+        'displayName': 'EndpointHybridI - Endpoint Server',
+        'host': '10.40.12.27',
+        'port': 7050,
+        'useTls': true,
+        'version': '11.3.0.0',
+        'family': 'launch'
+      }
+    ];
 
     this.setProperties({
       entityType: 'IP',
-      entityId: '10.20.30.40'
+      entityId: '10.20.30.40',
+      endpointServices
     });
 
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
-      entityId=entityId}}`);
+      entityId=entityId
+      endpointServices=endpointServices}}`);
+
     assert.ok(findAll('.js-test-pivot-to-endpoint-link').length, 1, 'Expected to find endpoint link for IP');
+  });
 
 
-    redux.dispatch({
-      type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
-      payload: false
-    });
-
+  test('Pivot to Investigate > Hosts/Files link is disabled', async function(assert) {
     this.setProperties({
       entityType: 'IP',
       entityId: '10.20.30.40'
@@ -357,7 +372,9 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
-      entityId=entityId}}`);
+      entityId=entityId
+      endpointServices=endpointServices}}`);
+
     assert.equal(findAll('a.disabled')[0].innerText.trim(), 'Pivot to Investigate > Hosts/Files');
   });
 });

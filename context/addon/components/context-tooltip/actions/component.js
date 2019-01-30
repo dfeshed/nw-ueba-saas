@@ -8,9 +8,8 @@ import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/util/context-
 import { getSummaryData } from 'context/actions/model-summary';
 import { inject as service } from '@ember/service';
 
-const stateToComputed = ({ context: { hover: { modelSummary, isEndpointServerAvailable } } }) => ({
-  modelSummary,
-  isEndpointServerAvailable
+const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
+  modelSummary
 });
 
 const dispatchToActions = {
@@ -81,6 +80,11 @@ const ContextToolTipActions = Component.extend({
   @computed('entityType', 'entityType')
   showEndpointLink(entityType, entityId) {
     return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS|FILE_HASH|FILE_NAME/));
+  },
+
+  @computed('endpointServices')
+  isEndpointServerAvailable(endpointServices) {
+    return endpointServices && endpointServices.length > 0;
   },
 
   /**

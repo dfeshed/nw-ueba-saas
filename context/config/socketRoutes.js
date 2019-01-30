@@ -5,7 +5,6 @@ const common = require('../../common');
 module.exports = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
-  const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
     context: {
@@ -103,13 +102,6 @@ module.exports = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/contexthub/context/metas',
         requestDestination: '/ws/contexthub/context/metas'
-      }
-    },
-    'investigate-server': {
-      socketUrl: investigateSocketUrl,
-      findServicesByName: {
-        subscriptionDestination: '/user/queue/investigate/services/name',
-        requestDestination: '/ws/investigate/services/name'
       }
     }
   };

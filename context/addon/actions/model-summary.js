@@ -14,12 +14,7 @@ const getSummaryData = (model) => {
   };
 };
 
-const isEndpointServerAvailable = (data) => ({
-  type: ACTION_TYPES.SET_ENDPOINT_SERVER_AVAILABLE,
-  payload: data
-});
 
 export {
-  getSummaryData,
-  isEndpointServerAvailable
+  getSummaryData
 };

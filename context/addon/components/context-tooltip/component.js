@@ -1,23 +1,13 @@
 import Component from '@ember/component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
-import { isEndpointServerAvailable } from 'context/actions/model-summary';
-import { inject as service } from '@ember/service';
-import { connect } from 'ember-redux';
-import { next } from '@ember/runloop';
 
-const dispatchToActions = {
-  isEndpointServerAvailable
-};
-
-const ContextTooltipComponent = Component.extend({
+export default Component.extend({
   tagName: '',
   layout,
 
   // passed down to rsa-content-tethered-panel
   panelId: 'context-tooltip-1',
-
-  context: service(),
 
   /**
    * Configurable optional action to be invoked when user clicks on a data record (e.g., the incidents count or
@@ -31,19 +21,6 @@ const ContextTooltipComponent = Component.extend({
    */
   clickDataAction: null,
 
-  didReceiveAttrs() {
-    this._super(...arguments);
-    next(() => {
-      this.get('context').services().then(({ data }) => {
-        if (data.length > 0) {
-          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-            this.send('isEndpointServerAvailable', true);
-          }
-        }
-      });
-    });
-  },
-
   actions: {
     handleClick() {
       const args = [ ...arguments ];
@@ -56,5 +33,3 @@ const ContextTooltipComponent = Component.extend({
     }
   }
 });
-
-export default connect(null, dispatchToActions)(ContextTooltipComponent);

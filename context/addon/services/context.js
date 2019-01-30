@@ -417,53 +417,5 @@ export default Service.extend({
         });
       }
     });
-  },
-
-  /**
-   * Returns a promise for the list of enabled entity types. Disabled entity types are omitted.
-   *
-   * When this method is invoked multiple times, it re-uses the last promise if that promise is
-   * either still pending or successful.
-   *
-   * The list of entity types is an Array of Strings.
-   * @example
-   * ```js
-   * [ 'IP', 'USER', 'HOST', 'DOMAIN', 'FILE' ]
-   * ```
-   * @returns {Promise}
-   * @public
-   */
-  services() {
-
-    // If we already have a promise, re-use it
-    let promise = this.get('_servicesPromise');
-    if (!promise) {
-
-      const filter = [{
-        field: 'name',
-        value: 'endpoint-server'
-      }];
-
-      // We don't have a promise already, create a new one
-      promise = this.get('request').promiseRequest({
-        modelName: 'investigate-server',
-        method: 'findServicesByName',
-        query: { filter }
-      })
-      // If promise fails, clear cached promise, don't re-use
-        .catch((err) => {
-          warn(`Error fetching services ${err}`, { id: 'context.services.context' });
-          this.set('_servicesPromise', null);
-        });
-
-      // Cache promise for reuse
-      this.set('_servicesPromise', promise);
-    }
-
-    return promise;
-  },
-
-  // Cache of promise for list of endpoint-servers.
-  _servicesPromise: null
-
+  }
 });

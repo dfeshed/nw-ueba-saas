@@ -14,6 +14,7 @@ import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import $ from 'jquery';
+import { warn } from '@ember/debug';
 
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
@@ -174,6 +175,26 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
+  getListOfLaunchServices() {
+    const request = get(this, 'request');
+    const filter = [{
+      field: 'name',
+      value: 'endpoint-server'
+    }];
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'findServicesByName',
+        modelName: 'investigate-server',
+        query: { filter }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        warn.error(`Error fetching services ${error}`, { id: 'context.services.context' });
+        reject(error);
+      });
+    });
+  },
+
   model({ iframedIntoClassic }) {
     // If packager route is from the classic SA then hide the application navigation as this route is mounted in iframe
     if (iframedIntoClassic) {
@@ -188,6 +209,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
+    const launchServicesPromise = this.getListOfLaunchServices();
 
     // Resolve the user's roles/authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app
@@ -195,16 +217,17 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
     const roles = this.getRoles();
     this.set('accessControl.authorities', roles);
-
     return RSVP.all([
       preferencesPromise,
       timezonesPromise,
-      permissionsPromise
+      permissionsPromise,
+      launchServicesPromise
     ]).then((responses) => {
       // set the user preference timezone after timezones have been loaded, since the timezone service depends
       // on having the full list of timezone options for values to be properly set.
-      const [preferences] = responses;
+      const [preferences, , , endpointServices] = responses;
       this.set('timezone.selected', preferences.data.timeZone);
+      return { endpointServices: endpointServices.data };
     }).catch(() => {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
