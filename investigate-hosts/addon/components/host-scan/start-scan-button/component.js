@@ -32,8 +32,12 @@ export default Component.extend({
         onSuccess: () => {
           success('investigateHosts.hosts.initiateScan.success');
         },
-        onFailure: () => {
-          failure('investigateHosts.hosts.initiateScan.failure');
+        onFailure: (response) => {
+          if (response.includes('Scan is already in progress or request is pending')) {
+            failure(response, null, false);
+          } else {
+            failure('investigateHosts.hosts.initiateScan.failure');
+          }
         }
       };
       startScan(this.get('agentIds'), callBackOptions);
