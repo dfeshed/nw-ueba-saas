@@ -240,10 +240,10 @@ page.investigate-files-engine {
       padding-right: 5rem;
       font-size: 1rem;
       position: relative;
-      top: 1rem;
+      top: 0.8rem;
     }
     .close-zone {
-      padding-top: 1.5rem;
+      padding-top: 1.4rem;
     }
   }
   .machine-count, .machine-count * {
@@ -289,6 +289,9 @@ page.investigate-files-engine {
       padding-right: 1rem;
       padding-left: 0;
       padding-top: 0.7rem;
+    }
+    .close-zone {
+      padding-right: 0.8rem;
     }
   }
   .right-zone {

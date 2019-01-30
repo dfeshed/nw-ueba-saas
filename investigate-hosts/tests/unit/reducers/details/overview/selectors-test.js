@@ -448,6 +448,36 @@ test('getPoliciesPropertyData', function(assert) {
     'sendTestLog': 'Disabled',
     'protocol': 'TLS'
   });
+  const state5 = {
+    endpoint: {
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'linux'
+          }
+        }
+      }
+    }
+  };
+  const result5 = getPoliciesPropertyData(Immutable.from(state5));
+  assert.deepEqual(result5.windowsLogPolicy, {}, 'WindowsLogPolicy should empty for non windows machines');
+  const state6 = {
+    endpoint: {
+      overview: {
+        hostOverview: {
+          machineIdentity: {
+            machineOsType: 'windows'
+          }
+        }
+      }
+    }
+  };
+  const result6 = getPoliciesPropertyData(Immutable.from(state6));
+  assert.deepEqual(result6.windowsLogPolicy,
+    { 'enabled': 'Disabled',
+      'sendTestLog': 'Disabled'
+    },
+    'WindowsLogPolicy should have for windows machines');
 });
 
 test('selectedSnapshot', function(assert) {

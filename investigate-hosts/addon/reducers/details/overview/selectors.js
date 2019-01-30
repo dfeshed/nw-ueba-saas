@@ -237,16 +237,20 @@ const _getscheduledScanConfig = createSelector(
 );
 
 export const _getWindowsLogPolicy = createSelector(
-  [_policyDetails],
-  (policyDetails) => {
-    const { policy } = policyDetails;
-    const windowsLogPolicy = policy && policy.windowsLogPolicy ? policy.windowsLogPolicy : {};
-    const { enabled, sendTestLog } = windowsLogPolicy;
-    return {
-      ...windowsLogPolicy,
-      enabled: enabled ? 'Enabled' : 'Disabled',
-      sendTestLog: sendTestLog ? 'Enabled' : 'Disabled'
-    };
+  [_policyDetails, isMachineWindows],
+  (policyDetails, isMachineWindows) => {
+    // Details should retun only for Windows machine
+    if (isMachineWindows) {
+      const { policy } = policyDetails;
+      const windowsLogPolicy = policy && policy.windowsLogPolicy ? policy.windowsLogPolicy : {};
+      const { enabled, sendTestLog } = windowsLogPolicy;
+      return {
+        ...windowsLogPolicy,
+        enabled: enabled ? 'Enabled' : 'Disabled',
+        sendTestLog: sendTestLog ? 'Enabled' : 'Disabled'
+      };
+    }
+    return {};
   }
 );
 

@@ -3,7 +3,7 @@ import { generateColumns } from 'investigate-hosts/util/util';
 const defaultColumns = [
   {
     'dataType': 'checkbox',
-    'width': 20,
+    'width': '2vw',
     'class': 'rsa-form-row-checkbox',
     'componentClass': 'rsa-form-checkbox',
     'visible': true,

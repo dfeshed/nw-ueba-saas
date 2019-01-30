@@ -105,24 +105,27 @@ const COLUMNS = {
       {
         field: 'displayName',
         title: 'investigateHosts.systemInformation.securityProducts.displayName',
-        width: 100
+        width: '28vw'
       },
       {
         field: 'instance',
-        title: 'investigateHosts.systemInformation.securityProducts.instance'
+        title: 'investigateHosts.systemInformation.securityProducts.instance',
+        width: '20vw'
       },
       {
         field: 'features',
-        title: 'investigateHosts.systemInformation.securityProducts.features'
+        title: 'investigateHosts.systemInformation.securityProducts.features',
+        width: '20vw'
       },
       {
         field: 'type',
         title: 'investigateHosts.systemInformation.securityProducts.type',
-        width: '15%'
+        width: '15vw'
       },
       {
         field: 'version',
-        title: 'investigateHosts.systemInformation.securityProducts.version'
+        title: 'investigateHosts.systemInformation.securityProducts.version',
+        width: '10vw'
       }
     ]
   },

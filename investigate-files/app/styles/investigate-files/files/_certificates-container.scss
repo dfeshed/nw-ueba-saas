@@ -87,6 +87,11 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       width: 97%;
     }
   }
+  .left-zone {
+    .close-zone {
+      margin-right: -14px;
+    }
+  }
   .show-left-zone {
     .title-header {
       display: none;
