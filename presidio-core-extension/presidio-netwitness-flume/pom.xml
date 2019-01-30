@@ -165,7 +165,7 @@
         <dependency>
             <groupId>com.rsa.asoc.libraries</groupId>
             <artifactId>record-streams-source-netwitness</artifactId>
-            <version>1.0.3</version>
+            <version>2.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.kohsuke</groupId>
