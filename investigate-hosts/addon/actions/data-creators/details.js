@@ -275,11 +275,15 @@ const _getMachineSearchForAgent = (agentId) => {
       meta: {
         onSuccess: ({ data }) => {
           const [item] = data.items;
-          dispatch(_fetchPolicyDetails(agentId));
-          dispatch(setSelectedHost(item));
-          dispatch(getAllServices());
-          dispatch(getServiceId('MACHINE'));
-          dispatch(fetchHostContext(item.machineIdentity.machineName));
+          if (item) {
+            const request = lookup('service:request');
+            request.registerPersistentStreamOptions({ socketUrlPostfix: item.serviceId, requiredSocketUrl: 'endpoint/socket' });
+            dispatch(_fetchPolicyDetails(agentId));
+            dispatch(setSelectedHost(item));
+            dispatch(getAllServices());
+            dispatch(getServiceId('MACHINE'));
+            dispatch(fetchHostContext(item.machineIdentity.machineName));
+          }
         }
       }
     });
