@@ -19,13 +19,14 @@ module('Unit | Validator | Respond | thresholdFormValidations', function(hooks) 
   });
 
   test('threshold form validations', async function(assert) {
-    assert.expect(42);
+    assert.expect(46);
 
     const fileThresholdValidator = (value) => validator['file.threshold']('', value, undefined, { 'file.enabled': true }, {});
     assert.equal(fileThresholdValidator(undefined), thresholdMessage);
     assert.equal(fileThresholdValidator(null), thresholdMessage);
     assert.equal(fileThresholdValidator(0), true);
     assert.equal(fileThresholdValidator(1), true);
+    assert.equal(fileThresholdValidator(1.1), thresholdMessage);
     assert.equal(fileThresholdValidator(100), true);
     assert.equal(fileThresholdValidator(101), thresholdMessage);
     assert.equal(fileThresholdValidator(9999), thresholdMessage);
@@ -36,6 +37,7 @@ module('Unit | Validator | Respond | thresholdFormValidations', function(hooks) 
     assert.equal(fileTimeWindowValidator(null), timeWindowMessage);
     assert.equal(fileTimeWindowValidator(0), timeWindowMessage);
     assert.equal(fileTimeWindowValidator(1), true);
+    assert.equal(fileTimeWindowValidator(1.1), timeWindowMessage);
     assert.equal(fileTimeWindowValidator(24), true);
     assert.equal(fileTimeWindowValidator(25), timeWindowMessage);
     assert.equal(fileTimeWindowValidator(9999), timeWindowMessage);
@@ -53,6 +55,7 @@ module('Unit | Validator | Respond | thresholdFormValidations', function(hooks) 
     assert.equal(hostThresholdValidator(null), thresholdMessage);
     assert.equal(hostThresholdValidator(0), true);
     assert.equal(hostThresholdValidator(1), true);
+    assert.equal(hostThresholdValidator(1.1), thresholdMessage);
     assert.equal(hostThresholdValidator(100), true);
     assert.equal(hostThresholdValidator(101), thresholdMessage);
     assert.equal(hostThresholdValidator(9999), thresholdMessage);
@@ -63,6 +66,7 @@ module('Unit | Validator | Respond | thresholdFormValidations', function(hooks) 
     assert.equal(hostTimeWindowValidator(null), timeWindowMessage);
     assert.equal(hostTimeWindowValidator(0), timeWindowMessage);
     assert.equal(hostTimeWindowValidator(1), true);
+    assert.equal(hostTimeWindowValidator(1.1), timeWindowMessage);
     assert.equal(hostTimeWindowValidator(24), true);
     assert.equal(hostTimeWindowValidator(25), timeWindowMessage);
     assert.equal(hostTimeWindowValidator(9999), timeWindowMessage);

@@ -16,11 +16,11 @@ const isEnabled = function(changes, content) {
 
 export default {
   'file.enabled': validatePresence(true),
-  'file.threshold': maybeValidate(validateNumber({ gte: 0, lte: 100, message: localizeMessage('threshold', context) }), isEnabled.bind(fileEnabled)),
-  'file.timeWindow': maybeValidate(validateNumber({ gte: 1, lte: 24, message: localizeMessage('timeWindow', context) }), isEnabled.bind(fileEnabled)),
+  'file.threshold': maybeValidate(validateNumber({ gte: 0, lte: 100, integer: true, message: localizeMessage('threshold', context) }), isEnabled.bind(fileEnabled)),
+  'file.timeWindow': maybeValidate(validateNumber({ gte: 1, lte: 24, integer: true, message: localizeMessage('timeWindow', context) }), isEnabled.bind(fileEnabled)),
   'file.timeWindowUnit': maybeValidate(validatePresence({ presence: true, message: localizeMessage('timeWindowUnit', context) }), isEnabled.bind(fileEnabled)),
   'host.enabled': validatePresence(true),
-  'host.threshold': maybeValidate(validateNumber({ gte: 0, lte: 100, message: localizeMessage('threshold', context) }), isEnabled.bind(hostEnabled)),
-  'host.timeWindow': maybeValidate(validateNumber({ gte: 1, lte: 24, message: localizeMessage('timeWindow', context) }), isEnabled.bind(hostEnabled)),
+  'host.threshold': maybeValidate(validateNumber({ gte: 0, lte: 100, integer: true, message: localizeMessage('threshold', context) }), isEnabled.bind(hostEnabled)),
+  'host.timeWindow': maybeValidate(validateNumber({ gte: 1, lte: 24, integer: true, message: localizeMessage('timeWindow', context) }), isEnabled.bind(hostEnabled)),
   'host.timeWindowUnit': maybeValidate(validatePresence({ presence: true, message: localizeMessage('timeWindowUnit', context) }), isEnabled.bind(hostEnabled))
 };

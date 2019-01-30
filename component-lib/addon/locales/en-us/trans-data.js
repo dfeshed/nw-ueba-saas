@@ -779,8 +779,8 @@ export default {
           hostTimeWindowUnit: 'Host Time Window Unit (days or hours)'
         },
         validations: {
-          threshold: 'Threshold must be between 0 and 100',
-          timeWindow: 'Time Window must be between 1 and 24',
+          threshold: 'Threshold must be a whole number between 0 and 100',
+          timeWindow: 'Time Window must be a whole number between 1 and 24',
           timeWindowUnit: 'Time Window must be in hours or days'
         },
         timeUnits: {

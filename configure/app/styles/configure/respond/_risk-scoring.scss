@@ -28,13 +28,16 @@
     display: flex;
 
     .form-validation:first-child {
-      width: 250px;
+      label, ul > li {
+        white-space: nowrap;
+        max-width: 0;
+      }
     }
 
     .form-validation:nth-child(even) {
-      padding-top: 2.15rem;
-      margin-left: -13.5rem;
       align-self: flex-start;
+      padding-top: 2.15em;
+      margin-left: rsa-whitespace(less);
     }
   }
 
