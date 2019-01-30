@@ -1,4 +1,7 @@
-<h2 class='filter-text'>{{filterOptions.label}}</h2>
+{{#unless filterOptions.hideLabel}}
+  <h2 class='filter-text'>{{filterOptions.label}}</h2>
+{{/unless}}
+
 <vbox class='list-filter-content'>
   {{#each filterValue as |option|}}
     <a href="#" onclick={{action 'toggleSelected' option}} onkeypress={{action 'toggleSelected' option}} class="rsa-form-checkbox-label {{if option.selected 'checked'}} list-filter-option">

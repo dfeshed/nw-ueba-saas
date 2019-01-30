@@ -30,6 +30,12 @@ const FILTER_TYPES = [
     type: 'list'
   },
   {
+    'name': 'groupPolicy.managed',
+    'hideLabel': true,
+    'listOptions': [ { name: false, label: 'investigateHosts.hosts.filters.showOnlyManageAgents' }],
+    type: 'list'
+  },
+  {
     'name': 'groupPolicy.groups.name',
     'label': 'investigateHosts.hosts.column.groupPolicy.groups.name',
     'type': 'text',

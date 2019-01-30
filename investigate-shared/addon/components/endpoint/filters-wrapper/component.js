@@ -31,6 +31,15 @@ const parseFilters = (filters) => {
   const expressionList = filters.map((filter) => {
     const { name, operator, value, unit } = filter;
     if (_isFilterHasValues(filter)) {
+
+      if (name === 'groupPolicy.managed') {
+        return {
+          restrictionType: 'NOT_EQUAL',
+          propertyValues: [{ value: false }],
+          propertyName: name
+        };
+      }
+
       let propertyValues = value.map((val) => ({ value: val }));
       if (name === 'size') {
         propertyValues = convertToBytes(unit, propertyValues);

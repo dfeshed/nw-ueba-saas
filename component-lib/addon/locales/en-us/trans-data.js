@@ -2958,6 +2958,7 @@ export default {
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         },
+        showOnlyManageAgents: 'Show Only Managed Agents',
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',
