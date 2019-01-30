@@ -45,7 +45,7 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
       .build();
     await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 0, 'loader is not present');
-    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-upload-2-filled').length, 1, 'default export button is rendered');
-    assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-upload-2-filled').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
+    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').length, 1, 'default export button is rendered');
+    assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
   });
 });

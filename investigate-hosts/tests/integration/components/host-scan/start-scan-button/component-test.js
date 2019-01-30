@@ -28,7 +28,7 @@ test('it renders the scan button with text', function(assert) {
   this.set('buttonText', 'Initiate Scan');
   this.render(hbs`{{host-scan/start-scan-button buttonText=buttonText}}`);
   assert.equal(this.$('.rsa-form-button').text().trim(), 'Initiate Scan', 'button with text "Initiate Scan"');
-  assert.equal(this.$('.rsa-icon').length, 0, 'No icon');
+  assert.equal(this.$('.rsa-icon').length, 1, 'with icon');
 });
 
 test('it renders the only icon', function(assert) {

@@ -9,9 +9,11 @@
   <div class="action-divider"></div>
   {{endpoint/pivot-to-event-analysis label='host' selections=selections pivotToInvestigate=pivotToInvestigate}}
   {{#rsa-form-button class='start-scan-button' isDisabled=isScanStartButtonDisabled click=(action showScanModal 'START_SCAN') title=actionsDisableMessage}}
+    {{rsa-icon name='check-shield' style='lined' size='small' title=(t 'investigateShared.endpoint.fileActions.editFileStatus')}}
     {{t 'investigateHosts.hosts.button.initiateScan'}}
   {{/rsa-form-button}}
   {{#rsa-form-button class='stop-scan-button' isDisabled=isScanStartButtonDisabled click=(action showScanModal 'STOP_SCAN') title=actionsDisableMessage}}
+    {{rsa-icon name='close-shield' style='lined' size='small' title=(t 'investigateShared.endpoint.fileActions.editFileStatus')}}
     {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
   {{/rsa-form-button}}
   {{host-list/host-table/action-bar/more-actions
