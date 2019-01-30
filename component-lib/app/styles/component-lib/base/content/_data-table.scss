@@ -18,6 +18,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       display: flex;
       text-align: center;
       align-items: center;
+      cursor: default;
+
+      .group-label-copy {
+        cursor: default;
+      }
     }
 
     &:hover {

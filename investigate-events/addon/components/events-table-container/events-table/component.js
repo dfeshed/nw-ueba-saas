@@ -76,6 +76,8 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   accessControl: service(),
   i18n: service(),
 
+  groupingSize: 100,
+
   @computed('items')
   hasResults(results) {
     return !!results && results.length > 0;
@@ -135,18 +137,22 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   },
 
   actions: {
-    onRowClick(event, index, browserEvent) {
-      const notKeyboardControl = browserEvent.keyCode != 40 && browserEvent.keyCode != 38;
-      const checkboxClicked = browserEvent.target.className.includes('rsa-form-checkbox-label');
-      const hasCheckboxChildren = browserEvent.target.getElementsByClassName('rsa-form-checkbox-label');
+    onRowClick(event, index, { keyCode, target }) {
+      const { className } = target;
+      const notKeyboardControl = keyCode != 40 && keyCode != 38;
+      const checkboxClicked = className.includes('rsa-form-checkbox-label');
+      const hasCheckboxChildren = target.getElementsByClassName('rsa-form-checkbox-label');
       const checkboxWrapperClicked = hasCheckboxChildren && hasCheckboxChildren.length;
-      if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
-        this.send('toggleEventSelection', event);
-      } else {
-        this.get('selectEvent')(event);
+      const labelClicked = className.includes('group-label') || className.includes('group-label-copy');
+
+      if (!labelClicked) {
+        if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
+          this.send('toggleEventSelection', event);
+        } else {
+          this.get('selectEvent')(event);
+        }
       }
     }
-
   }
 });
 

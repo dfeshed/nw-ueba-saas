@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import EventColumnGroups from '../../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { find, findAll, render } from '@ember/test-helpers';
+import { find, findAll, render, click } from '@ember/test-helpers';
 
 let setState;
 
@@ -16,6 +16,7 @@ module('Integration | Component | events-table', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -214,4 +215,38 @@ module('Integration | Component | events-table', function(hooks) {
 
     assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when permission is not present');
   });
+
+  test('when a row is clicked selectEvent fired', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .eventCount(1)
+      .eventResults([{ sessionId: 'foo', time: 123 }])
+      .build();
+
+    this.set('selectEvent', () => {
+      assert.ok(true);
+    });
+
+    await render(hbs`{{events-table-container/events-table selectEvent=selectEvent}}`);
+    assert.equal(findAll('.rsa-data-table-body-row').length > 0, true, 'a row is rendered');
+    await click('.rsa-data-table-body-row');
+  });
+
+  test('when a group label is clicked selectEvent is not fired', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .eventCount(2)
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .build();
+
+    this.set('selectEvent', () => {
+      assert.ok(false);
+    });
+
+    await render(hbs`{{events-table-container/events-table selectEvent=selectEvent enableGrouping=true groupingSize=1}}`);
+    assert.equal(findAll('.rsa-data-table-body-row').length > 0, true, 'a row is rendered');
+    await click('.group-label');
+    await click('.group-label-copy');
+  });
+
 });

@@ -179,7 +179,9 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
         });
 
         schedule('afterRender', () => {
-          this.$().append(`<div class="group-label"><div>${label}</div></div>`);
+          this.$().append(`<div class="group-label">
+            <div class="group-label-copy">${label}</div>
+          </div>`);
         });
       }
     }
