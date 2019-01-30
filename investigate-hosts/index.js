@@ -9,6 +9,7 @@ const projectName = 'investigate-hosts';
 
 const subscriptionPath = path.join(__dirname, 'tests', 'data');
 const preferencesMocks = require('../preferences').mockDestinations;
+const contextMockDirectory = require('../context').mockDestinations;
 
 module.exports = EngineAddon.extend({
   name: projectName,
@@ -41,7 +42,8 @@ module.exports = EngineAddon.extend({
 
   mockDestinations: [
     subscriptionPath,
-    preferencesMocks
+    preferencesMocks,
+    contextMockDirectory
   ],
 
   // See ../common.js for details on this function

@@ -4,12 +4,14 @@ const agentSocket = require('./agentRoutes');
 const endpointSocket = require('./endpointRoutes');
 const hostDetailSocket = require('./hostDetails');
 const adminSocket = require('./adminRoutes');
+const contextSocket = require('../../../context').socketRouteGenerator;
 
 const configGenerator = [
   agentSocket,
   endpointSocket,
   hostDetailSocket,
-  adminSocket
+  adminSocket,
+  contextSocket
 ];
 
 

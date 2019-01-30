@@ -219,4 +219,8 @@ export default class DataHelper {
     _set(this.state, 'files.visuals.isFilePropertyPanelVisible', value);
     return this;
   }
+  risk(risk) {
+    _set(this.state, 'files.risk', risk);
+    return this;
+  }
 }

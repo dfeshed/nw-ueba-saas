@@ -41,6 +41,14 @@ const Overview = Component.extend({
   @computed('getDataSourceTab')
   dataSourceTabs(tabs) {
     return tabs.filter((tab) => tab.name !== 'RISK_PROPERTIES');
+  },
+  actions: {
+    expandEventAction(id) {
+      if (this.get('isFilePropertyPanelVisible')) {
+        this.send('toggleFilePropertyPanel');
+      }
+      this.send('expandEvent', id);
+    }
   }
 });
 

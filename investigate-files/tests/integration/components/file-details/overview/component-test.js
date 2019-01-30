@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -8,6 +8,8 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+import risk from '../../../state/risk';
 
 const config = [
   {
@@ -131,5 +133,19 @@ module('Integration | Component | file-details/overview', function(hooks) {
     this.set('propertyConfig', config);
     await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
     assert.equal(findAll('.files-host-list').length, 1, 'Host is rendered in right panel');
+  });
+
+  test('file details closes on expanding events', async function(assert) {
+    new ReduxDataHelper(initState)
+      .activeDataSourceTab('HOSTS')
+      .isFilePropertyPanelVisible(true)
+      .hostNameList(hosts)
+      .risk(risk)
+      .build();
+    this.set('propertyConfig', config);
+    await render(hbs`{{file-details/overview propertyConfig=propertyConfig}}`);
+    assert.equal(findAll('.right-zone').length, 1, 'Right zone is rendered');
+    await click('.events-list-endpoint-header');
+    assert.equal(findAll('.right-zone').length, 0, 'On event expansion close the right panel');
   });
 });

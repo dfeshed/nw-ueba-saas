@@ -71,6 +71,14 @@ const HostOverview = Component.extend({
         this.set('domIsReady', true);
       }
     }, 250);
+  },
+  actions: {
+    expandEventAction(id) {
+      if (this.get('isDetailRightPanelVisible')) {
+        this.send('toggleDetailRightPanel');
+      }
+      this.send('expandEvent', id);
+    }
   }
 });
 
