@@ -78,7 +78,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .heading').length, 6, 'All heading labels rendered correctly');
     assert.equal(findAll('.available-settings .title').length, 16, 'All components in available-settings rendered correctly');
-    assert.equal(findAll('.available-settings .rsa-icon').length, 16, 'The plus icon next to the components is rendered correctly');
+    assert.equal(findAll('.available-settings .rsa-icon-add-circle-1-lined').length, 16, 'The plus icon next to the components is rendered correctly');
   });
 
   test('Effective date component should be greyed out by default', async function(assert) {
@@ -168,7 +168,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     await click(plusIcon);
     assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
     assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');
-    assert.equal(findAll('.selected-settings .rsa-icon').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
+    assert.equal(findAll('.selected-settings .rsa-icon-remove-circle-1-lined').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
   });
 
   test('When policy is Windows Log policy, primary destination is shown in the available settings', async function(assert) {

@@ -29,19 +29,37 @@
 
       .available-settings {
         margin-right: rsa-whitespace(most);
+        // prevent the icon from floating to the right
+        .label .rsa-icon {
+          float: none;
+          margin: 0;
+        }
+        .heading .rsa-icon {
+          float: none;
+          margin: 0;
+        }
         .rsa-icon {
           float: right;
-          margin-right: rsa-whitespace(most);
           margin-left: rsa-whitespace();
         }
         .is-greyed-out {
           color: text-color(primary);
-          pointer-events: none;
+          .rsa-icon-add-circle-1-lined {
+            color: text-color(primary, dark);
+            pointer-events: none;
+          }
+          .rsa-icon-information-circle-lined {
+            pointer-events: all;
+          }
         }
       }
       .available-settings .title {
         @include rsa-font();
         padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+        .tooltip-text {
+          float: right;
+          margin-top: 0;
+        }
       }
       .selected-settings {
         .remove-setting .rsa-icon {
@@ -55,6 +73,9 @@
       .selected-settings, .available-settings {
         max-height: calc(90vh - #{$wizardStepMaxHeight});
         overflow-y: auto;
+        .tooltip-text {
+          display: inline;
+        }
       }
       .selected-settings .scan-options {
         @include rsa-font(light,small);
@@ -64,9 +85,19 @@
           margin-right: rsa-whitespace();
         }
       }
+      .selected-settings .heading {
+        display: inline;
+      }
       .selected-settings .sub-heading {
         font-weight: 600;
         padding: rsa-whitespace(more) rsa-whitespace() 0 0;
+      }
+      .selected-settings .tooltip-text {
+        @include rsa-font(light,small);
+        color: inherit;
+        padding: inherit;
+        font-weight: inherit;
+        letter-spacing: .05rem;
       }
     }
   }

@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t 'adminUsm.policyWizard.edrPolicy.primaryAddress'}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t 'adminUsm.policyWizard.edrPolicy.primaryAddress'}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting"{{action 'removeFromSelectedSettings' 'primaryAddress'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
@@ -28,7 +32,11 @@
 
 <vbox class="primary-address__alias">
   <span class="text">
-    {{t 'adminUsm.policyWizard.edrPolicy.primaryAlias'}}
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.edrPolicy.primaryAliasTooltip')
+    style="standard"
+    alwaysShow=true}}
+      {{t 'adminUsm.policyWizard.edrPolicy.primaryAlias'}}
+    {{/rsa-text-with-tooltip}}
   </span>
   <span class="rsa-form-input">
     {{rsa-form-input

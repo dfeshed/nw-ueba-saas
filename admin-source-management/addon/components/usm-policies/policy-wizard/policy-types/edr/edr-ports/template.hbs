@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t (concat 'adminUsm.policyWizard.edrPolicy.' selectedSettingId)}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t (concat 'adminUsm.policyWizard.edrPolicy.' selectedSettingId)}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting"{{action 'removeFromSelectedSettings' selectedSettingId}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>

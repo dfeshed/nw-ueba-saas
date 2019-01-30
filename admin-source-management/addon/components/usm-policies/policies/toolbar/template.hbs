@@ -8,35 +8,53 @@
     {{/link-to}}
   </div>
   <span class="divider"></span>
-  <div class="action-control policies-publish-button">
-    {{#rsa-button-with-confirmation 
-      title=(t 'adminUsm.policies.modals.publishPolicies.title')
-      confirmationMessage=(t 'adminUsm.policies.modals.publishPolicies.confirm' numItems=selectedPublishItems.length)
-      confirmButtonLabel=(t 'adminUsm.policies.modals.publishPolicies.ok')
-      isDisabled=cannotPublishPolicies
-      cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handlePublishPolicies')}}
-      {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
-    {{/rsa-button-with-confirmation}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.policies.tooltips.publish')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control policies-publish-button">
+        {{#rsa-button-with-confirmation 
+          title=(t 'adminUsm.policies.modals.publishPolicies.title')
+          confirmationMessage=(t 'adminUsm.policies.modals.publishPolicies.confirm' numItems=selectedPublishItems.length)
+          confirmButtonLabel=(t 'adminUsm.policies.modals.publishPolicies.ok')
+          isDisabled=cannotPublishPolicies
+          cancelButtonLabel=(t 'adminUsm.button.cancel')
+          onConfirm=(action 'handlePublishPolicies')}}
+          {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
+        {{/rsa-button-with-confirmation}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
-  <div class="action-control policies-edit-button">
-    {{#link-to 'policy-wizard' selectedEditItem}}
-      {{#rsa-form-button
-        isDisabled=cannotEditPolicies}}
-        {{t 'adminUsm.button.edit'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.policies.tooltips.edit')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control policies-edit-button">
+        {{#link-to 'policy-wizard' selectedEditItem}}
+          {{#rsa-form-button
+            isDisabled=cannotEditPolicies}}
+            {{t 'adminUsm.button.edit'}}
+          {{/rsa-form-button}}
+        {{/link-to}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
-  <div class="action-control policies-delete-button">
-    {{#rsa-button-with-confirmation
-      title=(t 'adminUsm.policies.modals.deletePolicies.title')
-      confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
-      confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
-      confirmButtonStyle='danger'
-      isDisabled=cannotDeletePolicies
-      cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handleDeletePolicies')}}
-      {{t 'adminUsm.button.delete'}}
-    {{/rsa-button-with-confirmation}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.policies.tooltips.delete')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control policies-delete-button">
+        {{#rsa-button-with-confirmation
+          title=(t 'adminUsm.policies.modals.deletePolicies.title')
+          confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
+          confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
+          confirmButtonStyle='danger'
+          isDisabled=cannotDeletePolicies
+          cancelButtonLabel=(t 'adminUsm.button.cancel')
+          onConfirm=(action 'handleDeletePolicies')}}
+          {{t 'adminUsm.button.delete'}}
+        {{/rsa-button-with-confirmation}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
 </hbox>

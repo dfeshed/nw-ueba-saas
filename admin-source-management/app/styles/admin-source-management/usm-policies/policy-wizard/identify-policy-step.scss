@@ -12,6 +12,10 @@
         margin-bottom: rsa-whitespace(least);
       }
     }
+    
+    .label-text .tooltip {
+      display: flex;
+    }
 
     .control-with-error {
       flex: none;

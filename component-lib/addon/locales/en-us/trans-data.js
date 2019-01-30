@@ -254,6 +254,7 @@ export default {
         log: 'Log Event Details'
       },
       views: {
+        textView: 'Text View',
         text: 'Text Analysis',
         packet: 'Packet Analysis',
         file: 'File Analysis',
@@ -2139,7 +2140,7 @@ export default {
     placeholder: 'Make a selection',
     searchPlaceholder: 'Enter the filter option',
     emptyName: 'Configuration name is empty',
-    channelFilter: 'Channel Filters',
+    channelFilter: 'Channel Filters🛈',
     specialCharacter: 'Configuration name contains special character.',
     fullAgent: 'Full Agent',
     channel: {
@@ -3993,6 +3994,12 @@ export default {
           success: 'Successfully published selected Group(s)',
           failure: 'There was an unexpected problem publishing the Group(s)'
         }
+      },
+      tooltips: {
+        edit: 'Select a group to edit it, including applying policies. Only one group can be edited at a time.',
+        editRanking: 'Edit ranking to change how policies are applied when a source falls into multiple groups.',
+        delete: 'Select one or more groups to delete. If a deleted group applied a policy, the policy will no longer be applied to the sources that were in this group.',
+        publish: 'Select one or more unpublished groups to publish. Sources will receive changes when they next connect.'
       }
     },
     policies: {
@@ -4052,6 +4059,11 @@ export default {
           success: 'Successfully published selected Policy(ies)',
           failure: 'There was an unexpected problem publishing the Policy(ies)'
         }
+      },
+      tooltips: {
+        edit: 'Select a policy to edit it. Only one policy can be edited at a time.',
+        delete: 'Select one or more policies to delete.',
+        publish: 'Select one or more unpublished policies to publish. Sources will receive changes when they next connect.'
       }
     },
     // policy: {
@@ -4173,6 +4185,7 @@ export default {
           label4: 'New policies can be created in the the Policies Tab.'
         },
         sourceType: 'Source Type',
+        sourceTypeTooltip: 'Choose a source type to apply policies for.',
         selectedPolicy: 'Selected Policy',
         policyPlaceholder: 'Select a Policy',
         addSourceType: 'Add Another Source Type',
@@ -4181,7 +4194,12 @@ export default {
         appliedToGroup: 'APPLIED TO GROUP(S)',
         description: 'POLICY DESCRIPTION',
         available: 'Available Policies',
-        selected: 'Selected Policy'
+        availableTooltip: 'Available Policies shows all the published policies for the selected source type. If you do not see a ' +
+          'policy you are expecting to see, you may need to return to the Policies tab and publish it. Click on the + icon to select the policy.',
+        selected: 'Selected Policy',
+        selectedTooltip: 'The Selected Policy will be applied by this group. A group can only apply one policy per source type. ' +
+          'If sources in this group fall into multiple groups, this policy may not be applied to those sources depending on the group ranking. ' +
+          'Use Edit Ranking on the Groups tab to ensure this policy will be applied as intended.'
       },
       // review-group-step
       reviewGroup: 'Review',
@@ -4232,6 +4250,7 @@ export default {
         nSources: 'Source Count'
       },
       chooseSource: 'Choose Source Type',
+      sourceTooltip: 'A source takes its settings from the policies applied by the groups it belongs to, starting with rank one and working its way down, until it has a complete policy. If a source is a member of multiple groups with policies that set the same settings, it will follow the highest ranked. If the group policies do not create a full policy, the source will take the remaining settings from the default policy. Drag and drop the rows to change the order.',
       editRanking: 'Edit Ranking',
       chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
       error: {
@@ -4248,25 +4267,34 @@ export default {
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
       sourceType: 'Source Type',
+      sourceTypeTooltip: 'Chose a source type to create a policy for.',
       sourceTypePlaceholder: 'Choose a Source Type',
       edrSourceType: 'Agent Endpoint',
       fileLogSourceType: 'Agent Log Files',
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
+      nameTooltip: 'The name of the created policy',
+      namePlaceholder: 'Enter a unique policy name',
       edrPolicyName: 'EDR Policy Name',
       windowsLogPolicyName: 'Windows Log Policy Name',
-      namePlaceholder: 'Enter a unique policy name',
       dropdownPlaceholder: 'Type in or Pick from list',
       nameRequired: 'Policy name is required',
       nameExists: 'Policy name already exists',
       nameExceedsMaxLength: 'Policy name is limited to 256 characters',
       description: 'Policy Description',
+      descTooltip: 'Enter a description for the created policy to add more detail about the policy. The description can not exceed 8000 characters',
       descPlaceholder: 'Enter a description',
       descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
       definePolicy: 'Define Policy',
       availableSettings: 'Available Settings',
+      availableTooltip: 'Available Settings are the settings that can be used in this policy type. Select the settings you wish to include ' +
+        'using the + icon. A policy does not need to include all settings as a source takes its settings from the policies applied by all ' +
+        'the groups it belongs to according to rank, then the default policy.',
       selectedSettings: 'Selected Settings',
+      selectedTooltip: 'Selected Settings are the settings that your policy will contain. A policy only needs to contain a minimum of one setting. ' +
+        'A source will take the remaining settings from any other groups it belongs to according to rank, then the default policy. Use the X ' +
+        'icon to remove a setting from the policy.',
       // apply-to-group-step
       applyToGroup: 'Apply to Group',
       // review-policy-step
@@ -4306,12 +4334,16 @@ export default {
       // edr policy settings
       edrPolicy: {
         scanSchedule: 'Scan Schedule',
+        scanScheduleTooltip: 'Options to configure a scheduled scan.',
         schedOrManScan: 'Run Scheduled Scan',
+        schedOrManScanTooltip: 'Enable or disable a scheduled scan.',
         scanTypeManual: 'Disabled',
         scanTypeScheduled: 'Enabled',
         effectiveDate: 'Effective Date',
+        effectiveDateTooltip: 'Set the date when the scan schedule becomes active.',
         scanStartDateInvalidMsg: 'The scan start date should not be empty',
         scanFrequency: 'Scan Frequency',
+        scanFrequencyTooltip: 'Set scan frequency.',
         recurrenceInterval: {
           options: {
             daily: 'Days',
@@ -4336,54 +4368,86 @@ export default {
           }
         },
         startTime: 'Start Time',
+        startTimeTooltip: 'Set a start time for scans.',
         cpuMax: 'CPU Maximum',
+        cpuMaxTooltip: 'Set maximum CPU load',
         vmMax: 'Virtual Machine Maximum',
+        vmMaxTooltip: 'Set Virtual Machine Maximum CPU usage',
         advScanSettings: 'Scan Settings',
+        advScanSettingsTooltip: 'Options to configure Scan Settings',
         captureFloatingCode: 'Capture Floating Code',
         scanMbr: 'Scan Master Boot Record',
+        scanMbrTooltip: 'Scan Master Boot Record',
         filterSignedHooks: 'Include Hooks With Signed Modules',
         requestScanOnRegistration: 'Auto Scan New Systems When Added',
+        requestScanOnRegistrationTooltip: 'Auto Scan New Systems When Added',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         invasiveActions: 'Response Action Settings',
+        invasiveActionsTooltip: 'Options to configure Response Action Settings',
         blockingEnabled: 'Blocking',
+        blockingEnabledTooltip: 'Enable or disable Blocking',
         endpointServerSettings: 'Endpoint Server Settings',
+        endpointServerSettingsTooltip: 'Options to configure Endpoint Server Settings',
         primaryAddress: 'Endpoint Server',
-        primaryAlias: 'Endpoint Server Alias (Optional)',
+        primaryAddressTooltip: 'Set primary address of endpoint server',
         primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
+        primaryAlias: 'Endpoint Server Alias (Optional)',
+        primaryAliasTooltip: 'Set an alias for the Endpoint Server (Optional)',
         primaryAliasInvalid: 'The endpoint server alias is invalid',
         primaryHttpsPort: 'HTTPS Port',
+        primaryHttpsPortTooltip: 'Set HTTPS Port',
         primaryUdpPort: 'UDP Port',
+        primaryUdpPortTooltip: 'Set UDP Port',
         portInvalidMsg: 'The port should be between 1 and 65535',
         primaryHttpsBeaconInterval: 'HTTPS Beacon Interval',
+        primaryHttpsBeaconIntervalTooltip: 'Set HTTPS Beacon Interval',
         primaryHttpsBeaconIntervalInvalidMsg: 'The interval should be between 1 minute and 24 hours',
         primaryHttpsBeaconInterval_MINUTES: 'Minutes',
         primaryHttpsBeaconInterval_HOURS: 'Hours',
         primaryUdpBeaconInterval: 'UDP Beacon Interval',
+        primaryUdpBeaconIntervalTooltip: 'Set UDP Beacon Interval',
         primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
         primaryUdpBeaconInterval_SECONDS: 'Seconds',
         primaryUdpBeaconInterval_MINUTES: 'Minutes',
         agentSettings: 'Agent Mode',
+        agentSettingsTooltip: 'Configure Agent Settings',
         agentMode: 'Monitoring Mode',
+        agentModeTooltip: 'Enable or disable Monitoring Mode',
         insights: 'Insights',
         advanced: 'Advanced',
         advancedConfig: 'Advanced Configuration',
+        advancedConfigTooltip: 'Advanced Configuration',
         customConfigSetting: 'Advanced Setting',
+        customConfigSettingTooltip: 'Advanced agent configurations',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
 
       },
       // windowsLog policy settings
       windowsLogPolicy: {
         windowsLogSettingsHeader: 'Windows Log Settings',
+        windowsLogSettingsHeaderTooltip: 'Configure Windows Log Settings',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         enabled: 'Windows Log Collection', // 'Status',
+        enabledTooltip: 'Enable Windows Log Collection to also collect windows logs from the endpoint.', // 'Status',
         sendTestLog: 'Send Test Log',
-        primaryDestination: 'Primary Log Decoder / Log collector*',
-        secondaryDestination: 'Secondary Log Decoder / Log collector',
+        sendTestLogTooltip: 'Send Test Log',
+        primaryDestination: 'Primary Log Decoder / Log Collector',
+        primaryDestinationTooltip: 'Set Primary Destination: Log Decoder / Log Collector',
+        secondaryDestination: 'Secondary Log Decoder / Log Collector',
+        secondaryDestinationTooltip: 'Set Secondary Destination: Log Decoder / Log Collector',
         windowsLogDestinationInvalidMsg: 'The log server host name should not be empty',
         protocol: 'Protocol',
+        protocolTooltip: 'Set Protocol: TCP/UDP/TLS',
         channelFilters: 'Channel Filters',
+        channelFiltersTooltip: 'Configure which Windows log events to collect by selecting a channel, ' +
+          'filter condition, and the relevant event IDs. Common channels such as \'Security\' or \'System\' ' +
+          'can be selected from the dropdown, whereas custom channels can be added by typing in the ' +
+          'channel name field. By default all events are collected from a selected channel. To collect a ' +
+          'subset of events from that channel replace \'ALL\' with the relevant Event ID(s). Leave the ' +
+          'filter set to \'INCLUDE\' if only events with the listed Event IDs should be collected or ' +
+          'change it to \'EXCLUDE\' to collect all events except for these events.',
         channel: {
           add: 'Add a new channel',
           name: 'CHANNEL NAME *',
@@ -4455,17 +4519,19 @@ export default {
         osType_notEmpty: 'Select one or more of the operating system types.',
         osDescription_EQUAL: 'Enter OS Description value that is no longer than 255 characters. Only exact matches will be included.',
         osDescription_CONTAINS: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value is found anywhere in the OS description.',
-        osDescription_STARTS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value begins the OS description.',
+        osDescription_STARTS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value begins with the OS description.',
         osDescription_ENDS_WITH: 'Enter a OS Description value that is no longer than 255 characters. Matches will be included if the value ends with the OS description.',
-        hostname_EQUAL: 'Enter one or more valid hostnames. Valid hostnames contain alphanumeric, dot, or underscore characters. First and last characters must be alphanumeric.',
+        hostname_EQUAL: 'Enter one or more valid hostnames. Valid hostnames contain alphanumeric, ., or _ characters. First and last characters must be alphanumeric.',
         hostname_CONTAINS: 'Enter a single valid hostname string containing alphanumeric, ., or _ characters. Matches included if the value is found anywhere in host name',
-        hostname_STARTS_WITH: 'Enter a single valid hostname string. Valid starts with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value begins the host name.',
-        hostname_ENDS_WITH: 'Enter a single valid hostname ending substring. Valid ends with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value ends the host name',
+        hostname_STARTS_WITH: 'Enter a single valid hostname string. Valid starts with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value begins with the host name.',
+        hostname_ENDS_WITH: 'Enter a single valid hostname ending substring. Valid ends with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value ends with the host name',
         hostname_validHostnameList: 'Enter one or more valid hostnames.  Valid hostnames contain alphanumeric, ., or _ characters. First and last character must be alphanumeric. Multiple value can be separated by spaces, tabs, commas, or line feeds.',
-        ipv4_validIPv4: 'Enter a single valid IPv4 address value in each field.',
-        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses. Multiple value can be separated by spaces, tabs, commas, or line feeds.',
-        ipv6_validIPv6: 'Enter a single valid IPv6 address value in each field.',
-        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses. Multiple value can be separated by spaces, tabs, commas, or line feeds.'
+        ipv4_validIPv4_BETWEEN: 'Enter a single valid IPv4 address value in each field to specify a range of IP addresses (including start and end address) that will be included in the group.',
+        ipv4_validIPv4_NOT_BETWEEN: 'Enter a single valid IPv4 address value in each field to specify a range of IP addresses (including start and end address) that will be excluded from the group.',
+        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses. Multiple values can be separated by spaces, tabs, commas, or line feeds.',
+        ipv6_validIPv6_BETWEEN: 'Enter a single valid IPv6 address value in each field to specify a range of IP addresses (including start and end address) that will be included in the group.',
+        ipv6_validIPv6_NOT_BETWEEN: 'Enter a single valid IPv6 address value in each field to specify a range of IP addresses (including start and end address) that will be excluded from the group.',
+        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses. Multiple values can be separated by spaces, tabs, commas, or line feeds.'
       },
       placeholders: {
         beginning_IP: 'Beginning IP address',

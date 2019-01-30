@@ -6,6 +6,13 @@
   {{#sortable-group onChange="reorderRanking" as |group|}}
     <div class="source-type-top-text">
       <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
+      <div class="tooltip">
+        {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
+          style="standard"
+          alwaysShow=true}}
+          {{rsa-icon size='medium' name="information-circle" style='lined'}}
+        {{/rsa-text-with-tooltip}}
+      </div>
     </div>
     <table>
       <thead>

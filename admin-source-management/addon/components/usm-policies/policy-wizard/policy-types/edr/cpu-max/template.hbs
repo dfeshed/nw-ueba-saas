@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t 'adminUsm.policyWizard.edrPolicy.cpuMax'}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t 'adminUsm.policyWizard.edrPolicy.cpuMax'}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
   {{action 'removeFromSelectedSettings' 'cpuMax'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}

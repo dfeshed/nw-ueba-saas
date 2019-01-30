@@ -7,43 +7,68 @@
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
-  <div class="action-control groups-editRanking-button">
-    {{#link-to 'group-ranking'}}
-      {{#rsa-form-button}}
-        {{t 'adminUsm.button.editRanking'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
-  </div>
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.groups.tooltips.editRanking')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control groups-editRanking-button">
+        {{#link-to 'group-ranking'}}
+          {{#rsa-form-button}}
+            {{t 'adminUsm.button.editRanking'}}
+          {{/rsa-form-button}}
+        {{/link-to}}
+      </div>
+    {{/rsa-text-with-tooltip}}
+  </div>  
   <span class="divider"></span>
-  <div class="action-control groups-publish-button">
-    {{#rsa-button-with-confirmation 
-      title=(t 'adminUsm.groups.modals.publishGroups.title')
-      confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=selectedPublishItems.length)
-      confirmButtonLabel=(t 'adminUsm.groups.modals.publishGroups.ok')
-      isDisabled=cannotPublishGroups
-      cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handlePublishGroups')}}
-      {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
-    {{/rsa-button-with-confirmation}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.groups.tooltips.publish')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control groups-publish-button">
+        {{#rsa-button-with-confirmation 
+          title=(t 'adminUsm.groups.modals.publishGroups.title')
+          confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=selectedPublishItems.length)
+          confirmButtonLabel=(t 'adminUsm.groups.modals.publishGroups.ok')
+          isDisabled=cannotPublishGroups
+          cancelButtonLabel=(t 'adminUsm.button.cancel')
+          onConfirm=(action 'handlePublishGroups')}}
+          {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
+        {{/rsa-button-with-confirmation}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
-  <div class="action-control groups-edit-button">
-    {{#link-to 'group-wizard' selectedEditItem}}
-      {{#rsa-form-button
-        isDisabled=cannotEditGroups}}
-        {{t 'adminUsm.button.edit'}}
-      {{/rsa-form-button}}
-    {{/link-to}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.groups.tooltips.edit')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control groups-edit-button">
+        {{#link-to 'group-wizard' selectedEditItem}}
+          {{#rsa-form-button
+            isDisabled=cannotEditGroups}}
+            {{t 'adminUsm.button.edit'}}
+          {{/rsa-form-button}}
+        {{/link-to}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
-  <div class="action-control groups-delete-button">
-    {{#rsa-button-with-confirmation
-      title=(t 'adminUsm.groups.modals.deleteGroups.title')
-      confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=selectedDeleteItems.length)
-      confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
-      confirmButtonStyle='danger'
-      isDisabled=cannotDeleteGroups
-      cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handleDeleteGroups')}}
-      {{t 'adminUsm.button.delete'}}
-    {{/rsa-button-with-confirmation}}
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.groups.tooltips.delete')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control groups-delete-button">
+        {{#rsa-button-with-confirmation
+          title=(t 'adminUsm.groups.modals.deleteGroups.title')
+          confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=selectedDeleteItems.length)
+          confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
+          confirmButtonStyle='danger'
+          isDisabled=cannotDeleteGroups
+          cancelButtonLabel=(t 'adminUsm.button.cancel')
+          onConfirm=(action 'handleDeleteGroups')}}
+          {{t 'adminUsm.button.delete'}}
+        {{/rsa-button-with-confirmation}}
+      </div>
+    {{/rsa-text-with-tooltip}}
   </div>
+
 </hbox>

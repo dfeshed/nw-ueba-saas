@@ -9,6 +9,11 @@
     margin-top: rsa-whitespace();
     margin-bottom: rsa-whitespace(more);
     margin-left: rsa-whitespace();
+    display: flex;
+    .rsa-icon {
+      margin-left: rsa-whitespace(less);
+      vertical-align: top;
+    }
     span {
       @include rsa-font(header);
       margin-right: rsa-whitespace(less);

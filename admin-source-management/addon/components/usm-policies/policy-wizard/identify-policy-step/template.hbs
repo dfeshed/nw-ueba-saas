@@ -2,7 +2,13 @@
   <hbox class="control source-type">
     <label class="rsa-form-label power-select">
       <div class="label-text">
-        {{t 'adminUsm.policyWizard.sourceType'}}
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.sourceTypeTooltip')
+            style="standard"
+            alwaysShow=true}}
+            {{t 'adminUsm.policyWizard.sourceType'}}
+          {{/rsa-text-with-tooltip}}
+        </div>
       </div>
       {{#power-select
         class='source-type'
@@ -21,6 +27,7 @@
   <hbox class="control">
     {{rsa-form-input
       class='policy-name'
+      tooltip=(t 'adminUsm.policyWizard.nameTooltip')
       tabIndex='2'
       label=(t 'adminUsm.policyWizard.name')
       placeholder=(t 'adminUsm.policyWizard.namePlaceholder')
@@ -36,6 +43,7 @@
     <hbox class="control-with-error">
       {{rsa-form-textarea
         class='policy-description'
+        tooltip=(t 'adminUsm.policyWizard.descTooltip')
         tabIndex='3'
         label=(t 'adminUsm.policyWizard.description')
         placeholder=(t 'adminUsm.policyWizard.descPlaceholder')

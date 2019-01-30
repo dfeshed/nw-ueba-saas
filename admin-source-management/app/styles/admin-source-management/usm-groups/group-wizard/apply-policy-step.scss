@@ -63,6 +63,13 @@
     .label-header {
       font-size: 24.15px;
       line-height: 24.15px;
+      display: flex;
+      .rsa-icon {
+        margin-left: rsa-whitespace(less);
+      }
+    }
+    .label-text .tooltip {
+      display: flex;
     }
     th {
       text-align: left;

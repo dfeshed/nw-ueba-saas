@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t 'adminUsm.policyWizard.windowsLogPolicy.protocol'}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t 'adminUsm.policyWizard.windowsLogPolicy.protocol'}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting"{{action 'removeFromSelectedSettings' 'protocol'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>

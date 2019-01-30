@@ -26,7 +26,7 @@
 </div>
 
 <div class="tooltip">
-  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation))
+  {{#rsa-text-with-tooltip value=(t (concat 'adminUsm.groupCriteria.tooltips.' selectedAttribute '_' validation '_' selectedOperator))
     style="standard"
     alwaysShow=true}}
     {{rsa-icon size='large' name="information-circle" style='lined'}}

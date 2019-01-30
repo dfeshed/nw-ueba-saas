@@ -1,10 +1,15 @@
-
 <table class='policy-assignment'>
   <tr>
     <td class='source-type-selector'>
       <label class="rsa-form-label power-select">
         <div class="label-text">
-          {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
+          <div class="tooltip">
+            {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.sourceTypeTooltip')
+              style="standard"
+              alwaysShow=true}}
+              {{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}
+            {{/rsa-text-with-tooltip}}
+          </div>
         </div>
         {{#power-select
           searchEnabled=true
@@ -35,6 +40,13 @@
     <td class='available'>
       <div class="label-header">
         {{t 'adminUsm.groupWizard.applyPolicy.available'}}
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.availableTooltip')
+            style="standard"
+            alwaysShow=true}}
+            {{rsa-icon size='large' name="information-circle" style='lined'}}
+          {{/rsa-text-with-tooltip}}
+        </div>
       </div>
       <table>
         <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>
@@ -72,6 +84,13 @@
     <td class='selected'>
       <div class="label-header">
         {{t 'adminUsm.groupWizard.applyPolicy.selected'}}
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.selectedTooltip')
+            style="standard"
+            alwaysShow=true}}
+            {{rsa-icon size='large' name="information-circle" style='lined'}}
+          {{/rsa-text-with-tooltip}}
+        </div>
       </div>
       <table>
         <tr><th>{{t 'adminUsm.groupWizard.applyPolicy.policyName'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.appliedToGroup'}}</th><th>{{t 'adminUsm.groupWizard.applyPolicy.description'}}</th><th></th></tr>

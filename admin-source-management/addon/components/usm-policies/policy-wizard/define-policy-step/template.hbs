@@ -1,14 +1,34 @@
 <hbox class="all-settings">
   <vbox xs="5" class="available-settings">
     <div class="control">
-      <div class="label">{{t 'adminUsm.policyWizard.availableSettings'}}</div>
+      <div class="label">
+        {{t 'adminUsm.policyWizard.availableSettings'}}
+        {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.availableTooltip')
+          style="standard"
+          alwaysShow=true}}
+          {{rsa-icon size='large' name="information-circle" style='lined'}}
+        {{/rsa-text-with-tooltip}}
+      </div>
       {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
         {{#if enabledAvailableSetting.isHeader}}
-          <div class="heading">{{t enabledAvailableSetting.label}}</div>
+          <div class="heading">
+            {{t enabledAvailableSetting.label}}
+            {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label 'Tooltip' ))
+              style="standard"
+              alwaysShow=true}}
+              {{rsa-icon size='large' name="information-circle" style='lined'}}
+            {{/rsa-text-with-tooltip}}
+          </div>
         {{else}}
           <div class="title available-setting {{enabledAvailableSetting.id}}
             {{if enabledAvailableSetting.isGreyedOut 'is-greyed-out' 'not-greyed-out'}}">
             {{t enabledAvailableSetting.label}}
+
+            {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label 'Tooltip' ))
+              style="standard"
+              alwaysShow=true}}
+              {{rsa-icon size='large' name="information-circle" style='lined'}}
+            {{/rsa-text-with-tooltip}}
             <span {{action 'addToSelectedSettings' enabledAvailableSetting.id}}>
               {{rsa-icon name="add-circle-1" style="lined"}}
             </span>
@@ -19,15 +39,27 @@
   </vbox>
   <vbox xs="5" class="selected-settings">
     <div class="control">
-      <div class="label">{{t 'adminUsm.policyWizard.selectedSettings'}}</div>
+      <div class="label">
+        {{t 'adminUsm.policyWizard.selectedSettings'}}
+        {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.selectedTooltip')
+          style="standard"
+          alwaysShow=true}}
+          {{rsa-icon size='large' name="information-circle" style='lined'}}
+        {{/rsa-text-with-tooltip}}
+      </div>
       {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
         {{#if sortedSelectedSetting.isHeader}}
-          <div class="heading">{{t sortedSelectedSetting.label}}</div>
+          {{#rsa-text-with-tooltip value=(t (concat sortedSelectedSetting.label 'Tooltip' ))
+            style="standard"
+            alwaysShow=true}}
+            <div class="heading">{{t sortedSelectedSetting.label}}</div>
+          {{/rsa-text-with-tooltip}}
         {{else}}
           <div class="selected-setting">
             {{component sortedSelectedSetting.component
               selectedSettingId=sortedSelectedSetting.id
               isDefaultPolicy=defaultPolicy
+              tooltip=(t (concat sortedSelectedSetting.label 'Tooltip' ))
             }}
           </div>
         {{/if}}

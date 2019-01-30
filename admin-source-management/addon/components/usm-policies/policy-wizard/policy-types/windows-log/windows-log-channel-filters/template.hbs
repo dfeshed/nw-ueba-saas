@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t 'adminUsm.policyWizard.windowsLogPolicy.channelFilters'}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t 'adminUsm.policyWizard.windowsLogPolicy.channelFilters'}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting"{{action 'removeFromSelectedSettings' 'channelFilters'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>

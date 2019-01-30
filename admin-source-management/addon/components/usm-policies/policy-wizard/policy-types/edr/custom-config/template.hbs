@@ -1,5 +1,9 @@
 <h4 class='title'>
-  {{t 'adminUsm.policyWizard.edrPolicy.customConfigSetting'}}
+  {{#rsa-text-with-tooltip value=tooltip
+  style="standard"
+  alwaysShow=true}}
+    {{t 'adminUsm.policyWizard.edrPolicy.customConfigSetting'}}
+  {{/rsa-text-with-tooltip}}
   <span class="remove-setting"{{action 'removeFromSelectedSettings' 'customConfig'}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
