@@ -110,4 +110,30 @@ module('Unit | Actions | initializeRecon', function(hooks) {
 
     await settled().then(() => done());
   });
+
+  test('initializeRecon will fetch meta if none passed in via eventMeta', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    const redux = this.owner.lookup('service:redux');
+    const init = bindActionCreators(initializeRecon, redux.dispatch.bind(redux));
+
+    init({
+      aliases: [],
+      endpointId: '1',
+      eventId: '1',
+      language: []
+    });
+
+    await waitUntil(() => {
+      const { meta } = redux.getState().recon.meta;
+      return Array.isArray(meta) && meta.length === 20;
+    }, { timeout: 10000 });
+
+    const { meta } = redux.getState().recon.meta;
+    const [ metaEl ] = meta;
+    assert.equal(typeof(metaEl), 'object', 'meta was not correct type');
+    assert.equal(metaEl[0], 'service', 'meta key was incorrect');
+
+    await settled().then(() => done());
+  });
 });

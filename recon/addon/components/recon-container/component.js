@@ -6,7 +6,6 @@ import { observer } from '@ember/object';
 import { later, next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
-import { hasReconView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 import {
   initializeRecon,
@@ -17,14 +16,12 @@ import {
 
 const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
-  // Recon isn't ready until it has figured out which
-  // Recon view is supposed to be displayed
-  isViewReady: hasReconView(recon),
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen,
   stopNotifications: notifications.stopNotifications,
   status: files.fileExtractStatus,
-  apiFatalErrorCode: recon.data.apiFatalErrorCode
+  apiFatalErrorCode: recon.data.apiFatalErrorCode,
+  meta: recon.meta.meta
 });
 
 const dispatchToActions = {
@@ -45,30 +42,122 @@ const ReconContainer = Component.extend({
   flashMessages: service(),
   i18n: service(),
 
-  // BEGIN Component API
+  // ************************** BEGIN Component API ************************* //
+  /**
+   * Alias data for a service. If this data is not supplied to this component,
+   * it will fetch it itself.
+   * @type {Array.<Object>}
+   */
   aliases: null,
+
+  /**
+   * The unique id of a service (aka endpoint) that captured the event.
+   * @type {String}
+   * @required
+   */
   endpointId: null,
+
+  /**
+   * The unique id of the event to be reconstructed.
+   * @type {String}
+   * @required
+   */
   eventId: null,
+
+  /**
+   * The meta data for the event being reconstructed. If this data is not
+   * supplied to this component, it will fetch it itself.
+   * @type {Array.<Object>}
+   */
+  eventMeta: null,
+
+  /**
+   * The type of event that's being reconstructed. This information can be
+   * derived from `eventMeta`, but it takes time to pull in that data. While the
+   * meta is being fetched, you will see a spinner. To help the UI display
+   * relevent components/options quicker, supply an `eventType`.
+   * @see `component-lib/constants/event-type`
+   * @type {String}
+   */
   eventType: null,
+
+  /**
+   * Zero based index of item in result set (if viewing item from result set).
+   * @type {Number}
+   */
   index: null,
+
+  /**
+   * Language data for a service. If this data is not supplied to this
+   * component, it will fetch it itself.
+   * @type {Array.<Object>}
+   */
   language: null,
-  meta: null,
+
+  /**
+   * Various params which are part of the query, including the data needed for
+   * executing actions in the context menu.
+   * @type {Object}
+   */
+  queryInputs: null,
+
+  /**
+   * The initial size to render the Recon window.
+   * @type {String}
+   */
+  size: 'max',
+
+  /**
+   * Total number of results in result set (if viewing item from result set).
+   * @type {number}
+   */
   total: null,
 
-  // Actions
+  /**
+   * Action to be performed when closing the Recon panel.
+   * @type {Function}
+   */
   closeAction: null,
-  expandAction: null,
-  linkToFileAction: null,
-  shrinkAction: null,
-  // END Component API
 
-  _defaultSize: 'max',
+  /**
+   * Action to be performed when expanding the Recon panel to a wider width.
+   * @type {Function}
+   */
+  expandAction: null,
+
+  /**
+   * Action to be performed when linking to a file.
+   * @type {Function}
+   */
+  linkToFileAction: null,
+
+  /**
+   * Action to be performed when shrinking the Recon panel to a smaller width.
+   * @type {Function}
+   */
+  shrinkAction: null,
+  // *************************** END Component API ************************** //
+
   _isAnimationDone: false,
   _previousEventId: undefined,
 
-  @computed('isViewReady', '_isAnimationDone', 'meta', 'eventType')
-  isReady(isViewReady, _isAnimationDone, meta, eventType) {
-    return isViewReady && _isAnimationDone && (meta || eventType);
+  /**
+   * Determines if the UI is in a state that is ready to display UI elements.
+   * If this is `false` we show a spinner. If this is `true` we show the title
+   * and header sections. If the event reconstruction and meta are available
+   * we'll show those too (otherwise we'll show a spinner where that data would
+   * be displayed).
+   * @param {Boolean} _isAnimationDone - Has the Recon panel finished it's
+   * animation into view.
+   * @param {String} eventType - Event type that was passed in.
+   * @param {Array} eventMeta - Event meta that was passed in.
+   * @param {Array} meta - Event meta this component fetched because `eventMeta`
+   * was not supplied.
+   * @return {Boolean}
+   */
+  @computed('_isAnimationDone', 'eventType', 'eventMeta', 'meta')
+  isReady(_isAnimationDone, eventType, eventMeta, meta) {
+    return _isAnimationDone && (eventType || eventMeta || meta);
   },
 
   @computed('i18n', 'apiFatalErrorCode', 'eventId')
@@ -112,7 +201,7 @@ const ReconContainer = Component.extend({
       total
     } = this.getProperties('_previousEventId', 'index', 'total');
     const inputs = this.getProperties('endpointId', 'eventId', 'eventType',
-      'language', 'meta', 'aliases', 'linkToFileAction', '_defaultSize', 'queryInputs');
+      'language', 'eventMeta', 'aliases', 'linkToFileAction', 'size', 'queryInputs');
 
     // Checking whether or not Recon is open in standalone mode by checking
     // if closeAction is present or not. If a parent/containing addon/engine

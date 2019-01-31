@@ -7,7 +7,6 @@ import {
   isFileView,
   isPacketView,
   lacksPackets,
-  hasReconView,
   allDataHidden
 } from 'recon/reducers/visuals/selectors';
 
@@ -43,17 +42,6 @@ const generateReconViewData = function(selector) {
     }))
   };
 };
-
-test('hasReconView', function(assert) {
-  assert.expect(4);
-
-  const tests = generateReconViewData(hasReconView);
-
-  assert.equal(tests.textView, true, 'hasReconView should return true when is text view');
-  assert.equal(tests.fileView, true, 'hasReconView should return true when is file view');
-  assert.equal(tests.packetView, true, 'hasReconView should return true when is packet view');
-  assert.equal(tests.noView, false, 'hasReconView should return false when there is no view selected');
-});
 
 test('isTextView', function(assert) {
   assert.expect(4);

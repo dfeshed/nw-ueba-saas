@@ -9,6 +9,42 @@ import Immutable from 'seamless-immutable';
 
 const { _cookieStore } = DataCreators;
 
+const getStateWithNetworkEventType = () => {
+  return Immutable.from({
+    recon: {
+      data: { eventType: null },
+      meta: { meta: [['medium', 1]] },
+      visuals: { currentReconView: { name: 'PACKET' } }
+    }
+  });
+};
+
+const getStateWithLogEventType = () => {
+  return Immutable.from({
+    recon: {
+      data: { eventType: null },
+      meta: { meta: [['medium', 32]] },
+      visuals: { currentReconView: { name: 'PACKET' } }
+    }
+  });
+};
+
+const reconDispatch = (action) => {
+  if (action.type) {
+    setNewReconViewCalled = true;
+  }
+};
+
+const getState = () => {
+  return {
+    recon: {
+      visuals: { }
+    }
+  };
+};
+
+let setNewReconViewCalled = false;
+
 module('Unit | Actions | Data Creators', function(hooks) {
   setupTest(hooks);
 
@@ -24,14 +60,6 @@ module('Unit | Actions | Data Creators', function(hooks) {
     _cookieStore.clear();
     DataCreators._authCookie.reconPrefInitialized = false;
   });
-
-  const getState = () => {
-    return {
-      recon: {
-        visuals: { }
-      }
-    };
-  };
 
   test('test if preferences are initialized for the first time after login', function(assert) {
     const done = assert.async();
@@ -79,33 +107,6 @@ module('Unit | Actions | Data Creators', function(hooks) {
       }, 200);
     });
   });
-
-  const getStateWithNetworkEventType = () => {
-    return Immutable.from({
-      recon: {
-        data: { eventType: null },
-        meta: { meta: [['medium', 1]] },
-        visuals: { currentReconView: { name: 'PACKET' } }
-      }
-    });
-  };
-
-  const getStateWithLogEventType = () => {
-    return Immutable.from({
-      recon: {
-        data: { eventType: null },
-        meta: { meta: [['medium', 32]] },
-        visuals: { currentReconView: { name: 'PACKET' } }
-      }
-    });
-  };
-
-  let setNewReconViewCalled = false;
-  const reconDispatch = (action) => {
-    if (action.type) {
-      setNewReconViewCalled = true;
-    }
-  };
 
   test('test that on preferences update, new recon view is not set if not changed', function(assert) {
     const preferences = {

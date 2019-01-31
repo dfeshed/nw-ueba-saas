@@ -425,14 +425,13 @@ const initializeRecon = (reconInputs) => {
         }
       });
 
-      // if meta not passed in then need to fetch it now
-      // (even if its not being displayed) as we need to
-      // use meta to determine which data to fetch and
+      // If meta not passed in then need to fetch it now (even if its not being
+      // displayed) as we need to use meta to determine which data to fetch and
       // which recon view to display
-      if (!reconInputs.meta) {
+      if (!reconInputs.eventMeta) {
         dispatch(_retrieveMeta(reconInputs));
       } else {
-        dispatch(determineReconView(reconInputs.meta));
+        dispatch(determineReconView(reconInputs.eventMeta));
       }
     }
   };

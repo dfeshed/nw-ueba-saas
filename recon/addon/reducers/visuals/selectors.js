@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
-
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 
 const _currentReconView = (recon) => recon.visuals.currentReconView;
+
 const _typeCode = createSelector(
   [_currentReconView],
   (currentReconView) => currentReconView ? currentReconView.code : null
@@ -15,11 +15,6 @@ export const isResponseShown = (recon) => recon.visuals.isResponseShown;
 export const allDataHidden = createSelector(
   [isRequestShown, isResponseShown],
   (isRequestShown = true, isResponseShown = true) => !isRequestShown && !isResponseShown
-);
-
-export const hasReconView = createSelector(
-  _currentReconView,
-  (view) => !!view
 );
 
 export const isTextView = createSelector(
