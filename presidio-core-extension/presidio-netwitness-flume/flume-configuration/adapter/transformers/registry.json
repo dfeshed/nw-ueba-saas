@@ -301,6 +301,15 @@
       ]
     },
     {
+      "type": "copy_value",
+      "name": "agent-id",
+      "sourceKey": "agent_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.agentId"
+      ]
+    },
+    {
       "type": "string_format",
       "name": "convert-string-format-of-process-categories",
       "sourceKey": "processCategories",
