@@ -5,8 +5,9 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
-import fortscale.domain.core.*;
-
+import fortscale.domain.core.AlertTimeframe;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Events;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
@@ -28,19 +29,13 @@ import org.apache.commons.lang.WordUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import presidio.output.client.api.AlertsApi;
-import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Services for managing the evidences
@@ -53,7 +48,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	public static final int DEFAULT_EVENT_PAGE_SIZE = 50;
 	public static final int DEFAULT_EVENT_PAGE_NUMBER = 0;
 	public static final String LINK_POSTFIX_FOR_UI = "_link";
-	public static final String MACHINE_ID = "machineId";
+	public static final String AGENT_ID = "agentId";
 	public static final String PROCESS_FILE_NAME = "ProcessFileName";
 	public NwInvestigateHelper nwInvestigateHelper;
 //	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
@@ -341,11 +336,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 				String link = "";
 				if (unnormalizedValue!=null){
-					if (linkedFieldName.equals(MACHINE_ID)) {
+					if (linkedFieldName.equals(AGENT_ID)) {
 						link = nwInvestigateHelper.getLinkToInvestigateHost(unnormalizedValue);
 					} else if (linkedFieldName.endsWith(PROCESS_FILE_NAME)) {
 						boolean isSourceProcess = linkedFieldName.startsWith("src");
-						link = nwInvestigateHelper.getLinkToInvestigateProcess(unnormalizedValue,getFromAnyMap(MACHINE_ID, event), (Map<String, Object>) getFromAnyMap("additionalInfo", event), isSourceProcess);
+						link = nwInvestigateHelper.getLinkToInvestigateProcess(unnormalizedValue,getFromAnyMap(AGENT_ID, event), (Map<String, Object>) getFromAnyMap("additionalInfo", event), isSourceProcess);
 					} else {
 						link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
 					}
@@ -365,6 +360,14 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			Object response = map.get(key);
 			if (response != null) {
 				return response;
+			}
+			Object additionalInfo = map.get("additionalInfo");
+			if (additionalInfo != null) {
+				Map<String, Object> additionalInfoMap = (Map<String, Object>)additionalInfo;
+				Object data = additionalInfoMap.get(key);
+				if (data != null) {
+					return data;
+				}
 			}
 		}
 		//No map found
