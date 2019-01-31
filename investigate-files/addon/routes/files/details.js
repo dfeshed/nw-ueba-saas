@@ -6,6 +6,8 @@ import { next } from '@ember/runloop';
 export default Route.extend({
   redux: service(),
 
+  contextualHelp: service(),
+
   queryParams: {
     /**
      * selected sid for multi-server endpoint server
@@ -52,8 +54,15 @@ export default Route.extend({
     });
   },
 
+  deactivate() {
+    this.set('contextualHelp.topic', this.get('contextualHelp.invFiles'));
+  },
+
   actions: {
     switchToSelectedFileDetailsTab(tabName, fileFormat) {
+      if (tabName === 'ANALYSIS') {
+        this.set('contextualHelp.topic', this.get('contextualHelp.invEndpointFileAnalysis'));
+      }
       this.transitionTo({
         queryParams: {
           tabName,
@@ -61,5 +70,6 @@ export default Route.extend({
         }
       });
     }
+
   }
 });

@@ -111,4 +111,24 @@ module('Integration | Component | Files toolbar', function(hooks) {
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
     assert.equal(find('.view-certificate-button').title, 'No certificates available for the selected files.', 'tooltip added to disabled button');
   });
+
+  test('clicking certificates button will set the contextual topic to certificates view', async function(assert) {
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(setState)
+      .totalItems(3)
+      .services(services)
+      .setSelectedFileList([])
+      .build();
+    this.set('closeRiskPanel', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
+    const contextualHelp = this.owner.lookup('service:contextualHelp');
+    await click('.view-certificate-button');
+    assert.equal(contextualHelp.topic, 'invCertificates', 'When navigating to certificates view, contextual help topic is changed.');
+  });
 });

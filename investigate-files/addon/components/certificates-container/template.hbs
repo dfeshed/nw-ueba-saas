@@ -23,7 +23,7 @@
           {{t 'investigateFiles.button.filters'}}
         {{/rsa-form-button}}
       </h2>
-      {{#rsa-form-button class='back-to-file padding-right' click=(action 'toggleCertificateView')}}
+      {{#rsa-form-button class='back-to-file padding-right' click=(action 'gotoFilesView' isCertificateView)}}
         {{rsa-icon name='arrow-left-12'}}
         {{t 'investigateFiles.button.backToFiles'}}
       {{/rsa-form-button}}
@@ -33,7 +33,7 @@
       </label>
       {{certificates-container/certificate-status}}
       {{endpoint/pivot-to-event-analysis label='certificate' selections=selections pivotToInvestigate=(action 'pivotToInvestigate')}}
-      {{#rsa-form-button class='close-certificate-view-button' click=(action 'toggleCertificateView') isIconOnly=true}}
+      {{#rsa-form-button class='close-certificate-view-button' click=(action 'gotoFilesView' isCertificateView) isIconOnly=true}}
         {{rsa-icon title=(t 'investigateFiles.button.closeCertificateView') name='close'}}
       {{/rsa-form-button}}
     </hbox>

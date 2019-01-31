@@ -16,6 +16,12 @@
         border-color: border-color(accentOne, darker);
       }
     }
+
+    .help-button {
+      position: absolute;
+      right: 0;
+      padding-right: rsa-whitespace();
+    }
   }
 
 }

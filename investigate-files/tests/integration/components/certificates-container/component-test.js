@@ -87,4 +87,17 @@ module('Integration | Component | certificates-container', function(hooks) {
     assert.equal(find('.certificates-container .pivot-to-event-analysis').classList.contains('is-disabled'), false, 'Event analysis button enabled');
   });
 
+  test('certificates close button, when clicked will change the contextual topic back to investigate files', async function(assert) {
+    new ReduxDataHelper(initState)
+      .isCertificateView(true)
+      .build();
+    await render(hbs`{{certificates-container}}`);
+    const contextualHelp = this.owner.lookup('service:contextualHelp');
+    assert.equal(findAll('.close-certificate-view-button').length, 1, 'certificates close icon should rendered.');
+    await click('.close-certificate-view-button button');
+    return settled().then(() => {
+      assert.equal(contextualHelp.topic, 'files', 'When navigating back to files view, contextual help topic is changed.');
+    });
+  });
+
 });

@@ -30,7 +30,8 @@ const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  serviceList: serviceList(state)
+  serviceList: serviceList(state),
+  isCertificateView: state.certificate.list.isCertificateView
 });
 
 const dispatchToActions = {
@@ -56,6 +57,8 @@ const Certificate = Component.extend({
 
   pivot: service(),
 
+  contextualHelp: service(),
+
   @computed('selections')
   pivotInvestigateDisabled(selections) {
     if (!selections) {
@@ -76,6 +79,12 @@ const Certificate = Component.extend({
   actions: {
     pivotToInvestigate(item, category) {
       this.get('pivot').pivotToInvestigate('thumbprint', item, category);
+    },
+
+    gotoFilesView(isCertificateView) {
+      const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
+      this.set('contextualHelp.topic', contextualTopic);
+      this.send('toggleCertificateView');
     }
   }
 

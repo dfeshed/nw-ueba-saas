@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setSelectedService, setQueryTimeRange } from 'investigate-process-analysis/actions/creators/services-creators';
+import { inject as service } from '@ember/service';
 
 const dispatchToActions = {
   setSelectedService,
@@ -22,6 +23,9 @@ const QueryContainer = Component.extend({
 
   timeRangeInvalid: false,
 
+
+  contextualHelp: service(),
+
   actions: {
     timeRangeError() {
       this.set('timeRangeInvalid', true);
@@ -35,6 +39,10 @@ const QueryContainer = Component.extend({
     customTimeRange(start, end) {
       this.set('timeRangeInvalid', false);
       this.send('setQueryTimeRange', { startTime: start, endTime: end }, true);
+    },
+
+    goToHelp() {
+      this.get('contextualHelp').goToHelp('investigation', 'invProcessAnalysis');
     }
   }
 });

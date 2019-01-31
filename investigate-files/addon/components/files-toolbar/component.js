@@ -41,7 +41,8 @@ const stateToComputed = (state) => ({
   certificateLoadStatus: state.certificate.list.certificatesLoadingStatus,
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state),
-  isCertificateViewDisabled: isCertificateViewDisabled(state)
+  isCertificateViewDisabled: isCertificateViewDisabled(state),
+  isCertificateView: state.certificate.list.isCertificateView
 });
 
 const dispatchToActions = {
@@ -67,6 +68,8 @@ const ToolBar = Component.extend({
   flashMessage: service(),
 
   i18n: service(),
+
+  contextualHelp: service(),
 
   agentIds: [],
 
@@ -104,6 +107,12 @@ const ToolBar = Component.extend({
       if (this.closeRiskPanel) {
         this.closeRiskPanel();
       }
+    },
+
+    toggleCertificateViewAction(isCertificateView) {
+      const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
+      this.set('contextualHelp.topic', contextualTopic);
+      this.send('toggleCertificateView');
     }
   }
 });

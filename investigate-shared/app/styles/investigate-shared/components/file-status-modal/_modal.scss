@@ -8,6 +8,9 @@ $whitelistAlertWidth: 362px;
 }
 
 .rsa-application-modal-content.file-status-modal {
+  .rsa-icon-help-circle-lined {
+    padding-right: rsa-whitespace();
+  }
   width: $modalWidth;
   .modal-content {
     width: 100%;

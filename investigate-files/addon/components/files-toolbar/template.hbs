@@ -9,7 +9,7 @@
   {{#rsa-form-button
      isDisabled=isCertificateViewDisabled
      title=isCertificateViewDisabledTitle
-     class="view-certificate-button" click=(action 'toggleCertificateView')}}
+     class="view-certificate-button" click=(action 'toggleCertificateViewAction' isCertificateView)}}
     {{#if (and (eq certificateLoadStatus 'wait') (not-eq servers.isSummaryRetrieveError true))}}
       {{rsa-loader size='small'}}
     {{/if}}
