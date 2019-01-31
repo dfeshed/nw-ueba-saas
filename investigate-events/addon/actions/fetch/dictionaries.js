@@ -35,8 +35,7 @@ const fetchAliases = (serviceId) => {
   };
   return queryPromiseRequest(
     'core-meta-alias',
-    query,
-    { cancelPreviouslyExecuting: true }
+    query
   );
 };
 
