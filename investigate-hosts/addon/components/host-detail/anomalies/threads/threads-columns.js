@@ -22,8 +22,13 @@ export default {
     width: 500
   },
   {
-    field: 'fileProperties.score',
+    field: 'machineFileScore',
     title: 'score',
+    width: '12vw'
+  },
+  {
+    field: 'fileProperties.score',
+    title: 'globalScore',
     width: '12vw'
   },
   {

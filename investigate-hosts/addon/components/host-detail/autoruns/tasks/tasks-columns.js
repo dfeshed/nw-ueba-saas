@@ -14,8 +14,12 @@ const defaultColumns = [
     format: 'FILENAME'
   },
   {
-    field: 'fileProperties.score',
+    field: 'machineFileScore',
     title: 'Risk Score'
+  },
+  {
+    field: 'fileProperties.score',
+    title: 'Global Risk Score'
   },
   {
     field: 'machineCount',

@@ -54,9 +54,27 @@ const _setCurrentEntityId = (id) => {
   };
 };
 
-const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => {
+const getHostFileScoreContext = (id, agentId, severity = 'Critical') => {
   const alertCategory = _.upperFirst(severity);
+  const data = {
+    id,
+    alertCategory,
+    timeStamp: 0,
+    host: agentId
+  };
 
+  return (dispatch) => {
+    dispatch(_setCurrentEntityId(id));
+    dispatch({
+      type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+      meta: { belongsTo: 'HOST' },
+      promise: api.getHostFileRiskScoreContext(data)
+    });
+  };
+};
+
+const getRiskScoreContext = (id, riskType, severity = 'Critical') => {
+  const alertCategory = _.upperFirst(severity);
   const data = {
     id,
     alertCategory,
@@ -64,16 +82,9 @@ const getRiskScoreContext = (id, riskType, belongsTo, severity = 'Critical') => 
   };
   return (dispatch) => {
     dispatch(_setCurrentEntityId(id));
-    if (!belongsTo) {
-      // belongsTo decides the reducer state. If it is not explicitly specified, it is same as riskType
-      // This is different only for host files.
-      belongsTo = riskType;
-    }
     dispatch({
       type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
-      meta: {
-        belongsTo
-      },
+      meta: { belongsTo: riskType },
       promise: riskType === 'FILE' ? api.getRiskScoreContext(data) : api.getHostRiskScoreContext(data)
     });
   };
@@ -89,10 +100,14 @@ const _getRiskScoreDetailContext = (currentReduxState, riskType, alertName) => {
   return promise;
 };
 
-const getUpdatedRiskScoreContext = (id, riskType, belongsTo, tabName) => {
+const getUpdatedRiskScoreContext = (id, riskType, agentId, tabName) => {
   return (dispatch) => {
     dispatch(activeRiskSeverityTab(tabName));
-    dispatch(getRiskScoreContext(id, riskType, belongsTo, tabName));
+    if (agentId) {
+      dispatch(getHostFileScoreContext(id, agentId, tabName));
+    } else {
+      dispatch(getRiskScoreContext(id, riskType, tabName));
+    }
   };
 };
 
@@ -209,6 +224,7 @@ export {
   resetRiskContext,
   getRiskScoreContext,
   getUpdatedRiskScoreContext,
+  getHostFileScoreContext,
   getAlertEvents,
   setSelectedAlert,
   expandEvent,

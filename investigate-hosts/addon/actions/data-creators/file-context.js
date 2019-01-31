@@ -3,7 +3,7 @@ import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
-import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getHostFileScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { focusedRowChecksum } from 'investigate-hosts/reducers/details/file-context/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -39,10 +39,11 @@ const setRowSelection = (belongsTo, id, index) => ({ type: ACTION_TYPES.SET_FILE
 
 const onHostFileSelection = (belongsTo, storeName, { id }, index) => {
   return (dispatch, getState) => {
+    const { endpoint: { detailsInput: { agentId } } } = getState();
     dispatch(setRowSelection(belongsTo, id, index));
     dispatch(getRespondServerStatus());
     dispatch(resetRiskContext());
-    dispatch(getRiskScoreContext(focusedRowChecksum(getState(), storeName), 'FILE', 'HOST'));
+    dispatch(getHostFileScoreContext(focusedRowChecksum(getState(), storeName), agentId));
   };
 };
 

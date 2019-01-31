@@ -16,9 +16,15 @@ export default [
     isDescending: false
   },
   {
-    field: 'fileProperties.score',
-    width: '6vw',
+    field: 'machineFileScore',
+    width: '4vw',
     title: 'investigateHosts.process.riskScore',
+    isDescending: false
+  },
+  {
+    field: 'fileProperties.score',
+    width: '4vw',
+    title: 'investigateHosts.process.globalScore',
     isDescending: false
   },
   {

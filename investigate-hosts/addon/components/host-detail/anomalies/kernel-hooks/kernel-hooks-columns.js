@@ -22,8 +22,12 @@ export default {
     width: 300
   },
   {
-    field: 'fileProperties.score',
+    field: 'machineFileScore',
     title: 'score'
+  },
+  {
+    field: 'fileProperties.score',
+    title: 'globalScore'
   },
   {
     field: 'machineCount',

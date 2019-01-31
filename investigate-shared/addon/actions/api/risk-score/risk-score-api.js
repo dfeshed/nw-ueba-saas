@@ -48,6 +48,15 @@ const getHostRiskScoreContext = (data) => {
   });
 };
 
+const getHostFileRiskScoreContext = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'getHostFileContext',
+    modelName: 'respond-server',
+    query: { data }
+  });
+};
+
 const getDetailedHostRiskScoreContext = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -110,6 +119,7 @@ export default {
   getRiskScoreContext,
   getDetailedFileRiskScoreContext,
   getHostRiskScoreContext,
+  getHostFileRiskScoreContext,
   getDetailedHostRiskScoreContext,
   getAlertEvents,
   sendHostDataToResetRiskScore

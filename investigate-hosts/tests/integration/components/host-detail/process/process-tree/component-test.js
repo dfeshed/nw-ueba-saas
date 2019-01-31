@@ -220,7 +220,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     await render(hbs`{{host-detail/process/process-tree}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 12, '12 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Risk Score', 'Second column is Risk Score');
   });
@@ -1358,12 +1358,12 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       </style>
     {{host-detail/process/process-tree}}
     `);
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 12, '12 columns in header, including the checkbox');
     await click('.rsa-data-table-header__column-selector');
     return settled().then(async() => {
       await click(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3]);
       return settled().then(() => {
-        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 10, '10 columns in header, including the checkbox');
+        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
       });
     });
   });

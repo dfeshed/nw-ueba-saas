@@ -21,13 +21,17 @@ export default {
     format: 'FILENAME'
   },
   {
-    field: 'signature',
-    title: 'signature',
-    format: 'SIGNATURE'
+    field: 'machineFileScore',
+    title: 'score'
   },
   {
     field: 'fileProperties.score',
-    title: 'score'
+    title: 'globalScore'
+  },
+  {
+    field: 'signature',
+    title: 'signature',
+    format: 'SIGNATURE'
   },
   {
     field: 'machineCount',

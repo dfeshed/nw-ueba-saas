@@ -17,9 +17,16 @@ export default [
     disableSort: true
   },
   {
-    field: 'fileProperties.score',
-    width: '5vw',
+    field: 'machineFileScore',
+    width: '4vw',
     title: 'investigateHosts.process.riskScore',
+    isDescending: false,
+    disableSort: true
+  },
+  {
+    field: 'fileProperties.score',
+    width: '4vw',
+    title: 'investigateHosts.process.globalScore',
     disableSort: true
   },
   {

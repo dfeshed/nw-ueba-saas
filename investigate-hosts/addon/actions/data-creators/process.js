@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
 import { handleError } from '../creator-utils';
-import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { resetRiskContext, getHostFileScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const toggleProcessView = () => {
   return (dispatch, getState) => {
@@ -103,11 +103,12 @@ const getProcessDetails = (processId) => {
 };
 
 const onProcessSelection = (processId, checksumSha256) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { endpoint: { detailsInput: { agentId } } } = getState();
     dispatch(getRespondServerStatus());
     dispatch(resetRiskContext());
     dispatch(getProcessDetails(processId));
-    dispatch(getRiskScoreContext(checksumSha256, 'FILE', 'HOST'));
+    dispatch(getHostFileScoreContext(checksumSha256, agentId));
   };
 };
 

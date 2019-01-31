@@ -17,8 +17,12 @@ const defaultColumns = [
     width: '150px'
   },
   {
-    field: 'fileProperties.score',
+    field: 'machineFileScore',
     title: 'Risk Score'
+  },
+  {
+    field: 'fileProperties.score',
+    title: 'Global Score'
   },
   {
     field: 'machineCount',

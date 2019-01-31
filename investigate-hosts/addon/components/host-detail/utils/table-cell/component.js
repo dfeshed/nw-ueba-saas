@@ -11,7 +11,7 @@ export default BodyCell.extend({
 
   @computed('column.field')
   columnName(column) {
-    if (column == 'fileProperties.score' || column === 'score') {
+    if (column == 'fileProperties.score' || column === 'score' || column === 'machineFileScore') {
       return 'score';
     }
   },

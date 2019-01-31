@@ -67,10 +67,16 @@ const defaultColumns = [
     'width': 150
   },
   {
-    'field': 'fileProperties.score',
-    'title': 'Risk Score',
+    'field': 'machineFileScore',
     'label': 'investigateHosts.files.fields.score',
-    'width': 100
+    'title': 'Risk Score',
+    'width': 70
+  },
+  {
+    'field': 'fileProperties.score',
+    'title': 'Global Score',
+    'label': 'investigateHosts.files.fields.score',
+    'width': 90
   },
   {
     'field': 'machineCount',

@@ -49,8 +49,7 @@
         {{endpoint/risk-properties
           defaultAction=(action 'getUpdatedRiskScoreContext')
           riskState=risk
-          riskType='FILE'
-          belongsTo='HOST'
+          agentId=agentId
         }}
       {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
         <box class="host-properties-box scroll-box">

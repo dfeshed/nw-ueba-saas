@@ -75,9 +75,8 @@
       {{#if (eq activeHostDetailPropertyTab 'RISK')}}
         {{endpoint/risk-properties
           defaultAction=(action 'getUpdatedRiskScoreContext')
+          agentId=agentId
           riskState=risk
-          riskType='FILE'
-          belongsTo='HOST'
         }}
       {{else if (eq activeHostDetailPropertyTab 'FILE_DETAILS')}}
         <box class="process-property-box scroll-box">

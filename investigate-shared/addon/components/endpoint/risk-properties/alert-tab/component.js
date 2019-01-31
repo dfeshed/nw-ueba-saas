@@ -12,8 +12,8 @@ export default Component.extend({
   actions: {
     activate(id, tabName, alertCount) {
       if (alertCount !== 0 && this.get('defaultAction')) {
-        const { riskType, belongsTo } = this.getProperties('riskType', 'belongsTo');
-        this.get('defaultAction')(id, riskType, belongsTo, tabName);
+        const { riskType, agentId } = this.getProperties('riskType', 'agentId');
+        this.get('defaultAction')(id, riskType, agentId, tabName);
       }
     }
   }

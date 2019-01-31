@@ -14,7 +14,7 @@
   <a class='file-name-link' href='/investigate/files/file?checksum={{item.fileProperties.checksumSha256}}&sid={{sid}}' target='_blank' rel='noopener noreferrer'>{{get item column.field}}</a>
 {{else if (eq column.field 'status')}}
   {{itemStatus}}
-{{else if (or (eq column.field 'fileProperties.score') (eq column.field 'score'))}}
+{{else if (or (eq column.field 'fileProperties.score') (eq column.field 'score') (eq column.field 'machineFileScore'))}}
   <centered>
     {{rsa-risk-score score=(get item column.field) size='small'}}
   </centered>

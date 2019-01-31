@@ -20,13 +20,18 @@ const defaultColumns = [
     format: 'FILENAME'
   },
   {
+    field: 'machineFileScore',
+    title: 'Risk Score',
+    width: '4vw'
+  },
+  {
     field: 'fileProperties.score',
-    title: 'Risk Score'
+    title: 'Global Score'
   },
   {
     field: 'machineCount',
     title: 'Active On',
-    width: '6vw',
+    width: '4vw',
     disableSort: true
   },
   {
