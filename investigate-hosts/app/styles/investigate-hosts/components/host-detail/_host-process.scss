@@ -67,7 +67,12 @@
       min-height: 100%;
       .rsa-data-table-body-row {
         .process-name {
-          color: text-color(secondary,lightest);
+          color: text-color(secondary,light);
+        }
+        &.is-selected {
+          .process-name a{
+            color: text-color(secondary,lightest);
+          }
         }
       }
     }
@@ -75,7 +80,7 @@
     height: 100%;
     min-height: 100%;
     .process-name a {
-      color: text-color(secondary, dark);
+      color: text-color(secondary, light);
       text-decoration: underline;
       cursor: pointer;
       label {
