@@ -6,6 +6,7 @@
   {{card-index-db}}
 {{/if}}
 {{#if (or isConcentrator isBroker)}}
+  {{card-devices moduleName=moduleName}}
   {{card-aggregation moduleName=moduleName}}
   {{card-index-db isBroker=isBroker}}
 {{/if}}
@@ -13,5 +14,7 @@
   {{card-session-db}}
   {{card-meta-db}}
 {{/if}}
-{{card-system}}
+{{#if moduleName}}
+  {{card-system}}
+{{/if}}
 <div id="modalDestination"></div>

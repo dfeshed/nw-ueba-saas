@@ -1,0 +1,57 @@
+<h1 class="large centered">Devices</h1>
+{{#rsa-chart domainExtents=domainExtents data=graphData as |params|}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=0
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=1
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=2
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=3
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=4
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+{{#rsa-data-table
+  items=items
+  columnsConfig=columns}}
+
+  {{#rsa-data-table/header as |column|}}
+    {{#if column.headerComponentClass}}
+      <label class="rsa-form-checkbox-label {{if (eq graphField column.field) 'checked'}}">
+        {{rsa-form-checkbox checked=(eq graphField column.field) change=(action 'toggleColumnSelection' column.field)}}
+      </label>
+    {{/if}}
+    {{column.title}}
+  {{/rsa-data-table/header}}
+
+  {{#rsa-data-table/body noResultsMessage='No Devices Found' as |item index column|}}
+    {{#rsa-data-table/body-cell item=item column=column}}
+      {{#if (eq column.dataType 'numeric')}}
+        {{ngcoreui-formatted-number size=(get item column.field)}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

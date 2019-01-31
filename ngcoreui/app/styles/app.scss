@@ -37,7 +37,7 @@ a {
 }
 
 .border-panel {
-  border: 1px solid text-color(primary, light);
+  border: 1px solid text-color(primary);
   margin-top: rsa-whitespace();
   padding: rsa-whitespace() rsa-whitespace() 0px rsa-whitespace();
 }
@@ -355,8 +355,61 @@ table {
     stroke: text-color(primary);
   }
 
-  .rsa-y-axis text {
-    fill: text-color(primary);
+  .tick {
+    text {
+      fill: text-color(primary);
+    }
+  }
+}
+
+.rsa-line-series {
+  fill: none;
+  stroke-width: 1;
+  &.series-0 {
+    stroke: text-color(secondary);
+  }
+  &.series-1 {
+    stroke: text-color(secondary, darker);
+  }
+  &.series-2 {
+    stroke: text-color(secondary, darkest);
+  }
+  &.series-3 {
+    stroke: text-color(secondary, lighter);
+  }
+  &.series-4 {
+    stroke: text-color(secondary, lightest);
+  }
+  &.symbol {
+    stroke: none;
+    &.series-0 {
+      fill: text-color(secondary);
+    }
+    &.series-1 {
+      fill: text-color(secondary, darker);
+    }
+    &.series-2 {
+      fill: text-color(secondary, darkest);
+    }
+    &.series-3 {
+      fill: text-color(secondary, lighter);
+    }
+    &.series-4 {
+      fill: text-color(secondary, lightest);
+    }
+  }
+}
+
+
+.dashboard-banner {
+  height: 400px;
+  width: 100%;
+  margin: rsa-whitespace(less);
+  h1 {
+    margin-bottom: 10px
+  }
+  .rsa-data-table {
+    height: 100%;
   }
 }
 
