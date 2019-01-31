@@ -56,7 +56,6 @@ const defaultColumns = [
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
     label: 'investigateHosts.files.fields.downloaded',
-    disableSort: true,
     format: 'DOWNLOADSTATUS',
     width: 100
   },

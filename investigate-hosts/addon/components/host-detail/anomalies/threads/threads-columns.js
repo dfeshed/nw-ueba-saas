@@ -49,7 +49,6 @@ export default {
   {
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
-    disableSort: true,
     format: 'DOWNLOADSTATUS',
     width: 100
   },
