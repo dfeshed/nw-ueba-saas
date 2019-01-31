@@ -417,4 +417,30 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
+
+  test('it shows a placeholder if it is the first pill', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=true
+        metaOptions=metaOptions
+      }}
+    `);
+    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
+    assert.ok(placeholder.length > 0, 'appears to be missing a placeholder');
+  });
+
+  test('it does not show a placeholder if it is not the first pill', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
+    assert.ok(placeholder.length === 0, 'appears to be missing a placeholder');
+  });
 });

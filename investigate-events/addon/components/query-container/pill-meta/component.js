@@ -3,6 +3,7 @@ import { next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isArrowRight, isEnter, isEscape } from 'investigate-events/util/keys';
+import { inject as service } from '@ember/service';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -78,8 +79,16 @@ export default Component.extend({
    */
   isFirstPill: false,
 
+  i18n: service(),
+
   @computed('isActive', 'metaOptions')
   isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
+
+  @computed('isFirstPill', 'i18n.locale')
+  placeholder(isFirstPill) {
+    const i18n = this.get('i18n');
+    return isFirstPill ? i18n.t('queryBuilder.placeholder') : '';
+  },
 
   init() {
     this._super(...arguments);
