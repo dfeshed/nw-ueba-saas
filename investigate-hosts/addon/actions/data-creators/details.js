@@ -11,6 +11,7 @@ import { debug } from '@ember/debug';
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { toggleFileAnalysisView } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch, getState) => {
@@ -89,9 +90,14 @@ const _getHostDetails = (forceRefresh, serviceId) => {
 
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
-    const { endpoint: { drivers, autoruns, libraries, visuals } } = getState();
+    const { endpoint: { drivers, autoruns, libraries, visuals, detailsInput: { agentId } } } = getState();
     const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
     switch (activeHostDetailTab) {
+      case 'OVERVIEW':
+        dispatch(getRespondServerStatus());
+        dispatch(resetRiskContext());
+        dispatch(getRiskScoreContext(agentId, 'HOST'));
+        break;
       case 'ANOMALIES':
         if ((activeAnomaliesTab === 'IMAGEHOOKS')) {
           dispatch(getFileContext('IMAGEHOOK', ['IMAGE_HOOKS']));

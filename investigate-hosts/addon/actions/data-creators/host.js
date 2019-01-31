@@ -47,10 +47,7 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     if (sid !== getState().endpointQuery.serverId) {
       await dispatch(changeEndpointServer({ id }));
     }
-    dispatch(getRespondServerStatus());
     dispatch(resetHostDownloadLink());
-    dispatch(resetRiskContext());
-    dispatch(getRiskScoreContext(machineId, 'HOST'));
     dispatch(initializeAgentDetails({ agentId: machineId }, true, true));
     dispatch(changeDetailTab(tabName));
     // To redirect to the Process details panel in the process tab
