@@ -116,6 +116,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPolicyStatus('wait')
+      .policyWizPolicyOrig()
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICY });
     const endState = reducers(Immutable.from(_.cloneDeep(initialStateEdr)), action);

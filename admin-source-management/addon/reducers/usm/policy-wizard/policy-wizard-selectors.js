@@ -22,9 +22,19 @@ export const hasPolicyChanged = createSelector(
   }
 );
 
+/**
+ * Determines if the needed API call(s) have completed loading the required data.
+ * Currently we only check the policy, but we may also consider including other data such as
+ * policyList, listOfEndpointServers, listOfLogServers, etc...
+ */
 export const isPolicyLoading = createSelector(
   _policyWizardState,
   (_policyWizardState) => _policyWizardState.policyStatus === 'wait'
+);
+
+export const isPolicyLoadError = createSelector(
+  _policyWizardState,
+  (_policyWizardState) => _policyWizardState.policyStatus === 'error'
 );
 
 /**

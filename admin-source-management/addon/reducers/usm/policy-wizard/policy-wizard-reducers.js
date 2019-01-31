@@ -198,7 +198,14 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.FETCH_POLICY]: (state, action) => (
     handle(state, action, {
       start: (state) => {
-        return state.set('policyStatus', 'wait');
+        // reset everything on load start (same as NEW_POLICY) so things are in sync in case of a load error
+        const mergedInitialState = buildInitialState(state, state.policy.policyType);
+        const newState = state.merge({
+          ...mergedInitialState,
+          policyOrig: mergedInitialState.policy,
+          policyStatus: 'wait'
+        });
+        return newState;
       },
       failure: (state) => {
         return state.set('policyStatus', 'error');

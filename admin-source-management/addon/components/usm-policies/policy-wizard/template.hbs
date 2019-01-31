@@ -1,6 +1,14 @@
-{{rsa-lib/rsa-wizard
-  steps=steps
-  initialStepId='identifyPolicyStep'
-  transitionToClose=(action transitionToPolicies)
-  isWizardLoading=isPolicyLoading
-}}
+{{#if isPolicyLoadError}}
+  {{error-page
+    title=(t 'adminUsm.policyWizard.errorPage.loadErrorTitle')
+    errorDescription=(t 'adminUsm.policyWizard.errorPage.loadErrorDescription')
+    back=(action transitionToPolicies)
+  }}
+{{else}}
+  {{rsa-lib/rsa-wizard
+    steps=steps
+    initialStepId='identifyPolicyStep'
+    transitionToClose=(action transitionToPolicies)
+    isWizardLoading=isPolicyLoading
+  }}
+{{/if}}

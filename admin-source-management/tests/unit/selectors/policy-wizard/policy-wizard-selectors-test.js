@@ -20,6 +20,7 @@ import {
   isDefinePolicyStepValid,
   isWizardValid,
   isPolicyLoading,
+  isPolicyLoadError,
   hasPolicyChanged,
   isPolicySettingsEmpty
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
@@ -501,6 +502,26 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     isPolicyLoadingExpected = false;
     isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
     assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is false when policyStatus is complete');
+  });
+
+  test('isPolicyLoadError selector', function(assert) {
+    let policyStatusExpected = 'complete';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build();
+    let isPolicyLoadErrorExpected = false;
+    let isPolicyLoadErrorSelected = isPolicyLoadError(Immutable.from(fullState));
+    assert.deepEqual(isPolicyLoadErrorSelected, isPolicyLoadErrorExpected, 'isPolicyLoadError is false when policyStatus is complete');
+
+    policyStatusExpected = 'error';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build();
+    isPolicyLoadErrorExpected = true;
+    isPolicyLoadErrorSelected = isPolicyLoadError(Immutable.from(fullState));
+    assert.deepEqual(isPolicyLoadErrorSelected, isPolicyLoadErrorExpected, 'isPolicyLoadError is true when policyStatus is error');
   });
 
   test('hasPolicyChanged selector', function(assert) {

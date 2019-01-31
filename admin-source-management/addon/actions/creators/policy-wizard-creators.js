@@ -19,7 +19,12 @@ const initializePolicy = (policyId) => {
     if (policyId === 'create-new') {
       dispatch(newPolicy());
     } else {
-      await _initializeFetchPolicy(policyId, dispatch, getState);
+      try {
+        await _initializeFetchPolicy(policyId, dispatch, getState);
+      } catch (e) {
+        // since the fetch failed - no need to dispatch or load anything else
+        return;
+      }
     }
 
     // init policy list, which is used to validate policy name uniqueness
@@ -28,8 +33,6 @@ const initializePolicy = (policyId) => {
     // isDefaultPolicy is a boolean - for a default policy this will be set to true.
     const { defaultPolicy: isDefaultPolicy } = getState().usm.policyWizard.policy;
     initializePolicyType(getState().usm.policyWizard.policy.policyType, dispatch, isDefaultPolicy);
-
-
   };
 };
 
