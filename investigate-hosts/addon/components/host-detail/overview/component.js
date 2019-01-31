@@ -3,9 +3,12 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'investigate-shared/actions/data-creators/risk-creators';
-import { getPropertyData, getPoliciesPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
+import { getPropertyData,
+  getPoliciesPropertyData,
+  channelFiltersConfig,
+  showWindowsLogPolicy } from 'investigate-hosts/reducers/details/overview/selectors';
 import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
-import policiesConfig from 'investigate-hosts/components/property-panel/policies-property-config';
+import { getPoliciesPropertyConfig } from 'investigate-hosts/components/property-panel/policies-property-config';
 import {
   setAlertTab,
   setPropertyPanelTabView
@@ -33,7 +36,9 @@ const stateToComputed = (state) => ({
   policiesPropertyData: getPoliciesPropertyData(state),
   isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
   listOfServices: state.endpoint.machines.listOfServices,
-  isInsightsAgent: isInsightsAgent(state)
+  isInsightsAgent: isInsightsAgent(state),
+  channelFiltersConfig: channelFiltersConfig(state),
+  showWindowsLogPolicy: showWindowsLogPolicy(state)
 });
 
 const HostOverview = Component.extend({
@@ -46,7 +51,10 @@ const HostOverview = Component.extend({
 
   hostDetailsConfig,
 
-  policiesConfig,
+  @computed('showWindowsLogPolicy', 'channelFilters')
+  policiesConfig(showWindowsLogPolicy, channelFilters) {
+    return getPoliciesPropertyConfig(showWindowsLogPolicy, channelFilters);
+  },
 
   @computed('activePropertyPanelTab')
   propertyPanelData(tab) {

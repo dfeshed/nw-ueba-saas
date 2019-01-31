@@ -237,12 +237,11 @@ const _getscheduledScanConfig = createSelector(
 );
 
 export const _getWindowsLogPolicy = createSelector(
-  [_policyDetails, isMachineWindows],
-  (policyDetails, isMachineWindows) => {
-    // Details should retun only for Windows machine
-    if (isMachineWindows) {
-      const { policy } = policyDetails;
-      const windowsLogPolicy = policy && policy.windowsLogPolicy ? policy.windowsLogPolicy : {};
+  [_policyDetails],
+  (policyDetails) => {
+    const { policy } = policyDetails;
+    const windowsLogPolicy = policy && policy.windowsLogPolicy ? policy.windowsLogPolicy : null;
+    if (windowsLogPolicy) {
       const { enabled, sendTestLog } = windowsLogPolicy;
       return {
         ...windowsLogPolicy,
@@ -250,7 +249,6 @@ export const _getWindowsLogPolicy = createSelector(
         sendTestLog: sendTestLog ? 'Enabled' : 'Disabled'
       };
     }
-    return {};
   }
 );
 
@@ -298,3 +296,28 @@ export const getPoliciesPropertyData = createSelector(
 export const selectedSnapshot = createSelector(
   [_scanTime, _snapShots],
   (scanTime, snapShots) => snapShots ? snapShots.find((snapshot) => snapshot.scanStartTime === scanTime) : null);
+
+export const showWindowsLogPolicy = createSelector([_getWindowsLogPolicy], (windowsLogPolicy) => !!windowsLogPolicy);
+
+export const channelFiltersConfig = createSelector(
+  [_getWindowsLogPolicy],
+  (windowsLogPolicy) => {
+    let config = {};
+    if (windowsLogPolicy) {
+      const { channelFilters } = windowsLogPolicy;
+      if (Array.isArray(channelFilters) && channelFilters.length) {
+        config = {
+          sectionName: 'Channel Filters Settings',
+          fields: channelFilters.map((filter) => {
+            return {
+              labelKey: `${filter.channel} ${filter.filterType}`,
+              field: `${filter.eventId}`,
+              isStandardString: true
+            };
+          })
+        };
+      }
+    }
+    return config;
+  }
+);

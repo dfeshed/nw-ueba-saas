@@ -26,10 +26,15 @@ export default PropertyPanel.extend({
       const properties = config.map((item) => {
         // Loop through all the fields and set the value and display name
         const fields = item.fields.map((fieldItem) => {
-          const { fieldPrefix, field, labelKey } = fieldItem;
-          const label = `${this.get('localeNameSpace')}.${labelKey}`;
+          const { fieldPrefix, field, labelKey, isStandardString } = fieldItem;
+          const label = isStandardString ? labelKey : `${this.get('localeNameSpace')}.${labelKey}`;
           // If field prefix combine that field to get the value
-          let value = fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field);
+          let value = null;
+          if (isStandardString) {
+            value = field;
+          } else {
+            value = (fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field));
+          }
           if (value && field === 'groupPolicy.groups') {
             value = value.map((v) => {
               return v.name;
@@ -38,7 +43,7 @@ export default PropertyPanel.extend({
           return {
             ...fieldItem,
             value,
-            displayName: i18n.t(label).string
+            displayName: isStandardString ? label : i18n.t(label).string
           };
         });
         return { ...item, fields };

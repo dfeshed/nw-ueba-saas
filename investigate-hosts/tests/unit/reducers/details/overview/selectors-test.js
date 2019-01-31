@@ -15,7 +15,9 @@ import {
   hostWithStatus,
   isMachineWindows,
   getPoliciesPropertyData,
-  selectedSnapshot } from 'investigate-hosts/reducers/details/overview/selectors';
+  selectedSnapshot,
+  channelFiltersConfig,
+  showWindowsLogPolicy } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostOverview: { machineIdentity: { machineOsType: 'linux' } } } } }));
@@ -448,36 +450,24 @@ test('getPoliciesPropertyData', function(assert) {
     'sendTestLog': 'Disabled',
     'protocol': 'TLS'
   });
+
   const state5 = {
     endpoint: {
       overview: {
         hostOverview: {
-          machineIdentity: {
-            machineOsType: 'linux'
+          policyDetails: {
+            policy: {
+              edrPolicy: {
+                enabled: true
+              }
+            }
           }
         }
       }
     }
   };
   const result5 = getPoliciesPropertyData(Immutable.from(state5));
-  assert.deepEqual(result5.windowsLogPolicy, {}, 'WindowsLogPolicy should empty for non windows machines');
-  const state6 = {
-    endpoint: {
-      overview: {
-        hostOverview: {
-          machineIdentity: {
-            machineOsType: 'windows'
-          }
-        }
-      }
-    }
-  };
-  const result6 = getPoliciesPropertyData(Immutable.from(state6));
-  assert.deepEqual(result6.windowsLogPolicy,
-    { 'enabled': 'Disabled',
-      'sendTestLog': 'Disabled'
-    },
-    'WindowsLogPolicy should have for windows machines');
+  assert.deepEqual(result5.windowsLogPolicy, undefined);
 });
 
 test('selectedSnapshot', function(assert) {
@@ -513,4 +503,73 @@ test('selectedSnapshot', function(assert) {
     }
   }));
   assert.deepEqual(result2, null);
+});
+
+test('showWindowsLogPolicy', function(assert) {
+  const result1 = showWindowsLogPolicy(Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          groupPolicy: {}
+        },
+        policyDetails: {
+          policy: {
+            windowsLogPolicy: {
+              'enabled': true,
+              'sendTestLog': false,
+              'protocol': 'TLS',
+              'channelFilters': [{
+                'eventId': 'ALL',
+                'filterType': 'include',
+                'channel': 'system'
+              }]
+            }
+          }
+        }
+      }
+    }
+  }));
+  assert.equal(result1, true);
+  const result2 = showWindowsLogPolicy(Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          groupPolicy: {}
+        },
+        policyDetails: {}
+      }
+    }
+  }));
+  assert.equal(result2, false);
+});
+
+test('channelFiltersConfig', function(assert) {
+  const result1 = channelFiltersConfig(Immutable.from({
+    endpoint: {
+      overview: {
+        hostOverview: {
+          groupPolicy: {}
+        },
+        policyDetails: {
+          policy: {
+            windowsLogPolicy: {
+              'enabled': true,
+              'sendTestLog': false,
+              'protocol': 'TLS',
+              'channelFilters': [{
+                'eventId': 'ALL',
+                'filterType': 'include',
+                'channel': 'system'
+              }]
+            }
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result1.fields, [{
+    labelKey: 'system include',
+    field: 'ALL',
+    isStandardString: true
+  }]);
 });

@@ -1,4 +1,4 @@
-export default [
+const policiesPropertyConfig = [
   {
     sectionName: 'General',
     fields: [
@@ -109,31 +109,35 @@ export default [
         labelKey: 'policyWizard.edrPolicy.agentMode'
       }
     ]
-  },
-  // windows log policy
-  {
-    sectionName: 'Windows Log Settings',
-    fields: [
-      {
-        field: 'windowsLogPolicy.enabled',
-        labelKey: 'policies.detail.windowsLogPolicyEnabled'
-      },
-      {
-        field: 'windowsLogPolicy.primaryDestination',
-        labelKey: 'policies.detail.primaryDestination'
-      },
-      {
-        field: 'windowsLogPolicy.secondaryDestination',
-        labelKey: 'policies.detail.secondaryDestination'
-      },
-      {
-        field: 'windowsLogPolicy.protocol',
-        labelKey: 'policies.detail.protocol'
-      },
-      {
-        field: 'windowsLogPolicy.sendTestLog',
-        labelKey: 'policies.detail.sendTestLog'
-      }
-    ]
   }
 ];
+
+const windowsLogPolicy = {
+  sectionName: 'Windows Log Settings',
+  fields: [
+    {
+      field: 'windowsLogPolicy.enabled',
+      labelKey: 'policies.detail.windowsLogPolicyEnabled'
+    },
+    {
+      field: 'windowsLogPolicy.primaryDestination',
+      labelKey: 'policies.detail.primaryDestination'
+    },
+    {
+      field: 'windowsLogPolicy.secondaryDestination',
+      labelKey: 'policies.detail.secondaryDestination'
+    },
+    {
+      field: 'windowsLogPolicy.protocol',
+      labelKey: 'policies.detail.protocol'
+    },
+    {
+      field: 'windowsLogPolicy.sendTestLog',
+      labelKey: 'policies.detail.sendTestLog'
+    }
+  ]
+};
+
+export const getPoliciesPropertyConfig = (showWindowsLogPolicy, channelFiltersConfig) => {
+  return showWindowsLogPolicy ? [...policiesPropertyConfig, windowsLogPolicy, channelFiltersConfig || {}] : policiesPropertyConfig;
+};
