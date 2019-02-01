@@ -187,6 +187,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: true });
+    this.set('downloadDisabledTooltip', 'Download to server test tool tip');
 
     this.set('downloadFiles', function() {
       assert.ok('External function called on click of button');
@@ -198,10 +199,13 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       downloadFiles=downloadFiles
       accessControl=accessControl
       showResetRiskScore=true
-      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+      fileDownloadButtonStatus=fileDownloadButtonStatus
+      downloadDisabledTooltip=downloadDisabledTooltip
+    }}`);
 
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
+    assert.equal(findAll('.rsa-dropdown-action-list .panel3')[0].title, 'Download to server test tool tip', 'DownloadtoServer disabled tooltip should present');
     assert.equal(findAll('.rsa-dropdown-action-list .panel4')[0].title, 'Download the file to server to save a local copy.', 'Save a local copy tooltip should present');
     assert.equal(findAll('.rsa-dropdown-action-list .panel5')[0].title, 'Download the file to server to analyze.', 'Analyze file tooltip should present');
 

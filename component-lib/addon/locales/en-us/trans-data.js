@@ -3666,11 +3666,14 @@ export default {
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
         tooltips: {
-          downloadToServer: '',
+          downloadToServer: 'Maximum of {{count}} files can be downloaded at a time.',
           saveLocalCopy: 'Download the file to server to save a local copy.',
           analyzeFile: 'Download the file to server to analyze.',
           changeFileStatusDisabled: 'Select {{label}} to change the status',
-          moreActionDisabled: 'Select {{label}} to enable More actions'
+          moreActionDisabled: 'Select {{label}} to enable More actions',
+          files: {
+            downloadToServer: 'One file can be downloaded at a time.'
+          }
         }
       },
       savedFilters: 'Saved Filters',

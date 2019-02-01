@@ -21,7 +21,8 @@
         saveLocalCopy=(action 'onSaveLocalCopy')
         analyzeFile=(action 'onAnalyzeFile')
         isDisplayTabLabel=isDisplayTabLabel
-        tabLabel=(t (concat 'investigateHosts.tabs.' tabName))}}
+        tabLabel=(t (concat 'investigateHosts.tabs.' tabName))
+        downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.downloadToServer' count=100)}}
       {{host-detail/utils/file-context-table
         isPaginated=isPaginated
         storeName=storeName

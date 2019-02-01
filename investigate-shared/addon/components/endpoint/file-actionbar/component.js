@@ -103,7 +103,11 @@ export default Component.extend({
     // Translated titles added.
     return fileActionConfClone.map((item) => {
       const title = i18n.t(`investigateShared.endpoint.fileActions.${item.name}`).string;
-      const disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`).string;
+      let disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`).string;
+      if (item.name === 'downloadToServer') {
+        // Setting download disabled tooltip
+        disabledTooltip = this.get('downloadDisabledTooltip');
+      }
       let { subItems } = item;
       if (subItems) {
         subItems = subItems.map((subItem) => {

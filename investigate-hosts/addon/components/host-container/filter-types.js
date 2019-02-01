@@ -11,23 +11,14 @@ const FILTER_TYPES = [
     'type': 'range'
   },
   {
-    'name': 'machineIdentity.machineOsType',
-    'label': 'investigateHosts.hosts.column.machineIdentity.machineOsType',
-    'listOptions': [
-      { name: 'windows', label: 'investigateFiles.filter.fileType.pe' },
-      { name: 'linux', label: 'investigateFiles.filter.fileType.linux' },
-      { name: 'mac', label: 'investigateFiles.filter.fileType.macho' }
-    ],
-    type: 'list'
+    'name': 'machineIdentity.machineName',
+    'label': 'investigateHosts.hosts.column.machineIdentity.machineName',
+    'type': 'text'
   },
   {
-    'name': 'machineIdentity.agentMode',
-    'label': 'investigateHosts.hosts.column.machineIdentity.agentMode',
-    'listOptions': [
-      { name: 'insights', label: 'investigateHosts.hosts.filters.agentMode.insights' },
-      { name: 'advanced', label: 'investigateHosts.hosts.filters.agentMode.advanced' }
-    ],
-    type: 'list'
+    'name': 'machine.users.name',
+    'label': 'investigateHosts.hosts.column.machine.users.name',
+    'type': 'text'
   },
   {
     'name': 'groupPolicy.managed',
@@ -51,59 +42,6 @@ const FILTER_TYPES = [
         message: 'investigateHosts.hosts.filters.invalidGroup'
       }
     }
-  },
-  {
-    name: 'agentStatus.lastSeenTime',
-    label: 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
-    type: 'date',
-    showCustomDate: false,
-    timeframes: [
-      { name: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'Hours' },
-      { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
-      { name: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
-      { name: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
-      { name: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
-      { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
-      { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' },
-      { name: 'LAST_TWO_WEEKS', value: 14, unit: 'Days' },
-      { name: 'LAST_ONE_MONTH', value: 30, unit: 'Days' }
-    ]
-  },
-  {
-    name: 'machine.scanStartTime',
-    label: 'investigateHosts.hosts.column.machine.scanStartTime',
-    type: 'date',
-    timeframes: [
-      { name: 'LAST_FIVE_MINUTES', value: 5, unit: 'Minutes' },
-      { name: 'LAST_TEN_MINUTES', value: 10, unit: 'Minutes' },
-      { name: 'LAST_FIFTEEN_MINUTES', value: 15, unit: 'Minutes' },
-      { name: 'LAST_THIRTY_MINUTES', value: 30, unit: 'Minutes' },
-      { name: 'LAST_ONE_HOUR', value: 1, unit: 'Hours' },
-      { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
-      { name: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
-      { name: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
-      { name: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
-      { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
-      { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' }
-    ]
-  },
-  {
-    'name': 'machineIdentity.machineName',
-    'label': 'investigateHosts.hosts.column.machineIdentity.machineName',
-    'type': 'text'
-  },
-  {
-    'name': 'machine.users.name',
-    'label': 'investigateHosts.hosts.column.machine.users.name',
-    'type': 'text'
-  },
-  {
-    'name': 'machineIdentity.agent.driverErrorCode',
-    'label': 'investigateHosts.hosts.column.machineIdentity.agent.driverErrorCode',
-    'type': 'number',
-    'operators': [
-      { label: 'Equal', type: 'EQUAL' }
-    ]
   },
   {
     'name': 'machineIdentity.networkInterfaces.macAddress',
@@ -142,6 +80,68 @@ const FILTER_TYPES = [
       }
     },
     'placeholder': 'e.g., 1.1.1.1||1.1.1.1'
+  },
+  {
+    name: 'agentStatus.lastSeenTime',
+    label: 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
+    type: 'date',
+    showCustomDate: false,
+    timeframes: [
+      { name: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'Hours' },
+      { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+      { name: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
+      { name: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
+      { name: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
+      { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
+      { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' },
+      { name: 'LAST_TWO_WEEKS', value: 14, unit: 'Days' },
+      { name: 'LAST_ONE_MONTH', value: 30, unit: 'Days' }
+    ]
+  },
+  {
+    name: 'machine.scanStartTime',
+    label: 'investigateHosts.hosts.column.machine.scanStartTime',
+    type: 'date',
+    timeframes: [
+      { name: 'LAST_FIVE_MINUTES', value: 5, unit: 'Minutes' },
+      { name: 'LAST_TEN_MINUTES', value: 10, unit: 'Minutes' },
+      { name: 'LAST_FIFTEEN_MINUTES', value: 15, unit: 'Minutes' },
+      { name: 'LAST_THIRTY_MINUTES', value: 30, unit: 'Minutes' },
+      { name: 'LAST_ONE_HOUR', value: 1, unit: 'Hours' },
+      { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+      { name: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
+      { name: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
+      { name: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
+      { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
+      { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' }
+    ]
+  },
+  {
+    'name': 'machineIdentity.machineOsType',
+    'label': 'investigateHosts.hosts.column.machineIdentity.machineOsType',
+    'listOptions': [
+      { name: 'windows', label: 'investigateFiles.filter.fileType.pe' },
+      { name: 'linux', label: 'investigateFiles.filter.fileType.linux' },
+      { name: 'mac', label: 'investigateFiles.filter.fileType.macho' }
+    ],
+    type: 'list'
+  },
+  {
+    'name': 'machineIdentity.agentMode',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agentMode',
+    'listOptions': [
+      { name: 'insights', label: 'investigateHosts.hosts.filters.agentMode.insights' },
+      { name: 'advanced', label: 'investigateHosts.hosts.filters.agentMode.advanced' }
+    ],
+    type: 'list'
+  },
+  {
+    'name': 'machineIdentity.agent.driverErrorCode',
+    'label': 'investigateHosts.hosts.column.machineIdentity.agent.driverErrorCode',
+    'type': 'number',
+    'operators': [
+      { label: 'Equal', type: 'EQUAL' }
+    ]
   },
   {
     'name': 'machine.securityConfigurations',

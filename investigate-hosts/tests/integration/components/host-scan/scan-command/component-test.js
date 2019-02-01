@@ -32,14 +32,15 @@ test('it renders the scan start button', function(assert) {
 
 test('it should render the proper title for start scan', function(assert) {
   this.set('command', 'START_SCAN');
+  this.set('modalTitle', 'Test title');
   new ReduxDataHelper(initState)
     .scanCount(3)
     .build();
-  this.render(hbs`{{host-scan/scan-command command=command}}`);
+  this.render(hbs`{{host-scan/scan-command command=command modalTitle=modalTitle}}`);
   this.$('.host-start-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .scan-modal:visible').length, 1, 'Expected to render start scan modal');
-    assert.equal($('#modalDestination .rsa-application-modal-content h3').text().trim(), 'Start Scan for 3 host(s)');
+    assert.equal($('#modalDestination .rsa-application-modal-content h3').text().trim(), 'Test title');
   });
 });
 

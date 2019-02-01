@@ -52,7 +52,10 @@
             isFloatingOrMemoryDll=isFloatingOrMemoryDll
             downloadFiles=(action 'onDownloadFilesToServer')
             saveLocalCopy=(action 'onSaveLocalCopy')
-            analyzeFile=(action 'onAnalyzeFile')}}
+            analyzeFile=(action 'onAnalyzeFile')
+            downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.downloadToServer' count=100)
+            }}
+
         </div>
         {{host-detail/process/process-tree
           openPropertyPanel=(action layout.open 'right')

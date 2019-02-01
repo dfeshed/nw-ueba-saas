@@ -62,14 +62,14 @@
     height: 82vh;
     left:100%;
     .close-zone {
-      padding-top: 1.4rem;
+      padding-top: 0;
     }
   }
   .process-details-panel.is-show-process-details {
     left: 0;
   }
   .close-zone {
-    padding-top: 1.4rem;
+    padding-top: 1rem;
   }
 }
 .host-overview {
