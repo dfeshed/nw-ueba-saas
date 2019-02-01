@@ -55,10 +55,10 @@ export function computeExtent(data, accessorFn, extents) {
   if (extents && extents.fixed) {
     [min, max] = extents.fixed;
   }
-  if (!min) {
+  if (min === undefined || min === null) {
     min = minimum(data, accessorFn);
   }
-  if (!max) {
+  if (max === undefined || max === null) {
     max = maximum(data, accessorFn);
   }
   return [min, max];
