@@ -1,6 +1,6 @@
-{{#if isExportButtonDisabled}}
+{{#if isExportButtonDisabled.disabled}}
   {{#rsa-form-button isIconOnly=true isDisabled=true}}
-    {{rsa-icon name='file-zipped' title=(t 'investigateHosts.hosts.button.exportCSV') size='medium' style='filled'}}
+    {{rsa-icon name='file-zipped' title=(t exportTitle) size='medium' style='filled'}}
   {{/rsa-form-button}}
 {{else}}
   {{#if (eq hostExportStatus 'completed')}}

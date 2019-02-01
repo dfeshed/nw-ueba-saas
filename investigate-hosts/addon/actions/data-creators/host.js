@@ -64,6 +64,7 @@ const changeEndpointServerSelection = (server) => {
   return async(dispatch) => {
     try {
       await dispatch(changeEndpointServer(server));
+      dispatch(resetHostDownloadLink());
       dispatch(getPageOfMachines());
       dispatch(getServiceId('MACHINE'));
       dispatch(getRestrictedFileList('MACHINE'));

@@ -426,7 +426,7 @@ test('isExportButtonDisabled', function(assert) {
     endpointQuery: {}
   });
   const result = isExportButtonDisabled(state);
-  assert.equal(result, true, 'export button is disabled');
+  assert.equal(result.disabled, true, 'export button is disabled');
 });
 
 test('isExportButtonDisabled when server is endpoint broker server', function(assert) {
@@ -454,7 +454,7 @@ test('isExportButtonDisabled when server is endpoint broker server', function(as
     }
   });
   const result = isExportButtonDisabled(state);
-  assert.equal(result, true, 'export button is disabled');
+  assert.equal(result.disabled, true, 'export button is disabled');
 });
 
 test('isExportButtonDisabled when endpoint server is empty object', function(assert) {
@@ -482,7 +482,7 @@ test('isExportButtonDisabled when endpoint server is empty object', function(ass
     }
   });
   const result = isExportButtonDisabled(state);
-  assert.equal(result, false, 'export button is enabled');
+  assert.equal(result.disabled, false, 'export button is enabled');
 });
 
 test('hostListPropertyTabs', function(assert) {

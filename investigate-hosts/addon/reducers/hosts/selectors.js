@@ -205,7 +205,11 @@ export const isExportButtonDisabled = createSelector(
   [_hostList, _servers, _serverId],
   (hostList, servers, serverId) => {
     const isEndpointBroker = servers.some((s) => s.id === serverId && s.name === 'endpoint-broker-server');
-    return !hostList.length || isEndpointBroker;
+    const disabled = !hostList.length || isEndpointBroker;
+    return {
+      isEndpointBroker,
+      disabled
+    };
   }
 );
 

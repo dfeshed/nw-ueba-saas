@@ -48,4 +48,25 @@ module('Integration | Component | host-list/host-table/action-bar/export-button'
     assert.equal(findAll('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').length, 1, 'default export button is rendered');
     assert.equal(find('.rsa-form-button-wrapper button .rsa-icon-file-zipped-filled').getAttribute('title').trim(), 'Export to CSV', 'Export to CSV button is rendered.');
   });
+
+  test('Export to CSV title when broker view', async function(assert) {
+    const endpointQuery = {
+      serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
+    };
+    const services = {
+      serviceData: [{ id: 'e82241fc-0681-4276-a930-dd6e5d00f152', displayName: 'TEST', name: 'endpoint-broker-server', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(setState)
+      .hostList(hostListState.machines.hostList)
+      .hostSortField('machineIdentity.machineName')
+      .hostExportStatus('completed')
+      .endpointQuery(endpointQuery)
+      .services(services)
+      .build();
+    await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
+    assert.equal(findAll('.export-button .rsa-icon-file-zipped-filled')[0].title, 'Export to CSV is not supported for Endpoint Broker', 'Title for broker view.');
+  });
+
 });

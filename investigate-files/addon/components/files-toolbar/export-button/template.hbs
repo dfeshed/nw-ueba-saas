@@ -1,6 +1,6 @@
-{{#if isExportButtonDisabled}}
+{{#if isExportButtonDisabled.disabled}}
   {{#rsa-form-button class="export-button" isIconOnly=true isDisabled=true}}
-    {{rsa-icon title=(t 'investigateFiles.button.exportToCSV') name='file-zipped' style='filled'}}
+    {{rsa-icon title=(t exportTitle) name='file-zipped' style='filled'}}
   {{/rsa-form-button}}
 {{else}}
   {{#if (eq downloadStatus 'completed')}}

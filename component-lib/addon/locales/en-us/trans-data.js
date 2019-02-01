@@ -2184,6 +2184,7 @@ export default {
     },
     button: {
       exportToCSV: 'Export to CSV',
+      brokerExportToCSV: 'Export to CSV is not supported for Endpoint Broker',
       downloading: 'Downloading',
       save: 'Save',
       reset: 'Reset',
@@ -2838,6 +2839,7 @@ export default {
         addMore: 'Add Filter',
         loadMore: 'Load More',
         exportCSV: 'Export to CSV',
+        brokerExportCSV: 'Export to CSV is not supported for Endpoint Broker',
         export: 'Export to JSON',
         exportTooltip: 'Exports all scan data categories for the host.',
         downloading: 'Downloading',

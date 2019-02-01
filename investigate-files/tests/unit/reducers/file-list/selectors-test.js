@@ -227,7 +227,7 @@ test('isExportButtonDisabled', function(assert) {
     endpointQuery: {}
   });
   const result1 = isExportButtonDisabled(state1);
-  assert.equal(result1, true, 'export button is disabled');
+  assert.equal(result1.disabled, true, 'export button is disabled');
 
   const state2 = Immutable.from({
     files: STATE.files,
@@ -239,7 +239,7 @@ test('isExportButtonDisabled', function(assert) {
     }
   });
   const result2 = isExportButtonDisabled(state2);
-  assert.equal(result2, true, 'export button is disabled');
+  assert.equal(result2.disabled, true, 'export button is disabled');
 
   const state3 = Immutable.from({
     files: STATE.files,
@@ -251,7 +251,7 @@ test('isExportButtonDisabled', function(assert) {
     }
   });
   const result3 = isExportButtonDisabled(state3);
-  assert.equal(result3, false, 'export button is enabled');
+  assert.equal(result3.disabled, false, 'export button is enabled');
 });
 
 test('fileTotalLabel', function(assert) {

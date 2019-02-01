@@ -10,6 +10,10 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 let setState;
 
+const endpointQuery = {
+  serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
+};
+
 module('Integration | Component | files toolbar/export button', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -68,5 +72,22 @@ module('Integration | Component | files toolbar/export button', function(hooks) 
     return settled().then(() => {
       assert.equal(findAll('.export-button .rsa-loader').length, 1, 'Downloading', 'Button after click, Downloading');
     });
+  });
+
+
+  test('Export to CSV title when broker view', async function(assert) {
+    const services = {
+      serviceData: [{ id: 'e82241fc-0681-4276-a930-dd6e5d00f152', displayName: 'TEST', name: 'endpoint-broker-server', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    new ReduxDataHelper(setState)
+      .files([])
+      .downloadStatus('completed')
+      .endpointQuery(endpointQuery)
+      .services(services)
+      .build();
+    await render(hbs`{{files-toolbar/export-button}}`);
+    assert.equal(findAll('.export-button .rsa-icon-file-zipped-filled')[0].title, 'Export to CSV is not supported for Endpoint Broker', 'Title for broker view.');
   });
 });
