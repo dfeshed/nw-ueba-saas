@@ -38,6 +38,6 @@ module('Integration | Component | endpoint/load-more', function(hooks) {
 
     await render(hbs`{{endpoint/load-more count=count status=status servers=servers serverId=serverId}}`);
 
-    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'Reached maximum results supported in a broker view.', 'it renders load more button');
+    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'Reached maximum results supported in an endpoint broker view.', 'it renders load more button');
   });
 });

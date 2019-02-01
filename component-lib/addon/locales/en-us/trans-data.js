@@ -3576,7 +3576,7 @@ export default {
     },
     endpoint: {
       message: {
-        brokerViewMessage: 'Reached maximum results supported in a broker view.'
+        brokerViewMessage: 'Reached maximum results supported in an endpoint broker view.'
       },
       renderingGraph: 'Rendering graph...',
       errorTitle: 'Query Error',
