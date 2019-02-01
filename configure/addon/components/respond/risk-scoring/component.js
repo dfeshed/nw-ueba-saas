@@ -2,7 +2,7 @@ import { connect } from 'ember-redux';
 import { set } from '@ember/object';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { getRiskScoringExpanded, getRiskScoringSettings } from 'configure/reducers/respond/risk-scoring/selectors';
+import { getRiskScoringExpanded, getRiskScoringSettings, getRiskScoringStatus } from 'configure/reducers/respond/risk-scoring/selectors';
 import { toggleRiskScoringExpanded, updateRiskScoringSettings } from 'configure/actions/creators/respond/risk-scoring-creators';
 import thresholdFormValidations from 'configure/validations/respond/risk-scoring/threshold-form';
 
@@ -11,7 +11,8 @@ const localEnabled = (value) => ![null, undefined].includes(value);
 const stateToComputed = (state) => {
   return {
     isExpanded: getRiskScoringExpanded(state),
-    riskScoringSettings: getRiskScoringSettings(state)
+    riskScoringSettings: getRiskScoringSettings(state),
+    riskScoringStatus: getRiskScoringStatus(state)
   };
 };
 

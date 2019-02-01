@@ -794,9 +794,9 @@ export default {
           h: 'Hour(s)'
         },
         actionMessages: {
-          fetchFailure: 'There was a problem loading the Respond Risk Scoring settings. The Respond Server may be offline or inaccessible.',
-          updateSuccess: 'You successfully updated the Respond Risk Scoring settings',
-          updateFailure: 'There was a problem updating the Respond Risk Scoring settings'
+          fetchFailure: 'There was a problem loading the Endpoint Risk Scoring settings. The Respond Server may be offline or inaccessible.',
+          updateSuccess: 'You successfully updated the Endpoint Risk Scoring settings',
+          updateFailure: 'There was a problem updating the Endpoint Risk Scoring settings'
         }
       },
       priority: {

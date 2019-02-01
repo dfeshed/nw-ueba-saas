@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { normalizedState, normalizedStateExpanded } from './data';
+import { normalizedState, getNormalizedState } from './data';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -7,7 +7,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { patchSocket, throwSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { waitUntil, fillIn, find, click, render } from '@ember/test-helpers';
+import { waitUntil, fillIn, find, findAll, click, render } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { selectors } from '../../forms/form-element/selectors';
 import { fieldsetSync, formGroupExists, formGroup } from '../../forms/form-element/helpers';
@@ -24,7 +24,9 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    patchReducer(this, normalizedStateExpanded);
+    patchReducer(this, getNormalizedState({
+      riskScoringStatus: 'completed'
+    }));
     initialize(this.owner);
   });
 
@@ -168,16 +170,15 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
 
     await render(hbs`{{respond/risk-scoring}}`);
 
-    const iconSelector = '[test-id=toggleRiskScoring]';
     assert.equal(find(selectors.formElement).classList.contains('hidden'), true);
-    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), false);
-    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), true);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), false);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), true);
 
-    await click(iconSelector);
+    await click(selectors.iconSelector);
 
     assert.equal(find(selectors.formElement).classList.contains('hidden'), false);
-    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), true);
-    assert.equal(find(iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), false);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-down-8-filled'), true);
+    assert.equal(find(selectors.iconSelector).classList.contains('rsa-icon-arrow-right-8-filled'), false);
   });
 
   test('onclick the file radio will toggle threshold & time window visibility', async function(assert) {
@@ -615,5 +616,51 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     ({ label, selectedItem } = await formGroup(6));
     assert.equal(label.textContent.trim(), labels(this, 'hostTimeWindowUnit'));
     assert.equal(selectedItem.textContent.trim(), labels(this, 'days'));
+  });
+
+  test('when risk scoring status is error the form is hidden and a failure message is shown', async function(assert) {
+    assert.expect(8);
+
+    patchReducer(this, getNormalizedState({
+      riskScoringStatus: 'error',
+      riskScoringExpanded: false
+    }));
+
+    await render(hbs`{{respond/risk-scoring}}`);
+
+    const errorSelector = '[test-id=riskScoringError]';
+    assert.equal(findAll(selectors.formElement).length, 0);
+    assert.equal(findAll(errorSelector).length, 1);
+    assert.equal(find(errorSelector).classList.contains('hidden'), true);
+    assert.equal(find(errorSelector).textContent, labels(this, 'fetchFailure'));
+
+    await click(selectors.iconSelector);
+
+    assert.equal(findAll(selectors.formElement).length, 0);
+    assert.equal(findAll(errorSelector).length, 1);
+    assert.equal(find(errorSelector).classList.contains('hidden'), false);
+    assert.equal(find(errorSelector).textContent, labels(this, 'fetchFailure'));
+  });
+
+  test('when risk scoring status is wait the form is hidden and a loading spinner is shown', async function(assert) {
+    assert.expect(6);
+
+    patchReducer(this, getNormalizedState({
+      riskScoringStatus: 'wait',
+      riskScoringExpanded: false
+    }));
+
+    await render(hbs`{{respond/risk-scoring}}`);
+
+    const loaderSelector = '[test-id=riskScoringLoader]';
+    assert.equal(findAll(selectors.formElement).length, 0);
+    assert.equal(findAll(loaderSelector).length, 1);
+    assert.equal(find(loaderSelector).classList.contains('hidden'), true);
+
+    await click(selectors.iconSelector);
+
+    assert.equal(findAll(selectors.formElement).length, 0);
+    assert.equal(findAll(loaderSelector).length, 1);
+    assert.equal(find(loaderSelector).classList.contains('hidden'), false);
   });
 });

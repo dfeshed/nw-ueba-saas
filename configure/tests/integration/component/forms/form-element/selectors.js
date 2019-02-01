@@ -1,6 +1,7 @@
 export const selectors = {
   formElement: '[test-id=formElement]',
   formGroup: '[test-id=formGroup]',
+  iconSelector: '[test-id=toggleRiskScoring]',
   formValidation: '[test-id=formValidation]',
   formGroupValidation: '[test-id=formGroupValidation]',
   formGroupValidationMessage: '[test-id=formGroupValidationMessage]',

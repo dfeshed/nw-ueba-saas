@@ -12,6 +12,9 @@ export const labels = (context, name) => {
     case 'updateSuccess': {
       return t(context, `actionMessages.${name}`);
     }
+    case 'fetchFailure': {
+      return t(context, `actionMessages.${name}`);
+    }
     case 'hours': {
       return t(context, 'timeUnits.h');
     }

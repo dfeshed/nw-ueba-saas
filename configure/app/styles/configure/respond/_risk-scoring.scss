@@ -12,12 +12,24 @@
     color: text-color(primary, lightest);
   }
 
+  .hidden {
+    display: none;
+  }
+
+  .risk-scoring-loader {
+    padding-left: 108px;
+  }
+
+  .risk-scoring-error {
+    color: text-color(primary, lighter);
+  }
+
+  .risk-scoring-loader, .risk-scoring-error {
+    padding-top: 20px;
+  }
+
   form {
     padding-left: rsa-whitespace();
-
-    &.hidden {
-      display: none;
-    }
   }
 
   input {

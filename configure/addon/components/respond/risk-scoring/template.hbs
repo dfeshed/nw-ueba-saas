@@ -1,56 +1,64 @@
 <h1>{{rsa-icon size="small" name=toggleIcon click=(action "toggleRiskScoringExpanded") testId="toggleRiskScoring"}} {{t 'configure.incidentRules.riskScoring.header'}}</h1>
 
-{{#forms/form-element class=hideWhenExpanded formModel=riskScoringSettings formSave=(action "updateRiskScoringSettings") formValidations=thresholdFormValidations passiveReset=(action "passiveReset") as |form|}}
+{{#if (eq riskScoringStatus 'wait')}}
+  <div test-id="riskScoringLoader" class="risk-scoring-loader {{hideWhenExpanded}}">
+    {{rsa-loader size='medium'}}
+  </div>
+{{else if (eq riskScoringStatus 'error')}}
+  <div test-id="riskScoringError" class="risk-scoring-error {{hideWhenExpanded}}">{{t 'configure.incidentRules.riskScoring.actionMessages.fetchFailure'}}</div>
+{{else}}
+  {{#forms/form-element class=hideWhenExpanded formModel=riskScoringSettings formSave=(action "updateRiskScoringSettings") formValidations=thresholdFormValidations passiveReset=(action "passiveReset") as |form|}}
 
-  {{#form.radio property="file.enabled" passiveChange=(action "fileEnabledChange") legend=(t (concat labelPrefix 'fileThresholdEnabled')) as |radio|}}
-    {{radio.component value=true label=(t (concat labelPrefix 'enabled'))}}
-    {{radio.component value=false label=(t (concat labelPrefix 'disabled'))}}
-  {{/form.radio}}
+    {{#form.radio property="file.enabled" passiveChange=(action "fileEnabledChange") legend=(t (concat labelPrefix 'fileThresholdEnabled')) as |radio|}}
+      {{radio.component value=true label=(t (concat labelPrefix 'enabled'))}}
+      {{radio.component value=false label=(t (concat labelPrefix 'disabled'))}}
+    {{/form.radio}}
 
-  {{#if fileEnabled}}
-    {{#form.input property="file.threshold" label=(t (concat labelPrefix 'fileThreshold')) as |input|}}
-      {{input.component type="number" min="0" max="100"}}
-    {{/form.input}}
-
-    <div class="time-window">
-      {{#form.input property="file.timeWindow" label=(t (concat labelPrefix 'fileTimeWindow')) as |input|}}
-        {{input.component type="number" min="1" max="24"}}
+    {{#if fileEnabled}}
+      {{#form.input property="file.threshold" label=(t (concat labelPrefix 'fileThreshold')) as |input|}}
+        {{input.component type="number" min="0" max="100"}}
       {{/form.input}}
 
-      {{#form.select property="file.timeWindowUnit" label=(t (concat labelPrefix 'fileTimeWindowUnit')) labelHidden=true as |select|}}
-        {{#select.component options=timeWindowOptions as |unit|}}
-          {{t (concat unitPrefix 'timeUnits.' unit)}}
-        {{/select.component}}
-      {{/form.select}}
-    </div>
-  {{/if}}
+      <div class="time-window">
+        {{#form.input property="file.timeWindow" label=(t (concat labelPrefix 'fileTimeWindow')) as |input|}}
+          {{input.component type="number" min="1" max="24"}}
+        {{/form.input}}
 
-  {{#form.radio property="host.enabled" passiveChange=(action "hostEnabledChange") legend=(t (concat labelPrefix 'hostThresholdEnabled')) as |radio|}}
-    {{radio.component value=true label=(t (concat labelPrefix 'enabled'))}}
-    {{radio.component value=false label=(t (concat labelPrefix 'disabled'))}}
-  {{/form.radio}}
+        {{#form.select property="file.timeWindowUnit" label=(t (concat labelPrefix 'fileTimeWindowUnit')) labelHidden=true as |select|}}
+          {{#select.component options=timeWindowOptions as |unit|}}
+            {{t (concat unitPrefix 'timeUnits.' unit)}}
+          {{/select.component}}
+        {{/form.select}}
+      </div>
+    {{/if}}
 
-  {{#if hostEnabled}}
-    {{#form.input property="host.threshold" label=(t (concat labelPrefix 'hostThreshold')) as |input|}}
-      {{input.component type="number" min="0" max="100"}}
-    {{/form.input}}
+    {{#form.radio property="host.enabled" passiveChange=(action "hostEnabledChange") legend=(t (concat labelPrefix 'hostThresholdEnabled')) as |radio|}}
+      {{radio.component value=true label=(t (concat labelPrefix 'enabled'))}}
+      {{radio.component value=false label=(t (concat labelPrefix 'disabled'))}}
+    {{/form.radio}}
 
-    <div class="time-window">
-      {{#form.input property="host.timeWindow" label=(t (concat labelPrefix 'hostTimeWindow')) as |input|}}
-        {{input.component type="number" min="1" max="24"}}
+    {{#if hostEnabled}}
+      {{#form.input property="host.threshold" label=(t (concat labelPrefix 'hostThreshold')) as |input|}}
+        {{input.component type="number" min="0" max="100"}}
       {{/form.input}}
 
-      {{#form.select property="host.timeWindowUnit" label=(t (concat labelPrefix 'hostTimeWindowUnit')) labelHidden=true as |select|}}
-        {{#select.component options=timeWindowOptions as |unit|}}
-          {{t (concat unitPrefix 'timeUnits.' unit)}}
-        {{/select.component}}
-      {{/form.select}}
-    </div>
-  {{/if}}
+      <div class="time-window">
+        {{#form.input property="host.timeWindow" label=(t (concat labelPrefix 'hostTimeWindow')) as |input|}}
+          {{input.component type="number" min="1" max="24"}}
+        {{/form.input}}
 
-  <hbox class="form-save-controls">
-    {{form.save}}
-    {{form.reset}}
-  </hbox>
+        {{#form.select property="host.timeWindowUnit" label=(t (concat labelPrefix 'hostTimeWindowUnit')) labelHidden=true as |select|}}
+          {{#select.component options=timeWindowOptions as |unit|}}
+            {{t (concat unitPrefix 'timeUnits.' unit)}}
+          {{/select.component}}
+        {{/form.select}}
+      </div>
+    {{/if}}
 
-{{/forms/form-element}}
+    <hbox class="form-save-controls">
+      {{form.save}}
+      {{form.reset}}
+    </hbox>
+
+  {{/forms/form-element}}
+{{/if}}

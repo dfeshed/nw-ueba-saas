@@ -16,7 +16,7 @@ export const normalizedState = {
             enabled: true
           }
         },
-        riskScoringStatus: 'wait',
+        riskScoringStatus: 'completed',
         riskScoringExpanded: false,
         isTransactionUnderway: false
       }
@@ -40,19 +40,21 @@ export const getRiskScoringSettings = function() {
   };
 };
 
-export const normalizedStateExpanded = {
-  ...normalizedState,
-  configure: {
-    ...normalizedState.configure,
-    respond: {
-      ...normalizedState.configure.respond,
-      riskScoring: {
-        ...normalizedState.configure.riskScoring,
-        riskScoringSettings: { ...normalizedState.configure.respond.riskScoring.riskScoringSettings },
-        riskScoringStatus: 'wait',
-        riskScoringExpanded: true,
-        isTransactionUnderway: false
+export function getNormalizedState({ riskScoringStatus, riskScoringExpanded = true }) {
+  return {
+    ...normalizedState,
+    configure: {
+      ...normalizedState.configure,
+      respond: {
+        ...normalizedState.configure.respond,
+        riskScoring: {
+          ...normalizedState.configure.riskScoring,
+          riskScoringSettings: { ...normalizedState.configure.respond.riskScoring.riskScoringSettings },
+          riskScoringStatus,
+          riskScoringExpanded,
+          isTransactionUnderway: false
+        }
       }
     }
-  }
-};
+  };
+}

@@ -15,7 +15,7 @@ test('getRiskScoringSettings selector returns the risk scoring settings', functi
 test('getRiskScoringStatus selector returns the risk scoring status', function(assert) {
   assert.expect(1);
 
-  assert.deepEqual(getRiskScoringStatus(normalizedState), 'wait');
+  assert.deepEqual(getRiskScoringStatus(normalizedState), 'completed');
 });
 
 test('getRiskScoringExpanded selector returns the risk scoring expanded', function(assert) {
