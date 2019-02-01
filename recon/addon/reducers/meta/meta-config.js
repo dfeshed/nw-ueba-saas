@@ -1,3 +1,13 @@
+const loadedFiles = [
+  {
+    field: 'filename.dst'
+  },
+  {
+    label: 'recon.textView.endpointDetail.loadedInto',
+    field: 'filename.src'
+  }
+];
+
 export default {
   File: {
     fields: [
@@ -58,6 +68,13 @@ export default {
       }
     ]
   },
+  'Machine': {
+    fields: [
+      {
+        message: 'recon.textView.endpointDetail.machine'
+      }
+    ]
+  },
   'Process Event': {
     fields: [
       {
@@ -91,7 +108,8 @@ export default {
   Autorun: {
     fields: [
       {
-        field: 'filename'
+        field: 'filename',
+        postfixLabel: 'recon.textView.endpointDetail.autorun'
       }
     ]
   },
@@ -107,15 +125,7 @@ export default {
     ]
   },
   Dll: {
-    fields: [
-      {
-        field: 'filename.dst'
-      },
-      {
-        label: 'recon.textView.endpointDetail.loadedInto',
-        field: 'filename.src'
-      }
-    ]
+    fields: loadedFiles
   },
   Task: {
     fields: [
@@ -177,6 +187,44 @@ export default {
       {
         label: 'recon.textView.endpointDetail.loadedIn',
         field: 'filename'
+      }
+    ]
+  },
+  'Dylib': {
+    fields: loadedFiles
+  },
+  'Loaded Library': {
+    fields: loadedFiles
+  },
+  'Daemon': {
+    fields: [
+      {
+        field: 'filename',
+        postfixLabel: 'recon.textView.endpointDetail.daemon'
+      }
+    ]
+  },
+  'Initd': {
+    fields: [
+      {
+        field: 'filename',
+        postfixLabel: 'recon.textView.endpointDetail.initd'
+      }
+    ]
+  },
+  'Systemd': {
+    fields: [
+      {
+        field: 'filename',
+        postfixLabel: 'recon.textView.endpointDetail.systemd'
+      }
+    ]
+  },
+  'Cron': {
+    fields: [
+      {
+        field: 'filename',
+        postfixLabel: 'recon.textView.endpointDetail.cron'
       }
     ]
   }

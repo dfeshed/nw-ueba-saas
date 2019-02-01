@@ -237,7 +237,7 @@ export const endpointMeta = createSelector(
           value = getSrcFilename(meta);
         } else if (field.field === 'param.src') {
           value = getSrcParam(meta);
-        } else {
+        } else if (field.field) {
           value = findMetaValue(field.field, meta);
         }
         return { ...field, value };

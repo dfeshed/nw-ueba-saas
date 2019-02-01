@@ -29,6 +29,11 @@
   </hbox>
   <hbox class="endpoint-detail-description">
     {{#each endpointMeta as |item|}}
+      {{#if item.message}}
+        <span class='meta-key'>
+          {{t item.message}}
+        </span>
+      {{/if}}
       {{#if item.value}}
         {{#if item.icon}}
           <span class='meta-key'>
@@ -43,6 +48,11 @@
         <span class='meta-value'>
           {{item.value}}
         </span>
+        {{#if item.postfixLabel}}
+          <span class='meta-key'>
+            {{t item.postfixLabel}}
+          </span>
+        {{/if}}
       {{/if}}
     {{/each}}
   </hbox>

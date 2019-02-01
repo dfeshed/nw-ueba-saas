@@ -305,7 +305,13 @@ export default {
         colon: '::',
         loadedIn: 'loaded in',
         ran: 'ran',
-        triggeredEventTypeIs: 'triggered event type is'
+        triggeredEventTypeIs: 'triggered event type is',
+        machine: 'Scan Snapshot available in Host View',
+        autorun: 'Set as Autorun',
+        initd: 'is configured as Initd service',
+        systemd: 'is configured as Systemd service',
+        cron: 'is configured as cron job',
+        daemon: 'is configured as Daemon'
       }
     },
     packetView: {

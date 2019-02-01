@@ -271,7 +271,7 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
     await render(hbs`{{recon-event-detail/endpoint}}`);
     assert.equal(find(selectors.header).textContent.trim(), 'Autorun', 'Category is Autorun');
     const descriptionTags = findAll(selectors.description);
-    assert.equal(prepareDesription(descriptionTags), 'vsocklib.dll', 'text is rendered correctly');
+    assert.equal(prepareDesription(descriptionTags), 'vsocklib.dll Set as Autorun', 'text is rendered correctly');
   });
 
   test('renders Service view', async function(assert) {
@@ -452,5 +452,154 @@ module('Integration | Component | recon-event-detail/endpoint', function(hooks) 
     assert.equal(find(selectors.header).textContent.trim(), 'Image Hook', 'Category is Image Hook');
     const descriptionTags = findAll(selectors.description);
     assert.equal(prepareDesription(descriptionTags), 'CyMemDef64.dll hooked ntdll.dll :: fileOpen loaded in vpnui.exe', 'text is rendered correctly');
+  });
+
+  test('renders Dylib view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Dylib'],
+            ['filename.dst', 'libma_sensor_service.5.0.dylib'],
+            ['filename.src', 'macmnsvc']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Dylib', 'Category is Dylib');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'libma_sensor_service.5.0.dylib is loaded into macmnsvc', 'text is rendered correctly');
+  });
+
+  test('renders Loaded library view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Loaded Library'],
+            ['filename.dst', '_heapq.so'],
+            ['filename.src', 'python2.7']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Loaded Library', 'Category is Loaded library');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), '_heapq.so is loaded into python2.7', 'text is rendered correctly');
+  });
+
+  test('renders Daemon view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Daemon'],
+            ['filename', 'storedownloadd']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Daemon', 'Category is Daemon');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'storedownloadd is configured as Daemon', 'text is rendered correctly');
+  });
+
+  test('renders Initd view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Initd'],
+            ['filename', 'netconsole']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Initd', 'Category is Initd');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'netconsole is configured as Initd service', 'text is rendered correctly');
+  });
+
+  test('renders Systemd view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Systemd'],
+            ['filename', 'auth-rpcgss-module.service']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Systemd', 'Category is Systemd');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'auth-rpcgss-module.service is configured as Systemd service', 'text is rendered correctly');
+  });
+
+  test('renders Cron view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Cron'],
+            ['filename', 'mlocate']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Cron', 'Category is Cron');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'mlocate is configured as cron job', 'text is rendered correctly');
+  });
+
+  test('renders Machine view', async function(assert) {
+    const state = {
+      recon: {
+        meta: {
+          meta: [
+            ['sessionid', 1],
+            ['event.time', '2019-01-14T06:55:07.000+0000'],
+            ['alias.host', 'urdhwa-t1'],
+            ['category', 'Machine'],
+            ['filename', 'mlocate']
+          ]
+        }
+      }
+    };
+    patchReducer(this, Immutable.from(state));
+    await render(hbs`{{recon-event-detail/endpoint}}`);
+    assert.equal(find(selectors.header).textContent.trim(), 'Machine', 'Category is Machine');
+    const descriptionTags = findAll(selectors.description);
+    assert.equal(prepareDesription(descriptionTags), 'Scan Snapshot available in Host View', 'text is rendered correctly');
   });
 });
