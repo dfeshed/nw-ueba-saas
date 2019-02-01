@@ -138,7 +138,7 @@ const _resetForNextBatches = () => {
  * when we cancel.
  */
 const _done = (errorCode, serverMessage) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     if (window.DEBUG_STREAMS) {
       console.timeEnd();
       console.log('ALL DONE');
@@ -163,6 +163,19 @@ const _done = (errorCode, serverMessage) => {
         }
       });
     } else {
+      const totalEventsRetrieved = _totalEvents();
+      const { investigate: { eventCount: { data: eventCount } } } = getState();
+      if (totalEventsRetrieved !== eventCount) {
+        // This is a unique case where the eventCount returned
+        // earlier did not match the number of events retrieved.
+        // We will at all times rely on the actual events returned and
+        // on completion, update eventCount if there is a mismatch.
+        dispatch({
+          type: ACTION_TYPES.EVENT_COUNT_RESULTS,
+          payload: { data: totalEventsRetrieved }
+        });
+      }
+
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
         payload: 'complete',
@@ -767,7 +780,6 @@ export const eventsStartOldest = () => {
       onCompleted() {
         // stream already closed since it completed, can null async callback
         currentStreamState.eventStreamCallback = undefined;
-
         if (window.DEBUG_STREAMS) {
           console.log('Query is ending because we received all results');
         }

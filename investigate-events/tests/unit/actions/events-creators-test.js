@@ -86,7 +86,7 @@ const downstreamNewestDispatchCreator = (assert, asserts) => {
   return downstreamDispatch;
 };
 
-const downstreamOldestDispatchCreator = (assert, asserts) => {
+const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
 
   const downstreamDispatch = (actionOrThunk) => {
     if (noMoreEventsAllowed) {
@@ -153,7 +153,7 @@ module('Unit | Actions | event-creators', function(hooks) {
     const done = assert.async();
 
     const asserts = () => {
-      assert.equal(allActionsDispatched.length, 8, 'total actions dispatched');
+      assert.equal(allActionsDispatched.length, 9, 'total actions dispatched');
       assert.equal(queryResults.length, 2000, 'total results accumulated');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 4, '4 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
@@ -176,7 +176,7 @@ module('Unit | Actions | event-creators', function(hooks) {
     streamLimit = 700;
 
     const asserts = () => {
-      assert.equal(allActionsDispatched.length, 6, 'total actions dispatched');
+      assert.equal(allActionsDispatched.length, 7, 'total actions dispatched');
       // only want 700, but 1000 will stream in as entire results have to be processed
       // (gets truncated in reducer)
       assert.equal(queryResults.length, 1000, 'total results accumulated');
@@ -196,7 +196,24 @@ module('Unit | Actions | event-creators', function(hooks) {
   test('Retrieves oldest data when does not hit limit', function(assert) {
     assert.expect(9);
     const done = assert.async();
-
+    const getState = () => {
+      return new ReduxDataHelper()
+        .isQueryRunning(queryIsRunning)
+        .columnGroup('SUMMARY')
+        .columnGroups()
+        .endTime(1544026619)
+        .startTime(1513940220)
+        .streamLimit(streamLimit)
+        .streamBatch(streamBatch)
+        .serviceId('789')
+        .pillsDataPopulated()
+        .metaFilter()
+        .eventResultsStatus(status)
+        .eventResults(queryResults)
+        .eventCount(500)
+        .language()
+        .build();
+    };
     streamBatch = 250;
     // limit of 1000, 500 get returned so stream ends naturally
     streamLimit = 1000;
@@ -213,6 +230,6 @@ module('Unit | Actions | event-creators', function(hooks) {
     };
 
     const eventsStartOldestThunk = eventsStartOldest();
-    eventsStartOldestThunk(downstreamOldestDispatchCreator(assert, asserts), getState);
+    eventsStartOldestThunk(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
   });
 });

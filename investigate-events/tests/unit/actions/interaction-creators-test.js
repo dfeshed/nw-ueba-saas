@@ -200,7 +200,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
         .metaFilter()
         .eventResultsStatus(status)
         .eventResults(queryResults)
-        .eventCount(undefined)
+        .eventCount(500)
         .language()
         .serviceId()
         .startTime()
