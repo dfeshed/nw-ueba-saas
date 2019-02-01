@@ -161,8 +161,8 @@ export default Component.extend({
           this.set('_searchString', trimmedValueString);
         }
         actions.search(trimmedValueString);
-        actions.open();
       }
+      actions.open();
     },
 
     onInput(input, powerSelectAPI) {
