@@ -69,6 +69,9 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     public String getLinkToInvestigateHost(Object value) {
 
         Configurations conf = getConfigurations();
+        if (null == value) {
+            return null;
+        }
         String url =  new JerseyUriBuilder()
                 .scheme(URL_SCHEMA)
                 .host(conf.getBaseLinkDestinationHostname())
