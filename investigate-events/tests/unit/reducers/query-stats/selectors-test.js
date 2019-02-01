@@ -569,6 +569,18 @@ test('queryTimeElapsed when sub second difference', function(assert) {
   assert.equal(timeElapsed, '<1');
 });
 
+test('queryTimeElapsed when no device', function(assert) {
+  const timeElapsed = queryTimeElapsed({
+    investigate: {
+      queryStats: {
+        devices: []
+      }
+    }
+  });
+
+  assert.equal(timeElapsed, undefined);
+});
+
 test('streamingTimeElapsed when sub second difference', function(assert) {
   const timeElapsed = streamingTimeElapsed({
     investigate: {

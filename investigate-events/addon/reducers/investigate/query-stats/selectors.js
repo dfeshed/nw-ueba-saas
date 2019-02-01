@@ -213,10 +213,13 @@ export const decoratedDevices = createSelector(
 export const queryTimeElapsed = createSelector(
   [_devices],
   (devices = []) => {
-    if (devices[0] && ((devices[0].elapsedTime < 1) || (!devices[0].elapsedTime))) {
-      return '<1';
-    } else {
-      return `~${devices[0].elapsedTime}`;
+    const [ device ] = devices;
+    if (device) {
+      if ((device.elapsedTime < 1) || (!device.elapsedTime)) {
+        return '<1';
+      } else {
+        return `~${device.elapsedTime}`;
+      }
     }
   }
 );
