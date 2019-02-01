@@ -1,3 +1,21 @@
+$filterPanelMinWidth: 400px;
 .usm-policies-filter {
   height: 100%;
+  .filters-footer {
+    @include border-top(1px, solid, primary, dark, opaque);
+    bottom: 1px;
+    width: $filterPanelMinWidth;
+    padding: rsa-whitespace(less);
+    display: inline-flex;
+    position: fixed;
+    .rsa-form-button-wrapper {
+      flex-grow: 1;
+    }
+    button {
+      width: 100%;
+    }
+    .save-filter-button, .save-as-filter-button {
+      padding-left: rsa-whitespace(less);
+    }
+  }
 }

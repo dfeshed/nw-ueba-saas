@@ -67,14 +67,20 @@ $toolbarHeight: 40px;
 
     .items-body {
       margin: 0 rsa-whitespace();
+      margin-bottom: 28px;
     }
     .items-footer {
-      margin: 0 rsa-whitespace();
+      background-color: background-color(primary, darkest);
       max-height: 40px;
       color: text-color(primary, lightest);
       .selection-count {
         padding-left: rsa-whitespace(less);
       }
+      position: fixed;
+      bottom: 0px;
+      padding: rsa-whitespace();
+      text-align: center;
+      width: calc(100vw - #{$filterPanelMinWidth});
     }
   }
 
