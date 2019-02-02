@@ -234,6 +234,7 @@ module('Unit | Selectors | File Context', function() {
             1: {
               id: 1,
               fileName: 'C',
+              machineFileScore: 20,
               fileProperties: {
                 score: 20
               }
@@ -241,6 +242,7 @@ module('Unit | Selectors | File Context', function() {
             2: {
               id: 2,
               fileName: 'Z',
+              machineFileScore: 90,
               fileProperties: {
                 score: 100
               }
@@ -248,6 +250,7 @@ module('Unit | Selectors | File Context', function() {
             3: {
               id: 3,
               fileName: 'A',
+              machineFileScore: 45,
               fileProperties: {
                 score: 45
               }
@@ -316,6 +319,7 @@ module('Unit | Selectors | File Context', function() {
             1: {
               id: 1,
               fileName: 'C',
+              machineFileScore: 20,
               fileProperties: {
                 score: 20
               }
@@ -323,6 +327,7 @@ module('Unit | Selectors | File Context', function() {
             2: {
               id: 2,
               fileName: 'Z',
+              machineFileScore: 100,
               fileProperties: {
                 score: 100
               }
@@ -330,6 +335,7 @@ module('Unit | Selectors | File Context', function() {
             3: {
               id: 3,
               fileName: 'A',
+              machineFileScore: 45,
               fileProperties: {
                 score: 45
               }

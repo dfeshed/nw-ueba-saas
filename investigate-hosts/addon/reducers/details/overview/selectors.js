@@ -302,7 +302,7 @@ export const showWindowsLogPolicy = createSelector([_getWindowsLogPolicy], (wind
 export const channelFiltersConfig = createSelector(
   [_getWindowsLogPolicy],
   (windowsLogPolicy) => {
-    let config = {};
+    let config = null;
     if (windowsLogPolicy) {
       const { channelFilters } = windowsLogPolicy;
       if (Array.isArray(channelFilters) && channelFilters.length) {

@@ -112,7 +112,7 @@ export const listOfFiles = createSelector(
       return data;
     } else {
       // default sorting by risk score, higher risk first
-      data = data.sortBy('fileProperties.score');
+      data = data.sortBy('machineFileScore');
       data.reverse();
       return data;
     }

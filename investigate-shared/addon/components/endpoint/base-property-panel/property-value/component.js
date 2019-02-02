@@ -27,7 +27,9 @@ export default Component.extend({
     const cntx = this;
     const key = keyMapping[property.field];
     const item = {};
-    item[key] = property.value[0];
+    if (property.value) {
+      item[key] = property.value[0];
+    }
     return [
       {
         label: 'Copy',

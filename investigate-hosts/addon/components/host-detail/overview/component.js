@@ -51,9 +51,9 @@ const HostOverview = Component.extend({
 
   hostDetailsConfig,
 
-  @computed('showWindowsLogPolicy', 'channelFilters')
-  policiesConfig(showWindowsLogPolicy, channelFilters) {
-    return getPoliciesPropertyConfig(showWindowsLogPolicy, channelFilters);
+  @computed('showWindowsLogPolicy', 'channelFiltersConfig')
+  policiesConfig(showWindowsLogPolicy, channelFiltersConfig) {
+    return getPoliciesPropertyConfig(showWindowsLogPolicy, channelFiltersConfig);
   },
 
   @computed('activePropertyPanelTab')

@@ -139,5 +139,13 @@ const windowsLogPolicy = {
 };
 
 export const getPoliciesPropertyConfig = (showWindowsLogPolicy, channelFiltersConfig) => {
-  return showWindowsLogPolicy ? [...policiesPropertyConfig, windowsLogPolicy, channelFiltersConfig || {}] : policiesPropertyConfig;
+  let config = policiesPropertyConfig;
+  if (showWindowsLogPolicy) {
+    if (channelFiltersConfig) {
+      config = [...policiesPropertyConfig, windowsLogPolicy, channelFiltersConfig];
+    } else {
+      config = [...policiesPropertyConfig, windowsLogPolicy];
+    }
+  }
+  return config;
 };
