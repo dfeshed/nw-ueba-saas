@@ -85,20 +85,6 @@ const defaultColumns = [
     disableSort: true
   },
   {
-    'field': 'fileProperties.reputationStatus',
-    'title': 'Reputation',
-    'label': 'investigateHosts.files.fields.reputationStatus',
-    'width': 100
-  },
-  {
-    'field': 'fileProperties.entropy',
-    'title': 'Entropy',
-    'label': 'investigateHosts.files.fields.entropy',
-    'disableSort': true,
-    'format': 'DECIMAL',
-    'width': 53
-  },
-  {
     'field': 'fileProperties.fileStatus',
     'title': 'File Status',
     'label': 'investigateHosts.files.fields.fileStatus',
@@ -106,12 +92,10 @@ const defaultColumns = [
     'width': 100
   },
   {
-    'field': 'fileProperties.size',
-    'title': 'Size',
-    'label': 'investigateHosts.files.fields.size',
-    'disableSort': false,
-    'format': 'SIZE',
-    'width': 165
+    'field': 'fileProperties.reputationStatus',
+    'title': 'Reputation',
+    'label': 'investigateHosts.files.fields.reputationStatus',
+    'width': 100
   },
   {
     'field': 'fileProperties.downloadInfo',
@@ -125,6 +109,22 @@ const defaultColumns = [
     'title': 'Path',
     'label': 'investigateHosts.files.fields.path',
     'width': 800
+  },
+  {
+    'field': 'fileProperties.size',
+    'title': 'Size',
+    'label': 'investigateHosts.files.fields.size',
+    'disableSort': false,
+    'format': 'SIZE',
+    'width': 165
+  },
+  {
+    'field': 'fileProperties.entropy',
+    'title': 'Entropy',
+    'label': 'investigateHosts.files.fields.entropy',
+    'disableSort': true,
+    'format': 'DECIMAL',
+    'width': 53
   }
 ];
 

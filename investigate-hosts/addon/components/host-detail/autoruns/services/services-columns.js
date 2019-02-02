@@ -14,11 +14,6 @@ const defaultColumns = [
     format: 'FILENAME'
   },
   {
-    field: 'signature',
-    title: 'SIGNATURE',
-    format: 'SIGNATURE'
-  },
-  {
     field: 'machineFileScore',
     title: 'Risk Score'
   },
@@ -41,9 +36,9 @@ const defaultColumns = [
     title: 'File Status'
   },
   {
-    field: 'path',
-    title: 'FILE PATH',
-    width: '20vw'
+    field: 'signature',
+    title: 'SIGNATURE',
+    format: 'SIGNATURE'
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -51,6 +46,11 @@ const defaultColumns = [
     label: 'investigateHosts.files.fields.downloaded',
     format: 'DOWNLOADSTATUS',
     width: 100
+  },
+  {
+    field: 'path',
+    title: 'FILE PATH',
+    width: '20vw'
   }
 ];
 let columnsConfig = {

@@ -34,6 +34,16 @@ const defaultColumns = [
     title: 'Reputation'
   },
   {
+    field: 'fileProperties.fileStatus',
+    title: 'File Status',
+    width: '15vw'
+  },
+  {
+    field: 'signature',
+    title: 'SIGNATURE',
+    format: 'SIGNATURE'
+  },
+  {
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
     label: 'investigateHosts.files.fields.downloaded',
@@ -41,9 +51,10 @@ const defaultColumns = [
     width: 100
   },
   {
-    field: 'fileProperties.fileStatus',
-    title: 'File Status',
-    width: '15vw'
+    field: 'timeCreated',
+    title: 'FILE CREATION TIME',
+    format: 'DATE',
+    width: '10vw'
   }
 ];
 let columnsConfig = {

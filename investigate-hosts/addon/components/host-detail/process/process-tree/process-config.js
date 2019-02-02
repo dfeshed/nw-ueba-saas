@@ -36,28 +36,15 @@ export default [
     disableSort: true
   },
   {
-    field: 'fileProperties.fileStatus',
-    width: '4vw',
-    title: 'investigateHosts.process.fileStatus',
-    disableSort: true
-  },
-  {
     field: 'fileProperties.reputationStatus',
     width: '6vw',
     title: 'investigateHosts.process.reputationStatus',
     disableSort: true
   },
   {
-    field: 'launchArguments',
-    width: '20vw',
-    title: 'investigateHosts.process.launchArguments',
-    isDescending: false,
-    disableSort: true
-  },
-  {
-    field: 'path',
-    width: '16vw',
-    title: 'investigateHosts.process.filePath',
+    field: 'fileProperties.fileStatus',
+    width: '4vw',
+    title: 'investigateHosts.process.fileStatus',
     disableSort: true
   },
   {
@@ -71,6 +58,19 @@ export default [
     width: '4vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',
+    disableSort: true
+  },
+  {
+    field: 'launchArguments',
+    width: '20vw',
+    title: 'investigateHosts.process.launchArguments',
+    isDescending: false,
+    disableSort: true
+  },
+  {
+    field: 'path',
+    width: '16vw',
+    title: 'investigateHosts.process.filePath',
     disableSort: true
   },
   {

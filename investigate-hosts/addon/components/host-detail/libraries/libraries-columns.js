@@ -48,16 +48,16 @@ const defaultColumns = [
     format: 'SIGNATURE'
   },
   {
-    field: 'path',
-    title: 'FILE PATH',
-    width: 600
-  },
-  {
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
     label: 'investigateHosts.files.fields.downloaded',
     format: 'DOWNLOADSTATUS',
     width: 100
+  },
+  {
+    field: 'path',
+    title: 'FILE PATH',
+    width: 600
   },
   {
     field: 'checksumSha256',

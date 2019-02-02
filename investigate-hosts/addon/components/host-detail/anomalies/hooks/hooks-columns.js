@@ -29,26 +29,26 @@ export default {
     title: 'globalScore'
   },
   {
-    field: 'signature',
-    title: 'signature',
-    format: 'SIGNATURE'
-  },
-  {
     field: 'machineCount',
     title: 'machineCount',
     width: '6vw',
     disableSort: true
   },
   {
+    field: 'fileProperties.reputationStatus',
+    title: 'reputationStatus',
+    width: '15vw'
+  },
+  {
+    field: 'signature',
+    title: 'signature',
+    format: 'SIGNATURE'
+  },
+  {
     field: 'fileProperties.downloadInfo',
     title: 'downloaded',
     format: 'DOWNLOADSTATUS',
     width: 100
-  },
-  {
-    field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus',
-    width: '15vw'
   },
   {
     field: 'hookedProcess',

@@ -37,6 +37,11 @@ const defaultColumns = [
     width: '15vw'
   },
   {
+    field: 'signature',
+    title: 'SIGNATURE',
+    format: 'SIGNATURE'
+  },
+  {
     field: 'checksumSha256',
     title: 'HASH'
   },
