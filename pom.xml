@@ -43,7 +43,7 @@
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <presidio.core.version>3.0.1-SNAPSHOT</presidio.core.version>
         <jackson.version>2.9.8</jackson.version>
-        <spring-data-mongodb.version>1.10.13.RELEASE</spring-data-mongodb.version>
+        <spring-data-mongodb.version>1.10.18.RELEASE</spring-data-mongodb.version>
     </properties>
 
     <modules>
