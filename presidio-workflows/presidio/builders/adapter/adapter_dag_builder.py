@@ -42,7 +42,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
         self.log.debug("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
         task_sensor_service = TaskSensorService()
-        
+
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
@@ -56,6 +56,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
+                component='adapter',
                 dag=adapter_dag)
 
             adapter_dag_extended = AdapterDagBuilderExtension()
@@ -63,3 +64,4 @@ class AdapterDagBuilder(PresidioDagBuilder):
             task_sensor_service.add_task_sequential_sensor(jar_operator)
 
         return adapter_dag
+

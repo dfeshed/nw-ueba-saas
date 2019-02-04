@@ -20,6 +20,7 @@ POOL_NAME_CONF_KEY = "pool_name"
 RETRY_ARGS_CONF_KEY = "retry_args"
 JVM_ARGS_CONF_KEY = "jvm_args"
 DAGS_CONF_KEY = "dags"
+EXECUTION_TIMEOUT_CONF_KEY = "execution_timeout_in_seconds"
 
 RETRY_STATE_KEY_PREFIX = "retry_state_"
 RETRY_RUNNING_STATE = "RUNNING"
@@ -31,7 +32,7 @@ class SpringBootJarOperator(BashOperator):
     """
     Execute a Jar file.
 
-    :param jvm_args: The jvm args 
+    :param jvm_args: The jvm args
         options:
             jar_path, class_path - mandatory
             main_class - mandatory
@@ -56,11 +57,12 @@ class SpringBootJarOperator(BashOperator):
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
-    def __init__(self, command, jvm_args={}, java_args={}, *args, **kwargs):
+    def __init__(self, command, jvm_args={}, java_args={}, component=None, *args, **kwargs):
         self.log.debug("creating operator %s" % str(self.__class__))
         self.task_id = kwargs['task_id']
         self.log.debug("task %s" % str(kwargs['task_id']))
         self.final_conf_path = ""
+        self.component = component
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
         self.validate_mandatory_fields()
@@ -68,6 +70,7 @@ class SpringBootJarOperator(BashOperator):
         self.command = command
         bash_command = self.get_bash_command()
         pool_name = self._get_pool_name_if_exist()
+        execution_timeout = self.get_execution_timeout()
 
         # add retry callback
         retry_args = self._calc_retry_args()
@@ -91,6 +94,7 @@ class SpringBootJarOperator(BashOperator):
                                                         seconds=int(retry_args['max_retry_delay'])),
                                                     bash_command=bash_command, on_retry_callback=retry_callback,
                                                     pool=pool_name,
+                                                    execution_timeout=execution_timeout,
                                                     *args, **kwargs)
 
     def get_retry_callback(self, retry_fn):
@@ -124,6 +128,12 @@ class SpringBootJarOperator(BashOperator):
                     "did not find task %s configuration for task_id=%s. settling for operator=%s configuration" % (
                 conf_key, self.task_id, self.__class__.__name__)))
             conf = self.read(self.get_args_operator_conf_key_prefix(conf_key))
+        if not conf and self.component:
+            # read component conf
+            self.log.debug((
+                    "did not find component %s configuration for task_id=%s. settling for component=%s configuration" % (
+                 conf_key, self.task_id, self.component)))
+            conf = self.read(self.get_args_component_conf_key_prefix(conf_key))
         if not conf:
             # read default conf
             self.log.debug((
@@ -143,6 +153,16 @@ class SpringBootJarOperator(BashOperator):
             pool_name = None
         return pool_name
 
+    def get_execution_timeout(self):
+        execution_timeout = None
+
+        execution_timeout_conf = self._get_conf(EXECUTION_TIMEOUT_CONF_KEY)
+        if execution_timeout_conf is not None:
+            execution_timeout = timedelta(seconds=int(execution_timeout_conf))
+
+        return execution_timeout
+
+
     def _calc_retry_args(self):
         retry_args = self._get_conf(RETRY_ARGS_CONF_KEY)
         if retry_args is None:
@@ -157,20 +177,20 @@ class SpringBootJarOperator(BashOperator):
 
     def update_java_args(self, java_args):
         """
-        
+
         Update java args
-        :param java_args: The java args 
+        :param java_args: The java args
         :type java_args: dict
-        :return: 
+        :return:
         """
         self.java_args.update(java_args)
         self.bash_command = self.get_bash_command()
 
     def merge_args(self):
         """
-        
+
         Merge jvm_args and default values that exist in config.ini
-        :return: 
+        :return:
         """
         default_options_items = SpringBootJarOperator.conf_reader.read(conf_key="dags.operators.default_jar_values")
         if not default_options_items:
@@ -184,10 +204,10 @@ class SpringBootJarOperator(BashOperator):
 
     def get_bash_command(self):
         """
-        
+
         Create bash command in order to run jar
 
-        :return: 
+        :return:
         """
         bash_command = []
 
@@ -217,11 +237,11 @@ class SpringBootJarOperator(BashOperator):
 
     def java_path(self, bash_command):
         """
-        
+
         Java location e.g: /usr/bin/java
         :param bash_command: list of bash comments
         :type bash_command: []
-        :return: 
+        :return:
         """
 
         java_path = self.merged_args.get('java_path')
@@ -233,13 +253,13 @@ class SpringBootJarOperator(BashOperator):
 
     def jvm_memory_allocation(self, bash_command):
         """
-        
+
         Xmx specifies the maximum memory allocation pool for a Java Virtual Machine (JVM),
         Xms specifies the initial memory allocation pool.
-        
+
         :param bash_command: list of bash comments
         :type bash_command: []
-        :return: 
+        :return:
         """
 
         xms = self.merged_args.get(JVM_ARGS_CONF_KEY).get('xms')
@@ -254,11 +274,11 @@ class SpringBootJarOperator(BashOperator):
 
     def extra_jvm(self, bash_command):
         """
-        
-        extra args (like GC) for Java Virtual Machine (JVM),        
+
+        extra args (like GC) for Java Virtual Machine (JVM),
         :param bash_command: list of bash comments
         :type bash_command: []
-        :return: 
+        :return:
         """
 
         extra_jvm = self.merged_args.get(JVM_ARGS_CONF_KEY).get('extra_jvm')
@@ -267,10 +287,10 @@ class SpringBootJarOperator(BashOperator):
 
     def extra_args(self, bash_command):
         """
-        
+
         :param bash_command: list of bash comments
         :type bash_command: []
-        :return: 
+        :return:
         """
         extra_args = self.merged_args.get('extra_args')
         if not is_blank(extra_args):
@@ -278,15 +298,15 @@ class SpringBootJarOperator(BashOperator):
 
     def jar_path(self, bash_command, command):
         """
-        
-        Validate that main_class, jar_path or class_path exist in merged_args, 
+
+        Validate that main_class, jar_path or class_path exist in merged_args,
         otherwise throw an error
-        
+
         :param bash_command: list of bash comments
         :type bash_command: []
         :param command:
         :raise ValueError: main_class, class path or jar path were not defined
-        :return: 
+        :return:
         """
         jar_path_conf_key = 'jar_path'
         class_path = self.merged_args.get(JVM_ARGS_CONF_KEY).get(jar_path_conf_key)
@@ -314,12 +334,12 @@ class SpringBootJarOperator(BashOperator):
 
     def jmx(self, bash_command):
         """
-        
+
         JMX is build-in instrumentation that enables to monitor and manage JVM
-        
+
         :param bash_command: list of bash comments
         :type bash_command: []
-        :return: 
+        :return:
         """
 
         jmx_enabled = self.merged_args.get(JVM_ARGS_CONF_KEY).get('jmx_enabled')
@@ -339,10 +359,10 @@ class SpringBootJarOperator(BashOperator):
 
     def timezone(self, bash_command):
         """
-        
+
         :param bash_command: list of bash comments
         :type bash_command list
-        :return: 
+        :return:
         """
         timezone = self.merged_args.get(JVM_ARGS_CONF_KEY).get('timezone')
         if not is_blank(timezone):
@@ -353,7 +373,7 @@ class SpringBootJarOperator(BashOperator):
 
         :param bash_command: list of bash comments
         :type bash_command list
-        :return: 
+        :return:
         """
         profile = self.merged_args.get(JVM_ARGS_CONF_KEY).get('profile')
         if not is_blank(profile):
@@ -361,12 +381,12 @@ class SpringBootJarOperator(BashOperator):
 
     def remote_debug_options(self, bash_command):
         """
-        
+
         Handle debug options
-        
+
         :param bash_command: list of bash comments
         :type bash_command list
-        :return: 
+        :return:
         """
         remote_debug_conf_key = 'remote_debug_enabled'
         remote_debug_enabled = self.merged_args.get(JVM_ARGS_CONF_KEY).get(remote_debug_conf_key)
@@ -382,13 +402,13 @@ class SpringBootJarOperator(BashOperator):
 
     def logback(self, bash_command):
         """
-        
+
         Handle logback options: use java_overriding_logback_conf_path if exist,
         otherwise get java_logback_conf_path
-        
+
         :param bash_command: list of bash comments
         :type bash_command list
-        :return: 
+        :return:
         """
         logback_config = '-Dlogging.config=%s'
         overriding_logback_config = False
@@ -405,11 +425,11 @@ class SpringBootJarOperator(BashOperator):
 
     def validate_mandatory_fields(self):
         """
-        
+
         Validate if all the mandatory fields were set.
         main_class, jar_path or class_path are mandatory.
         :raise ValueError - throw an exception when fields are missing.
-        :return: 
+        :return:
         """
         jar_path = self.jvm_args.get('jar_path')
 
@@ -431,12 +451,18 @@ class SpringBootJarOperator(BashOperator):
     def get_operator_conf_key_prefix(self):
         return "%s.operators.%s" % (DAGS_CONF_KEY, self.__class__.__name__)
 
+    def get_component_conf_key_prefix(self):
+        return "components.%s" % (self.component)
+
     @staticmethod
     def get_default_args_conf_key(args_conf_key):
         return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, args_conf_key)
 
     def get_args_operator_conf_key_prefix(self, args_conf_key):
         return "%s.%s" % (self.get_operator_conf_key_prefix(), args_conf_key)
+
+    def get_args_component_conf_key_prefix(self, args_conf_key):
+        return "%s.%s" % (self.get_component_conf_key_prefix(), args_conf_key)
 
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
         return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)

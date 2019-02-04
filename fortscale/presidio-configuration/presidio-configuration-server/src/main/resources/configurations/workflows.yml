@@ -119,6 +119,7 @@ components:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
       main_class: presidio.adapter.FortscaleAdapterApplication
+    execution_timeout_in_seconds: 7200
   input:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
