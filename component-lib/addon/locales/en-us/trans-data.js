@@ -4183,7 +4183,7 @@ export default {
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
-      nameTooltip: 'A group must have a name. The name must be unique and less than 257 characters',
+      nameTooltip: 'Group name must be unique and 256 characters or less.',
       nameRequired: 'Group name is required',
       nameExists: 'Group name already exists',
       nameExceedsMaxLength: 'Group name is limited to 256 characters',
@@ -4289,13 +4289,13 @@ export default {
       // identify-policy-step
       identifyPolicy: 'Identify Policy',
       sourceType: 'Source Type',
-      sourceTypeTooltip: 'Chose a source type to create a policy for.',
+      sourceTypeTooltip: 'Choose a source type to create a policy for.',
       sourceTypePlaceholder: 'Choose a Source Type',
       edrSourceType: 'Agent Endpoint',
       fileLogSourceType: 'Agent Log Files',
       windowsLogSourceType: 'Agent Windows Logs',
       name: 'Policy Name',
-      nameTooltip: 'The name of the created policy',
+      nameTooltip: 'Policy name must be unique and 256 characters or less.',
       namePlaceholder: 'Enter a unique policy name',
       edrPolicyName: 'EDR Policy Name',
       windowsLogPolicyName: 'Windows Log Policy Name',
@@ -4304,7 +4304,7 @@ export default {
       nameExists: 'Policy name already exists',
       nameExceedsMaxLength: 'Policy name is limited to 256 characters',
       description: 'Policy Description',
-      descTooltip: 'Enter a description for the created policy to add more detail about the policy. The description can not exceed 8000 characters',
+      descTooltip: 'Use the optional policy description to add more detail about the policy. The description can not exceed 8000 characters',
       descPlaceholder: 'Enter a description',
       descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
@@ -4360,7 +4360,6 @@ export default {
       // edr policy settings
       edrPolicy: {
         scanSchedule: 'Scan Schedule',
-        scanScheduleTooltip: 'Options to configure a scheduled scan.',
         schedOrManScan: 'Run Scheduled Scan',
         schedOrManScanTooltip: 'Enable or disable a scheduled scan.',
         scanTypeManual: 'Disabled',
@@ -4400,7 +4399,6 @@ export default {
         vmMax: 'Virtual Machine Maximum',
         vmMaxTooltip: 'Set Virtual Machine Maximum CPU usage',
         advScanSettings: 'Scan Settings',
-        advScanSettingsTooltip: 'Options to configure Scan Settings',
         captureFloatingCode: 'Capture Floating Code',
         scanMbr: 'Scan Master Boot Record',
         scanMbrTooltip: 'Scan Master Boot Record',
@@ -4410,11 +4408,9 @@ export default {
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         invasiveActions: 'Response Action Settings',
-        invasiveActionsTooltip: 'Options to configure Response Action Settings',
         blockingEnabled: 'Blocking',
         blockingEnabledTooltip: 'Enable or disable Blocking',
         endpointServerSettings: 'Endpoint Server Settings',
-        endpointServerSettingsTooltip: 'Options to configure Endpoint Server Settings',
         primaryAddress: 'Endpoint Server',
         primaryAddressTooltip: 'Set primary address of endpoint server',
         primaryAddressInvalidMsg: 'The endpoint server host name should not be empty',
@@ -4437,13 +4433,11 @@ export default {
         primaryUdpBeaconInterval_SECONDS: 'Seconds',
         primaryUdpBeaconInterval_MINUTES: 'Minutes',
         agentSettings: 'Agent Mode',
-        agentSettingsTooltip: 'Configure Agent Settings',
         agentMode: 'Monitoring Mode',
         agentModeTooltip: 'Enable or disable Monitoring Mode',
         insights: 'Insights',
         advanced: 'Advanced',
         advancedConfig: 'Advanced Configuration',
-        advancedConfigTooltip: 'Advanced Configuration',
         customConfigSetting: 'Advanced Setting',
         customConfigSettingTooltip: 'Advanced agent configurations',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
@@ -4452,7 +4446,6 @@ export default {
       // windowsLog policy settings
       windowsLogPolicy: {
         windowsLogSettingsHeader: 'Windows Log Settings',
-        windowsLogSettingsHeaderTooltip: 'Configure Windows Log Settings',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
         enabled: 'Windows Log Collection', // 'Status',
@@ -4476,9 +4469,9 @@ export default {
           'change it to \'EXCLUDE\' to collect all events except for these events.',
         channel: {
           add: 'Add a new channel',
-          name: 'CHANNEL NAME *',
-          filter: 'FILTER *',
-          event: 'EVENT ID *',
+          name: 'CHANNEL NAME',
+          filter: 'FILTER',
+          event: 'EVENT ID',
           empty: ''
         },
         invalidEventId: 'Event ID is invalid',
@@ -4546,12 +4539,12 @@ export default {
         osDescription_EQUAL: 'Enter OS Description value that is no longer than 255 characters. Only exact matches will be included.',
         osDescription_CONTAINS: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value is found anywhere in the OS description.',
         osDescription_STARTS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value begins with the OS description.',
-        osDescription_ENDS_WITH: 'Enter a OS Description value that is no longer than 255 characters. Matches will be included if the value ends with the OS description.',
+        osDescription_ENDS_WITH: 'Enter OS Description value that is no longer than 255 characters. Matches will be included if the value ends with the OS description.',
         hostname_EQUAL: 'Enter one or more valid hostnames. Valid hostnames contain alphanumeric, ., or _ characters. First and last characters must be alphanumeric.',
         hostname_CONTAINS: 'Enter a single valid hostname string containing alphanumeric, ., or _ characters. Matches included if the value is found anywhere in host name',
         hostname_STARTS_WITH: 'Enter a single valid hostname string. Valid starts with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value begins with the host name.',
         hostname_ENDS_WITH: 'Enter a single valid hostname ending substring. Valid ends with substring contain alphanumeric, ., or _ characters. First character must be alphanumeric. Matches included if the value ends with the host name',
-        hostname_validHostnameList: 'Enter one or more valid hostnames.  Valid hostnames contain alphanumeric, ., or _ characters. First and last character must be alphanumeric. Multiple value can be separated by spaces, tabs, commas, or line feeds.',
+        hostname_validHostnameList: 'Enter one or more valid hostnames.  Valid hostnames contain alphanumeric, ., or _ characters. First and last character must be alphanumeric. Multiple values can be separated by spaces, tabs, commas, or line feeds.',
         ipv4_validIPv4_BETWEEN: 'Enter a single valid IPv4 address value in each field to specify a range of IP addresses (including start and end address) that will be included in the group.',
         ipv4_validIPv4_NOT_BETWEEN: 'Enter a single valid IPv4 address value in each field to specify a range of IP addresses (including start and end address) that will be excluded from the group.',
         ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses. Multiple values can be separated by spaces, tabs, commas, or line feeds.',
@@ -4572,8 +4565,8 @@ export default {
         hostname_STARTS_WITH: 'Enter starting substring',
         hostname_ENDS_WITH: 'Enter ending substring',
         hostname_validHostnameList: 'Enter one or more valid hostnames',
-        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses',
-        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses'
+        ipv4_validIPv4List: 'Enter one or more valid IPv4 addresses. Multiple values can be separated by spaces, tabs, commas, or line feeds.',
+        ipv6_validIPv6List: 'Enter one or more valid IPv6 addresses. Multiple values can be separated by spaces, tabs, commas, or line feeds.'
       }
     },
     errorCodeResponse: {

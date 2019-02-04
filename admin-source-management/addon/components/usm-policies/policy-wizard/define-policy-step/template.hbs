@@ -13,11 +13,6 @@
         {{#if enabledAvailableSetting.isHeader}}
           <div class="heading">
             {{t enabledAvailableSetting.label}}
-            {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label 'Tooltip' ))
-              style="standard"
-              alwaysShow=true}}
-              {{rsa-icon size='large' name="information-circle" style='lined'}}
-            {{/rsa-text-with-tooltip}}
           </div>
         {{else}}
           <div class="title available-setting {{enabledAvailableSetting.id}}
@@ -49,11 +44,7 @@
       </div>
       {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
         {{#if sortedSelectedSetting.isHeader}}
-          {{#rsa-text-with-tooltip value=(t (concat sortedSelectedSetting.label 'Tooltip' ))
-            style="standard"
-            alwaysShow=true}}
-            <div class="heading">{{t sortedSelectedSetting.label}}</div>
-          {{/rsa-text-with-tooltip}}
+          <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
           <div class="selected-setting">
             {{component sortedSelectedSetting.component

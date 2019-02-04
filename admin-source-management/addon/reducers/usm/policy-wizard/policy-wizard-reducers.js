@@ -112,6 +112,8 @@ const agentSettingsHeaderId = 'agentSettingsHeader';
 const allAgentSettingsIds = 'agentMode';
 const advancedConfigHeaderId = 'advancedConfigHeader';
 const allAdvancedConfigIds = 'customConfig';
+const windowsLogSettingsHeaderId = 'windowsLogSettingsHeader';
+const allWindowsLogSettingsHeaderIds = ['enabled', 'sendTestLog', 'primaryDestination', 'secondaryDestination', 'protocol', 'channelFilters'];
 
 // run for NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
 export const buildInitialState = (state, policyType, isUpdatePolicyType = false) => {
@@ -222,10 +224,10 @@ export default reduxActions.handleActions({
           if (!isBlank(fetchedPolicy[setting.id])) {
             newAvailableSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
             newSelectedSettings.push({ ...setting, isEnabled: false, isGreyedOut: false });
-          // settings dependent on scanType of 'ENABLED' must be enabled
+            // settings dependent on scanType of 'ENABLED' must be enabled
           } else if (setting.parentId === scanScheduleId && fetchedPolicy[setting.parentId] === 'ENABLED') {
             newAvailableSettings.push({ ...setting, isEnabled: true, isGreyedOut: false });
-          // default
+            // default
           } else {
             newAvailableSettings.push({ ...setting });
           }
@@ -305,7 +307,7 @@ export default reduxActions.handleActions({
         ...policyValues
       },
       availableSettings: newAvailableSettings,
-      selectedSettings: _.uniqBy([ ...selectedSettings, newSelectedSettings ], 'id')
+      selectedSettings: _.uniqBy([...selectedSettings, newSelectedSettings], 'id')
     }, { deep: true }); // deep merge so we don't reset everything
   },
 
@@ -359,12 +361,22 @@ export default reduxActions.handleActions({
       newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, advancedConfigHeaderId);
     }
 
+    const showWindowsLogSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allWindowsLogSettingsHeaderIds);
+    if (showWindowsLogSettingsHeader) {
+      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, windowsLogSettingsHeaderId));
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, windowsLogSettingsHeaderId);
+    }
+
     const newAvailableSettings = availableSettings.map((el) => {
       if (el.id === scanSchedHeaderId) {
         return _shouldShowHeaderInAvailSettings(allScanScheduleIds, selectedSettingsIds, el);
       }
       if (el.id === advScanSettingsHeaderId) {
         return _shouldShowHeaderInAvailSettings(allAdvScanSettingsIds, selectedSettingsIds, el);
+      }
+      if (el.id === windowsLogSettingsHeaderId) {
+        return _shouldShowHeaderInAvailSettings(allWindowsLogSettingsHeaderIds, selectedSettingsIds, el);
       }
       if (el.id === invActionsHeaderId) {
         return _shouldShowHeaderInAvailSettings([allInvActionsIds], selectedSettingsIds, el);

@@ -534,9 +534,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('UPDATE_HEADERS_FOR_ALL_SETTINGS moves the header to the right correctly', function(assert) {
-    const initialStateCopy = _.cloneDeep(initialStateEdr);
+    const initialStateEdrCopy = _.cloneDeep(initialStateEdr);
+    const initialStateWinLogCopy = _.cloneDeep(initialStateWinLog);
 
-    initialStateCopy.selectedSettings = [
+    initialStateEdrCopy.selectedSettings = [
       { index: 13, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
     ];
 
@@ -547,30 +548,72 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       ]
     };
 
+    initialStateWinLogCopy.selectedSettings = [
+      { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
+      { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] },
+      { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
+      { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
+      { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
+      { index: 6, id: 'channelFilters', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFilters', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', defaults: [{ field: 'channelFilters', value: [{ channel: '', filterType: 'INCLUDE', eventId: 'ALL' }] }] }
+    ];
+
+    const expectedWinLogEndState = {
+      selectedSettings: [
+        { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
+        { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
+        { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] },
+        { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
+        { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
+        { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
+        { index: 6, id: 'channelFilters', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFilters', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', defaults: [{ field: 'channelFilters', value: [{ channel: '', filterType: 'INCLUDE', eventId: 'ALL' }] }] }
+      ]
+    };
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
-    const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(_.sortBy(endState.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since blocking component exists on the right, the header for blocking is correctly moved to the right');
-    assert.deepEqual(endState.availableSettings[12].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
+    const endStateEdr = reducers(Immutable.from(initialStateEdrCopy), action);
+    const endStateWinLog = reducers(Immutable.from(initialStateWinLogCopy), action);
+    assert.deepEqual(_.sortBy(endStateEdr.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since blocking component exists on the right, the header for blocking is correctly moved to the right');
+    assert.deepEqual(endStateEdr.availableSettings[12].isEnabled, false, 'Since blocking component is on the right, its header should not exist on the left');
+    assert.deepEqual(_.sortBy(endStateWinLog.selectedSettings, 'index'), expectedWinLogEndState.selectedSettings, 'Since all the windows log settings are moved to the right, the header for windows log setting is correctly moved to the right');
+    assert.deepEqual(endStateWinLog.availableSettings[0].isEnabled, false, 'Since all windows log settings components are on the right, its header should not exist on the left');
   });
 
   test('UPDATE_HEADERS_FOR_ALL_SETTINGS moves the header to the right and also keeps it on the left', function(assert) {
-    const initialStateCopy = _.cloneDeep(initialStateEdr);
-    initialStateCopy.selectedSettings = [
+    const initialStateEdrCopy = _.cloneDeep(initialStateEdr);
+    const initialStateWinLogCopy = _.cloneDeep(initialStateWinLog);
+
+    initialStateEdrCopy.selectedSettings = [
       { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
       { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] }
     ];
 
-    const expectedEndState = {
+    const expectedEndStateEdr = {
       selectedSettings: [
         { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
         { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
         { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] }
       ]
     };
+
+    initialStateWinLogCopy.selectedSettings = [
+      { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
+      { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+    ];
+
+    const expectedWinLogEndState = {
+      selectedSettings: [
+        { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
+        { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
+        { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+      ]
+    };
+
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
-    const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(_.sortBy(endState.selectedSettings, 'index'), expectedEndState.selectedSettings, 'Since some endPointServer components exist on the right, the header exists on the right');
-    assert.deepEqual(endState.availableSettings[14].isEnabled, true, 'Since atleast one component from endPointServer is still on the left, the header exists on the left');
+    const endStateEdr = reducers(Immutable.from(initialStateEdrCopy), action);
+    const endStateWinLog = reducers(Immutable.from(initialStateWinLogCopy), action);
+    assert.deepEqual(_.sortBy(endStateEdr.selectedSettings, 'index'), expectedEndStateEdr.selectedSettings, 'Since some endPointServer components exist on the right, the header exists on the right');
+    assert.deepEqual(endStateEdr.availableSettings[14].isEnabled, true, 'Since atleast one component from endPointServer is still on the left, the header exists on the left');
+    assert.deepEqual(_.sortBy(endStateWinLog.selectedSettings, 'index'), expectedWinLogEndState.selectedSettings, 'Since windows log setting exists on the right, the header for windows log setting is correctly moved to the right');
+    assert.deepEqual(endStateWinLog.availableSettings[0].isEnabled, true, 'Since atleast one component from Windows Log Setting is still on the left, the header exists on the left');
   });
 
 
