@@ -6,15 +6,17 @@ export default {
   message(frame) {
     const body = JSON.parse(frame.body);
     let group = {};
+    let returnCode = -1; // use the real error code if we ever add one for "Group does NOT exist"
     for (let index = 0; index < groups.length; index++) {
       if (groups[index].id === body.data) {
         group = groups[index];
+        returnCode = 0;
         break;
       }
     }
     return {
-      code: 0,
-      data: group
+      code: returnCode, // 0 == Ok, anything else == Error
+      data: group // change this to error info if we ever add anything for "Group does NOT exist"
     };
   }
 };

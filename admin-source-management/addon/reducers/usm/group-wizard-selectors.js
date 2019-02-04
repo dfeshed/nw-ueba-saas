@@ -55,6 +55,13 @@ export const isGroupLoading = createSelector(
   }
 );
 
+export const isGroupLoadError = createSelector(
+  _groupWizardState,
+  (groupWizardState) => {
+    return groupWizardState.groupStatus === 'error';
+  }
+);
+
 export const isLoadingGroupRanking = createSelector(
   _groupWizardState,
   (groupWizardState) => groupWizardState.groupRankingStatus === 'wait'

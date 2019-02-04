@@ -621,6 +621,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
       .groupWizGroupStatus('wait')
+      .groupWizGroupOrig()
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUP });
     const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);

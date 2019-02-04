@@ -18,6 +18,7 @@ import {
   // TODO when implemented isReviewGroupStepValid,
   // TODO when implemented isWizardValid
   isGroupLoading,
+  isGroupLoadError,
   hasGroupChanged,
   policyList,
   availablePolicySourceTypes,
@@ -310,6 +311,26 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     isGroupLoadingExpected = false;
     isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is false when groupStatus is complete');
+  });
+
+  test('isGroupLoadError selector', function(assert) {
+    let groupStatusExpected = 'complete';
+    let fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupStatus(groupStatusExpected)
+      .build();
+    let isGroupLoadErrorExpected = false;
+    let isGroupLoadErrorSelected = isGroupLoadError(Immutable.from(fullState));
+    assert.deepEqual(isGroupLoadErrorSelected, isGroupLoadErrorExpected, 'isGroupLoadError is false when groupStatus is complete');
+
+    groupStatusExpected = 'error';
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupStatus(groupStatusExpected)
+      .build();
+    isGroupLoadErrorExpected = true;
+    isGroupLoadErrorSelected = isGroupLoadError(Immutable.from(fullState));
+    assert.deepEqual(isGroupLoadErrorSelected, isGroupLoadErrorExpected, 'isGroupLoadError is true when groupStatus is error');
   });
 
   test('hasGroupChanged selector', function(assert) {

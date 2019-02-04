@@ -188,8 +188,10 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.FETCH_GROUP]: (state, action) => (
     handle(state, action, {
       start: (state) => {
+        // reset everything on load start (same as NEW_GROUP) so things are in sync in case of a load error
         return state.merge({
           ...initialState,
+          groupOrig: initialState.group,
           groupStatus: 'wait'
         });
       },

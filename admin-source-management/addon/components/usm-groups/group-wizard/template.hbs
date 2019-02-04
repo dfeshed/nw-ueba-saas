@@ -1,6 +1,14 @@
-{{rsa-lib/rsa-wizard
-  steps=steps
-  initialStepId='identifyGroupStep'
-  transitionToClose=(action transitionToGroups)
-  isWizardLoading=isGroupLoading
-}}
+{{#if isGroupLoadError}}
+  {{error-page
+    title=(t 'adminUsm.groupWizard.errorPage.loadErrorTitle')
+    errorDescription=(t 'adminUsm.groupWizard.errorPage.loadErrorDescription')
+    back=(action transitionToGroups)
+  }}
+{{else}}
+  {{rsa-lib/rsa-wizard
+    steps=steps
+    initialStepId='identifyGroupStep'
+    transitionToClose=(action transitionToGroups)
+    isWizardLoading=isGroupLoading
+  }}
+{{/if}}

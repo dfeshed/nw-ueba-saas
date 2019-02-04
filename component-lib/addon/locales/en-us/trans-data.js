@@ -4243,6 +4243,10 @@ export default {
           continueEditing: 'Continue Editing'
         }
       },
+      errorPage: {
+        loadErrorTitle: 'Group could not be loaded',
+        loadErrorDescription: 'There was a problem loading the requested group. The server may be offline or inaccessible, or the group may not exist.'
+      },
       actionMessages: {
         prevFailure: 'Please fix all the validation errors before navigating back to the previous step.',
         prevEmptyFailure: 'At least one condition is required before navigating back to the previous step.',

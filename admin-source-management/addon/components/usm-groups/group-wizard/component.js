@@ -4,7 +4,8 @@ import { connect } from 'ember-redux';
 import {
   group,
   steps,
-  isGroupLoading
+  isGroupLoading,
+  isGroupLoadError
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 // import {
@@ -14,7 +15,8 @@ import {
 const stateToComputed = (state) => ({
   group: group(state),
   steps: steps(state),
-  isGroupLoading: isGroupLoading(state)
+  isGroupLoading: isGroupLoading(state),
+  isGroupLoadError: isGroupLoadError(state)
 });
 
 const dispatchToActions = (/* dispatch */) => ({

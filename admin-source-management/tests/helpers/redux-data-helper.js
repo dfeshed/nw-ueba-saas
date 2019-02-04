@@ -387,6 +387,11 @@ export default class DataHelper {
     return this;
   }
 
+  groupWizGroupOrig() {
+    _set(this.state, 'usm.groupWizard.groupOrig', this.state.usm.groupWizard.group);
+    return this;
+  }
+
   groupWizGroupStatus(status) {
     _set(this.state, 'usm.groupWizard.groupStatus', status);
     return this;
