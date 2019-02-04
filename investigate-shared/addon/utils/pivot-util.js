@@ -32,7 +32,7 @@ const _buildFilter = (metaName, metaValue, itemList) => {
     const query = investigateMeta.map((meta) => {
       return _getQuery(meta, value);
     });
-    return query.join('||');
+    return `(${ query.join('||') })`;
   }
   return _getQuery(investigateMeta, value);
 };
