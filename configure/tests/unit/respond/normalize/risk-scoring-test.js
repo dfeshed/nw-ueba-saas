@@ -342,3 +342,37 @@ test('normalize will accept both true and false for enabled', function(assert) {
     }
   });
 });
+
+test('normalize will correctly accept 0 for threshold value', function(assert) {
+  assert.expect(1);
+
+  const result = normalizeRiskScoringSettings([
+    {
+      type: 'host',
+      threshold: 88,
+      timeWindow: '1d',
+      enabled: false
+    },
+    {
+      type: 'file',
+      threshold: 0,
+      timeWindow: '24h',
+      enabled: true
+    }
+  ]);
+
+  assert.deepEqual(result, {
+    host: {
+      threshold: '88',
+      timeWindow: '1',
+      timeWindowUnit: 'd',
+      enabled: false
+    },
+    file: {
+      threshold: '0',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: true
+    }
+  });
+});

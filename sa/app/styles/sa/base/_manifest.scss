@@ -57,7 +57,7 @@ $licenseBannerHeight: 36px;
 .rsa-protected page.configure-engine {
   min-height: calc(100vh - #{$appNavigationHeaderHeight});
   .rsa-incident-rules, .rsa-incident-rule, .respond-notifications {
-    height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
+    height: calc(100vh - #{$appNavigationHeaderHeight} - calc(2 * #{$configureNavigationHeight}) - calc(2 * #{$licenseBannerHeight}));
   }
 
   .license-banner.shown + .rsa-incident-rules,

@@ -38,7 +38,7 @@ test('The component appears in the DOM with the expected number of rows', functi
   setState({ ...initialState });
   this.render(hbs`{{respond/incident-rules}}`);
   assert.equal(this.$('.rsa-incident-rules').length, 1, 'The component appears in the DOM');
-  assert.equal(this.$('tbody tr').length, 11, 'There are 11 rows in the table');
+  assert.equal(this.$('tbody tr').length, 20, 'There are 20 rows in the table');
   assert.equal(this.$('tbody tr.is-selected').length, 0, 'There are no selected rows');
 });
 

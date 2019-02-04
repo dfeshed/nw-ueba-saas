@@ -1,11 +1,12 @@
 import _ from 'lodash';
+import { isNone } from '@ember/utils';
 
 const parseEnabled = (value) => [null, undefined].includes(value) || value;
 
 export const normalizeRiskScoringSettings = (data) => {
   return data && data.reduce((result, { type, threshold, timeWindow, enabled }) => {
     const [ , timeWindowValue, timeWindowUnit ] = timeWindow && timeWindow.match && timeWindow.match(/(\d+)(.*)/) || ['', '', ''];
-    const thresholdValue = threshold ? `${threshold}` : '';
+    const thresholdValue = isNone(threshold) ? '' : `${threshold}`;
     const typeLower = type && type.toLowerCase();
     const enabledValue = parseEnabled(enabled);
     result[typeLower] = {

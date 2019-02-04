@@ -1,6 +1,9 @@
 $toolbarHeight: 40px;
 $dragPadColor: background-color(primary);
 $dragPadHighlightedColor: background-color(primary, lighter);
+$licenseBannerHeight: 36px;
+$appNavigationHeaderHeight: 40px;
+$configureNavigationHeight: 48px;
 
 .rsa-incident-rules-header {
   padding-top: rsa-whitespace();
@@ -18,7 +21,7 @@ $dragPadHighlightedColor: background-color(primary, lighter);
 }
 
 .rsa-incident-rules {
-   height: calc(100vh - 133px);
+   height: calc(100vh - #{$appNavigationHeaderHeight} - calc(2 * #{$configureNavigationHeight}) - calc(2 * #{$licenseBannerHeight}));
 
   .incident-rule-list {
     overflow: auto;
