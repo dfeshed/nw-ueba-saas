@@ -59,4 +59,11 @@
       margin-right: rsa-whitespace();
     }
   }
+
+  .ember-power-select-trigger {
+    &--active {
+      margin-top: -1px;
+      margin-left: -1px;
+    }
+  }
 }

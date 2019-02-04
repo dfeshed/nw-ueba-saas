@@ -12,7 +12,6 @@ function* fetchRiskScoringSettingsAsync() {
     yield put({ type: ACTION_TYPES.FETCH_RISK_SCORING_SETTINGS, payload });
   } catch (e) {
     yield put({ type: ACTION_TYPES.FETCH_RISK_SCORING_SETTINGS_FAILED });
-    failure('configure.incidentRules.riskScoring.actionMessages.fetchFailure');
   }
 }
 
