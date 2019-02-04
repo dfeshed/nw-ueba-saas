@@ -230,7 +230,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'File Details', 'Default tab is file details');
       assert.equal(findAll('.host-property-panel').length, 1, 'Property panel is rendered');
       await click(findAll('.rsa-header .rsa-nav-tab')[1]);
-      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Risk Details', 'Risk details tab is selected');
+      assert.equal(findAll('.rsa-header .rsa-nav-tab.is-active')[0].textContent.trim(), 'Local Risk Details', 'Risk details tab is selected');
       assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
 
       await click('.x-toggle-btn');

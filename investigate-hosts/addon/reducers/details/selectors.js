@@ -10,7 +10,7 @@ const HOST_DETAIL_PROPERTY_TABS = [
     name: 'FILE_DETAILS'
   },
   {
-    label: 'investigateHosts.tabs.riskDetails',
+    label: 'investigateHosts.tabs.localRiskDetails',
     name: 'RISK'
   }
 ];

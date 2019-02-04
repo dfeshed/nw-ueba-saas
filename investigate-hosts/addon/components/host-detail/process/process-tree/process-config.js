@@ -19,14 +19,14 @@ export default [
   {
     field: 'machineFileScore',
     width: '4vw',
-    title: 'investigateHosts.process.riskScore',
+    title: 'investigateHosts.process.localRiskScore',
     isDescending: false,
     disableSort: true
   },
   {
     field: 'fileProperties.score',
     width: '4vw',
-    title: 'investigateHosts.process.globalScore',
+    title: 'investigateHosts.process.globalRiskScore',
     disableSort: true
   },
   {

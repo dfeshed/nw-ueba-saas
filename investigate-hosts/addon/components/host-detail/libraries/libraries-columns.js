@@ -21,12 +21,12 @@ const defaultColumns = [
   },
   {
     field: 'machineFileScore',
-    title: 'Risk Score',
+    title: 'Local Risk Score',
     width: '4vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'Global Score'
+    title: 'Global Risk Score'
   },
   {
     field: 'machineCount',

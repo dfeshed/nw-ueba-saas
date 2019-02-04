@@ -23,11 +23,11 @@ export default {
   },
   {
     field: 'machineFileScore',
-    title: 'score'
+    title: 'localRiskScore'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalScore'
+    title: 'globalRiskScore'
   },
   {
     field: 'machineCount',

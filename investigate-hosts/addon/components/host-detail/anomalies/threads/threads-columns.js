@@ -23,12 +23,12 @@ export default {
   },
   {
     field: 'machineFileScore',
-    title: 'score',
+    title: 'localRiskScore',
     width: '12vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalScore',
+    title: 'globalRiskScore',
     width: '12vw'
   },
   {

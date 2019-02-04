@@ -222,7 +222,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 13, '13 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
-    assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Risk Score', 'Second column is Risk Score');
+    assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Local Risk Score', 'Second column is Local Risk Score');
   });
 
   test('Get the length of visible items in datatable', async function(assert) {
