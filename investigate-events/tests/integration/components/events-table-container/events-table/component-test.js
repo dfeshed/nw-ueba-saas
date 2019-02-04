@@ -249,4 +249,20 @@ module('Integration | Component | events-table', function(hooks) {
     await click('.group-label-copy');
   });
 
+  test('event tabel is displayed with expected column group\'s default header values', async function(assert) {
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .eventCount(100000)
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    const headerColumns = findAll('.rsa-data-table-header-row div > h2');
+    assert.equal('COLLECTION TIME', headerColumns[0].innerText, 'Expected 1st column');
+    assert.equal('TYPE', headerColumns[1].innerText, 'Expected 2nd column');
+
+  });
+
 });

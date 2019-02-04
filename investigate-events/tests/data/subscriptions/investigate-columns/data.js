@@ -1,6 +1,6 @@
 export const BASE_COLUMNS = [
-  { field: 'time', title: 'Event Time', width: 135 },
-  { field: 'medium', title: 'Event Type' }
+  { field: 'time', title: 'Collection Time', width: 135 },
+  { field: 'medium', title: 'Type' }
 ];
 
 export default [
