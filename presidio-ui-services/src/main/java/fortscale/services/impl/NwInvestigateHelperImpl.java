@@ -77,6 +77,8 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .host(conf.getBaseLinkDestinationHostname())
                 .path(PATH_TEMPLATE_HOST+"/"+value)
                 .queryParam(MACHINE_ID, value)
+                // This meta represents service id for endpoint hybrid. This is url format but Endpoint link consider only service Id. In future there may be something else might
+                // come in this url. Need to update service id accordingly.
                 .queryParam(SID, callbackId.toString().replace("nwe://", ""))
                 .queryParam("tabName","OVERVIEW")
                 .toString();
