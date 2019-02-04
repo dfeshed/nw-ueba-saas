@@ -66,10 +66,10 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
     }
 
     @Override
-    public String getLinkToInvestigateHost(Object value) {
+    public String getLinkToInvestigateHost(Object value, Object callbackId) {
 
         Configurations conf = getConfigurations();
-        if (null == value) {
+        if (null == value || null == callbackId) {
             return null;
         }
         String url =  new JerseyUriBuilder()
@@ -77,7 +77,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .host(conf.getBaseLinkDestinationHostname())
                 .path(PATH_TEMPLATE_HOST+"/"+value)
                 .queryParam(MACHINE_ID, value)
-                .queryParam(SID,conf.getBrokerId())
+                .queryParam(SID, callbackId)
                 .queryParam("tabName","OVERVIEW")
                 .toString();
 

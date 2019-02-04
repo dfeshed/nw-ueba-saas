@@ -7,7 +7,7 @@ public interface NwInvestigateHelper {
 
     String getLinkToInvestigate(Object value, LocalDateTime startTime, LocalDateTime endTime);
 
-    String getLinkToInvestigateHost(Object value);
+    String getLinkToInvestigateHost(Object value, Object callbackId);
 
     String getLinkToInvestigateProcess(Object value, Object hostName, Map<String,Object> map, boolean isSourceProcess);
 }
