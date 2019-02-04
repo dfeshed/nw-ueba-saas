@@ -326,6 +326,15 @@
     },
     {
       "type": "copy_value",
+      "name": "callback_id",
+      "sourceKey": "new.callback_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.callbackId"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "os-type",
       "sourceKey": "OS[0]",
       "isRemoveSourceKey": true,
