@@ -3671,7 +3671,7 @@ export default {
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
         tooltips: {
-          downloadToServer: 'Maximum of {{count}} files can be downloaded at a time.',
+          downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',
           analyzeFile: 'Download the file to server to analyze.',
           changeFileStatusDisabled: 'Select {{label}} to change the status',

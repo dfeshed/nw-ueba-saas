@@ -19,7 +19,7 @@ import {
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 
-import { fileContextSelectionsData, fileContextSelectionsItem } from '../../../../integration/components/state/fileContextData';
+import { fileContextSelectionsData } from '../../../../integration/components/state/fileContextData';
 
 
 module('Unit | Selectors | File Context', function() {
@@ -305,10 +305,10 @@ module('Unit | Selectors | File Context', function() {
         }
       }
     }), 'drivers');
-    assert.equal(result.length, 2, '2 files are selected');
+    assert.equal(result.length, 1, '1 file is selected');
     assert.deepEqual(result[0],
-      { checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
-        fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]' }, 'Verify first file checksum and filename');
+      { checksumSha256: '5469da9747d23abd3a1ccffa2bccfe6256938a416f707ed2160d3eda3867c30d',
+        fileName: 'HookTest_DLL64_0c30.dll' }, 'Verify first file checksum and filename');
   });
 
   test('fileContextFileProperty when selectedRowId is empty', function(assert) {
@@ -430,6 +430,31 @@ module('Unit | Selectors | File Context', function() {
       }
     }), 'drivers');
     assert.deepEqual(result, { 'isDownloadToServerDisabled': false, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
+  });
+
+  test('fileDownloadButtonStatus if more than 1 file is selected is disabled', function(assert) {
+    const result = fileDownloadButtonStatus(Immutable.from({
+      endpoint: {
+        machines: {
+          selectedHostList: [{
+            id: 1,
+            version: '4.3.0.0',
+            managed: true
+          }]
+        },
+        overview: {
+          hostDetails: {
+            machineIdentity: {
+              agentMode: 'Advanced'
+            }
+          }
+        },
+        drivers: {
+          fileContextSelections: [...fileContextSelectionsData, ...fileContextSelectionsData]
+        }
+      }
+    }), 'drivers');
+    assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus is ok');
   });
 
   test('fileDownloadButtonStatus if not all selected files are memorydlls or floating code', function(assert) {
@@ -646,39 +671,6 @@ module('Unit | Selectors | File Context', function() {
     });
     const result = isAnyFileFloatingOrMemoryDll(state, 'drivers');
     assert.equal(result, true);
-  });
-  test('fileDownloadButtonStatus if number of selected files is more than 100', function(assert) {
-    const testDataWithLengthOver100 = (function() {
-      const over100Selected = [];
-      let count = 101;
-      while (count > 0) {
-        over100Selected.push(fileContextSelectionsItem);
-        count--;
-      }
-      return over100Selected;
-    })();
-    const result = fileDownloadButtonStatus(Immutable.from({
-      endpoint: {
-        machines: {
-          selectedHostList: [{
-            id: 1,
-            version: '4.3.0.0',
-            managed: true
-          }]
-        },
-        overview: {
-          hostDetails: {
-            machineIdentity: {
-              agentMode: 'Advanced'
-            }
-          }
-        },
-        drivers: {
-          fileContextSelections: [...testDataWithLengthOver100]
-        }
-      }
-    }), 'drivers');
-    assert.deepEqual(result, { 'isDownloadToServerDisabled': true, 'isSaveLocalAndFileAnalysisDisabled': true }, 'fileDownloadButtonStatus ok');
   });
 });
 

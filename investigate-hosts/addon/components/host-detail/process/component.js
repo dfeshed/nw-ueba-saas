@@ -136,11 +136,7 @@ const Container = Component.extend({
     onDownloadFilesToServer() {
       const callBackOptions = this.get('callBackOptions')(this);
       const agentId = this.get('agentId');
-      let selectedProcessList = this.get('selectedProcessList');
-
-      if (selectedProcessList.length > 100) {
-        selectedProcessList = selectedProcessList.slice(0, 100);
-      }
+      const selectedProcessList = this.get('selectedProcessList');
 
       this.send('downloadFilesToServer', agentId, selectedProcessList, callBackOptions);
     },

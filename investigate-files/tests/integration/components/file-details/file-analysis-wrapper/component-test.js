@@ -202,7 +202,6 @@ module('Integration | Component | file-details/file-analysis-wrapper', function(
 
     await render(hbs`{{file-details/file-analysis-wrapper}}`);
 
-    assert.equal(findAll('.fileNotDownloadedError .rsa-icon.rsa-icon-report-problem-triangle-filled').length, 1, 'triangle icon present');
     assert.equal(find('.fileNotDownloadedError span').textContent.trim(), 'Download the file to server to analyze.', 'Error message present');
   });
 

@@ -112,11 +112,7 @@ const ContextWrapper = Component.extend({
     onDownloadFilesToServer() {
       const callBackOptions = this.get('callBackOptions')(this);
       const agentId = this.get('agentId');
-      let fileContextSelections = this.get('fileContextSelections');
-
-      if (fileContextSelections.length > 100) {
-        fileContextSelections = fileContextSelections.slice(0, 100);
-      }
+      const fileContextSelections = this.get('fileContextSelections');
 
       this.send('downloadFilesToServer', agentId, fileContextSelections, callBackOptions);
     },

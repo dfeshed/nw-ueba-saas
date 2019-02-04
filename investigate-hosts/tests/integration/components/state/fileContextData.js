@@ -20,19 +20,6 @@ export const selectedProcessItemInfo = {
 
 export const fileContextSelectionsData = [
   {
-    id: 'imageHooks_1',
-    fileName: '[FLOATING_CODE_054F182DB0FD4AFBE92B311874C721C8]',
-    checksumSha1: '77e2e1facd878903daacfb5a561456225c05a445',
-    checksumSha256: 'd30ae1f19c6096d2bfb50dc22731209fd94d659c864d6642c64b5ae39f61876d',
-    checksumMd5: '054f182db0fd4afbe92b311874c721c8',
-    size: 65536,
-    machineOsType: 'windows',
-    path: '',
-    downloadInfo: {},
-    features: [],
-    format: 'floating'
-  },
-  {
     id: 'imageHooks_12',
     fileName: 'HookTest_DLL64_0c30.dll',
     checksumSha1: '5c6ff89eef54b7d5fba72889c2250ee09b04bcab',

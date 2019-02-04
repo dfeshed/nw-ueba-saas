@@ -77,8 +77,8 @@ export default Component.extend({
     return {};
   },
 
-  @computed('fileDownloadButtonStatus', 'showResetRiskScore')
-  fileActionOptions(fileDownloadButtonStatus, showResetRiskScore) {
+  @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList')
+  fileActionOptions(fileDownloadButtonStatus, showResetRiskScore, itemList) {
 
     const i18n = this.get('i18n');
     const canManageFiles = this.get('accessControl.endpointCanManageFiles');
@@ -104,7 +104,7 @@ export default Component.extend({
     return fileActionConfClone.map((item) => {
       const title = i18n.t(`investigateShared.endpoint.fileActions.${item.name}`).string;
       let disabledTooltip = i18n.t(`investigateShared.endpoint.fileActions.tooltips.${item.name}`).string;
-      if (item.name === 'downloadToServer') {
+      if ((item.name === 'downloadToServer') && (itemList.length !== 1)) {
         // Setting download disabled tooltip
         disabledTooltip = this.get('downloadDisabledTooltip');
       }

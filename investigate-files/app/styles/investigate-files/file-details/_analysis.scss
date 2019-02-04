@@ -18,10 +18,8 @@
     height: 105px;
   }
   .fileNotDownloadedError {
+    @include rsa-font(regular, large);
     margin: auto;
-    .rsa-icon {
-      color: text-color(accentFour, light);
-      margin-right: 5px;
-    }
+    color: text-color(accentFour);
   }
 }
