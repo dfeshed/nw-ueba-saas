@@ -164,7 +164,7 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
       assert.equal(menuItems.length, 2, '2 Context menu options rendered');
       await triggerEvent(`#${menuItems[1].id}`, 'mouseover');
       const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
-      assert.equal(subItems.length, 4, 'Sub menu rendered');
+      assert.equal(subItems.length, 5, 'Sub menu rendered');
       click(`#${subItems[0].id}`);
       return settled().then(() => {
         assert.ok(actionSpy.calledOnce, 'Pivot service is invoked');

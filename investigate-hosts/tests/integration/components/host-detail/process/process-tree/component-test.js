@@ -855,7 +855,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       const menuItems = findAll(`${selector} > .context-menu__item`);
       await triggerEvent(`#${menuItems[2].id}`, 'mouseover');
       const subItems = findAll(`#${menuItems[2].id} > .context-menu--sub .context-menu__item`);
-      assert.equal(subItems.length, 4, 'Sub menu rendered');
+      assert.equal(subItems.length, 5, 'Sub menu rendered');
     });
   });
 

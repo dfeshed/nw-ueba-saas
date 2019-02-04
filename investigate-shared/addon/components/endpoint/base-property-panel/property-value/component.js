@@ -42,6 +42,13 @@ export default Component.extend({
         prefix: 'investigateShared.endpoint.fileActions.',
         subActions: [
           {
+            label: 'consoleEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action() {
+              cntx.get('pivot').pivotToInvestigate(key, item, 'Console Event');
+            }
+          },
+          {
             label: 'networkEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action() {

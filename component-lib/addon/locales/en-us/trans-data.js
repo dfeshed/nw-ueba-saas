@@ -3665,6 +3665,7 @@ export default {
         fileEvents: 'File Events',
         processEvents: 'Process Events',
         registryEvents: 'Registry Events',
+        consoleEvents: 'Console Events',
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
         tooltips: {

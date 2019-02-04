@@ -24,7 +24,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
-      assert.equal(findAll(`${selector} li`).length, 4, 'expected to render 4 menu options');
+      assert.equal(findAll(`${selector} li`).length, 5, 'expected to render 5 menu options');
     });
   });
 
@@ -74,7 +74,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
-      assert.equal(findAll(`${selector} li`).length, 4, 'expected to render 4 menu options');
+      assert.equal(findAll(`${selector} li`).length, 5, 'expected to render 5 menu options');
       await click(findAll(`${selector} li`)[0]);
     });
   });

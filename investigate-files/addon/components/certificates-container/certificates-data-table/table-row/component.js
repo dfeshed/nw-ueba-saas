@@ -42,6 +42,13 @@ export default DataTableBodyRow.extend({
         prefix: 'investigateShared.endpoint.fileActions.',
         subActions: [
           {
+            label: 'consoleEvents',
+            prefix: 'investigateShared.endpoint.fileActions.',
+            action(selection, context) {
+              context.pivotToInvestigate(context.get('item'), 'Console Event');
+            }
+          },
+          {
             label: 'networkEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {

@@ -6,6 +6,10 @@ import { inject as service } from '@ember/service';
 
 const CATEGORIES = [
   {
+    label: 'investigateShared.endpoint.fileActions.consoleEvents',
+    category: 'Console Event'
+  },
+  {
     label: 'investigateShared.endpoint.fileActions.networkEvents',
     category: 'Network Event'
   },

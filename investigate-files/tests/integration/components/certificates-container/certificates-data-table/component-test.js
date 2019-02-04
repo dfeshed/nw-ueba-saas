@@ -233,7 +233,7 @@ module('Integration | Component | certificates-container/certificates-data-table
       const menuItems = findAll(`${selector} > .context-menu__item`);
       await triggerEvent(`#${menuItems[1].id}`, 'mouseover');
       const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
-      assert.equal(subItems.length, 4, 'Sub menu rendered');
+      assert.equal(subItems.length, 5, 'Sub menu rendered');
       click(`#${subItems[0].id}`);
     });
   });
