@@ -310,6 +310,15 @@
       ]
     },
     {
+      "type": "copy_value",
+      "name": "callback_id",
+      "sourceKey": "nwe_callback_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.callbackId"
+      ]
+    },
+    {
       "type": "string_format",
       "name": "convert-string-format-of-process-categories",
       "sourceKey": "processCategories",
