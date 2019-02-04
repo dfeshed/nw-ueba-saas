@@ -37,6 +37,7 @@ test('it renders content error', function(assert) {
   this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
   return wait().then(() => {
     assert.equal(this.$().find('.rsa-panel-message').length, 1, 'Content error not set');
+    assert.equal(this.$().find('.recon-pager').length, 1, 'Pager not rendered');
   });
 });
 
@@ -76,7 +77,7 @@ test('endpoint events redirect to empty view', function(assert) {
   });
 });
 
-test('displays correct error when missing permissionss', function(assert) {
+test('displays correct error when missing permissions', function(assert) {
   this.set('accessControl.hasReconAccess', false);
 
   new DataHelper(this.get('redux'))

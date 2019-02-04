@@ -8,6 +8,12 @@
   {{else}}
     {{#if isContentError}}
       {{rsa-panel-message message=errorMessage}}
+      {{recon-pager
+        eventIndex=eventIndex
+        eventTotal=eventTotal
+        isPacket=false
+        isText=false
+      }}
     {{else}}
       {{component currentReconView.component}}
     {{/if}}
