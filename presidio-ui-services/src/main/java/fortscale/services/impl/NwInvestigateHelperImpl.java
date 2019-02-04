@@ -77,7 +77,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .host(conf.getBaseLinkDestinationHostname())
                 .path(PATH_TEMPLATE_HOST+"/"+value)
                 .queryParam(MACHINE_ID, value)
-                .queryParam(SID, callbackId)
+                .queryParam(SID, callbackId.toString().replace("nwe://", ""))
                 .queryParam("tabName","OVERVIEW")
                 .toString();
 
