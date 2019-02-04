@@ -170,4 +170,31 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     await blur('.rsa-form-textarea  textarea');
     assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 0, 'Save button not disabled');
   });
+
+  test('it toggles save button based on changing the sub options (block)', async function(assert) {
+    this.set('showFileStatusModal', true);
+    this.set('itemList', [
+      {
+        fileName: 'test',
+        machineOsType: 'windows',
+        size: 100
+      },
+      {
+        fileName: 'test2',
+        machineOsType: 'windows',
+        size: 100
+      }
+    ]);
+    this.set('data', {
+      comment: 'Test',
+      fileStatus: 'Blacklist',
+      remediationAction: null
+    });
+    await render(hbs`{{endpoint/edit-file-status/modal data=data itemList=itemList isRemediationAllowed=true showFileStatusModal=showFileStatusModal}}`);
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
+    await click('.remediation-action-checkbox');
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 0, 'Save button not disabled');
+  });
+
+
 });

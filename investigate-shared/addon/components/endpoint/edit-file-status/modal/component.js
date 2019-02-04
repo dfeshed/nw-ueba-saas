@@ -52,7 +52,7 @@ export default Component.extend({
     return { ...data }; // required this to reset the data on cancel
   },
 
-  @computed('formData', 'formData.comment', 'formData.fileStatus')
+  @computed('formData', 'formData.comment', 'formData.fileStatus', 'formData.remediationAction', 'formData.category')
   isSaveButtonDisabled(formData, comment, fileStatus) {
     if (_.isEqual(formData, this.get('data'))) {
       return true; // IF data is not modified disable the save button
