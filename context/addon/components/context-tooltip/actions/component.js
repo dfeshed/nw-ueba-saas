@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
-import computed from 'ember-computed-decorators';
+import computed, { notEmpty } from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
 import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/util/context-data-modifier';
@@ -52,6 +52,9 @@ const ContextToolTipActions = Component.extend({
    */
   addToListAction: null,
 
+  @notEmpty('endpointServices')
+  isEndpointServerAvailable: false,
+
   /**
    * Indicates whether or not to show the link to NetWitness Endpoint thick client ("ECAT").
    * @type {Boolean}
@@ -80,11 +83,6 @@ const ContextToolTipActions = Component.extend({
   @computed('entityType', 'entityType')
   showEndpointLink(entityType, entityId) {
     return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC_ADDRESS|FILE_HASH|FILE_NAME/));
-  },
-
-  @computed('endpointServices')
-  isEndpointServerAvailable(endpointServices) {
-    return endpointServices && endpointServices.length > 0;
   },
 
   /**

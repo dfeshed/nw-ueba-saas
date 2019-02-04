@@ -96,8 +96,13 @@ const _getRiskScoreDetailContext = (currentReduxState, riskType, alertName) => {
     alertCategory: alertCategory(currentReduxState),
     alertName
   };
-  const promise = riskType === 'FILE' ? api.getDetailedFileRiskScoreContext(data) : api.getDetailedHostRiskScoreContext(data);
-  return promise;
+  return riskType === 'FILE' ? api.getDetailedFileRiskScoreContext(data) : api.getDetailedHostRiskScoreContext(data);
+};
+
+const activeRiskSeverityTab = (tabName) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName }, meta: { belongsTo: riskType(getState()) } });
+  };
 };
 
 const getUpdatedRiskScoreContext = (id, riskType, agentId, tabName) => {
@@ -111,10 +116,19 @@ const getUpdatedRiskScoreContext = (id, riskType, agentId, tabName) => {
   };
 };
 
-const activeRiskSeverityTab = (tabName) => {
-  return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName }, meta: { belongsTo: riskType(getState()) } });
-  };
+const getAlertEvents = (event) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const handlers = {
+      onError(response) {
+        reject(response);
+      },
+      onResponse() { },
+      onCompleted(response) {
+        resolve(response.data);
+      }
+    };
+    fetchStreamingAlertEvents(event, handlers);
+  });
 };
 
 const setSelectedAlert = (context) => {
@@ -183,21 +197,6 @@ const setSelectedAlert = (context) => {
       })();
     });
   };
-};
-
-const getAlertEvents = (event) => {
-  return new RSVP.Promise((resolve, reject) => {
-    const handlers = {
-      onError(response) {
-        reject(response);
-      },
-      onResponse() { },
-      onCompleted(response) {
-        resolve(response.data);
-      }
-    };
-    fetchStreamingAlertEvents(event, handlers);
-  });
 };
 
 const expandEvent = (id) => {

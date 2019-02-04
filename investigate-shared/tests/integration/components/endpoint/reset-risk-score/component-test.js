@@ -52,4 +52,20 @@ module('Integration | Component | endpoint/reset-risk-score', function(hooks) {
     assert.equal(findAll('.reset-risk-score .max-limit-info').length, 1, 'Info message is present in Reset risk score');
   });
 
+  test('on click of cancel button confirmation dialog is closed', async function(assert) {
+    this.set('showResetScoreModal', true);
+    await render(hbs`{{endpoint/reset-risk-score showResetScoreModal=showResetScoreModal}}`);
+    await click('.closeReset');
+    assert.equal(this.get('showResetScoreModal'), false, 'confirmation dialog is closed');
+  });
+
+  test('on click of reset button, showResetScoreModal is set true', async function(assert) {
+    this.set('buttonType', 'button');
+    this.set('showResetScoreModal', false);
+    await render(hbs`{{endpoint/reset-risk-score buttonType=buttonType showResetScoreModal=showResetScoreModal}}`);
+    await click('.reset-score-button');
+    assert.equal(this.get('showResetScoreModal'), true, 'showResetScoreModal is set true');
+    assert.equal(findAll('.reset-risk-score-dialog').length, 1, 'confirmation dialog is opened');
+  });
+
 });
