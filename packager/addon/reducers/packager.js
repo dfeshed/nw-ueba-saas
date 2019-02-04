@@ -26,11 +26,11 @@ const packagerReducer = handleActions({
       success: (s) => s.merge({
         defaultPackagerConfig: {
           ...action.payload.data,
-          packageConfig: { ...action.payload.data.packageConfig, server: s.selectedServerIP }
+          packageConfig: { ...action.payload.data, server: s.selectedServerIP }
         },
         initialState: {
           ...action.payload.data,
-          packageConfig: { ...action.payload.data.packageConfig, server: s.selectedServerIP }
+          packageConfig: { ...action.payload.data, server: s.selectedServerIP }
         }
       })
     });

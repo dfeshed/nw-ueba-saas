@@ -12,7 +12,7 @@ moduleFor('service:request', {
 
 test('Test action creator for making server call for fetching packager config information.', function(assert) {
   const done = assert.async();
-  assert.expect(7);
+  assert.expect(5);
   const callback = dataCreators.getConfig();
   assert.equal(typeof callback, 'function');
   patchSocket((method, modelName) => {
@@ -21,9 +21,7 @@ test('Test action creator for making server call for fetching packager config in
   });
   const dispatchFn = function(action) {
     action.promise.then((response) => {
-      assert.ok(response.data.logCollectionConfig, 'LogCollectionConfig should not be null');
-      assert.ok(response.data.packageConfig, 'PackageConfig should not be null');
-      assert.ok(response.data.logCollectionConfig.channels.length > 0, 'There should be at least 1 channel filter');
+      assert.ok(response.data, 'PackageConfig should not be null');
       done();
     });
     assert.equal(action.type, ACTION_TYPES.GET_INFO);

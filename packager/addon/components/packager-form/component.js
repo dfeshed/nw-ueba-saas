@@ -190,7 +190,7 @@ const formComponent = Component.extend({
       this.setProperties(error);
       if (!error) {
         this.send('saveUIState', this.get('configData'));
-        this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, this._getCallbackFunction(), this.get('serverId'));
+        this.send('setConfig', { ...this.get('configData.packageConfig') }, this._getCallbackFunction(), this.get('serverId'));
       } else {
         if (error.isAccordion) {
           this._agentConfigExpand();

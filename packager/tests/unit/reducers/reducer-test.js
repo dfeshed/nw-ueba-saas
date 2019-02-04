@@ -56,8 +56,8 @@ test('Get defaultPackagerConfig ', function(assert) {
   });
 
   const endState = reducer(previous, action);
-  assert.deepEqual(endState.defaultPackagerConfig, { ...data, packageConfig: { ...data.packageConfig, server: previous.selectedServerIP } });
-  assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data.packageConfig, server: previous.selectedServerIP } });
+  assert.deepEqual(endState.defaultPackagerConfig, { ...data, packageConfig: { ...data, server: previous.selectedServerIP } });
+  assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data, server: previous.selectedServerIP } });
 });
 
 test('Update Redux state with UI state ', function(assert) {

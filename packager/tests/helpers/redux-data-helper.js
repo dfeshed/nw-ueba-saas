@@ -29,7 +29,7 @@ export default class DataHelper {
   }
 
   defaultConfig(configData = config) {
-    _set(this.state, 'defaultPackagerConfig', configData);
+    _set(this.state, 'defaultPackagerConfig.packageConfig', configData);
     return this;
   }
 
