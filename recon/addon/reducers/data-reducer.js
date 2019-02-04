@@ -18,10 +18,11 @@ const dataInitialState = Immutable.from({
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
 
 const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, isStandalone, queryInputs } }) => {
+  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, eventType, isStandalone, queryInputs } }) => {
     return dataInitialState.merge({
       endpointId,
       eventId,
+      eventType,
       isStandalone,
       queryInputs,
       contentLoading: true

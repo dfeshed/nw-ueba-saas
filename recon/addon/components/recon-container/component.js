@@ -157,7 +157,7 @@ const ReconContainer = Component.extend({
    */
   @computed('_isAnimationDone', 'eventType', 'eventMeta', 'meta')
   isReady(_isAnimationDone, eventType, eventMeta, meta) {
-    return _isAnimationDone && (eventType || eventMeta || meta);
+    return _isAnimationDone && !!(eventType || eventMeta || meta);
   },
 
   @computed('i18n', 'apiFatalErrorCode', 'eventId')
@@ -240,7 +240,7 @@ const ReconContainer = Component.extend({
       if (!this.isDestroyed) {
         this.set('_isAnimationDone', true);
       }
-    }, 2000);
+    }, 500);
   },
 
   willDestroyElement() {
