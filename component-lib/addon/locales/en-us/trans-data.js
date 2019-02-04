@@ -474,7 +474,7 @@ export default {
     reExecutingQuery: 'Query is being re-executed to fetch different columns',
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
-    notAllLoaded: '{{maxEvents}} event maximum displayed, remaining results not loaded',
+    notAllLoaded: 'Matched {{maxEvents}} event maximum, remaining results not loaded.',
     partialResults: 'Because the query was canceled, only {{actualEventCount}} results of {{totalCount}} are displayed.',
     allResultsLoaded: 'All results loaded',
     showNextXEvents: 'Show Next {{count}} Events',
@@ -524,7 +524,7 @@ export default {
       title: '{{count}} Events ({{sort}})',
       oldest: 'oldest',
       newest: 'newest',
-      titleThresholdTooltip: 'Displaying {{age}} {{count}} events in {{sort}} order.',
+      titleThresholdTooltip: 'The query matched more than {{count}} events, and the maximum of {{count}} {{age}} events were retrieved. Consider refining your query.',
       isAtThreshold: 'The event count reached the query threshold.',
       tableGroupLabel: 'Displaying events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {

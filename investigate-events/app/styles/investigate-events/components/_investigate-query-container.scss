@@ -185,7 +185,7 @@
 
     &.console-has-warning {
       .query-bar-options {
-        @include border(1px, solid, accentThree);
+        @include border(1px, solid, accentFour);
       }
     }
 
@@ -253,14 +253,14 @@
 
                 &.warning {
                   margin-top: -.5rem;
-                  color: text-color(accentThree);
+                  color: text-color(accentFour);
                   position: relative;
                   top: 3px;
                 }
 
                 &.slowest {
                   margin-top: -.5rem;
-                  color: text-color(accentThree);
+                  color: text-color(accentFour);
                   position: relative;
                   top: 3px;
                 }
@@ -361,7 +361,7 @@
             }
 
             &.warning {
-              @include border(2px, solid, accentThree);
+              @include border(2px, solid, accentFour);
               background-color: background-color(primary, darker);
             }
 
@@ -390,9 +390,9 @@
             }
 
             &.warning {
-              @include border(2px, solid, accentThree);
+              @include border(2px, solid, accentFour);
               &.closed {
-                background-color: background-color(accentThree);
+                background-color: background-color(accentFour);
               }
             }
 
@@ -437,7 +437,7 @@
 
         &.has-warning {
           .console-content {
-            @include border(1px, solid, accentThree);
+            @include border(1px, solid, accentFour);
             @include border-top(1px, solid, primary, dark);
           }
         }
@@ -465,7 +465,7 @@
             }
 
             i {
-              color: text-color(accentThree);
+              color: text-color(accentFour);
               margin-right: rsa-whitespace(least);
               position: relative;
               top: 3px;
@@ -589,14 +589,14 @@
 
         &.has-warning {
           top: rsa-whitespace(less);
-          color: text-color(accentThree);
+          color: text-color(accentFour);
 
           &:hover {
-            color: text-color(accentThree, lighter);
+            color: text-color(accentFour, lighter);
           }
 
           &:active {
-            color: text-color(accentThree);
+            color: text-color(accentFour);
           }
         }
 

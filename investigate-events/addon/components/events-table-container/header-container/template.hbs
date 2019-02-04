@@ -6,9 +6,8 @@
           {{t "investigate.events.titleThreshold" age=eventResultSetStart count=count sort=eventTimeSortOrder}}
           {{rsa-icon
             class="at-threshold"
-            style="lined"
             name='report-problem-triangle'
-            title=(t 'investigate.events.titleThresholdTooltip' age=eventResultSetStart sort=eventTimeSortOrder count=eventCount)}}
+            title=(t 'investigate.events.titleThresholdTooltip' age=eventResultSetStart count=eventCount)}}
         {{else}}
           {{t "investigate.events.title" count=count sort=eventTimeSortOrder}}
         {{/if}}
