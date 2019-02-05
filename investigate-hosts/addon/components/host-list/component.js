@@ -87,12 +87,12 @@ const Container = Component.extend({
         onSuccess: (response) => {
           const { data } = response;
           if (data === limitedFiles.length) {
-            success('investigateFiles.riskScore.success');
+            success('investigateHosts.hosts.resetHosts.success');
           } else {
-            warning('investigateFiles.riskScore.warning');
+            warning('investigateHosts.hosts.resetHosts.warning');
           }
         },
-        onFailure: () => failure('investigateFiles.riskScore.error')
+        onFailure: () => failure('investigateHosts.hosts.resetHosts.error')
       };
       this.send('resetRiskScore', limitedFiles, 'HOST', callBackOptions);
       this.set('showResetScoreModal', false);
