@@ -119,10 +119,10 @@ export const eventType = createSelector(
         medium,
         'nwe.callback_id': callBackId
       } = event;
-      if (medium === 32) {
-        type = EVENT_TYPES.LOG;
-      } else if (callBackId) {
+      if (callBackId) {
         type = EVENT_TYPES.ENDPOINT;
+      } else if (medium === 32) {
+        type = EVENT_TYPES.LOG;
       } else {
         type = EVENT_TYPES.NETWORK;
       }
