@@ -1,6 +1,9 @@
 import Component from '@ember/component';
 import { get, set } from '@ember/object';
 import computed from 'ember-computed-decorators';
+import { later } from '@ember/runloop';
+
+const PROPAGATE = 100;
 
 export default Component.extend({
   focused: 0,
@@ -39,7 +42,11 @@ export default Component.extend({
     },
 
     blur() {
-      this.incrementProperty('focused');
+      later(() => {
+        if (!this.isDestroying) {
+          this.incrementProperty('focused');
+        }
+      }, PROPAGATE);
     }
   }
 });

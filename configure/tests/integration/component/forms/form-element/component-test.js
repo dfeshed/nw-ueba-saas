@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { set } from '@ember/object';
-import { run } from '@ember/runloop';
+import { later, run, scheduleOnce } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { triggerKeyEvent, waitUntil, focus, blur, settled, click, find, fillIn, render } from '@ember/test-helpers';
+import { clearRender, triggerKeyEvent, waitUntil, focus, blur, settled, click, find, findAll, fillIn, render } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { formModel, anotherModel } from './data';
 import { selectors } from './selectors';
@@ -14,6 +14,7 @@ import { FormElement } from './shim';
 import { Promise } from 'rsvp';
 
 const ENTER_KEY = 13;
+const PROPAGATE = 100;
 const timeout = 10000;
 
 let group, label, input, select, radioOne, labelOne, radioTwo, labelTwo, legend, inputGroupOne, inputGroupTwo, options, selectedItem, validation, groupValidation, inlineMessages, submitted, radioShapeOne, radioShapeTwo;
@@ -689,5 +690,84 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(inlineMessages.length, 1);
     assert.equal(inlineMessages[0].textContent.trim(), '');
     assert.equal(validation.classList.contains('is-invalid'), false);
+  });
+
+  test('inline validation not shown when reset is clicked before focusOut fires on behalf of form validation', async function(assert) {
+    assert.expect(14);
+
+    ({ input, validation, inlineMessages } = await formGroup(1));
+
+    assert.equal(input.value, 'y');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await fillIn(input, '');
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    // simulate blur event like a real user would experience
+    // like clicking the reset button after typing into the input
+    await new Promise((resolve) => {
+      blur(input);
+      later(() => {
+        resolve();
+      }, PROPAGATE - 10);
+    });
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    // allow the blur enough time to propagate and trip the inline validation
+    await waitUntil(() => {
+      ({ inlineMessages } = formGroupSync(1));
+      return inlineMessages && inlineMessages[0].textContent.trim() !== '';
+    }, { timeout: (PROPAGATE / 10) });
+
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), 'Foo.bar.baz can\'t be blank');
+    assert.equal(validation.classList.contains('is-invalid'), true);
+  });
+
+  test('blur event will be runloop safe', async function(assert) {
+    assert.expect(9);
+
+    ({ input, validation, inlineMessages } = await formGroup(1));
+
+    assert.equal(input.value, 'y');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    await fillIn(input, '');
+
+    assert.equal(input.value, '');
+    assert.equal(inlineMessages.length, 1);
+    assert.equal(inlineMessages[0].textContent.trim(), '');
+    assert.equal(validation.classList.contains('is-invalid'), false);
+
+    // will destory the component but not until blur has fired
+    scheduleOnce('render', this, async function() {
+      clearRender();
+    });
+
+    // will run just before the clearRender is invoked
+    scheduleOnce('actions', this, async function() {
+      await new Promise((resolve) => {
+        blur(input);
+        later(() => {
+          resolve();
+        }, PROPAGATE - 10);
+      });
+    });
+
+    await waitUntil(() => {
+      return findAll(selectors.resetButton).length === 0;
+    }, { timeout });
+
+    assert.equal(findAll(selectors.resetButton).length, 0);
   });
 });
