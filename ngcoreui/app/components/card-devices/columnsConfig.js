@@ -34,7 +34,8 @@ export const COLUMNS_CONFIG = [
   },
   {
     field: 'time_last',
-    title: 'Last Time'
+    title: 'Last Time',
+    dataType: 'date'
   },
   {
     field: 'time_network',

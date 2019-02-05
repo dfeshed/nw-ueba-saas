@@ -17,12 +17,14 @@
 
   This should probably include dropping into the tree view from any path in the tree based on the URL
 
+- [ ] Add historical fetch to `card-devices` to populate graph
 - [ ] Update tree view to be a console
 - [ ] Add support for local user settings persistence
 - [ ] Add build number in ngcoreui.sh to archive for production builds
 - [x] Enhance graphs to use fixed y-axis range where appropriate (e.g cpu % -> 0-100)
 - [ ] use rsa-content-datetime template for time value
 - [ ] Internationalization, add compatibility with SA-UI i18n service
+- [ ] Update existing cards to use the same graph population mechanisms as `card-devices`
 
 ## BUGS
 - [ ] CRITICAL: page becomes unresponsive after time
@@ -38,7 +40,7 @@
     - [ ] filter does not apply until control loses focus
     - [ ] filter not applied to new logs when `Show Latest` selected
   - [ ] change message wrap so that it does not wrap to begining of next line (wrap toggle?)
-- [ ] tree operation results panel only displays last message received
+- [x] tree operation results panel only displays last message received
 - [x] The popout menu on the left should have a “Shutdown” option
 
   This should probably be on the dashboard page and not the popout menu...
@@ -48,11 +50,12 @@
 - [ ] When filling in values for an operation, clicking “Enable” should be assumed if clicking on the control (ie. the text box that you “Enable”)
 - [x] When utilizing an operation there should be a way to specify the entire string-param’d string, as in the classic REST interface
 - Dashboard
-  - [ ] cards should be fixed width (maybe not?)
+  - [ ] cards should be fixed width (maybe?)
   - [ ] card property names/values wrap and flow into property immediately below, add clipping & '...'
   - [ ] monitor mixin pulls 10 minutes of data when anything over 6 *should* be sufficient
   - [ ] allow gaps in graphs where no values exist (e.g. capture not running)
   - [ ] show errors for action failures using notifications.js (standard errors SAStyle example not working)
+  - [ ] `devices-card` last time needs to be formatted as a time value
 
 ## Introduction
 `ngcoreui` is an Ember app which serves as a web interface for the core devices.

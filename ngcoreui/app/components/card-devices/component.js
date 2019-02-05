@@ -11,27 +11,37 @@ export default Component.extend({
   classNames: ['dashboard-banner'],
 
   moduleName: null,
-  monitor: [],
   devicesStreamHandle: null,
   devices: null,
   data: null,
 
   intervalHandle: null,
 
+  xProp: 'time_',
+  yProp: 'session_rate',
+
   domainExtents: {
-    x: { fixed: [ 0, 299 ] },
+    x: { fixed: [ 0, 30000 ] },
     y: { fixed: [ 0 ] }
   },
 
   transport: service(),
 
-  graphField: 'session_rate',
-
   columns: COLUMNS_CONFIG,
+
+  formatters: COLUMNS_CONFIG.reduce((formatters, column) => {
+    if (column.dataType === 'numeric') {
+      formatters[column.field] = parseFloat;
+    } else if (column.field === 'time_last') {
+      // time.last is seconds since epoch as a string
+      formatters[column.field] = (v) => new Date(parseFloat(v) * 1000).toLocaleString('en-US', { hour12: false });
+    }
+    return formatters;
+  }, {}),
 
   actions: {
     toggleColumnSelection(field) {
-      this.set('graphField', field);
+      this.set('yProp', field);
     }
   },
 
@@ -110,12 +120,14 @@ export default Component.extend({
       },
       messageCallback: (message) => {
         const nodes = message.nodes || (message.node ? [ message.node ] : []);
-
         const devices = this.get('devices');
+        const formatters = this.get('formatters');
         const updated = devices.map((device) => {
           if (device.name === deviceName) {
             nodes.forEach((node) => {
-              device.values[node.name.replace('.', '_')] = node.value;
+              const name = node.name.replace('.', '_');
+              const value = formatters[name] ? formatters[name](node.value) : node.value;
+              device.values[name] = value;
             });
           }
           return device;
@@ -145,20 +157,16 @@ export default Component.extend({
   },
 
   updateSeries() {
+    const time_ = Date.now();
     const { data, devices } = this.getProperties('data', 'devices');
     const series = devices.map((device, index) => {
-      return (data[index] || []).concat({ ...device.values }).slice(-300);
+      return (data[index] || []).concat({ ...device.values, time_ }).slice(-301);
     });
     this.set('data', series);
-  },
-
-  @computed('data', 'graphField')
-  graphData: (data, graphField) => {
-    return data.map((d) => {
-      const offset = 300 - d.length;
-      return d.map((values, index) => {
-        return { x: index + offset, y: parseFloat(values[graphField]) };
-      });
+    // force y-axis to always show 0 and x axis to show 5 minutes
+    this.set('domainExtents', {
+      y: { fixed: [0] },
+      x: { fixed: [time_ - 300 * 1000, time_] }
     });
   }
 

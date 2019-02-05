@@ -63,7 +63,7 @@ export default Service.extend({
       // By default on a development build, set this to localhost.
       // If you're developing and want to test the UI on a different endpoint,
       // change this string.
-      this.set('url', `${wsScheme}//localhost:50102/connections/ws`);
+      this.set('url', `${wsScheme}//localhost:50105/connections/ws`);
     }
   },
 

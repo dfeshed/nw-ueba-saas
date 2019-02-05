@@ -1,32 +1,46 @@
 <h1 class="large centered">Devices</h1>
-{{#rsa-chart domainExtents=domainExtents data=graphData as |params|}}
+{{#rsa-chart
+  domainExtents=domainExtents
+  xProp=xProp
+  yProp=yProp
+  data=data as |params|}}
   {{rsa-line-series
     data=params.data
     dataIndex=0
+    xProp=xProp
+    yProp=yProp
     xScale=params.xScale
     yScale=params.yScale
     height=params.graphHeight}}
   {{rsa-line-series
     data=params.data
     dataIndex=1
+    xProp=xProp
+    yProp=yProp
     xScale=params.xScale
     yScale=params.yScale
     height=params.graphHeight}}
   {{rsa-line-series
     data=params.data
     dataIndex=2
+    xProp=xProp
+    yProp=yProp
     xScale=params.xScale
     yScale=params.yScale
     height=params.graphHeight}}
   {{rsa-line-series
     data=params.data
     dataIndex=3
+    xProp=xProp
+    yProp=yProp
     xScale=params.xScale
     yScale=params.yScale
     height=params.graphHeight}}
   {{rsa-line-series
     data=params.data
     dataIndex=4
+    xProp=xProp
+    yProp=yProp
     xScale=params.xScale
     yScale=params.yScale
     height=params.graphHeight}}
@@ -38,8 +52,8 @@
 
   {{#rsa-data-table/header as |column|}}
     {{#if column.headerComponentClass}}
-      <label class="rsa-form-checkbox-label {{if (eq graphField column.field) 'checked'}}">
-        {{rsa-form-checkbox checked=(eq graphField column.field) change=(action 'toggleColumnSelection' column.field)}}
+      <label class="rsa-form-checkbox-label {{if (eq yProp column.field) 'checked'}}">
+        {{rsa-form-checkbox checked=(eq yProp column.field) change=(action 'toggleColumnSelection' column.field)}}
       </label>
     {{/if}}
     {{column.title}}
