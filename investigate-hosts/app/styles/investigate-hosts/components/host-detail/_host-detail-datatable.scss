@@ -19,4 +19,8 @@
   .rsa-data-table-body-row.is-row-checked {
     background-color: background-color(primary, darker);
   }
+
+  .content-context-menu {
+    display: inherit;
+  }
 }
