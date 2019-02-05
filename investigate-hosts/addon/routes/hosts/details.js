@@ -41,6 +41,9 @@ export default Route.extend({
     },
     sid: {
       refreshModel: true
+    },
+    tabName: {
+      refreshModel: true
     }
   },
 
