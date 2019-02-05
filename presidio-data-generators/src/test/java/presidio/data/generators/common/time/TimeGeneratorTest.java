@@ -24,7 +24,7 @@ public class TimeGeneratorTest {
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
         MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
-        Assert.assertTrue(TG.hasNext());
+        Assert.assertTrue(TG.hasNext()!= null);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class TimeGeneratorTest {
         LocalTime endTime = LocalTime.of(endHour,endMin, 20, 500);
 
         ITimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
-        while (TG.hasNext()) System.out.println(TG.getNext().toString());
+        while (TG.hasNext() != null) System.out.println(TG.getNext().toString());
         Assert.assertTrue(true);
     }
 
@@ -53,7 +53,7 @@ public class TimeGeneratorTest {
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
         MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
-        Assert.assertTrue(TG.hasNext());
+        Assert.assertTrue(TG.hasNext() != null);
     }
 
     @Test

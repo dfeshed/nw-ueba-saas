@@ -46,7 +46,7 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
     @Override
     public List<Event> generate() throws GeneratorException {
         List<Event> ret = new ArrayList<>();
-        while(timeGenerator.hasNext()){
+        while(timeGenerator.hasNext() != null){
             ret.add(generateNext());
         }
         return ret;
@@ -55,7 +55,7 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
     @Override
     public Event generateNext() throws GeneratorException {
         Event ret = null;
-        while(ret == null && timeGenerator.hasNext()) {
+        while(ret == null && timeGenerator.hasNext() != null) {
             EventGeneratorProbability eventGeneratorProbability = eventGeneratorProbabilityIterator.next();
             if (!eventGeneratorProbabilityIterator.hasNext()) {
                 resetEventGeneratorProbabilityIterator();

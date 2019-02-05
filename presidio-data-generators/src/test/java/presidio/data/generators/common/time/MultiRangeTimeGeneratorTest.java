@@ -100,7 +100,7 @@ public class MultiRangeTimeGeneratorTest {
         ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 rangesList, Duration.ofHours(1));
         int count = 0;
-        while (TG.hasNext()) {
+        while (TG.hasNext() != null) {
             System.out.print(++count + " ");
             System.out.println(TG.getNext().toString());
         }
@@ -112,7 +112,7 @@ public class MultiRangeTimeGeneratorTest {
         ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 Collections.emptyList(), Duration.ofHours(1));
         int count = 0;
-        while (TG.hasNext()) {
+        while (TG.hasNext() != null) {
             System.out.print(++count + " ");
             System.out.println(TG.getNext().toString());
         }
@@ -130,7 +130,7 @@ public class MultiRangeTimeGeneratorTest {
         ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 rangesList, null);
         int count = 0;
-        while (TG.hasNext()) {
+        while (TG.hasNext() != null) {
             System.out.print(++count + " ");
             System.out.println(TG.getNext().toString());
         }
@@ -148,7 +148,7 @@ public class MultiRangeTimeGeneratorTest {
         ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 rangesList, Duration.ofMinutes(30));
         int count = 0;
-        while (TG.hasNext()) {
+        while (TG.hasNext() != null) {
             System.out.print(++count + " ");
             System.out.println(TG.getNext().toString());
         }

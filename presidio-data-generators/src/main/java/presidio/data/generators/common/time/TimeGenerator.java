@@ -50,7 +50,7 @@ public class TimeGenerator implements ITimeGenerator {
         List<Instant> eventTimes = new ArrayList<>();
         TimeGeneratorIterator iterator = new TimeGeneratorIterator();
 
-        while(iterator.hasNext()){
+        while(iterator.hasNext() != null){
             eventTimes.add(iterator.getNext());
         }
         return eventTimes;
@@ -59,7 +59,7 @@ public class TimeGenerator implements ITimeGenerator {
     public void printIntervals() {
         TimeGeneratorIterator iterator = new TimeGeneratorIterator();
         
-        while(iterator.hasNext()){
+        while(iterator.hasNext() != null){
             System.out.println(iterator.getNext());
         }
     }
@@ -69,13 +69,13 @@ public class TimeGenerator implements ITimeGenerator {
     }
 
     @Override
-    public boolean hasNext() {
+    public Instant hasNext() {
         return iterator.hasNext();
     }
 
     @Override
     public Instant getNext() throws GeneratorException {
-        if (!hasNext()) throw new GeneratorException ("Time Generator Exception occurred: End of the LocalTime interval is reached - no more data.");
+        if (hasNext() == null) throw new GeneratorException ("Time Generator Exception occurred: End of the LocalTime interval is reached - no more data.");
         return iterator.getNext();
     }
 
@@ -83,7 +83,7 @@ public class TimeGenerator implements ITimeGenerator {
         if(size == null){
             TimeGeneratorIterator iterator = new TimeGeneratorIterator();
             int cnt = 0;
-            while(iterator.hasNext()){
+            while(iterator.hasNext() != null){
                 cnt++;
                 iterator.advanceNextInstant();
             }
@@ -115,8 +115,8 @@ public class TimeGenerator implements ITimeGenerator {
             endInstantInCurDay = calcEndInstantInDay(startInstant.truncatedTo(ChronoUnit.DAYS));
         }
         
-        public boolean hasNext(){
-            return nextInstant != null;
+        public Instant hasNext(){
+            return nextInstant;
         }
         
         public Instant getNext(){
