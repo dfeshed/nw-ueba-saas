@@ -376,3 +376,39 @@ test('normalize will correctly accept 0 for threshold value', function(assert) {
     }
   });
 });
+
+test('denormalize will transform any decimal values to integer', function(assert) {
+  assert.expect(1);
+
+  const result = denormalizeRiskScoringSettings({
+    host: {
+      threshold: '75',
+      timeWindow: '5.0',
+      timeWindowUnit: 'd',
+      enabled: true
+    },
+    file: {
+      threshold: '80',
+      timeWindow: '24',
+      timeWindowUnit: 'h',
+      enabled: false
+    }
+  });
+
+  const expected = [
+    {
+      type: 'HOST',
+      threshold: 75,
+      timeWindow: '5d',
+      enabled: true
+    },
+    {
+      type: 'FILE',
+      threshold: 80,
+      timeWindow: '24h',
+      enabled: false
+    }
+  ];
+
+  assert.deepEqual(result, expected);
+});
