@@ -6,7 +6,7 @@ import java.time.Instant;
 
 public interface ITimeGenerator {
 
-    boolean hasNext();
+    Instant hasNext();
     Instant getNext() throws GeneratorException;
     Instant getFirst() throws GeneratorException;
     Instant getLast() throws GeneratorException;

@@ -59,7 +59,7 @@ public class DLPFileEventsGenerator extends AbstractEventGenerator {
         DLPFileEvent event = null;
 
         // fill list of events
-        if (getTimeGenerator().hasNext()) {
+        if (getTimeGenerator().hasNext() != null) {
             Instant currentTime = getTimeGenerator().getNext();
             User user = getUserGenerator().getNext();
 

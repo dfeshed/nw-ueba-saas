@@ -86,14 +86,17 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
     }
 
     @Override
-    public boolean hasNext() {
-        return nextInstant.isBefore(endInstant);
+    public Instant hasNext() {
+        if (nextInstant.isBefore(endInstant)){
+            return nextInstant;
+        }
+        return null;
     }
 
     @Override
     public Instant getNext() throws GeneratorException {
 
-        if (hasNext()) {
+        if (hasNext() != null) {
             Instant returnedInstant = nextInstant;
             updateNextInstant();
             return returnedInstant;

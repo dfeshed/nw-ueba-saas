@@ -47,13 +47,16 @@ public class FixedRangeTimeGenerator implements ITimeGenerator {
     }
 
     @Override
-    public boolean hasNext() {
-        return nextInstant.isBefore(endInstant);
+    public Instant hasNext() {
+        if (nextInstant.isBefore(endInstant)){
+            return nextInstant;
+        }
+        return null;
     }
 
     @Override
     public Instant getNext() throws GeneratorException {
-        if (hasNext()) {
+        if (hasNext() != null) {
             Instant returnedInstant = nextInstant;
             nextInstant = nextInstant.plus(interval);
             return returnedInstant;

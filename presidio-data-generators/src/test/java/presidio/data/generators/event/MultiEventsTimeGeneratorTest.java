@@ -48,7 +48,7 @@ public class MultiEventsTimeGeneratorTest {
          * Actual size of returned list - 2000
          * events from 44 to 1999 are NULLs
          * **/
-        while (randomEventsGenerator.hasNext()) {
+        while (randomEventsGenerator.hasNext() != null) {
             // for some reason, in time generator, after 44 events, nextInstant is set for default -30d (from AbstractEventGenerator) and hasNext returns true.
             List<Event> events = randomEventsGenerator.generate(2000);
             Assert.assertEquals(events.size(),44);
