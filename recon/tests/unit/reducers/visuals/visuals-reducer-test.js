@@ -20,11 +20,7 @@ const initialState = Immutable.from({
 });
 
 test('test INITIALIZE action handler', function(assert) {
-  const state = Immutable.from({});
-  const initializeAsNetwork = {
-    type: ACTION_TYPES.INITIALIZE,
-    payload: { eventType: 'NETWORK' }
-  };
+  // ENDPOINT and LOG are always "TEXT"
   const initializeAsLog = {
     type: ACTION_TYPES.INITIALIZE,
     payload: { eventType: 'LOG' }
@@ -33,9 +29,24 @@ test('test INITIALIZE action handler', function(assert) {
     type: ACTION_TYPES.INITIALIZE,
     payload: { eventType: 'ENDPOINT' }
   };
-  assert.equal(reducer(state, initializeAsNetwork).currentReconView.name, 'PACKET', 'incorrect view type for network event type');
-  assert.equal(reducer(state, initializeAsLog).currentReconView.name, 'TEXT', 'incorrect view type for log event type');
-  assert.equal(reducer(state, initializeAsEndpoint).currentReconView.name, 'TEXT', 'incorrect view type for endpoint event type');
+  assert.equal(reducer(initialState, initializeAsLog).currentReconView.name, 'TEXT', 'incorrect view type for log event type');
+  assert.equal(reducer(initialState, initializeAsEndpoint).currentReconView.name, 'TEXT', 'incorrect view type for endpoint event type');
+
+  // NETWORK will default to "TEXT", but can also be what was last selected
+  const initializeAsNetworkDefault = {
+    type: ACTION_TYPES.INITIALIZE,
+    payload: { eventType: 'NETWORK' }
+  };
+  assert.equal(reducer(initialState, initializeAsNetworkDefault).currentReconView.name, 'TEXT', 'incorrect default view type for network event type');
+  const packetState = Immutable.from({
+    ...initialState,
+    defaultReconView: RECON_VIEW_TYPES_BY_NAME.PACKET
+  });
+  const initializeAsNetworkPacket = {
+    type: ACTION_TYPES.INITIALIZE,
+    payload: { eventType: 'NETWORK' }
+  };
+  assert.equal(reducer(packetState, initializeAsNetworkPacket).currentReconView.name, 'PACKET', 'incorrect view type for network event type, was expecting "PACKET"');
 });
 
 test('test SET_PREFERENCES action handler', function(assert) {

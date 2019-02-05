@@ -410,7 +410,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     const eventResults = {
       data: [
         { sessionId: 1, medium: 32 },
-        { sessionId: 2, 'nwe.callback_id': true },
+        { sessionId: 2, medium: 32, 'nwe.callback_id': true },
         { sessionId: 3 }
       ]
     };

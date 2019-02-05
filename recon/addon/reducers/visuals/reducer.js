@@ -7,7 +7,6 @@ import {
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import { handleSetTo, handlePreference } from 'recon/reducers/util';
-import { warn } from '@ember/debug';
 
 const visualsInitialState = Immutable.from({
   defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
@@ -34,23 +33,15 @@ const visuals = handleActions({
   },
 
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
+    const { eventType } = payload;
     // if we know what type of event this is, let's set that up now
-    if (payload.eventType && typeof(payload.eventType) === 'string') {
-      let newView;
-      switch (payload.eventType) {
-        case EVENT_TYPES.ENDPOINT:
-        case EVENT_TYPES.LOG:
-          newView = _getViewByName('TEXT');
-          break;
-        case EVENT_TYPES.NETWORK:
-          newView = _getViewByName('PACKET');
-          break;
-        default:
-          warn(`Unsupported reconstruction type: "${payload.eventType}"`, false, { id: 'recon.visuals.initialize' });
-      }
-      if (newView) {
-        return state.set('currentReconView', newView);
-      }
+    if (eventType && typeof(eventType) === 'string') {
+      // ENDPOINT and LOG events are always viewed as "text", otherwise, just
+      // use the default view. The default view is updated whenever you choose
+      // a new view.
+      const view = (eventType === EVENT_TYPES.ENDPOINT || eventType === EVENT_TYPES.LOG) ?
+        _getViewByName('TEXT') : state.defaultReconView;
+      return state.set('currentReconView', view);
     }
     return state;
   },
