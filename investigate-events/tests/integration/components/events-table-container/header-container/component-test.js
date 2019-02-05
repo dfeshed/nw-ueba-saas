@@ -63,7 +63,7 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(findAll('.ember-power-select-group').length, 2, 'render two column groups');
     assert.equal(findAll('.ember-power-select-group-name')[0].textContent.trim(), 'Custom Column Groups', 'render custom column group');
     assert.equal(findAll('.ember-power-select-group-name')[1].textContent.trim(), 'Default Column Groups', 'render default column group');
-    assert.equal(find('.ember-power-select-group-name').getAttribute('title'), 'Manage Custom Column Groups in Events View');
+    assert.equal(find('.ember-power-select-group-name').getAttribute('title'), 'Manage Custom Column Groups in Events List');
   });
 
   test('it provides option for search filter', async function(assert) {

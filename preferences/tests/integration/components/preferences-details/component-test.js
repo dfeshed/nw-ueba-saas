@@ -81,11 +81,21 @@ module('Integration | Component | Preferences Details', function(hooks) {
     // assert.ok(find('.rsa-form-radio-label.Ascending.checked'));
   });
 
+  test('Preferences panel should render title for DOWNLOAD EXTRACTED FILES AUTOMATICALLY', async function(assert) {
+    await renderApplicationContent(this, assert);
+    assert.equal(findAll('.rsa-form-checkbox-label')[0].getAttribute('title'), 'If selected, the browser downloads files to the download folder and if a file type is mapped to a default program, automatically open it.');
+  });
+
+  test('Preferences panel should render title for Update time window automatically', async function(assert) {
+    await renderApplicationContent(this, assert);
+    assert.equal(findAll('.rsa-form-checkbox-label')[1].getAttribute('title'), 'If selected, this continuously updates the time window, for relative time ranges, to reflect the latest time. In both cases the Query Events icon becomes active so that you can refresh the displayed results. If using database time, updates the time window when new data has been stored. If using current time, updates the time window when a minute elapses.');
+  });
+
   test('Preferences panel should show Time format Settings', async function(assert) {
     await renderApplicationContent(this, assert);
     assert.ok(find('.rsa-form-radio-label.DB.checked'));
-    assert.equal(find('.rsa-form-radio-label.DB').getAttribute('title'), 'Database time where events are stored', 'tooltip should be shown for Database time');
-    assert.equal(find('.rsa-form-radio-label.WALL').getAttribute('title'), 'Current time with timezone set in user preferences', 'tooltip should be shown for Wall clock time');
+    assert.equal(find('.rsa-form-radio-label.DB').getAttribute('title'), 'Default selection. When selected, the end time is the last time data was stored in the service being queried.');
+    assert.equal(find('.rsa-form-radio-label.WALL').getAttribute('title'), 'When selected, the end time is the current time of day, with the preferred time zone, no matter when the most recent data was stored.');
   });
 
   test('Preferences panel comes with valid options for Analysis', async function(assert) {
@@ -120,7 +130,6 @@ module('Integration | Component | Preferences Details', function(hooks) {
     assert.equal(options.length, 4);
     assert.equal(getTextFromDOMArray(options), 'DownloadTextDownloadCSVDownloadTSVDownloadJSON');
   });
-
 
   test('Preferences panel saves new Analysis on change', async function(assert) {
     await renderApplicationContent(this, assert);

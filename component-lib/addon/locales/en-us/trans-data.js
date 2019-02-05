@@ -379,8 +379,8 @@ export default {
       topBottom: 'Top/Bottom View',
       sideBySide: 'Side by Side View',
       meta: 'Show/Hide Meta',
-      expand: 'Expand View',
-      shrink: 'Contract View',
+      expand: 'Expand Panel',
+      shrink: 'Shrink Panel',
       close: 'Close Reconstruction'
     },
     eventHeader: {
@@ -466,7 +466,7 @@ export default {
   noon: 'Noon',
   investigate: {
     controls: {
-      toggle: 'Show/Hide Events Panel',
+      toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'
     },
     title: 'Investigate',
@@ -529,7 +529,7 @@ export default {
       tableGroupLabel: 'Displaying events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {
         custom: 'Custom Column Groups',
-        customTitle: 'Manage Custom Column Groups in Events View',
+        customTitle: 'Manage Custom Column Groups in Events List',
         default: 'Default Column Groups',
         searchPlaceholder: 'Type to filter column group'
       },
@@ -555,9 +555,9 @@ export default {
       error: 'An unexpected error occurred when executing this query.',
       fatalSummaryError: 'The service is unavailable',
       deviceDownRequery: 'Service went offline in the middle of the query. Please re-query.',
-      shrink: 'Shrink Events Panel',
-      expand: 'Expand Events Panel',
-      close: 'Close Events Panel',
+      shrink: 'Shrink Events List Panel',
+      expand: 'Expand Events List Panel',
+      close: 'Close Events List Panel',
       scrollMessage: 'Scroll down to view the selected event highlighted in blue',
       eventTips: {
         noResults: 'No results yet. Please select a service, time range, and submit a query',
@@ -2053,12 +2053,13 @@ export default {
       },
       queryTimeFormat: 'Time format for query',
       DB: 'Database Time',
-      WALL: 'Wall Clock Time',
-      'DB-tooltip': 'Database time where events are stored',
-      'WALL-tooltip': 'Current time with timezone set in user preferences',
+      WALL: 'Current Time',
+      'DB-tooltip': 'Default selection. When selected, the end time is the last time data was stored in the service being queried.',
+      'WALL-tooltip': 'When selected, the end time is the current time of day, with the preferred time zone, no matter when the most recent data was stored.',
       autoDownloadExtractedFiles: 'Download extracted files automatically',
+      'autoDownloadExtractedFiles-tooltip': 'If selected, the browser downloads files to the download folder and if a file type is mapped to a default program, automatically open it.',
       autoUpdateSummary: 'Update time window automatically',
-      'autoUpdateSummary-tooltip': 'Enable this option to automatically update the time range window in the breadcrumb when the service is polled and sends fresh results. When the time range is updated, you can see the Submit Query button activated and click to get the fresh results. To keep the time range window in the breadcrumb synchronized with the current results, do not enable this option.',
+      'autoUpdateSummary-tooltip': 'If selected, this continuously updates the time window, for relative time ranges, to reflect the latest time. In both cases the Query Events icon becomes active so that you can refresh the displayed results. If using database time, updates the time window when new data has been stored. If using current time, updates the time window when a minute elapses.',
       eventTimeSortOrder: 'Event Sort Order',
       'eventTimeSortOrder-tooltip': 'Sort events in descending or ascending order based on collection time. If results exceed the events limit, not all events can be loaded. The portion of returned events (oldest or newest) that is loaded will match the sort order preference (oldest or newest).',
       Descending: 'Newest First',
