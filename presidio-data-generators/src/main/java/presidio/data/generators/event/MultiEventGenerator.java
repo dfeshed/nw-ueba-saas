@@ -19,7 +19,10 @@ public class MultiEventGenerator implements IEventGenerator<Event>{
     public void updateNextEventGenerator(){
         curEventGenerator = eventGeneratorList.get(0);
         for(AbstractEventGenerator eventGenerator: eventGeneratorList){
-            if(curEventGenerator.hasNext().isAfter(eventGenerator.hasNext())){
+            if(eventGenerator.hasNext() == null){
+                continue;
+            }
+            if(curEventGenerator.hasNext() == null || curEventGenerator.hasNext().isAfter(eventGenerator.hasNext())){
                 curEventGenerator = eventGenerator;
             }
         }
