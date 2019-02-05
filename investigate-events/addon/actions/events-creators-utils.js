@@ -38,8 +38,10 @@ export const mergeMetaIntoEvent = (includeSessionId) => {
       }
       const len = metas.length || 0;
       for (let i = 0; i < len; i++) {
-        const meta = metas[i];
-        event[meta[0]] = meta[1];
+        const [key, val] = metas[i];
+        if (event[key] === undefined) {
+          event[key] = val;
+        }
       }
 
       // convert to something easily sortable later

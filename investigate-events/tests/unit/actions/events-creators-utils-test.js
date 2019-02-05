@@ -96,14 +96,14 @@ module('Unit | Actions | events-creators-utils', function(hooks) {
     event = {
       time: 60000,
       sessionid: 1,
-      metas: [['foo', 1], ['bar', 10]]
+      metas: [['foo', 1], ['bar', 10], ['bar', 5]]
     };
     mergeMetaIntoEvent(false)(event);
     assert.equal(Object.keys(event).length, 4, 'correct number of object keys');
     assert.equal(event.metas, undefined, 'metas is gone');
     assert.equal(event.sessionid, undefined, 'sessionid is gone');
     assert.equal(event.foo, 1, 'foo flattened in');
-    assert.equal(event.bar, 10, 'bar flattened in');
+    assert.equal(event.bar, 10, 'first bar flattened in');
     assert.equal(event.time, 60000, 'time still there');
     assert.deepEqual(event.timeAsNumber, new Date(60000).getTime() / 1000, 'time added as date object');
 
