@@ -6,7 +6,7 @@ const tabs = [
   },
   {
     label: 'investigateHosts.tabs.mountedPaths',
-    hiddenFor: ['windows'],
+    hiddenFor: ['windows', 'mac'],
     name: 'MOUNTED_PATH',
     id: '2'
   },
@@ -19,7 +19,7 @@ const tabs = [
   {
     label: 'investigateHosts.tabs.bashHistories',
     name: 'BASH_HISTORY',
-    hiddenFor: ['windows'],
+    hiddenFor: ['windows', 'mac'],
     id: '4'
   },
   {

@@ -39,11 +39,11 @@ module('Integration | Component | host-detail/system-information', function(hook
 
   // Test for the number of tabs rendered based on the OS selected
   // Mac
-  test('Number of tabs rendered based on the OS selected, Mac : 4', async function(assert) {
+  test('Number of tabs rendered based on the OS selected, Mac : 2', async function(assert) {
     setState(mac);
     await render(hbs`{{host-detail/system-information}}`);
     const numberOfNavTabs = findAll('.system-information-wrapper .host-title-bar > div').length;
-    assert.equal(numberOfNavTabs, 4, 'Number of tabs rendered based on the OS selected');
+    assert.equal(numberOfNavTabs, 2, 'Number of tabs rendered based on the OS selected');
   });
   // Windows
   test('Number of tabs rendered based on the OS selected, Windows : 5', async function(assert) {
@@ -183,7 +183,9 @@ module('Integration | Component | host-detail/system-information', function(hook
   // Test if no results message is present
   test('No Results Found text present when there are no results', async function(assert) {
     assert.expect(1);
-    setState(mac);
+    const linux1 = { ...linux };
+    linux1.overview.hostDetails.machine.mountedPaths = [];
+    setState(linux1);
     await render(hbs`{{host-detail/system-information}}`);
     await click('.system-information-wrapper .host-title-bar > div:nth-child(2)');
     assert.equal(find('.message').textContent.trim(), 'No Results Found.', 'No Results Found text present when there are no results');
