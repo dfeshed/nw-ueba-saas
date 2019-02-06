@@ -389,7 +389,9 @@ module('Integration | Component | host-list', function(hooks) {
 
   test('on right clicking the machine name context menu not rendered', async function(assert) {
     setState(endpointState);
-    this.set('closeProperties', () => {});
+    this.set('closeProperties', () => {
+      assert.ok(true);
+    });
     this.set('openProperties', () => {});
     await render(hbs`
       <style>

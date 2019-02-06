@@ -41,9 +41,11 @@ const onHostFileSelection = (belongsTo, storeName, { id }, index) => {
   return (dispatch, getState) => {
     const { endpoint: { detailsInput: { agentId } } } = getState();
     dispatch(setRowSelection(belongsTo, id, index));
-    dispatch(getRespondServerStatus());
-    dispatch(resetRiskContext());
-    dispatch(getHostFileScoreContext(focusedRowChecksum(getState(), storeName), agentId));
+    if (id) {
+      dispatch(getRespondServerStatus());
+      dispatch(resetRiskContext());
+      dispatch(getHostFileScoreContext(focusedRowChecksum(getState(), storeName), agentId));
+    }
   };
 };
 

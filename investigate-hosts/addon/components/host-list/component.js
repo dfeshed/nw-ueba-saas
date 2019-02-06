@@ -77,6 +77,7 @@ const Container = Component.extend({
         onSuccess: () => success('investigateHosts.hosts.deleteHosts.success'),
         onFailure: ({ meta: message }) => failure(message.message)
       };
+      this.closeProperties();
       this.send('deleteHosts', callBackOptions);
       this.set('showConfirmationModal', false);
     },
