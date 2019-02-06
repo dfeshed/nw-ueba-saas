@@ -64,8 +64,8 @@ def uebaPreparingEnv (){
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
     if (runCleanup == 'false' && schedulerActivity == 'active' ){
        sleep 30
-       sh "systemctl start airflow-scheduler"
-       sh "systemctl start airflow-webserver"
+       sh "sudo systemctl start airflow-scheduler"
+       sh "sudo systemctl start airflow-webserver"
     }
     println ('Presidio RPMs After The Upgrade')
     sh "rpm -qa | grep presidio"
