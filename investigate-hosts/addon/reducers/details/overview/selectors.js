@@ -15,6 +15,7 @@ const _arrangeSecurityConfigsBy = (state) => state.endpoint.overview.arrangeSecu
 const _policyDetails = (state) => state.endpoint.overview.policyDetails || {};
 const _serverId = (state) => state.endpointQuery.serverId;
 const _selectedMachineServerId = (state) => state.endpointQuery.selectedMachineServerId;
+const _activePropertyPanelTab = (state) => state.endpoint.visuals.activePropertyPanelTab;
 
 const _hostAgentStatus = createSelector(
   _hostOverview,
@@ -257,39 +258,52 @@ export const getPoliciesPropertyData = createSelector(
   (policyDetails, hostOverview, scheduledScanConfig, windowsLogPolicy) => {
     const policyStatus = hostOverview.groupPolicy ? hostOverview.groupPolicy.policyStatus : null;
     const { policy, evaluatedTime, message } = policyDetails;
-    const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : {};
-    const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
-    let newTransportConfig = {};
-    if (transportConfig) {
-      const { primary } = transportConfig;
-      const { httpsBeaconIntervalInSeconds, udpBeaconIntervalInSeconds } = primary;
-      newTransportConfig = {
-        primary: {
-          ...primary,
-          httpsBeaconInterval: secondsToMinutesConverter(httpsBeaconIntervalInSeconds),
-          udpBeaconInterval: secondsToMinutesConverter(udpBeaconIntervalInSeconds)
+    const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : null;
+    let policiesPropertyData = null;
+    if (windowsLogPolicy) {
+      policiesPropertyData = {
+        ...policy,
+        policyStatus,
+        evaluatedTime,
+        message,
+        windowsLogPolicy
+      };
+    }
+    if (edrPolicy) {
+      const { blockingConfig, serverConfig, transportConfig } = edrPolicy;
+      let newTransportConfig = {};
+      if (transportConfig) {
+        const { primary } = transportConfig;
+        const { httpsBeaconIntervalInSeconds, udpBeaconIntervalInSeconds } = primary;
+        newTransportConfig = {
+          primary: {
+            ...primary,
+            httpsBeaconInterval: secondsToMinutesConverter(httpsBeaconIntervalInSeconds),
+            udpBeaconInterval: secondsToMinutesConverter(udpBeaconIntervalInSeconds)
+          }
+        };
+      }
+      policiesPropertyData = {
+        ...policy,
+        policyStatus,
+        evaluatedTime,
+        message,
+        windowsLogPolicy,
+        edrPolicy: {
+          ...edrPolicy,
+          agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',
+          blockingConfig: {
+            enabled: blockingConfig && blockingConfig.enabled ? 'Enabled' : 'Disabled'
+          },
+          serverConfig: {
+            requestScanOnRegistration: serverConfig && serverConfig.requestScanOnRegistration ? 'Enabled' : 'Disabled'
+          },
+          transportConfig: newTransportConfig,
+          scheduledScanConfig
         }
       };
     }
-    return {
-      ...policy,
-      policyStatus,
-      evaluatedTime,
-      message,
-      windowsLogPolicy,
-      edrPolicy: {
-        ...edrPolicy,
-        agentMode: edrPolicy.agentMode && edrPolicy.agentMode === 'INSIGHTS' ? 'Insights' : 'Advanced',
-        blockingConfig: {
-          enabled: blockingConfig && blockingConfig.enabled ? 'Enabled' : 'Disabled'
-        },
-        serverConfig: {
-          requestScanOnRegistration: serverConfig && serverConfig.requestScanOnRegistration ? 'Enabled' : 'Disabled'
-        },
-        transportConfig: newTransportConfig,
-        scheduledScanConfig
-      }
-    };
+    return policiesPropertyData;
   }
 );
 
@@ -320,4 +334,13 @@ export const channelFiltersConfig = createSelector(
     }
     return config;
   }
+);
+
+export const hostOverviewServerId = createSelector(
+  [_hostOverview], (hostOverview) => hostOverview.serviceId
+);
+
+export const policiesUnavailableMessage = createSelector(
+  [_activePropertyPanelTab, getPoliciesPropertyData],
+  (tab, policiesPropertyData) => tab === 'POLICIES' && !policiesPropertyData ? 'Policy unavailable' : null
 );

@@ -118,4 +118,13 @@ module('Integration | Component | endpoint/base-property-panel', function(hooks)
     await click('.header-section__check-box input');
     assert.equal(findAll('.content-section__property').length, 5, 'Properties with non empty values');
   });
+
+  test('it should render the property panel error message', async function(assert) {
+    assert.expect(2);
+    this.set('errorMessage', 'An error');
+    await render(hbs`{{endpoint/base-property-panel errorMessage=errorMessage}}`);
+    assert.equal(find('.content-section .message').textContent.trim(), 'An error');
+    assert.equal(findAll('.content-section__property').length, 0);
+
+  });
 });

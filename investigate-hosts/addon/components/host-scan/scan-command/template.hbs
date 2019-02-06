@@ -5,12 +5,14 @@
     agentIds=agentIds
     modalTitle=modalTitle
     buttonText=(t 'investigateHosts.hosts.button.initiateScan')
-    title=actionsDisableMessage}}
+    title=actionsDisableMessage
+    serverId=serverIdForScanCommand}}
 {{else if (eq command 'STOP_SCAN')}}
   {{host-scan/stop-scan-button
     warningMessage=warningMessages
     isDisabled=isScanStartButtonDisabled
     agentIds=agentIds
     modalTitle=title
-    buttonText=(t 'investigateHosts.hosts.moreActions.cancelScan')}}
+    buttonText=(t 'investigateHosts.hosts.moreActions.cancelScan')
+    serverId=serverIdForScanCommand}}
 {{/if}}

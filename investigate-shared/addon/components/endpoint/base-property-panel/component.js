@@ -71,6 +71,7 @@ export default Component.extend({
    */
   config: [],
 
+  errorMessage: null,
   /**
    * Override this method if changes required in config before processing.
    * @param config

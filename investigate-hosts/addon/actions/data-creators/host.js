@@ -310,8 +310,8 @@ const initializeHostsPreferences = () => {
   };
 };
 
-const startScan = (agentIds, callbacks = callbacksDefault) => {
-  Machines.startScanRequest(agentIds)
+const startScan = (agentIds, callbacks = callbacksDefault, serverId) => {
+  Machines.startScanRequest(agentIds, serverId)
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {
@@ -319,8 +319,8 @@ const startScan = (agentIds, callbacks = callbacksDefault) => {
     });
 };
 
-const stopScan = (agentIds, callbacks = callbacksDefault) => {
-  Machines.stopScanRequest(agentIds)
+const stopScan = (agentIds, callbacks = callbacksDefault, serverId) => {
+  Machines.stopScanRequest(agentIds, serverId)
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {

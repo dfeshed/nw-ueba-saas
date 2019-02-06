@@ -22,6 +22,8 @@ export default Component.extend({
 
   agentIds: null,
 
+  serverId: null,
+
   actions: {
 
     handleStopScan() {
@@ -29,7 +31,7 @@ export default Component.extend({
         onSuccess: () => this.get('flashMessage').showFlashMessage('investigateHosts.hosts.cancelScan.success'),
         onFailure: (message) => this.get('flashMessage').showErrorMessage(message)
       };
-      stopScan(this.get('agentIds'), callBackOptions);
+      stopScan(this.get('agentIds'), callBackOptions, this.get('serverId'));
     },
 
     toggleStopScanModal() {

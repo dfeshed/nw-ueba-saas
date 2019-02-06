@@ -6,7 +6,8 @@ import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'inves
 import { getPropertyData,
   getPoliciesPropertyData,
   channelFiltersConfig,
-  showWindowsLogPolicy } from 'investigate-hosts/reducers/details/overview/selectors';
+  showWindowsLogPolicy,
+  policiesUnavailableMessage } from 'investigate-hosts/reducers/details/overview/selectors';
 import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
 import { getPoliciesPropertyConfig } from 'investigate-hosts/components/property-panel/policies-property-config';
 import {
@@ -38,7 +39,8 @@ const stateToComputed = (state) => ({
   listOfServices: state.endpoint.machines.listOfServices,
   isInsightsAgent: isInsightsAgent(state),
   channelFiltersConfig: channelFiltersConfig(state),
-  showWindowsLogPolicy: showWindowsLogPolicy(state)
+  showWindowsLogPolicy: showWindowsLogPolicy(state),
+  policiesUnavailableMessage: policiesUnavailableMessage(state)
 });
 
 const HostOverview = Component.extend({

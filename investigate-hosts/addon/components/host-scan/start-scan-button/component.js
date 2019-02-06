@@ -25,6 +25,8 @@ export default Component.extend({
 
   title: null,
 
+  serverId: null,
+
   actions: {
 
     handleInitiateScan() {
@@ -40,7 +42,7 @@ export default Component.extend({
           }
         }
       };
-      startScan(this.get('agentIds'), callBackOptions);
+      startScan(this.get('agentIds'), callBackOptions, this.get('serverId'));
     },
 
     onModalClose() {

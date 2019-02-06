@@ -120,8 +120,7 @@ test('getPropertyPanelTabs', function(assert) {
     endpoint: {
       visuals: {
         activePropertyPanelTab: 'POLICIES'
-      },
-      overview: {}
+      }
     }
   });
   const result1 = getPropertyPanelTabs(state1);
@@ -132,9 +131,6 @@ test('getPropertyPanelTabs', function(assert) {
     endpoint: {
       visuals: {
         activePropertyPanelTab: null
-      },
-      overview: {
-        hostDetails: {}
       }
     }
   });
@@ -145,34 +141,10 @@ test('getPropertyPanelTabs', function(assert) {
     endpoint: {
       visuals: {
         activePropertyPanelTab: null
-      },
-      overview: {
-        hostDetails: {
-          groupPolicy: {
-            managed: true
-          }
-        }
       }
     }
   });
   const result3 = getPropertyPanelTabs(state3);
   assert.equal(result3.length, 2, 'tabs count');
   assert.equal(result3.findBy('name', 'HOST_DETAILS').selected, true, 'HOST_DETAILS tab is selected');
-
-  const state4 = Immutable.from({
-    endpoint: {
-      visuals: {
-        activePropertyPanelTab: null
-      },
-      overview: {
-        hostDetails: {
-          groupPolicy: {
-            managed: false
-          }
-        }
-      }
-    }
-  });
-  const result4 = getPropertyPanelTabs(state4);
-  assert.equal(result4.length, 1, 'tabs count');
 });

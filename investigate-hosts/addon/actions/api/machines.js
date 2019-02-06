@@ -142,16 +142,19 @@ const getAllSchemas = () => {
  * Executes a websocket call to start the request scan for selected hosts
  *
  * @method startScanRequest
- * @param data {Object} of agentIds
+ * @param agentIds {Object} of agentIds
+ * @param serverId {String} post to a specific server
  * @public
  * @returns {Promise}
  */
-const startScanRequest = (agentIds) => {
+const startScanRequest = (agentIds, serverId) => {
   const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
   return request.promiseRequest({
     method: 'commandScan',
     modelName: 'agent',
-    query: { data: { agentIds, scanCommandType: 'QUICK_SCAN' } }
+    query: { data: { agentIds, scanCommandType: 'QUICK_SCAN' } },
+    streamOptions
   });
 };
 
@@ -160,15 +163,18 @@ const startScanRequest = (agentIds) => {
  *
  * @method stopScanRequest
  * @param agentIds {Object} of agentIds
+ * @param serverId {String} post to a specific server
  * @public
  * @returns {Promise}
  */
-const stopScanRequest = (agentIds) => {
+const stopScanRequest = (agentIds, serverId) => {
   const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
   return request.promiseRequest({
     method: 'stopScan',
     modelName: 'agent',
-    query: { data: { agentIds, scanCommandType: 'CANCEL_SCAN' } }
+    query: { data: { agentIds, scanCommandType: 'CANCEL_SCAN' } },
+    streamOptions
   });
 };
 

@@ -17,7 +17,8 @@ import {
   getPoliciesPropertyData,
   selectedSnapshot,
   channelFiltersConfig,
-  showWindowsLogPolicy } from 'investigate-hosts/reducers/details/overview/selectors';
+  showWindowsLogPolicy,
+  hostOverviewServerId } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostOverview: { machineIdentity: { machineOsType: 'linux' } } } } }));
@@ -454,12 +455,11 @@ test('getPoliciesPropertyData', function(assert) {
   const state5 = {
     endpoint: {
       overview: {
-        hostOverview: {
-          policyDetails: {
-            policy: {
-              edrPolicy: {
-                enabled: true
-              }
+        hostOverview: {},
+        policyDetails: {
+          policy: {
+            edrPolicy: {
+              enabled: true
             }
           }
         }
@@ -468,6 +468,16 @@ test('getPoliciesPropertyData', function(assert) {
   };
   const result5 = getPoliciesPropertyData(Immutable.from(state5));
   assert.deepEqual(result5.windowsLogPolicy, undefined);
+
+  const state6 = {
+    endpoint: {
+      overview: {
+        hostOverview: {}
+      }
+    }
+  };
+  const result6 = getPoliciesPropertyData(Immutable.from(state6));
+  assert.deepEqual(result6, null);
 });
 
 test('selectedSnapshot', function(assert) {
@@ -572,4 +582,12 @@ test('channelFiltersConfig', function(assert) {
     field: 'ALL',
     isStandardString: true
   }]);
+});
+
+test('hostOverviewServerId', function(assert) {
+  const result1 = hostOverviewServerId(Immutable.from({ endpoint: { overview: {} } }));
+  assert.deepEqual(result1, undefined);
+
+  const result2 = hostOverviewServerId(Immutable.from({ endpoint: { overview: { hostOverview: { serviceId: '123' } } } }));
+  assert.deepEqual(result2, '123');
 });

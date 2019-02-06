@@ -29,6 +29,10 @@
     {{/each}}
     <hr class="divider">
   {{else}}
-    {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+    {{#if errorMessage}}
+      {{rsa-panel-message message=errorMessage}}
+    {{else}}
+      {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+    {{/if}}
   {{/each}}
 </box>

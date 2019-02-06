@@ -9,12 +9,15 @@ import {
   extractAgentIds,
   actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
+import { hostOverviewServerId } from 'investigate-hosts/reducers/details/overview/selectors';
+
 const stateToComputed = (state) => ({
   warningMessages: warningMessages(state),
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   agentIds: extractAgentIds(state),
   scanCount: scanCount(state),
-  actionsDisableMessage: actionsDisableMessage(state)
+  actionsDisableMessage: actionsDisableMessage(state),
+  serverIdForScanCommand: hostOverviewServerId(state)
 });
 const ScanCommand = Component.extend({
   tagName: '',
