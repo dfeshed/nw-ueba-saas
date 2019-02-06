@@ -1,3 +1,26 @@
+# [10.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.6.0)
+## Features
+* [ASOC-58956](https://bedfordjira.na.rsa.net/browse/ASOC-58956):&emsp;New fields Classifier id and Classification are not very descriptive
+* [ASOC-68091](https://bedfordjira.na.rsa.net/browse/ASOC-68091):&emsp;Need to be able to enable/disable risk scoring functionality
+* [ASOC-69281](https://bedfordjira.na.rsa.net/browse/ASOC-69281):&emsp;Disable Incidents related to files or host
+* [ASOC-69538](https://bedfordjira.na.rsa.net/browse/ASOC-69538):&emsp;Missing fields in normalized UEBA alerts
+* [ASOC-70538](https://bedfordjira.na.rsa.net/browse/ASOC-70538):&emsp;Add Ability to Cancel a Query
+* [ASOC-70534](https://bedfordjira.na.rsa.net/browse/ASOC-70534):&emsp;Increase Search Result Page to 100k
+* [ASOC-70782](https://bedfordjira.na.rsa.net/browse/ASOC-70782):&emsp;Context limit for file account for whitelisting/Reset risk score
+* [ASOC-70783](https://bedfordjira.na.rsa.net/browse/ASOC-70783):&emsp;In Respond Alert tab add under Source field "Risk Scoring"
+* [ASOC-70915](https://bedfordjira.na.rsa.net/browse/ASOC-70915):&emsp;Review Upgrade Docs and Regression tests
+* [ASOC-71036](https://bedfordjira.na.rsa.net/browse/ASOC-71036):&emsp;Query visibility console updates
+* [ASOC-71265](https://bedfordjira.na.rsa.net/browse/ASOC-71265):&emsp;Utilize new query parameter to limit events retrieved
+* [ASOC-71286](https://bedfordjira.na.rsa.net/browse/ASOC-71286):&emsp;Risk Score shown on global host view other tabs like File, Process etc
+* [ASOC-71317](https://bedfordjira.na.rsa.net/browse/ASOC-71317):&emsp;Implementation of Job to update local file risk score in the global host UI
+* [ASOC-71318](https://bedfordjira.na.rsa.net/browse/ASOC-71318):&emsp;Integration test for local file risks core updation
+* [ASOC-71326](https://bedfordjira.na.rsa.net/browse/ASOC-71326):&emsp;Host details row click - Get local alert context
+* [ASOC-71327](https://bedfordjira.na.rsa.net/browse/ASOC-71327):&emsp;Implement API to get local risk score for a file on host
+* [ASOC-71335](https://bedfordjira.na.rsa.net/browse/ASOC-71335):&emsp;Remove reset score only under host different tabs
+* [ASOC-71896](https://bedfordjira.na.rsa.net/browse/ASOC-71896):&emsp;Mixed Mode - update query parameter to include both stream limit and threshold
+* [ASOC-72196](https://bedfordjira.na.rsa.net/browse/ASOC-72196):&emsp;Remove support for descending order in 11.3
+
+
 # [10.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.5.0)
 ## Features
 * [ASOC-60739](https://bedfordjira.na.rsa.net/browse/ASOC-60739):&emsp;Integration and QE Verification - Investigate-server
