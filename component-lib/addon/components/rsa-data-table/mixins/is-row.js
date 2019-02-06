@@ -180,7 +180,10 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
 
         schedule('afterRender', () => {
           this.$().append(`<div class="group-label">
-            <div class="group-label-copy">${label}</div>
+            <div class="group-label-copy">
+              <i class="rsa-icon rsa-icon-arrow-down-7-filled"></i>
+              ${label}
+            </div>
           </div>`);
         });
       }

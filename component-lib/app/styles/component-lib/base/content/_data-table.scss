@@ -8,20 +8,27 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   .is-at-grouping-size {
     .group-label {
       position: absolute;
-      padding-left: 7px;
       left: 0;
       right: 0;
       top: 100%;
       bottom: -28px;
-      color: text-color(primary, lighter);
       @include rsa-font(header);
       display: flex;
-      text-align: center;
       align-items: center;
       cursor: default;
 
       .group-label-copy {
+        font-weight: bold;
+        letter-spacing: .5px;
+        padding: 4px rsa-whitespace(most) 4px rsa-whitespace();
+        color: text-color(primary, lighter);
+        text-transform: uppercase;
+        background: linear-gradient(90deg, background-color(primary, dark) 0%, background-color(primary, dark) 75%, background-color(primary, darkest) 100%);
         cursor: default;
+
+        i {
+          margin-right: rsa-whitespace(least);
+        }
       }
     }
 

@@ -526,7 +526,7 @@ export default {
       newest: 'newest',
       titleThresholdTooltip: 'The query matched more than {{count}} events, and the maximum of {{count}} {{age}} events were retrieved. Consider refining your query.',
       isAtThreshold: 'The event count reached the query threshold.',
-      tableGroupLabel: 'Displaying events {{startNextGroup}} - {{endNextGroup}}',
+      tableGroupLabel: 'Events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {
         custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events List',
@@ -4461,15 +4461,15 @@ export default {
         protocol: 'Protocol',
         protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guarantied.',
         channelFilters: 'Channel Filters',
-        channelFiltersTooltip: 'Configure which Windows log events to collect by selecting a channel, '+
-         'filter condition, and the relevant event IDs. Common channels such as \'Security\' or \'System\' '+
+        channelFiltersTooltip: 'Configure which Windows log events to collect by selecting a channel, ' +
+         'filter condition, and the relevant event IDs. Common channels such as \'Security\' or \'System\' ' +
          'can be selected from the dropdown, whereas custom channels can be added by typing in the ' +
          'channel name field. By default all events are collected from a selected channel. To collect a ' +
          'subset of events from that channel replace \'ALL\' with the relevant Event ID(s). Leave the ' +
-         'filter set to \'INCLUDE\' if only events with the listed Event IDs should be collected or '+
+         'filter set to \'INCLUDE\' if only events with the listed Event IDs should be collected or ' +
          'change it to \'EXCLUDE\' to collect all events except for these events.',
 
-         channel: {
+        channel: {
           add: 'Add a new channel',
           name: 'CHANNEL NAME',
           filter: 'FILTER',
