@@ -53,12 +53,15 @@ public class NumberedUserRandomUniformallyGenerator implements IUserGenerator{
     public User getNext() {
         int randNumber = random.nextInt(numOfUsers);
         String userName;
+        String userId;
         if(isUserNameContainNumbers) {
             userName = namePrefix + randNumber;
+            userId = idPrefix + randNumber;
         } else{
             userName = getUserName(randNumber);
+            userId = idPrefix + userName;
         }
-        User user = new User(userName, idPrefix + randNumber, userName + "FirstName", userName + "LastName", isAdmin);
+        User user = new User(userName, userId, userName + "FirstName", userName + "LastName", isAdmin);
 
         return user;
     }
