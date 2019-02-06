@@ -165,6 +165,11 @@ export default Component.extend({
       actions.open();
     },
 
+    /**
+     * This function is call after a key is pressed and after power-select has
+     * had an opportunity to react.
+     * @private
+     */
     onInput(input, powerSelectAPI) {
       this.set('_searchString', input);
       const match = complexOperators.find((d) => input.includes(d));
@@ -185,6 +190,12 @@ export default Component.extend({
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
       } else if (isBackspace(event) && event.target.value === '') {
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
+      } else if (isBackspace(event) && event.target.value.length === 1) {
+        // This handles the situation where you clear out the value, but don't
+        // press backspace to move back to operator. We reset `valueString` so
+        // that the cleared out value doesn't reappear when losing/gaining
+        // focus.
+        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_SET, ''));
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
         const { value } = event.target;
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, value));

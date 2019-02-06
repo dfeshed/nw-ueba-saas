@@ -100,10 +100,30 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await focus(PILL_SELECTORS.valueTrigger);
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', BACKSPACE_KEY);
-    // return settled();
   });
 
-  test('it broadcasts a message when the BACKSPACE key is pressed', async function(assert) {
+  test('it broadcasts a message when the BACKSPACE key is pressed, deleting the last character', async function(assert) {
+    // The handleMessage callback gets called twice because, in the  test env,
+    // the onBlur get's called immediately after the onKeyDown. This causes two
+    // `VALUE_SET` events dispatched back to back.
+    assert.expect(2);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.VALUE_SET) {
+        assert.ok(true, 'This should be called');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+        valueString='x'
+      }}
+    `);
+    await focus(PILL_SELECTORS.valueTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', BACKSPACE_KEY);
+  });
+
+  test('it broadcasts a message when the BACKSPACE key is pressed, and there are no characters', async function(assert) {
     const done = assert.async();
     assert.expect(1);
     this.set('handleMessage', (type) => {
