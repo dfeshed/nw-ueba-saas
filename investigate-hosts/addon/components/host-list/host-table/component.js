@@ -7,7 +7,9 @@ import {
   processedHostList,
   serviceList,
   hostTotalLabel,
-  nextLoadCount } from 'investigate-hosts/reducers/hosts/selectors';
+  nextLoadCount,
+  isScanStartButtonDisabled
+} from 'investigate-hosts/reducers/hosts/selectors';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
 
@@ -35,7 +37,8 @@ const stateToComputed = (state) => ({
   focusedHost: state.endpoint.machines.focusedHost,
   focusedHostIndex: state.endpoint.machines.focusedHostIndex,
   selections: state.endpoint.machines.selectedHostList || [],
-  nextLoadCount: nextLoadCount(state)
+  nextLoadCount: nextLoadCount(state),
+  isScanStartButtonDisabled: isScanStartButtonDisabled(state)
 });
 
 const dispatchToActions = {

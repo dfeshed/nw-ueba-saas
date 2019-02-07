@@ -74,7 +74,6 @@ const endpointServer = {
 const endpointQuery = {
   serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
 };
-
 const endpointState =
   {
     endpoint:
@@ -82,6 +81,39 @@ const endpointState =
       schema: { schema: endpoint.schema },
       machines: {
         hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F' }],
+        hostColumnSort: 'machineIdentity.machineName',
+        focusedHost: null
+      }
+    },
+    preferences: {
+      preferences: {
+        machinePreference: {
+          visibleColumns: [
+            'id',
+            'machineIdentity.agentVersion',
+            'machine.scanStartTime',
+            'machineIdentity.machineOsType'
+          ]
+        }
+      }
+    },
+    endpointServer,
+    endpointQuery
+  };
+
+const dummySelectedHostList = new Array(101)
+  .join().split(',')
+  .map(function(item, index) {
+    return { index: { id: ++index, version: index, managed: true } };
+  });
+
+const selectedMoreHostsState =
+  {
+    endpoint:
+    {
+      schema: { schema: endpoint.schema },
+      machines: {
+        hostList: hostListState.machines.hostList, selectedHostList: dummySelectedHostList,
         hostColumnSort: 'machineIdentity.machineName',
         focusedHost: null
       }
@@ -215,6 +247,27 @@ module('Integration | Component | host-list', function(hooks) {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 5, 'Context menu not rendered');
+    });
+  });
+  test('For more than 100 hosts selection and On right click start scan and stop scan options should disable', async function(assert) {
+    setState(selectedMoreHostsState);
+    this.set('closeProperties', () => {});
+    this.set('openProperties', () => {});
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list 
+        openProperties=openProperties
+        closeProperties=closeProperties}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items[2].classList.contains('context-menu__item--disabled'), true, 'Context menu start scan option disabled');
+      assert.equal(items[3].classList.contains('context-menu__item--disabled'), true, 'Context menu stop scan option disabled');
     });
   });
 

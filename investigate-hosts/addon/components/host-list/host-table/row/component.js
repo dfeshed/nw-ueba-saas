@@ -47,6 +47,9 @@ export default DataTableBodyRow.extend({
         prefix: 'investigateShared.endpoint.hostActions.',
         action(selection, context) {
           context.showScanModal('STOP_SCAN');
+        },
+        disabled(selection, context) {
+          return context.get('isScanStartButtonDisabled');
         }
       },
       {

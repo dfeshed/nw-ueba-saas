@@ -4,13 +4,18 @@ import HOST_LIST_COLUMNS from './host-columns';
 import Immutable from 'seamless-immutable';
 
 const COLUMN_WIDTH = {
-  'agentStatus.scanStatus': '6vw',
-  'machine.scanStartTime': '6vw',
-  'agentStatus.lastSeenTime': '6vw',
+  'agentStatus.scanStatus': '8vw',
+  'machine.scanStartTime': '9vw',
+  'agentStatus.lastSeenTime': '8vw',
   'analysisData.machineRiskScore': '6vw',
-  'machineIdentity.machineOsType': '5vw',
+  'machineIdentity.machineOsType': '7vw',
   'machineIdentity.networkInterfaces.ipv4': '5vw',
-  'machine.users.name': '5vw'
+  'machine.users.name': '5vw',
+  'groupPolicy.policyStatus': '6vw',
+  'machineIdentity.agentMode': '5vw',
+  'machineIdentity.agentVersion': '6vw',
+  'machineIdentity.networkInterfaces.macAddress': '7vw'
+
 };
 
 const DEFAULT_COLUMN = Immutable.from([
