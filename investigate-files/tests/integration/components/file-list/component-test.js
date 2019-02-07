@@ -767,7 +767,7 @@ module('Integration | Component | file list', function(hooks) {
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const newsetSelectedIndex = redux.getState().files.fileList.selectedIndex;
-      assert.equal(newsetSelectedIndex, null, 'Focused host remains unchanged');
+      assert.equal(newsetSelectedIndex, -1, 'Focused host remains unchanged');
     });
   });
 

@@ -46,7 +46,7 @@ test('should return the initial state', function(assert) {
     hostColumnSort: [{ key: 'score', descending: true }],
     selectedHostList: [],
     focusedHost: null,
-    focusedHostIndex: null,
+    focusedHostIndex: -1,
     hostFetchStatus: 'wait',
     loadMoreHostStatus: 'stopped',
     hostExportStatus: 'completed',
@@ -155,7 +155,7 @@ test('The SET_FOCUSED_HOST action will sets the selected row data to state', fun
 
 test('The SET_FOCUSED_HOST_INDEX action will sets the selected row data to state', function(assert) {
   const previous = Immutable.from({
-    focusedHostIndex: null
+    focusedHostIndex: -1
   });
   const result = reducer(previous, { type: ACTION_TYPES.SET_FOCUSED_HOST_INDEX, payload: 2 });
   assert.deepEqual(result.focusedHostIndex, 2);

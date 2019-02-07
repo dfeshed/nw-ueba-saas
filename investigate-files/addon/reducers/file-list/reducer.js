@@ -34,7 +34,7 @@ const fileListState = Immutable.from({
   isRemediationAllowed: true,
   selectedFile: {},
   selectedDetailFile: null,
-  selectedIndex: null,
+  selectedIndex: -1,
   downloadLink: null,
   machineFilePathInfoList: []
 });
@@ -86,7 +86,7 @@ const fileListReducer = handleActions({
         areFilesLoading: 'wait',
         totalItems: 0,
         selectedFileList: [],
-        selectedIndex: null,
+        selectedIndex: -1,
         selectedDetailFile: null
       }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
@@ -253,7 +253,7 @@ const fileListReducer = handleActions({
     isRemediationAllowed: true,
     selectedFile: {},
     selectedDetailFile: null,
-    selectedIndex: null,
+    selectedIndex: -1,
     downloadLink: null,
     machineFilePathInfoList: []
   })

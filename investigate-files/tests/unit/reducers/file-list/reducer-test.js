@@ -79,7 +79,7 @@ module('Unit | Reducers | file-list', function() {
       isRemediationAllowed: true,
       selectedFile: {},
       selectedDetailFile: null,
-      selectedIndex: null,
+      selectedIndex: -1,
       downloadLink: null,
       machineFilePathInfoList: []
     });
@@ -454,7 +454,7 @@ module('Unit | Reducers | file-list', function() {
 
   test('SET_SELECTED_INDEX', function(assert) {
     const previous = Immutable.from({
-      selectedIndex: null
+      selectedIndex: -1
     });
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_INDEX, payload: 2 });
     assert.equal(result.selectedIndex, 2);

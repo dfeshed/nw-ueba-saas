@@ -67,7 +67,7 @@ const Container = Component.extend({
   actions: {
     onPanelClose(side) {
       if (side === 'right') {
-        this.send('setFocusedHostIndex', null);
+        this.send('setFocusedHostIndex', -1);
       }
     }
   }

@@ -180,7 +180,7 @@ const FileList = Component.extend({
         } else {
           this.send('toggleFileSelection', item);
           this.closeRiskPanel();
-          this.send('setSelectedIndex', null);
+          this.send('setSelectedIndex', -1);
         }
       }
     },
@@ -258,7 +258,7 @@ const FileList = Component.extend({
         menu.set('contextItems', this.get('contextItems'));
         // Highlight is removed and right panel is closed when right clicked on non-highlighted row
         if (this.get('selectedFile').id !== item.id) {
-          this.send('setSelectedIndex', null);
+          this.send('setSelectedIndex', -1);
           this.closeRiskPanel();
         }
         this.set('itemList', [item]);

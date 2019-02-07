@@ -109,7 +109,7 @@ const HostTable = Component.extend({
         } else {
           this.send('toggleMachineSelected', item);
           this.closeProperties();
-          this.send('setFocusedHostIndex', null);
+          this.send('setFocusedHostIndex', -1);
         }
       }
     },
@@ -128,7 +128,7 @@ const HostTable = Component.extend({
         menu.set('contextItems', this.get('contextItems'));
         // Highlight is removed and right panel is closed when right clicked on non-highlighted row
         if (this.get('focusedHost') && this.get('focusedHost').id !== item.id) {
-          this.send('setFocusedHostIndex', null);
+          this.send('setFocusedHostIndex', -1);
           this.closeProperties();
         }
         if (!this.isAlreadySelected(this.get('selections'), item)) {

@@ -14,7 +14,7 @@ const initialState = Immutable.from({
 
   focusedHost: null,
 
-  focusedHostIndex: null,
+  focusedHostIndex: -1,
 
   // State to indicate host retriving status from the server
   hostFetchStatus: 'wait',
@@ -120,7 +120,7 @@ const hosts = reduxActions.handleActions({
         totalItems: 0,
         selectedHostList: [],
         focusedHost: null,
-        focusedHostIndex: null
+        focusedHostIndex: -1
       }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
       success: (s) => s.merge({

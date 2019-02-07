@@ -102,7 +102,7 @@ const Files = Component.extend({
   actions: {
     onPanelClose(side) {
       if (side === 'right') {
-        this.send('setSelectedIndex', null);
+        this.send('setSelectedIndex', -1);
       }
     },
 

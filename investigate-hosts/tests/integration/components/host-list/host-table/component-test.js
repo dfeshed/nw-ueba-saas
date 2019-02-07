@@ -130,7 +130,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     triggerEvent(findAll('.score')[2], 'contextmenu', e);
     return settled().then(async() => {
       const newFocusedHostIndex = redux.getState().endpoint.machines.focusedHostIndex;
-      assert.equal(newFocusedHostIndex, null, 'Focus on rows is removed.');
+      assert.equal(newFocusedHostIndex, -1, 'Focus on rows is removed.');
     });
   });
 
