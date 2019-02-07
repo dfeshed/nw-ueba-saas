@@ -22,7 +22,7 @@ const Services = Component.extend({
 
   @computed('machineOsType')
   columnsConfig(machineOsType) {
-    return columnsConfig[machineOsType];
+    return columnsConfig[machineOsType].sortBy('order');
   }
 });
 
