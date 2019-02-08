@@ -1821,7 +1821,7 @@ export default {
       timestamp: 'timestamp',
       header: '',
       sourceName: {
-        'Risk Scoring Server': 'Risk Scoring Server',
+        'Risk Scoring': 'Risk Scoring',
         'ESA Correlation': 'ESA Correlation',
         ECAT: 'Endpoint',
         'Event Stream Analysis': 'Event Stream Analysis',
