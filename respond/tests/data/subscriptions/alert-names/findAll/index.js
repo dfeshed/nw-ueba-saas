@@ -34,6 +34,7 @@ const data = [
 ];
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/alerts/distinct/names',
   requestDestination: '/ws/respond/alerts/distinct/names',
   message(/* frame */) {

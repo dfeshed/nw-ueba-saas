@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/alerts/original',
   requestDestination: '/ws/respond/alerts/original',
   message(/* frame */) {

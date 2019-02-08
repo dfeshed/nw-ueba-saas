@@ -1,6 +1,7 @@
 import data from '../query/data';
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/incidents/archer/send',
   requestDestination: '/ws/respond/incidents/archer/send',
   message(frame) {

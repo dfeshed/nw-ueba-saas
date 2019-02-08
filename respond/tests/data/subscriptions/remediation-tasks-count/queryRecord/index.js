@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/remediation/tasks/count',
   requestDestination: '/ws/respond/remediation/tasks/count',
   message(/* frame */) {

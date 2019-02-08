@@ -1,5 +1,8 @@
+$appNavigationHeaderHeight: 40px;
+$configureNavigationHeight: 48px;
+
 .rsa-incident-rule {
-  height: calc(100vh - 45px);
+  height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
 
   centered {
     height: 100%;

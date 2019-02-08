@@ -45,6 +45,7 @@ const data = {
 };
 
 export default {
+  delay: 1,
   subscriptionDestination: '/queue/incident/create',
   requestDestination: '/ws/respond/incident/create',
   message() {

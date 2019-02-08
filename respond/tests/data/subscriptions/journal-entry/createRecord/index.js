@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/journal/create',
   requestDestination: '/ws/respond/journal/create',
   message(/* frame */) {

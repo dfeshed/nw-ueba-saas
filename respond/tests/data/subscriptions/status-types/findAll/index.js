@@ -9,6 +9,7 @@ const data = [
 ];
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/options/status',
   requestDestination: '/ws/respond/options/status',
   message(/* frame */) {

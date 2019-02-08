@@ -6,6 +6,7 @@ const data = [
 ];
 
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/options/priority',
   requestDestination: '/ws/respond/options/priority',
   message(/* frame */) {

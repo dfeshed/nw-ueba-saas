@@ -36,8 +36,10 @@ const matchesFilter = (item, filters = []) => {
   return hasMatchedAllFilters;
 };
 
+// Please don't specify a delay here because this helps us find a race condition when fetching core devices
+// https://github.rsa.lab.emc.com/asoc/sa-ui/pull/4485/files
+// https://github.rsa.lab.emc.com/billut/sa-ui/blob/2419eb6164526d687109d24d6b74e397e445d03d/sa/tests/acceptance/respond-core-devices-test.js
 export default {
-  delay: 1,
   subscriptionDestination: '/user/queue/incidents',
   requestDestination: '/ws/respond/incidents',
 

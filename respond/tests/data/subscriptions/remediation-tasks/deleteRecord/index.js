@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/remediation/tasks/delete',
   requestDestination: '/ws/respond/remediation/tasks/delete',
   message(frame) {
