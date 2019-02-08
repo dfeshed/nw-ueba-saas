@@ -39,6 +39,10 @@
     .divider {
       height: 1.75rem;
     }
+    .host-name {
+      border-bottom: 2px solid;
+      border-style: dashed;
+    }
   }
   .host-title-icon {
     padding: 0 rsa-whitespace(less) 0 0;
