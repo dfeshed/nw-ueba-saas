@@ -26,6 +26,7 @@ test('it renders an empty message when no files', function(assert) {
   this.render(hbs`{{recon-event-detail/files}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 100);
+    assert.equal(this.$('.recon-pager').length, 1);
     assert.equal(str, 'Therearenofilesavailableforthisevent.');
   });
 });

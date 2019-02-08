@@ -65,11 +65,10 @@
     {{#if hasSelectedFiles}}
       <section class="download-warning">{{t 'recon.fileView.downloadWarning'}}</section>
     {{/if}}
-
-    {{recon-pager
-      eventIndex=eventIndex
-      eventTotal=eventTotal
-    }}
   {{/if}}
-
 {{/if}}
+
+{{recon-pager
+  eventIndex=eventIndex
+  eventTotal=eventTotal
+}}
