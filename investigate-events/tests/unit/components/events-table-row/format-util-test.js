@@ -11,6 +11,15 @@ module('Unit | Events Table Row | format util', {
   }
 });
 
+test('test <none> formatting', function(assert) {
+  const opts = {
+    locale: 'en',
+    dateTimeFormat: 'YYYY/MM/DD[T]HH:mm:ss',
+    timeZone: 'Asia/Kolkata'
+  };
+  assert.equal(formatUtil.text('extension', '<none>', opts), '&lt;none&gt;', '<none> should be formatted properly');
+});
+
 test('test time formatting', function(assert) {
   const opts = {
     locale: 'en',
