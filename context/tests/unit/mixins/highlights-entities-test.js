@@ -31,6 +31,9 @@ const entityTooltipPanelId = 'panel-1';
 const eventBusStub = EmberObject.extend(Evented, {}).create();
 
 const contextStub = EmberObject.extend({
+  contextHubEnable() {
+    return rsvp.resolve({ data: { contextHubEnabled: true } });
+  },
   types() {
     return rsvp.resolve(entityTypes);
   },
@@ -262,3 +265,54 @@ test('it does nothing by default because "autoHighlightEntities" is falsey', fun
     });
   });
 });
+
+test('it does nothing if CH is not added in system', function(assert) {
+  assert.expect(3);
+
+  const element3 = document.createElement('svg');
+  element3.id = 'highlights-entities-test-element-3';
+  element3.innerHTML = innerHTML;
+  document.body.appendChild(element3);
+
+  const subject = FakeComponentClass.create({
+    element: element3,
+    autoHighlightEntities: true,
+    context: {
+      contextHubEnable() {
+        return rsvp.resolve({ data: { contextHubEnabled: false } });
+      }
+    },
+    entityTooltipTriggerEvent: 'click'
+  });
+  subject.didInsertElement();
+  const done = assert.async();
+
+  // Use `next()` to wait long enough for `didInsertElement` to call the mixin's `highlightEntities()`.
+  next(() => {
+
+    // Use `next()` to wait long enough for `highlightEntities()` to complete DOM manipulations.
+    next(() => {
+
+      // Check that CSS classes were NOT applied.
+      assert.notOk(subject.$('.entity-has-been-validated').length);
+      assert.notOk(subject.$('.is-context-enabled').length);
+      assert.notOk(subject.$('.is-not-context-enabled').length);
+
+      // Check that clicking on the entity DOM node does nothing.
+      const tooltipSpy = () => {
+        assert.ok(true, 'An event was heard that was intended to display the tooltip.');
+      };
+      const tooltipDisplayEventName = `rsa-content-tethered-panel-toggle-${entityTooltipPanelId}`;
+      eventBusStub.on(tooltipDisplayEventName, tooltipSpy);
+
+      // Clicking on a context-enable DOM node should NOT trigger an eventBus event. No assert expected!
+      subject.$('.entity').first().click();
+
+      eventBusStub.off(tooltipDisplayEventName, tooltipSpy);
+      subject.willDestroyElement();
+      done();
+    });
+  });
+});
+
+

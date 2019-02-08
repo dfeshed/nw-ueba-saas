@@ -27,6 +27,44 @@ export default Service.extend({
   config: null,
 
   /**
+   * Returns a promise for the CH is enabled in stack or not.
+   *
+   * When this method is invoked multiple times, it re-uses the last promise if that promise is
+   * either still pending or successful.
+   *
+   * @example
+   * ```js
+   * { data: { contextHubEnabled: false } }
+   * ```
+   * @returns {Promise}
+   * @public
+   */
+  contextHubEnable() {
+
+    // If we already have a promise, re-use it
+    let promise = this.get('_contextHubEnable');
+    if (!promise) {
+
+      // We don't have a promise already, create a new one
+      promise = this.get('request').promiseRequest({
+        method: 'stream',
+        modelName: 'contextEnable',
+        query: {}
+      })
+        // If promise fails, clear cached promise, don't re-use
+        .catch((err) => {
+          warn(`Error fetching context hub  server ${err}`);
+          this.set('_contextHubEnable', null);
+        });
+
+      // Cache promise for reuse
+      this.set('_contextHubEnable', promise);
+    }
+
+    return promise;
+  },
+
+  /**
    * Returns a promise for the list of enabled entity types. Disabled entity types are omitted.
    *
    * When this method is invoked multiple times, it re-uses the last promise if that promise is

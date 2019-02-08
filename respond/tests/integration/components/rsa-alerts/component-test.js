@@ -49,7 +49,8 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   skip('The rsa-alerts component renders to the DOM', async function(assert) {
     const done = assert.async();
     setState();
-    await render(hbs`{{rsa-alerts}}`);
+    this.set('autoHighlightEntities', false);
+    await render(hbs`{{rsa-alerts autoHighlightEntities=autoHighlightEntities}}`);
     assert.equal(findAll('.rsa-alerts').length, 1, 'The rsa-alerts component should be found in the DOM');
     await settled().then(() => done());
   });

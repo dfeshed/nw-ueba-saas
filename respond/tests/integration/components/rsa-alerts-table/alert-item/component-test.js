@@ -33,7 +33,8 @@ module('Integration | Component | rsa alerts table alert item', function(hooks) 
     assert.expect(7);
 
     this.set('item', enrichment);
-    await render(hbs`{{rsa-alerts-table/alert-item item=item index=0}}`);
+    this.set('autoHighlightEntities', false);
+    await render(hbs`{{rsa-alerts-table/alert-item item=item autoHighlightEntities=autoHighlightEntities index=0}}`);
 
     assert.equal(findAll('.rsa-alerts-table-alert-item').length, 1, 'Expected to find root DOM node.');
     assert.ok(findAll('.enrichment').length, 'Expected to find enrichment DOM');

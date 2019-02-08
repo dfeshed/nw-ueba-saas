@@ -5,6 +5,7 @@ import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { next } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import $ from 'jquery';
+import { log } from 'ember-debug';
 import rsvp from 'rsvp';
 import {
   wireTriggerToClick,
@@ -225,8 +226,8 @@ export default Mixin.create({
    */
   @computed('_entityTypesPromise', '_entityMetasPromise')
   _entityTypesAndMetasPromises(typesPromise, metasPromise) {
-    return rsvp.allSettled([ typesPromise, metasPromise ])
-      .then(([ typesState, metasState ]) => {
+    return rsvp.allSettled([typesPromise, metasPromise])
+      .then(([typesState, metasState]) => {
 
         // Parse out the fulfilled values from the promises.
         const { value: types } = typesState || {};
@@ -257,22 +258,25 @@ export default Mixin.create({
     if (!entitySelector) {
       return;
     }
-
-    // Async fetch the necessary configs from context service.
-    this.get('_entityTypesAndMetasPromises').then(({ types, metas }) => {
-
-      // If we waited too long and this component's DOM has been trashed, exit.
-      // If contexthub-server is throwing error still _entityTypesPromise promise is getting resolved but this time there will not be any types. Due to that java script error will come. In this scenario we suppose to display some error to analyst. Currently preventing java script error later will be displaying proper error message to analyst.
-      if (!this.element || this.get('isDestroying') || this.get('isDestroyed') || !types) {
+    this.get('context').contextHubEnable().then(({ data: { contextHubEnabled } }) => {
+      log('Context Hub Server is enabled ::', contextHubEnabled);
+      if (!contextHubEnabled) {
         return;
       }
-
-      // Process all the DOM nodes that are entities, excluding any that we already processed.
-      const found = [];
-      this.$(entitySelector).not(`.${CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED}`)
-        .each((index, el) => {
+      if (!this.element || this.get('isDestroying') || this.get('isDestroyed')) {
+        return;
+      }
+      // Async fetch the necessary configs from context service.
+      this.get('_entityTypesAndMetasPromises').then(({ types, metas }) => {
+        // If we waited too long and this component's DOM has been trashed, exit.
+        // If contexthub-server is throwing error still _entityTypesPromise promise is getting resolved but this time there will not be any types. Due to that java script error will come. In this scenario we suppose to display some error to analyst. Currently preventing java script error later will be displaying proper error message to analyst.
+        if (!types || !this.$(entitySelector)) {
+          return;
+        }
+        // Process all the DOM nodes that are entities, excluding any that we already processed.
+        const found = [];
+        this.$(entitySelector).not(`.${CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED}`).each((index, el) => {
           const $el = $(el);
-
           // Highlight the node with appropriate CSS classes.
           const isContextEnabled = this._highlightEntity($el, types, metas);
           if (isContextEnabled) {
@@ -289,8 +293,9 @@ export default Mixin.create({
           }
         });
 
-      // Request summary data for all the context enabled nodes.
-      this._fetchEntitiesData(found);
+        // Request summary data for all the context enabled nodes.
+        this._fetchEntitiesData(found);
+      });
     });
   },
 

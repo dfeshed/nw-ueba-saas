@@ -5,8 +5,18 @@ const common = require('../../common');
 module.exports = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
+  const adminSocketUrl = common.determineSocketUrl(environment, '/administration/socket');
 
   return {
+
+    contextEnable: {
+      socketUrl: adminSocketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/administration/features',
+        requestDestination: '/ws/administration/features'
+      }
+    },
     context: {
       socketUrl,
       stream: {
