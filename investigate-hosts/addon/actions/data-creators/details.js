@@ -71,8 +71,6 @@ const _getHostDetails = (forceRefresh, serviceId) => {
         meta: {
           onSuccess: (response) => {
             const { data } = response;
-            request.registerPersistentStreamOptions({ socketUrlPostfix: data.serviceId, requiredSocketUrl: 'endpoint/socket' });
-            dispatch(setSelectedMachineServerId(data.serviceId));
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(setFocusedHost(data));
             dispatch(_fetchDataForSelectedTab());
@@ -203,8 +201,7 @@ const changeDetailTab = (tabName) => {
 
 const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
   return (dispatch, getState) => {
-    const { isTreeView } = getState().endpoint.visuals;
-    const { selectedMachineServerId } = getState().endpointQuery;
+    const { visuals: { isTreeView }, detailsInput: { snapShots } } = getState().endpoint;
     dispatch(setScanTime(scanTime));
     dispatch(changeDetailTab(tabName));
     if (tabName === 'PROCESS' && !isTreeView) {
@@ -217,7 +214,8 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
         dispatch(setAnomaliesTabView(secondaryTab));
       }
     } else {
-      dispatch(_getHostDetails(true, selectedMachineServerId));
+      const { serviceId } = snapShots.find((snapshot) => snapshot.scanStartTime === scanTime);
+      dispatch(_getHostDetails(true, serviceId));
     }
     dispatch(toggleExploreSearchResults(false));
   };

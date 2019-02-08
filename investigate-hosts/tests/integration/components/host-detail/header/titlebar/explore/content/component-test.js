@@ -41,8 +41,11 @@ test('File found category navigation calls endpoint sockets', function(assert) {
 
   assert.expect(6);
 
-  this.get('timezone').set('_selected', { zoneId: 'Kwajalein' });
-  new ReduxDataHelper(setState).exploreData(exploreData.explore).build();
+  this.get('timezone').set('_selected', { zoneId: 'GMT' });
+  new ReduxDataHelper(setState)
+    .exploreData(exploreData.explore)
+    .snapShot([{ serviceId: '123', scanStartTime: 1510889499000 }])
+    .endpointQuery({ endpointQuery: { serverId: '123' } }).build();
   this.render(hbs`{{host-detail/header/titlebar/explore/content }}`);
   const fileList = $('.host-explore__content__header__filename');
 

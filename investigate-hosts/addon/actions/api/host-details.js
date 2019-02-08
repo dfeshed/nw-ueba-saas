@@ -75,7 +75,7 @@ const exportFileContext = (data) => {
 };
 
 
-const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onError = NOOP, onCompleted = NOOP }) => {
+const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onError = NOOP, onCompleted = NOOP }, serverId) => {
   const filter = [{
     field: 'keyword',
     value: filterObj.text
@@ -89,7 +89,7 @@ const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onE
     method: 'fileContextSearch',
     modelName: 'endpoint',
     query: { filter },
-    streamOptions: { requireRequestId: false },
+    streamOptions: { requireRequestId: false, requiredSocketUrl: 'endpoint/socket', socketUrlPostfix: serverId },
     onInit,
     onResponse,
     onError,

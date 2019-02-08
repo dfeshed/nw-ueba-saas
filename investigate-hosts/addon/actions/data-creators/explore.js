@@ -9,7 +9,7 @@ let stopItemsStream;
  */
 const getFileSearchResults = (filterStr) => {
   return (dispatch, getState) => {
-    const { endpoint: { detailsInput: { agentId } } } = getState();
+    const { endpoint: { detailsInput: { agentId } }, endpointQuery: { serverId } } = getState();
     const filterObj = {
       text: filterStr,
       agentId
@@ -37,7 +37,7 @@ const getFileSearchResults = (filterStr) => {
           const debugError = JSON.stringify(err);
           debug(`onError: getFileSearchResults ${debugError}`);
         }
-      }
+      }, serverId
     );
   };
 };
