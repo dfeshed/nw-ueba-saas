@@ -161,6 +161,10 @@ export default [
       {
         field: 'machineIdentity.hardware.serial',
         labelKey: 'machineIdentity.hardware.serial'
+      },
+      {
+        field: 'machineIdentity.hardware.model',
+        labelKey: 'machineIdentity.hardware.model'
       }
     ]
   },
