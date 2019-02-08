@@ -1,6 +1,7 @@
 import RSVP, { Promise } from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from '../types';
+import { getServices } from 'respond/reducers/respond/recon/selectors';
 
 const requestServices = function() {
   const request = lookup('service:request');
@@ -9,6 +10,23 @@ const requestServices = function() {
     modelName: 'core-service',
     query: {}
   });
+};
+
+const fetchPackAction = function(resolve, reject) {
+  return () => {
+    return {
+      type: ACTION_TYPES.SERVICES_RETRIEVE,
+      promise: requestServices(),
+      meta: {
+        onSuccess() {
+          resolve();
+        },
+        onFailure() {
+          reject();
+        }
+      }
+    };
+  };
 };
 
 const serviceIdFilter = (value) => ({ field: 'endpointId', value });
@@ -44,20 +62,13 @@ const fetchAliases = function(endpointId) {
 export default {
 
   getServices() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        dispatch({
-          type: ACTION_TYPES.SERVICES_RETRIEVE,
-          promise: requestServices(),
-          meta: {
-            onSuccess() {
-              resolve();
-            },
-            onFailure() {
-              reject();
-            }
-          }
-        });
+        const coreServices = getServices(getState());
+        const callback = fetchPackAction(resolve, reject);
+        if (coreServices === undefined) {
+          dispatch(callback());
+        }
       });
     };
   },

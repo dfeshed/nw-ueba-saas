@@ -4,11 +4,12 @@ import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find, findAll, settled } from '@ember/test-helpers';
+import { waitUntil, render, click, find, findAll, settled } from '@ember/test-helpers';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket, throwSocket } from 'sa/tests/helpers/patch-socket';
 
+const timeout = 10000;
 const japaneseLocale = 'Japanese';
 const englishLocale = 'English';
 const powerSelect = '.power-select';
@@ -119,6 +120,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
 
     await render(hbs`{{test-clazz go=(action go)}}`);
 
+    await waitUntil(() => find('.time').textContent === 'PM', { timeout });
     assert.equal(find('.time').textContent, 'PM');
 
     await click('.time');

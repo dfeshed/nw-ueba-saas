@@ -3,6 +3,7 @@
  * Container for all sub-routes that require authentication.
  * @public
  */
+import Ember from 'ember';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { get } from '@ember/object';
@@ -15,6 +16,10 @@ import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import $ from 'jquery';
 import { warn } from '@ember/debug';
+
+const {
+  testing
+} = Ember;
 
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
@@ -167,7 +172,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const key = this.get('landingPage.selected.key');
     const classicRedirect = localStorage.getItem('rsa-post-auth-redirect');
 
-    if (classicRedirect) {
+    if (classicRedirect && !testing) {
       window.location = classicRedirect;
       return localStorage.removeItem('rsa-post-auth-redirect');
     } else {

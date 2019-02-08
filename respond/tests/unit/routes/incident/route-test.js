@@ -1,15 +1,16 @@
 import { module, test } from 'qunit';
 import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
-import { patchSocket, throwSocket } from '../../helpers/patch-socket';
-import { patchReducer } from '../../helpers/vnext-patch';
-import Immutable from 'seamless-immutable';
-import { computed } from '@ember/object';
-import { getServices, isServicesLoading, isServicesRetrieveError } from 'respond/reducers/respond/recon/selectors';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { computed } from '@ember/object';
 import { settled, waitUntil } from '@ember/test-helpers';
-import ApplicationRoute from 'respond/routes/application';
+import IncidentRoute from 'respond/routes/incident';
+import Immutable from 'seamless-immutable';
+import { patchReducer } from '../../../helpers/vnext-patch';
+import { patchSocket, throwSocket } from '../../../helpers/patch-socket';
+import { getServices, isServicesLoading, isServicesRetrieveError } from 'respond/reducers/respond/recon/selectors';
 
+const timeout = 10000;
 const getServiceState = (state) => {
   const services = getServices(state);
   const loading = isServicesLoading(state);
@@ -21,24 +22,57 @@ const getServiceState = (state) => {
   };
 };
 
-let route, redux;
+let redux, route, transition, hasPermission;
 
-module('Unit | Route | application', function(hooks) {
+module('Unit | Route | incident', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
+    transition = null;
+    hasPermission = true;
     initialize(this.owner);
     patchReducer(this, Immutable.from({}));
     this.owner.register('service:-routing', Service.extend({
-      currentRouteName: 'application'
+      currentRouteName: 'incident'
     }));
     redux = this.owner.lookup('service:redux');
-    const PatchedRoute = ApplicationRoute.extend({
+    const accessControl = Service.extend({
+      hasRespondIncidentsAccess: computed(function() {
+        return hasPermission;
+      })
+    }).create();
+    const PatchedRoute = IncidentRoute.extend({
       redux: computed(function() {
         return redux;
-      })
+      }),
+      accessControl: computed(function() {
+        return accessControl;
+      }),
+      transitionTo(routeName) {
+        transition = routeName;
+      }
     });
     route = PatchedRoute.create();
+  });
+
+  test('it transitions to "index" if the user does not have access', async function(assert) {
+    assert.expect(1);
+
+    hasPermission = false;
+
+    await route.beforeModel();
+    await settled();
+    assert.equal(transition, 'index');
+  });
+
+  test('does not transition to "index" if the user has access', async function(assert) {
+    assert.expect(1);
+
+    hasPermission = true;
+
+    await route.beforeModel();
+    await settled();
+    assert.equal(transition, null);
   });
 
   test('should fetch services and push service data into redux', async function(assert) {
@@ -55,7 +89,7 @@ module('Unit | Route | application', function(hooks) {
       assert.deepEqual(query, {});
     });
 
-    route.model();
+    route.beforeModel();
 
     ({ services, loading, error } = getServiceState(redux.getState()));
     assert.equal(loading, true);
@@ -65,7 +99,7 @@ module('Unit | Route | application', function(hooks) {
     await waitUntil(() => {
       ({ services, loading, error } = getServiceState(redux.getState()));
       return services && Object.keys(services).length === 4;
-    }, { timeout: 8000 });
+    }, { timeout });
 
     assert.equal(loading, false);
     assert.equal(error, false);
@@ -115,7 +149,7 @@ module('Unit | Route | application', function(hooks) {
 
     const done = throwSocket({ methodToThrow: 'findAll', modelNameToThrow: 'core-service' });
 
-    route.model();
+    route.beforeModel();
 
     ({ services, loading, error } = getServiceState(redux.getState()));
     assert.equal(loading, true);
@@ -133,5 +167,4 @@ module('Unit | Route | application', function(hooks) {
 
     return settled().then(() => done());
   });
-
 });

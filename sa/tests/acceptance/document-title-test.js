@@ -2,7 +2,9 @@ import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupLoginTest } from '../helpers/setup-login';
 import { waitForSockets } from '../helpers/wait-for-sockets';
-import { visit, currentURL, settled } from '@ember/test-helpers';
+import { waitUntil, visit, currentURL, settled } from '@ember/test-helpers';
+
+const timeout = 10000;
 
 module('Acceptance | document title', function(hooks) {
   setupApplicationTest(hooks);
@@ -19,7 +21,9 @@ module('Acceptance | document title', function(hooks) {
 
     const translation = this.owner.lookup('service:i18n');
     const expected = translation.t('appTitle');
-    assert.equal(document.title, expected);
+
+    await waitUntil(() => document.title === `${expected}`, { timeout });
+    assert.equal(document.title, `${expected}`);
 
     await settled().then(() => done());
   });

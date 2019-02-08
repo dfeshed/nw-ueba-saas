@@ -49,6 +49,21 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
 
   app.use('/locales/', express.static(path.join(__dirname, 'locales')), dirListing('locales'));
 
+  app.use('/userpkistatus', function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+    res.send('off');
+  });
+
+  app.use('/display/security/securitybanner/get', function(req, res) {
+    res.json({ 'data': [
+      {
+        'securityBannerEnabled': false,
+        'securityBannerTitle': '',
+        'securityBannerText': ''
+      }
+    ] });
+  });
+
   // generic info route used for all connections
   // eslint-disable-next-line new-cap
   const infoRoute = express.Router();

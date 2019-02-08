@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializeIncidents } from 'respond/actions/creators/incidents-creators';
+import { get } from '@ember/object';
 
 export default Route.extend({
   accessControl: service(),
@@ -20,7 +21,7 @@ export default Route.extend({
   },
 
   model() {
-    const redux = this.get('redux');
+    const redux = get(this, 'redux');
     redux.dispatch(initializeIncidents());
   },
 

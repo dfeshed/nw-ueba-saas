@@ -10,6 +10,8 @@ import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { Promise } from 'rsvp';
 
+const timeout = 10000;
+
 module('Unit | Controller | application', function(hooks) {
   setupTest(hooks);
 
@@ -241,6 +243,8 @@ module('Unit | Controller | application', function(hooks) {
       assert.equal(fetchCount, 1);
       assert.equal(get(i18n, 'locale'), 'es-mx');
       assert.equal(dynamicScripts().length, 1);
+
+      await waitUntil(() => t('title').toString() === 'spanish_x', { timeout });
       assert.equal(t('title').toString(), 'spanish_x');
 
       patchFetch((url) => fileFetch(url));
@@ -250,6 +254,8 @@ module('Unit | Controller | application', function(hooks) {
         assert.equal(fetchCount, 1);
         assert.equal(get(i18n, 'locale'), 'en-us');
         assert.equal(dynamicScripts().length, 1);
+
+        await waitUntil(() => t('title').toString() === 'Missing translation: title', { timeout });
         assert.equal(t('title').toString(), 'Missing translation: title');
 
         redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
@@ -258,6 +264,8 @@ module('Unit | Controller | application', function(hooks) {
           assert.equal(fetchCount, 2);
           assert.equal(get(i18n, 'locale'), 'es-mx');
           assert.equal(dynamicScripts().length, 1);
+
+          await waitUntil(() => t('title').toString() === 'spanish_x', { timeout });
           assert.equal(t('title').toString(), 'spanish_x');
         });
       });

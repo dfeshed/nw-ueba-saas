@@ -31,6 +31,11 @@ const {
   testing
 } = Ember;
 
+const endpoint = function(path) {
+  const { useMockServer, mockServerUrl } = config;
+  return useMockServer ? `${mockServerUrl}${path}` : path;
+};
+
 /**
  * Enumeration of authentication status.
  * @private
@@ -311,13 +316,15 @@ export default Component.extend({
 
       // Find out if the PKI Status is `on` or `off`!
       // Make a REST Call
-      const promisePki = this.get('ajax').request('/userpkistatus', {
+      const pkiUrl = endpoint('/userpkistatus');
+      const promisePki = this.get('ajax').request(pkiUrl, {
         dataType: 'html' // Capture the Response body!
       });
 
       // Get banner for Security Banner
       // Make REST call
-      const promiseSecurityBanner = this.get('ajax').request('/display/security/securitybanner/get');
+      const eulaUrl = endpoint('/display/security/securitybanner/get');
+      const promiseSecurityBanner = this.get('ajax').request(eulaUrl);
 
       // Wait for both Promise to return
       // Once both complete, resolve it

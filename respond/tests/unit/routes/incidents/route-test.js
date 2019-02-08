@@ -8,6 +8,8 @@ import IncidentsRoute from 'respond/routes/incidents';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
 
+const timeout = 10000;
+
 let redux, transition, hasPermission;
 
 module('Unit | Route | incidents', function(hooks) {
@@ -17,6 +19,8 @@ module('Unit | Route | incidents', function(hooks) {
     transition = null;
     hasPermission = true;
     initialize(this.owner);
+    patchReducer(this, Immutable.from({}));
+    redux = this.owner.lookup('service:redux');
   });
 
   const setupRoute = function() {
@@ -30,7 +34,6 @@ module('Unit | Route | incidents', function(hooks) {
     }).create();
     const contextualHelp = this.owner.lookup('service:contextualHelp');
     const i18n = this.owner.lookup('service:i18n');
-    redux = this.owner.lookup('service:redux');
     const PatchedRoute = IncidentsRoute.extend({
       i18n: computed(function() {
         return i18n;
@@ -93,7 +96,6 @@ module('Unit | Route | incidents', function(hooks) {
   test('ensure the expected action creator is called', async function(assert) {
     assert.expect(1);
 
-    patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
     await route.model();
 
@@ -103,9 +105,8 @@ module('Unit | Route | incidents', function(hooks) {
         assert.ok(true, 'isSendToArcherAvailable was set meaning the action creator was called');
       }
       return isSendToArcherAvailable;
-    }, { timeout: 10000 });
+    }, { timeout });
 
     await settled();
   });
-
 });

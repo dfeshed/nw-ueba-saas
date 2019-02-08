@@ -1,10 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
-import { get } from '@ember/object';
 import config from 'ember-get-config';
-import { recon } from 'respond/actions/api';
-import { bindActionCreators } from 'redux';
 
 const { useMockServer, mockServerUrl, environment } = config;
 
@@ -49,22 +46,6 @@ export default Route.extend({
     });
   },
 
-  getServices(redux) {
-    const getServices = bindActionCreators(recon.getServices, redux.dispatch.bind(redux));
-    try {
-      getServices();
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log('Error fetching core services: ', e);
-    }
-  },
-
-  model() {
-    const redux = get(this, 'redux');
-    this.getServices(redux);
-    return {};
-  },
-
   activate() {
     this.set('contextualHelp.module', this.get('contextualHelp.respondModule'));
   },
@@ -72,4 +53,5 @@ export default Route.extend({
   deactivate() {
     this.set('contextualHelp.module', null);
   }
+
 });

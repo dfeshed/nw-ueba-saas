@@ -2,6 +2,9 @@ import Route from '@ember/routing/route';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { initializeIncident } from 'respond/actions/creators/incidents-creators';
+import { get } from '@ember/object';
+import { recon } from 'respond/actions/api';
+import { bindActionCreators } from 'redux';
 
 export default Route.extend({
   accessControl: service(),
@@ -16,6 +19,18 @@ export default Route.extend({
     // TODO: we should use more complex redirects here, but we're just going to send back to / for now
     if (!this.get('accessControl.hasRespondIncidentsAccess')) {
       this.transitionTo('index');
+    }
+    const redux = get(this, 'redux');
+    this.getServices(redux);
+  },
+
+  getServices(redux) {
+    const getServices = bindActionCreators(recon.getServices, redux.dispatch.bind(redux));
+    try {
+      getServices();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('Error fetching core services: ', e);
     }
   },
 
