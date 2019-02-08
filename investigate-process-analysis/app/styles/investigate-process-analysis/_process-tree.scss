@@ -1,6 +1,9 @@
 $circle-border-color: #D8D8D8;
 
 .process-tree {
+  svg {
+    height: 100%;
+  }
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
   cursor: -moz-grab;

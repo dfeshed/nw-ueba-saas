@@ -10,6 +10,7 @@
   }
 
   .alerts {
+    height: 100%;
     overflow: auto;
     max-width: 400px;
     @include border-right(1px, solid, primary, lightest, nearly-transparent);

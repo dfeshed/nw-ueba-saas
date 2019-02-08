@@ -34,6 +34,7 @@
   }
 
   .alerts {
+    height: 100%;
     min-width: 400px;
     max-width: 400px;
     @include border-right(1px, solid, primary, lightest, nearly-transparent);
