@@ -24,12 +24,12 @@ export default {
   {
     field: 'machineFileScore',
     title: 'localRiskScore',
-    width: '12vw'
+    width: '8vw'
   },
   {
     field: 'fileProperties.score',
     title: 'globalRiskScore',
-    width: '12vw'
+    width: '8vw'
   },
   {
     field: 'machineCount',

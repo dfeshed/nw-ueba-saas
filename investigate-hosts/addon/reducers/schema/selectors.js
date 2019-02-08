@@ -10,12 +10,11 @@ const COLUMN_WIDTH = {
   'analysisData.machineRiskScore': '6vw',
   'machineIdentity.machineOsType': '7vw',
   'machineIdentity.networkInterfaces.ipv4': '5vw',
-  'machine.users.name': '5vw',
+  'machine.users.name': '15vw',
   'groupPolicy.policyStatus': '6vw',
   'machineIdentity.agentMode': '5vw',
   'machineIdentity.agentVersion': '6vw',
   'machineIdentity.networkInterfaces.macAddress': '7vw'
-
 };
 
 const DEFAULT_COLUMN = Immutable.from([

@@ -22,11 +22,13 @@ export default {
   },
   {
     field: 'machineFileScore',
-    title: 'localRiskScore'
+    title: 'localRiskScore',
+    width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalRiskScore'
+    title: 'globalRiskScore',
+    width: '8vw'
   },
   {
     field: 'machineCount',
@@ -42,7 +44,8 @@ export default {
   {
     field: 'signature',
     title: 'signature',
-    format: 'SIGNATURE'
+    format: 'SIGNATURE',
+    width: '8vw'
   },
   {
     field: 'fileProperties.downloadInfo',

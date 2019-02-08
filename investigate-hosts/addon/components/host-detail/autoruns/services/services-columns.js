@@ -12,17 +12,20 @@ const defaultColumns = [
     field: 'fileName',
     title: 'NAME',
     format: 'FILENAME',
-    order: 1
+    order: 1,
+    width: '12vw'
   },
   {
     field: 'machineFileScore',
     title: 'Local Risk Score',
-    order: 5
+    order: 5,
+    width: '8vw'
   },
   {
     field: 'fileProperties.score',
     title: 'Global Risk Score',
-    order: 6
+    order: 6,
+    width: '8vw'
   },
   {
     field: 'machineCount',
@@ -45,7 +48,8 @@ const defaultColumns = [
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE',
-    order: 4
+    order: 4,
+    width: '10vw'
   },
   {
     field: 'fileProperties.downloadInfo',

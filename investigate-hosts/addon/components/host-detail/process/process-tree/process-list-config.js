@@ -17,13 +17,13 @@ export default [
   },
   {
     field: 'machineFileScore',
-    width: '4vw',
+    width: '7vw',
     title: 'investigateHosts.process.localRiskScore',
     isDescending: false
   },
   {
     field: 'fileProperties.score',
-    width: '4vw',
+    width: '7vw',
     title: 'investigateHosts.process.globalRiskScore',
     isDescending: false
   },
@@ -47,13 +47,13 @@ export default [
   },
   {
     field: 'fileProperties.signature.features',
-    width: '10vw',
+    width: '12vw',
     title: 'investigateHosts.process.signature',
     isDescending: false
   },
   {
     field: 'fileProperties.downloadInfo',
-    width: '6vw',
+    width: '8vw',
     format: 'DOWNLOADSTATUS',
     title: 'investigateHosts.process.downloaded',
     isDescending: false
@@ -72,7 +72,7 @@ export default [
   },
   {
     field: 'launchArguments',
-    width: '10vw',
+    width: '20vw',
     title: 'investigateHosts.process.launchArguments',
     isDescending: false
   },

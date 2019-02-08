@@ -12,7 +12,8 @@ const defaultColumns = [
   },
   {
     field: 'processContext',
-    title: 'PROCESS CONTEXT'
+    title: 'PROCESS CONTEXT',
+    width: '8vw'
   },
   {
     field: 'fileName',
@@ -22,11 +23,12 @@ const defaultColumns = [
   {
     field: 'machineFileScore',
     title: 'Local Risk Score',
-    width: '4vw'
+    width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'Global Risk Score'
+    title: 'Global Risk Score',
+    width: '8vw'
   },
   {
     field: 'machineCount',
@@ -57,7 +59,7 @@ const defaultColumns = [
   {
     field: 'path',
     title: 'FILE PATH',
-    width: 600
+    width: '19vw'
   },
   {
     field: 'checksumSha256',
@@ -71,7 +73,7 @@ let columnsConfig = {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
       format: 'DATE',
-      width: '20%'
+      width: '12vw'
     }
   ],
   windows: [
@@ -79,7 +81,7 @@ let columnsConfig = {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
       format: 'DATE',
-      width: '20%'
+      width: '12vw'
     }
   ],
   linux: [
@@ -87,7 +89,7 @@ let columnsConfig = {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
       format: 'DATE',
-      width: '20%'
+      width: '12vw'
     }
   ]
 };

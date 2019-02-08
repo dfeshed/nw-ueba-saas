@@ -29,7 +29,7 @@ let columnsConfig = {
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      width: '370px'
+      width: '12vw'
     }
   ],
   mac: [
@@ -45,7 +45,7 @@ let columnsConfig = {
       'title': 'Created',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      width: '370px'
+      width: '12vw'
     }
   ]
 };
@@ -70,13 +70,13 @@ const defaultColumns = [
     'field': 'machineFileScore',
     'label': 'investigateHosts.files.fields.score',
     'title': 'Local Risk Score',
-    'width': 70
+    'width': '8vw'
   },
   {
     'field': 'fileProperties.score',
     'title': 'Global Risk Score',
     'label': 'investigateHosts.files.fields.score',
-    'width': 90
+    'width': '8vw'
   },
   {
     'field': 'machineCount',
@@ -108,7 +108,7 @@ const defaultColumns = [
     'field': 'path',
     'title': 'Path',
     'label': 'investigateHosts.files.fields.path',
-    'width': 800
+    'width': '18vw'
   },
   {
     'field': 'fileProperties.size',

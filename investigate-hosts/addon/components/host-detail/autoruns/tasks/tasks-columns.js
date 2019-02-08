@@ -12,17 +12,20 @@ const defaultColumns = [
     field: 'fileName',
     title: 'NAME',
     format: 'FILENAME',
-    order: 1
+    order: 1,
+    width: '10vw'
   },
   {
     field: 'machineFileScore',
     title: 'Local Risk Score',
-    order: 4
+    order: 4,
+    width: '8vw'
   },
   {
     field: 'fileProperties.score',
     title: 'Global Risk Score',
-    order: 5
+    order: 5,
+    width: '8vw'
   },
   {
     field: 'machineCount',
@@ -39,19 +42,21 @@ const defaultColumns = [
   {
     field: 'fileProperties.fileStatus',
     title: 'File Status',
-    width: '15vw',
+    width: '8vw',
     order: 11
   },
   {
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE',
-    order: 3
+    order: 3,
+    width: '10vw'
   },
   {
     field: 'checksumSha256',
     title: 'HASH',
-    order: 12
+    order: 12,
+    width: '22vw'
   },
   {
     field: 'fileProperties.downloadInfo',
@@ -67,19 +72,22 @@ let columnsConfig = {
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      order: 15
+      order: 15,
+      width: '18vw'
     }
   ],
   windows: [
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      order: 15
+      order: 15,
+      width: '18vw'
     },
     {
       field: 'creatorUser',
       title: 'CREATOR USER',
-      order: 8
+      order: 8,
+      width: '15vw'
     },
     {
       field: 'executeUser',
@@ -89,24 +97,28 @@ let columnsConfig = {
     {
       field: 'name',
       title: 'TASK NAME',
-      order: 2
+      order: 2,
+      width: '20vw'
     },
     {
       field: 'launchArguments',
       title: 'LAUNCH ARGUMENTS',
-      order: 6
+      order: 6,
+      width: '18vw'
     },
     {
       field: 'status',
       title: 'STATUS',
-      order: 14
+      order: 14,
+      width: '14vw'
     }
   ],
   linux: [
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      order: 15
+      order: 15,
+      width: '18vw'
     }
   ]
 };
