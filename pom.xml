@@ -36,9 +36,9 @@
         <org.springframework-version>4.3.8.RELEASE</org.springframework-version>
         <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
-        <jackson.version>2.9.6</jackson.version>
-        <jackson.dataformat.version>2.9.6</jackson.dataformat.version>
-        <jackson.datatype.version>2.9.6</jackson.datatype.version>
+        <jackson.version>2.9.8</jackson.version>
+        <jackson.dataformat.version>2.9.8</jackson.dataformat.version>
+        <jackson.datatype.version>2.9.8</jackson.datatype.version>
         <test.exclude>nothingToExlude</test.exclude>
         <test.include>**/*Test.java</test.include>
         <test.groups></test.groups>
@@ -62,7 +62,7 @@
         <asm-commons.version>5.0.3</asm-commons.version>
         <commons-codec.version>1.9</commons-codec.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
 
         <!-- maven plugins versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
