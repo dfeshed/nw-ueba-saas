@@ -89,7 +89,7 @@ public class ProcessEvent extends Event implements Serializable {
     }
 
     public void setProcessEventDescription(String processEventDescription) {
-        processEventDescription = processEventDescription;
+        this.processEventDescription = processEventDescription;
     }
 
     @Override

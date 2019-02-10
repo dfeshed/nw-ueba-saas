@@ -2,30 +2,23 @@ package presidio.data.generators.processentity;
 
 import presidio.data.domain.FileEntity;
 import presidio.data.domain.ProcessEntity;
-import presidio.data.generators.common.*;
-import presidio.data.generators.event.process.CertificateIssuerDefaultGenerator;
-import presidio.data.generators.event.process.ICertificateIssuerGenerator;
+import presidio.data.generators.common.IStringListGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
 
 import java.util.List;
 
-/**
- * Default generator for Process entity.
- *
- * **/
-public class WindowsProcessEntityGenerator implements IProcessEntityGenerator {
+public class ProcessEntityGenerator implements IProcessEntityGenerator {
 
     IFileEntityGenerator processFileGenerator;
     IStringListGenerator processDirectoryGroupsGenerator;
     IStringListGenerator processCategoriesGenerator;
-    ICertificateIssuerGenerator processCertificateIssuerGenerator;
 
-    public WindowsProcessEntityGenerator() {
+
+    public ProcessEntityGenerator() {
         processFileGenerator = new ProcessFileEntityGenerator();
-        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[] {"WINDOWS_SYSTEM32","WINDOWS"});
-        processCategoriesGenerator = new ProcessCategoriesGenerator(new String[] {"WINDOWS_PROCESS"});
-        processCertificateIssuerGenerator = new CertificateIssuerDefaultGenerator();
+        processDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator((List<String>) null);
+        processCategoriesGenerator = new ProcessCategoriesGenerator((List<String>) null);
 
     }
 
@@ -34,9 +27,8 @@ public class WindowsProcessEntityGenerator implements IProcessEntityGenerator {
         FileEntity processFile = getProcessFileGenerator().getNext();
         List<String> processDirectoryGroups = getProcessDirectoryGroupsGenerator().getNext();
         List<String> processCategories = getProcessCategoriesGenerator().getNext();
-        String processCertificateIssuer = getProcessCertificateIssuerGenerator().getNext();
 
-        return new ProcessEntity(processFile, processDirectoryGroups, processCategories, processCertificateIssuer);
+        return new ProcessEntity(processFile, processDirectoryGroups, processCategories, "");
     }
 
     public IFileEntityGenerator getProcessFileGenerator() {
@@ -62,13 +54,4 @@ public class WindowsProcessEntityGenerator implements IProcessEntityGenerator {
     public void setProcessCategoriesGenerator(IStringListGenerator processCategoriesGenerator) {
         this.processCategoriesGenerator = processCategoriesGenerator;
     }
-
-    public void setProcessCertificateIssuerGenerator(ICertificateIssuerGenerator processCertificateIssuerGenerator) {
-        this.processCertificateIssuerGenerator = processCertificateIssuerGenerator;
-    }
-
-    public ICertificateIssuerGenerator getProcessCertificateIssuerGenerator() {
-        return processCertificateIssuerGenerator;
-    }
-
 }

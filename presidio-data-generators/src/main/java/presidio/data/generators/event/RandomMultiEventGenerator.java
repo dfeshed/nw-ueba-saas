@@ -29,7 +29,7 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
     }
 
     public RandomMultiEventGenerator(List<EventGeneratorProbability> eventGeneratorProbabilityList,
-                                     Instant startInstant, Instant endInstant, List<MultiRangeTimeGenerator.ActivityRange> activityRanges, Duration interval) throws GeneratorException {
+                                     Instant startInstant, Instant endInstant, List<MultiRangeTimeGenerator.ActivityRange> activityRanges, Duration interval) {
         this.eventGeneratorProbabilityList = eventGeneratorProbabilityList;
         resetEventGeneratorProbabilityIterator();
         for (EventGeneratorProbability eventGeneratorProbability: eventGeneratorProbabilityList){

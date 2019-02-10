@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import presidio.data.domain.FileEntity;
 import presidio.data.generators.common.*;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
+import presidio.data.generators.fileentity.IFileEntityGenerator;
 
 public class ProcessFileEntityGenerator implements IFileEntityGenerator {
 
@@ -38,11 +39,11 @@ public class ProcessFileEntityGenerator implements IFileEntityGenerator {
             Pair.of("regedit.exe","C:\\Windows")};
 
 
-    public ProcessFileEntityGenerator() throws GeneratorException {
+    public ProcessFileEntityGenerator(){
         fileNameAndDirGenerator = new CyclicPairsGenerator(DEFAULT_PROCESS_FILES);
     }
 
-    public ProcessFileEntityGenerator(Pair[] nameAndDirPairs) throws GeneratorException {
+    public ProcessFileEntityGenerator(Pair[] nameAndDirPairs){
         fileNameAndDirGenerator = new CyclicPairsGenerator(nameAndDirPairs);
     }
 

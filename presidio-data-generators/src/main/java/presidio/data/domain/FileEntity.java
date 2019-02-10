@@ -1,5 +1,8 @@
 package presidio.data.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class FileEntity {
     String filePath;
     String  fileName;
@@ -59,6 +62,20 @@ public class FileEntity {
         if (isDirectory == null || isDirectory) return fileName;
         if (filePath == null) return null;
         return filePath + ((filePath.contains("\\"))?"\\":"") + fileName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FileEntity)) return false;
+        FileEntity that = (FileEntity) o;
+        return new EqualsBuilder().append(this.filePath, that.filePath)
+                .append(this.fileName, that.fileName).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(filePath).append(fileName).hashCode();
     }
 
     @Override

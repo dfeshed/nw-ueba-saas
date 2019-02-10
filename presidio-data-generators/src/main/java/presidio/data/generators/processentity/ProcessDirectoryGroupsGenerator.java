@@ -27,4 +27,8 @@ public class ProcessDirectoryGroupsGenerator implements IStringListGenerator {
     public ProcessDirectoryGroupsGenerator(String[] customList) {
         value = Arrays.asList(customList);
     }
+
+    public ProcessDirectoryGroupsGenerator(List<String> value){
+        this.value = value;
+    }
 }
