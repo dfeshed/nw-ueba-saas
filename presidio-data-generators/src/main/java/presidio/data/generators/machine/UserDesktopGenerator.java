@@ -16,6 +16,7 @@ public class UserDesktopGenerator implements IMachineGenerator{
                 "",
                 "",
                 "",
-                "");
+                "",
+                user.getUserId());
     }
 }
