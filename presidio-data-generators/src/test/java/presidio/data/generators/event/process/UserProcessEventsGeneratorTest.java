@@ -58,11 +58,13 @@ public class UserProcessEventsGeneratorTest {
      * ####10 * 50000 * 10 / 36000000 = 0.1389
      * **/
 
+    private final int NUM_OF_NORMAL_USERS = 94500;
     private final double PROBABILITY_NORMAL_USER_PROCESS_EVENT = 0.4921875;
+    private final int NUM_OF_ADMIN_USERS = 5000;
     private final double PROBABILITY_ADMIN_USER_PROCESS_EVENT = 0.3189;
+    private final int NUM_OF_SERVICE_ACCOUNT_USERS = 500;
     private final double PROBABILITY_SERVICE_ACCOUNT_USER_PROCESS_EVENT = 0.06944;
-    //private final double PROBABILITY_10_50KH = 0.1667;
-    private final double PROBABILITY_10_3KH = 0.0083;
+
 
 
 
@@ -77,33 +79,32 @@ public class UserProcessEventsGeneratorTest {
         Instant endInstant      = Instant.parse("2010-01-01T06:05:00.00Z");
 
 
-        int numOfNormalUsers = 94500;
 
 
 
-        IMachineGenerator src100MachinesGenerator = null;
+
+
 
         /** USERS **/
+        IUserGenerator normalUserGenerator = createNormalUserGenerator();
+        List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange = getNormalUserActivityRange();
 
-        IUserGenerator normalUserGenerator = new NumberedUserRandomUniformallyGenerator(numOfNormalUsers, 1, "normal_user_", "UID", false, false);
 
         /** MACHINES **/
+        IMachineGenerator machineGenerator = createMachineGenerator();
 
 
-        src100MachinesGenerator = new RandomMultiMachineEntityGenerator(
-                Arrays.asList("100m_domain1", "100m_domain2", "100m_domain3", "100m_domain4", "100m_domain5",
-                        "100m_domain6", "100m_domain7", "100m_domain8", "100m_domain9", "100m_domain10"),
-                10, "5machines_",
-                10, "src");
-
-        List<MachineGeneratorRouter.MachineGeneratorWeight> machineGeneratorWeights = new ArrayList<>();
-        machineGeneratorWeights.add(new MachineGeneratorRouter.MachineGeneratorWeight(5, src100MachinesGenerator));
-        machineGeneratorWeights.add(new MachineGeneratorRouter.MachineGeneratorWeight(95, new UserDesktopGenerator()));
-        MachineGeneratorRouter machineGeneratorRouter = new MachineGeneratorRouter(machineGeneratorWeights);
 
         /** GENERATORS: PROCESS **/
-        RandomMultiEventGenerator nonImportantProcessNormalBehaviorForNormalUsersEventGenerator = createNonImportantProcessNormalBehaviorForNormalUsersEventGenerator(machineGeneratorRouter,
-                normalUserGenerator, startInstant, endInstant);
+        RandomMultiEventGenerator nonImportantProcessNormalBehaviorForNormalUsersEventGenerator =
+                createNonImportantProcessNormalBehaviorEventGenerator(
+                        machineGenerator,
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        PROBABILITY_NORMAL_USER_PROCESS_EVENT,
+                        startInstant,
+                        endInstant,
+                        "nonImportantProcessNormalBehaviorForNormalUsersEventGenerator");
 
         List<AbstractEventGenerator<Event>> eventGenerators = new ArrayList<>();
         eventGenerators.add(nonImportantProcessNormalBehaviorForNormalUsersEventGenerator);
@@ -115,28 +116,78 @@ public class UserProcessEventsGeneratorTest {
         System.out.println(stopWatch.toSplitString());
     }
 
-    private RandomMultiEventGenerator createNonImportantProcessNormalBehaviorForNormalUsersEventGenerator(IMachineGenerator machineGenerator,
-                                                                                                          IUserGenerator normalUserGenerator,
-                                                                                                          Instant startInstant,
-                                                                                                          Instant endInstant) {
+    private IUserGenerator createNormalUserGenerator(){
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_NORMAL_USERS, 1, "normal_user_", "UID", false, false);
+        return userGenerator;
+    }
+
+    private List<MultiRangeTimeGenerator.ActivityRange> getNormalUserActivityRange(){
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,0), LocalTime.of(22,0), Duration.ofNanos(ACTIVE_TIME_INTERVAL)));
+        return rangesList;
+    }
+
+    private IUserGenerator createAdminUserGenerator(){
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_ADMIN_USERS, 1, "admin_user_", "UID", false, false);
+        return userGenerator;
+    }
+
+    private List<MultiRangeTimeGenerator.ActivityRange> getAdminUserActivityRange(){
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(0,0), LocalTime.of(22,0), Duration.ofNanos(ACTIVE_TIME_INTERVAL)));
+        return rangesList;
+    }
+
+    private IUserGenerator createServiceAccountUserGenerator(){
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_SERVICE_ACCOUNT_USERS, 1, "sa_user_", "UID", false, false);
+        return userGenerator;
+    }
+
+    private List<MultiRangeTimeGenerator.ActivityRange> getServiceAcountUserActivityRange(){
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(0,0), LocalTime.of(23,59), Duration.ofNanos(ACTIVE_TIME_INTERVAL)));
+        return rangesList;
+    }
+
+    private IMachineGenerator createMachineGenerator(){
+        IMachineGenerator src100MachinesGenerator = createNonDesktopMachineGenerator();
+
+        List<MachineGeneratorRouter.MachineGeneratorWeight> machineGeneratorWeights = new ArrayList<>();
+        machineGeneratorWeights.add(new MachineGeneratorRouter.MachineGeneratorWeight(5, src100MachinesGenerator));
+        machineGeneratorWeights.add(new MachineGeneratorRouter.MachineGeneratorWeight(95, new UserDesktopGenerator()));
+        MachineGeneratorRouter machineGeneratorRouter = new MachineGeneratorRouter(machineGeneratorWeights);
+
+        return machineGeneratorRouter;
+    }
+
+    private IMachineGenerator createNonDesktopMachineGenerator(){
+        return new RandomMultiMachineEntityGenerator(
+                Arrays.asList("100m_domain1", "100m_domain2", "100m_domain3", "100m_domain4", "100m_domain5",
+                        "100m_domain6", "100m_domain7", "100m_domain8", "100m_domain9", "100m_domain10"),
+                10, "5machines_",
+                10, "src");
+    }
+
+    private RandomMultiEventGenerator createNonImportantProcessNormalBehaviorEventGenerator(IMachineGenerator machineGenerator,
+                                                                                            IUserGenerator normalUserGenerator,
+                                                                                            List<MultiRangeTimeGenerator.ActivityRange> rangesList,
+                                                                                            double eventProbability,
+                                                                                            Instant startInstant,
+                                                                                            Instant endInstant,
+                                                                                            String generatorName) {
         UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
         processNormalUsrEventsGenerator.setUserGenerator(normalUserGenerator);
         processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
-        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, "processNormalUsrEventsGenerator");
+        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, generatorName);
 
-        /** EVENTS & PROBABILITIES**/
         List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
         RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
-                new RandomMultiEventGenerator.EventGeneratorProbability(processNormalUsrEventsGenerator, PROBABILITY_NORMAL_USER_PROCESS_EVENT);
+                new RandomMultiEventGenerator.EventGeneratorProbability(processNormalUsrEventsGenerator, eventProbability);
         listOfProbabilities.add(eventsProbabilityForNormalUsers);
 
-        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
-        long activeTimeInterval = ACTIVE_TIME_INTERVAL;
-        long idleTimeInterval = IDLE_TIME_INTERVAL;
-        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,0), LocalTime.of(22,0), Duration.ofNanos(activeTimeInterval)));
 
         RandomMultiEventGenerator randomEventsGenerator = new RandomMultiEventGenerator(listOfProbabilities,
-                startInstant, endInstant, rangesList, Duration.ofMillis((int) (idleTimeInterval) ));
+                startInstant, endInstant, rangesList, Duration.ofMillis((int) (IDLE_TIME_INTERVAL) ));
         return randomEventsGenerator;
     }
 
@@ -181,9 +232,12 @@ public class UserProcessEventsGeneratorTest {
                 //todo insert events
 
                 Map<String, List<Event>> userToEvents = new HashMap<>();
+                Map<String, List<Event>> srcProcessToEvents = new HashMap<>();
                 for(Event event: events){
                     List<Event> userEvents = userToEvents.computeIfAbsent(((ProcessEvent)event).getUser().getUserId(), k -> new ArrayList<>());
                     userEvents.add(event);
+                    List<Event> srcProcessEvents = srcProcessToEvents.computeIfAbsent(((ProcessEvent)event).getProcessOperation().getSourceProcess().getProcessFileName(), k -> new ArrayList<>());
+                    srcProcessEvents.add(event);
                 }
                 stopWatch.split();
             }
