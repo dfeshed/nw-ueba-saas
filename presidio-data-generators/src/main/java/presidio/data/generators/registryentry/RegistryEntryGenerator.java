@@ -1,16 +1,9 @@
 package presidio.data.generators.registryentry;
 
-import presidio.data.domain.FileEntity;
-import presidio.data.domain.ProcessEntity;
 import presidio.data.domain.RegistryEntry;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
-import presidio.data.generators.event.process.CertificateIssuerDefaultGenerator;
-import presidio.data.generators.event.process.ICertificateIssuerGenerator;
-import presidio.data.generators.fileentity.IFileEntityGenerator;
-import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
-import presidio.data.generators.processentity.IProcessEntityGenerator;
 
 /**
  * Default generator for Process entity.

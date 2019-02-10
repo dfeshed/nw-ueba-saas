@@ -23,12 +23,12 @@ public class TimeGenerator implements ITimeGenerator {
 
     TimeGeneratorIterator iterator;
 
-    public TimeGenerator() throws GeneratorException {
+    public TimeGenerator(){
         this(LocalTime.of(8,0), LocalTime.of(16,0), 10, 30, 1);
     }
 
-    public TimeGenerator(LocalTime startLocalTime, LocalTime endLocalTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
-        if (interval <= 0) throw new GeneratorException("Interval must be greater than 0");
+    public TimeGenerator(LocalTime startLocalTime, LocalTime endLocalTime, int interval, int daysBackFrom, int daysBackTo){
+        if (interval <= 0) throw new IllegalArgumentException("Interval must be greater than 0");
         this.startLocalTime = startLocalTime;
         this.endLocalTime = endLocalTime;
         this.interval = interval;

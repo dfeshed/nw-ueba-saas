@@ -6,7 +6,7 @@ import presidio.data.domain.User;
 
 public class RandomUserGenerator implements IUserGenerator {
 
-    public RandomUserGenerator() throws GeneratorException {
+    public RandomUserGenerator(){
     }
 
     public User getNext(){

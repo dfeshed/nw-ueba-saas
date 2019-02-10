@@ -27,4 +27,8 @@ public class ProcessCategoriesGenerator implements IStringListGenerator {
     public ProcessCategoriesGenerator(String[] customList) {
         value = Arrays.asList(customList);
     }
+
+    public ProcessCategoriesGenerator(List<String> value) {
+        this.value = value;
+    }
 }

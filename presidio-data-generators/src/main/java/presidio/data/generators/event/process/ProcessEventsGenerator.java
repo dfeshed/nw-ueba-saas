@@ -37,16 +37,16 @@ public class ProcessEventsGenerator extends AbstractEventGenerator {
     private IMachineGenerator machineEntityGenerator;
     private IProcessDescriptionGenerator processDescriptionGenerator;
 
-    public ProcessEventsGenerator() throws GeneratorException {
+    public ProcessEventsGenerator(){
         setFieldDefaultGenerators();
     }
 
-    public ProcessEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public ProcessEventsGenerator(ITimeGenerator timeGenerator){
         super(timeGenerator);
         setFieldDefaultGenerators();
     }
 
-    private void setFieldDefaultGenerators() throws GeneratorException {
+    private void setFieldDefaultGenerators(){
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());

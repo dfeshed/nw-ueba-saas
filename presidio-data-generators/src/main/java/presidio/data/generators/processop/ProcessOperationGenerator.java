@@ -12,7 +12,7 @@ public class ProcessOperationGenerator implements IProcessOperationGenerator {
     private IProcessEntityGenerator destProcessEntityGenerator;
     private IOperationTypeGenerator operationTypeGenerator;
 
-    public ProcessOperationGenerator() throws GeneratorException {
+    public ProcessOperationGenerator() {
         sourceProcessEntityGenerator = new WindowsProcessEntityGenerator();
         destProcessEntityGenerator = new WindowsProcessEntityGenerator();
         operationTypeGenerator = new CyclicOperationTypeGenerator();

@@ -13,7 +13,7 @@ public class MinutesIncrementTimeGenerator extends TimeGenerator {
 
     }
 
-    public MinutesIncrementTimeGenerator() throws GeneratorException {
+    public MinutesIncrementTimeGenerator(){
         super(LocalTime.of(8,0), LocalTime.of(16,0), minutes2Millis(10), 30, 1);
     }
 

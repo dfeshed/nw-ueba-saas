@@ -11,19 +11,19 @@ import java.util.List;
 public abstract class AbstractEventGenerator<T> implements IEventGenerator<T>{
     protected ITimeGenerator timeGenerator;
 
-    public AbstractEventGenerator() throws GeneratorException {
+    public AbstractEventGenerator(){
         this.timeGenerator = new MinutesIncrementTimeGenerator();
     }
 
-    public AbstractEventGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public AbstractEventGenerator(ITimeGenerator timeGenerator){
         this.timeGenerator = timeGenerator;
     }
 
-    public void setTimeGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public void setTimeGenerator(ITimeGenerator timeGenerator){
         this.timeGenerator = timeGenerator;
     }
 
-    public ITimeGenerator getTimeGenerator() throws GeneratorException {
+    public ITimeGenerator getTimeGenerator(){
         return this.timeGenerator;
     }
 
