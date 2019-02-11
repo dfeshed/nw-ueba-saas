@@ -11,4 +11,5 @@ apache-airflow[devel]==1.10.2
 python-dateutil
 lxml>4.0
 setuptools-scm==2.1.0
+snakebite
 ../presidio-workflows-extension/.tox/dist/presidio-workflows-extension-1.0.zip
