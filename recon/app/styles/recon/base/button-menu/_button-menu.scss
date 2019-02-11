@@ -11,6 +11,7 @@
   background-clip: padding-box;
   @include border(1px, solid, primary, lightest);
   box-shadow: 1px 1px 2px background-color(primary, darkest);
+  padding: 0px .5px 0px .5px;
 
   &.expanded {
     display: block;
@@ -34,9 +35,10 @@
     color: text-color(primary, base);
   }
 
-  li a:hover {
+  li:focus {
     color: text-color(primary, lightest);
     background: background-color(secondary, darker);
+    outline: none;
     cursor: pointer;
   }
 

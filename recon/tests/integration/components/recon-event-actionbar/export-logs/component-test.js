@@ -11,6 +11,11 @@ const data = {
   eventType: { name: 'LOG' }
 };
 
+const ARROW_ENTER_KEY = 13;
+
+const downloadButtonSelector = '.export-logs-button .rsa-form-button';
+const dropdownArrowSelector = '.rsa-split-dropdown .rsa-form-button';
+
 moduleForComponent('recon-event-actionbar/export-logs', 'Integration | Component | recon event actionbar/export logs', {
   integration: true,
   beforeEach() {
@@ -103,6 +108,59 @@ test('it renders proper label when downloading log data', function(assert) {
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
     assert.equal(str, 'Downloading...');
+  });
+});
+
+/*
+ *checks if download is triggered when option is clicked
+*/
+test('option click will trigger download', function(assert) {
+
+  new DataHelper(this.get('redux'))
+    .initializeData()
+    .setAutoDownloadPreference(false);
+
+  this.render(hbs `{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+
+  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Log', 'Download menu button label for Logs when not downloading');
+
+  this.$(dropdownArrowSelector).click();
+
+  const buttonMenuSelector = '.recon-button-menu li:nth-child(1) a';
+  this.$(buttonMenuSelector).click();
+
+  const that = this;
+  return wait().then(function() {
+    assert.equal(that.$(downloadButtonSelector)[0].outerText.trim(), 'Downloading...', 'Download menu button label for Logs when downloading');
+  });
+});
+
+/*
+ *checks if download is triggered when enter is hit
+*/
+test('keydown enter will trigger download', function(assert) {
+
+  new DataHelper(this.get('redux'))
+    .initializeData()
+    .setAutoDownloadPreference(false);
+
+  this.render(hbs `{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+
+  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Log', 'Download menu button label for Logs when not downloading');
+
+  this.$(dropdownArrowSelector).click();
+
+  // this.$ does not have "Event" on it, use window
+  // eslint-disable-next-line new-cap
+  const e = window.$.Event('keydown');
+  e.keyCode = ARROW_ENTER_KEY;
+
+  const buttonMenuSelector = '.recon-button-menu li:nth-child(1)';
+  this.$(buttonMenuSelector).trigger(e);
+
+  const that = this;
+  return wait().then(function() {
+    assert.equal(that.$(downloadButtonSelector)[0].outerText.trim(), 'Downloading...', 'Download menu button label for Logs when downloading');
   });
 });
 

@@ -16,9 +16,9 @@
       }}
         {{rsa-icon name="arrow-down-12"}}
       {{/rsa-form-button}}
-      {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle}}
+      {{#recon-button-menu isExpanded=isExpanded currentIndex=-1 style=offsetsStyle items=downloadFormats tabindex=0}}
         {{#each downloadFormats as |download|}}
-          <li>
+          <li tabindex='-1' onkeydown={{action 'handleKeydown' download.key}}>
             <a {{action 'processMenuItem' download.key}}>
               {{t (concat 'recon.textView.' (get download 'value'))}}
             </a>

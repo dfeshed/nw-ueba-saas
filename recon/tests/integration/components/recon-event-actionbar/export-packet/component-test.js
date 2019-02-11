@@ -5,12 +5,17 @@ import hbs from 'htmlbars-inline-precompile';
 import { set, computed } from '@ember/object';
 import { setupRenderingTest } from 'ember-qunit';
 import DataHelper from '../../../../helpers/data-helper';
-import { click, render, find, findAll, settled } from '@ember/test-helpers';
+import { click, render, find, findAll, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import * as InteractionCreators from 'recon/actions/interaction-creators';
 
 const didDownloadCreatorsStub = sinon.stub(InteractionCreators, 'didDownloadFiles');
+
+const ARROW_ENTER_KEY = 13;
+
+const downloadButtonSelector = '.export-packet-button .rsa-form-button';
+const dropdownArrowSelector = '.rsa-split-dropdown .rsa-form-button';
 
 const data = {
   eventType: { name: 'NETWORK' }
@@ -146,6 +151,57 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), isDownloading);
+    });
+  });
+
+  /*
+  *checks if download is triggered when option is clicked
+  */
+  test('option click will trigger download', async function(assert) {
+    assert.expect(2);
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux)
+      .initializeData()
+      .setAutoDownloadPreference(false);
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+
+    assert.equal(find(downloadButtonSelector).outerText.trim(), 'Download PCAP', 'Download menu button label for Packets when not downloading');
+
+    await click(dropdownArrowSelector);
+
+    const buttonMenuSelector = '.recon-button-menu li:nth-child(1) a';
+    await click(buttonMenuSelector);
+
+    return settled().then(async() => {
+      assert.equal(find(downloadButtonSelector).outerText.trim(), 'Downloading...', 'Download menu button label for Packets when downloading');
+    });
+  });
+
+  /*
+  *checks if download is triggered when enter is hit
+  */
+  test('keydown enter will trigger download', async function(assert) {
+    assert.expect(2);
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux)
+      .initializeData()
+      .setAutoDownloadPreference(false);
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    assert.equal(find(downloadButtonSelector).outerText.trim(), 'Download PCAP', 'Download menu button label for Packets when not downloading');
+
+    await click(dropdownArrowSelector);
+
+    const buttonMenuSelector = '.recon-button-menu li:nth-child(1)';
+    await triggerKeyEvent(buttonMenuSelector, 'keydown', ARROW_ENTER_KEY);
+
+    return settled().then(async() => {
+      assert.equal(find(downloadButtonSelector).outerText.trim(), 'Downloading...', 'Download menu button label for Packets when downloading');
     });
   });
 

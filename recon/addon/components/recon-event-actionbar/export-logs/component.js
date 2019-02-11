@@ -84,6 +84,13 @@ const DownloadLogsComponent = Component.extend({
     toggleExpand() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.toggleProperty('isExpanded');
+    },
+    // to execute download on pressing ENTER key in the menu
+    handleKeydown(type, e) {
+      if (e.keyCode === 13) {
+        this.toggleProperty('isExpanded');
+        this.send('extractFiles', type);
+      }
     }
   }
 
