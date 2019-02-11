@@ -122,6 +122,32 @@ public class UserProcessEventsGeneratorTest {
         System.out.println(stopWatch.toSplitString());
     }
 
+    private void generateDaysOfEvents(IEventGenerator<Event> eventGenerator) throws GeneratorException {
+
+        /** Generate and send events **/
+        int iterations = 0;
+
+        while (eventGenerator.hasNext() != null) {
+            try {
+                List<Event> events = eventGenerator.generate(EVENTS_GENERATION_CHUNK);
+
+                Map<String, List<Event>> userToEvents = new HashMap<>();
+                Map<String, List<Event>> srcProcessToEvents = new HashMap<>();
+                for(Event event: events){
+                    List<Event> userEvents = userToEvents.computeIfAbsent(((ProcessEvent)event).getUser().getUserId(), k -> new ArrayList<>());
+                    userEvents.add(event);
+                    List<Event> srcProcessEvents = srcProcessToEvents.computeIfAbsent(((ProcessEvent)event).getProcessOperation().getSourceProcess().getProcessFileName(), k -> new ArrayList<>());
+                    srcProcessEvents.add(event);
+                }
+                stopWatch.split();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private IUserGenerator createNormalUserGenerator(){
         IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_NORMAL_USERS, 1, "normal_user_", "UID", false, false);
         return userGenerator;
@@ -237,30 +263,6 @@ public class UserProcessEventsGeneratorTest {
         return new ArrayList<>(fileEntitySet);
     }
 
-    private void generateDaysOfEvents(IEventGenerator<Event> eventGenerator) throws GeneratorException {
 
-        /** Generate and send events **/
-        int iterations = 0;
-
-        while (eventGenerator.hasNext() != null) {
-            try {
-                List<Event> events = eventGenerator.generate(EVENTS_GENERATION_CHUNK);
-
-                Map<String, List<Event>> userToEvents = new HashMap<>();
-                Map<String, List<Event>> srcProcessToEvents = new HashMap<>();
-                for(Event event: events){
-                    List<Event> userEvents = userToEvents.computeIfAbsent(((ProcessEvent)event).getUser().getUserId(), k -> new ArrayList<>());
-                    userEvents.add(event);
-                    List<Event> srcProcessEvents = srcProcessToEvents.computeIfAbsent(((ProcessEvent)event).getProcessOperation().getSourceProcess().getProcessFileName(), k -> new ArrayList<>());
-                    srcProcessEvents.add(event);
-                }
-                stopWatch.split();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
 
 }
