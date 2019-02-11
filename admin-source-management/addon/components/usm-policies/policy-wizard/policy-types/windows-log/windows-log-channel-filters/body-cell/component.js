@@ -3,6 +3,7 @@ import { A } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import DataTableBody from '../component';
 import channels from './channels';
+import { next } from '@ember/runloop';
 
 export default DataTableBody.extend({
   layout,
@@ -20,20 +21,23 @@ export default DataTableBody.extend({
       }
       this.get('channelUpdated')();
     },
-    // to add a new custom channel by typing it and pressing ENTER key in the channel dropdown
-    setChannelOptions(select, e) {
+    // When onBlur happens due to ENTER/TAB press or the CLICK event,
+    // whatever channel name that has been entered will be added to the dropdown list.
+    setChannelOptionsOnBlur(select) {
       const searchText = select.searchText.trim();
       const lastSearchedText = select.lastSearchedText.trim();
-      // keyCode = 13 is the Enter key
-      if (e.keyCode === 13 &&
-          select.isOpen &&
+      if (!select.isOpen &&
           !select.highlighted &&
           !isEmpty(searchText)) {
         const channelOptions = this.get('channelOptions');
         const isChannelPresent = channelOptions.some((t) => (t === lastSearchedText));
         if (!isChannelPresent) {
-          channelOptions.pushObject(lastSearchedText);
-          select.actions.choose(searchText);
+          next(this, () => {
+            // push the lastSearchedText in the next runloop so EPS has time to
+            // react to the ENTER/TAB press or the CLICK event.
+            channelOptions.pushObject(lastSearchedText);
+            select.actions.choose(searchText);
+          });
         }
       }
     }

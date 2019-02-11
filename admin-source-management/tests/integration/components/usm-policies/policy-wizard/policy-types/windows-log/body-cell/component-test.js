@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { find, findAll, render, triggerKeyEvent, click } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { A } from '@ember/array';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -229,5 +229,38 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     await typeInSearch(channelName);
     await triggerKeyEvent('.ember-power-select-search-input', 'keydown', ENTER_KEY);
     assert.equal(findAll('.windows-log-channel-name .ember-power-select-selected-item')[0].innerText, channelName.trim(), 'channel name added correctly without the trialing space');
+  });
+
+  test('Clicking anywhere outside the channel name box will also add the channel name', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(channelFilters)
+      .build();
+
+    const channelName = 'xyz';
+    this.setProperties({
+      column,
+      channelOptions,
+      item
+    });
+
+    this.set('channelUpdated', () => {
+      assert.ok(true, 'channelUpdated should be called when channel options are increased');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+        column=column
+        channelOptions=channelOptions
+        item=item
+        channelUpdated=channelUpdated
+      }}
+    `);
+
+    await clickTrigger('.windows-log-channel-name');
+    await typeInSearch(channelName);
+    const channelDomEle = document.querySelector('.windows-log-channel-filters');
+    await click(channelDomEle);
+    assert.equal(findAll('.windows-log-channel-name .ember-power-select-selected-item')[0].innerText, channelName.trim(), 'channel name is added correctly on an external click');
   });
 });
