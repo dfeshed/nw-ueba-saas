@@ -1152,7 +1152,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     }, { timeout: 6000 });
     const { selectedProcessId } = redux.getState().endpoint.process;
     assert.equal(selectedProcessId, 2, 'Focused host set as first row');
-    triggerEvent(findAll('.machine-count')[0], 'contextmenu', e);
+    triggerEvent(findAll('.download-status')[0], 'contextmenu', e);
     await waitUntil(() => {
       return !!redux.getState().endpoint.process.selectedProcessId;
     }, { timeout: 6000 });
@@ -1358,14 +1358,63 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       </style>
     {{host-detail/process/process-tree}}
     `);
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 12, '12 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header by default, including the checkbox');
     await click('.rsa-data-table-header__column-selector');
     return settled().then(async() => {
       await click(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3]);
       return settled().then(() => {
-        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header, including the checkbox');
+        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 12, '12 columns in header, including the checkbox after togglinf from column selector');
       });
     });
+  });
+
+  test('Machine count, is hidden in the table by default', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    assert.equal(findAll('.machine-count').length, 0, 'machine count doesnt exist as a column by default.');
   });
 
 });

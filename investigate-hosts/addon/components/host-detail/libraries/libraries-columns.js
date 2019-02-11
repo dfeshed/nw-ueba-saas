@@ -34,7 +34,8 @@ const defaultColumns = [
     field: 'machineCount',
     title: 'Active On',
     width: '4vw',
-    disableSort: true
+    disableSort: true,
+    visible: false
   },
   {
     field: 'fileProperties.reputationStatus',

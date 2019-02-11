@@ -32,7 +32,8 @@ const defaultColumns = [
     title: 'Active On',
     width: '6vw',
     disableSort: true,
-    order: 7
+    order: 7,
+    visible: false
   },
   {
     field: 'fileProperties.reputationStatus',

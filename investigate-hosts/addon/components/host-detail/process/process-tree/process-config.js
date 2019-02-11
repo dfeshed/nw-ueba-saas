@@ -33,7 +33,8 @@ export default [
     field: 'machineCount',
     title: 'investigateHosts.process.machineCount',
     width: '6vw',
-    disableSort: true
+    disableSort: true,
+    visible: false
   },
   {
     field: 'fileProperties.reputationStatus',
