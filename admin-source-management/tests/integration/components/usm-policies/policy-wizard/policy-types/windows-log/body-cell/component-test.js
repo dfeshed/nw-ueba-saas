@@ -196,4 +196,38 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
 
     assert.equal(this.get('channelOptions').length, 6, 'Test is added as a option');
   });
+
+  test('Trailing space not allowed on entering the channel name', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(channelFilters)
+      .build();
+
+    const ENTER_KEY = 13;
+    const channelName = 'test ';
+    this.setProperties({
+      column,
+      channelOptions,
+      item
+    });
+
+    this.set('channelUpdated', () => {
+      assert.ok(true, 'channelUpdated should be called when channel options are increased');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+        column=column
+        channelOptions=channelOptions
+        item=item
+        channelUpdated=channelUpdated
+      }}
+    `);
+
+    await clickTrigger('.windows-log-channel-name');
+    // channel name with a trailing space
+    await typeInSearch(channelName);
+    await triggerKeyEvent('.ember-power-select-search-input', 'keydown', ENTER_KEY);
+    assert.equal(findAll('.windows-log-channel-name .ember-power-select-selected-item')[0].innerText, channelName.trim(), 'channel name added correctly without the trialing space');
+  });
 });
