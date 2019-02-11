@@ -4,7 +4,7 @@ import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { isEmpty } from '@ember/utils';
 import { resetHostDownloadLink } from 'investigate-hosts/actions/ui-state-creators';
-import { initializeAgentDetails, changeDetailTab, setNewTabView } from 'investigate-hosts/actions/data-creators/details';
+import { initializeAgentDetails, setNewTabView } from 'investigate-hosts/actions/data-creators/details';
 import { setupEndpointServer, changeEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
 import _ from 'lodash';
@@ -41,7 +41,7 @@ const bootstrapInvestigateHosts = (query) => {
   };
 };
 
-const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }) => {
+const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }, isPageLoading) => {
   return async(dispatch, getState) => {
     const id = sid || getState().endpointQuery.serverId;
     if (sid !== getState().endpointQuery.serverId) {
@@ -49,12 +49,11 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     }
     dispatch(resetHostDownloadLink());
 
-    if (tabName === 'OVERVIEW') {
+    if (isPageLoading) {
       dispatch(initializeAgentDetails({ agentId: machineId }, true, true));
-      dispatch(changeDetailTab(tabName));
-    } else {
-      dispatch(setNewTabView(tabName));
     }
+
+    dispatch(setNewTabView(tabName));
     // To redirect to the Process details panel in the process tab
     next(() => {
       if (tabName === 'PROCESS' && subTabName === 'process-details') {

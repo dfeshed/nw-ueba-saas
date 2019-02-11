@@ -26,6 +26,8 @@ export default Route.extend({
 
   listLoaded: false,
 
+  isPageLoading: true,
+
   queryParams: {
     machineId: {
       refreshModel: true
@@ -47,13 +49,17 @@ export default Route.extend({
     }
   },
 
+  activate() {
+    this.set('isPageLoading', false);
+  },
 
   model(params) {
     const redux = this.get('redux');
+    const isPageReload = this.get('isPageLoading');
     const { sid, machineId, tabName } = params;
     if (sid && machineId) {
       this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
-      return redux.dispatch(initializeHostDetailsPage(params));
+      return redux.dispatch(initializeHostDetailsPage(params, isPageReload));
     }
   },
 
@@ -68,6 +74,7 @@ export default Route.extend({
 
   deactivate() {
     const redux = this.get('redux');
+    this.set('isPageLoading', true); // Reset the flag
     redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
   }
 });
