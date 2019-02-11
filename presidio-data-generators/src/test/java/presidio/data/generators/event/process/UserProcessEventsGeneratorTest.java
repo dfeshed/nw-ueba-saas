@@ -59,11 +59,13 @@ public class UserProcessEventsGeneratorTest {
      * **/
 
     private final int NUM_OF_NORMAL_USERS = 94500;
-    private final double PROBABILITY_NORMAL_USER_PROCESS_EVENT = 0.4921875;
+    private final double PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.4921875;
+    private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 100;
+    private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 200;
     private final int NUM_OF_ADMIN_USERS = 5000;
-    private final double PROBABILITY_ADMIN_USER_PROCESS_EVENT = 0.3189;
+    private final double PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.3189;
     private final int NUM_OF_SERVICE_ACCOUNT_USERS = 500;
-    private final double PROBABILITY_SERVICE_ACCOUNT_USER_PROCESS_EVENT = 0.06944;
+    private final double PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.06944;
 
 
 
@@ -93,6 +95,9 @@ public class UserProcessEventsGeneratorTest {
         /** MACHINES **/
         IMachineGenerator machineGenerator = createMachineGenerator();
 
+        /** Processes **/
+        List<FileEntity> nonImportantProcesses = generateFileEntities();
+
 
 
         /** GENERATORS: PROCESS **/
@@ -101,7 +106,8 @@ public class UserProcessEventsGeneratorTest {
                         machineGenerator,
                         normalUserGenerator,
                         normalUserActivityRange,
-                        PROBABILITY_NORMAL_USER_PROCESS_EVENT,
+                        PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
+                        nonImportantProcesses,
                         startInstant,
                         endInstant,
                         "nonImportantProcessNormalBehaviorForNormalUsersEventGenerator");
@@ -172,13 +178,24 @@ public class UserProcessEventsGeneratorTest {
                                                                                             IUserGenerator normalUserGenerator,
                                                                                             List<MultiRangeTimeGenerator.ActivityRange> rangesList,
                                                                                             double eventProbability,
+                                                                                            List<FileEntity> processes,
                                                                                             Instant startInstant,
                                                                                             Instant endInstant,
                                                                                             String generatorName) {
         UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
         processNormalUsrEventsGenerator.setUserGenerator(normalUserGenerator);
         processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
-        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, generatorName);
+
+
+        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
+        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
+                MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER, MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER));
+        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
+        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
+                MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER, MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER));
+        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.OPEN_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_REMOTE_THREAD.value};
+        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, srcProcessEntityGenerator,
+                dstProcessEntityGenerator, operationTypeNames, generatorName);
 
         List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
         RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
@@ -191,19 +208,18 @@ public class UserProcessEventsGeneratorTest {
         return randomEventsGenerator;
     }
 
-    private void fillProcessEventsGeneratorWithDefaultGenerators(ProcessEventsGenerator processEventsGenerator, String testCase){
+    private void fillProcessEventsGeneratorWithDefaultGenerators(ProcessEventsGenerator processEventsGenerator,
+                                                                 ProcessEntityGenerator srcProcessEntityGenerator,
+                                                                 ProcessEntityGenerator dstProcessEntityGenerator,
+                                                                 String[] operationTypeNames,
+                                                                 String testCase){
         //operator generator
         ProcessOperationGenerator opGenerator = new ProcessOperationGenerator();
-        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.OPEN_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_REMOTE_THREAD.value};
+
         CyclicOperationTypeGenerator opTypeGenerator = new CyclicOperationTypeGenerator(operationTypeNames);
         opGenerator.setOperationTypeGenerator(opTypeGenerator);
-        List<FileEntity> fileEntitiesPool = generateFileEntities();
-        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
-        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(fileEntitiesPool, 100, 200));
         opGenerator.setSourceProcessEntityGenerator(srcProcessEntityGenerator);
-        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
-        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(fileEntitiesPool, 100, 200));
-        opGenerator.setDestProcessEntityGenerator(srcProcessEntityGenerator);
+        opGenerator.setDestProcessEntityGenerator(dstProcessEntityGenerator);
         processEventsGenerator.setProcessOperationGenerator(opGenerator);
         //event id generator
         EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testCase);
@@ -229,7 +245,6 @@ public class UserProcessEventsGeneratorTest {
         while (eventGenerator.hasNext() != null) {
             try {
                 List<Event> events = eventGenerator.generate(EVENTS_GENERATION_CHUNK);
-                //todo insert events
 
                 Map<String, List<Event>> userToEvents = new HashMap<>();
                 Map<String, List<Event>> srcProcessToEvents = new HashMap<>();
