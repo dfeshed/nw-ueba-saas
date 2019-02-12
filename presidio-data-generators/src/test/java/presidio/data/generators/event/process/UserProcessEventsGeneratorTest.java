@@ -1,6 +1,7 @@
 package presidio.data.generators.event.process;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.junit.Before;
 import org.junit.Test;
 import presidio.data.domain.FileEntity;
 import presidio.data.domain.event.Event;
@@ -18,11 +19,13 @@ import presidio.data.generators.machine.UserDesktopGenerator;
 import presidio.data.generators.processentity.ProcessEntityGenerator;
 import presidio.data.generators.processop.ProcessOperationGenerator;
 import presidio.data.generators.user.IUserGenerator;
+import presidio.data.generators.user.LimitNumOfUsersGenerator;
 import presidio.data.generators.user.NumberedUserRandomUniformallyGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class UserProcessEventsGeneratorTest {
@@ -74,6 +77,123 @@ public class UserProcessEventsGeneratorTest {
     private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
 
 
+    //Reconnaissance tools Group A
+    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS = 65000;
+    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY = 40000;
+    private final double RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER = 0.4921875;
+    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 50000; //50 seconds. (8*3600/50)*0.49 =~280 users
+    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 10;
+    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 50;
+    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS = 3000;
+    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY = 2000;
+    private final double RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.3189;
+    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/50)*0.3189 =~45 users
+    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
+    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
+    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS = 300;
+    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 200;
+    private final double RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.06944;
+    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
+    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
+    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
+
+
+
+    /** USERS **/
+    IUserGenerator normalUserGenerator;
+    List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange;
+    IUserGenerator adminUserGenerator;
+    List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange;
+    IUserGenerator serviceAccountUserGenerator;
+    List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange;
+
+    //For Reconnaissance tools A
+    IUserGenerator ReconToolGroupAAllNormalUsers;
+    IUserGenerator ReconToolGroupAAllAdminUsers;
+    IUserGenerator ReconToolGroupAAllServiceAccountUsers;
+
+
+    /** MACHINES **/
+    IMachineGenerator machineGenerator;
+
+    /** Processes **/
+    List<FileEntity> nonImportantProcesses;
+
+
+    /** GENERATORS: PROCESS **/
+
+    //Generator for non Important Processes and normal users
+    ProcessEventsGenerator nonImportantProcessForNormalUsersEventGenerator;
+
+    //Generator for non Important Processes and admin users
+    ProcessEventsGenerator nonImportantProcessForAdminUsersEventGenerator;
+
+    //Generator for non Important Processes and service account users
+    ProcessEventsGenerator nonImportantProcessForServiceAccountUsersEventGenerator;
+
+
+    @Before
+    public void prepareTest(){
+        normalUserGenerator = createNormalUserGenerator();
+        normalUserActivityRange = getNormalUserActivityRange();
+        adminUserGenerator = createAdminUserGenerator();
+        adminUserActivityRange = getAdminUserActivityRange();
+        serviceAccountUserGenerator = createServiceAccountUserGenerator();
+        serviceAcountUserActivityRange = getServiceAcountUserActivityRange();
+
+        //For Reconnaissance tools A
+        ReconToolGroupAAllNormalUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS, normalUserGenerator);
+        ReconToolGroupAAllAdminUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS, normalUserGenerator);
+        ReconToolGroupAAllServiceAccountUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS, normalUserGenerator);
+
+
+        /** MACHINES **/
+        machineGenerator = createMachineGenerator();
+
+        /** Processes **/
+        nonImportantProcesses = generateFileEntities();
+
+
+
+        /** GENERATORS: PROCESS **/
+
+        //Generator for non Important Processes and normal users
+        nonImportantProcessForNormalUsersEventGenerator =
+                createNonImportantProcessEventGenerator(
+                        machineGenerator,
+                        normalUserGenerator,
+                        nonImportantProcesses,
+                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
+                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
+                        "nonImportantProcessForNormalUsersEventGenerator"
+                );
+
+
+
+        //Generator for non Important Processes and admin users
+        nonImportantProcessForAdminUsersEventGenerator =
+                createNonImportantProcessEventGenerator(
+                        machineGenerator,
+                        adminUserGenerator,
+                        nonImportantProcesses,
+                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
+                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
+                        "nonImportantProcessForAdminUsersEventGenerator"
+                );
+
+        //Generator for non Important Processes and service account users
+        nonImportantProcessForServiceAccountUsersEventGenerator =
+                createNonImportantProcessEventGenerator(
+                        machineGenerator,
+                        serviceAccountUserGenerator,
+                        nonImportantProcesses,
+                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
+                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
+                        "nonImportantProcessForServiceAccountUsersEventGenerator"
+                );
+
+
+    }
 
 
 
@@ -84,86 +204,45 @@ public class UserProcessEventsGeneratorTest {
         Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
         Instant endInstant      = Instant.parse("2010-01-01T06:05:00.00Z");
 
-        /** USERS **/
-        IUserGenerator normalUserGenerator = createNormalUserGenerator();
-        List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange = getNormalUserActivityRange();
-        IUserGenerator adminUserGenerator = createAdminUserGenerator();
-        List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange = getAdminUserActivityRange();
-        IUserGenerator serviceAccountUserGenerator = createServiceAccountUserGenerator();
-        List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange = getServiceAcountUserActivityRange();
+        // daily loop
+        Instant startDailyInstant = startInstant;
+        while(startDailyInstant.isBefore(endInstant)) {
+            Instant endDailyInstant = startDailyInstant.truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS);
+            if(endDailyInstant.isAfter(endInstant)){
+                endDailyInstant = endInstant;
+            }
 
-
-        /** MACHINES **/
-        IMachineGenerator machineGenerator = createMachineGenerator();
-
-        /** Processes **/
-        List<FileEntity> nonImportantProcesses = generateFileEntities();
-
-
-
-        /** GENERATORS: PROCESS **/
-        List<AbstractEventGenerator<Event>> eventGenerators = new ArrayList<>();
-
-        //Generator for non Important Processes and normal users
-        RandomMultiEventGenerator eventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        normalUserGenerator,
-                        normalUserActivityRange,
-                        PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                        TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        startInstant,
-                        endInstant,
-                        "nonImportantProcessForNormalUsersEventGenerator");
-        eventGenerators.add(eventGenerator);
-
-        //Generator for non Important Processes and admin users
-        eventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        adminUserGenerator,
-                        adminUserActivityRange,
-                        PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                        TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        startInstant,
-                        endInstant,
-                        "nonImportantProcessForAdminUsersEventGenerator");
-        eventGenerators.add(eventGenerator);
-
-        //Generator for non Important Processes and service account users
-        eventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        serviceAccountUserGenerator,
-                        serviceAcountUserActivityRange,
-                        PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                        TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        startInstant,
-                        endInstant,
-                        "nonImportantProcessForServiceAccountUsersEventGenerator");
-        eventGenerators.add(eventGenerator);
+            //get list of event generators
+            List<AbstractEventGenerator<Event>> eventGenerators = new ArrayList<>();
+            RandomMultiEventGenerator eventGenerator =
+                    createNonImportantProcessForNormalUsersRandomEventGenerator(
+                            startDailyInstant, endDailyInstant);
+            eventGenerators.add(eventGenerator);
+            eventGenerator =
+                    createNonImportantProcessForAdminUsersEventGenerator(
+                            startDailyInstant,endDailyInstant
+                    );
+            eventGenerators.add(eventGenerator);
+            eventGenerator =
+                    createNonImportantProcessForServiceAccountUsersEventGenerator(
+                            startDailyInstant, endDailyInstant
+                    );
+            eventGenerators.add(eventGenerator);
 
 
 
+            MultiEventGenerator multiEventGenerator = new MultiEventGenerator(eventGenerators);
 
-        MultiEventGenerator multiEventGenerator = new MultiEventGenerator(eventGenerators);
+            generateEvents(multiEventGenerator);
 
-        generateDaysOfEvents(multiEventGenerator);
+            stopWatch.split();
+            System.out.println(stopWatch.toSplitString());
 
-        stopWatch.split();
-        System.out.println(stopWatch.toSplitString());
+            startDailyInstant = endDailyInstant;
+        }
     }
 
-    private void generateDaysOfEvents(IEventGenerator<Event> eventGenerator) throws GeneratorException {
+    private void generateEvents(IEventGenerator<Event> eventGenerator) throws GeneratorException {
 
         /** Generate and send events **/
         int iterations = 0;
@@ -187,6 +266,98 @@ public class UserProcessEventsGeneratorTest {
                 e.printStackTrace();
             }
         }
+    }
+
+    //==================================================================================
+    // Creating Random Event Generators for daily events for all the different scenarios
+    //==================================================================================
+
+    private RandomMultiEventGenerator createNonImportantProcessForNormalUsersRandomEventGenerator(Instant startInstant,
+                                                                                                  Instant endInstant){
+        return createRandomEventGenerator(nonImportantProcessForNormalUsersEventGenerator,
+                normalUserActivityRange,
+                PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
+                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS,
+                startInstant,
+                endInstant
+        );
+    }
+
+    private RandomMultiEventGenerator createNonImportantProcessForAdminUsersEventGenerator(Instant startInstant,
+                                                                                           Instant endInstant){
+        return createRandomEventGenerator(nonImportantProcessForAdminUsersEventGenerator,
+                adminUserActivityRange,
+                PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
+                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS,
+                startInstant,
+                endInstant
+        );
+    }
+
+    private RandomMultiEventGenerator createNonImportantProcessForServiceAccountUsersEventGenerator(Instant startInstant,
+                                                                                                    Instant endInstant){
+        return createRandomEventGenerator(nonImportantProcessForServiceAccountUsersEventGenerator,
+                serviceAcountUserActivityRange,
+                PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
+                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS,
+                startInstant,
+                endInstant
+        );
+    }
+
+
+
+
+
+    private RandomMultiEventGenerator createRandomEventGenerator(ProcessEventsGenerator processEventsGenerator,
+                                                                 List<MultiRangeTimeGenerator.ActivityRange> rangesList,
+                                                                 double eventProbability,
+                                                                 int timeIntervalForAbnormalTime,
+                                                                 Instant startInstant,
+                                                                 Instant endInstant) {
+        List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
+        RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
+                new RandomMultiEventGenerator.EventGeneratorProbability(processEventsGenerator, eventProbability);
+        listOfProbabilities.add(eventsProbabilityForNormalUsers);
+
+
+
+        RandomMultiEventGenerator randomEventsGenerator = new RandomMultiEventGenerator(listOfProbabilities,
+                startInstant, endInstant, rangesList, Duration.ofMillis((int) (timeIntervalForAbnormalTime) ));
+        return randomEventsGenerator;
+    }
+
+
+
+
+    //==================================================================================
+    // Creating Event Generators for all events for all the different scenarios
+    // In the random generator which is built per day the time generator is added
+    // In addition when building the random generator the set of users might be reduced.
+    //==================================================================================
+
+    private ProcessEventsGenerator createNonImportantProcessEventGenerator(IMachineGenerator machineGenerator,
+                                                                              IUserGenerator userGenerator,
+                                                                              List<FileEntity> processes,
+                                                                              int minNumOfFilesPerUser,
+                                                                              int maxNumOfFilesPerUser,
+                                                                              String generatorName) {
+        UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
+        processNormalUsrEventsGenerator.setUserGenerator(userGenerator);
+        processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
+
+
+        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
+        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
+                minNumOfFilesPerUser, maxNumOfFilesPerUser));
+        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
+        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
+                minNumOfFilesPerUser, maxNumOfFilesPerUser));
+        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.OPEN_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_REMOTE_THREAD.value};
+        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, srcProcessEntityGenerator,
+                dstProcessEntityGenerator, operationTypeNames, generatorName);
+
+        return processNormalUsrEventsGenerator;
     }
 
     private IUserGenerator createNormalUserGenerator(){
@@ -239,44 +410,6 @@ public class UserProcessEventsGeneratorTest {
                         "100m_domain6", "100m_domain7", "100m_domain8", "100m_domain9", "100m_domain10"),
                 10, "5machines_",
                 10, "src");
-    }
-
-    private RandomMultiEventGenerator createNonImportantProcessEventGenerator(IMachineGenerator machineGenerator,
-                                                                              IUserGenerator normalUserGenerator,
-                                                                              List<MultiRangeTimeGenerator.ActivityRange> rangesList,
-                                                                              double eventProbability,
-                                                                              int timeIntervalForAbnormalTime,
-                                                                              List<FileEntity> processes,
-                                                                              int minNumOfFilesPerUser,
-                                                                              int maxNumOfFilesPerUser,
-                                                                              Instant startInstant,
-                                                                              Instant endInstant,
-                                                                              String generatorName) {
-        UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
-        processNormalUsrEventsGenerator.setUserGenerator(normalUserGenerator);
-        processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
-
-
-        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
-        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
-                minNumOfFilesPerUser, maxNumOfFilesPerUser));
-        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
-        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
-                minNumOfFilesPerUser, maxNumOfFilesPerUser));
-        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.OPEN_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_REMOTE_THREAD.value};
-        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, srcProcessEntityGenerator,
-                dstProcessEntityGenerator, operationTypeNames, generatorName);
-
-        List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
-        RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
-                new RandomMultiEventGenerator.EventGeneratorProbability(processNormalUsrEventsGenerator, eventProbability);
-        listOfProbabilities.add(eventsProbabilityForNormalUsers);
-
-
-
-        RandomMultiEventGenerator randomEventsGenerator = new RandomMultiEventGenerator(listOfProbabilities,
-                startInstant, endInstant, rangesList, Duration.ofMillis((int) (timeIntervalForAbnormalTime) ));
-        return randomEventsGenerator;
     }
 
     private void fillProcessEventsGeneratorWithDefaultGenerators(ProcessEventsGenerator processEventsGenerator,
