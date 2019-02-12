@@ -668,3 +668,23 @@ test('decoratedDevices', function(assert) {
   assert.equal(devices[0].devices[0].on, true);
   assert.equal(devices[0].devices[0].devices.length, 0);
 });
+
+test('isMixedMode', function(assert) {
+  const devices = decoratedDevices({
+    investigate: {
+      queryStats: {
+        devices: [{
+          serviceId: 'foo'
+        }]
+      },
+      services: {
+        serviceData: [{
+          id: 'bar',
+          displayName: 'bar'
+        }]
+      }
+    }
+  });
+
+  assert.equal(devices[0].serviceName, 'Unknown');
+});

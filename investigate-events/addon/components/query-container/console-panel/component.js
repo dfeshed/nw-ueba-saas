@@ -9,7 +9,8 @@ import {
   isQueryComplete,
   decoratedDevices,
   warningsWithServiceName,
-  errorsWithServiceName
+  errorsWithServiceName,
+  isMixedMode
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { isCanceled, percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
@@ -28,7 +29,8 @@ const stateToComputed = (state) => ({
   devices: decoratedDevices(state),
   filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
   queriedService: queriedService(state),
-  percentageOfEventsDataReturned: percentageOfEventsDataReturned(state)
+  percentageOfEventsDataReturned: percentageOfEventsDataReturned(state),
+  isMixedMode: isMixedMode(state)
 });
 
 const ConsolePanel = Component.extend({
@@ -36,6 +38,7 @@ const ConsolePanel = Component.extend({
 
   classNames: ['console-panel'],
   classNameBindings: [
+    'isMixedMode',
     'hasError',
     'hasWarning'
   ],

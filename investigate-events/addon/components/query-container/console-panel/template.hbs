@@ -29,8 +29,14 @@
     <code>{{filters}}</code>
   {{/if}}
 
-  {{#if hasWarning}}
+  {{#if (or hasWarning isMixedMode)}}
     <ul class="warnings">
+      {{#if isMixedMode}}
+        <li>
+          {{rsa-icon title=(t 'investigate.queryStats.warning') name='synchronize-warning-1' size="large" class="is-mixed-mode"}}
+          {{t 'investigate.queryStats.isMixedMode'}}
+        </li>
+      {{/if}}
       {{#each warnings as |w|}}
         {{query-container/console-panel/warning message=w.warning service=w.serviceName}}
       {{/each}}

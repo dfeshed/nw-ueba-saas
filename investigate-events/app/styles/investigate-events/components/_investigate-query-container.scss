@@ -469,6 +469,10 @@
               margin-right: rsa-whitespace(least);
               position: relative;
               top: 3px;
+
+              &.is-mixed-mode {
+                color: text-color(primary, lightest);
+              }
             }
 
             .message {

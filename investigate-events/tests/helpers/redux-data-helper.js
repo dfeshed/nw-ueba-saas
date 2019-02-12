@@ -514,6 +514,17 @@ export default class DataHelper {
     return this;
   }
 
+  isMixedMode() {
+    _set(this.state.queryStats, 'devices', [
+      {
+        serviceId: 'doesNotExist',
+        on: true,
+        elapsedTime: 2
+      }
+    ]);
+    return this;
+  }
+
   queryStatsWithHierarcy() {
     _set(this.state.queryStats, 'devices', [
       {
@@ -545,7 +556,6 @@ export default class DataHelper {
     });
     return this;
   }
-
 
   queryStatsHasWarning() {
     _set(this.state.queryStats, 'description', 'warning');

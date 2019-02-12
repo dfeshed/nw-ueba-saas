@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { isEmpty } from '@ember/utils';
+
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -237,5 +238,18 @@ export const streamingTimeElapsed = createSelector(
       }
     }
 
+  }
+);
+
+export const isMixedMode = createSelector(
+  [decoratedDevices],
+  (decoratedDevices = []) => {
+    const checkForUnknown = (devices) => {
+      return devices.find((d) => {
+        return d.serviceName === 'Unknown' ? true : checkForUnknown(d.devices);
+      });
+    };
+
+    return !!checkForUnknown(decoratedDevices);
   }
 );

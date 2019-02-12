@@ -45,6 +45,17 @@ module('Integration | Component | console-panel', function(hooks) {
     assert.equal(find('.console-panel .console-content .timerange .value .end').textContent.trim(), '"49682-11-11 15:20:00"');
   });
 
+  test('renders the correct dom and data when in mixed mode', async function(assert) {
+    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsRetrieving().isMixedMode().build();
+
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+
+    assert.equal(findAll('.console-panel .warnings i.is-mixed-mode').length, 1);
+    assert.equal(findAll('.console-panel.is-mixed-mode').length, 1);
+  });
+
   test('renders the correct progressLabel when Queued', async function(assert) {
     new ReduxDataHelper(setState).withPreviousQuery().queryStats('Queued').queryStatsIsOpen().build();
 
