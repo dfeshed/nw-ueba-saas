@@ -39,7 +39,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
-    assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
 
   });
 

@@ -34,6 +34,7 @@
   }
 
   .eula-content {
+    margin-top: rsa-whitespace(more);
     margin-bottom: rsa-whitespace(more);
     border-color: rgba(117,117,117, 1);
     border-width: 1px;
@@ -130,6 +131,7 @@
     margin: calc(#{rsa-whitespace(more)} * -1);
     padding: rsa-whitespace(more) rsa-whitespace(more);
     position: relative;
+    padding-bottom: 0;
 
     h3 {
       position: absolute;
