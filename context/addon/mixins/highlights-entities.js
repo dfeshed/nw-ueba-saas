@@ -258,7 +258,19 @@ export default Mixin.create({
     if (!entitySelector) {
       return;
     }
-    this.get('context').contextHubEnable().then(({ data: { contextHubEnabled } }) => {
+    this.get('context').contextHubEnable().then((response) => {
+      if (!response) {
+        return;
+      }
+
+      const { data } = response;
+
+      if (!data) {
+        return;
+      }
+
+      const { contextHubEnabled } = data;
+
       log('Context Hub Server is enabled ::', contextHubEnabled);
       if (!contextHubEnabled) {
         return;

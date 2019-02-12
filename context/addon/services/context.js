@@ -53,7 +53,7 @@ export default Service.extend({
       })
         // If promise fails, clear cached promise, don't re-use
         .catch((err) => {
-          warn(`Error fetching context hub  server ${err}`);
+          warn(`Error fetching context hub  server ${err}`, { id: 'context.services.context' });
           this.set('_contextHubEnable', null);
         });
 
