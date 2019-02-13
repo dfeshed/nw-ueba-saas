@@ -142,7 +142,12 @@ const saModuleDependants = {
   context: [
     'sa',
     'respond',
-    'respond-shared'
+    'respond-shared',
+    'investigate',
+    'investigate-events',
+    'investigate-files',
+    'investigate-shared',
+    'investigate-hosts'
   ],
   preferences: [
     'sa',

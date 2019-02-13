@@ -80,7 +80,6 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
-      "../context",
       "../investigate-shared",
       "../license"
     ]
