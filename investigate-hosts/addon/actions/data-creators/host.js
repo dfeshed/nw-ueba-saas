@@ -50,10 +50,10 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     dispatch(resetHostDownloadLink());
 
     if (isPageLoading) {
-      dispatch(initializeAgentDetails({ agentId: machineId }, true, true));
+      dispatch(initializeAgentDetails({ agentId: machineId }, true, true, tabName));
+    } else {
+      dispatch(setNewTabView(tabName));
     }
-
-    dispatch(setNewTabView(tabName));
     // To redirect to the Process details panel in the process tab
     next(() => {
       if (tabName === 'PROCESS' && subTabName === 'process-details') {

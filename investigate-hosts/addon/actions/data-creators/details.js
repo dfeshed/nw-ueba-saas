@@ -13,7 +13,7 @@ import { setSelectedMachineServerId } from 'investigate-shared/actions/data-crea
 import { toggleFileAnalysisView } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
-const _getAllSnapShots = (agentId) => {
+const _getAllSnapShots = (agentId, tabName) => {
   return (dispatch, getState) => {
     const { serverId } = getState().endpointQuery;
     dispatch({
@@ -23,7 +23,11 @@ const _getAllSnapShots = (agentId) => {
         onSuccess: ({ data }) => {
           const [scanTime] = data.length ? data : [{}];
           dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: scanTime.scanStartTime });
+
           // take serverid from the state if snapshots is an empty array
+          if (tabName) {
+            dispatch(changeDetailTab(tabName));
+          }
           dispatch(_getHostDetails(true, scanTime.serviceId || serverId));
         },
         onFailure: (response) => {
@@ -221,7 +225,7 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
   };
 };
 
-const initializeAgentDetails = (input, loadSnapshot, loadMachineSearch) => {
+const initializeAgentDetails = (input, loadSnapshot, loadMachineSearch, tabName) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = input; // scanTime here will contain snapshot object
     const { endpoint: { detailsInput: dataState, filter } } = getState();
@@ -239,7 +243,7 @@ const initializeAgentDetails = (input, loadSnapshot, loadMachineSearch) => {
     if (dataState.agentId !== agentId || (scanTime && scanTime.scanStartTime !== dataState.scanTime)) {
       dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanTime ? scanTime.scanStartTime : null } });
       if (loadSnapshot) {
-        dispatch(_getAllSnapShots(agentId));
+        dispatch(_getAllSnapShots(agentId, tabName));
       } else {
         dispatch(_getHostDetails(true, scanTime.serviceId));
       }
