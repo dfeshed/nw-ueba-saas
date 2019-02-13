@@ -48,7 +48,7 @@
       </form>
     {{else if mustChangePassword}}
       <grid class="{{if displayPolicies 'display-policies'}}">
-        <vbox xs="6">
+        <vbox xs="6" class="password-policies">
           <h4>Password Format Rules</h4>
           <ul>
             {{#if passwordPolicyMinChars}}
