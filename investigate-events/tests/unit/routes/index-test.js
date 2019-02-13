@@ -253,9 +253,10 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
       // 1f4 is statically returned by mock-server for persisting params
       const pillDataHashesPresent = hashes.length === 2 && hashes.includes('1f4') && hashes.includes('foo');
+      const arePillsInOrder = (hashes.indexOf('foo') === 0 && hashes.indexOf('1f4') === 1);
       const pillsDataPopulated = queryNode.pillsData.length === 4;
 
-      if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
+      if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated && arePillsInOrder) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
         return true;

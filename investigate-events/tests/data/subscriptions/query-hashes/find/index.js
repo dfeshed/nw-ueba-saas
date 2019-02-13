@@ -2,7 +2,7 @@ export default {
   subscriptionDestination: '/user/queue/investigate/predicate/get-by-id',
   requestDestination: '/ws/investigate/predicate/get-by-id',
   message(frame) {
-    if (frame.body.includes('predicateIds":["1f4","foo"]')) {
+    if (frame.body.includes('predicateIds":["foo","1f4"]')) {
       return {
         meta: {
           complete: false

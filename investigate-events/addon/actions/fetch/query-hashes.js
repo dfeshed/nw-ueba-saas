@@ -21,7 +21,7 @@ const getParamsForHashes = (hashes) => {
 // Takes query inputs and sends them off
 // to get a hash.
 
-const getHashForParams = (pillData, language) => {
+const getHashForParams = (pillData) => {
   const request = lookup('service:request');
 
   // fire and forget, we want to persist the ENTIRE
@@ -31,7 +31,7 @@ const getHashForParams = (pillData, language) => {
   // request below does the work of sending the
   // entire query
   if (pillData.length > 1) {
-    const pillDataAsString = encodeMetaFilterConditions(pillData, language);
+    const pillDataAsString = encodeMetaFilterConditions(pillData);
     request.promiseRequest({
       modelName: MODEL_NAME,
       method: 'persist',
@@ -44,7 +44,7 @@ const getHashForParams = (pillData, language) => {
   }
 
   const predicateRequests = pillData.map((pD) => {
-    const pillDataString = encodeMetaFilterConditions([pD], language);
+    const pillDataString = encodeMetaFilterConditions([pD]);
     return {
       query: pillDataString
     };

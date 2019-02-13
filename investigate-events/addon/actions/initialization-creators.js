@@ -160,21 +160,21 @@ const _handleInitializationError = (dispatch) => {
 };
 
 const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigateCallback, dispatch, getState) => {
-  const { investigate } = getState();
-  const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, investigate.dictionaries.language);
+  const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+  const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, metaKeys);
 
   return new Promise(function(resolve, reject) {
     // fetch a hash for meta filters passed through the url
     dispatch({
       type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
       promise: getHashForParams(
-        parsedPillData,
-        investigate.dictionaries.language
+        parsedPillData
       ),
       meta: {
         onSuccess({ data }) {
           const hashIds = data.map((d) => d.id);
-          const allHashIds = hashIds.concat(parsedQueryParams.pillDataHashes);
+          // maintaining the order of pills is important here
+          const allHashIds = parsedQueryParams.pillDataHashes.concat(hashIds);
 
           // fetch params for all hashes
           // this will return params for what was in pdhash and mf in the url
@@ -214,8 +214,8 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
 
 const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, isInternalQuery) => {
   return (dispatch, getState) => {
-    const { investigate } = getState();
-    const parsedPillData = parsePillDataFromUri(pillData, investigate.dictionaries.language);
+    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+    const parsedPillData = parsePillDataFromUri(pillData, metaKeys);
 
     // If this is an internal query, then the pills are already
     // set up and we do not need to set them up again.
@@ -235,8 +235,7 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
     dispatch({
       type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
       promise: getHashForParams(
-        parsedPillData,
-        investigate.dictionaries.language
+        parsedPillData
       ),
       meta: {
         onSuccess({ data }) {
