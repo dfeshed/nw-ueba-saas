@@ -263,4 +263,38 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     await click(channelDomEle);
     assert.equal(findAll('.windows-log-channel-name .ember-power-select-selected-item')[0].innerText, channelName.trim(), 'channel name is added correctly on an external click');
   });
+
+  test('If the typed in channel is already present in the dropdown, populate it on external click', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('windowsLogPolicy')
+      .policyWizWinLogChannelFilters(channelFilters)
+      .build();
+
+    // System is already present in the dropdown
+    const channelName = 'Application';
+    this.setProperties({
+      column,
+      channelOptions,
+      item
+    });
+
+    this.set('channelUpdated', () => {
+      assert.ok(true, 'channelUpdated should be called when channel options are increased');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+        column=column
+        channelOptions=channelOptions
+        item=item
+        channelUpdated=channelUpdated
+      }}
+    `);
+
+    await clickTrigger('.windows-log-channel-name');
+    await typeInSearch(channelName);
+    const channelDomEle = document.querySelector('.windows-log-channel-filters');
+    await click(channelDomEle);
+    assert.equal(findAll('.windows-log-channel-name .ember-power-select-selected-item')[0].innerText, channelName.trim(), 'Application is correctly polulated on external click');
+  });
 });

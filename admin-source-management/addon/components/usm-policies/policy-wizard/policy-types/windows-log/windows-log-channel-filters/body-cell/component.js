@@ -38,6 +38,9 @@ export default DataTableBody.extend({
             channelOptions.pushObject(lastSearchedText);
             select.actions.choose(searchText);
           });
+        } else {
+          // if the typed in channel is already present in the dropdown list, populate it.
+          select.actions.choose(searchText);
         }
       }
     }
