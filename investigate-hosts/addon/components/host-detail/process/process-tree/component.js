@@ -162,6 +162,9 @@ const TreeComponent = Component.extend({
 
 
     sort(column) {
+      if (this.closePropertyPanel) {
+        this.closePropertyPanel();
+      }
       const { field: sortField, isDescending: isDescOrder } = column;
       this.send('sortBy', sortField, !isDescOrder);
       column.set('isDescending', !isDescOrder);

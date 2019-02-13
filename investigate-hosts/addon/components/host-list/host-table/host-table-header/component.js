@@ -58,6 +58,12 @@ const tableHeader = RSADataTableHeader.extend({
 
     clearSearchTerm() {
       this.set('searchTerm', '');
+    },
+    sort(columnSort) {
+      if (this.closeProperties) {
+        this.closeProperties();
+      }
+      this.send('setHostColumnSort', columnSort);
     }
   }
 });

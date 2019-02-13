@@ -249,7 +249,10 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Check that sort action is performed & correct values are passed', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
+    this.set('closePropertyPanel', () => {
+      assert.ok(true);
+    });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
       .sortField('name')
@@ -262,7 +265,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 2000px
         }
     </style>
-    {{host-detail/process/process-tree}}`);
+    {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}`);
     assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     return settled().then(() => {

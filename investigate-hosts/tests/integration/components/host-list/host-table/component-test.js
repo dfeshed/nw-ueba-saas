@@ -134,6 +134,38 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     });
   });
 
+  test('On sort closeProperties is called', async function(assert) {
+    assert.expect(6);
+    this.set('closeProperties', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openProperties', () => {});
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 1, 'One row is selected');
+    assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
+    const redux = this.owner.lookup('service:redux');
+    const { focusedHostIndex } = redux.getState().endpoint.machines;
+    assert.equal(focusedHostIndex, 1, 'Focused host set as first row');
+    assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-up-7-filled'), true, 'Default arrow up icon before sorting');
+    await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
+    return settled().then(() => {
+      assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
+    });
+  });
+
   test('selecting an already check-boxed row, opens the risk panel', async function(assert) {
     this.set('closeProperties', () => {});
     this.set('openProperties', function() {

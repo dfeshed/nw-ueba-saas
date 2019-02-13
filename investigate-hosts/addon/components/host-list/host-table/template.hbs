@@ -5,7 +5,7 @@
     items=hostList
     columnsConfig=columns
     onRowClick=(action 'toggleSelectedRow')}}
-    {{host-list/host-table/host-table-header}}
+    {{host-list/host-table/host-table-header closeProperties=closeProperties}}
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>
         {{rsa-loader size='larger'}}
