@@ -5,7 +5,7 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 from presidio.utils.services.time_service import convert_to_utc
 from presidio.utils.services.time_service import floor_time
-
+import logging
 
 class FixedDurationJarOperator(SpringBootJarOperator):
     """
@@ -48,13 +48,10 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         execution_date = context_wrapper.get_execution_date()
         if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,
                                        self.interval):
-            # Create short_circuit_operator in order to skip the task before it executes.
             # e.g: execution_date = datetime(2014, 11, 28, 13, 50, 0)
             # interval = timedelta(minutes=5)
             # fixed_duration = timedelta(days=1)
-            self.log.error(
-                'Create short_circuit_operator in order to skip the task.')
-            raise InvalidExecutionDateError(execution_date, self.fixed_duration_strategy)
+            self.log.info('The execution date {} is not the last interval of fixed duration {}.'.format(execution_date, self.fixed_duration_strategy))
 
         start_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
         end_date = floor_time(execution_date + self.interval,
@@ -78,9 +75,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
 
         if not is_execution_date_valid(execution_date, fixed_duration_strategy,
                                        interval):
-            self.log.error(
-                'Create short_circuit_operator in order to skip the task.')
-            raise InvalidExecutionDateError(execution_date, fixed_duration_strategy)
+            logging.info('The execution date {} is not the last interval of fixed duration {}.'.format(execution_date, fixed_duration_strategy))
 
         start_date = floor_time(execution_date, time_delta=fixed_duration_strategy)
         end_date = floor_time(execution_date + interval,
