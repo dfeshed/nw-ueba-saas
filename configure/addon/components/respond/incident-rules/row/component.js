@@ -24,6 +24,5 @@ export default Component.extend(SortableItemMixin, {
 
   click() {
     this.get('onRowClick').apply(this, arguments);
-    return false;
   }
 });

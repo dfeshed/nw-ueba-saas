@@ -1,13 +1,15 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import sinon from 'sinon';
+import { next } from '@ember/runloop';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
-import wait from 'ember-test-helpers/wait';
+import Component from '@ember/component';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import { waitUntil, click, find, findAll, render } from '@ember/test-helpers';
 import Immutable from 'seamless-immutable';
 import rules from '../../../../data/subscriptions/incident-rules/findAll/data';
+import { Promise } from 'rsvp';
 import $ from 'jquery';
-import * as alertRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 
 const initialState = {
   rules,
@@ -17,74 +19,103 @@ const initialState = {
 };
 
 let setState;
+const timeout = 10000;
 
-moduleForComponent('respond/incident-rules', 'Integration | Component | Respond Incident Rules', {
-  integration: true,
-  resolver: engineResolverFor('configure'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-    setState = (state) => {
-      const fullState = { configure: { respond: { incidentRules: state } } };
-      applyPatch(Immutable.from(fullState));
-      this.inject.service('redux');
+module('Integration | Component | Respond Incident Rules', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('configure')
+  });
+
+  hooks.beforeEach(async function() {
+    setState = async(state) => {
+      return new Promise((resolve) => {
+        const fullState = { configure: { respond: { incidentRules: state } } };
+        patchReducer(this, Immutable.from(fullState));
+        next(null, resolve);
+      });
     };
-  },
-  afterEach() {
-    revertPatch();
-  }
-});
+  });
 
-test('The component appears in the DOM with the expected number of rows', function(assert) {
-  setState({ ...initialState });
-  this.render(hbs`{{respond/incident-rules}}`);
-  assert.equal(this.$('.rsa-incident-rules').length, 1, 'The component appears in the DOM');
-  assert.equal(this.$('tbody tr').length, 20, 'There are 20 rows in the table');
-  assert.equal(this.$('tbody tr.is-selected').length, 0, 'There are no selected rows');
-});
+  test('The component appears in the DOM with the expected number of rows', async function(assert) {
+    await setState({ ...initialState });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(findAll('.rsa-incident-rules').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('tbody tr').length, 20, 'There are 20 rows in the table');
+    assert.equal(findAll('tbody tr.is-selected').length, 0, 'There are no selected rows');
+  });
 
-test('The no results message appears when there are no rules', function(assert) {
-  setState({ ...initialState, rules: [] });
-  this.render(hbs`{{respond/incident-rules}}`);
-  assert.equal(this.$('.no-results-message .message').text().trim(), 'No incident rules were found', 'The no results message appears when there are no rules');
-});
+  test('The no results message appears when there are no rules', async function(assert) {
+    await setState({ ...initialState, rules: [] });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(find('.no-results-message .message').textContent.trim(), 'No incident rules were found', 'The no results message appears when there are no rules');
+  });
 
-test('The loading spinner appears when rulesState is "wait"', function(assert) {
-  setState({ ...initialState, rulesStatus: 'wait' });
-  this.render(hbs`{{respond/incident-rules}}`);
-  assert.equal(this.$('.rsa-loader').length, 1, 'The loading spinner appears when the rulesStatus is "wait"');
-});
+  test('The loading spinner appears when rulesState is "wait"', async function(assert) {
+    await setState({ ...initialState, rulesStatus: 'wait' });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(findAll('.rsa-loader').length, 1, 'The loading spinner appears when the rulesStatus is "wait"');
+  });
 
-test('The row cells have the expected data', function(assert) {
-  setState({ ...initialState });
-  this.render(hbs`{{respond/incident-rules}}`);
-  const $firstRowCells = this.$('tbody tr').first().find('td');
-  assert.equal($($firstRowCells[0]).find('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
-  assert.equal($($firstRowCells[1]).find('input[type=radio]').length, 1, 'The second cell in the row has a selection radio button');
-  assert.equal($($firstRowCells[3]).find('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
-  assert.equal($($firstRowCells[4]).find('a').length, 1, 'The fifth cell in the row has a link');
-  assert.equal($($firstRowCells[6]).find('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
-});
+  test('The row cells have the expected data', async function(assert) {
+    await setState({ ...initialState });
+    await render(hbs`{{respond/incident-rules}}`);
+    const $firstRowCells = this.$('tbody tr').first().find('td');
+    assert.equal($($firstRowCells[0]).find('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
+    assert.equal($($firstRowCells[1]).find('input[type=radio]').length, 1, 'The second cell in the row has a selection radio button');
+    assert.equal($($firstRowCells[3]).find('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
+    assert.equal($($firstRowCells[4]).find('a').length, 1, 'The fifth cell in the row has a link');
+    assert.equal($($firstRowCells[6]).find('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
+  });
 
-test('it shows the selected row with the proper class name', function(assert) {
-  setState({ ...initialState, selectedRule: '59b92bbf4cb0f0092b6b6a8b' });
-  this.render(hbs`{{respond/incident-rules}}`);
-  assert.equal(this.$('tbody tr.is-selected').length, 1, 'There is one row selected');
-});
+  test('it shows the selected row with the proper class name', async function(assert) {
+    await setState({ ...initialState, selectedRule: '59b92bbf4cb0f0092b6b6a8b' });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
+  });
 
-test('it has the transaction overlay when isTransactionUnderway is true', function(assert) {
-  setState({ ...initialState, isTransactionUnderway: true });
-  this.render(hbs`{{respond/incident-rules}}`);
-  assert.equal(this.$('.transaction-in-progress .transaction-overlay').length, 1, 'The transaction overlay appears');
-});
+  test('it has the transaction overlay when isTransactionUnderway is true', async function(assert) {
+    await setState({ ...initialState, isTransactionUnderway: true });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(findAll('.transaction-in-progress .transaction-overlay').length, 1, 'The transaction overlay appears');
+  });
 
-test('Clicking on a cell/row dispatches the selectRule creator', function(assert) {
-  const actionSpy = sinon.spy(alertRuleCreators, 'selectRule');
-  setState({ ...initialState });
-  this.render(hbs`{{respond/incident-rules}}`);
-  // click on a cell
-  $(this.$('tbody td')[1]).click();
-  return wait().then(() => {
-    assert.ok(actionSpy.calledOnce, 'The selectRule creator was called once');
-    actionSpy.restore();
+  test('click handler should not prevent propagating of event', async function(assert) {
+    assert.expect(2);
+
+    let clicked, rowClicked;
+    const FakeComponent = Component.extend({
+      layout: hbs`
+        {{#respond/incident-rules/row
+          rule=rule
+          selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
+          <div test-id="linkWrapper">
+            {{#link-to 'respond.incident-rule' rule.id}}{{rule.name}}{{/link-to}}
+          </div>
+        {{/respond/incident-rules/row}}
+      `,
+      click() {
+        clicked = true;
+      },
+      actions: {
+        handleRowClick() {
+          rowClicked = true;
+        }
+      }
+    });
+
+    this.owner.register('component:test-clazz', FakeComponent);
+
+    this.set('selectedRuleId', 1);
+    this.set('rule', { id: 1, name: 'x' });
+    await render(hbs`{{test-clazz rule=rule selectedRuleId=selectedRuleId}}`);
+
+    const linkSelector = '[test-id=linkWrapper]';
+    await click(linkSelector);
+
+    await waitUntil(() => clicked === true, { timeout });
+    assert.equal(clicked, true);
+
+    await waitUntil(() => rowClicked === true, { timeout });
+    assert.equal(rowClicked, true);
   });
 });
