@@ -5,6 +5,12 @@
  */
 const FILTER_TYPES = [
   {
+    'name': 'groupPolicy.managed',
+    'hideLabel': true,
+    'listOptions': [ { name: false, label: 'investigateHosts.hosts.filters.showOnlyManageAgents' }],
+    type: 'list'
+  },
+  {
     'name': 'score',
     'label': 'investigateHosts.hosts.column.score',
     'step': 1,
@@ -19,12 +25,6 @@ const FILTER_TYPES = [
     'name': 'machine.users.name',
     'label': 'investigateHosts.hosts.column.machine.users.name',
     'type': 'text'
-  },
-  {
-    'name': 'groupPolicy.managed',
-    'hideLabel': true,
-    'listOptions': [ { name: false, label: 'investigateHosts.hosts.filters.showOnlyManageAgents' }],
-    type: 'list'
   },
   {
     'name': 'groupPolicy.groups.name',
