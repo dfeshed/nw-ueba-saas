@@ -16,6 +16,7 @@ import {
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
+import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
 import {
@@ -57,7 +58,8 @@ const stateToComputed = (state, { storeName }) => ({
   fileDownloadButtonStatus: fileDownloadButtonStatus(state, storeName),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   risk: riskState(state),
-  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName)
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
+  hostName: hostName(state)
 });
 
 const dispatchToActions = {

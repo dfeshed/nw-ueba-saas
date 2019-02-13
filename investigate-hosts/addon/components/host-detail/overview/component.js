@@ -7,6 +7,7 @@ import { getPropertyData,
   getPoliciesPropertyData,
   channelFiltersConfig,
   showWindowsLogPolicy,
+  hostName,
   policiesUnavailableMessage } from 'investigate-hosts/reducers/details/overview/selectors';
 import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
 import { getPoliciesPropertyConfig } from 'investigate-hosts/components/property-panel/policies-property-config';
@@ -40,7 +41,8 @@ const stateToComputed = (state) => ({
   isInsightsAgent: isInsightsAgent(state),
   channelFiltersConfig: channelFiltersConfig(state),
   showWindowsLogPolicy: showWindowsLogPolicy(state),
-  policiesUnavailableMessage: policiesUnavailableMessage(state)
+  policiesUnavailableMessage: policiesUnavailableMessage(state),
+  hostName: hostName(state)
 });
 
 const HostOverview = Component.extend({

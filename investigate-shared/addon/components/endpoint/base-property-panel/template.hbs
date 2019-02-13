@@ -24,7 +24,7 @@
     {{#each property.fields as |field|}}
       <hbox fit class="content-section__property col-xs-12">
         {{endpoint/base-property-panel/property-name property=field}}
-        {{endpoint/base-property-panel/property-value property=field}}
+        {{endpoint/base-property-panel/property-value property=field hostName=hostName}}
       </hbox>
     {{/each}}
     <hr class="divider">

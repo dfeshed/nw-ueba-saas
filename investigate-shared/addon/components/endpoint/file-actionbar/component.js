@@ -161,7 +161,8 @@ export default Component.extend({
     },
 
     pivotToInvestigate(item, category) {
-      this.get('pivot').pivotToInvestigate(this.get('metaName'), this.get('itemList')[0], category);
+      const machineName = this.get('hostName');
+      this.get('pivot').pivotToInvestigate(this.get('metaName'), { ...item, machineName }, category);
     }
 
   }

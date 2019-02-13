@@ -38,6 +38,7 @@
             getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
             resetRiskScore = (action 'resetRiskScoreAction')
             serviceList=serviceList
+            hostName=hostName
             metaName='checksumSha256'
             itemList=selectedProcessList
             serviceId=serviceId
@@ -85,6 +86,7 @@
         <box class="process-property-box scroll-box">
           {{endpoint/file-property-panel
             config=propertyConfig
+            hostName=hostName
             localeNameSpace='investigateHosts.property.file'
             data=process}}
         </box>

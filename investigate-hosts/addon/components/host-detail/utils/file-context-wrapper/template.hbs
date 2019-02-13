@@ -9,6 +9,7 @@
         resetRiskScore = (action 'resetRiskScoreAction')
         metaName='checksumSha256'
         showResetRiskScore=false
+        hostName=hostName
         isRemediationAllowed=isRemediationAllowed
         itemList=fileContextSelections
         fileStatusData=fileStatus
@@ -56,6 +57,7 @@
         <box class="host-properties-box scroll-box">
           {{endpoint/file-property-panel
             config=propertyConfig
+            hostName=hostName
             localeNameSpace='investigateHosts.property.file'
             data=fileProperty}}
         </box>

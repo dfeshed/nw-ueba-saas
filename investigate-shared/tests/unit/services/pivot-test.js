@@ -50,4 +50,16 @@ module('Unit | Service | Pivot', function(hooks) {
     actionSpy.restore();
   });
 
+
+  test('it add the alias.host if item has the machineName', function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    const pivot = this.owner.lookup('service:pivot');
+    pivot.pivotToInvestigate('checksum256', { machineName: 'test_machine', checksum256: 'test' });
+    assert.ok(actionSpy.calledOnce);
+    assert.ok(actionSpy.args[0][0].includes('test_machine'));
+    assert.ok(actionSpy.args[0][0].includes('/navigate/query'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
+
 });

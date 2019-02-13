@@ -63,4 +63,15 @@ module('Unit | Utils | pivot to investigate', function() {
     const result = serializeQueryParams(params);
     assert.equal(result, 'et=0&eid=1&mf=a%3D\'a/%3Db%3D/a\'&mps=default&rs=max&sid=2&st=3', 'serializeQueryParams gives the correct URL string');
   });
+
+  test('if meta is checksum256 it adds the file name to query', function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', itemList: [{ fileName: 'test_file.exe', checksumSha256: 'test' }], additionalFilter: 'category="network event"' }, '12345', { unit: 'days', value: 2 }, 'UTC');
+    assert.ok(actionSpy.calledOnce);
+    assert.ok(actionSpy.args[0][0].includes('test_file.exe'));
+    assert.ok(actionSpy.args[0][0].includes('filename.all'));
+    assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
 });

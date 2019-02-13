@@ -27,9 +27,13 @@ export default Component.extend({
     const cntx = this;
     const key = keyMapping[property.field];
     const item = {};
+    const machineName = cntx.get('hostName');
     if (property.value) {
       item[key] = property.value[0];
     }
+    // Adding machine name to the item
+    item.machineName = machineName;
+
     return [
       {
         label: 'Copy',

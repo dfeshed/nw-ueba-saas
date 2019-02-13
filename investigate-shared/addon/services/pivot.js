@@ -14,21 +14,26 @@ export default Service.extend({
     if (investigateServer !== '-1') {
       const dateRange = timeRange(state);
       const { zoneId } = this.get('timezone.selected');
-      let additionalFilter;
+      const additionalFilter = [];
       if (category) {
-        additionalFilter = `category="${category}"`;
+        additionalFilter.push(`category="${category}"`);
       }
+
+      if (item.machineName) {
+        additionalFilter.push(`alias.host="${item.machineName}"`);
+      }
+
       if (tab === 'EVENTS') {
         navigateToInvestigateEventsAnalysis({
           metaName,
           itemList: [item],
-          additionalFilter
+          additionalFilter: additionalFilter.join(' && ')
         }, investigateServer, dateRange, zoneId);
       } else {
         navigateToInvestigateNavigate({
           metaName,
           itemList: [item],
-          additionalFilter
+          additionalFilter: additionalFilter.join(' && ')
         }, investigateServer, dateRange, zoneId);
       }
     }

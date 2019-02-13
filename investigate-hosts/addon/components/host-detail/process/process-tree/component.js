@@ -186,6 +186,7 @@ const TreeComponent = Component.extend({
     handleRowClickAction(item, index, e) {
       const { pid, checksumSha256 } = item;
       const { target: { classList } } = e;
+      const machineName = this.get('hostName');
       // If it's machine name click don't select the row
       if (e.target.tagName.toLowerCase() === 'a' || e.target.parentElement.tagName.toLowerCase() === 'a') {
         return;
@@ -199,14 +200,14 @@ const TreeComponent = Component.extend({
           // when a row not in the checkbox selected list is clicked, other checkboxes are cleared.
           if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
             this.send('deSelectAllProcess');
-            this.send('toggleProcessSelection', item);
+            this.send('toggleProcessSelection', { ...item, machineName });
           }
           if (this.openPropertyPanel) {
             this.openPropertyPanel();
           }
           this.send('onProcessSelection', pid, checksumSha256);
         } else {
-          this.send('toggleProcessSelection', item);
+          this.send('toggleProcessSelection', { ...item, machineName }); // Adding machine name to item, as it's not there
           this.send('setRowIndex', null);
           if (this.closePropertyPanel) {
             this.closePropertyPanel();
@@ -217,6 +218,8 @@ const TreeComponent = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
+
+      const machineName = this.get('hostName');
 
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
@@ -236,7 +239,7 @@ const TreeComponent = Component.extend({
         this.set('itemList', [item]);
         if (!this._isAlreadySelected(this.get('selectedProcessList'), item)) {
           this.send('deSelectAllProcess');
-          this.send('toggleProcessSelection', item);
+          this.send('toggleProcessSelection', { ...item, machineName });
         }
         const selections = this.get('selectedProcessList');
         if (selections && selections.length === 1) {
@@ -246,7 +249,8 @@ const TreeComponent = Component.extend({
     },
 
     pivotToInvestigate(item, category) {
-      this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
+      const machineName = this.get('hostName');
+      this.get('pivot').pivotToInvestigate('checksumSha256', { ...item, machineName }, category);
     },
 
     onCloseServiceModal() {

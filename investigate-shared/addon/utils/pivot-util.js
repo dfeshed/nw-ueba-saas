@@ -7,7 +7,7 @@ const INVESTIGATE_META_MAPPING = {
   'userName': ['username', 'user.dst', 'user.src'],
   'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
   'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6'],
-  'checksumSha256': 'checksum.all',
+  'checksumSha256': ['checksum.all', 'filename.all'],
   'checksumMd5': 'checksum.all',
   'firstFileName': 'filename',
   'thumbprint': 'cert.thumbprint'
@@ -30,6 +30,9 @@ const _buildFilter = (metaName, metaValue, itemList) => {
   // If list meta then add || in query
   if (Array.isArray(investigateMeta)) {
     const query = investigateMeta.map((meta) => {
+      if (meta === 'filename.all') {
+        return _getQuery(meta, get(itemList[0], 'fileName'));
+      }
       return _getQuery(meta, value);
     });
     return `(${ query.join('||') })`;
