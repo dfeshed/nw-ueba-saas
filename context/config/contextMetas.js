@@ -13,39 +13,50 @@ module.exports = {
       'ip_addr',
       'ip_address',
       'ip_source',
-      'alias_ip'
+      'alias_ip',
+      'ip_all'
     ],
     USER: [
       'user_src',
       'user_dst',
-      'username'
+      'username',
+      'user_all'
     ],
     DOMAIN: [
       'domain_src',
       'domain_dst',
       'full_domain',
-      'dns_domain'
+      'dns_domain',
+      'domain_all'
     ],
     'MAC_ADDRESS': [
       'alias_mac',
       'eth_src',
       'eth_dst',
-      'mac_address'
+      'mac_address',
+      'eth_all'
     ],
     'FILE_NAME': [
       'file',
       'filename',
-      'sourcefile'
+      'sourcefile',
+      'filename_src',
+      'filename_dst',
+      'filename_all'
     ],
     'FILE_HASH': [
       'checksum',
-      'hash'
+      'hash',
+      'checksum_src',
+      'checksum_dst',
+      'checksum_all'
     ],
     HOST: [
       'domain',
       'alias_host',
       'device_host',
-      'dns_hostname'
+      'dns_hostname',
+      'host_all'
     ]
   }
 };
