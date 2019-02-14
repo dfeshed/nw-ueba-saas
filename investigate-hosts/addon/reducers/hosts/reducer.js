@@ -168,7 +168,8 @@ const hosts = reduxActions.handleActions({
     id: host.id,
     machineIdentity: { machineName: host.machineIdentity.machineName },
     version: host.machineIdentity.agentVersion,
-    managed: host.groupPolicy.managed
+    managed: host.groupPolicy.managed,
+    serviceId: host.serviceId
   }))),
 
   [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', []),

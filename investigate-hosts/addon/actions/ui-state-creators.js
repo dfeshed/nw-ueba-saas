@@ -7,7 +7,8 @@ const toggleMachineSelected = (host) => ({
     id: host.id,
     machineIdentity: { machineName: host.machineIdentity.machineName },
     version: host.machineIdentity.agentVersion,
-    managed: host.groupPolicy.managed
+    managed: host.groupPolicy.managed,
+    serviceId: host.serviceId
   }
 });
 const toggleIconVisibility = (flag, id) => ({ type: ACTION_TYPES.TOGGLE_ICON_VISIBILITY, payload: { flag, id } });
@@ -17,7 +18,8 @@ const setSelectedHost = (host) => ({
     machineIdentity: { machineName: host.machineIdentity.machineName },
     id: host.id,
     version: host.machineIdentity.agentVersion,
-    managed: host.groupPolicy.managed
+    managed: host.groupPolicy.managed,
+    serviceId: host.serviceId
   }
 });
 

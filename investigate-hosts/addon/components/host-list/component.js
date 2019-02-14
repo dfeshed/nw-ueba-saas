@@ -64,10 +64,12 @@ const Container = Component.extend({
     },
 
     initiateScanCommand(command) {
+      const hosts = this.get('selections');
+      const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
       if (command === 'START_SCAN') {
-        startScanCommand(this.get('agentIds'));
+        startScanCommand(this.get('agentIds'), host.serviceId);
       } else {
-        stopScanCommand(this.get('agentIds'));
+        stopScanCommand(this.get('agentIds'), host.serviceId);
       }
       this.set('showCommandModal', false);
     },
