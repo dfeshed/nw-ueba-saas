@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import pathParentHelper from './path-parent';
+import pathToUrlSegmentHelper from './path-to-url-segment';
 import { isFlag, FLAGS } from 'ngcoreui/services/transport/flag-helper';
 
 const _treePath = (state) => state.treePath;
@@ -32,6 +33,13 @@ const pathParent = createSelector(
   [ _treePath ],
   (treePath) => {
     return pathParentHelper(treePath);
+  }
+);
+
+const pathParentToUrlSegment = createSelector(
+  [ _treePath ],
+  (treePath) => {
+    return pathToUrlSegmentHelper(pathParentHelper(treePath));
   }
 );
 
@@ -186,6 +194,7 @@ export {
   currentDirectoryContents,
   isNotRoot,
   pathParent,
+  pathParentToUrlSegment,
   operationNames,
   filteredOperationNames,
   selectedOperation,

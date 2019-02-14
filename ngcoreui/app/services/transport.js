@@ -1,11 +1,38 @@
 import Service from '@ember/service';
+import Evented from '@ember/object/evented';
 import { Promise } from 'rsvp';
 import Channel from './transport/channel';
 import * as FLAGS from './transport/nw-flags';
 import parseFlags from './transport/parse-flags';
 import ENV from 'ngcoreui/config/environment';
 
-export default Service.extend({
+/**
+ * Connected event. Fired when the websocket is connected.
+ *
+ * @event transport#connected
+ */
+
+/**
+ * Close event. Fired when the websocket is closed.
+ *
+ * @event transport#close
+ * @type {CloseEvent}
+ * @property {Number} code - Why the websocket was closed. See https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
+ */
+
+/**
+ * Error event. Fired when the websocket emits an error.
+ *
+ * @event transport#error
+ * @type {Error}
+ */
+
+/**
+ * @emits transport#connected
+ * @emits transport#close
+ * @emits transport#error
+ */
+export default Service.extend(Evented, {
 
   /**
    * @private
@@ -69,28 +96,26 @@ export default Service.extend({
 
   /**
    * @public
-   * @param {*} onConnected - A function to call when the websocket is connected
-   * @param {*} onError - A function to call when the websocket experiences an error
    */
-  connect(onConnected, onError) {
+  connect() {
     let ws = this.get('ws');
     this.disconnect();
     ws = new WebSocket(this.get('url'));
     ws.onopen = () => {
-      onConnected();
+      this.trigger('connected');
       this.flushQueue();
     };
     ws.onmessage = (messageEvent) => {
       this.handleIncomingMessage(messageEvent);
     };
     ws.onclose = (closeEvent) => {
-      // eslint-disable-next-line no-console
-      console.log(`WS closed, code ${closeEvent.code}`);
+      this.trigger('close', closeEvent);
     };
-    ws.onerror = () => {
-      onError('WebSocket error');
+    ws.onerror = (err) => {
+      this.trigger('error', err);
     };
     this.set('ws', ws);
+    return this;
   },
 
   setUrl(url) {
@@ -207,8 +232,9 @@ export default Service.extend({
     }
     const pendingChannels = this.get('pendingChannels');
     if (pendingChannels[tid]) {
-      pendingChannels[tid] = (channel) => {
-        channel.delete();
+      pendingChannels[tid] = {
+        resolve: (channel) => channel.delete(),
+        reject: (channel) => channel.delete()
       };
     } else {
       const channels = Object.values(this.get('channels'));
@@ -290,9 +316,19 @@ export default Service.extend({
     }
 
     // Deal with incoming messages not destined for channels
-    // For now, those are only messages informing us of channels we created
     if ((flags.dataType & FLAGS.PARAMS) && messageData.params && messageData.params.tid) {
       this.establishChannel(messageData);
+    } else if (flags.error) {
+      // ESLint says "These characters are rarely used in JavaScript strings so a regular expression containing these characters is most likely a mistake."
+      // and "If you need to use control character pattern matching, then you should turn this rule off."
+      // eslint-disable-next-line no-control-regex
+      const nodeDoesNotExist = new RegExp("The channel target node '.*' does not exist.*[\\u{0000}-\\u{0002}]+(\\d+)", 'us');
+      const result = nodeDoesNotExist.exec(messageData.error.message);
+      if (result) {
+        const tid = parseInt(result[1], 10);
+        this.get('pendingChannels')[tid].reject('Target node does not exist');
+        delete this.get('pendingChannels')[tid];
+      }
     }
   },
 
@@ -311,9 +347,9 @@ export default Service.extend({
         }
       };
 
-      // Store the resolve callback in the pending channels object
-      // Call it when we hear back that the channel was created
-      this.get('pendingChannels')[tid] = resolve;
+      // Store the resolve & reject callbacks in the pending channels object
+      // Call resolve when we hear back that the channel was created
+      this.get('pendingChannels')[tid] = { resolve, reject };
       this.sendMessage(data, reject);
     });
   },
@@ -323,7 +359,7 @@ export default Service.extend({
    * @param {*} message
    */
   establishChannel(message) {
-    const pendingPromiseResolve = this.get('pendingChannels')[message.params.tid];
+    const pendingPromiseResolve = this.get('pendingChannels')[message.params.tid].resolve;
     delete this.get('pendingChannels')[message.params.tid];
     const route = [parseInt(message.params.pid, 10), parseInt(message.params.target, 10)];
     const channel = Channel.create({

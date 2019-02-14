@@ -6,20 +6,20 @@ import parseFlags from '../services/transport/parse-flags';
 const MAX_BATCH_SIZE = 10000;
 const LOG_FETCH_INTERVAL = 1000;
 
-const connect = (onConnected = () => {}) => {
+const connect = () => {
   const transport = lookup('service:transport');
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.WS_CONNECT_START
     });
-    transport.connect(
-      () => {
+    transport.connect()
+      .on('connected', () => {
         dispatch({ type: ACTION_TYPES.WS_CONNECT_FINISH });
-        onConnected();
         dispatch(_getDeviceInfo());
-      },
-      (error) => dispatch({ type: ACTION_TYPES.WS_ERROR, payload: error })
-    );
+      })
+      .on('error', (err) => {
+        dispatch({ type: ACTION_TYPES.WS_ERROR, payload: err });
+      });
   };
 };
 
@@ -38,34 +38,46 @@ const disconnect = () => {
 const changeDirectory = (path) => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
-    dispatch(deselectOperation());
-    dispatch(deselectStat());
-    transport.stopStream(getState().treeMonitorStreamTid);
-    const tid = transport.stream({
-      path,
-      message: {
-        message: 'mon',
-        params: {
-          depth: '1'
-        }
-      },
-      messageCallback: (updateMessage) => {
-        dispatch(_updateTreeContents(updateMessage));
-      },
-      errorCallback: (errorMessage) => {
-        throw new Error(errorMessage);
-      }
-    });
-    dispatch({
-      type: ACTION_TYPES.TREE_CHANGE_DIRECTORY,
-      payload: {
+    transport.send(path, {
+      message: 'ls'
+    }).then((message) => {
+      dispatch(deselectOperation());
+      dispatch(deselectStat());
+      transport.stopStream(getState().treeMonitorStreamTid);
+      dispatch({
+        type: ACTION_TYPES.TREE_LIST_CONTENTS,
+        payload: message
+      });
+      const tid = transport.stream({
         path,
-        tid
-      }
+        message: {
+          message: 'mon',
+          params: {
+            depth: '1'
+          }
+        },
+        messageCallback: (updateMessage) => {
+          dispatch(_updateTreeContents(updateMessage));
+        },
+        errorCallback: (errorMessage) => {
+          throw new Error(errorMessage);
+        }
+      });
+      dispatch({
+        type: ACTION_TYPES.TREE_CHANGE_DIRECTORY,
+        payload: {
+          path,
+          tid
+        }
+      });
+      dispatch(_getOperations(path));
+      dispatch(_getDescription(path));
+    }).catch(() => {
+      // If we get an error trying to use `ls`, just go back to the dashboard.
+      // We should probably also display something to the user here
+      const router = lookup('service:router');
+      router.replaceWith('/');
     });
-    dispatch(_listContents(path));
-    dispatch(_getOperations(path));
-    dispatch(_getDescription(path));
   };
 };
 
@@ -317,16 +329,6 @@ const logsClearInterval = () => {
   return {
     type: ACTION_TYPES.LOGS_INTERVAL_HANDLE,
     payload: null
-  };
-};
-
-const _listContents = (path) => {
-  const transport = lookup('service:transport');
-  return {
-    type: ACTION_TYPES.TREE_LIST_CONTENTS,
-    promise: transport.send(path, {
-      message: 'ls'
-    })
   };
 };
 

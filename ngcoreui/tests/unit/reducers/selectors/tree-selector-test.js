@@ -4,6 +4,7 @@ import {
   currentDirectoryContents,
   isNotRoot,
   pathParent,
+  pathParentToUrlSegment,
   operationNames,
   filteredOperationNames,
   selectedOperation,
@@ -46,6 +47,17 @@ module('Unit | Selectors | Tree', (hooks) => {
     assert.strictEqual(pathParent(state), '/sys');
     state = new ReduxDataHelper().pathParent().treePath('/abc/def/xyz').build();
     assert.strictEqual(pathParent(state), '/abc/def');
+  });
+
+  test('pathParentToUrlSegment should map a path string to a url segment for its parent', (assert) => {
+    let state = new ReduxDataHelper().pathParentToUrlSegment().treePath('/').build();
+    assert.strictEqual(pathParentToUrlSegment(state), null);
+    state = new ReduxDataHelper().pathParentToUrlSegment().treePath('/sys').build();
+    assert.strictEqual(pathParentToUrlSegment(state), 'tree');
+    state = new ReduxDataHelper().pathParentToUrlSegment().treePath('/sys/stats').build();
+    assert.strictEqual(pathParentToUrlSegment(state), 'sys');
+    state = new ReduxDataHelper().pathParentToUrlSegment().treePath('/abc/def/xyz').build();
+    assert.strictEqual(pathParentToUrlSegment(state), 'abc/def');
   });
 
   test('operationNames should find just the names of the operations for the current path', (assert) => {

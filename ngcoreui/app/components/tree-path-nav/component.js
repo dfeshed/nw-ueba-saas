@@ -1,31 +1,25 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
-import { changeDirectory } from 'ngcoreui/actions/actions';
 import pathParent from 'ngcoreui/reducers/selectors/path-parent';
 
 const pathToNameObject = (path) => {
   if (path === '/') {
     return {
-      path,
+      path: 'tree',
       name: '/'
     };
   } else if (path.indexOf('/') === path.lastIndexOf('/')) {
     return {
-      path,
+      path: path.substring(1),
       name: path.substring(1)
     };
   } else {
     return {
-      path,
+      path: path.substring(1),
       name: path.substring(path.lastIndexOf('/') + 1),
       includeLeadingSlash: true
     };
   }
-};
-
-const dispatchToActions = {
-  changeDirectory
 };
 
 const treePathNav = Component.extend({
@@ -34,10 +28,11 @@ const treePathNav = Component.extend({
   tagName: 'span',
 
   // Returns an array containing each parent by their full path,
-  // up until that path. e.g. "/sys/stats" => [
-  //   { path: "/", name: "/" },
-  //   { path: "/sys", name: "sys" },
-  //   { path: "/sys/stats", name: "stats", includeLeadingSlash: true }
+  // up until that path, but modified to handle the root and without
+  // the leading slash for handling by the router. e.g. "/sys/stats" => [
+  //   { path: "tree", name: "/" },
+  //   { path: "sys", name: "sys" },
+  //   { path: "sys/stats", name: "stats", includeLeadingSlash: true }
   // ]
   @computed('path')
   pathArray: (path) => {
@@ -51,4 +46,4 @@ const treePathNav = Component.extend({
   }
 });
 
-export default connect(undefined, dispatchToActions)(treePathNav);
+export default treePathNav;

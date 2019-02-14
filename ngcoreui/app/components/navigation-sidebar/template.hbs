@@ -12,7 +12,7 @@ and the outer class defines the collapsed width.
 
 <div class="navigation-sidebar-inner">
   {{#link-to "index"}}<div class="nav-item"><span>{{rsa-icon name="home-1" style="lined"}}</span> Dashboard</div>{{/link-to}}
-  {{#link-to "tree"}}<div class="nav-item"><span class="flipped">{{rsa-icon name="flowchart" style="lined"}}</span> Tree View</div>{{/link-to}}
+  {{#link-to "tree" "tree" active=treeActive}}<div class="nav-item"><span class="flipped">{{rsa-icon name="flowchart" style="lined"}}</span> Tree View</div>{{/link-to}}
   {{#link-to "logs"}}<div class="nav-item"><span>{{rsa-icon name="copy-1" style="lined"}}</span> Logs</div>{{/link-to}}
   <hr>
   <a href="http://{{host}}/sys/caupload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> CA Upload</div></a>

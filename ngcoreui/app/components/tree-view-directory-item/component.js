@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { changeDirectory, selectNode } from 'ngcoreui/actions/actions';
+import pathToUrlSegment from 'ngcoreui/reducers/selectors/path-to-url-segment';
 import { isFlag, FLAGS } from 'ngcoreui/services/transport/flag-helper';
 
 const dispatchToActions = {
@@ -39,7 +40,10 @@ const treeViewDirectoryItem = Component.extend({
   },
 
   @computed('node')
-  requiresRestart: (node) => isFlag(node.nodeType, FLAGS.CONFIG_VALUE_RESTART_NEEDED)
+  requiresRestart: (node) => isFlag(node.nodeType, FLAGS.CONFIG_VALUE_RESTART_NEEDED),
+
+  @computed('node')
+  urlSegment: (node) => pathToUrlSegment(node.path)
 });
 
 export default connect(undefined, dispatchToActions)(treeViewDirectoryItem);

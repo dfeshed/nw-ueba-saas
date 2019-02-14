@@ -7,8 +7,10 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('tree');
+  this.route('index', { path: '/' });
   this.route('logs');
+  // Catch all unknown paths and put them through tree, handle unknown paths there
+  this.route('tree', { path: '*path' });
 });
 
 export default Router;

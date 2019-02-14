@@ -5,9 +5,14 @@ import { changeActiveTab, changeDirectory } from 'ngcoreui/actions/actions';
 export default Route.extend({
   redux: service(),
 
-  beforeModel() {
+  model(params) {
+    let path = `/${params.path}`;
     const redux = this.get('redux');
     redux.dispatch(changeActiveTab('tree'));
-    redux.dispatch(changeDirectory('/'));
+    if (path === '/tree') {
+      path = '/';
+    }
+    // Bad paths are handled in the `changeDirectory` action
+    redux.dispatch(changeDirectory(path));
   }
 });

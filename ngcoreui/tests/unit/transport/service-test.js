@@ -18,12 +18,14 @@ module('Unit | Service | transport', function(hooks) {
     const done = assert.async(1);
     const transport = this.owner.lookup('service:transport');
     setTransportTestingState(transport);
-    transport.connect(() => {
+    transport.on('connected', () => {
       assert.strictEqual(transport.get('ws').readyState, WebSocket.OPEN);
       done();
-    }, (err) => {
+    });
+    transport.on('error', (err) => {
       throw new Error(err);
     });
+    transport.connect();
   });
 
   test('disconnect disconnects when connected', function(assert) {
@@ -32,7 +34,7 @@ module('Unit | Service | transport', function(hooks) {
     const done = assert.async(1);
     const transport = this.owner.lookup('service:transport');
     setTransportTestingState(transport);
-    transport.connect(() => {
+    transport.on('connected', () => {
       const ws = transport.get('ws');
       assert.strictEqual(ws.readyState, WebSocket.OPEN);
       transport.disconnect().then(() => {
@@ -43,9 +45,11 @@ module('Unit | Service | transport', function(hooks) {
         assert.deepEqual(transport.get('ws'), null);
         done();
       });
-    }, (err) => {
+    });
+    transport.on('error', (err) => {
       throw new Error(err);
     });
+    transport.connect();
   });
 
   test('disconnect does not error when disconnected', function(assert) {
@@ -69,13 +73,15 @@ module('Unit | Service | transport', function(hooks) {
     const done = assert.async(1);
     const transport = this.owner.lookup('service:transport');
     setTransportTestingState(transport);
-    transport.connect(() => {
+    transport.on('connected', () => {
       assert.strictEqual(transport.get('ws').readyState, WebSocket.OPEN);
       assert.strictEqual(transport.assertConnected(), true);
       done();
-    }, (err) => {
+    });
+    transport.on('error', (err) => {
       throw new Error(err);
     });
+    transport.connect();
   });
 
   test('assertConnected returns false when not connected', function(assert) {
@@ -94,7 +100,7 @@ module('Unit | Service | transport', function(hooks) {
     const done = assert.async(1);
     const transport = this.owner.lookup('service:transport');
     setTransportTestingState(transport);
-    transport.connect(() => {
+    transport.on('connected', () => {
       assert.strictEqual(transport.get('ws').readyState, WebSocket.OPEN);
       transport.send('/', {
         message: 'Foobar'
@@ -102,9 +108,11 @@ module('Unit | Service | transport', function(hooks) {
         assert.strictEqual(response.params.description, 'Foobar');
         done();
       });
-    }, (err) => {
+    });
+    transport.on('error', (err) => {
       throw new Error(err);
     });
+    transport.connect();
   });
 
   test('stream sends a message and calls back each time a response arrives', function(assert) {
@@ -113,7 +121,7 @@ module('Unit | Service | transport', function(hooks) {
     const done = assert.async(1);
     const transport = this.owner.lookup('service:transport');
     setTransportTestingState(transport);
-    transport.connect(() => {
+    transport.on('connected', () => {
       assert.strictEqual(transport.get('ws').readyState, WebSocket.OPEN);
       const expectedResponses = ['One', 'Two', 'Three'];
       let responsesReceived = 0;
@@ -132,8 +140,10 @@ module('Unit | Service | transport', function(hooks) {
           throw new Error(err);
         }
       });
-    }, (err) => {
+    });
+    transport.on('error', (err) => {
       throw new Error(err);
     });
+    transport.connect();
   });
 });

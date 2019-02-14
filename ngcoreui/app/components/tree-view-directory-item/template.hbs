@@ -22,13 +22,15 @@
   <hbox class="directory-item" align="center" nowrap>
 
     <box fit>
-      <a {{action 'changeDirectory' node.path}} class="large">
-        {{#if node.display}}
-          <span title={{node.name}}>{{node.display}}</span>
-        {{else}}
-          {{node.name}}/
-        {{/if}}
-      </a>
+      {{#link-to "tree" urlSegment activeClass="ember-active"}}
+        <a class="large">
+          {{#if node.display}}
+            <span title={{node.name}}>{{node.display}}</span>
+          {{else}}
+            {{node.name}}/
+          {{/if}}
+        </a>
+      {{/link-to}}
     </box>
 
   </hbox>

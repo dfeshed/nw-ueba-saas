@@ -1,1 +1,1 @@
-{{#each pathArray as |item|}}{{#if item.includeLeadingSlash}}/{{/if}}<a {{action 'changeDirectory' item.path}} class="tree-path-nav">{{item.name}}</a>{{/each}}
+{{#each pathArray as |item|}}{{#if item.includeLeadingSlash}}/{{/if}}{{#link-to "tree" item.path activeClass="ember-active"}}<a class="tree-path-nav">{{item.name}}</a>{{/link-to}}{{/each}}
