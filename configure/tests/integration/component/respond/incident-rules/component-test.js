@@ -9,6 +9,7 @@ import { waitUntil, click, find, findAll, render } from '@ember/test-helpers';
 import Immutable from 'seamless-immutable';
 import rules from '../../../../data/subscriptions/incident-rules/findAll/data';
 import { Promise } from 'rsvp';
+import Service from '@ember/service';
 import $ from 'jquery';
 
 const initialState = {
@@ -80,7 +81,18 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
   });
 
   test('click handler should not prevent propagating of event', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
+
+    const transitions = [];
+    const FakeRoutingService = Service.extend({
+      generateURL: () => {
+        return;
+      },
+      transitionTo: (name) => {
+        transitions.push(name);
+      }
+    });
+    this.owner.register('service:-routing', FakeRoutingService);
 
     let clicked, rowClicked;
     const FakeComponent = Component.extend({
@@ -89,7 +101,7 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
           rule=rule
           selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
           <div test-id="linkWrapper">
-            {{#link-to 'respond.incident-rule' rule.id}}{{rule.name}}{{/link-to}}
+            {{#link-to 'respond.incident-rule' rule.id test-id="ruleLink"}}{{rule.name}}{{/link-to}}
           </div>
         {{/respond/incident-rules/row}}
       `,
@@ -109,13 +121,17 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     this.set('rule', { id: 1, name: 'x' });
     await render(hbs`{{test-clazz rule=rule selectedRuleId=selectedRuleId}}`);
 
-    const linkSelector = '[test-id=linkWrapper]';
-    await click(linkSelector);
-
-    await waitUntil(() => clicked === true, { timeout });
-    assert.equal(clicked, true);
+    const divSelector = '[test-id=linkWrapper]';
+    await click(divSelector);
 
     await waitUntil(() => rowClicked === true, { timeout });
     assert.equal(rowClicked, true);
+    assert.equal(clicked, undefined);
+
+    const linkSelector = '[test-id=ruleLink]';
+    await click(linkSelector);
+
+    await waitUntil(() => transitions.length > 0, { timeout });
+    assert.deepEqual(transitions, ['respond.incident-rule']);
   });
 });
