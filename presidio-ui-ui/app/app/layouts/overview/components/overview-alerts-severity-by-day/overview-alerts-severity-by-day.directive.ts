@@ -202,6 +202,14 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                                     "axisAlpha": 0
                                 }
                             ],
+                            "listeners": [{
+                                "event": "drawn",
+                                "method": function (obj) {
+                                    if (obj.chart && obj.chart.axesSet && obj.chart.axesSet.node.childNodes.length > 1) {
+                                        obj.chart.axesSet.node.childNodes[1].style.display='none';
+                                    }
+                                }
+                            }],
                             "balloon": {},
                             "dataProvider": dataProvider
                         }
