@@ -3,7 +3,6 @@ package presidio.data.generators.event;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.FixedRangeTimeGenerator;
-import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 
 import java.time.Duration;
@@ -17,8 +16,9 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
     private Iterator<EventGeneratorProbability> eventGeneratorProbabilityIterator;
     private List<EventGeneratorProbability> eventGeneratorProbabilityList;
     private Random random;
+    private Event nextEvent;
     public RandomMultiEventGenerator(List<EventGeneratorProbability> eventGeneratorProbabilityList,
-                                     Instant startInstant, Instant endInstant, Duration interval) throws GeneratorException {
+                                     Instant startInstant, Instant endInstant, Duration interval){
         this.eventGeneratorProbabilityList = eventGeneratorProbabilityList;
         resetEventGeneratorProbabilityIterator();
         for (EventGeneratorProbability eventGeneratorProbability: eventGeneratorProbabilityList){
@@ -26,6 +26,12 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
             eventGeneratorProbability.getEventGenerator().setTimeGenerator(timeGenerator);
         }
         random = new Random(0);
+
+        try {
+            updateNext();
+        } catch (GeneratorException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public RandomMultiEventGenerator(List<EventGeneratorProbability> eventGeneratorProbabilityList,
@@ -37,36 +43,42 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
             eventGeneratorProbability.getEventGenerator().setTimeGenerator(timeGenerator);
         }
         random = new Random(0);
+        try {
+            updateNext();
+        } catch (GeneratorException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Instant hasNext() {
+        return nextEvent == null ? null : nextEvent.getDateTime();
     }
 
     private void resetEventGeneratorProbabilityIterator(){
         eventGeneratorProbabilityIterator = eventGeneratorProbabilityList.iterator();
     }
 
-    @Override
-    public List<Event> generate() throws GeneratorException {
-        List<Event> ret = new ArrayList<>();
-        while(timeGenerator.hasNext() != null){
-            ret.add(generateNext());
-        }
-        return ret;
-    }
-
-    @Override
-    public Event generateNext() throws GeneratorException {
-        Event ret = null;
-        while(ret == null && timeGenerator.hasNext() != null) {
+    public void updateNext() throws GeneratorException {
+        nextEvent = null;
+        while(nextEvent == null && timeGenerator.hasNext() != null) {
             EventGeneratorProbability eventGeneratorProbability = eventGeneratorProbabilityIterator.next();
             if (!eventGeneratorProbabilityIterator.hasNext()) {
                 resetEventGeneratorProbabilityIterator();
             }
             if (random.nextDouble() <= eventGeneratorProbability.getProbablility()) {
-                ret = eventGeneratorProbability.getEventGenerator().generateNext();
+                nextEvent = eventGeneratorProbability.getEventGenerator().generateNext();
             } else{
                 //advancing the time with out generating data.
                 eventGeneratorProbability.getEventGenerator().getTimeGenerator().getNext();
             }
         }
+    }
+
+    @Override
+    public Event generateNext() throws GeneratorException {
+        Event ret = nextEvent;
+        updateNext();
 
         return ret;
     }

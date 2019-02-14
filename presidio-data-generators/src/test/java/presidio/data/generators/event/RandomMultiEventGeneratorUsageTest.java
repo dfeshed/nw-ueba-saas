@@ -41,7 +41,7 @@ public class RandomMultiEventGeneratorUsageTest {
                 Instant.now().truncatedTo(ChronoUnit.DAYS), Duration.ofHours(1) );
 
         events.addAll(generator.generate());
-        Assert.assertEquals(events.size(), 359);
+        Assert.assertEquals(events.size(), 358);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class RandomMultiEventGeneratorUsageTest {
                 Instant.now().truncatedTo(ChronoUnit.DAYS), rangesList, Duration.ofHours(1) );
 
         events.addAll(generator.generate());
-        Assert.assertEquals(events.size(), 431798);
+        Assert.assertEquals(events.size(), 431797);
     }
 
 }
