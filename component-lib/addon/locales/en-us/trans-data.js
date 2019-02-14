@@ -3613,7 +3613,8 @@ export default {
         errorPage: {
           serviceDown: 'Respond Server is offline',
           serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
-        }
+        },
+        infoMessage: '  Events rolled out due to retention policies or manual deletion will not be available.'
       },
       riskPanel: {
         timeUnit: {

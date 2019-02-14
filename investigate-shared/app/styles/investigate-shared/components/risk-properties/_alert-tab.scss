@@ -64,3 +64,17 @@
     display: inline;
   }
 }
+
+.host-overview,
+.file-overview {
+  .events-list {
+    top: 15px
+  }
+
+  .events-info-message {
+    @include rsa-font(regular);
+    padding-top: rsa-whitespace(less);
+    padding-left: rsa-whitespace();
+  }
+}
+

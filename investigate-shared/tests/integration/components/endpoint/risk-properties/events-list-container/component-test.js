@@ -86,4 +86,16 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
 
     assert.equal(findAll('.rsa-panel-message').length, 1, 'Error Message for No events available exists.');
   });
+
+  test('displaying info message', async function(assert) {
+    this.set('state', {
+      eventsData: respondData,
+      expandedEventId: null,
+      eventsLoadingStatus: 'completed',
+      riskScoreContextError: null,
+      riskScoreContext
+    });
+    await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
+    assert.equal(findAll('.events-info-message').length, 1, 'info message is present');
+  });
 });
