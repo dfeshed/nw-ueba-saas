@@ -1,15 +1,15 @@
 import Service, { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { navigateToInvestigateEventsAnalysis, navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
-import { lookup } from 'ember-dependency-lookup';
 
 export default Service.extend({
 
   timezone: service(),
 
+  redux: service(),
+
   pivotToInvestigate(metaName, item, category, tab = 'NAVIGATE') {
-    const redux = lookup('service:redux');
-    const state = redux.getState();
+    const state = this.get('redux').getState();
     const investigateServer = serviceId(state);
     if (investigateServer !== '-1') {
       const dateRange = timeRange(state);
