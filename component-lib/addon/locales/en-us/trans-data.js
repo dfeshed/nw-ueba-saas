@@ -2097,7 +2097,7 @@ export default {
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
-      errorDescription: 'Endpoint Server may not be configured properly. See the Physical Host Installation Guide for instructions on Endpoint Hybrid or Endpoint Log Hybrid installation.'
+      errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
