@@ -1,4 +1,4 @@
-<box class="content-section">
+<div class="content-section">
   {{!--If block level contents are provided--}}
   {{#if hasProperties}}
     {{#each properties as |property|}}
@@ -16,4 +16,4 @@
   {{else}}
     {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
   {{/if}}
-</box>
+</div>

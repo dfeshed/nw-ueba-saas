@@ -6,8 +6,6 @@ import { set, get } from '@ember/object';
 export default Component.extend({
   layout,
 
-  tagName: 'box',
-
   classNames: ['process-property-panel'],
 
   /**
