@@ -70,7 +70,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .heading')[3].innerText, 'History', 'History is the last section as expected');
     assert.equal(findAll('.usm-groups-inspector .title').length, 6, 'expected property names are shown');
     assert.equal(findAll('.usm-groups-inspector .group-criteria')[0].innerText,
-      'Sources included if\nall\nof the following criteria are met:',
+      'Sources included if\nall\nof the following conditions are met:',
       'expected AND conjunction property');
     assert.equal(findAll('.usm-groups-inspector .value').length, 7, 'expected value elements are shown');
     assert.equal(findAll('.usm-groups-inspector .value')[3].innerText, '2018-04-13 05:35', 'created on value shows as expected');
@@ -114,7 +114,7 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .heading').length, 3, 'expected headings are shown');
     assert.equal(findAll('.usm-groups-inspector .heading')[2].innerText, 'History', 'History is the last section as expected');
     assert.equal(findAll('.usm-groups-inspector .group-criteria')[0].innerText,
-      'Sources included if\nany\nof the following criteria are met:',
+      'Sources included if\nany\nof the following conditions are met:',
       'expected ANY conjunction property');
     const expectedSrcCount = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(findAll('.usm-groups-inspector .count')[0].textContent.trim(), 'Updating', 'source count shows as expected');

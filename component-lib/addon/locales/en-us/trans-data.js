@@ -3998,7 +3998,7 @@ export default {
         definition: 'Definition',
         sourceCount: 'Source Count',
         andOrConditionsPart1: 'Sources included if',
-        andOrConditionsPart2: 'of the following criteria are met:'
+        andOrConditionsPart2: 'of the following conditions are met:'
       },
       modals: {
         deleteGroups: {
@@ -4456,12 +4456,12 @@ export default {
         sendTestLog: 'Send Test Log',
         sendTestLogTooltip: 'If enabled, a sample log will be sent to the configured server when the policy is loaded to test connectivity. This allows the configuration to be tested before standard logs are available. ',
         primaryDestination: 'Primary Log Decoder / Log Collector',
-        primaryDestinationTooltip: 'The primary NetWitness Platform server to which the collected windows logs will be forwarded to.',
+        primaryDestinationTooltip: 'The primary Log Decoder or Log Collector to which the collected windows logs will be forwarded.',
         secondaryDestination: 'Secondary Log Decoder / Log Collector',
-        secondaryDestinationTooltip: 'If the primary server is not reachable, collected windows logs will be forwarded to this server. Please note, NetWitness cannot detect failures when UDP is the protocol used.',
+        secondaryDestinationTooltip: 'If the primary Log Decoder or Log Collector is not reachable, collected windows logs will be forwarded to this server. Please note, NetWitness cannot detect failures when UDP is the protocol used.',
         windowsLogDestinationInvalidMsg: 'The log server host name should not be empty',
         protocol: 'Protocol',
-        protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guarantied.',
+        protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guaranteed.',
         channelFilters: 'Channel Filters',
         channelFiltersTooltip: 'Configure which Windows log events to collect by selecting a channel, ' +
          'filter condition, and the relevant event IDs. Common channels such as \'Security\' or \'System\' ' +
@@ -4521,7 +4521,7 @@ export default {
       },
       andOrOperatorText: {
         first: 'Include source if ',
-        second: ' of the following criteria are met:'
+        second: ' of the following conditions are met:'
       },
       inputValidations: {
         none: '',
