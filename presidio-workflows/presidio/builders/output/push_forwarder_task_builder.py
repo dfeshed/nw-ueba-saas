@@ -13,11 +13,12 @@ class PushForwarderTaskBuilder(LoggingMixin):
 
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-    def __init__(self):
+    def __init__(self, condition):
 
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
         self.jvm_args = config_reader.read(conf_key=FORWARDER_JVM_ARGS_CONFIG_PATH)
+        self.condition = condition
 
     def build(self, presidio_core_dag):
         """
@@ -36,6 +37,7 @@ class PushForwarderTaskBuilder(LoggingMixin):
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,
-            dag=presidio_core_dag)
+            dag=presidio_core_dag,
+            condition=self.condition)
 
         return data_forwarding_operator

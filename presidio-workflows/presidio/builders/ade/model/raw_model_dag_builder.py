@@ -53,42 +53,36 @@ class RawModelDagBuilder(PresidioDagBuilder):
         """
         task_sensor_service = TaskSensorService()
 
-        #defining feature aggregation buckets operator
-        raw_model_feature_aggregation_buckets_operator = RawModelFeatureAggregationBucketsOperator(fixed_duration_strategy = FIX_DURATION_STRATEGY_DAILY,
-                                                                                                   command=PresidioDagBuilder.presidio_command,
-                                                                                                   data_source=self.data_source,
-                                                                                                   dag=raw_model_dag)
-        feature_aggregation_buckets_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id=('feature_aggregation_buckets_short_circuit{0}'.format(self.data_source)),
-            dag=raw_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+        def feature_aggregation_buckets_condition(context): return is_execution_date_valid(context['execution_date'],
                                                                      self._feature_aggregation_buckets_interval,
                                                                      raw_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_short_circuit(raw_model_feature_aggregation_buckets_operator,
-                                                   feature_aggregation_buckets_short_circuit_operator)
+
+        # defining feature aggregation buckets operator
+        raw_model_feature_aggregation_buckets_operator = RawModelFeatureAggregationBucketsOperator(
+            fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
+            command=PresidioDagBuilder.presidio_command,
+            data_source=self.data_source,
+            dag=raw_model_dag,
+            condition=feature_aggregation_buckets_condition)
+
+        def raw_model_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                     self._build_model_interval,
+                                                                     raw_model_dag.schedule_interval) \
+                                                 & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                    raw_model_dag,
+                                                    self._min_gap_from_dag_start_date_to_start_modeling,
+                                                    context['execution_date'],
+                                                    raw_model_dag.schedule_interval)
 
         # defining model operator
         raw_model_operator = RawModelOperator(data_source=self.data_source,
                                               command="process",
                                               session_id=raw_model_dag.dag_id.split('.',1)[0],
-                                              dag=raw_model_dag)
-        raw_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='raw_model_short_circuit{0}'.format(self.data_source),
-            dag=raw_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._build_model_interval,
-                                                                     raw_model_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(raw_model_dag,
-                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
-                                                                                                                                   kwargs['execution_date'],
-                                                                                                                                   raw_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_sequential_sensor(raw_model_operator)
-        task_sensor_service.add_task_short_circuit(raw_model_operator, raw_model_short_circuit_operator)
+                                              dag=raw_model_dag,
+                                              condition=raw_model_condition)
 
+        sensor = task_sensor_service.add_task_sequential_sensor(raw_model_operator)
         # defining the dependencies between the operators
-        raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_short_circuit_operator)
-
+        raw_model_feature_aggregation_buckets_operator.set_downstream(sensor)
 
         return raw_model_dag

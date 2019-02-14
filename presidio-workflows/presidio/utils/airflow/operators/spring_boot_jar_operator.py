@@ -57,7 +57,7 @@ class SpringBootJarOperator(BashOperator):
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
-    def __init__(self, command, jvm_args={}, java_args={}, component=None, *args, **kwargs):
+    def __init__(self, command, jvm_args={}, java_args={}, component=None, condition=None, *args, **kwargs):
         self.log.debug("creating operator %s" % str(self.__class__))
         self.task_id = kwargs['task_id']
         self.log.debug("task %s" % str(kwargs['task_id']))
@@ -68,6 +68,7 @@ class SpringBootJarOperator(BashOperator):
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
         self.command = command
+        self.condition = condition
         bash_command = self.get_bash_command()
         pool_name = self._get_pool_name_if_exist()
         execution_timeout = self.get_execution_timeout()
@@ -101,9 +102,18 @@ class SpringBootJarOperator(BashOperator):
         return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
 
     def execute(self, context):
+        self.log.info("executes spring boot Jar operator")
         retry_task_state = SpringBootJarOperator.get_task_retry_value(context, RETRY_SUCCESS_STATE)
-        if (retry_task_state == RETRY_SUCCESS_STATE):
-            super(SpringBootJarOperator, self).execute(context)
+        if retry_task_state == RETRY_SUCCESS_STATE:
+            result = True
+            if self.condition:
+                result = self.condition(context)
+                self.log.info("Condition result is %s", result)
+            if result:
+                self.log.info('Proceeding with downstream tasks...')
+                super(SpringBootJarOperator, self).execute(context)
+            else:
+                self.log.info('Skip with downstream tasks...')
         else:
             ti = context['task_instance']
             skip_msg = 'skipping try attempt %s: last retry did not succeed. retry state: %s' % (
