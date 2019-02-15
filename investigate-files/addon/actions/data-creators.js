@@ -431,9 +431,9 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
     dispatch(resetRiskContext());
 
     const { files: { fileList: { selectedDetailFile } } } = getState();
+    request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
 
     if (!selectedDetailFile) {
-      request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
       dispatch(_getSelectedFileProperties(checksum));
     }
 
