@@ -43,10 +43,12 @@ const bootstrapInvestigateHosts = (query) => {
 
 const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }, isPageLoading) => {
   return async(dispatch, getState) => {
-    const id = sid || getState().endpointQuery.serverId;
-    if (sid !== getState().endpointQuery.serverId) {
+
+    if (isPageLoading) {
+      const id = sid || getState().endpointQuery.serverId;
       await dispatch(changeEndpointServer({ id }));
     }
+
     dispatch(resetHostDownloadLink());
 
     if (isPageLoading) {
