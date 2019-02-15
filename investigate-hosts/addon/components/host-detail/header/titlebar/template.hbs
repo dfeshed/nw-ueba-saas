@@ -12,7 +12,7 @@
 </hbox>
 
 {{#host-detail/utils/host-title-bar tabs=hostDetailTabs defaultAction=(action 'setNewTabView') as |tab|}}
-  {{#link-to (query-params tabName=tab.name)}}
+  {{#link-to (query-params tabName=tab.name subTabName=null)}}
     <div class="label">{{t tab.label}}</div>
   {{/link-to}}
 {{/host-detail/utils/host-title-bar}}

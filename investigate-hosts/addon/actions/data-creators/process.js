@@ -34,16 +34,11 @@ const setDllRowSelectedId = (rowId) => ({ type: ACTION_TYPES.SET_PROCESS_DLL_ROW
 const _getList = () => {
   return (dispatch, getState) => {
     const { sortField: key, isDescOrder: descending } = getState().endpoint.process;
-    const { detailsInput: { agentId, scanTime }, visuals: { isTreeView } } = getState().endpoint;
+    const { detailsInput: { agentId, scanTime } } = getState().endpoint;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_LIST,
       promise: Process.getProcessList({ agentId, scanTime }, { key, descending }),
       meta: {
-        onSuccess: (response) => {
-          if (!isTreeView && response.data.length) {
-            dispatch(getProcessDetails(response.data[0].pid));
-          }
-        },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_LIST, response)
       }
     });
@@ -52,16 +47,11 @@ const _getList = () => {
 
 const _getTree = () => {
   return (dispatch, getState) => {
-    const { detailsInput: { agentId, scanTime }, visuals: { isTreeView } } = getState().endpoint;
+    const { detailsInput: { agentId, scanTime } } = getState().endpoint;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_TREE,
       promise: Process.getProcessTree({ agentId, scanTime }),
       meta: {
-        onSuccess: (response) => {
-          if (isTreeView && response.data.length) {
-            dispatch(getProcessDetails(response.data[0].pid));
-          }
-        },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
     });

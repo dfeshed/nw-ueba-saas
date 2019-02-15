@@ -36,7 +36,7 @@ export default Route.extend({
       refreshModel: true
     },
     subTabName: {
-      refreshModel: false
+      refreshModel: true
     },
     pid: {
       refreshModel: true
