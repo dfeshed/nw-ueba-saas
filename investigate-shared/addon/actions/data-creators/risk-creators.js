@@ -18,6 +18,7 @@ const STATE_MAP = {
   FILE: 'files',
   HOST: 'endpoint'
 };
+const mediumAlertIdArray = [];
 const alertIdArray = [];
 
 const resetRiskScore = (selectedItems, riskType, callbacks = callbacksDefault) => {
@@ -163,31 +164,37 @@ const setSelectedAlert = (context) => {
             } else {
               if (event.source === 'Respond') {
                 // High and Critical alerts are fetched from Respond server
-                await api.getAlertEvents(event.id)
-                  .then(({ data }) => {
-                    // Data is valid. Notify the reducers to update state.
-                    dispatch({
-                      type: ACTION_TYPES.GET_RESPOND_EVENTS,
-                      payload: { indicatorId: event.id, events: data },
-                      meta: { belongsTo: type }
-                    });
-                  })
-                  .catch((error) => {
-                    _handleError(ACTION_TYPES.GET_RESPOND_EVENTS, error);
-                  });
-              } else if (event.source === 'ESA') {
-                // Medium alerts will be fetch from Decoder
                 alertIdArray.push(event);
                 if (alertIdArray.length === 100 || i === (events.length - 1)) {
+                  await api.getAlertEvents(alertIdArray)
+                    .then(({ data }) => {
+                      // Data is valid. Notify the reducers to update state.
+                      dispatch({
+                        type: ACTION_TYPES.GET_RESPOND_EVENTS,
+                        payload: { events: data },
+                        meta: {
+                          belongsTo: type
+                        }
+                      });
+                    })
+                    .catch((error) => {
+                      _handleError(ACTION_TYPES.GET_RESPOND_EVENTS, error);
+                    });
+                  alertIdArray.length = 0;
+                }
+              } else if (event.source === 'ESA') {
+                // Medium alerts will be fetch from Decoder
+                mediumAlertIdArray.push(event);
+                if (mediumAlertIdArray.length === 100 || i === (events.length - 1)) {
                   // For every 100 events or on last event, make an api call
-                  await getAlertEvents(alertIdArray)
+                  await getAlertEvents(mediumAlertIdArray)
                     .then((data) => {
                       dispatch({ type: ACTION_TYPES.GET_ESA_EVENTS, payload: { indicatorId: event.id, events: data }, meta: { belongsTo: riskType(getState()) } });
                     })
                     .catch((response) => {
                       _handleError(ACTION_TYPES.GET_ESA_EVENTS, response);
                     });
-                  alertIdArray.length = 0;
+                  mediumAlertIdArray.length = 0;
                 }
               }
             }

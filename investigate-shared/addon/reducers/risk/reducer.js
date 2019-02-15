@@ -95,22 +95,30 @@ const riskScoreReducer = handleActions({
     });
     return state.set('eventsData', [ ...eventsData, ...transformedEvents ]);
   },
-  [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, { payload: { indicatorId, events } }) => {
+  [ACTION_TYPES.GET_RESPOND_EVENTS]: (state, { payload: { events } }) => {
     const { eventsData } = state;
-    events.forEach((evt, index) => {
-      // Tag each retrieved event with its parent indicator id.
-      // This is useful downstream for mapping events back to their parent.
-      evt.indicatorId = indicatorId;
-      evt.eventIndex = index;
+    const normalizedEvent = [];
+    events.forEach((alertEvent) => {
+      const { id, alert: { events } } = alertEvent;
+      events.forEach((evt, index) => {
+        // Tag each retrieved event with its parent indicator id.
+        // This is useful downstream for mapping events back to their parent.
+        evt.indicatorId = id;
+        evt.eventIndex = index;
 
-      // Ensure each event has an id.
-      // This is useful for selecting individual events in the UI.
-      if (!evt.id) {
-        evt.id = `${indicatorId}:${index}`;
-      }
+        // Ensure each event has an id.
+        // This is useful for selecting individual events in the UI.
+        if (!evt.id) {
+          evt.id = `${id}:${index}`;
+        }
+      });
+      fixNormalizedEvents(events);
+      events.forEach((event) => {
+        normalizedEvent.push(event);
+      });
     });
-    fixNormalizedEvents(events);
-    return state.set('eventsData', [ ...eventsData, ...events ]);
+
+    return state.set('eventsData', [ ...eventsData, ...normalizedEvent ]);
   },
   [ACTION_TYPES.GET_EVENTS_INITIALIZED]: (state) => {
     return state.set('eventsLoadingStatus', 'loading');

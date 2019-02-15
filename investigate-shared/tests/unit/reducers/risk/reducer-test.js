@@ -86,11 +86,13 @@ module('Unit | Reducers | risk', function(hooks) {
 
     const newEndState = reducer(previous, {
       type: ACTION_TYPES.GET_RESPOND_EVENTS,
-      payload: { indicatorId: '234-xyz', events: [{ 'agent_id': '234-xyz', 'device_type': 'nwendpoint' }] }
+      payload: { events: [{ id: '234-xyz', alert: { events: [{ 'agent_id': '234-xyz', 'device_type': 'nwendpoint', category: 'Process Event' }] } },
+        { id: '235-xyz', alert: { events: [{ 'agent_id': '235-xyz', 'device_type': 'nwendpoint', category: 'File Event' }] } }] }
     });
 
-    assert.equal(newEndState.eventsData[1].id, '234-xyz:0', 'unique id is properly set for each event');
-    assert.equal(newEndState.eventsData.length, 2);
+    assert.equal(newEndState.eventsData[1].id, '234-xyz:0', 'unique id is properly set for second event');
+    assert.equal(newEndState.eventsData[2].id, '235-xyz:0', 'unique id is properly set for third event');
+    assert.equal(newEndState.eventsData.length, 3);
   });
 
   test('The ACTIVE_RISK_SEVERITY_TAB action will reset the selected alert', function(assert) {

@@ -30,9 +30,9 @@ const filesConfigGen = function(environment) {
     },
     'respond-server': {
       socketUrl: respondSocketUrl,
-      'alert-events': {
-        subscriptionDestination: '/user/queue/alerts/events',
-        requestDestination: '/ws/respond/alerts/events'
+      'get-events': {
+        subscriptionDestination: '/user/queue/alerts/events/batch',
+        requestDestination: '/ws/respond/alerts/events/batch'
       },
       getFileContext: {
         subscriptionDestination: '/user/queue/risk/context/file',

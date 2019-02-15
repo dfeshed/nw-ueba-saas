@@ -1,5 +1,4 @@
 import { lookup } from 'ember-dependency-lookup';
-import filterQuery from 'respond-shared/utils/filter-query';
 
 /**
  * Executes the web socket call for sending the checksum256 of selected files to reset risk score
@@ -100,19 +99,17 @@ const getDetailedFileRiskScoreContext = (data) => {
  * @param alertId
  * @returns {Promise}
  */
-const getAlertEvents = (alertId) => {
+const getAlertEvents = (alerts) => {
   const request = lookup('service:request');
-  const query = filterQuery.create()
-    .addSortBy('timestamp', false)
-    .addFilter('_id', alertId);
-
+  const query = { field: 'ids', values: alerts.mapBy('id') };
   return request.promiseRequest({
-    method: 'alert-events',
+    method: 'get-events',
     modelName: 'respond-server',
-    query: query.toJSON()
+    query: {
+      filter: [query]
+    }
   });
 };
-
 
 export default {
   sendDataToResetRiskScore,
