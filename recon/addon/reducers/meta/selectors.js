@@ -4,6 +4,8 @@ import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import { getMetaValue } from '../util';
 import ENDPOINT_META_CONFIG from './meta-config';
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
+import { lookup } from 'ember-dependency-lookup';
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -35,6 +37,7 @@ const HTTP_DATA = 80;
 const _metaDirect = (meta) => meta;
 
 // ACCESSOR FUNCTIONS
+const _metaError = (recon) => recon.meta.metaError;
 const _endpointId = (state) => state.recon.data.endpointId;
 const _eventMeta = (state) => state.recon.meta.meta || [];
 const _eventType = (state) => state.data.eventType;
@@ -244,5 +247,18 @@ export const endpointMeta = createSelector(
       });
     }
     return requiredFields;
+  }
+);
+export const errorMessage = createSelector(
+  [_metaError],
+  (metaError) => {
+    const errorObj = handleInvestigateErrorCode(metaError);
+    if (!errorObj) {
+      return;
+    }
+
+    const { errorCode, type, messageLocaleKey } = errorObj;
+
+    return lookup('service:i18n').t(messageLocaleKey, { errorCode, type });
   }
 );

@@ -49,6 +49,10 @@ const investigateEventsErrorCodeDictionary = {
 };
 
 function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
+  if (!response) {
+    return;
+  }
+
   const errorCode = response.code || response.errorCode || response['error-code'];
 
   // not an error code, do not process

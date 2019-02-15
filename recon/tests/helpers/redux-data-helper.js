@@ -56,6 +56,16 @@ export default class DataHelper {
     return this;
   }
 
+  isMetaError() {
+    _set(this.state, 'meta.metaError', {
+      errorCode: 1,
+      meta: {
+        message: 'foo'
+      }
+    });
+    return this;
+  }
+
   isLogEvent() {
     this.meta([['medium', 32]]);
     return this;

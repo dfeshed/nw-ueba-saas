@@ -8,6 +8,9 @@ import {
   hasTextContent
 } from 'recon/reducers/text/selectors';
 import {
+  errorMessage
+} from 'recon/reducers/meta/selectors';
+import {
   hasPackets
 } from 'recon/reducers/packets/selectors';
 import layout from './template';
@@ -21,7 +24,7 @@ const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) =
   hasTextContent: hasTextContent(recon),
   hasPackets: hasPackets(recon),
   meta: meta.meta,
-  metaError: meta.metaError,
+  metaError: errorMessage(recon),
   metaLoading: meta.metaLoading,
   metaToHighlight: text.metaToHighlight,
   metaHighlightCount: metaHighlightCount(recon),

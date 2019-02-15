@@ -4,11 +4,11 @@
   </div>
 {{else}}
   {{#if metaError}}
-    {{rsa-panel-message message=(t 'recon.error.generic')}}
+    {{rsa-panel-message message=metaError}}
   {{else}}
     {{#if metaItems}}
       <hbox class="meta-heading">
-        <h2>Event Meta</h2>
+        <h2>{{'investigate-shared.eventMetaTitle'}}</h2>
       </hbox>
 
       {{#each metaItems as |item|}}

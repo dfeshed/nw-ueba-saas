@@ -3580,6 +3580,7 @@ export default {
     }
   },
   investigateShared: {
+    eventMetaTitle: 'Event Meta',
     machineCount: {
       singular: '{{count}} host',
       plural: '{{count}} hosts'

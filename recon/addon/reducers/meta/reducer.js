@@ -18,10 +18,9 @@ const metaReducer = handleActions({
 
   [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (/* s */) => metaInitialState.set('metaLoading', true),
-      finish: (s) => s.set('metaLoading', false),
-      failure: (s) => s.set('metaError', true),
-      success: (s) => s.set('meta', action.payload)
+      start: () => metaInitialState.set('metaLoading', true),
+      failure: (s) => s.set('metaLoading', false).set('metaError', action.payload),
+      success: (s) => s.set('metaLoading', false).set('meta', action.payload)
     });
   }
 

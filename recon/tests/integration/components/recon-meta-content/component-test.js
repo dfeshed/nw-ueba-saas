@@ -30,6 +30,12 @@ module('Integration | Component | recon-meta-content', function(hooks) {
     assert.equal(findAll('.recon-meta-content-item').length, 5);
   });
 
+  test('renders error correctly', async function(assert) {
+    new ReduxDataHelper(setState).isMetaError().build();
+    await render(hbs`{{recon-meta-content}}`);
+    assert.equal(findAll('.rsa-panel-message .message')[0].textContent.trim(), 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: 1 - UNHANDLED_ERROR');
+  });
+
   test('zero meta items render correctly', async function(assert) {
     new ReduxDataHelper(setState).meta([]).build();
 
