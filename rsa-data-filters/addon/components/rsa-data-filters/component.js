@@ -117,6 +117,9 @@ export default Component.extend({
 
     resetFilters() {
       const onFilterChange = this.get('onFilterChange');
+      if (this.closeEntityDetails) {
+        this.closeEntityDetails();
+      }
       this.set('disableSaveFilterButton', true);
       if (!this.get('clearFormOnReset')) {
         const preLoadedFilters = this.get('preLoadedFilters');

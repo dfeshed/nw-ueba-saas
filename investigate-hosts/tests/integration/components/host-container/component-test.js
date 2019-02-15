@@ -193,4 +193,21 @@ module('Integration | Component | host-container', function(hooks) {
       });
     });
   });
+
+  test('click on reset of filter, right panel is closed', async function(assert) {
+    setState(endpointState);
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-container}}`);
+    await click(findAll('.rsa-data-table-body-row')[1]);
+    assert.equal(findAll('.host-container-list .show-right-zone').length, 1, 'Properties panel is open on host row click');
+    assert.equal(findAll('.host-container-list .left-zone .filters-footer .reset-filter-button').length, 1, 'Reset button is present');
+
+    await click(findAll('.host-container-list .left-zone .filters-footer .reset-filter-button button')[0]);
+    assert.equal(findAll('.host-container-list .show-right-zone').length, 0, 'Right panel is closed on click of Reset');
+  });
 });
