@@ -664,4 +664,28 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       assert.equal(selectedRowId, 3, 'row with id 3 is focused after the click.');
     });
   });
+
+  test('External action is called if items length is zero', async function(assert) {
+    assert.expect(1);
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    this.set('closePropertyPanel', () => {
+      assert.ok(true);
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName closePropertyPanel=closePropertyPanel columnsConfig=columnConfig}}`);
+    const redux = this.owner.lookup('service:redux');
+    redux.dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo: 'DRIVER' } });
+  });
 });

@@ -3,7 +3,9 @@
   color: text-color(primary, lightest);
   background-color: $table-panel-header-color;
   height: 70px;
-  line-height: 3rem;
+  padding-right: rsa-whitespace();
+  padding-left: 0;
+  padding-top: rsa-whitespace(less);
   .title {
     padding-left: rsa-whitespace();
   }
@@ -31,6 +33,7 @@
       padding: 0 1.5rem 0 0;
       font-size: 1.28rem;
       font-weight: 100;
+      line-height: 30px;
     }
   }
   .file-actionbar {
