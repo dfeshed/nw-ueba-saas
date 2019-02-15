@@ -71,14 +71,16 @@ $toolbarHeight: 40px;
     }
     .items-footer {
       background-color: background-color(primary, darkest);
-      max-height: 40px;
+      max-height: 28px;
       color: text-color(primary, lightest);
       .selection-count {
         padding-left: rsa-whitespace(less);
       }
       position: fixed;
       bottom: 0px;
+      margin-bottom: -2px;
       padding: rsa-whitespace();
+      padding-top: 4px;
       text-align: center;
       width: calc(100vw - #{$filterPanelMinWidth});
     }
