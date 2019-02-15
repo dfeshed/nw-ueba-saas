@@ -118,6 +118,7 @@ module('Integration | Component | events-table', function(hooks) {
       true,
       'a message is displayed when we get the max events'
     );
+    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'Reached the 1 event limit. Consider refining your query.', 'Footer message when limit reached');
   });
 
   test('if events are complete, and there are results, and did not hit the limit, a message is displayed', async function(assert) {
@@ -135,6 +136,7 @@ module('Integration | Component | events-table', function(hooks) {
       true,
       'a message is displayed when the entire event result is fetched'
     );
+    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'All results loaded', 'Footer message when the entire event result is fetched');
   });
 
   test('if events are complete, and there are no results, a message is not displayed', async function(assert) {
@@ -166,7 +168,7 @@ module('Integration | Component | events-table', function(hooks) {
     assert.notOk(find('.rsa-loader'), 'spinner should not be present');
     assert.equal(find('.no-results-message').textContent.trim(),
       'Query canceled before any results were returned.',
-      'missing correct cancellation message'
+      'correct cancellation message'
     );
   });
 
@@ -181,11 +183,11 @@ module('Integration | Component | events-table', function(hooks) {
     await render(hbs`{{events-table-container/events-table}}`);
     assert.notOk(find('.rsa-loader'), 'spinner should not be present');
     assert.equal(findAll('.rsa-investigate-events-table-row').length, 1,
-      'missing correct number of rows'
+      'correct number of rows'
     );
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(),
-      'Because the query was canceled, only 1 results of 2 are displayed.',
-      'missing correct cancellation message when partial results returned'
+      'Retrieved 1 of 2 events prior to query cancellation.',
+      'correct cancellation message when partial results returned'
     );
   });
 
@@ -249,7 +251,7 @@ module('Integration | Component | events-table', function(hooks) {
     await click('.group-label-copy');
   });
 
-  test('event tabel is displayed with expected column group\'s default header values', async function(assert) {
+  test('event table is displayed with expected column group\'s default header values', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .eventThreshold(100000)

@@ -17,11 +17,12 @@ import {
   toggleSelectAllEvents,
   toggleEventSelection
 } from 'investigate-events/actions/interaction-creators';
+import { thousandFormat } from 'investigate-events/util/numberFormats';
 
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
   status: state.investigate.eventResults.status,
-  maxEvents: state.investigate.eventResults.streamLimit,
+  maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
   allEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),
@@ -37,8 +38,8 @@ const stateToComputed = (state) => ({
   metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
   isCanceled: isCanceled(state),
   isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
-  totalCount: state.investigate.eventCount.data,
-  actualEventCount: actualEventCount(state),
+  totalCount: thousandFormat(state.investigate.eventCount.data),
+  actualEventCount: thousandFormat(actualEventCount(state)),
   threshold: state.investigate.eventCount.threshold
 });
 

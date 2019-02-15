@@ -3,13 +3,13 @@
     <div class="rsa-investigate-events-table__header__eventLabel">
       <h2>
         {{#if isAtThreshold}}
-          {{t "investigate.events.titleThreshold" age=eventResultSetStart count=count sort=eventTimeSortOrder}}
+          {{t "investigate.events.titleThreshold" age=eventResultSetStart count=count sort=abbreviatedSortOrder}}
           {{rsa-icon
             class="at-threshold"
             name='report-problem-triangle'
-            title=(t 'investigate.events.titleThresholdTooltip' age=eventResultSetStart count=eventCount)}}
+            title=(t 'investigate.events.titleThresholdTooltip' age=eventResultSetStart count=count)}}
         {{else}}
-          {{t "investigate.events.title" count=count sort=eventTimeSortOrder}}
+          {{t "investigate.events.title" count=count sort=abbreviatedSortOrder}}
         {{/if}}
       </h2>
     </div>

@@ -9,15 +9,15 @@ import { setColumnGroup } from 'investigate-events/actions/interaction-creators'
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { thousandFormat } from 'investigate-events/util/numberFormats';
 
 const stateToComputed = (state) => ({
-  eventCount: state.investigate.eventCount.data,
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
   eventTimeSortOrder: state.investigate.eventResults.eventTimeSortOrder,
   columnGroups: state.investigate.data.columnGroups,
   selectedColumnGroup: getSelectedColumnGroup(state),
-  count: state.investigate.eventCount.data,
+  count: thousandFormat(state.investigate.eventCount.data),
   isAtThreshold: resultCountAtThreshold(state),
   shouldStartAtOldest: shouldStartAtOldest(state)
 });
@@ -36,6 +36,11 @@ const HeaderContainer = Component.extend({
   @computed('shouldStartAtOldest', 'i18n')
   eventResultSetStart(shouldStartAtOldest, i18n) {
     return shouldStartAtOldest ? i18n.t('investigate.events.oldest') : i18n.t('investigate.events.newest');
+  },
+
+  @computed('eventTimeSortOrder', 'i18n')
+  abbreviatedSortOrder(eventTimeSortOrder, i18n) {
+    return i18n.t(`investigate.events.abbr.${eventTimeSortOrder}`);
   },
 
   @computed('columnGroups', 'i18n.locale')

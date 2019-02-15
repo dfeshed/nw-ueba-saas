@@ -38,8 +38,11 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with data at threshold', async function(assert) {
     new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100000Events(Ascending)', 'rendered event header title');
+    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
     assert.ok(find('.rsa-investigate-events-table__header__container .at-threshold'), 'at threshold icon is present');
+    assert.equal(find('.rsa-investigate-events-table__header__container .at-threshold').getAttribute('title').trim(),
+      'Reached the 100,000 event limit. Displaying oldest events from the time window. Consider refining your query to narrow the results.',
+      'at threshold tooltip');
   });
 
   test('render the events header with required fields ', async function(assert) {
@@ -48,7 +51,7 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements');
     // TODO bring download back.
     assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 2, 'rendered with three elements');
-    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Ascending)', 'rendered event header title');
+    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     // TODO bring download back.
     // assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');

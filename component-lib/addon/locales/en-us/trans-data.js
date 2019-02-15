@@ -474,8 +474,8 @@ export default {
     reExecutingQuery: 'Query is being re-executed to fetch different columns',
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
-    notAllLoaded: 'Matched {{maxEvents}} event maximum, remaining results not loaded.',
-    partialResults: 'Because the query was canceled, only {{actualEventCount}} results of {{totalCount}} are displayed.',
+    notAllLoaded: 'Reached the {{maxEvents}} event limit. Consider refining your query.',
+    partialResults: 'Retrieved {{actualEventCount}} of {{totalCount}} events prior to query cancellation.',
     allResultsLoaded: 'All results loaded',
     showNextXEvents: 'Show Next {{count}} Events',
     tryAgain: 'Try Again',
@@ -524,7 +524,11 @@ export default {
       title: '{{count}} Events ({{sort}})',
       oldest: 'oldest',
       newest: 'newest',
-      titleThresholdTooltip: 'The query matched more than {{count}} events, and the maximum of {{count}} {{age}} events were retrieved. Consider refining your query.',
+      abbr: {
+        Ascending: 'Asc',
+        Descending: 'Desc'
+      },
+      titleThresholdTooltip: 'Reached the {{count}} event limit. Displaying {{age}} events from the time window. Consider refining your query to narrow the results.',
       isAtThreshold: 'The event count reached the query threshold.',
       tableGroupLabel: 'Events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {
@@ -2060,7 +2064,7 @@ export default {
       autoDownloadExtractedFiles: 'Download extracted files automatically',
       'autoDownloadExtractedFiles-tooltip': 'If selected, the browser downloads files to the download folder and if a file type is mapped to a default program, automatically open it.',
       autoUpdateSummary: 'Update time window automatically',
-      'autoUpdateSummary-tooltip': 'If selected, this continuously updates the time window, for relative time ranges, to reflect the latest time. In both cases the Query Events icon becomes active so that you can refresh the displayed results. If using database time, updates the time window when new data has been stored. If using current time, updates the time window when a minute elapses.',
+      'autoUpdateSummary-tooltip': 'Enables continuous update of the relative time window for the query. The time window updates when new data is stored (database time) or when a minute elapses (current time). In both cases the query icon activates, allowing you to refresh stale results.',
       eventTimeSortOrder: 'Event Sort Order',
       'eventTimeSortOrder-tooltip': 'Sort events in descending or ascending order based on collection time. If results exceed the events limit, not all events can be loaded. The portion of returned events (oldest or newest) that is loaded will match the sort order preference (oldest or newest).',
       Descending: 'Newest First',

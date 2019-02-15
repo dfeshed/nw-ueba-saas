@@ -88,7 +88,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel should render title for Update time window automatically', async function(assert) {
     await renderApplicationContent(this, assert);
-    assert.equal(findAll('.rsa-form-checkbox-label')[1].getAttribute('title'), 'If selected, this continuously updates the time window, for relative time ranges, to reflect the latest time. In both cases the Query Events icon becomes active so that you can refresh the displayed results. If using database time, updates the time window when new data has been stored. If using current time, updates the time window when a minute elapses.');
+    assert.equal(findAll('.rsa-form-checkbox-label')[1].getAttribute('title'), 'Enables continuous update of the relative time window for the query. The time window updates when new data is stored (database time) or when a minute elapses (current time). In both cases the query icon activates, allowing you to refresh stale results.');
   });
 
   test('Preferences panel should show Time format Settings', async function(assert) {
