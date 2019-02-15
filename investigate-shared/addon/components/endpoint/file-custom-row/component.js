@@ -186,35 +186,35 @@ export default DataTableBodyRow.extend({
             label: 'consoleEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {
-              context.pivotToInvestigate(context.get('item'), 'Console Event');
+              context.pivotToInvestigate(context.get('selections')[0], 'Console Event');
             }
           },
           {
             label: 'networkEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {
-              context.pivotToInvestigate(context.get('item'), 'Network Event');
+              context.pivotToInvestigate(context.get('selections')[0], 'Network Event');
             }
           },
           {
             label: 'fileEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {
-              context.pivotToInvestigate(context.get('item'), 'File Event');
+              context.pivotToInvestigate(context.get('selections')[0], 'File Event');
             }
           },
           {
             label: 'processEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {
-              context.pivotToInvestigate(context.get('item'), 'Process Event');
+              context.pivotToInvestigate(context.get('selections')[0], 'Process Event');
             }
           },
           {
             label: 'registryEvents',
             prefix: 'investigateShared.endpoint.fileActions.',
             action(selection, context) {
-              context.pivotToInvestigate(context.get('item'), 'Registry Event');
+              context.pivotToInvestigate(context.get('selections')[0], 'Registry Event');
             }
           }
         ],
