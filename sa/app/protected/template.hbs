@@ -9,6 +9,6 @@
       {{/if}}
     </aside>
   </page>
-  {{context-tooltip clickDataAction=(action 'openContextPanel') endpointServices=model.endpointServices addToListAction=(action 'openContextAddToList')}}
+  {{context-tooltip clickDataAction=(action 'openContextPanel') endpointServices=listOfServices addToListAction=(action 'openContextAddToList')}}
   {{context-panel/add-to-list entity=entityToAddToList}}
 {{/if}}

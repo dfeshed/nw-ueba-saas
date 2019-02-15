@@ -176,6 +176,15 @@ export default Route.extend(AuthenticatedRouteMixin, {
       window.location = classicRedirect;
       return localStorage.removeItem('rsa-post-auth-redirect');
     } else {
+      // Need to pass the list of services to context to determine endpoint is configured or not
+      // As model is already resolved we can't set value to model, so setting response in controller and reading it
+      // Also checking the permission before making the api call, to avoid the failures
+      if (this.get('accessControl.hasInvestigateAccess')) {
+        const controller = this.controllerFor('protected');
+        this.getListOfLaunchServices().then((response) => {
+          controller.set('listOfServices', response.data);
+        });
+      }
       this._checkAccessAndTransition(key, transition.targetName);
     }
   },
@@ -214,7 +223,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
-    const launchServicesPromise = this.getListOfLaunchServices();
 
     // Resolve the user's roles/authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app
@@ -225,14 +233,13 @@ export default Route.extend(AuthenticatedRouteMixin, {
     return RSVP.all([
       preferencesPromise,
       timezonesPromise,
-      permissionsPromise,
-      launchServicesPromise
+      permissionsPromise
     ]).then((responses) => {
       // set the user preference timezone after timezones have been loaded, since the timezone service depends
       // on having the full list of timezone options for values to be properly set.
-      const [preferences, , , endpointServices] = responses;
+      const [preferences] = responses;
       this.set('timezone.selected', preferences.data.timeZone);
-      return { endpointServices: endpointServices.data };
+      return {};
     }).catch(() => {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');

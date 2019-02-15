@@ -13,6 +13,8 @@ export default Controller.extend({
 
   request: service(),
 
+  listOfServices: [],
+
   actions: {
     openContextPanel(entity) {
       const { type, id } = entity || {};
