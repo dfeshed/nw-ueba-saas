@@ -1,5 +1,7 @@
 {{! Toolbar }}
-{{respond/incident-rules/toolbar transitionToRule=transitionToRule}}
+{{#if (eq rulesStatus 'complete')}}
+  {{respond/incident-rules/toolbar transitionToRule=transitionToRule}}
+{{/if}}
 
 {{! Table }}
 <div class="incident-rule-list">

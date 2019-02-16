@@ -57,6 +57,15 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     assert.equal(findAll('.rsa-loader').length, 1, 'The loading spinner appears when the rulesStatus is "wait"');
   });
 
+  test('The error message appears when rulesState is "error"', async function(assert) {
+    await setState({ ...initialState, rulesStatus: 'error' });
+    await render(hbs`{{respond/incident-rules}}`);
+    assert.equal(findAll('.rsa-loader').length, 0);
+    assert.equal(findAll('.no-results-message').length, 0);
+    assert.equal(findAll('.incident-rules-toolbar').length, 0);
+    assert.equal(findAll('.rules-error').length, 1);
+  });
+
   test('The row cells have the expected data', async function(assert) {
     await setState({ ...initialState });
     await render(hbs`{{respond/incident-rules}}`);
