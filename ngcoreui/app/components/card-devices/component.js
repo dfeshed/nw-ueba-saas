@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import { COLUMNS_CONFIG } from './columnsConfig';
+import { interval } from 'd3-timer';
 
 export default Component.extend({
   label: null,
@@ -15,6 +16,9 @@ export default Component.extend({
   devices: null,
   data: null,
 
+  /**
+   * Stores a D3 interval object, not a standard JS interval handle
+   */
   intervalHandle: null,
 
   xProp: 'time_',
@@ -75,7 +79,7 @@ export default Component.extend({
     });
 
     // start the interval to update series data
-    this.set('intervalHandle', setInterval(() => this.updateSeries(), 1000));
+    this.set('intervalHandle', interval(() => this.updateSeries(), 1000));
   },
 
   addDevice(node) {
@@ -144,7 +148,7 @@ export default Component.extend({
   willDestroy() {
     const { intervalHandle, transport, devicesStreamHandle, devices } =
       this.getProperties('intervalHandle', 'transport', 'devicesStreamHandle', 'devices');
-    clearInterval(intervalHandle);
+    intervalHandle.stop();
     transport.stopStream(devicesStreamHandle);
     devices.forEach((device) => transport.stopStream(device.streamHandle));
   },

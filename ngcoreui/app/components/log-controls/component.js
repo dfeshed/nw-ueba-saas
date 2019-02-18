@@ -93,7 +93,7 @@ const logControls = Component.extend({
     stopUpdates() {
       const logsIntervalHandle = this.get('logsIntervalHandle');
       if (logsIntervalHandle) {
-        clearInterval(logsIntervalHandle);
+        logsIntervalHandle.stop();
         this.send('logsClearInterval');
       }
     },

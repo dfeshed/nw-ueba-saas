@@ -7,12 +7,17 @@ import Mixin from '@ember/object/mixin';
 import { inject as service } from '@ember/service';
 import Immutable from 'seamless-immutable';
 import computed from 'ember-computed-decorators';
+import { interval } from 'd3-timer';
 
 export default Mixin.create({
   type: null,
 
   monitor: null,
   monitorHandles: null,
+
+  /**
+   * Stores a D3 interval object, not a standard JS inverval handle
+   */
   intervalHandle: null,
   nodes: null,
   data: null,
@@ -65,7 +70,7 @@ export default Mixin.create({
       this.fetchHistory(monitorSeries)
         .then(() => {
           // set a poll to append to series data the current values (as updated by monitoring)
-          this.set('intervalHandle', setInterval(() => {
+          this.set('intervalHandle', interval(() => {
             const series = this.get('data');
             const data = Array(series.length).fill([]);
             monitorSeries.forEach((mon, index) => {
@@ -91,7 +96,7 @@ export default Mixin.create({
     const transport = this.get('transport');
     const handles = Object.values(this.get('monitorHandles'));
     handles.forEach((handle) => transport.stopStream(handle));
-    clearInterval(this.get('intervalHandle'));
+    this.get('intervalHandle').stop();
   },
 
   /**

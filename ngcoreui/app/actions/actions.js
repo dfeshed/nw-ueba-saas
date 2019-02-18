@@ -2,6 +2,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { Promise } from 'rsvp';
 import * as ACTION_TYPES from './types';
 import parseFlags from '../services/transport/parse-flags';
+import { interval } from 'd3-timer';
 
 const MAX_BATCH_SIZE = 10000;
 const LOG_FETCH_INTERVAL = 1000;
@@ -290,7 +291,7 @@ const loadLogs = (params) => {
         type: ACTION_TYPES.LOGS_LOAD_FINISH
       });
       if (latest) {
-        const intervalHandle = setInterval(() => {
+        const intervalHandle = interval(() => {
           transport.send('/logs/stats/last.id', {
             message: 'get'
           }).then((response) => {
