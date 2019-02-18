@@ -59,7 +59,7 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .scheme(URL_SCHEMA)
                 .host(conf.getBaseLinkDestinationHostname())
                 .path(pathWithParameters)
-                .queryParam(QUERY_PARAM_NAME,value).toString();
+                .queryParam(QUERY_PARAM_NAME,value).toString().replaceAll("\\+", "%20");
 
         return url;
 
