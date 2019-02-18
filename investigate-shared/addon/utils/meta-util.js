@@ -55,12 +55,11 @@ export const transform = (event) => {
     let forwardIp = '';
     const source = {};
     const srcUser = {};
-    const dstUser = {};
     const destination = {};
+    let checksum;
 
     const len = (metas && metas.length) || 0;
-    let i;
-    for (i = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
       const meta = metas[i];
       const [metaName, metaValue] = meta;
       const newName = META_MAP[metaName];
@@ -100,9 +99,6 @@ export const transform = (event) => {
         case 'user.src':
           srcUser.username = metaValue;
           break;
-        case 'user.dst':
-          dstUser.username = metaValue;
-          break;
         case 'forward.ip':
           forwardIp = metaValue;
           break;
@@ -111,17 +107,23 @@ export const transform = (event) => {
             newEvent.operating_system = metaValue;
           }
           break;
+        case 'checksum':
+          checksum = metaValue;
+          break;
       }
     }
     newEvent.type = 'Endpoint';
-    newEvent.file_SHA256 = source.hash;
     newEvent.domain = newEvent.hostname;
     newEvent.event_source = `${forwardIp}:50005`;
     source.user = srcUser;
-    destination.user = dstUser;
     newEvent.source = source;
     newEvent.destination = destination;
     newEvent.related_links = _prepareQueryString(newEvent);
+    const data = [];
+    data[0] = {
+      hash: checksum || source.hash
+    };
+    newEvent.data = data;
   }
   return newEvent;
 };

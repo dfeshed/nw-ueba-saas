@@ -67,6 +67,7 @@ test('transform returns fields from map or specific object', function(assert) {
   assert.equal(keys[16], 'source', 'source info is present');
   assert.equal(keys[17], 'destination', 'destination info is present');
   assert.equal(keys[18], 'related_links', 'related_links info is present');
+  assert.equal(keys[19], 'data', 'data => data');
 
   assert.equal(result.related_links.length, 2, '2 related links present');
   assert.equal(result.related_links[0].url, '/investigation/host/10.40.14.108:50005/navigate/event/AUTO/116414', 'Original event link is correct');
@@ -75,6 +76,7 @@ test('transform returns fields from map or specific object', function(assert) {
     'Destination domain link is correct');
   assert.equal(result.source.hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Source Sha256 is set');
   assert.equal(result.destination.hash, '840e1f9dc5a29bebf01626822d7390251e9cf05bb3560ba7b68bdb8a41cf08e3', 'Destination hash is Sha256');
+  assert.equal(result.data[0].hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'Source Sha256 is set as hash');
 });
 
 
@@ -102,4 +104,23 @@ test('operating_system property for tranformed event should set only for valid s
     ] };
   const result = transform(event);
   assert.equal(result.operating_system, 'windows', 'Operating System sets as windows');
+});
+
+test('consider checksum as hash when checksum is present otherwise set checksum.src as hash', function(assert) {
+  let event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['checksum', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['checksum.src', '09a1afb374069223e1ec1d2609a42e87']
+    ] };
+  let result = transform(event);
+  assert.equal(result.data[0].hash, '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef', 'checksum is set as hash');
+
+  event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['checksum.src', '09a1afb374069223e1ec1d2609a42e87']
+    ] };
+  result = transform(event);
+  assert.equal(result.data[0].hash, '09a1afb374069223e1ec1d2609a42e87', 'checksum.src is set as hash');
 });
