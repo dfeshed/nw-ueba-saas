@@ -35,7 +35,7 @@ module.exports = function(environment) {
         cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
-    'save-entries':{
+    'save-entries': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
@@ -44,7 +44,7 @@ module.exports = function(environment) {
         cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
-    'create-list':{
+    'create-list': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
@@ -53,7 +53,7 @@ module.exports = function(environment) {
         cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
-    'data-sources':{
+    'data-sources': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
@@ -62,7 +62,7 @@ module.exports = function(environment) {
         cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
-    'data-connections':{
+    'data-connections': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,

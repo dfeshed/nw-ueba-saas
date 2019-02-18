@@ -107,7 +107,11 @@ const _getDataSources = (meta) => {
               });
             }
           );
-
+        } else {
+          dispatch({
+            type: ACTION_TYPES.CONTEXT_ERROR,
+            payload: 'context.error.noDataSource'
+          });
         }
       },
       ({ meta }) => {
