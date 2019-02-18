@@ -36,7 +36,6 @@ public class UserProcessEventsGeneratorTest {
 
     final int ACTIVE_TIME_INTERVAL = 1000000; // nanos
     final int EVENTS_GENERATION_CHUNK = 50000;
-    final int EVENTS_INSERT_CHUNK = 4000;
 
     final Pair[] WINDOWS_PROCESS_FILES = { Pair.of("taskhostw.exe"," C:\\Windows\\System32\\"),
             Pair.of("smss.exe"," C:\\Windows\\System32\\"),
@@ -131,72 +130,8 @@ public class UserProcessEventsGeneratorTest {
      * **/
 
     private final int NUM_OF_NORMAL_USERS = 94500;
-    private final double PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.4921875;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 50000; //50 seconds. (8*3600/50)*0.49 =~280 users
-    private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 100;
-    private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 200;
     private final int NUM_OF_ADMIN_USERS = 5000;
-    private final double PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.3189;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/50)*0.3189 =~45 users
-    private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
-    private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
     private final int NUM_OF_SERVICE_ACCOUNT_USERS = 500;
-    private final double PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.06944;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
-    private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
-    private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
-
-
-    //Reconnaissance tools Group A. Normal behavior + abnormal time.
-    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS = 65000;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY = 40000;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER = 0.03; //~3 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 50000; //50 seconds. (8*3600/50)*0.03 =~17 users
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 10;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 50;
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 1;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 10;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS = 3000;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY = 2000;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER = 0.1; // 180 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/50)*0.1 =~15 users
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 1;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 10;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS = 300;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 200;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER = 0.02; // ~360 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
-    private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1;
-    private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 10;
-
-    //Reconnaissance tools Group A. abnormal behavior.
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY = 180;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER = 0.00081; // ~16 events per hour per user
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_OTHER_ACTIVITY_RANGE_FOR_NORMAL_USERS = 1800000; //Half an hour
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 1000;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 5000;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 1000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 2000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY = 13;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER = 0.001625; // ~450 events per hour
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_OTHER_ACTIVITY_RANGE_FOR_ADMIN_USERS = 1800000; //Half an hour
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 1000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 2000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 2;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER = 0.0005; // ~900 events per hour per user
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 100;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 2000;//use all recon tool that you can
-
-
 
     /** USERS **/
     IUserGenerator normalUserGenerator;
@@ -208,47 +143,12 @@ public class UserProcessEventsGeneratorTest {
     IUserGenerator serviceAccountUserGenerator;
     List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange;
 
-    //For Reconnaissance tools A
-    IUserGenerator ReconToolGroupAAllNormalUsers;
-    IUserGenerator ReconToolGroupAAllAdminUsers;
-    IUserGenerator ReconToolGroupAAllServiceAccountUsers;
-
-
     /** MACHINES **/
     IMachineGenerator machineGenerator;
 
     /** Processes **/
     List<FileEntity> nonImportantProcesses;
 
-
-    /** GENERATORS: PROCESS **/
-
-    //Generator for non Important Processes and normal users
-    ProcessEventsGenerator nonImportantProcessForNormalUsersEventGenerator;
-
-    //Generator for non Important Processes and admin users
-    ProcessEventsGenerator nonImportantProcessForAdminUsersEventGenerator;
-
-    //Generator for non Important Processes and service account users
-    ProcessEventsGenerator nonImportantProcessForServiceAccountUsersEventGenerator;
-
-    //Generator for recon tool group A Processes and normal users
-    ProcessEventsGenerator reconToolGroupAForNormalUsersEventGenerator;
-
-    //Generator for recon tool group A Processes and admin users
-    ProcessEventsGenerator reconToolGroupAForAdminUsersEventGenerator;
-
-    //Generator for recon tool group A Processes and service account users
-    ProcessEventsGenerator reconToolGroupAForServiceAccountUsersEventGenerator;
-
-    //Abnormal events Generator for recon tool group A Processes and normal users
-    ProcessEventsGenerator reconToolGroupAForNormalUsersAbnormalEventGenerator;
-
-    //Abnormal events Generator for recon tool group A Processes and admin users
-    ProcessEventsGenerator reconToolGroupAForAdminUsersAbnormalEventGenerator;
-
-    //Abnormal events Generator for recon tool group A Processes and service account users
-    ProcessEventsGenerator reconToolGroupAForServiceAccountUsersAbnormalEventGenerator;
 
 
     @Before
@@ -262,136 +162,11 @@ public class UserProcessEventsGeneratorTest {
         serviceAccountUserGenerator = createServiceAccountUserGenerator();
         serviceAcountUserActivityRange = getServiceAcountUserActivityRange();
 
-        //For Reconnaissance tools A
-        ReconToolGroupAAllNormalUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS, normalUserGenerator);
-        ReconToolGroupAAllAdminUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS, adminUserGenerator);
-        ReconToolGroupAAllServiceAccountUsers = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS, serviceAccountUserGenerator);
-
-
         /** MACHINES **/
         machineGenerator = createMachineGenerator();
 
         /** Processes **/
         nonImportantProcesses = generateFileEntities();
-
-
-
-        /** GENERATORS: PROCESS **/
-
-        //Generator for non Important Processes and normal users
-        nonImportantProcessForNormalUsersEventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        normalUserGenerator,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        "nonImportantProcessForNormalUsersEventGenerator"
-                );
-
-
-
-        //Generator for non Important Processes and admin users
-        nonImportantProcessForAdminUsersEventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        adminUserGenerator,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        "nonImportantProcessForAdminUsersEventGenerator"
-                );
-
-        //Generator for non Important Processes and service account users
-        nonImportantProcessForServiceAccountUsersEventGenerator =
-                createNonImportantProcessEventGenerator(
-                        machineGenerator,
-                        serviceAccountUserGenerator,
-                        nonImportantProcesses,
-                        MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        "nonImportantProcessForServiceAccountUsersEventGenerator"
-                );
-
-        //+++++++++++ Recon Tool Group A ++++++++++++//
-
-        //Generator for recon tool group A Processes and normal users
-        reconToolGroupAForNormalUsersEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER,
-                        "reconToolGroupAForNormalUsersEventGenerator"
-                );
-
-
-
-        //Generator for recon tool group A Processes and admin users
-        reconToolGroupAForAdminUsersEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER,
-                        "reconToolGroupAForAdminUsersEventGenerator"
-                );
-
-        //Generator for recon tool group A Processes and service account users
-        reconToolGroupAForServiceAccountUsersEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        "reconToolGroupAForServiceAccountUsersEventGenerator"
-                );
-
-
-        //Abnormal events Generator for recon tool group A Processes and normal users
-        reconToolGroupAForNormalUsersAbnormalEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER,
-                        "reconToolGroupAForNormalUsersAbnormalEventGenerator"
-                );
-
-
-
-        //Abnormal events Generator for recon tool group A Processes and admin users
-        reconToolGroupAForAdminUsersAbnormalEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER,
-                        "reconToolGroupAForAdminUsersAbnormalEventGenerator"
-                );
-
-        //Abnormal events Generator for recon tool group A Processes and service account users
-        reconToolGroupAForServiceAccountUsersAbnormalEventGenerator =
-                createReconToolGroupAEventGenerator(
-                        machineGenerator,
-                        nonImportantProcesses,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER,
-                        "reconToolGroupAForServiceAccountUsersAbnormalEventGenerator"
-                );
-
     }
 
 
@@ -403,6 +178,33 @@ public class UserProcessEventsGeneratorTest {
         Instant startInstant    = Instant.parse("2010-01-01T22:00:00.00Z");
         Instant endInstant      = Instant.parse("2010-01-02T01:05:00.00Z");
 
+        NonImportantProcessEventGeneratorsBuilder nonImportantProcessEventGeneratorsBuilder =
+                new NonImportantProcessEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        machineGenerator,
+                        nonImportantProcesses
+                );
+        ReconToolGroupAEventGeneratorsBuilder reconToolGroupAEventGeneratorsBuilder =
+                new ReconToolGroupAEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        machineGenerator,
+                        nonImportantProcesses
+                );
+
         // daily loop
         Instant startDailyInstant = startInstant;
         while(startDailyInstant.isBefore(endInstant)) {
@@ -413,64 +215,15 @@ public class UserProcessEventsGeneratorTest {
 
             //get list of event generators
             List<AbstractEventGenerator<Event>> eventGenerators = new ArrayList<>();
-            RandomMultiEventGenerator eventGenerator =
-                    createNonImportantProcessForNormalUsersRandomEventGenerator(
-                            startDailyInstant, endDailyInstant);
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createNonImportantProcessForAdminUsersEventGenerator(
-                            startDailyInstant,endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createNonImportantProcessForServiceAccountUsersEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-
-            //+++++++++++ Recon Tool Group A ++++++++++++//
-
-            eventGenerator =
-                    createReconToolGroupAForNormalUsersRandomEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createReconToolGroupAForAdminUsersEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createReconToolGroupAForServiceAccountUsersEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-
-            //Abnormal events:
-            eventGenerator =
-                    createReconToolGroupAForNormalUsersRandomAbnormalEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createReconToolGroupAForAdminUsersAbnormalEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-            eventGenerator =
-                    createReconToolGroupAForServiceAccountUsersAbnormalEventGenerator(
-                            startDailyInstant, endDailyInstant
-                    );
-            eventGenerators.add(eventGenerator);
-
-
+            eventGenerators.addAll(nonImportantProcessEventGeneratorsBuilder.buildGenerators(startDailyInstant, endDailyInstant));
+            eventGenerators.addAll(reconToolGroupAEventGeneratorsBuilder.buildGenerators(startDailyInstant, endDailyInstant));
 
             MultiEventGenerator multiEventGenerator = new MultiEventGenerator(eventGenerators);
 
             generateEvents(multiEventGenerator);
 
             stopWatch.split();
-//            System.out.println(stopWatch.toSplitString());
+            System.out.println(stopWatch.toSplitString());
 
             startDailyInstant = endDailyInstant;
         }
@@ -503,248 +256,6 @@ public class UserProcessEventsGeneratorTest {
         }
     }
 
-    //==================================================================================
-    // Creating Random Event Generators for daily events for all the different scenarios
-    //==================================================================================
-
-    private RandomMultiEventGenerator createRandomEventGenerator(ProcessEventsGenerator processEventsGenerator,
-                                                                 List<MultiRangeTimeGenerator.ActivityRange> rangesList,
-                                                                 double eventProbability,
-                                                                 int timeIntervalForAbnormalTime,
-                                                                 Instant startInstant,
-                                                                 Instant endInstant) {
-        List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
-        RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
-                new RandomMultiEventGenerator.EventGeneratorProbability(processEventsGenerator, eventProbability);
-        listOfProbabilities.add(eventsProbabilityForNormalUsers);
-
-
-
-        RandomMultiEventGenerator randomEventsGenerator = new RandomMultiEventGenerator(listOfProbabilities,
-                startInstant, endInstant, rangesList, Duration.ofMillis((int) (timeIntervalForAbnormalTime) ));
-        return randomEventsGenerator;
-    }
-
-    //Non-Important processes (Not: reconnaissance, scripting engine, important windows processes)
-    //general scenario where most of the load is.
-    private RandomMultiEventGenerator createNonImportantProcessForNormalUsersRandomEventGenerator(Instant startInstant,
-                                                                                                  Instant endInstant){
-        return createRandomEventGenerator(nonImportantProcessForNormalUsersEventGenerator,
-                normalUserActivityRange,
-                PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createNonImportantProcessForAdminUsersEventGenerator(Instant startInstant,
-                                                                                           Instant endInstant){
-        return createRandomEventGenerator(nonImportantProcessForAdminUsersEventGenerator,
-                adminUserActivityRange,
-                PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createNonImportantProcessForServiceAccountUsersEventGenerator(Instant startInstant,
-                                                                                                    Instant endInstant){
-        return createRandomEventGenerator(nonImportantProcessForServiceAccountUsersEventGenerator,
-                serviceAcountUserActivityRange,
-                PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT,
-                TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-
-    //Reconnaissance tools A: Destination processes: [arp, systeminfo, net, sc, netstat, nbtstat, ipconfig, wmic, hostname]
-    //NOTICE: It is expected that the userGenerator will be set at each day that is generated.
-
-    private RandomMultiEventGenerator createReconToolGroupAForNormalUsersRandomEventGenerator(Instant startInstant,
-                                                                                                  Instant endInstant){
-
-        IUserGenerator reconToolGroupANormalUsersDailyGenerator = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY, ReconToolGroupAAllNormalUsers);
-        reconToolGroupAForNormalUsersEventGenerator.setUserGenerator(reconToolGroupANormalUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForNormalUsersEventGenerator,
-                normalUserActivityRange,
-                RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER,
-                RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createReconToolGroupAForNormalUsersRandomAbnormalEventGenerator(Instant startInstant,
-                                                                                              Instant endInstant){
-
-        IUserGenerator reconToolGroupANormalUsersDailyGenerator = new LimitNumOfUsersGenerator(ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY, ReconToolGroupAAllNormalUsers);
-        reconToolGroupAForNormalUsersAbnormalEventGenerator.setUserGenerator(reconToolGroupANormalUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForNormalUsersAbnormalEventGenerator,
-                normalUserAbnormalActivityRange,
-                ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER,
-                ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_OTHER_ACTIVITY_RANGE_FOR_NORMAL_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createReconToolGroupAForAdminUsersEventGenerator(Instant startInstant,
-                                                                                       Instant endInstant){
-        IUserGenerator reconToolGroupAAdminUsersDailyGenerator = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY, ReconToolGroupAAllAdminUsers);
-        reconToolGroupAForAdminUsersEventGenerator.setUserGenerator(reconToolGroupAAdminUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForAdminUsersEventGenerator,
-                adminUserActivityRange,
-                RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER,
-                RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createReconToolGroupAForAdminUsersAbnormalEventGenerator(Instant startInstant,
-                                                                                       Instant endInstant){
-        IUserGenerator reconToolGroupAAdminUsersDailyGenerator = new LimitNumOfUsersGenerator(ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY, ReconToolGroupAAllAdminUsers);
-        reconToolGroupAForAdminUsersAbnormalEventGenerator.setUserGenerator(reconToolGroupAAdminUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForAdminUsersAbnormalEventGenerator,
-                adminUserAbnormalActivityRange,
-                ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER,
-                ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_OTHER_ACTIVITY_RANGE_FOR_ADMIN_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createReconToolGroupAForServiceAccountUsersEventGenerator(Instant startInstant,
-                                                                                                Instant endInstant){
-        IUserGenerator reconToolGroupAServiceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator(RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY, ReconToolGroupAAllServiceAccountUsers);
-        reconToolGroupAForServiceAccountUsersEventGenerator.setUserGenerator(reconToolGroupAServiceAccountUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForServiceAccountUsersEventGenerator,
-                serviceAcountUserActivityRange,
-                RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER,
-                RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-    private RandomMultiEventGenerator createReconToolGroupAForServiceAccountUsersAbnormalEventGenerator(Instant startInstant,
-                                                                                                Instant endInstant){
-        IUserGenerator reconToolGroupAServiceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator(ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY, ReconToolGroupAAllServiceAccountUsers);
-        reconToolGroupAForServiceAccountUsersAbnormalEventGenerator.setUserGenerator(reconToolGroupAServiceAccountUsersDailyGenerator);
-        return createRandomEventGenerator(reconToolGroupAForServiceAccountUsersAbnormalEventGenerator,
-                serviceAcountUserActivityRange,
-                ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER,
-                ABNORMAL_RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS,
-                startInstant,
-                endInstant
-        );
-    }
-
-
-
-
-
-    //==================================================================================
-    // Creating Event Generators for all events for all the different scenarios
-    // In the random generator which is built per day the time generator is added
-    // In addition when building the random generator the set of users might be reduced.
-    //==================================================================================
-
-    //Non-Important processes (Not: reconnaissance, scripting engine, important windows processes)
-    //general scenario where most of the load is.
-
-    private ProcessEventsGenerator createNonImportantProcessEventGenerator(IMachineGenerator machineGenerator,
-                                                                              IUserGenerator userGenerator,
-                                                                              List<FileEntity> processes,
-                                                                              int minNumOfFilesPerUser,
-                                                                              int maxNumOfFilesPerUser,
-                                                                              String generatorName) {
-        UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
-        processNormalUsrEventsGenerator.setUserGenerator(userGenerator);
-        processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
-
-
-        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
-        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
-                minNumOfFilesPerUser, maxNumOfFilesPerUser));
-        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
-        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(processes,
-                minNumOfFilesPerUser, maxNumOfFilesPerUser));
-        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.OPEN_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_PROCESS.value, PROCESS_OPERATION_TYPE.CREATE_REMOTE_THREAD.value};
-        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, srcProcessEntityGenerator,
-                dstProcessEntityGenerator, operationTypeNames, generatorName);
-
-        return processNormalUsrEventsGenerator;
-    }
-
-
-
-    private List<FileEntity> getReconToolGroupAFileEnities(){
-        return getFileEnities(RECON_TOOLS_GROUP_A);
-    }
-
-
-    //Reconnaissance tools A: Destination processes: [arp, systeminfo, net, sc, netstat, nbtstat, ipconfig, wmic, hostname]
-    //NOTICE: It is expected that the userGenerator will be set at each day that is generated.
-    private ProcessEventsGenerator createReconToolGroupAEventGenerator(IMachineGenerator machineGenerator,
-                                                                       List<FileEntity> nonImportantProcesses,
-                                                                       int minNumOfFilesPerUserForNonImportantProcesses,
-                                                                       int maxNumOfFilesPerUserForNonImportantProcesses,
-                                                                       int minNumOfFilesPerUserForReconTool,
-                                                                       int maxNumOfFilesPerUserForReconTool,
-                                                                       String generatorName) {
-        String[] operationTypeNames = {PROCESS_OPERATION_TYPE.CREATE_PROCESS.value};
-        return createReconToolEventGenerator(
-                machineGenerator,
-                nonImportantProcesses,
-                minNumOfFilesPerUserForNonImportantProcesses,
-                maxNumOfFilesPerUserForNonImportantProcesses,
-                getReconToolGroupAFileEnities(),
-                minNumOfFilesPerUserForReconTool,
-                maxNumOfFilesPerUserForReconTool,
-                operationTypeNames,
-                generatorName
-        );
-    }
-
-    private ProcessEventsGenerator createReconToolEventGenerator(IMachineGenerator machineGenerator,
-                                                                 List<FileEntity> nonImportantProcesses,
-                                                                 int minNumOfFilesPerUserForNonImportantProcesses,
-                                                                 int maxNumOfFilesPerUserForNonImportantProcesses,
-                                                                 List<FileEntity> reconToolProcesses,
-                                                                 int minNumOfFilesPerUserForReconTool,
-                                                                 int maxNumOfFilesPerUserForReconTool,
-                                                                 String[] operationTypeNames,
-                                                                 String generatorName) {
-        UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
-        processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
-
-
-        ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
-        srcProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(nonImportantProcesses,
-                minNumOfFilesPerUserForNonImportantProcesses, maxNumOfFilesPerUserForNonImportantProcesses));
-
-        ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
-        dstProcessEntityGenerator.setProcessFileGenerator(new UserFileEntityGenerator(reconToolProcesses,
-                minNumOfFilesPerUserForReconTool, maxNumOfFilesPerUserForReconTool));
-
-//        I need to add directory group and categories
-        ProcessCategoriesGenerator categoriesGenerator = new ProcessCategoriesGenerator(new String[]{"RECONNAISSANCE_TOOL"});
-        dstProcessEntityGenerator.setProcessCategoriesGenerator(categoriesGenerator);
-
-        ProcessDirectoryGroupsGenerator dstProcessDirectoryGroupsGenerator = new ProcessDirectoryGroupsGenerator(new String[]{"WINDOWS_SYSTEM32", "WINDOWS"});
-        dstProcessEntityGenerator.setProcessDirectoryGroupsGenerator(dstProcessDirectoryGroupsGenerator);
-
-
-        fillProcessEventsGeneratorWithDefaultGenerators(processNormalUsrEventsGenerator, srcProcessEntityGenerator,
-                dstProcessEntityGenerator, operationTypeNames, generatorName);
-
-        return processNormalUsrEventsGenerator;
-    }
 
     private IUserGenerator createNormalUserGenerator(){
         IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_NORMAL_USERS, 1, "normal_user_", "UID", false, false);
@@ -811,24 +322,6 @@ public class UserProcessEventsGeneratorTest {
                 10, "src");
     }
 
-    private void fillProcessEventsGeneratorWithDefaultGenerators(ProcessEventsGenerator processEventsGenerator,
-                                                                 ProcessEntityGenerator srcProcessEntityGenerator,
-                                                                 ProcessEntityGenerator dstProcessEntityGenerator,
-                                                                 String[] operationTypeNames,
-                                                                 String testCase){
-        //operator generator
-        ProcessOperationGenerator opGenerator = new ProcessOperationGenerator();
-
-        CyclicOperationTypeGenerator opTypeGenerator = new CyclicOperationTypeGenerator(operationTypeNames);
-        opGenerator.setOperationTypeGenerator(opTypeGenerator);
-        opGenerator.setSourceProcessEntityGenerator(srcProcessEntityGenerator);
-        opGenerator.setDestProcessEntityGenerator(dstProcessEntityGenerator);
-        processEventsGenerator.setProcessOperationGenerator(opGenerator);
-        //event id generator
-        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testCase);
-        processEventsGenerator.setEventIdGenerator(eventIdGen);
-    }
-
     private List<FileEntity> generateFileEntities(){
         RandomFileEntityGenerator randomFileEntityGenerator =
                 new RandomFileEntityGenerator(1000, "dir", "",
@@ -838,15 +331,5 @@ public class UserProcessEventsGeneratorTest {
             fileEntitySet.add(randomFileEntityGenerator.getNext());
         }
         return new ArrayList<>(fileEntitySet);
-    }
-
-
-    private List<FileEntity> getFileEnities(Pair[] dirAndFilePair){
-        List<FileEntity> ret = new ArrayList<>();
-        ProcessFileEntityGenerator fileGenerator = new ProcessFileEntityGenerator(dirAndFilePair);
-        for(int i = 0; i < dirAndFilePair.length; i++){
-            ret.add(fileGenerator.getNext());
-        }
-        return ret;
     }
 }
