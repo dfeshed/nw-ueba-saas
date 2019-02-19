@@ -1,7 +1,7 @@
 // Temporary while feature goes through QE
 /* eslint-disable  no-console */
 
-window.DEBUG_STREAMS = true;
+// window.DEBUG_STREAMS = true;
 
 import { lookup } from 'ember-dependency-lookup';
 
