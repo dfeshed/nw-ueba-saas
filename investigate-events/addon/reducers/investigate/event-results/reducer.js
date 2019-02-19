@@ -6,7 +6,7 @@ import sort from 'fast-sort';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { SORT_ORDER } from './selectors';
 
-export const MAX_EVENTS_ALLOWED = 100000;
+export const MAX_EVENTS_ALLOWED = window.MAX_EVENTS_ALLOWED || 50000;
 
 const _initialState = Immutable.from({
   // streaming, complete, stopped, between-streams
@@ -15,7 +15,7 @@ const _initialState = Immutable.from({
   data: null,
   reason: undefined,
   streamLimit: MAX_EVENTS_ALLOWED,
-  streamBatch: 4000,
+  streamBatch: 3000,
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
