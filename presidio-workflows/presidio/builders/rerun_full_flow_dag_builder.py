@@ -164,7 +164,7 @@ def cleanup_dags_from_postgres(prefix_dag_ids, session=None):
             dag = query.first()
             logging.info("dag_id: %s", dag.dag_id)
 
-            sql = "DELETE FROM {} WHERE dag_id LIKE \'%{}%\'".format(t, dag.dag_id)
+            sql = "DELETE FROM {} WHERE dag_id=\'{}\'".format(t, dag.dag_id)
             logging.info("executing: %s", sql)
             session.execute(sql)
 
