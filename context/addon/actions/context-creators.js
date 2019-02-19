@@ -75,44 +75,37 @@ const _getDataSources = (meta) => {
       false,
       (response) => {
         const dataConnections = response.data;
-        if (dataConnections.length) {
-          fetchData(
-            {},
-            'data-sources',
-            false,
-            ({ data }) => {
-              const configuredData = findConfiguredDatasource(data, dataConnections);
-              const dataSources = configuredData.map((v) => {
-                if (v.enabled) {
-                  return v.dataSourceGroup;
-                }
-              }).filter((v, i, a) => a.indexOf(v) === i);
-              if (dataSources.length === 0) {
-                dispatch({
-                  type: ACTION_TYPES.CONTEXT_ERROR,
-                  payload: 'context.error.noDataSource'
-                });
-              } else {
-                dispatch({
-                  type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
-                  payload: findDataSource(dataSources, meta)
-                });
+        fetchData(
+          {},
+          'data-sources',
+          false,
+          ({ data }) => {
+            const configuredData = findConfiguredDatasource(data, dataConnections);
+            const dataSources = configuredData.map((v) => {
+              if (v.enabled) {
+                return v.dataSourceGroup;
               }
-            },
-            ({ meta }) => {
-              const error = (meta && meta.message) ? meta.message : 'context.error';
+            }).filter((v, i, a) => a.indexOf(v) === i);
+            if (dataSources.length === 0) {
               dispatch({
                 type: ACTION_TYPES.CONTEXT_ERROR,
-                payload: `context.error.${error}`
+                payload: 'context.error.noDataSource'
+              });
+            } else {
+              dispatch({
+                type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
+                payload: findDataSource(dataSources, meta)
               });
             }
-          );
-        } else {
-          dispatch({
-            type: ACTION_TYPES.CONTEXT_ERROR,
-            payload: 'context.error.noDataSource'
-          });
-        }
+          },
+          ({ meta }) => {
+            const error = (meta && meta.message) ? meta.message : 'context.error';
+            dispatch({
+              type: ACTION_TYPES.CONTEXT_ERROR,
+              payload: `context.error.${error}`
+            });
+          }
+        );
       },
       ({ meta }) => {
         const error = (meta && meta.message) ? meta.message : 'context.error';
