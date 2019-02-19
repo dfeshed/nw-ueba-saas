@@ -1,11 +1,16 @@
 $topNavHeight: 89px;
 $navbarHeight: 49px;
+$licenseBanner: 36px;
 
 page.admin-usm-engine {
   height: calc(100vh - #{$topNavHeight});
   min-height: calc(100vh - #{$topNavHeight});
   max-height: calc(100vh - #{$topNavHeight});
   color: text-color(primary, lightest);
+}
+.admin-engine .license-banner.shown+page.admin-usm-engine {
+  min-height: calc(100vh - #{$topNavHeight} - #{$licenseBanner});
+  max-height: calc(100vh - #{$topNavHeight} - #{$licenseBanner});
 }
 
 .admin-usm-engine {
