@@ -45,6 +45,21 @@ test('Test action creator for generating agent/log configuration.', function(ass
   callback(dispatchFn);
 });
 
+test('Test action creator for getEndpointServerList', function(assert) {
+  const done = assert.async();
+  const callback = dataCreators.getEndpointServerList('LOG_CONFIG');
+  assert.equal(typeof callback, 'function');
+  patchSocket((method, modelName) => {
+    assert.equal(method, 'findAll');
+    assert.equal(modelName, 'endpoint-server');
+  });
+  const dispatchFn = function(action) {
+    assert.equal(action.type, ACTION_TYPES.GET_ENDPOINT_SERVERS);
+    done();
+  };
+  callback(dispatchFn);
+});
+
 test('Test action creator for getting devices', function(assert) {
   const done = assert.async();
   assert.expect(4);
