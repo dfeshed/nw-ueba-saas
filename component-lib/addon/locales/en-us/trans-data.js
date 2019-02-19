@@ -528,7 +528,7 @@ export default {
         Ascending: 'Asc',
         Descending: 'Desc'
       },
-      titleThresholdTooltip: 'Reached the {{count}} event limit. Displaying {{age}} events from the time window. Consider refining your query to narrow the results.',
+      titleThresholdTooltip: 'Reached the {{count}} event limit. Displaying {{actualEventCount}} of the {{age}} events from the time window. Consider refining your query to narrow the results.',
       isAtThreshold: 'The event count reached the query threshold.',
       tableGroupLabel: 'Events {{startNextGroup}} - {{endNextGroup}}',
       columnGroups: {

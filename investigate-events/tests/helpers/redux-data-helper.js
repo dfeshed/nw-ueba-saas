@@ -191,6 +191,11 @@ export default class DataHelper {
     return this;
   }
 
+  isCanceled() {
+    _set(this.state, 'eventResults.status', 'canceled');
+    return this;
+  }
+
   eventResults(data) {
     _set(this.state, 'eventResults.data', data);
     return this;

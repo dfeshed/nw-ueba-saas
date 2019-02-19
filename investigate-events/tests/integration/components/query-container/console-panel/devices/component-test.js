@@ -7,6 +7,10 @@ import { find, findAll, render } from '@ember/test-helpers';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 
+const eventResultsData = [
+  { medium: 32, time: +(new Date()), size: 13191, custom: { 'meta-summary': 'bar' }, 'has.alias': 'raw-value' }
+];
+
 let setState;
 
 module('Integration | Component | console-devices', function(hooks) {
@@ -79,6 +83,15 @@ module('Integration | Component | console-devices', function(hooks) {
     assert.equal(findAll('.devices-status ul.device-hierarchy li').length, 1);
     assert.equal(find('.devices-status ul.device-hierarchy li:first-of-type .device').textContent.trim(), '1');
     assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s) and retrieved (~1s)  10 event(s).'));
+  });
+
+  test('renders the summary of the top level device when canceled', async function(assert) {
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsComplete().isCanceled().eventResults(eventResultsData).eventCount(10).build();
+    await render(hbs`
+      {{query-container/console-panel/devices}}
+    `);
+
+    assert.ok(find('.devices-status ul.device-hierarchy li:first-of-type').textContent.trim().includes('found (~2s) and retrieved (~1s)  1 event(s).'));
   });
 
   test('renders the summary of the top level device when no events', async function(assert) {

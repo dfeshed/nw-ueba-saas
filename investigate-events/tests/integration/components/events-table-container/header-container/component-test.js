@@ -11,6 +11,10 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
+const eventResultsData = [
+  { medium: 32, time: +(new Date()), size: 13191, custom: { 'meta-summary': 'bar' }, 'has.alias': 'raw-value' }
+];
+
 const columnSelector = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
 
 const renderDefaultHeaderContainer = async(assert) => {
@@ -41,8 +45,14 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
     assert.ok(find('.rsa-investigate-events-table__header__container .at-threshold'), 'at threshold icon is present');
     assert.equal(find('.rsa-investigate-events-table__header__container .at-threshold').getAttribute('title').trim(),
-      'Reached the 100,000 event limit. Displaying oldest events from the time window. Consider refining your query to narrow the results.',
+      'Reached the 100,000 event limit. Displaying 100,000 of the oldest events from the time window. Consider refining your query to narrow the results.',
       'at threshold tooltip');
+  });
+
+  test('render the events header with actualCount when canceled', async function(assert) {
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventResults(eventResultsData).eventCount(10).build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
   });
 
   test('render the events header with required fields ', async function(assert) {

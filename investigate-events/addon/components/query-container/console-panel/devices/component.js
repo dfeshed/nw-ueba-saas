@@ -2,9 +2,9 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
-import {
-  resultCountAtThreshold
-} from 'investigate-events/reducers/investigate/event-count/selectors';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+import { actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { thousandFormat } from 'investigate-events/util/numberFormats';
 
 import {
   hasWarning,
@@ -32,8 +32,11 @@ const stateToComputed = (state) => ({
   hasWarning: hasWarning(state),
   devices: decoratedDevices(state),
   eventCount: state.investigate.eventCount.data,
+  formattedEventCount: thousandFormat(state.investigate.eventCount.data),
   eventTimeSortOrderPreferenceWhenQueried: state.investigate.eventResults.eventTimeSortOrderPreferenceWhenQueried,
-  resultCountAtThreshold: resultCountAtThreshold(state)
+  resultCountAtThreshold: resultCountAtThreshold(state),
+  formattedActualEventCount: thousandFormat(actualEventCount(state)),
+  actualEventCount: actualEventCount(state)
 });
 
 const DevicesStatus = Component.extend({

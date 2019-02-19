@@ -8,7 +8,7 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { shouldStartAtOldest, actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'investigate-events/util/numberFormats';
 
 const stateToComputed = (state) => ({
@@ -19,7 +19,8 @@ const stateToComputed = (state) => ({
   selectedColumnGroup: getSelectedColumnGroup(state),
   count: thousandFormat(state.investigate.eventCount.data),
   isAtThreshold: resultCountAtThreshold(state),
-  shouldStartAtOldest: shouldStartAtOldest(state)
+  shouldStartAtOldest: shouldStartAtOldest(state),
+  actualEventCount: thousandFormat(actualEventCount(state))
 });
 
 const dispatchToActions = {
