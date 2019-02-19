@@ -169,7 +169,7 @@ def cleanup_dags_from_postgres(prefix_dag_ids, session=None):
             session.execute(sql)
 
     sql = "DELETE FROM variable WHERE key LIKE \'{}%\'".format(spring_boot_jar_operator.RETRY_STATE_KEY_PREFIX)
-    logging.error("executing: %s", sql)
+    logging.info("executing: %s", sql)
     session.execute(sql)
 
 
