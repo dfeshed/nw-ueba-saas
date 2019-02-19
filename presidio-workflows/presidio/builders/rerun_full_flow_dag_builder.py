@@ -150,7 +150,6 @@ def kill_dags_task_instances(dag_ids):
             stop_kill_dag_run_task_instances(dag_run=dag_run)
 
 
-
 @provide_session
 def cleanup_dags_from_postgres(prefix_dag_ids, session=None):
     """
@@ -159,7 +158,7 @@ def cleanup_dags_from_postgres(prefix_dag_ids, session=None):
     """
     for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
         for prefix_dag_id in prefix_dag_ids:
-            query = session.query(DagModel).filter(DagModel.dag_id.like(prefix_dag_id))
+            query = session.query(DagModel).filter(DagModel.dag_id.like(prefix_dag_id), DagModel.is_paused == True)
             logging.info("query: %s", query)
             dag = query.first()
             logging.info("dag_id: %s", dag.dag_id)
