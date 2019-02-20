@@ -55,6 +55,8 @@ class TestFixedDurationJarOpertor():
             'b': 'two'
         }
 
+        def condition(context): return False
+
         task = FixedDurationJarOperator(
             task_id='fixed_duration_operator',
             jvm_args=jvm_args,
@@ -62,7 +64,7 @@ class TestFixedDurationJarOpertor():
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
             dag=dag,
-            condition=False)
+            condition=condition)
 
         task.clear()
         task.run(start_date=default, end_date=default)
@@ -105,6 +107,8 @@ class TestFixedDurationJarOpertor():
             'b': 'two'
         }
 
+        def condition(context): return True
+
         task = FixedDurationJarOperator(
             task_id='fixed_duration_operator',
             jvm_args=jvm_args,
@@ -112,7 +116,7 @@ class TestFixedDurationJarOpertor():
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
             dag=dag,
-            condition=True)
+            condition=condition)
 
         task.clear()
         task.execute(context={'execution_date': default, 'task_instance': DummyTaskInstance(dag_id=dag.dag_id,task_id=task.task_id, execution_date=default)})
