@@ -61,11 +61,13 @@ class TestFixedDurationJarOpertor():
             java_args=java_args,
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
-            dag=dag)
+            dag=dag,
+            condition=False)
 
         task.clear()
         task.run(start_date=default, end_date=default)
-        assert task.condition is False
+
+        assert task.sp.returncode == 0
 
 
     def test_valid_execution_date(self):
@@ -120,6 +122,7 @@ class TestFixedDurationJarOpertor():
         expected_java_args = {'a': 'one', 'b': 'two', 'fixed_duration_strategy': '3600.0',
                               'start_date': '2014-05-13T13:00:00Z', 'end_date': '2014-05-13T14:00:00Z'}
         assert_bash_comment(task, expected_bash_comment, expected_java_args)
+        assert task.sp.returncode == 1
 
 
 class DummyTaskInstance(object):
