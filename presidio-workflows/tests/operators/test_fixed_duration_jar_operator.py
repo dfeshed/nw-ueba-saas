@@ -55,18 +55,21 @@ class TestFixedDurationJarOpertor():
             'b': 'two'
         }
 
+        def condition(context): return True
+
         task = FixedDurationJarOperator(
             task_id='fixed_duration_operator',
             jvm_args=jvm_args,
             java_args=java_args,
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
-            dag=dag)
+            dag=dag,
+            condition=condition)
 
         task.clear()
+
         with pytest.raises(Exception):
             task.run(start_date=default, end_date=default)
-
 
     def test_valid_execution_date(self):
         """
@@ -103,13 +106,16 @@ class TestFixedDurationJarOpertor():
             'b': 'two'
         }
 
+        def condition(context): return True
+
         task = FixedDurationJarOperator(
             task_id='fixed_duration_operator',
             jvm_args=jvm_args,
             java_args=java_args,
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
-            dag=dag)
+            dag=dag,
+            condition=condition)
 
         task.clear()
         task.execute(context={'execution_date': default, 'task_instance': DummyTaskInstance(dag_id=dag.dag_id,task_id=task.task_id, execution_date=default)})

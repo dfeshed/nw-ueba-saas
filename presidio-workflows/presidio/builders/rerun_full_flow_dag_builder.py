@@ -60,11 +60,12 @@ class RerunFullFlowDagBuilder(object):
         kill_dags_task_instances_operator >> clean_mongo_operator
         kill_dags_task_instances_operator >> clean_elasticsearch_data_operator
         kill_dags_task_instances_operator >> clean_adapter_operator
+        kill_dags_task_instances_operator >> clean_logs_operator
         clean_mongo_operator >> reset_presidio_configuration_operator
         clean_elasticsearch_data_operator >> reset_presidio_configuration_operator
         clean_adapter_operator >> reset_presidio_configuration_operator
+        clean_logs_operator >> reset_presidio_configuration_operator
         reset_presidio_configuration_operator >> clean_dags_from_db_operator
-        clean_dags_from_db_operator >> clean_logs_operator
 
         logging.debug("Finished creating dag - %s", dag.dag_id)
 
@@ -149,18 +150,22 @@ def kill_dags_task_instances(dag_ids):
             stop_kill_dag_run_task_instances(dag_run=dag_run)
 
 
-
 @provide_session
-def cleanup_dags_from_postgres(dag_ids, session=None):
+def cleanup_dags_from_postgres(dag_ids_regex, session=None):
     """
-    :param dag_ids: dag id's to be cleaned from airflow db
-    :type dag_ids: list[str]
+    :param dag_ids_regex: dag id's to be cleaned from airflow db if paused
+    :type dag_ids_regex: list[str]
     """
     for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
-        for dag_id in dag_ids:
-            sql = "DELETE FROM {} WHERE dag_id LIKE \'%{}%\'".format(t, dag_id)
-            logging.info("executing: %s", sql)
-            session.execute(sql)
+        for dag_id_regex in dag_ids_regex:
+            query = session.query(DagModel).filter(DagModel.dag_id == dag_id_regex, DagModel.is_paused == True)
+            logging.info("query: %s", query)
+            dags = query.all()
+
+            for dag in dags:
+                sql = "DELETE FROM {} WHERE dag_id=\'{}\'".format(t, dag.dag_id)
+                logging.info("executing: %s", sql)
+                session.execute(sql)
 
     sql = "DELETE FROM variable WHERE key LIKE \'{}%\'".format(spring_boot_jar_operator.RETRY_STATE_KEY_PREFIX)
     logging.info("executing: %s", sql)
@@ -198,7 +203,7 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
 def build_clean_dags_from_db_operator(cleanup_dag, dag_ids_to_clean):
     clean_dags_from_db_operator = PythonOperator(task_id='cleanup_dags_from_postgress',
                                                  python_callable=cleanup_dags_from_postgres,
-                                                 op_kwargs={'dag_ids': copy(dag_ids_to_clean)},
+                                                 op_kwargs={'dag_ids_regex': copy(dag_ids_to_clean)},
                                                  dag=cleanup_dag)
     return clean_dags_from_db_operator
 

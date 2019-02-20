@@ -1,5 +1,6 @@
 import functools
 import os
+from abc import abstractmethod
 from datetime import timedelta
 from subprocess import Popen, STDOUT, PIPE
 from tempfile import gettempdir, NamedTemporaryFile
@@ -102,7 +103,6 @@ class SpringBootJarOperator(BashOperator):
         return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
 
     def execute(self, context):
-        self.log.info("executes spring boot Jar operator")
         retry_task_state = SpringBootJarOperator.get_task_retry_value(context, RETRY_SUCCESS_STATE)
         if retry_task_state == RETRY_SUCCESS_STATE:
             result = True
@@ -110,16 +110,21 @@ class SpringBootJarOperator(BashOperator):
                 result = self.condition(context)
                 self.log.info("Condition result is %s", result)
             if result:
+                self._is_execution_date_valid(context)
                 self.log.info('Proceeding with downstream tasks...')
                 super(SpringBootJarOperator, self).execute(context)
             else:
-                self.log.info('Skip with downstream tasks...')
+                self.log.info('Skip the task...')
         else:
             ti = context['task_instance']
             skip_msg = 'skipping try attempt %s: last retry did not succeed. retry state: %s' % (
                 ti.try_number, retry_task_state)
             self.log.info(skip_msg)
             raise AirflowException(skip_msg)
+
+    @abstractmethod
+    def _is_execution_date_valid(self, context):
+        pass
 
     def _should_run_clean_command_before_retry(self, kwargs):
         if 'run_clean_command_before_retry' in kwargs and not kwargs['run_clean_command_before_retry']:
