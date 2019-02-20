@@ -111,7 +111,8 @@ class TestFixedDurationJarOpertor():
             java_args=java_args,
             command=COMMAND,
             fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
-            dag=dag)
+            dag=dag,
+            condition=True)
 
         task.clear()
         task.execute(context={'execution_date': default, 'task_instance': DummyTaskInstance(dag_id=dag.dag_id,task_id=task.task_id, execution_date=default)})
