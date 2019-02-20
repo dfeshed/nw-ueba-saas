@@ -110,8 +110,8 @@ class SpringBootJarOperator(BashOperator):
                 result = self.condition(context)
                 self.log.info("Condition result is %s", result)
             if result:
-                self.log.info('Proceeding with downstream tasks...')
                 self._is_execution_date_valid(context)
+                self.log.info('Proceeding with downstream tasks...')
                 super(SpringBootJarOperator, self).execute(context)
             else:
                 self.log.info('Skip the task...')
