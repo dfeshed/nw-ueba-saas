@@ -60,6 +60,34 @@ test('Get defaultPackagerConfig ', function(assert) {
   assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data, server: previous.selectedServerIP } });
 });
 
+test('GET_INFO state for start', function(assert) {
+  const previous = Immutable.from({
+    error: true,
+    loading: false
+  });
+  const action = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.GET_INFO,
+    payload: { data }
+  });
+
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.loading, true, 'loading is set to true');
+  assert.deepEqual(endState.error, false, 'error is set to false');
+});
+
+test('GET_INFO state for failure', function(assert) {
+  const previous = Immutable.from({
+    error: false
+  });
+  const action = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.GET_INFO,
+    payload: { data }
+  });
+
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.error, true, 'error is set to false');
+});
+
 test('Update Redux state with UI state ', function(assert) {
   const previous = Immutable.from({
     defaultPackagerConfig: {}
@@ -72,6 +100,18 @@ test('Update Redux state with UI state ', function(assert) {
   assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
 });
 
+test('DOWNLOAD_PACKAGE set state downloadLink', function(assert) {
+  const previous = Immutable.from({
+    downloadLink: null
+  });
+  const action = {
+    type: ACTION_TYPES.DOWNLOAD_PACKAGE,
+    payload: 'https:/download/agentConfig'
+  };
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.downloadLink, 'https:/download/agentConfig');
+});
+
 test('set selected server ip check', function(assert) {
   const previous = Immutable.from({
     selectedServerIP: null
@@ -82,4 +122,44 @@ test('set selected server ip check', function(assert) {
   };
   const endState = reducer(previous, action);
   assert.deepEqual(endState.selectedServerIP, '10.30.12.1');
+});
+
+test('set downloadLink state', function(assert) {
+  const previous = Immutable.from({
+    updating: true
+  });
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SAVE_INFO
+  });
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.updating, false, 'updating is set to false');
+});
+
+test('set downloadLink state for start', function(assert) {
+  const previous = Immutable.from({
+    updating: false,
+    error: true
+  });
+
+  const action = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.SAVE_INFO
+  });
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.updating, true, 'updating is set to true');
+  assert.deepEqual(endState.error, false, 'error is set to false');
+});
+
+test('set downloadLink state for failure', function(assert) {
+  const previous = Immutable.from({
+    updating: false,
+    error: true
+  });
+
+  const action = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.SAVE_INFO
+  });
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.updating, false, 'on failure updating state is not changed');
+  assert.deepEqual(endState.error, true, 'on failure error state is not changed');
 });
