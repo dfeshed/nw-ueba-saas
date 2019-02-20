@@ -64,8 +64,8 @@ class TestFixedDurationJarOpertor():
             dag=dag)
 
         task.clear()
-        with pytest.raises(Exception):
-            task.run(start_date=default, end_date=default)
+        task.run(start_date=default, end_date=default)
+        assert task.condition is False
 
 
     def test_valid_execution_date(self):

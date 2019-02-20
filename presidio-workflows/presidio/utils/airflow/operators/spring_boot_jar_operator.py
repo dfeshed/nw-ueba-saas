@@ -102,7 +102,6 @@ class SpringBootJarOperator(BashOperator):
         return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
 
     def execute(self, context):
-        self.log.info("executes spring boot Jar operator")
         retry_task_state = SpringBootJarOperator.get_task_retry_value(context, RETRY_SUCCESS_STATE)
         if retry_task_state == RETRY_SUCCESS_STATE:
             result = True
@@ -113,7 +112,7 @@ class SpringBootJarOperator(BashOperator):
                 self.log.info('Proceeding with downstream tasks...')
                 super(SpringBootJarOperator, self).execute(context)
             else:
-                self.log.info('Skip with downstream tasks...')
+                self.log.info('Skip the task...')
         else:
             ti = context['task_instance']
             skip_msg = 'skipping try attempt %s: last retry did not succeed. retry state: %s' % (
