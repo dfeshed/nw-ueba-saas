@@ -3321,6 +3321,9 @@ export default {
             isoCountryCode: 'Country Code',
             timeZone: 'Time Zone'
           }
+        },
+        message: {
+          policyReadPermission: 'Permission required to view policy'
         }
       },
       propertyPanelTitles: {

@@ -184,6 +184,11 @@ export default Service.extend({
   },
 
   @computed('roles.[]')
+  hasPolicyReadPermission(roles) {
+    return this._hasPermission(roles, 'endpoint-server.policy.read');
+  },
+
+  @computed('roles.[]')
   endpointCanManageFiles(roles) {
     return this._hasPermission(roles, 'endpoint-server.agent.manage');
   },

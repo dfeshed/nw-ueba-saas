@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
 import { riskState, getPropertyPanelTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { setSelectedAlert, getUpdatedRiskScoreContext, expandEvent } from 'investigate-shared/actions/data-creators/risk-creators';
 import { getPropertyData,
@@ -55,6 +56,10 @@ const HostOverview = Component.extend({
 
   hostDetailsConfig,
 
+  accessControl: service(),
+
+  i18n: service(),
+
   @computed('showWindowsLogPolicy', 'channelFiltersConfig')
   policiesConfig(showWindowsLogPolicy, channelFiltersConfig) {
     return getPoliciesPropertyConfig(showWindowsLogPolicy, channelFiltersConfig);
@@ -74,6 +79,12 @@ const HostOverview = Component.extend({
       localeNameSpace: 'investigateHosts.hosts.properties',
       config: this.get('hostDetailsConfig')
     };
+  },
+
+  @computed('policiesUnavailableMessage')
+  propertyPanelErrorMessage(message) {
+    const i18n = this.get('i18n');
+    return this.get('accessControl.hasPolicyReadPermission') ? message : i18n.t('investigateHosts.hosts.properties.message.policyReadPermission');
   },
 
   didRender() {

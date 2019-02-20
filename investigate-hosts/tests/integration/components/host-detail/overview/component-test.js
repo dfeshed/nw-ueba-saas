@@ -154,4 +154,26 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     await click('.events-list-endpoint-header');
     assert.equal(findAll('.right-zone').length, 0, 'On event expansion, close the right panel');
   });
+
+  test('renders policy unavailable message', async function(assert) {
+    setState({ activePropertyPanelTab: 'POLICIES' });
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasPolicyReadPermission', true);
+
+    await render(hbs`{{host-detail/overview domIsReady=true }}`);
+
+    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'Policy unavailable');
+  });
+
+  test('renders policy read permission message', async function(assert) {
+    setState({ activePropertyPanelTab: 'POLICIES' });
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasPolicyReadPermission', false);
+
+    await render(hbs`{{host-detail/overview domIsReady=true }}`);
+
+    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'Permission required to view policy');
+  });
 });
