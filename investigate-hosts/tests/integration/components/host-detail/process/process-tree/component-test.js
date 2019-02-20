@@ -254,10 +254,12 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.ok(true);
     });
     new ReduxDataHelper(setState)
-      .processList(processData.processList)
-      .sortField('name')
+      .processList(listData)
+      .processTree([])
       .agentId(1)
+      .sortField('score')
       .isTreeView(false)
+      .isProcessTreeLoading(false)
       .scanTime(1234567890)
       .isDescOrder(false).build();
     await render(hbs`<style>

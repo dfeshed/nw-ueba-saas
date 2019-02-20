@@ -5,6 +5,7 @@ import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { observer } from '@ember/object';
+import { once } from '@ember/runloop';
 
 import {
   listOfFiles,
@@ -52,6 +53,7 @@ const stateToComputed = (state, { storeName }) => ({
   restrictedFileList: state.fileStatus.restrictedFileList,
   sid: state.endpointQuery.serverId,
   agentCountMapping: state.endpoint[storeName].agentCountMapping,
+  sortConfig: state.endpoint[storeName].sortConfig,
   selectedRowIndex: state.endpoint[storeName].selectedRowIndex,
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName)
 });
@@ -103,21 +105,22 @@ const FileContextTable = Component.extend({
    * We are using observer here because we need to close the property panel when snapshot changes, snapshot is outside
    * of the this component
    */
-  _loadingStatus: observer('isDataLoading', function() {
-    if (this.get('isDataLoading')) {
-      if (this.closePropertyPanel) {
-        this.closePropertyPanel();
-      }
-    }
+  _loadingStatus: observer('isDataLoading', 'sortConfig', 'listOfFiles.[]', function() {
+    once(this, 'closePanel');
   }),
+
+  closePanel() {
+    if (this.closePropertyPanel) {
+      this.send('deSelectAllSelection');
+      this.closePropertyPanel();
+    }
+  },
 
   actions: {
 
     sort(column) {
       column.set('isDescending', !column.isDescending);
-      if (this.closePropertyPanel) {
-        this.closePropertyPanel();
-      }
+
       // resetting the selection on sort
       const tabName = this.get('tabName');
       this.send('resetSelection', tabName);

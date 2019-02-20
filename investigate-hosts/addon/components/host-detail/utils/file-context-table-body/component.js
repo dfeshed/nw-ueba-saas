@@ -21,13 +21,6 @@ const FilesContextTableBody = DataTableBody.extend({
     if (machineCountColumn.length) {
       run.debounce(this, this._fetchMachineCount, 100);
     }
-
-    if (this.get('_visibleItems').length === 0) {
-      if (this.closePropertyPanel) {
-        this.closePropertyPanel();
-      }
-    }
-
   }),
 
   _fetchMachineCount() {

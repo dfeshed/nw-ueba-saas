@@ -14,6 +14,7 @@ import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
+import { once } from '@ember/runloop';
 
 import {
   setRowIndex,
@@ -70,6 +71,7 @@ const stateToComputed = (state) => ({
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
   selectedFileChecksums: selectedFileChecksums(state),
   agentCountMapping: state.endpoint.process.agentCountMapping,
+  sortField: state.endpoint.process.sortField,
   serverId: state.endpointQuery.serverId
 });
 
@@ -118,6 +120,21 @@ const TreeComponent = Component.extend({
   },
 
   /**
+   * We are using observer here because we need to close the property panel when snapshot changes, snapshot is outside
+   * of the this component
+   */
+  _loadingStatus: observer('isProcessTreeLoading', 'sortField', 'visibleItems.[]', function() {
+    once(this, 'closePanel');
+  }),
+
+  closePanel() {
+    if (this.closePropertyPanel) {
+      this.send('deSelectAllProcess');
+      this.closePropertyPanel();
+    }
+  },
+
+  /**
    * Observer to dispatch getProcessdetails action when navigate to Process tab using explore
    * This is used to make a web socket call to get the first process details after filtering the process in the selector
    * @public
@@ -162,9 +179,6 @@ const TreeComponent = Component.extend({
 
 
     sort(column) {
-      if (this.closePropertyPanel) {
-        this.closePropertyPanel();
-      }
       const { field: sortField, isDescending: isDescOrder } = column;
       this.send('sortBy', sortField, !isDescOrder);
       column.set('isDescending', !isDescOrder);

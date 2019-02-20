@@ -240,7 +240,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(document.querySelectorAll('.risk-properties').length, 1);
       state = this.owner.lookup('service:redux').getState();
       const { endpoint: { process: { selectedRowIndex } } } = state;
-      assert.equal(selectedRowIndex, -1);
+      assert.equal(selectedRowIndex, null);
       assert.equal(find('.file-info').textContent.trim().includes('Showing 77 out of 77 processes'), true, 'Shows footer message');
     });
   });
