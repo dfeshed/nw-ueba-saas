@@ -55,7 +55,7 @@ class TestFixedDurationJarOpertor():
             'b': 'two'
         }
 
-        def condition(context): return False
+        def condition(context): return True
 
         task = FixedDurationJarOperator(
             task_id='fixed_duration_operator',
@@ -67,10 +67,9 @@ class TestFixedDurationJarOpertor():
             condition=condition)
 
         task.clear()
-        task.run(start_date=default, end_date=default)
 
-        assert task.sp.returncode == 0
-
+        with pytest.raises(Exception):
+            task.run(start_date=default, end_date=default)
 
     def test_valid_execution_date(self):
         """
@@ -127,7 +126,6 @@ class TestFixedDurationJarOpertor():
         expected_java_args = {'a': 'one', 'b': 'two', 'fixed_duration_strategy': '3600.0',
                               'start_date': '2014-05-13T13:00:00Z', 'end_date': '2014-05-13T14:00:00Z'}
         assert_bash_comment(task, expected_bash_comment, expected_java_args)
-        assert task.sp.returncode == 1
 
 
 class DummyTaskInstance(object):

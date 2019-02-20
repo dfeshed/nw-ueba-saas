@@ -65,6 +65,16 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         super(FixedDurationJarOperator, self).update_java_args(java_args)
         super(FixedDurationJarOperator, self).execute(context)
 
+    def _is_execution_date_valid(self, context):
+        execution_date = context['execution_date']
+        if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,
+                                       self.interval):
+            # e.g: execution_date = datetime(2014, 11, 28, 13, 50, 0)
+            # interval = timedelta(minutes=5)
+            # fixed_duration = timedelta(days=1)
+            logging.error('The execution date {} is not the last interval of fixed duration {}.'.format(execution_date, self.fixed_duration_strategy))
+            raise InvalidExecutionDateError(execution_date, self.fixed_duration_strategy)
+
     @staticmethod
     def add_java_args(context):
         params = context['params']

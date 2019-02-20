@@ -1,5 +1,6 @@
 import functools
 import os
+from abc import abstractmethod
 from datetime import timedelta
 from subprocess import Popen, STDOUT, PIPE
 from tempfile import gettempdir, NamedTemporaryFile
@@ -110,6 +111,7 @@ class SpringBootJarOperator(BashOperator):
                 self.log.info("Condition result is %s", result)
             if result:
                 self.log.info('Proceeding with downstream tasks...')
+                self._is_execution_date_valid(context)
                 super(SpringBootJarOperator, self).execute(context)
             else:
                 self.log.info('Skip the task...')
@@ -119,6 +121,10 @@ class SpringBootJarOperator(BashOperator):
                 ti.try_number, retry_task_state)
             self.log.info(skip_msg)
             raise AirflowException(skip_msg)
+
+    @abstractmethod
+    def _is_execution_date_valid(self, context):
+        pass
 
     def _should_run_clean_command_before_retry(self, kwargs):
         if 'run_clean_command_before_retry' in kwargs and not kwargs['run_clean_command_before_retry']:
