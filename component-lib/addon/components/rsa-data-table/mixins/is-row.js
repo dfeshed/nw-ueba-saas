@@ -11,6 +11,7 @@ import { htmlSafe } from '@ember/string';
 import { set } from '@ember/object';
 import $ from 'jquery';
 import Mixin from '@ember/object/mixin';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
@@ -174,8 +175,8 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
         }
 
         const label = this.get('i18n').t('investigate.events.tableGroupLabel', {
-          startNextGroup,
-          endNextGroup
+          startNextGroup: thousandFormat(startNextGroup),
+          endNextGroup: thousandFormat(endNextGroup)
         });
 
         schedule('afterRender', () => {

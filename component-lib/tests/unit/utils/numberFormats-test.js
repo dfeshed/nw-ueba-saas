@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { thousandFormat } from 'investigate-events/util/numberFormats';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 module('Unit | Util | quote');
 

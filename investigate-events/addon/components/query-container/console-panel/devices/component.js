@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { thousandFormat } from 'investigate-events/util/numberFormats';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 import {
   hasWarning,

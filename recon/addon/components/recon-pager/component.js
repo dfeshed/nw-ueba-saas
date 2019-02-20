@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { pageFirst, changePacketsPerPage } from 'recon/actions/data-creators';
 import { packetTotal } from 'recon/reducers/header/selectors';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = ({ recon, recon: { packets } }) => ({
   packetsPageSize: packets.packetsPageSize,
@@ -57,6 +58,18 @@ const reconPagerComponent = Component.extend({
   @computed('packetCount', 'packetTotal')
   isHidden(total = 0, pageSize = 0) {
     return total === pageSize;
+  },
+
+  // Format count with comma delimiters.
+  @computed('eventTotal')
+  formattedEventTotal(eventTotal) {
+    return thousandFormat(eventTotal);
+  },
+
+  // Format count with comma delimiters.
+  @computed('eventIndex')
+  formattedEventIndex(eventIndex) {
+    return thousandFormat(eventIndex);
   }
 
 });

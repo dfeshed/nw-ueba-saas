@@ -9,7 +9,7 @@ import { setColumnGroup } from 'investigate-events/actions/interaction-creators'
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { shouldStartAtOldest, actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { thousandFormat } from 'investigate-events/util/numberFormats';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,

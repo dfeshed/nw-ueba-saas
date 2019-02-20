@@ -43,6 +43,19 @@ const mockItems = [];
   }
 })();
 
+const mock1000PlusCount = 1100;
+const mock1000PlusItems = [];
+(function() {
+  let i;
+  for (i = 0; i < mock1000PlusCount; i++) {
+    mock1000PlusItems.push({
+      id: i,
+      foo: `foo${i}`,
+      bar: `bar${i}`
+    });
+  }
+})();
+
 const items = [ {
   service: 'notes',
   orig_ip: '8.202.108.50'
@@ -623,18 +636,21 @@ test('it sets the minHeight of the table body rows when enableGrouping is true a
 
 test('it renders the group-label when enableGrouping is true', function(assert) {
   this.setProperties({
-    items: mockItems,
+    items: mock1000PlusItems,
     columnsConfig: mockColumnsConfig
   });
-
+  // adjusted css for table and row help fit more rows
   this.render(hbs`
     <style type="text/css">
+      .rsa-data-table-body-row {
+        height: 1px;
+      }
       .rsa-data-table-body {
-        height: 100px;
+        height: 1300px;
         overflow: auto;
       }
     </style>
-    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=true groupingSize=10 lazy=true}}
+    {{#rsa-data-table items=items columnsConfig=columnsConfig enableGrouping=true groupingSize=100 lazy=true}}
       {{#rsa-data-table/body as |item index column|}}
         {{#rsa-data-table/body-cell item=item index=index column=column~}}
           {{get item column.field}}
@@ -644,7 +660,9 @@ test('it renders the group-label when enableGrouping is true', function(assert) 
   `);
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
-  assert.equal(this.$('.group-label').length, 1, '.group-label dom element found.');
+  assert.equal(this.$('.group-label').length, 10, '.group-label dom element found.');
+  assert.equal(this.$('.group-label')[8].innerText.trim(), 'EVENTS 901 - 1,000', 'group label text');
+  assert.equal(this.$('.group-label')[9].innerText.trim(), 'EVENTS 1,001 - 1,100', 'group label text');
   assert.equal(this.$('.enable-grouping').length, 1, '.enable-grouping dom element found.');
 });
 

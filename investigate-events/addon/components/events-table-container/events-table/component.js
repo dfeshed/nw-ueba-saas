@@ -17,7 +17,7 @@ import {
   toggleSelectAllEvents,
   toggleEventSelection
 } from 'investigate-events/actions/interaction-creators';
-import { thousandFormat } from 'investigate-events/util/numberFormats';
+import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
