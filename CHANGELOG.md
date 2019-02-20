@@ -1,3 +1,8 @@
+# [10.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.7.0)
+## Features
+* Various bug fixes
+
+
 # [10.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.6.0)
 ## Features
 * [ASOC-58956](https://bedfordjira.na.rsa.net/browse/ASOC-58956):&emsp;New fields Classifier id and Classification are not very descriptive
