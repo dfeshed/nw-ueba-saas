@@ -33,6 +33,8 @@ test('getHostTableColumns', function(assert) {
   // 0th field is a checkbox.
   assert.equal(result[1].visible, true, 'Agent Id field is not visible');
   assert.equal(result[3].visible, false, 'Agent Version field is visible');
+  assert.equal(result[8].disableSort, false, 'Agent Mode field sort is enabled');
+  assert.equal(result[15].disableSort, true, 'Agent ID field sort is disabled');
 });
 
 

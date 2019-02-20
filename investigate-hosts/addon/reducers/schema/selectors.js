@@ -17,6 +17,18 @@ const COLUMN_WIDTH = {
   'machineIdentity.networkInterfaces.macAddress': '7vw'
 };
 
+const SORTABLE_COLUMNS = [
+  'score',
+  'machineIdentity.machineName',
+  'groupPolicy.groups.name',
+  'groupPolicy.policyStatus',
+  'machineIdentity.agentVersion',
+  'machine.users.name',
+  'machineIdentity.machineOsType',
+  'machineIdentity.agentMode',
+  'machineIdentity.operatingSystem.description'
+];
+
 const DEFAULT_COLUMN = Immutable.from([
   {
     dataType: 'checkbox',
@@ -73,7 +85,8 @@ export const getHostTableColumns = createSelector(
           searchable,
           values,
           title: `investigateHosts.hosts.column.${field}`,
-          width: COLUMN_WIDTH[field] || '10vw'
+          width: COLUMN_WIDTH[field] || '10vw',
+          disableSort: !SORTABLE_COLUMNS.includes(field)
         };
       });
 

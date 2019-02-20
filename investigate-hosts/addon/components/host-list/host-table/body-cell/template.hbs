@@ -37,7 +37,7 @@
     {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
   </div>
 {{else if (eq column.field 'machineIdentity.hardware.totalPhysicalMemory')}}
-  <div class="{{unless isManaged "host-disable-text"}}">
+  <div class="{{unless item.groupPolicy.managed "host-disable-text"}}">
     {{rsa-content-memsize size=(get item column.field)}}
   </div>
 {{else}}
