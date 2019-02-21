@@ -86,7 +86,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
       .policyWizWinLogChannelFilters(channelFilters)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters}}`);
-    const addRow = document.querySelector('.windows-log-channel-filters .add-row .rsa-icon');
+    const addRow = document.querySelector('.windows-log-channel-filters .add-row .add-channel-button');
     await click(addRow);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });

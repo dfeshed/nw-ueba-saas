@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { scheduleOnce } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
@@ -39,11 +40,16 @@ const WindowsLogChannelFilters = Component.extend({
     this.send('updatePolicyProperty', 'channelFilters', this.get('channels'));
   },
 
+  _scrollToAddChannelButton() {
+    this.get('element').querySelector('.add-channel-button').scrollIntoView(false);
+  },
+
   actions: {
     // adding a row to the channel filters table
     addRowFilter() {
       this.get('channels').pushObject({ channel: '', filterType: 'INCLUDE', eventId: 'ALL' });
       this._updateChannelFilters();
+      scheduleOnce('afterRender', this, '_scrollToAddChannelButton');
     },
     // pass the index of the row to delete the row in the channel filters
     deleteRow(index) {

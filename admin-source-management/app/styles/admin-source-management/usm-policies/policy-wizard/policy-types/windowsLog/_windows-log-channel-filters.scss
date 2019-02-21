@@ -2,6 +2,11 @@
   padding: rsa-whitespace(more) 0 0 0;
   .channel-container {
     padding-right: 0;
+    /* override the component-lib table body so there is never any vertical scrollbar */
+    .rsa-data-table-body {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
   }
   .title {
     text-transform: uppercase;
@@ -24,7 +29,12 @@
       box-sizing: content-box;
     }
   }
+  .add-row {
+    padding-top: rsa-whitespace(less);
+    padding-left: rsa-whitespace();
+  }
 }
+
 .input-error {
   @include rsa-font(paragraph, small);
   color: text-color(primary, lightest);

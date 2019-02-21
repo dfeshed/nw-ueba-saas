@@ -4480,7 +4480,7 @@ export default {
          'change it to \'EXCLUDE\' to collect all events except for these events.',
 
         channel: {
-          add: 'Add a new channel',
+          add: 'Add Channel Filter',
           name: 'CHANNEL NAME',
           filter: 'FILTER',
           event: 'EVENT ID',
