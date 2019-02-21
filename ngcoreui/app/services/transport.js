@@ -78,6 +78,18 @@ export default Service.extend(Evented, {
   messageQueue: [],
 
   /**
+   * @public
+   * The amount of time to wait after a failed reconnect attempt to try again. Doubled
+   * each time up to reconnectMaxWaitMs.
+   */
+  reconnectBaseDelayMs: 500,
+
+  /**
+   * The maximum amount of time to wait after a failed reconnection attempt to try again.
+   */
+  reconnectMaxWaitMs: 30 * 1000,
+
+  /**
    * @private
    * Sets up service variables
    */
@@ -98,18 +110,22 @@ export default Service.extend(Evented, {
    * @public
    */
   connect() {
-    let ws = this.get('ws');
-    this.disconnect();
-    ws = new WebSocket(this.get('url'));
+    const ws = new WebSocket(this.get('url'));
     ws.onopen = () => {
+      // Wait until we successfully connect to send close events
+      // Otherwise, if the WS isn't available upon initial load of the page, close events are sent
+      ws.onclose = (closeEvent) => {
+        this.trigger('close', closeEvent);
+        this.reconnect();
+      };
       this.trigger('connected');
       this.flushQueue();
     };
     ws.onmessage = (messageEvent) => {
       this.handleIncomingMessage(messageEvent);
     };
-    ws.onclose = (closeEvent) => {
-      this.trigger('close', closeEvent);
+    ws.onclose = () => {
+      this.reconnect();
     };
     ws.onerror = (err) => {
       this.trigger('error', err);
@@ -120,6 +136,41 @@ export default Service.extend(Evented, {
 
   setUrl(url) {
     this.set('url', url);
+  },
+
+  /**
+   *
+   * @param {Number} delayMs - Will wait this long after a failed reconnection attempt to
+   *   try to reconnect, doubled each time up to this.reconnectMaxWaitMs
+   */
+  reconnect(delayMs = this.get('reconnectBaseDelayMs')) {
+    // This shouldn't do much other than setting this.ws to null, since we're
+    // only calling it from onclose, but do it just to be sure
+    this.disconnect().then(() => {
+      const ws = new WebSocket(this.get('url'));
+      ws.onopen = () => {
+        // Wait until we successfully reconnect to start sending close events again
+        ws.onclose = (closeEvent) => {
+          this.trigger('close', closeEvent);
+          this.reconnect();
+        };
+        this.trigger('connected');
+        this.trigger('reconnected');
+        this.flushQueue();
+      };
+      ws.onmessage = (messageEvent) => {
+        this.handleIncomingMessage(messageEvent);
+      };
+      ws.onclose = () => {
+        setTimeout(() => {
+          this.reconnect(Math.min(delayMs * 2, this.get('reconnectMaxWaitMs')));
+        }, delayMs);
+      };
+      ws.onerror = (err) => {
+        this.trigger('error', err);
+      };
+      this.set('ws', ws);
+    });
   },
 
   /**
@@ -141,10 +192,7 @@ export default Service.extend(Evented, {
           case WebSocket.OPEN:
           case WebSocket.CLOSING:
             {
-              const firstListener = ws.onclose;
-              ws.onclose = (closeEvent) => {
-                // Wrap the first onclose
-                firstListener(closeEvent);
+              ws.onclose = () => {
                 resolve();
               };
               ws.close(1000);

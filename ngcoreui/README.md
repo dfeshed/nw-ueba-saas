@@ -78,11 +78,11 @@ The artifact for ng-core can be manually built from the `sa-ui/ngcoreui` directo
 4. Make your changes. The webpage will automatically reload.
 
 ### Testing
-`ngcoreui` uses its own simpler version of `mock-server` that lives in `ngcoreui/da-mock-server`. To run tests locally, first navigate into that folder and run `node index.js`. Then, in a separate terminal, navigate back to the `ngcoreui` root folder and run `ember exam`.
+`ngcoreui` uses its own simpler version of `mock-server` that lives in `ngcoreui/ngcoreui-mock-server`. To run tests locally, first navigate into that folder and run `node index.js`. Then, in a separate terminal, navigate back to the `ngcoreui` root folder and run `ember exam`.
 
 ### Architecture
 `ngcoreui` is built using many of the same tools as the other ember apps/engines in `sa-ui`. State is tracked in Redux, but there are a couple exceptions. (There are possible other exceptions, but these are the two biggest)
 - The `{{dashboard-visual}}` component monitors stats passed to it, but does not update state when it receives updates, it just updates itself and passes the data through bindings to its child component. (This was not a design decision, but rather a consequence of a bug)
 - `{{tree-view-operation-parameter}}` passes data up through actions to its parent.
 
-There is one important service, [`app/services/transport.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport.js) which controls all the WebSocket communication. It has two main methods, `send()` and `stream()`. To see usage examples, look at the action creators in [`app/actions/actions.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/actions/actions.js)
+There is one important service, [`app/services/transport.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport.js) which controls all the WebSocket communication. It has two main methods, `send()` and `stream()`. To see usage examples, look at the action creators in [`app/actions/actions.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/actions/actions.js) or the docs in [`app/services/transport/README.md`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport/README.md)

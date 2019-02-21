@@ -36,6 +36,13 @@ const pathParent = createSelector(
   }
 );
 
+const pathToUrlSegment = createSelector(
+  [ _treePath ],
+  (treePath) => {
+    return pathToUrlSegmentHelper(treePath);
+  }
+);
+
 const pathParentToUrlSegment = createSelector(
   [ _treePath ],
   (treePath) => {
@@ -194,6 +201,7 @@ export {
   currentDirectoryContents,
   isNotRoot,
   pathParent,
+  pathToUrlSegment,
   pathParentToUrlSegment,
   operationNames,
   filteredOperationNames,

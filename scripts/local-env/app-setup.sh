@@ -50,9 +50,9 @@ cd $scriptDir/../mock-server
 yarn
 yarn link
 
-# da-mock-server is also just Yarn install
-info "Running install for direct access mock server"
-cd ../ngcoreui/da-mock-server
+# ngcoreui-mock-server is also just Yarn install
+info "Running install for ngcoreui mock server"
+cd ../ngcoreui/ngcoreui-mock-server
 yarn
 # prepareApp expects to be only one folder level deep when it starts
 cd ..

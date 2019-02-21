@@ -3,42 +3,39 @@
 The transport service manages the WebSocket connection. It handles messaging, channel creation, and deletion for the application layer protocol.
 
 - [Methods](#methods)
-    - [`.connect(onConnected, onError)`](#connectonconnected-onerror)
-        - [Parameters](#parameters)
-        - [Example](#example)
+    - [`.connect()`](#connect)
     - [`.disconnect()`](#disconnect)
-        - [Returns](#returns)
-        - [Example](#example)
     - [`.send(path, message)`](#sendpath-message)
-        - [Parameters](#parameters)
-        - [Returns](#returns)
-        - [Example](#example)
     - [`.stream(path, message, messageCallback, errorCallback)`](#streampath-message-messagecallback-errorcallback)
-        - [Parameters](#parameters)
-        - [Returns](#returns)
-        - [Example](#example)
+- [Events](#events)
+    - [`connected`](#connected)
+    - [`reconnected`](#reconnected)
+    - [`close`](#close)
+    - [`error`](#error)
 
 # Methods
 
-## `.connect(onConnected, onError)`
+## `.connect()`
 
 Connects the service to the WebSocket backend.
 
-### Parameters
+### Returns
 
-| Parameter     | Type       | Details                                           |
-| ------------- | ---------- | ------------------------------------------------- |
-| `onConnected` | `function` | Gets called once when the WebSocket is connected. |
-| `onError`     | `function` | Called if the WebSocket experiences an error.     |
+`transport` - Returns `transport` for use in chaining
 
 ### Example
 
 ```JavaScript
-transport.connect(() => {
-    console.log('WebSocket connected');
-}, (err) => {
-    console.log(`WebSocket error: ${err}`);
-})
+transport.connect()
+    .on('connected', () => {
+        console.log('WebSocket connected');
+    })
+    .on('close', () => {
+        console.log('WebSocket closed');
+    })
+    .on('error', (err) => {
+        console.log(`WebSocket error: ${err}`);
+    });
 ```
 
 ## `.disconnect()`
@@ -118,3 +115,29 @@ transport.stream('/sys/stats', {
     // Use this close() function when you're done with the stream
 })
 ```
+
+# Events
+
+## `connected`
+
+Emitted when the WebSocket becomes connected, initially or after a reconnect.
+
+## `reconnected`
+
+Like `connected`, but only emitted after a reconnection
+
+## `close`
+
+Emitted when the WebSocket is closed.
+
+### Returns
+
+`CloseEvent` - A [standard WebSocket CloseEvent](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent).
+
+## `error`
+
+Emitted when the WebSocket encounters an error.
+
+### Returns
+
+`Event` - An Event as described [here](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/onerror).

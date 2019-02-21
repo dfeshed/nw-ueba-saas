@@ -4,6 +4,7 @@ import {
   currentDirectoryContents,
   isNotRoot,
   pathParent,
+  pathToUrlSegment,
   pathParentToUrlSegment,
   operationNames,
   filteredOperationNames,
@@ -47,6 +48,17 @@ module('Unit | Selectors | Tree', (hooks) => {
     assert.strictEqual(pathParent(state), '/sys');
     state = new ReduxDataHelper().pathParent().treePath('/abc/def/xyz').build();
     assert.strictEqual(pathParent(state), '/abc/def');
+  });
+
+  test('pathToUrlSegment should map a path string to a url segment', (assert) => {
+    let state = new ReduxDataHelper().pathToUrlSegment().treePath('/').build();
+    assert.strictEqual(pathToUrlSegment(state), 'tree');
+    state = new ReduxDataHelper().pathToUrlSegment().treePath('/sys').build();
+    assert.strictEqual(pathToUrlSegment(state), 'sys');
+    state = new ReduxDataHelper().pathToUrlSegment().treePath('/sys/stats').build();
+    assert.strictEqual(pathToUrlSegment(state), 'sys/stats');
+    state = new ReduxDataHelper().pathToUrlSegment().treePath('/abc/def/xyz').build();
+    assert.strictEqual(pathToUrlSegment(state), 'abc/def/xyz');
   });
 
   test('pathParentToUrlSegment should map a path string to a url segment for its parent', (assert) => {

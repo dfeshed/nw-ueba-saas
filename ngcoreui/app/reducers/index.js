@@ -62,7 +62,9 @@ const reducer = handleActions({
 
   [ACTION_TYPES.TREE_LIST_CONTENTS]: (state, action) => {
     const { payload } = action;
-    return state.set('treePathContents', payload);
+    return handle(state, action, {
+      finish: (prevState) => prevState.set('treePathContents', payload)
+    });
   },
 
   [ACTION_TYPES.TREE_GET_DEVICE_INFO]: (state, action) => {

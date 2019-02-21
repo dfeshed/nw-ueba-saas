@@ -8,7 +8,14 @@
       </box>
     {{/if}}
     <box fit xs="hidden" sm="visible">
-      <p>{{#if isDevelopmentBuild}}{{rsa-icon name="report-problem-triangle"}} Development Build | {{/if}}Device: {{deviceInfo.module}} v{{deviceInfo.version}} | Host: {{deviceInfo.hostname}}</p>
+      <p>
+        {{#if isDevelopmentBuild}}
+          <span>{{rsa-icon name="report-problem-triangle"}} Development Build | </span>
+        {{/if}}
+        <span>Device: {{deviceInfo.module}} v{{deviceInfo.version}}</span>
+        <span>| Host: {{deviceInfo.hostname}}</span>
+        <span>| Connection Status: <span class="{{if wsConnected 'connected' 'disconnected'}}">&#9679;</span> {{connectionString}}</span>
+      </p>
     </box>
   </box>
 </hbox>

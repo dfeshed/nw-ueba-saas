@@ -1,19 +1,20 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { deselectStat, setConfigValue } from 'ngcoreui/actions/actions';
-import { liveSelectedNode, selectedIsConfigNode, configSetResult, selectedNodeRequiresRestart } from 'ngcoreui/reducers/selectors';
+import { deselectNode, setConfigValue } from 'ngcoreui/actions/actions';
+import { liveSelectedNode, selectedIsConfigNode, configSetResult, selectedNodeRequiresRestart, pathToUrlSegment } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   selectedNode: state.selectedNode,
   liveSelectedNode: liveSelectedNode(state),
   selectedIsConfigNode: selectedIsConfigNode(state),
   configSetResult: configSetResult(state),
-  selectedNodeRequiresRestart: selectedNodeRequiresRestart(state)
+  selectedNodeRequiresRestart: selectedNodeRequiresRestart(state),
+  pathToUrlSegment: pathToUrlSegment(state)
 });
 
 const dispatchToActions = {
-  deselectStat,
+  deselectNode,
   setConfigValue
 };
 

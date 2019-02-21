@@ -1,37 +1,23 @@
-{{#if isStatOrConfigNode}}
-  <hbox class="directory-item" align="center" nowrap>
+<hbox class="directory-item" align="center" nowrap>
 
-    <box fit>
-      <a {{action 'selectNode' node}} class="large{{if requiresRestart ' error-text-hover'}}">
+  <box fit>
+    {{#link-to "tree" urlSegment activeClass="ember-active"}}
+      <a class="large{{if requiresRestart ' error-text-hover'}}">
         {{#if node.display}}
           <span title={{node.name}}>{{node.display}}</span>
         {{else}}
-          {{node.name}}
+          {{node.name}}{{unless isStatOrConfigNode '/'}}
         {{/if}}
       </a>
-    </box>
-    
+    {{/link-to}}
+  </box>
+
+  {{#if isStatOrConfigNode}}
     <box fill class="dotted-line"></box>
 
     <box fit>
       {{tree-view-value node=node}}
     </box>
+  {{/if}}
 
-  </hbox>
-{{else}}
-  <hbox class="directory-item" align="center" nowrap>
-
-    <box fit>
-      {{#link-to "tree" urlSegment activeClass="ember-active"}}
-        <a class="large">
-          {{#if node.display}}
-            <span title={{node.name}}>{{node.display}}</span>
-          {{else}}
-            {{node.name}}/
-          {{/if}}
-        </a>
-      {{/link-to}}
-    </box>
-
-  </hbox>
-{{/if}}
+</hbox>

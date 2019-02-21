@@ -2,13 +2,13 @@
 function runEmberTestDirectAccessMockServer {
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
-  info "Starting direct access mock test server"
+  info "Starting ngcoreui mock test server"
 
   # run mock server
-  node ./da-mock-server/index.js &
-  checkError "Direct access mock server refused to start"
+  node ./ngcoreui-mock-server/index.js &
+  checkError "ngcoreui mock server refused to start"
   local PID=$!
-  success "Direct access mock server started, process id: $PID"
+  success "ngcoreui mock server started, process id: $PID"
 
   # now run the tests
   info "Running 'ember exam' for ngcoreui on port $testemPort"
@@ -88,7 +88,7 @@ function buildDirectAccess {
 }
 
 function buildDirectAccessMockServer {
-  cd da-mock-server
+  cd ngcoreui-mock-server
 
   yarn
 

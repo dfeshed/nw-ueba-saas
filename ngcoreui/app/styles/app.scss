@@ -422,6 +422,14 @@ table {
   }
 }
 
+.connected {
+  color: text-color(accentTwo)
+}
+
+.disconnected {
+  color: text-color(accentOne, dark)
+}
+
 /* Scrollbar CSS */
 ::-webkit-scrollbar {
   width: 5px;

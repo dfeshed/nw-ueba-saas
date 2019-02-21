@@ -39,46 +39,34 @@ const disconnect = () => {
 const changeDirectory = (path) => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
-    transport.send(path, {
-      message: 'ls'
-    }).then((message) => {
-      dispatch(deselectOperation());
-      dispatch(deselectStat());
-      transport.stopStream(getState().treeMonitorStreamTid);
-      dispatch({
-        type: ACTION_TYPES.TREE_LIST_CONTENTS,
-        payload: message
-      });
-      const tid = transport.stream({
-        path,
-        message: {
-          message: 'mon',
-          params: {
-            depth: '1'
-          }
-        },
-        messageCallback: (updateMessage) => {
-          dispatch(_updateTreeContents(updateMessage));
-        },
-        errorCallback: (errorMessage) => {
-          throw new Error(errorMessage);
+    dispatch(deselectOperation());
+    dispatch(deselectNode());
+    transport.stopStream(getState().treeMonitorStreamTid);
+    const tid = transport.stream({
+      path,
+      message: {
+        message: 'mon',
+        params: {
+          depth: '1'
         }
-      });
-      dispatch({
-        type: ACTION_TYPES.TREE_CHANGE_DIRECTORY,
-        payload: {
-          path,
-          tid
-        }
-      });
-      dispatch(_getOperations(path));
-      dispatch(_getDescription(path));
-    }).catch(() => {
-      // If we get an error trying to use `ls`, just go back to the dashboard.
-      // We should probably also display something to the user here
-      const router = lookup('service:router');
-      router.replaceWith('/');
+      },
+      messageCallback: (updateMessage) => {
+        dispatch(_updateTreeContents(updateMessage));
+      },
+      errorCallback: (errorMessage) => {
+        throw new Error(errorMessage);
+      }
     });
+    dispatch({
+      type: ACTION_TYPES.TREE_CHANGE_DIRECTORY,
+      payload: {
+        path,
+        tid
+      }
+    });
+    dispatch(_listContents(path));
+    dispatch(_getOperations(path));
+    dispatch(_getDescription(path));
   };
 };
 
@@ -203,7 +191,7 @@ const selectNode = (node) => {
   };
 };
 
-const deselectStat = () => {
+const deselectNode = () => {
   return {
     type: ACTION_TYPES.TREE_DESELECT_SELECTED_NODE
   };
@@ -333,6 +321,16 @@ const logsClearInterval = () => {
   };
 };
 
+const _listContents = (path) => {
+  const transport = lookup('service:transport');
+  return {
+    type: ACTION_TYPES.TREE_LIST_CONTENTS,
+    promise: transport.send(path, {
+      message: 'ls'
+    })
+  };
+};
+
 const _getDeviceInfo = () => {
   const transport = lookup('service:transport');
   return {
@@ -421,7 +419,7 @@ export {
   cancelOperation,
   changeActiveTab,
   selectNode,
-  deselectStat,
+  deselectNode,
   setConfigValue,
   loadLogs,
   logsClearInterval

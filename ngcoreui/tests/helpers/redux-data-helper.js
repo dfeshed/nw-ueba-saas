@@ -162,6 +162,10 @@ export default class DataHelper {
     return this._connectAndFillTree();
   }
 
+  pathToUrlSegment() {
+    return this._connectAndFillTree();
+  }
+
   pathParentToUrlSegment() {
     return this._connectAndFillTree();
   }

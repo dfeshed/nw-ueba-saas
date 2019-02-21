@@ -1,5 +1,5 @@
 {
-  "name": "da-mock-server",
+  "name": "ngcoreui-mock-server",
   "version": "0.0.1",
   "description": "Mock server for websocket connections and testing",
   "main": "index.js",
