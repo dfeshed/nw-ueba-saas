@@ -45,7 +45,11 @@ const getFileAnalysisData = (data, format, callback = { onSuccess: NOOP, onFailu
 
 const saveLocalFileCopy = (selectedFile, callback, serviceIdFromFiles) => {
   return (dispatch, getState) => {
-    const serverId = serviceIdFromFiles ? serviceIdFromFiles : getState().endpointQuery.serverId;
+    const { serviceId: selectedServiceId, selectedMachineServerId } = getState().endpointQuery;
+    // if broker is selected in host details then the selectedMachineServerId needs to be sent.
+    const selectedEndpointServerId = selectedMachineServerId ? selectedMachineServerId : selectedServiceId;
+    // if from global files, serviceIdFromFiles needs to be passed.
+    const serverId = serviceIdFromFiles ? serviceIdFromFiles : selectedEndpointServerId;
     api.saveLocalFileCopy(selectedFile.checksumSha256, serverId)
       .then(({ data }) => {
         if (data.id) {

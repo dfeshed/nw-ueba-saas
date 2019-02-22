@@ -428,7 +428,8 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       }
     };
     const endpointQuery = {
-      serverId: 'serverId'
+      serverId: 'serverId',
+      selectedMachineServerId: 'serverId'
     };
     const selectedHostList = [{
       id: 1,
