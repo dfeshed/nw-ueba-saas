@@ -235,7 +235,7 @@ const _loadLogs = ({ params, dispatch, transport }) => {
   });
 };
 
-const loadLogs = (params) => {
+const loadLogs = (params, intervalCallback) => {
   const transport = lookup('service:transport');
   return (dispatch) => {
     let top;
@@ -305,19 +305,10 @@ const loadLogs = (params) => {
             }
           });
         }, LOG_FETCH_INTERVAL);
-        dispatch({
-          type: ACTION_TYPES.LOGS_INTERVAL_HANDLE,
-          payload: intervalHandle
-        });
+        // Cannot store d3.interval in state, it is not serializable
+        intervalCallback(intervalHandle);
       }
     });
-  };
-};
-
-const logsClearInterval = () => {
-  return {
-    type: ACTION_TYPES.LOGS_INTERVAL_HANDLE,
-    payload: null
   };
 };
 
@@ -421,6 +412,5 @@ export {
   selectNode,
   deselectNode,
   setConfigValue,
-  loadLogs,
-  logsClearInterval
+  loadLogs
 };

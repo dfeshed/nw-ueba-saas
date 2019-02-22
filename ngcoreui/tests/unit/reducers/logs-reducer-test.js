@@ -120,19 +120,4 @@ module('Unit | Reducers | Logs', (hooks) => {
       { id: 4, msg: 'fred' }
     ]);
   });
-
-  test('LOGS_INTERVAL_HANDLE sets the handle in state', (assert) => {
-    const action = {
-      type: ACTION_TYPES.LOGS_INTERVAL_HANDLE,
-      payload: 3
-    };
-    const state = new ReduxDataHelper()
-      .connected()
-      .treePathContentsStandard()
-      .build();
-
-    const result = reducer(state, action);
-
-    assert.deepEqual(result.logsIntervalHandle, 3);
-  });
 });

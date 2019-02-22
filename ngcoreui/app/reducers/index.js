@@ -341,10 +341,6 @@ const reducer = handleActions({
     } else {
       return state;
     }
-  },
-
-  [ACTION_TYPES.LOGS_INTERVAL_HANDLE]: (state, action) => {
-    return state.set('logsIntervalHandle', action.payload);
   }
 
 }, initialState);

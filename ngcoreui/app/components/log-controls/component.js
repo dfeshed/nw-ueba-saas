@@ -1,15 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { loadLogs, logsClearInterval } from 'ngcoreui/actions/actions';
+import { loadLogs } from 'ngcoreui/actions/actions';
 
 const stateToComputed = (state) => ({
   logsIntervalHandle: state.logsIntervalHandle
 });
 
 const dispatchToActions = {
-  loadLogs,
-  logsClearInterval
+  loadLogs
 };
 
 const logControls = Component.extend({
@@ -98,9 +97,16 @@ const logControls = Component.extend({
       }
     },
 
+    logsClearInterval() {
+      this.get('intervalHandle').stop();
+      this.set('intervalHandle', undefined);
+    },
+
     updateParams() {
       this.send('stopUpdates');
-      this.send('loadLogs', this.get('params'));
+      this.send('loadLogs', this.get('params'), (intervalHandle) => {
+        this.set('intervalHandle', intervalHandle);
+      });
     },
 
     typeChanged() {
