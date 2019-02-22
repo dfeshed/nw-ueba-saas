@@ -50,7 +50,7 @@ const getRestrictedFileList = () => {
   return request.promiseRequest({
     method: 'restrictedList',
     modelName: 'endpoint',
-    streamOptions: { requireRequestId: true },
+    streamOptions: { requireRequestId: true, requiredSocketUrl: 'endpoint/socket', socketUrlPostfix: 'any' },
     query: {
       data: 'Whitelist'
     }
