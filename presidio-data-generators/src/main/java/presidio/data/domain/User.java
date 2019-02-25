@@ -1,6 +1,6 @@
 package presidio.data.domain;
 
-public class User {
+public class User implements IUser{
     private String username;
     private String userId; // normalisedUserName
     private String firstName;

@@ -1,5 +1,6 @@
 package presidio.data.domain.event.process;
 
+import presidio.data.domain.IUser;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.Event;
@@ -13,7 +14,7 @@ public class ProcessEvent extends Event implements Serializable {
     private String eventId;
     private Instant dateTime;
     private String dataSource;
-    private User user;
+    private IUser user;
     private ProcessOperation processOperation;
     private MachineEntity machineEntity;
     private String processEventDescription;
@@ -22,7 +23,7 @@ public class ProcessEvent extends Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public ProcessEvent(String eventId, Instant dateTime, String dataSource, User user, ProcessOperation processOperation, MachineEntity machineEntity) {
+    public ProcessEvent(String eventId, Instant dateTime, String dataSource, IUser user, ProcessOperation processOperation, MachineEntity machineEntity) {
         this.eventId = eventId;
         this.dateTime = dateTime;
         this.dataSource = dataSource;
@@ -60,11 +61,11 @@ public class ProcessEvent extends Event implements Serializable {
         this.dataSource = dataSource;
     }
 
-    public User getUser() {
+    public IUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(IUser user) {
         this.user = user;
     }
 
