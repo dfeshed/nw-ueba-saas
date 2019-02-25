@@ -37,18 +37,20 @@ public abstract class ProcessEventGeneratorsBuilder {
     /** Processes **/
     protected  List<FileEntity> nonImportantProcesses;
 
+    private double probabilityMultiplier;
+
 
 
     public ProcessEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
-                                                     List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
-                                                     List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
-                                                     IUserGenerator adminUserGenerator,
-                                                     List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange,
-                                                     List<MultiRangeTimeGenerator.ActivityRange> adminUserAbnormalActivityRange,
-                                                     IUserGenerator serviceAccountUserGenerator,
-                                                     List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange,
-                                                     IMachineGenerator machineGenerator,
-                                                     List<FileEntity> nonImportantProcesses){
+                                         List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
+                                         List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
+                                         IUserGenerator adminUserGenerator,
+                                         List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange,
+                                         List<MultiRangeTimeGenerator.ActivityRange> adminUserAbnormalActivityRange,
+                                         IUserGenerator serviceAccountUserGenerator,
+                                         List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange,
+                                         IMachineGenerator machineGenerator,
+                                         List<FileEntity> nonImportantProcesses){
         this.normalUserGenerator = normalUserGenerator;
         this.normalUserActivityRange = normalUserActivityRange;
         this.normalUserAbnormalActivityRange = normalUserAbnormalActivityRange;
@@ -59,6 +61,15 @@ public abstract class ProcessEventGeneratorsBuilder {
         this.serviceAcountUserActivityRange = serviceAcountUserActivityRange;
         this.machineGenerator = machineGenerator;
         this.nonImportantProcesses = nonImportantProcesses;
+        this.probabilityMultiplier = 1;
+    }
+
+    public void setProbabilityMultiplier(double probabilityMultiplier) {
+        this.probabilityMultiplier = probabilityMultiplier;
+    }
+
+    public double getProbabilityMultiplier() {
+        return probabilityMultiplier;
     }
 
     protected List<FileEntity> getFileEnities(Pair[] dirAndFilePair){
@@ -96,7 +107,7 @@ public abstract class ProcessEventGeneratorsBuilder {
                                                                  Instant endInstant) {
         List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
         RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
-                new RandomMultiEventGenerator.EventGeneratorProbability(processEventsGenerator, eventProbability);
+                new RandomMultiEventGenerator.EventGeneratorProbability(processEventsGenerator, eventProbability*getProbabilityMultiplier());
         listOfProbabilities.add(eventsProbabilityForNormalUsers);
 
 

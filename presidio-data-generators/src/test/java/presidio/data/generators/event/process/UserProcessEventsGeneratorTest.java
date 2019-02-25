@@ -92,6 +92,7 @@ public class UserProcessEventsGeneratorTest {
                         machineGenerator,
                         nonImportantProcesses
                 );
+        nonImportantProcessEventGeneratorsBuilder.setProbabilityMultiplier(0.5);
         processEventGeneratorsBuilders.add(nonImportantProcessEventGeneratorsBuilder);
         ReconToolGroupAEventGeneratorsBuilder reconToolGroupAEventGeneratorsBuilder =
                 new ReconToolGroupAEventGeneratorsBuilder(
