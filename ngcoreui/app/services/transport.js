@@ -156,7 +156,8 @@ export default Service.extend(Evented, {
         };
         this.trigger('connected');
         this.trigger('reconnected');
-        this.flushQueue();
+        // this.flushQueue();
+        window.location.reload();
       };
       ws.onmessage = (messageEvent) => {
         this.handleIncomingMessage(messageEvent);

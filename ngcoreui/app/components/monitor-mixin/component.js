@@ -84,6 +84,9 @@ export default Mixin.create({
           }, 1000));
         });
     }
+    this.get('transport').one('close', () => {
+      this.get('intervalHandle').stop();
+    });
   },
 
   /**

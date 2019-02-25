@@ -24,16 +24,16 @@ a {
   padding-bottom: rsa-whitespace();
 }
 
-.border-line-left {
-  border-left: 1px solid rgb(66, 66, 66);
-}
-
-.border-line-right {
-  border-right: 1px solid rgb(66, 66, 66);
-}
-
-.border-line-top {
-  border-top: 1px solid rgb(66, 66, 66);
+.border-line {
+  &-left {
+    border-left: 1px solid rgb(66, 66, 66);
+  }
+  &-right {
+    border-right: 1px solid rgb(66, 66, 66);
+  }
+  &-top {
+    border-top: 1px solid rgb(66, 66, 66);
+  }
 }
 
 .border-panel {

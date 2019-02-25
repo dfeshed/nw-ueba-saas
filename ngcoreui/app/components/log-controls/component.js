@@ -1,17 +1,16 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { loadLogs } from 'ngcoreui/actions/actions';
-
-const stateToComputed = (state) => ({
-  logsIntervalHandle: state.logsIntervalHandle
-});
 
 const dispatchToActions = {
   loadLogs
 };
 
 const logControls = Component.extend({
+  transport: service(),
+
   tagName: 'hbox',
   classNames: ['bottom-padding', 'log-controls'],
 
@@ -90,16 +89,11 @@ const logControls = Component.extend({
 
   actions: {
     stopUpdates() {
-      const logsIntervalHandle = this.get('logsIntervalHandle');
-      if (logsIntervalHandle) {
-        logsIntervalHandle.stop();
-        this.send('logsClearInterval');
+      const intervalHandle = this.get('intervalHandle');
+      if (intervalHandle) {
+        intervalHandle.stop();
+        this.set('intervalHandle', undefined);
       }
-    },
-
-    logsClearInterval() {
-      this.get('intervalHandle').stop();
-      this.set('intervalHandle', undefined);
     },
 
     updateParams() {
@@ -155,6 +149,14 @@ const logControls = Component.extend({
     }
   },
 
+  init() {
+    this._super(...arguments);
+
+    this.get('transport').one('close', () => {
+      this.get('intervalHandle').stop();
+    });
+  },
+
   // Necessary to pass to the date-time picker because there is no
   // dateFormat service in this app
   dateFormat: {
@@ -164,4 +166,4 @@ const logControls = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(logControls);
+export default connect(null, dispatchToActions)(logControls);

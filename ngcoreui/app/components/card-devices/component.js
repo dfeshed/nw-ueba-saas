@@ -80,6 +80,9 @@ export default Component.extend({
 
     // start the interval to update series data
     this.set('intervalHandle', interval(() => this.updateSeries(), 1000));
+    this.get('transport').one('close', () => {
+      this.get('intervalHandle').stop();
+    });
   },
 
   addDevice(node) {

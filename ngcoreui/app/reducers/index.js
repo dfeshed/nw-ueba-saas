@@ -24,8 +24,7 @@ const initialState = Immutable.from({
   appStatNodes: {},
   logs: null,
   logsLoading: false,
-  logsLastLoaded: '0',
-  logsIntervalHandle: null
+  logsLastLoaded: '0'
 });
 
 const infoNodeNames = [

@@ -13,7 +13,7 @@
 
   This should probably include close handler as well
 
-- [ ] CRITICAL: Back/Forward/Refresh support
+- [x] CRITICAL: Back/Forward/Refresh support
 
   This should probably include dropping into the tree view from any path in the tree based on the URL
 
@@ -27,8 +27,8 @@
 - [ ] Update existing cards to use the same graph population mechanisms as `card-devices`
 
 ## BUGS
-- [ ] CRITICAL: page becomes unresponsive after time
-- [ ] HIGH: offline awareness
+- [x] CRITICAL: page becomes unresponsive after time
+- [x] HIGH: offline awareness
 
   when the websocket connection is lost, the app still accepts input
 
