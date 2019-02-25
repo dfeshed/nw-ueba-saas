@@ -6,6 +6,7 @@ import { isDevelopmentBuild } from 'ngcoreui/reducers/selectors';
 const stateToComputed = (state) => ({
   deviceInfo: state.deviceInfo,
   wsConnected: state.wsConnected,
+  username: state.username,
   isDevelopmentBuild: isDevelopmentBuild(state)
 });
 

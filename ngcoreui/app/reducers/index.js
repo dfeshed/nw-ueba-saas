@@ -15,6 +15,7 @@ const initialState = Immutable.from({
   treePath: '/',
   treePathContents: null,
   deviceInfo: {},
+  username: null,
   treeSelectedOperationIndex: -1,
   treeOperationParams: {},
   operationResponse: null,
@@ -297,6 +298,15 @@ const reducer = handleActions({
 
   [ACTION_TYPES.APP_CHANGE_ACTIVE_TAB]: (state, action) => {
     return state.set('activeTab', action.payload);
+  },
+
+  [ACTION_TYPES.APP_GET_USER]: (state, action) => {
+    return handle(state, action, {
+      finish: (prevState) => {
+        const { params } = action.payload;
+        return prevState.set('username', params.username);
+      }
+    });
   },
 
   [ACTION_TYPES.LOGS_LOAD_START]: (state) => {

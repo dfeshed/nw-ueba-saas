@@ -14,6 +14,7 @@
         {{/if}}
         <span>Device: {{deviceInfo.module}} v{{deviceInfo.version}}</span>
         <span>| Host: {{deviceInfo.hostname}}</span>
+        <span>| Username: {{username}}</span>
         <span>| Connection Status: <span class="{{if wsConnected 'connected' 'disconnected'}}">&#9679;</span> {{connectionString}}</span>
       </p>
     </box>

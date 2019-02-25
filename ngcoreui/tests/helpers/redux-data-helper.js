@@ -74,6 +74,7 @@ export default class DataHelper {
     _set(this.state, 'treeSelectedOperationIndex', -1);
     _set(this.state, 'treeOperationParams', {});
     _set(this.state, 'deviceInfo', {});
+    _set(this.state, 'username', null);
     _set(this.state, 'operationResponse', null);
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);

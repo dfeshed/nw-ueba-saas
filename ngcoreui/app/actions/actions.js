@@ -17,6 +17,7 @@ const connect = () => {
       .on('connected', () => {
         dispatch({ type: ACTION_TYPES.WS_CONNECT_FINISH });
         dispatch(_getDeviceInfo());
+        dispatch(_getUserInfo());
       })
       .on('error', (err) => {
         dispatch({ type: ACTION_TYPES.WS_ERROR, payload: err });
@@ -328,6 +329,16 @@ const _getDeviceInfo = () => {
     type: ACTION_TYPES.TREE_GET_DEVICE_INFO,
     promise: transport.send('/sys/stats', {
       message: 'ls'
+    })
+  };
+};
+
+const _getUserInfo = () => {
+  const transport = lookup('service:transport');
+  return {
+    type: ACTION_TYPES.APP_GET_USER,
+    promise: transport.send('/users', {
+      message: 'whoAmI'
     })
   };
 };
