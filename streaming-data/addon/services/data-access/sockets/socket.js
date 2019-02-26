@@ -107,11 +107,13 @@ function disconnectNamed(name) {
  */
 function createStream(method, modelName, query, streamOptions = {}) {
   const cfg = _findSocketConfig(modelName, method, (streamOptions ? streamOptions.socketUrlPostfix : ''), (streamOptions ? streamOptions.requiredSocketUrl : ''));
+  const fetchSocketClient = () => connect(cfg.socketUrl, undefined, streamOptions.dedicatedSocketName);
   const allStreamOptions = {
     ...streamOptions,
     socketConfig: cfg,
     socketRequestParams: query,
-    fetchSocketClient: () => connect(cfg.socketUrl, undefined, streamOptions.dedicatedSocketName)
+    fetchSocketClient,
+    wsClientId: fetchSocketClient()._id
   };
   return Stream.create(allStreamOptions);
 }

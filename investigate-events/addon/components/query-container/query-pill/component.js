@@ -153,7 +153,9 @@ export default Component.extend({
   @computed('pillData')
   stringifiedPill: (pillData) => {
     if (pillData) {
-      const { meta: { metaName }, operator: { displayName }, value } = pillData;
+      const { meta, operator, value } = pillData;
+      const metaName = meta ? meta.metaName : null;
+      const displayName = operator ? operator.displayName : null;
       return `${metaName || ''} ${displayName || ''} ${value || ''}`.trim();
     }
   },

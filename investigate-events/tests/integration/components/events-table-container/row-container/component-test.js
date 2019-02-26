@@ -1,18 +1,20 @@
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import EmberObject, { set, get } from '@ember/object';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, render, find, findAll, settled } from '@ember/test-helpers';
 
-module('Integration | Component | events table row', function(hooks) {
+module('Integration | Component | Events Table Row', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
+    initialize(this.owner);
   });
 
   const item = { medium: '1', time: +(new Date()), foo: 'foo', bar: 'bar', 'has.alias': 'raw-value' };
@@ -157,6 +159,7 @@ module('Integration | Component | events table row', function(hooks) {
         clickAction=clickAction
       }}
     `);
+    await settled();
 
     await click('.rsa-investigate-events-table-row');
     await settled();

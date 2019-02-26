@@ -18,6 +18,9 @@ const fetchMeta = ({ endpointId, eventId }) => {
       method: 'stream',
       modelName: 'core-event',
       query,
+      streamOptions: {
+        cancelPreviouslyExecuting: true
+      },
       onError: reject,
       onResponse({ data, meta }) {
         if (meta.complete) {

@@ -98,7 +98,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   /**
    * Triggers the initial rendering of cell contents.  Ensures that this is done
-   * first, beforeany inherited `afterRender` logic from `_super`. Why? Because
+   * first, before any inherited `afterRender` logic from `_super`. Why? Because
    * the `_super` in this case is a data table row, which measures its own
    * height once the DOM is ready. We want to render the cell contents before
    * that happens.

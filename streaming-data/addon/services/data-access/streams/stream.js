@@ -37,6 +37,14 @@ let _requestCounter = 0;
 export default EmberObject.extend({
 
   /**
+   * ID of the promise returned for the web socket client. This can be used to
+   * determine if multiple requests on the same socket for the same endpoint are
+   * being made. This is paired with the `Stream` option
+   * `cancelPreviouslyExecuting` to stop these duplicate requests.
+   */
+  wsClientId: null,
+
+  /**
    * Hashtable of configuration properties for the stream.  Includes the following properties:
    * .socketUrl: (string) The connection URL for the socket server.
    * .subscriptionDestination: (string) The destination for the SUBSCRIBE message.

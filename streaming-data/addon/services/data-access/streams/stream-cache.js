@@ -54,18 +54,19 @@ function cleanUpRouteStreams(newRouteName) {
  * If a stream exists already for the model/method,
  * stop it.
  *
+ * @param {Number} id the unique id of the socket
  * @param {String} method the method name for the stream
  * @param {String} modelName the model name for the stream
  * @returns {undefined}
  * @public
  */
-function _cleanUpDuplicateStream(_method, _modelName) {
+function _cleanUpDuplicateStream(_id, _method, _modelName) {
   // create array of all streams
   const allStreams = [];
   Object.keys(_streams).forEach((routeName) => allStreams.push(..._streams[routeName]));
 
-  allStreams.forEach(({ method, modelName, stream }) => {
-    if (method === _method && modelName === _modelName) {
+  allStreams.forEach(({ id, method, modelName, stream }) => {
+    if (_id === id && method === _method && modelName === _modelName) {
       // stream exists that matches modelName/method for the stream
       // that is being created, stop the previous one so that any
       // data coming back from it doesn't cause async problems
@@ -90,10 +91,12 @@ function _cleanUpDuplicateStream(_method, _modelName) {
  * @public
  */
 function registerStream(stream, method, modelName, routeName, streamOptions) {
+  const { wsClientId: id } = stream;
+
   // need to check and see if is identical
   // streaming existing and cancel it
   if (streamOptions.cancelPreviouslyExecuting === true) {
-    _cleanUpDuplicateStream(method, modelName);
+    _cleanUpDuplicateStream(id, method, modelName);
   }
 
   if (!streamOptions.keepAliveOnRouteChange) {
@@ -101,7 +104,7 @@ function registerStream(stream, method, modelName, routeName, streamOptions) {
       if (!_streams[routeName]) {
         _streams[routeName] = [];
       }
-      _streams[routeName].push({ stream, streamOptions, method, modelName });
+      _streams[routeName].push({ id, stream, streamOptions, method, modelName });
     } else {
       // lacking route name, so add to anon routes that
       // get cleaned up on any route change
