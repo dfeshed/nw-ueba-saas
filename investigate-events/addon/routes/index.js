@@ -16,8 +16,7 @@ import {
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
-// TODO bring download back.
-// import { teardownNotifications, initializeNotifications } from '../actions/notiication-creators';
+import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -62,9 +61,8 @@ export default Route.extend({
     // Helps in cases where the service hasn't been re-selected or the page has not been refreshed
     // in a long time.
     timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
-    // TODO bring download back.
     // dispatch call to open notification websocket
-    // this.get('redux').dispatch(initializeNotifications());
+    this.get('redux').dispatch(initializeNotifications());
   },
 
   deactivate() {
@@ -73,13 +71,11 @@ export default Route.extend({
     this.set('contextualHelp.topic', null);
     // terminate the continous polling of summary
     clearInterval(timerId);
-    // TODO bring download back.
-    /*
     const { notifications: { stopNotifications } } = this.get('redux').getState().investigate;
     if (stopNotifications) {
       stopNotifications();
       this.get('redux').dispatch(teardownNotifications());
-    }*/
+    }
   },
 
   model(params) {

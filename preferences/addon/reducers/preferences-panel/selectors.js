@@ -15,10 +15,7 @@ export const getPreferencesSchema = createSelector(
     if (preferencesConfiguration && preferencesConfiguration.items) {
       const { fieldPrefix } = preferencesConfiguration;
 
-      // TODO bring download back. Remove filter that excludes Meta Download option.
-      const itemList = preferencesConfiguration.items.filter((item) => item.name != 'preferences.investigate-events.defaultMetaFormat');
-
-      const items = itemList.map((item) => {
+      const items = preferencesConfiguration.items.map((item) => {
         return {
           ...item,
           fieldPrefix: item.additionalFieldPrefix ? `${fieldPrefix}.${item.additionalFieldPrefix}` : fieldPrefix

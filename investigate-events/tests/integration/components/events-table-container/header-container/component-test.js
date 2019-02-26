@@ -20,8 +20,7 @@ const columnSelector = '.rsa-investigate-events-table__header__columnGroup .embe
 const renderDefaultHeaderContainer = async(assert) => {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
   await render(hbs`{{events-table-container/header-container}}`);
-  // TODO bring download back. power-select for download is not available as of now
-  assert.equal(findAll('.ember-power-select-trigger').length, 1, 'only 1 power-select available. There is no option to select default column group.');
+  assert.equal(findAll('.ember-power-select-trigger').length, 2, 'columnGroup, downloadEvents');
 };
 
 module('Integration | Component | header-container', function(hooks) {
@@ -58,13 +57,11 @@ module('Integration | Component | header-container', function(hooks) {
   test('render the events header with required fields ', async function(assert) {
     await renderDefaultHeaderContainer(assert);
     assert.ok(find('.rsa-investigate-events-table__header__container'), 'render event header container');
-    assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements');
-    // TODO bring download back.
-    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 2, 'rendered with three elements');
+    assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
+    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 3, 'rendered with three elements - eventLabel, columnGroup, downloadEvents');
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
-    // TODO bring download back.
-    // assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
+    assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
   });
 
   test('it provides option to select column groups', async function(assert) {

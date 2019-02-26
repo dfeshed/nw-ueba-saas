@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
@@ -191,8 +191,7 @@ module('Integration | Component | events-table', function(hooks) {
     );
   });
 
-  // TODO bring download back
-  skip('renders event selection checkboxes only if permissions are present', async function(assert) {
+  test('renders event selection checkboxes only if permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     new ReduxDataHelper(setState)
@@ -205,7 +204,7 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-form-checkbox-label').length, 1, 'Renders event selection checkboxes when permission is present');
   });
 
-  skip('does not render event selection checkboxes if permissions are not present', async function(assert) {
+  test('does not render event selection checkboxes if permissions are not present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', false);
     new ReduxDataHelper(setState)

@@ -49,9 +49,8 @@ const dispatchToActions = {
   toggleEventSelection
 };
 
-// TODO bring download back
-/*
-  const checkBoxElement = {
+// checkboxes for multiple event selection
+const checkBoxElement = {
   title: '',
   class: 'rsa-form-row-checkbox',
   width: 18,
@@ -61,8 +60,7 @@ const dispatchToActions = {
   visible: true,
   disableSort: true,
   headerComponentClass: 'rsa-form-checkbox'
-};*/
-
+};
 
 /*
  * Since the events table is a special custom table which has html tags with meta and value injected from the javascript
@@ -97,13 +95,10 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   }),
 
   @computed('columns', 'accessControl.hasInvestigateContentExportAccess', 'allItemsChecked')
-  extendedColumns: (columns) => {
-  // TODO bring download back
-  // extendedColumns: (columns, hasPermissions) => {
-
-    /* if (hasPermissions) {
+  extendedColumns: (columns, hasPermissions) => {
+    if (hasPermissions) {
       return [checkBoxElement, ...columns];
-    }*/
+    }
     return columns;
   },
 
