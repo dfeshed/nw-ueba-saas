@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import urllib
 
 # Read the current UEBA server configuration.
 with open('/etc/netwitness/presidio/configserver/configurations/application-presidio.json') as json_file:
@@ -11,6 +12,7 @@ source = application_presidio['dataPulling']['source']
 match = re.match('^nws://(.+):(.+)@(.+):(.+)$', source)
 user = match.group(1)
 password = match.group(2)
+password = urllib.unquote(password).decode('utf8')
 host = match.group(3)
 port = match.group(4)
 
@@ -31,7 +33,7 @@ schemas = ' '.join(data_pipeline['schemas'])
 enable_forwarding = application_presidio['outputForwarding']['enableForwarding']
 
 # Rerun the UEBA server configuration command.
-os.system('sh /opt/rsa/saTools/bin/ueba-server-config -u {} -p {} -h {} -t {} -s "{}" {} -o {} -v'.format(
+os.system('sh /opt/rsa/saTools/bin/ueba-server-config -u {} -p \'{}\' -h {} -t {} -s "{}" {} -o {} -v'.format(
     user,
     password,
     host,
