@@ -25,4 +25,15 @@ module('Unit | Reducers | investigate', function(hooks) {
     assert.equal(newEndState.serviceId, '12345');
   });
 
+  test('The SET_INVESTIGATE_PREFERENCE sets serviceId as -1 on start', function(assert) {
+    const previous = Immutable.from({
+      serviceId: null
+    });
+    const newAction = makePackAction(LIFECYCLE.START, {
+      type: ACTION_TYPES.SET_INVESTIGATE_PREFERENCE,
+      payload: {}
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.equal(newEndState.serviceId, '-1', 'On start service id is -1');
+  });
 });

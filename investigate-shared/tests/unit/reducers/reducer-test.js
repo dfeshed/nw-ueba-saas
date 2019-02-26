@@ -78,5 +78,76 @@ module('Unit | Reducers | investigate-files | file-filter', function(hooks) {
     assert.equal(result.selectedFilter.criteria.expressionList.length, 0);
     assert.equal(result.expressionList.length, 0);
   });
+
+  test('APPLY_FILTER sets expressionList', function(assert) {
+
+    const previous = Immutable.from({
+      expressionList: []
+    });
+    const testPayload = [{
+      restrictionType: 'GREATER_THAN',
+      propertyName: 'size',
+      propertyValues: '1'
+    }];
+    const result = reducer(previous, { type: ACTION_TYPES.APPLY_FILTER, payload: testPayload });
+    assert.deepEqual(result.expressionList, testPayload, 'payload is set to expressionList');
+  });
+
+  test('SET_SAVED_FILTER sets selectedFilter', function(assert) {
+    const previous = Immutable.from({
+      expressionList: [],
+      selectedFilter: null
+    });
+    const testPayload = {
+      name: 'less size',
+      filterType: 'FILE',
+      systemFilter: false,
+      criteria: {
+        criteriaList: [],
+        expressionList: [{
+          restrictionType: 'GREATER_THAN',
+          propertyName: 'size',
+          propertyValues: '1'
+        } ]
+      }
+    };
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SAVED_FILTER, payload: testPayload });
+    assert.deepEqual(result.selectedFilter, testPayload, 'payload is set to expressionList');
+    assert.deepEqual(result.expressionList, testPayload.criteria.expressionList, 'expressionList is set');
+  });
+
+  test('The GET_FILTER get the filters', function(assert) {
+    const selectedFilter = {
+      name: 'less size',
+      filterType: 'FILE',
+      systemFilter: false,
+      criteria: {
+        criteriaList: [],
+        expressionList: [{
+          restrictionType: 'GREATER_THAN',
+          propertyName: 'size',
+          propertyValues: '1'
+        } ]
+      }
+    };
+
+    const previous = Immutable.from({
+      savedFilterList: [],
+      expressionList: [],
+      selectedFilter
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      meta: {
+        belongsTo: 'FILE'
+      },
+      type: ACTION_TYPES.GET_FILTER,
+      payload: { data: [ { filterType: 'FILE' }, { filterType: 'MACHINE' }] }
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.equal(newEndState.savedFilterList.length, 1);
+    assert.deepEqual(newEndState.expressionList, selectedFilter.criteria.expressionList);
+  });
+
 });
 

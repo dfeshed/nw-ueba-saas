@@ -199,4 +199,106 @@ module('Unit | Reducers | risk', function(hooks) {
     assert.deepEqual(result.alertsLoadingStatus, 'completed', 'alertsLoadingStatus value is set');
 
   });
+
+  test('The GET_RISK_SCORE_CONTEXT sets the risk score context error on failure', function(assert) {
+    // Initial state
+    const initialResult = reducer(undefined, {});
+    assert.equal(initialResult.riskScoreContextError, null, 'original riskScoreContextError value');
+    assert.equal(initialResult.alertsLoadingStatus, null, 'original alertsLoadingStatus value');
+
+    const response = [{
+      hash: 'ccc8538dd62f20999717e2bbab58a18973b938968d699154df9233698a899efa',
+      alertCount: {
+        critical: 1,
+        high: 10,
+        medium: 20
+      },
+      categorizedAlerts: {}
+    }
+    ];
+
+    const newAction = makePackAction(LIFECYCLE.FAILURE, {
+      type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+      payload: { meta: response }
+    });
+
+    const result = reducer(initialResult, newAction);
+    assert.deepEqual(result.riskScoreContextError, response, 'riskScoreContext value is set');
+    assert.deepEqual(result.alertsLoadingStatus, null, 'alertsLoadingStatus value is set');
+
+  });
+
+  test('The GET_RISK_SCORE_CONTEXT sets the alertsLoadingStatus on start ', function(assert) {
+    // Initial state
+    const initialResult = reducer(undefined, {});
+    assert.equal(initialResult.riskScoreContext, null, 'original riskScoreContext value');
+    assert.equal(initialResult.alertsLoadingStatus, null, 'original alertsLoadingStatus value');
+
+    const newAction = makePackAction(LIFECYCLE.START, {
+      type: ACTION_TYPES.GET_RISK_SCORE_CONTEXT,
+      payload: {}
+    });
+
+    const result = reducer(initialResult, newAction);
+    assert.deepEqual(result.alertsLoadingStatus, 'loading', 'alertsLoadingStatus value is set to loading');
+  });
+
+  test('the RESET_RISK_SCORE sets the isRiskScoreReset on success', function(assert) {
+    const previous = Immutable.from({
+      isRiskScoreReset: false
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.RESET_RISK_SCORE,
+      payload: {}
+    });
+    const result = reducer(previous, newAction);
+    assert.deepEqual(result.isRiskScoreReset, true, 'isRiskScoreReset is set');
+  });
+
+  test('the RESET_RISK_SCORE sets the isRiskScoreReset on failure', function(assert) {
+    const previous = Immutable.from({
+      isRiskScoreReset: true
+    });
+
+    const newAction = makePackAction(LIFECYCLE.FAILURE, {
+      type: ACTION_TYPES.RESET_RISK_SCORE,
+      payload: {}
+    });
+    const result = reducer(previous, newAction);
+    assert.deepEqual(result.isRiskScoreReset, false, 'isRiskScoreReset is set');
+  });
+
+  test('The GET_RESPOND_SERVER_STATUS sets isRespondServerOffline', function(assert) {
+    const previous = Immutable.from({
+      isRespondServerOffline: false
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: true });
+    assert.equal(result.isRespondServerOffline, true, 'isRespondServerOffline is set to true');
+  });
+
+  test('SET_RISK_SCORE_DETAIL_CONTEXT sets eventContext', function(assert) {
+    const testPayload = {
+      data: {
+        distinctAlertCount: {},
+        categorizedAlerts: {
+          Critical: {
+            Blacklisted: {
+              alertCount: 3,
+              eventContexts: [{
+                id: '5c74c5b9a08cc476828be5ad'
+              }]
+            }
+          }
+        }
+      }
+    };
+    const previous = Immutable.from({
+      eventContext: [{}, {}],
+      activeRiskSeverityTab: 'Critical',
+      selectedAlert: 'Blacklisted'
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_RISK_SCORE_DETAIL_CONTEXT, payload: testPayload });
+    assert.equal(result.eventContext.length, 1, 'eventContext is set');
+  });
 });
