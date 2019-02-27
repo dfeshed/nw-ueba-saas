@@ -18,6 +18,8 @@
     "test": "node ./scripts/test"
   },
   "dependencies": {
+    "@ember/jquery": "0.6.0",
+    "@ember/optional-features": "0.7.0",
     "@html-next/flexi-config": "2.0.0",
     "@html-next/flexi-default-styles": "2.0.1",
     "@html-next/flexi-dsl": "2.0.1",

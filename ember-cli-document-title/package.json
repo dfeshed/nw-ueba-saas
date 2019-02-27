@@ -27,6 +27,8 @@
     "test": "ember try:each && ember fastboot:test"
   },
   "devDependencies": {
+    "@ember/jquery": "0.6.0",
+    "@ember/optional-features": "0.7.0",
     "ember-cli-babel": "^6.17.2",
     "broccoli-asset-rev": "^2.4.5",
     "ember-cli": "3.5.1",
