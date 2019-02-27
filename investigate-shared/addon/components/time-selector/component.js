@@ -5,9 +5,6 @@ import { inject as service } from '@ember/service';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import layout from './template';
 
-let endTimeMilli = 0;
-let startTimeMilli = 0;
-
 const TimeSelector = Component.extend({
 
   layout,
@@ -86,7 +83,7 @@ const TimeSelector = Component.extend({
   @computed('startTime', 'timeRangeInvalid')
   _startTimeMilli(startTime, timeRangeInvalid) {
 
-    const newStartTime = !startTime ? moment().subtract(1, 'day').add(1, 'minutes').startOf('minute').valueOf() : startTime * 1000;
+    let newStartTime = !startTime ? moment().subtract(1, 'day').add(1, 'minutes').startOf('minute').valueOf() : startTime * 1000;
     // default to last 23 hrs 59 mins 59 seconds if startTime is not set
 
     if (newStartTime === this.get('_previousStartTimeMilli')) {
@@ -99,18 +96,22 @@ const TimeSelector = Component.extend({
         // This is to add a digit at the end of the startTime, so that we forcefully
         // trigger its child component's CP. Because milli seconds will be trimmed off later,
         // we are not worried about actually changing the time.
-        startTimeMilli === 0 ? startTimeMilli = 1 : startTimeMilli = 0;
+        if (moment(newStartTime).milliseconds() === 1) {
+          newStartTime = moment(newStartTime).milliseconds(0).valueOf();
+        } else {
+          newStartTime = moment(newStartTime).milliseconds(1).valueOf();
+        }
       }
 
     }
     this.set('_previousStartTimeMilli', newStartTime);
-    return newStartTime + (startTimeMilli);
+    return newStartTime;
   },
 
   @computed('endTime', 'timeRangeInvalid')
   _endTimeMilli(endTime, timeRangeInvalid) {
 
-    const newEndTime = !endTime ? moment().endOf('minute').valueOf() : endTime * 1000;
+    let newEndTime = !endTime ? moment().endOf('minute').valueOf() : endTime * 1000;
     // default to last 23 hrs 59 mins 59 seconds if endTime is not set
 
     if (newEndTime === this.get('_previousEndTimeMilli')) {
@@ -123,12 +124,16 @@ const TimeSelector = Component.extend({
         // This is to add a digit at the end of the endTime, so that we forcefully
         // trigger its child component's CP. Because milli seconds will be trimmed off later,
         // we are not worried about actually changing the time.
-        endTimeMilli === 0 ? endTimeMilli = 1 : endTimeMilli = 0;
+        if (moment(newEndTime).milliseconds() === 1) {
+          newEndTime = moment(newEndTime).milliseconds(0).valueOf();
+        } else {
+          newEndTime = moment(newEndTime).milliseconds(1).valueOf();
+        }
       }
 
     }
     this.set('_previousEndTimeMilli', newEndTime);
-    return newEndTime + (endTimeMilli);
+    return newEndTime;
   },
 
   @computed('timeFormat.selected.key')

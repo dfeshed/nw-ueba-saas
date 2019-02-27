@@ -146,6 +146,10 @@ export default Component.extend({
   duration(start, end, hasErrors) {
     if (!hasErrors) {
       const i18n = this.get('i18n');
+      // making sure we trim of milliseconds before calculating duration.
+      // We anyways are shaving off milliseconds before saving it in state or querying.
+      end = moment(end).milliseconds(0);
+      start = moment(start).milliseconds(0);
       const duration = moment.duration(moment(end).diff(moment(start)));
       const years = duration.years() > 0 ? `${duration.years()} ${i18n.t('dateTime.years')}` : '';
       const months = duration.months() > 0 ? `${duration.months()} ${i18n.t('dateTime.months')}` : '';
