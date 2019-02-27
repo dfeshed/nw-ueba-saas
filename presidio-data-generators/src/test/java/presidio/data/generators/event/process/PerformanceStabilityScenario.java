@@ -106,7 +106,6 @@ public class PerformanceStabilityScenario {
                         machineGenerator,
                         nonImportantProcesses
                 );
-        nonImportantProcessEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier);
         processEventGeneratorsBuilders.add(nonImportantProcessEventGeneratorsBuilder);
         ReconToolGroupAEventGeneratorsBuilder reconToolGroupAEventGeneratorsBuilder =
                 new ReconToolGroupAEventGeneratorsBuilder(
@@ -227,6 +226,7 @@ public class PerformanceStabilityScenario {
                         nonImportantProcesses
                 );
         processEventGeneratorsBuilders.add(windowsProcessesEventGeneratorsBuilder);
+        processEventGeneratorsBuilders.forEach(processEventGeneratorsBuilder -> processEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier));
     }
 
     private IUserGenerator createNormalUserGenerator(){
