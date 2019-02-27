@@ -80,18 +80,32 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     assert.equal(result, true, 'Certificates loading is set to true.');
   });
 
-  test('isAllSelected', function(assert) {
+  test('isAllSelected is false', function(assert) {
     const stateNew = Immutable.from({
       certificate: {
         list: {
           certificatesLoadingStatus: 'wait',
           certificatesList: new Array(3),
-          selectedCertificateList: []
+          selectedCertificateList: null
         }
       }
     });
     const result = isAllSelected(stateNew);
     assert.equal(result, false, 'isAllCertificates selected false.');
+  });
+
+  test('isAllSelected is true', function(assert) {
+    const stateNew = Immutable.from({
+      certificate: {
+        list: {
+          certificatesLoadingStatus: 'wait',
+          certificatesList: new Array(3),
+          selectedCertificateList: new Array(3)
+        }
+      }
+    });
+    const result = isAllSelected(stateNew);
+    assert.equal(result, true, 'isAllCertificates selected true.');
   });
 
   test('columns', function(assert) {
@@ -114,6 +128,7 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     result = columns(stateNew);
     assert.equal(result[1].visible, true, 'visible column updated.');
   });
+
   test('nextLoadCount', function(assert) {
     let stateNew = Immutable.from({
       certificate: {

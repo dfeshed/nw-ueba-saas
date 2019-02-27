@@ -37,6 +37,29 @@ module('Unit | Reducers | File Analysis', function() {
     assert.equal(result.filePropertiesData.format, 'macho', 'updated with the new file data');
   });
 
+  test('FETCH_FILE_ANALYZER_DATA sets the filedata on start', function(assert) {
+    const previous = Immutable.from({
+      'fileData': null,
+      fileDataLoadingStatus: null
+    });
+    const action = makePackAction(LIFECYCLE.START, { type: SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_DATA });
+    const result = reducer(previous, action);
+
+    assert.equal(result.fileDataLoadingStatus, 'loading', 'fileDataLoadingStatus is loading');
+  });
+
+  test('FETCH_FILE_ANALYZER_DATA sets the filedata on failure', function(assert) {
+    const previous = Immutable.from({
+      'fileData': null,
+      fileDataLoadingStatus: null
+    });
+    const action = makePackAction(LIFECYCLE.FAILURE, { type: SHARED_ACTION_TYPES.FETCH_FILE_ANALYZER_DATA });
+    const result = reducer(previous, action);
+
+    assert.equal(result.fileData, null, 'file data is reset');
+    assert.equal(result.fileDataLoadingStatus, 'failed', 'fileDataLoadingStatus is failed');
+  });
+
   test('FETCH_FILE_ANALYZER_DATA sets the filedata', function(assert) {
     const previous = Immutable.from({
       'fileData': null,

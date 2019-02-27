@@ -7,6 +7,12 @@ export default {
           firstFileName: 'lynchtmlconv.exe',
           firstSeenTime: 1518423937603,
           machineOsType: 'windows',
+          downloadInfo: {
+            time: '2019-02-25T09:37:06.872+0000',
+            path: '/var/netwitness/endpoint-server/files/ed215',
+            filename: '6c7be07a56de5447dbcb86bc3a26985235689474017277bc4bff4ee14f137bd2',
+            status: 'Downloaded'
+          },
           signature: {
             timeStamp: 1513066956657,
             thumbprint: '3f3c460361882ee8f31793c556bce3b22f025a29',
@@ -61,7 +67,8 @@ export default {
             ]
           },
           entropy: 6.278159404874137,
-          format: 'pe'
+          format: 'pe',
+          serviceId: 'serviceId1'
         },
         {
           id: '1a13e24ff50c883889e90d3ea3e9c01d8df8097a90d5879f75be2432a891dd86',

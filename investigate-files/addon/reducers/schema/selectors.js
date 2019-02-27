@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import Immutable from 'seamless-immutable';
 import FILE_LIST_COLUMNS_CONFIG from './file-list-columns-config';
 
 /**
@@ -37,7 +36,7 @@ const SUPPORTED_SORT_TYPES = [
 ];
 
 
-const schema = () => FILE_LIST_COLUMNS_CONFIG || Immutable.from([]);
+const schema = () => FILE_LIST_COLUMNS_CONFIG;
 const _preferences = (state) => state.preferences.preferences;
 
 const _visibleColumns = createSelector(
@@ -54,7 +53,7 @@ const _visibleColumns = createSelector(
 export const columns = createSelector(
   [schema, _visibleColumns],
   (schema, _visibleColumns) => {
-    const updatedSchema = schema.map((item) => {
+    return schema.map((item) => {
       const { dataType, name: field, searchable, values } = item;
       const disableSort = !SUPPORTED_SORT_TYPES.includes(field);
 
@@ -71,7 +70,6 @@ export const columns = createSelector(
 
     });
     // Data-table component is expecting simple array/ember array
-    return updatedSchema;
   }
 );
 

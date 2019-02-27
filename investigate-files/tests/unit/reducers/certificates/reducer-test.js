@@ -73,6 +73,19 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     assert.equal(newEndState.loadMoreStatus, 'completed');
   });
 
+  test('test for GET_CERTIFICATES failure', function(assert) {
+    const previous = Immutable.from({
+      certificatesList: [],
+      loadMoreStatus: 'stopped'
+    });
+
+    const newAction = makePackAction(LIFECYCLE.FAILURE, {
+      type: ACTION_TYPES.GET_CERTIFICATES
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.equal(newEndState.loadMoreStatus, 'error');
+  });
+
   test('test INCREMENT_CERTIFICATE_PAGE_NUMBER reducer', function(assert) {
     const previous = Immutable.from({
       pageNumber: 0
@@ -98,6 +111,18 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     assert.equal(result.selectedCertificateList.length, 1);
     assert.equal(result.selectedCertificateList[0].thumbprint, 0);
   });
+
+  test('TOGGLE_SELECTED_CERTIFICATE should unselect the selected certificate', function(assert) {
+    const previous = Immutable.from({
+      selectedCertificateList: [{ 'thumbprint': '013e2787748a74103d62d2cdbf77a1345517c482' }]
+    });
+    const certificate = {
+      thumbprint: '013e2787748a74103d62d2cdbf77a1345517c482'
+    };
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_CERTIFICATE, payload: certificate });
+    assert.equal(result.selectedCertificateList.length, 0);
+  });
+
   test('test for SAVE_CERTIFICATE_STATUS reducer', function(assert) {
     const previous = Immutable.from({
       certificatesList: [ {
@@ -149,6 +174,21 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     assert.equal(newEndState.certificateStatusData.certificateStatusData, 'Blacklisted');
   });
 
+  test('test for GET_CERTIFICATE_STATUS when resultList is empty', function(assert) {
+    const previous = Immutable.from({
+      certificatesList: [ {
+        'thumbprint': 'afdd80c4ebf2f61d3943f18bb566d6aa6f6e5033'
+      }]
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_CERTIFICATE_STATUS,
+      payload: { data: [ { resultList: [] } ] }
+    });
+    const newEndState = reducer(previous, newAction);
+    assert.deepEqual(newEndState, previous);
+  });
+
   test('reset certificate data', function(assert) {
     const previous = Immutable.from({
       certificatesList: [ {
@@ -169,6 +209,7 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     };
     assert.deepEqual(result, resetState, 'initial state');
   });
+
   test('update column visibilty certificate data', function(assert) {
     const previous = Immutable.from({
       certificateVisibleColumns: []
@@ -176,6 +217,15 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     const result = reducer(previous, { type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: { selected: true, field: 'someColumn' } });
     assert.equal(result.certificateVisibleColumns.length, 1, 'Visual column added');
   });
+
+  test('update column visibilty certificate data for unselect', function(assert) {
+    const previous = Immutable.from({
+      certificateVisibleColumns: ['radio', 'friendlyName', 'issuer']
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.UPDATE_CERTIFICATE_COLUMN_VISIBILITY, payload: { selected: false, field: 'issuer' } });
+    assert.equal(result.certificateVisibleColumns.length, 2, '1 column unselected');
+  });
+
   test('CLOSE_CERTIFICATE_VIEW', function(assert) {
     const previous = Immutable.from({
       isCertificateView: true

@@ -80,6 +80,7 @@
         {{/if}}
         <li title="{{if fileAction.disabled fileAction.disabledTooltip}}"
         class="{{fileAction.panelId}}{{if fileAction.disabled ' disabled'}}"
+        test-id="{{fileAction.name}}"
         {{action 'onFileDownloadOptions' fileAction.name fileAction.disabled}}>
           {{fileAction.title}}
         </li>

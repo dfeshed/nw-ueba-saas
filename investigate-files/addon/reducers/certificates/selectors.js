@@ -95,7 +95,7 @@ const _visibleColumns = (state) => state.certificate.list.certificateVisibleColu
 export const columns = createSelector(
   [_visibleColumns],
   (_visibleColumns) => {
-    const updatedSchema = CERTIFICATE_COLUMNS.map((item) => {
+    return CERTIFICATE_COLUMNS.map((item) => {
       const { dataType, field, searchable, values, width, disableSort, title } = item;
 
       return {
@@ -109,7 +109,6 @@ export const columns = createSelector(
         disableSort
       };
     });
-    return updatedSchema;
   }
 );
 
@@ -160,7 +159,6 @@ export const nextLoadCount = createSelector(
   certificatesList,
   (certificatesList) => {
     const PAGE_LOAD_SIZE = 100;
-    const loadCount = certificatesList.length >= PAGE_LOAD_SIZE ? PAGE_LOAD_SIZE : certificatesList.length;
-    return loadCount;
+    return certificatesList.length >= PAGE_LOAD_SIZE ? PAGE_LOAD_SIZE : certificatesList.length;
   }
 );

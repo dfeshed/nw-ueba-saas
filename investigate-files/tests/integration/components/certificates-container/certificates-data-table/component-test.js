@@ -8,8 +8,16 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import sinon from 'sinon';
+import CertificateCreators from 'investigate-files/actions/certificate-data-creators';
 
-let initState;
+let initState, getSavedCertificateStatusSpy;
+const spys = [];
+
+spys.push(
+  getSavedCertificateStatusSpy = sinon.stub(CertificateCreators, 'getSavedCertificateStatus')
+);
+
 const callback = () => {};
 const e = {
   clientX: 5,
@@ -83,6 +91,10 @@ module('Integration | Component | certificates-container/certificates-data-table
   });
 
   hooks.afterEach(function() {
+    spys.forEach((s) => {
+      s.resetHistory();
+      s.restore();
+    });
     revertPatch();
   });
 
@@ -210,6 +222,25 @@ module('Integration | Component | certificates-container/certificates-data-table
       click('.context-menu__item:nth-of-type(1)');
       return settled().then(() => {
         assert.equal(findAll('.file-status-radio').length, 3, 'Edit Certificate status model is rendered.');
+      });
+    });
+  });
+
+  test('testing the certificate table row clicking twice on same row', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .build();
+
+    await render(hbs`{{certificates-container/certificates-data-table getSavedCertificateStatus=getSavedCertificateStatus}}{{context-menu}}`);
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+    return settled().then(() => {
+      triggerEvent('.content-context-menu', 'contextmenu', e); // click same row again
+      return settled().then(() => {
+        assert.equal(getSavedCertificateStatusSpy.callCount, 2, 'getSavedCertificateStatusSpy action is called twice');
       });
     });
   });

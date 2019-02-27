@@ -7,9 +7,14 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-import files from '../../state/files';
+import dummyFiles from '../../state/files';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
-let initState;
+import sinon from 'sinon';
+import FileCreators from 'investigate-files/actions/data-creators';
+import FileAnalysisCreators from 'investigate-shared/actions/data-creators/file-analysis-creators';
+
+let initState, downloadFilesToServerSpy, saveLocalFileCopySpy;
+const spys = [];
 const wormhole = 'wormhole-context-menu';
 const callback = () => {};
 const e = {
@@ -21,6 +26,12 @@ const e = {
       innerHeight: 100
     }
   }
+};
+
+const selectors = {
+  downloadFilesToServer: '[test-id=downloadToServer]',
+  saveLocalCopy: '[test-id=saveLocalCopy]',
+  analyzeFile: '[test-id=analyzeFile]'
 };
 const selectedFileList = [
   {
@@ -127,6 +138,8 @@ const sampleData = [{
   entropy: 1,
   size: 1024,
   format: 'PE',
+  checksum: 'checksum123',
+  serviceId: 'service123',
   signature: {
     features: 'XXX unsigned',
     thumbprint: '',
@@ -174,6 +187,11 @@ const config = [
   }
 ];
 
+spys.push(
+  downloadFilesToServerSpy = sinon.stub(FileCreators, 'downloadFilesToServer'),
+  saveLocalFileCopySpy = sinon.stub(FileAnalysisCreators, 'saveLocalFileCopy')
+);
+
 module('Integration | Component | Investigate-files-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
@@ -194,17 +212,21 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   });
 
   hooks.afterEach(function() {
+    spys.forEach((s) => {
+      s.resetHistory();
+      s.restore();
+    });
     const wormholeElement = document.querySelector('#wormhole-context-menu');
     if (wormholeElement) {
       document.querySelector('#ember-testing').removeChild(wormholeElement);
     }
   });
 
-  test('Context menu rendered', async function(assert) {
-
+  test('Context menu rendered and click download to server', async function(assert) {
+    assert.expect(2);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
-    const { files: { schema: { schema } } } = files;
+    const { files: { schema: { schema } } } = dummyFiles;
     const endpointQuery = {
       serverId: 'serverId'
     };
@@ -227,16 +249,95 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     {{investigate-files-container accessControl=accessControl}}{{context-menu}}`);
 
     triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[0], 'contextmenu', e);
+    return settled().then(async() => {
 
-    return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 9, 'Context menu rendered');
+      const [download] = findAll(selectors.downloadFilesToServer);
+      await click(download);
+      assert.equal(downloadFilesToServerSpy.callCount, 1, 'Download Files to Server action is called once');
+    });
+  });
+
+  test('Context menu rendered and click saveLocalFileCopy', async function(assert) {
+    assert.expect(2);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    const { files: { schema: { schema }, fileList: { files } } } = dummyFiles;
+    const endpointQuery = {
+      serverId: 'serverId'
+    };
+
+    new ReduxDataHelper(initState)
+      .schema(schema)
+      .files(files)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .setSelectedFileList(selectedFileList)
+      .setSelectedFile({})
+      .build();
+
+    await render(hbs`
+      <style>
+      box, section {
+        min-height: 2000px
+      }
+      </style>
+    {{investigate-files-container accessControl=accessControl}}{{context-menu}}`);
+
+    triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 9, 'Context menu rendered');
+      const [saveLocalCopy] = findAll(selectors.saveLocalCopy);
+      await click(saveLocalCopy);
+      assert.equal(saveLocalFileCopySpy.callCount, 1, 'saveLocalCopy action is called once');
+    });
+  });
+
+  test('Context menu rendered and click analyzeFile', async function(assert) {
+    assert.expect(1);
+    const windowOpen = window.open;
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    const { files: { schema: { schema }, fileList: { files } } } = dummyFiles;
+    const endpointQuery = {
+      serverId: 'serverId'
+    };
+    window.open = (path) => {
+      // Since this calls opens in the same tab, cannot use sinon stub
+      assert.equal(path.includes('6c7be07a56de5447dbcb86bc3a26985235689474017277bc4bff4ee14f137bd2'),
+        true, 'window open is called');
+    };
+    new ReduxDataHelper(initState)
+      .schema(schema)
+      .files(files)
+      .endpointServer(endpointServer)
+      .endpointQuery(endpointQuery)
+      .setSelectedFileList(selectedFileList)
+      .setSelectedFile({})
+      .build();
+
+    await render(hbs`
+      <style>
+      box, section {
+        min-height: 2000px
+      }
+      </style>
+    {{investigate-files-container accessControl=accessControl}}{{context-menu}}`);
+
+    triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const [analyzeFile] = findAll(selectors.analyzeFile);
+      await click(analyzeFile);
+      window.open = windowOpen;
     });
   });
 
   test('Investigate files container, when files are available', async function(assert) {
-    const { files: { schema: { schema } } } = files;
+    const { files: { schema: { schema } } } = dummyFiles;
     new ReduxDataHelper(initState)
       .schema(schema)
       .fileCount(3)
@@ -264,7 +365,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   });
 
   test('it renders file list when endpointserver is online', async function(assert) {
-    const { files: { schema: { schema } } } = files;
+    const { files: { schema: { schema } } } = dummyFiles;
     new ReduxDataHelper(initState)
       .schema(schema)
       .fileCount(3)
@@ -278,7 +379,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   });
 
   test('when hosts tab is active, file-found-on-hosts renders', async function(assert) {
-    const { files: { schema: { schema } } } = files;
+    const { files: { schema: { schema } } } = dummyFiles;
     const done = waitForSockets();
     new ReduxDataHelper(initState)
       .schema(schema)
@@ -357,7 +458,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     assert.equal(find('.view-certificate-button').title, 'Select a maximum of 10 files to view.', 'tooltip added to disabled button');
   });
   test('it closes the right panel on changing the service', async function(assert) {
-    const { files: { schema: { schema } } } = files;
+    const { files: { schema: { schema } } } = dummyFiles;
     const services = {
       serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
       summaryData: { startTime: 0 },

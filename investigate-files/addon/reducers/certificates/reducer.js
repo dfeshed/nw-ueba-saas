@@ -47,7 +47,7 @@ const _handleAppendCertificates = (action) => {
 const _toggleSelectedCertificate = (state, payload) => {
   const { thumbprint } = payload;
   const selected = state.selectedCertificateList;
-  if (selected.length > 0 && selected[0].thumbprint == thumbprint) {
+  if (selected.length > 0 && selected[0].thumbprint === thumbprint) {
     return state.merge({ 'selectedCertificateList': [], 'certificateStatusData': {} });
   }
   return state.merge({ 'selectedCertificateList': [{ thumbprint }], 'certificateStatusData': {} });
@@ -118,7 +118,7 @@ const certificatesReducer = handleActions({
       return state.set('certificateVisibleColumns', updatedVisibleColumns);
     } else {
       const newColumns = visibleColumns.filter((column) => column !== field);
-      return state.setIn('certificateVisibleColumns', newColumns);
+      return state.setIn(['certificateVisibleColumns'], newColumns);
     }
   }
 

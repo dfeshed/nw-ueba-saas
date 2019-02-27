@@ -6,7 +6,6 @@ import {
   hasFiles,
   fileExportLink,
   serviceList,
-  getContext,
   isAllSelected,
   selectedFileStatusHistory,
   hostList,
@@ -90,59 +89,6 @@ test('serviceList', function(assert) {
     }
   }));
   assert.deepEqual(listOfServicesNull, null, 'Supported services available is null');
-});
-
-test('getContext returns incidents', function(assert) {
-  const state = Immutable.from({
-    files: {
-      fileList: {
-        lookupData: [{
-          Incidents: {
-            resultList: [{ _id: 'INC-18409', name: 'RespondAlertsESA for user199' }]
-          }
-        }]
-      },
-      visuals: {
-        activeDataSourceTab: 'INCIDENT'
-      }
-    }
-  });
-  const result = getContext(state);
-  assert.equal(result.resultList.length, 1, '1 incidents are fetched');
-});
-
-test('getContext returns alerts', function(assert) {
-  const state = Immutable.from({
-    files: {
-      fileList: {
-        lookupData: [
-          {
-            Alerts: {
-              resultList: [{
-                '_id': {
-                  '$oid': '5afcffbedb7a8b75269a0040'
-                },
-                alert: { source: 'Event Stream Analysis 1' },
-                incidentId: 'INC-18409'
-              },
-              {
-                '_id': {
-                  '$oid': '5afcffbedb7a8b75269a0041'
-                },
-                alert: { source: 'Event Stream Analysis 2' },
-                incidentId: 'INC-18410'
-              }]
-            }
-          }
-        ]
-      },
-      visuals: {
-        activeDataSourceTab: 'ALERT'
-      }
-    }
-  });
-  const result = getContext(state);
-  assert.equal(result.resultList.length, 2, '2 Alerts fetched');
 });
 
 test('isAllSelected test', function(assert) {
@@ -524,3 +470,16 @@ test('hostListCount test', function(assert) {
   const result = hostListCount(state);
   assert.equal(result, 1);
 });
+
+test('hostListCount should be 0 when hostlist is empty', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        hostNameList: []
+      }
+    }
+  });
+  const result = hostListCount(state);
+  assert.equal(result, 0);
+});
+

@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { prepareContext } from 'investigate-shared/helpers/prepare-context';
 import { isBrokerView } from 'investigate-shared/selectors/endpoint-server/selectors';
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 
@@ -7,26 +6,24 @@ const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder',
 const _files = (state) => state.files.fileList.fileData;
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _serviceList = (state) => state.files.fileList.listOfServices;
-const _context = (state) => state.files.fileList.lookupData;
 const _selectedFileList = (state) => state.files.fileList.selectedFileList || [];
 const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileStatusHistory || [];
 const _hostList = (state) => state.files.fileList.hostNameList;
 const _serverId = (state) => state.endpointQuery.serverId;
 const _areFilesLoading = (state) => state.files.fileList.areFilesLoading;
-const _activeDataSourceTab = (state) => state.files.visuals.activeDataSourceTab || 'FILE_DETAILS';
 const _servers = (state) => state.endpointServer.serviceData || [];
 const _fileTotal = (state) => state.files.fileList.totalItems || 0;
 const _hasNext = (state) => state.files.fileList.hasNext;
 const _expressionList = (state) => state.files.filter.expressionList || [];
 const _downloadLink = (state) => state.files.fileList.downloadLink;
+
 const _areSelectedFilesHavingThumbprint = createSelector(
   _selectedFileList,
   (fileContextSelections) => {
     if (fileContextSelections && fileContextSelections.length > 0) {
-      const filteredList = fileContextSelections.some((item) => {
+      return fileContextSelections.some((item) => {
         return item.signature && item.signature.thumbprint;
       });
-      return filteredList;
     }
     return true;
   }
@@ -83,13 +80,6 @@ export const serviceList = createSelector(
   }
 );
 
-export const getContext = createSelector(
-  [_context, _activeDataSourceTab],
-  (context, riskPanelActiveTab) => {
-    return prepareContext([context, riskPanelActiveTab]);
-  }
-);
-
 export const isAllSelected = createSelector(
   [files, _selectedFileList],
   (files, selectedFileList) => {
@@ -114,10 +104,9 @@ export const selectedFileStatusHistory = createSelector(
 export const hostList = createSelector(
   _hostList,
   (hostList) => {
-    const hosts = hostList.map((host) => {
+    return hostList.map((host) => {
       return host.value;
     });
-    return hosts;
   }
 );
 
@@ -155,8 +144,7 @@ export const nextLoadCount = createSelector(
   [files],
   (files) => {
     const ONE_PAGE_MAX_LENGTH = 100;
-    const loadCount = files.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : files.length;
-    return loadCount;
+    return files.length >= ONE_PAGE_MAX_LENGTH ? ONE_PAGE_MAX_LENGTH : files.length;
   }
 );
 
@@ -164,10 +152,9 @@ export const isAnyFileFloatingOrMemoryDll = createSelector(
   _selectedFileList,
   (fileContextSelections) => {
     if (fileContextSelections && fileContextSelections.length) {
-      const filteredList = fileContextSelections.some((item) => {
+      return fileContextSelections.some((item) => {
         return (item.format && item.format === 'floating') || (item.features && item.features.includes('file.memoryHash'));
       });
-      return filteredList;
     }
     return false;
   }

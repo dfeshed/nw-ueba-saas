@@ -5,7 +5,6 @@ import { normalize } from 'normalizr';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { fileListSchema } from './schema';
-import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const fileListState = Immutable.from({
   areFilesLoading: 'wait',
@@ -19,9 +18,6 @@ const fileListState = Immutable.from({
   downloadId: null,
   listOfServices: null,
   activeDataSourceTab: 'FILE_DETAILS',
-  lookupData: [{}],
-  contextError: null,
-  contextLoadingStatus: 'wait',
   selectedFileList: [],
   fileData: {},
   agentCountMapping: {},
@@ -29,8 +25,6 @@ const fileListState = Immutable.from({
   hostNameList: [],
   fetchHostNameListError: false,
   fetchMetaValueLoading: false,
-  riskScoreContext: null,
-  riskScoreContextError: null,
   isRemediationAllowed: true,
   selectedFile: {},
   selectedDetailFile: null,
@@ -66,7 +60,8 @@ const _toggleSelectedFile = (state, payload) => {
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size, features, format, downloadInfo, serviceId }];
+    selectedList = [...selectedFileList,
+      { id, fileName: firstFileName, machineOsType, checksumSha256, checksumSha1, checksumMd5, signature, size, features, format, downloadInfo, serviceId }];
   }
   return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {}, isRemediationAllowed: true });
 
@@ -141,17 +136,6 @@ const fileListReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.GET_RISK_SCORE_CONTEXT]: (state, action) => {
-    return handle(state, action, {
-      success: (s) => s.set('riskScoreContext', action.payload.data),
-      failure: (s) => s.set('riskScoreContextError', action.payload.meta)
-    });
-  },
-
-  [ACTION_TYPES.RESET_RISK_CONTEXT]: (state) => {
-    return state.set('riskScoreContext', null);
-  },
-
   [ACTION_TYPES.SAVE_FILE_STATUS]: (state, action) => {
     return handle(state, action, {
       success: (s, action) => {
@@ -177,11 +161,6 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null),
 
-  [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
-    const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
-    return state.merge({ lookupData, contextLoadingStatus: 'completed' });
-  },
-
   [ACTION_TYPES.AGENT_COUNT_INIT]: (state, { payload }) => {
     const data = {};
     payload.forEach((checksum) => {
@@ -189,10 +168,6 @@ const fileListReducer = handleActions({
     });
     return state.set('agentCountMapping', { ...state.agentCountMapping, ...data });
   },
-
-  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait' }),
-
-  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
 
   [ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR]: (state) => state.set('fetchHostNameListError', true),
 
@@ -238,9 +213,6 @@ const fileListReducer = handleActions({
     downloadStatus: 'completed',
     downloadId: null,
     activeDataSourceTab: 'FILE_DETAILS',
-    lookupData: [{}],
-    contextError: null,
-    contextLoadingStatus: 'wait',
     selectedFileList: [],
     fileData: {},
     agentCountMapping: {},
@@ -248,8 +220,6 @@ const fileListReducer = handleActions({
     hostNameList: [],
     fetchHostNameListError: false,
     fetchMetaValueLoading: false,
-    riskScoreContext: null,
-    riskScoreContextError: null,
     isRemediationAllowed: true,
     selectedFile: {},
     selectedDetailFile: null,

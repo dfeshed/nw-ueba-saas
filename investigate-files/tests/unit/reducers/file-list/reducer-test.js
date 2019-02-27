@@ -65,17 +65,12 @@ module('Unit | Reducers | file-list', function() {
       downloadId: null,
       listOfServices: null,
       activeDataSourceTab: 'FILE_DETAILS',
-      lookupData: [{}],
-      contextError: null,
-      contextLoadingStatus: 'wait',
       selectedFileList: [],
       agentCountMapping: {},
       fileStatusData: {},
       hostNameList: [],
       fetchHostNameListError: false,
       fetchMetaValueLoading: false,
-      riskScoreContext: null,
-      riskScoreContextError: null,
       isRemediationAllowed: true,
       selectedFile: {},
       selectedDetailFile: null,
@@ -127,6 +122,14 @@ module('Unit | Reducers | file-list', function() {
     });
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: { fileName: 'test.exe' } });
     assert.equal(result.selectedFile.fileName, 'test.exe');
+  });
+
+  test('SET_AGENT_COUNT', function(assert) {
+    const previous = Immutable.from({
+      agentCountMapping: { '2241b8d9359da46a97df4343876ca6c998830bdfb307bbccedb2518acbf10db5': 1 }
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_AGENT_COUNT, payload: { ca231291beae70764af6b7acb6fe369a115b88c633d5609347a8f0390b82b1802: 2 } });
+    assert.equal(Object.keys(result.agentCountMapping).length, 2);
   });
 
   test('The SET_SORT_BY will set the selected sort to state', function(assert) {
@@ -302,22 +305,6 @@ module('Unit | Reducers | file-list', function() {
     assert.equal(newEndState.lookupData.length, 1);
   });
 
-  test('The context state being cleared', function(assert) {
-    const previous = Immutable.from({
-      lookupData: contextData.data
-    });
-    const newEndState = reducer(previous, { type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
-    assert.deepEqual(newEndState.lookupData[0], {}, 'lookupData state is cleared.');
-  });
-
-  test('contextError state when context server is not reachable', function(assert) {
-    const previous = Immutable.from({
-      contextError: null
-    });
-    const newEndState = reducer(previous, { type: ACTION_TYPES.CONTEXT_ERROR, payload: 'context.error.timeout' });
-    assert.deepEqual(newEndState.contextError, 'context.error.timeout', 'contextError state has been changed to true.');
-  });
-
   test('toggling selected file in filelist ', function(assert) {
     const previous = Immutable.from({
       selectedFileList: [],
@@ -333,7 +320,10 @@ module('Unit | Reducers | file-list', function() {
       fileData: {
         1: {
           id: 1,
-          checksumSha256: 'ABC'
+          checksumSha256: 'ABC',
+          pe: {
+            features: [ 'file.exe', 'file.arch64']
+          }
         },
         2: {
           id: 2,
@@ -398,14 +388,35 @@ module('Unit | Reducers | file-list', function() {
     assert.deepEqual(newEndState.fileStatusData, {});
   });
 
-  test('Fetch the data from context server', function(assert) {
+  test('The SAVE_FILE_STATUS sets the state', function(assert) {
     const previous = Immutable.from({
-      lookupData: [{}]
+      fileData: {
+        '123': {
+          firstFileName: '[FILELESS_SCRIPT_323420505D727E9691AF32255A4FC20A]',
+          checksumSha256: '123',
+          remediationAction: 'Unblock'
+        }
+      }
     });
-    const newEndState = reducer(previous, { type: ACTION_TYPES.SET_CONTEXT_DATA, payload: contextData.data });
-    assert.equal(newEndState.lookupData.length, 1);
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_FILE_STATUS,
+      payload: {
+        request: {
+          id: 'req-699564',
+          data: {
+            fileStatus: 'Graylist',
+            comment: 'test',
+            checksums: [
+              '123'
+            ],
+            automaticallyAssigned: false
+          }
+        }
+      }
+    });
+    const newEndState = reducer(previous, successAction);
+    assert.deepEqual(newEndState.fileData['123'].fileStatus, 'Graylist');
   });
-
 
   test('Fetch host name error is set to true', function(assert) {
     const previous = Immutable.from({
@@ -478,6 +489,17 @@ module('Unit | Reducers | file-list', function() {
 
     assert.equal(newEndState.areFilesLoading, 'completed', 'data loaded');
     assert.equal(Object.values(newEndState.fileData).length, 1);
+  });
+
+  test('The FETCH_ALL_FILES sets error', function(assert) {
+    const previous = Immutable.from({
+      fileData: {},
+      loadMoreStatus: null
+    });
+    const failureAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_ALL_FILES });
+    const endState = reducer(previous, failureAction);
+
+    assert.equal(endState.hostFetchStatus, 'error', 'hostFetchStatus is set to error');
   });
 
   test('AGENT_COUNT_INIT set the status to loading', function(assert) {

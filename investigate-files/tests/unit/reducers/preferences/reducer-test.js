@@ -52,6 +52,20 @@ test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', functio
   assert.equal(result.preferences.filePreference.visibleColumns[0], 'fileFirstName', 'expected to match fileFirstName');
 });
 
+test('The UPDATE_COLUMN_VISIBILITY  action unchecking column', function(assert) {
+  const response = Immutable.from({
+    preferences: {
+      filePreference: {
+        visibleColumns: ['fileFirstName', 'score', 'machineCount'],
+        sortField: null
+      },
+      machinePreference: null
+    }
+  });
+
+  const result = reducer(response, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machineCount', selected: false } });
+  assert.equal(result.preferences.filePreference.visibleColumns.length, 2, 'expected to return 2 column');
+});
 
 test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert) {
 
