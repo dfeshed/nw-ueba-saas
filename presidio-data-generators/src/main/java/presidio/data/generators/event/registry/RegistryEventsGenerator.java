@@ -27,16 +27,16 @@ public class RegistryEventsGenerator extends AbstractEventGenerator {
     private IRegistryOperationGenerator registryOperationGenerator;
     private IMachineGenerator machineEntityGenerator;
 
-    public RegistryEventsGenerator() throws GeneratorException {
+    public RegistryEventsGenerator(){
         setFieldDefaultGenerators();
     }
 
-    public RegistryEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+    public RegistryEventsGenerator(ITimeGenerator timeGenerator){
         super(timeGenerator);
         setFieldDefaultGenerators();
     }
 
-    private void setFieldDefaultGenerators() throws GeneratorException {
+    private void setFieldDefaultGenerators(){
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());

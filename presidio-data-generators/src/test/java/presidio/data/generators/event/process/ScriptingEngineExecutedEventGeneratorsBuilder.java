@@ -15,7 +15,7 @@ import java.util.List;
 
 
 
-//scripting engine
+//scripting engine executed by other process
 //NOTICE: It expect once a day with a day period in order to replace the userGenerator each day.
 public class ScriptingEngineExecutedEventGeneratorsBuilder extends UseCaseEventGeneratorsBuilder{
     private static final Pair[] SCRIPTING_ENGINE = {

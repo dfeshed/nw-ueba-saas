@@ -15,7 +15,7 @@ public class RegistryEntryGenerator implements IRegistryEntryGenerator {
     IStringGenerator registryKeyGroupGenerator;
     IStringGenerator registryValueNameGenerator;
 
-    public RegistryEntryGenerator() throws GeneratorException {
+    public RegistryEntryGenerator(){
         registryKeyGenerator = new StringCyclicValuesGenerator(new String[] {"a","b"});
         registryKeyGroupGenerator = new StringCyclicValuesGenerator(new String[] {"g_a","g_b"});
         registryValueNameGenerator = new StringCyclicValuesGenerator(new String[] {"v_a","v_b"});

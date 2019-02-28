@@ -14,7 +14,7 @@ public class RegistryOperationGenerator implements IRegistryOperationGenerator {
     private IRegistryEntryGenerator registryEntryGenerator;
     private IOperationTypeGenerator operationTypeGenerator;
 
-    public RegistryOperationGenerator() throws GeneratorException {
+    public RegistryOperationGenerator(){
         processEntityGenerator = new WindowsProcessEntityGenerator();
         registryEntryGenerator = new RegistryEntryGenerator();
         operationTypeGenerator = new CyclicOperationTypeGenerator();

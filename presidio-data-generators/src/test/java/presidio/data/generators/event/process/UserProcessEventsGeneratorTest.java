@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class UserProcessEventsGeneratorTest {
 
-    private final int EVENTS_GENERATION_CHUNK = 50000;
+    private final int EVENTS_GENERATION_CHUNK = 1000000;
 
     private StopWatch stopWatch = new StopWatch();
 
@@ -22,10 +22,10 @@ public class UserProcessEventsGeneratorTest {
     public void test() throws GeneratorException {
         stopWatch.start();
 
-        Instant startInstant    = Instant.parse("2010-01-01T22:00:00.00Z");
-        Instant endInstant      = Instant.parse("2010-01-02T01:05:00.00Z");
+        Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
+        Instant endInstant      = Instant.parse("2010-01-01T06:01:00.00Z");
 
-        PerformanceStabilityScenario scenario = new PerformanceStabilityScenario(startInstant, endInstant, 0.5);
+        PerformanceStabilityScenario scenario = new PerformanceStabilityScenario(startInstant, endInstant, 1);
 
         List<Event> events;
         do {
@@ -43,8 +43,8 @@ public class UserProcessEventsGeneratorTest {
                 dstProcessEvents.add(event);
             }
 
-//            stopWatch.split();
-//            System.out.println(stopWatch.toSplitString());
+            stopWatch.split();
+            System.out.println(stopWatch.toSplitString());
         } while (events.size() == EVENTS_GENERATION_CHUNK);
 
         stopWatch.split();

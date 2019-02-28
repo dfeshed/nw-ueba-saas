@@ -1,5 +1,6 @@
 package presidio.data.domain.event.registry;
 
+import presidio.data.domain.IUser;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.RegistryEntry;
 import presidio.data.domain.User;
@@ -14,7 +15,7 @@ public class RegistryEvent extends Event implements Serializable {
     private String eventId;
     private Instant dateTime;
     private String dataSource;
-    private User user;
+    private IUser user;
     private RegistryOperation registryOperation;
     private MachineEntity machineEntity;
     private RegistryEntry registryEntry;
@@ -23,7 +24,7 @@ public class RegistryEvent extends Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public RegistryEvent(String eventId, Instant dateTime, String dataSource, User user, RegistryOperation registryOperation, MachineEntity machineEntity) {
+    public RegistryEvent(String eventId, Instant dateTime, String dataSource, IUser user, RegistryOperation registryOperation, MachineEntity machineEntity) {
         this.eventId = eventId;
         this.dateTime = dateTime;
         this.dataSource = dataSource;
@@ -61,11 +62,11 @@ public class RegistryEvent extends Event implements Serializable {
         this.dataSource = dataSource;
     }
 
-    public User getUser() {
+    public IUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(IUser user) {
         this.user = user;
     }
 
