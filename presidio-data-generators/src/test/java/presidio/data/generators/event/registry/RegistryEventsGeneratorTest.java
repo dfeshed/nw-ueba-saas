@@ -2,10 +2,8 @@ package presidio.data.generators.event.registry;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.domain.event.process.ProcessEvent;
 import presidio.data.domain.event.registry.RegistryEvent;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.event.process.ProcessEventsGenerator;
 
 import java.util.List;
 

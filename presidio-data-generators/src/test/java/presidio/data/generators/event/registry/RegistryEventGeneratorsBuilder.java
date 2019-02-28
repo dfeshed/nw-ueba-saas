@@ -12,7 +12,6 @@ import presidio.data.generators.event.process.CyclicOperationTypeGenerator;
 import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.processentity.ProcessEntityGenerator;
-import presidio.data.generators.processop.ProcessOperationGenerator;
 import presidio.data.generators.registryentry.IRegistryEntryGenerator;
 import presidio.data.generators.registryop.RegistryOperationGenerator;
 import presidio.data.generators.user.IUserGenerator;
