@@ -79,6 +79,7 @@ export default class DataHelper {
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);
     _set(this.state, 'logs', null);
+    _set(this.state, 'logsFilterChangePending', false);
     _set(this.state, 'logsLoading', false);
     _set(this.state, 'logsLastLoaded', '0');
     _set(this.state, 'logsIntervalHandle', null);
@@ -137,6 +138,11 @@ export default class DataHelper {
 
   logs(arr) {
     _set(this.state, 'logs', arr);
+    return this;
+  }
+
+  logsFilterChangePending(bool) {
+    _set(this.state, 'logsFilterChangePending', bool);
     return this;
   }
 

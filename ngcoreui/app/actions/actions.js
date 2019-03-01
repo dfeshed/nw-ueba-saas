@@ -289,6 +289,7 @@ const loadLogs = (params, intervalCallback) => {
               transport.send('/logs', {
                 message: 'download',
                 params: {
+                  ...params,
                   id1: (top + 1).toString(),
                   id2: (newTop + 1).toString(),
                   op: 'start'
@@ -310,6 +311,18 @@ const loadLogs = (params, intervalCallback) => {
         intervalCallback(intervalHandle);
       }
     });
+  };
+};
+
+const logsFilterChange = () => {
+  return {
+    type: ACTION_TYPES.LOGS_FILTER_CHANGE
+  };
+};
+
+const logsFilterChangeDone = () => {
+  return {
+    type: ACTION_TYPES.LOGS_FILTER_CHANGE_DONE
   };
 };
 
@@ -423,5 +436,7 @@ export {
   selectNode,
   deselectNode,
   setConfigValue,
-  loadLogs
+  loadLogs,
+  logsFilterChange,
+  logsFilterChangeDone
 };

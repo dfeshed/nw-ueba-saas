@@ -23,6 +23,7 @@ const initialState = Immutable.from({
   selectedNode: null,
   appStatNodes: {},
   logs: null,
+  logsFilterChangePending: false,
   logsLoading: false,
   logsLastLoaded: '0'
 });
@@ -336,6 +337,14 @@ const reducer = handleActions({
     } else {
       return state;
     }
+  },
+
+  [ACTION_TYPES.LOGS_FILTER_CHANGE]: (state) => {
+    return state.set('logsFilterChangePending', true);
+  },
+
+  [ACTION_TYPES.LOGS_FILTER_CHANGE_DONE]: (state) => {
+    return state.set('logsFilterChangePending', false);
   },
 
   [ACTION_TYPES.LOGS_UPDATE]: (state, action) => {

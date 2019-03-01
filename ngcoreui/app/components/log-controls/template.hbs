@@ -23,7 +23,7 @@
   {{#if isId}}
     {{#if latest}}
       <vbox fit>
-        {{rsa-form-input label='Count' value=count focusOut=(action 'updateParams')}}
+        {{rsa-form-input label='Count' value=count onKeyUp=(action 'logsFilterChange')}}
         <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
           {{rsa-form-checkbox
           checked=latest
@@ -33,7 +33,7 @@
       </vbox>
     {{else}}
       <vbox fit>
-        {{rsa-form-input label='id1' value=id1 focusOut=(action 'updateParams') isDisabled=latest}}
+        {{rsa-form-input label='id1' value=id1 onKeyUp=(action 'logsFilterChange') isDisabled=latest}}
         <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
           {{rsa-form-checkbox
           checked=latest
@@ -42,7 +42,7 @@
         </label>
       </vbox>
       <vbox fit>
-        {{rsa-form-input label='id2' value=id2 focusOut=(action 'updateParams')}}
+        {{rsa-form-input label='id2' value=id2 onKeyUp=(action 'logsFilterChange')}}
       </vbox>
     {{/if}}
   {{else if isTime}}
@@ -64,7 +64,7 @@
 </hbox>
 
 <vbox fit>
-  {{rsa-form-input label=(if regexMode 'Regex' 'Match') value=filter focusOut=(action 'updateParams')}}
+  {{rsa-form-input label=(if regexMode 'Regex' 'Match') value=filter onKeyUp=(action 'logsFilterChange')}}
   <div class="less-top-margin">
     <label class="rsa-form-checkbox-label {{if regexMode 'checked'}}">
       {{rsa-form-checkbox
@@ -122,3 +122,9 @@
     </div>
   </hbox>
 </vbox>
+
+{{#if logsFilterChangePending}}
+  <vbox fit justify="center">
+    {{#rsa-form-button style='primary' defaultAction=(action 'updateParams')}}Change Filters{{/rsa-form-button}}
+  </vbox>
+{{/if}}

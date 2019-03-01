@@ -2,10 +2,16 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { loadLogs } from 'ngcoreui/actions/actions';
+import { loadLogs, logsFilterChange, logsFilterChangeDone } from 'ngcoreui/actions/actions';
+
+const stateToComputed = (state) => ({
+  logsFilterChangePending: state.logsFilterChangePending
+});
 
 const dispatchToActions = {
-  loadLogs
+  loadLogs,
+  logsFilterChange,
+  logsFilterChangeDone
 };
 
 const logControls = Component.extend({
@@ -98,54 +104,55 @@ const logControls = Component.extend({
 
     updateParams() {
       this.send('stopUpdates');
+      this.send('logsFilterChangeDone');
       this.send('loadLogs', this.get('params'), (intervalHandle) => {
         this.set('intervalHandle', intervalHandle);
       });
     },
 
     typeChanged() {
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
 
     toggleDebug() {
       this.toggleProperty('debug');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleInfo() {
       this.toggleProperty('info');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleAudit() {
       this.toggleProperty('audit');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleWarning() {
       this.toggleProperty('warning');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleFailure() {
       this.toggleProperty('failure');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleLatest() {
       this.toggleProperty('latest');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     setTime1(time) {
       // time is an array of JS Date objects
       this.set('time1Local', time);
       // Convert from JS time to UNIX/epoc time
       this.set('time1', Math.floor(time[0].getTime() / 1000).toString());
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     setTime2(time) {
       this.set('time2Local', time);
       this.set('time2', Math.floor(time[0].getTime() / 1000).toString());
-      this.send('updateParams');
+      this.send('logsFilterChange');
     },
     toggleRegexMode() {
       this.toggleProperty('regexMode');
-      this.send('updateParams');
+      this.send('logsFilterChange');
     }
   },
 
@@ -166,4 +173,4 @@ const logControls = Component.extend({
   }
 });
 
-export default connect(null, dispatchToActions)(logControls);
+export default connect(stateToComputed, dispatchToActions)(logControls);

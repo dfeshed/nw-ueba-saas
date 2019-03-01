@@ -159,6 +159,10 @@ hr {
   margin-left: 10px;
 }
 
+.log-controls .flatpickr-input {
+  min-width: 14em;
+}
+
 .log-controls > hbox,
 .log-controls > vbox {
   padding-left: 15px;

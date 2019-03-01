@@ -39,6 +39,53 @@ module('Unit | Reducers | Logs', (hooks) => {
     assert.strictEqual(result.logsLoading, false);
   });
 
+  test('LOGS_FILTER_CHANGE sets logsFilterChangePending to true', (assert) => {
+    const action = {
+      type: ACTION_TYPES.LOGS_FILTER_CHANGE
+    };
+    const state = new ReduxDataHelper()
+      .connected()
+      .build();
+
+    assert.strictEqual(state.logsFilterChangePending, false);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.logsFilterChangePending, true);
+  });
+
+  test('LOGS_FILTER_CHANGE sets logsFilterChangePending to true and doesn\'t error when already true', (assert) => {
+    const action = {
+      type: ACTION_TYPES.LOGS_FILTER_CHANGE
+    };
+    const state = new ReduxDataHelper()
+      .connected()
+      .logsFilterChangePending(true)
+      .build();
+
+    assert.strictEqual(state.logsFilterChangePending, true);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.logsFilterChangePending, true);
+  });
+
+  test('LOGS_FILTER_CHANGE_DONE sets logsFilterChangePending to false', (assert) => {
+    const action = {
+      type: ACTION_TYPES.LOGS_FILTER_CHANGE_DONE
+    };
+    const state = new ReduxDataHelper()
+      .connected()
+      .logsFilterChangePending(true)
+      .build();
+
+    assert.strictEqual(state.logsFilterChangePending, true);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.logsFilterChangePending, false);
+  });
+
   test('LOGS_ADD_NEW adds logs to state and removes overlap', (assert) => {
     const action1 = {
       type: ACTION_TYPES.LOGS_ADD_NEW,
