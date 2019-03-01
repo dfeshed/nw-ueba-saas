@@ -10,6 +10,8 @@ const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 
+const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
+
 export default Component.extend({
   classNameBindings: ['isExpanded', 'isPopulated', ':pill-operator'],
 
@@ -19,6 +21,13 @@ export default Component.extend({
    * @public
    */
   isActive: false,
+
+  /**
+   * Is the component being opened for edit?
+   * @type {boolean}
+   * @public
+   */
+  isEditing: false,
 
   /**
    * Does this component consume the full width of its parent, or is it sized to
@@ -68,6 +77,15 @@ export default Component.extend({
   @computed('meta')
   options(meta) {
     return relevantOperators(meta);
+  },
+
+  /**
+   * We take away the ability to create FF in edit mode.
+   * Therefore, no Advanced Options while editing.
+   */
+  @computed('isEditing')
+  optionsComponent(isEditing) {
+    return isEditing ? undefined : AFTER_OPTIONS_COMPONENT;
   },
 
   init() {

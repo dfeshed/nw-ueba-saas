@@ -10,6 +10,7 @@
 {{query-container/pill-meta
   isActive=(readonly isMetaActive)
   isAutoFocused=(readonly isMetaAutoFocused)
+  isEditing=(readonly isEditing)
   isExpanded=(readonly shouldMetaExpand)
   isFirstPill=(eq position 0)
   metaOptions=metaOptions
@@ -19,6 +20,7 @@
 
 {{query-container/pill-operator
   isActive=(readonly isOperatorActive)
+  isEditing=(readonly isEditing)
   isExpanded=(readonly shouldOperatorExpand)
   isFocusAtBeginning=(readonly isOperatorFocusedAtBeginning)
   meta=(readonly selectedMeta)
@@ -28,6 +30,7 @@
 
 {{query-container/pill-value
   isActive=(readonly isValueActive)
+  isEditing=(readonly isEditing)
   isFocusAtBeginning=(readonly isValueFocusedAtBeginning)
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)

@@ -15,6 +15,18 @@ const FREE_FORM_PILL = 'Free-Form Filter';
 // This is used for an internal Ember API function: escapeExpression
 const { Handlebars: { Utils } } = Ember;
 
+/**
+* The options used for the power-select. They are grouped to provide a way to
+* have 2 "lists". One list is the default type of pill to create, the second
+* list is the advanced options (creating free-form or text pills). The first
+* group's name is hidden via CSS, but we still need to give it a name so it
+* renders. That's why it's a space character.
+*/
+const _dropDownOptions = [
+  { groupName: ' ', options: [QUERY_PILL] },
+  { groupName: 'Advanced Options', options: [ FREE_FORM_PILL ] }
+];
+
 export default Component.extend({
   classNameBindings: ['isPopulated', ':pill-value'],
 
@@ -31,6 +43,13 @@ export default Component.extend({
    * @public
    */
   isActive: false,
+
+  /**
+   * Is the component being opened for edit?
+   * @type {boolean}
+   * @public
+   */
+  isEditing: false,
 
   /**
    * Should we position the cursor at the beginning of the string when focusing
@@ -61,17 +80,14 @@ export default Component.extend({
   _isAutoFocus: true,
 
   /**
-   * The options used for the power-select. They are grouped to provide a way to
-   * have 2 "lists". One list is the default type of pill to create, the second
-   * list is the advanced options (creating free-form or text pills). The first
-   * group's name is hidden via CSS, but we still need to give it a name so it
-   * renders. That's why it's a space character.
+   * If an already existing pill is being edited, do not display
+   * Advanced Options in the dropdown.
    * @private
    */
-  _options: [
-    { groupName: ' ', options: [QUERY_PILL] },
-    { groupName: 'Advanced Options', options: [ FREE_FORM_PILL ] }
-  ],
+  @computed('isEditing')
+  _options: (isEditing) => {
+    return isEditing ? _dropDownOptions.filter((op) => op.groupName !== 'Advanced Options') : _dropDownOptions;
+  },
 
   /**
    * The value typed into power-selects input

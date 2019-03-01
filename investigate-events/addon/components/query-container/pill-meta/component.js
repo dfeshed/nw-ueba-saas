@@ -16,6 +16,8 @@ const dropFocus = () => {
   }
 };
 
+const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
+
 export default Component.extend({
   classNameBindings: ['isExpanded', ':pill-meta'],
 
@@ -32,6 +34,13 @@ export default Component.extend({
    * @public
    */
   isAutoFocused: true,
+
+  /**
+   * Is the component being opened for edit?
+   * @type {boolean}
+   * @public
+   */
+  isEditing: false,
 
   /**
    * Does this component consume the full width of its parent, or is it sized to
@@ -88,6 +97,15 @@ export default Component.extend({
   placeholder(isFirstPill) {
     const i18n = this.get('i18n');
     return isFirstPill ? i18n.t('queryBuilder.placeholder') : '';
+  },
+
+  /**
+   * We take away the ability to create FF in edit mode.
+   * Therefore, no Advanced Options while editing.
+   */
+  @computed('isEditing')
+  optionsComponent(isEditing) {
+    return isEditing ? undefined : AFTER_OPTIONS_COMPONENT;
   },
 
   init() {

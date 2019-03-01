@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
-import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -2006,5 +2006,43 @@ module('Integration | Component | Query Pills', function(hooks) {
       // );
       assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), 'foobar', 'Expected stringified pill');
     });
+  });
+
+  test('it should not have Advanced Options in the afterOptionsComponent if a pill is open for edit', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    // Should be able to see Advanced Options on a new pill trigger/meta
+    assert.ok(find(PILL_SELECTORS.powerSelectAfterOptions), 'Should be able to see Advanced Options in meta component');
+
+    // select some meta and move to operator comp
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // select some meta and move to operator comp
+    // Should be able to see Advanced Options on operator dropdown
+    assert.ok(find(PILL_SELECTORS.powerSelectAfterOptions), 'Should be able to see Advanced Options in operator component');
+
+    // Select an operator and move to value comp
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+    // Should be able to see the Advanced Options
+    assert.equal(find('ul.ember-power-select-options li:nth-of-type(2)').textContent.trim().replace(/\s/g, ''), 'AdvancedOptionsFree-FormFilter', 'Should be able to see Advanced Options in value component');
+
+    // Remove all focus
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
+
+    // Open a pill for edit
+    await doubleClick(PILL_SELECTORS.queryPill, true);
+
+    // But while editing, there should not be Advanced Options in the dropdown
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptions), 'Should be no Advanced Options in value component');
+
   });
 });

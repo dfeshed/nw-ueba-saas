@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { later, next, throttle } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import computed, { alias } from 'ember-computed-decorators';
+import computed, { alias, and } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -78,6 +78,14 @@ export default Component.extend({
   // Tracks whether a double click has fired to single click
   // events can be stopped
   doubleClickFired: false,
+
+  /**
+   * Is this pill currently being edited
+   * @type {boolean}
+   * @public
+   */
+  @and('pillData.isEditing', 'isActive')
+  isEditing: false,
 
   /**
    *

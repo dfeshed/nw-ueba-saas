@@ -1,7 +1,7 @@
 {{#if isActiveWithOptions}}
   {{#power-select-typeahead
     afterOptionsComponent=(
-      component 'query-container/power-select-after-options'
+      component optionsComponent
       sendMessage=(action 'handleMessage')
     )
     allowClear=false
