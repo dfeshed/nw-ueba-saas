@@ -6,8 +6,7 @@ import Component from '@ember/component';
 import { next } from '@ember/runloop';
 
 import {
-  getEndpointServerList,
-  getDevices
+  getEndpointServerList
 } from '../../actions/data-creators';
 
 
@@ -21,8 +20,7 @@ const stateToComputed = ({ packager }) => ({
   error: packager.error
 });
 const dispatchToActions = {
-  getEndpointServerList,
-  getDevices
+  getEndpointServerList
 };
 
 
@@ -52,7 +50,6 @@ const Container = Component.extend({
     next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         this.send('getEndpointServerList', this.get('serverId'));
-        this.send('getDevices');
       }
     });
   }

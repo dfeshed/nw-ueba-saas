@@ -230,24 +230,6 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(find('.password-input-js').classList.contains('is-error'), false, 'Error class is not present, on password field.');
   });
 
-  test('Protocol and TestLog resets to default when reset button is clicked', async function(assert) {
-    assert.expect(3);
-    new ReduxDataHelper(setState)
-      .setData('defaultPackagerConfig', newConfig)
-      .build();
-    this.set('selectedProtocol', 'UDP');
-    this.set('testLog', false);
-    this.set('status', 'disabled');
-    await render(hbs`{{packager-form selectedProtocol=selectedProtocol testLog=testLog status=status}}`);
-    await click('.reset-button .rsa-form-button');
-    const protocol = this.get('selectedProtocol');
-    const testLog = this.get('testLog');
-    const status = this.get('status');
-    assert.equal(protocol, 'TCP');
-    assert.equal(testLog, true);
-    assert.equal(status, 'enabled');
-  });
-
   test('required fields are rendered in the AGENT CONFIGURATION section', async function(assert) {
 
     await render(hbs`{{packager-form}}`);
@@ -274,5 +256,45 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(serviceNameEl.length, 1, 'Service service name input is rendered');
     assert.equal(serviceDisplayNameEl.length, 1, 'Service display name is rendered');
     assert.equal(serviceDescriptionEl.length, 1, 'Service description is rendered');
+  });
+
+  test('Password field is not valid, on key up', async function(assert) {
+    this.set('isPasswordError', false);
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test'
+      }
+    };
+
+    new ReduxDataHelper(setState).setData('defaultPackagerConfig', testConfig).build();
+    await render(hbs`{{packager-form isPasswordError=isPasswordError}}`);
+    await triggerKeyEvent('.password-input-js  input', 'keyup', 13);
+    assert.equal(this.get('isPasswordError'), true);
+    assert.equal(find('.password-input-js').classList.contains('is-error'), true, 'Error class is present on password field.');
+  });
+
+  test('Force Overwrite', async function(assert) {
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test',
+        'forceOverwrite': false
+      }
+    };
+
+    new ReduxDataHelper(setState).setData('defaultPackagerConfig', testConfig).build();
+    await render(hbs`{{packager-form}}`);
+    assert.equal(findAll('.field.force-overwrite .rsa-form-checkbox.checked').length, 0, 'Force overwrite is checked');
+    await click(findAll('.field.force-overwrite .rsa-form-checkbox')[0]);
+    assert.equal(findAll('.field.force-overwrite .rsa-form-checkbox.checked').length, 1, 'Force overwrite is not checked');
   });
 });

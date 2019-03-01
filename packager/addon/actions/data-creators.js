@@ -15,9 +15,19 @@ import * as ACTION_TYPES from './types';
 import {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices,
   fetchEndpointServers
 } from './fetch';
+
+/**
+ * Generic handler for errors
+ * @private
+ */
+const _handleFilesError = (response) => {
+  return {
+    type: ACTION_TYPES.RETRIEVE_FAILURE,
+    payload: response.code
+  };
+};
 
 /**
  * Action creator for fetching packager config information.
@@ -75,21 +85,6 @@ const saveUIState = (fieldValues) => ({
 });
 
 /**
- * Action creator for fetching list of devices available.
- * @method getServices
- * @public
- * @returns {Object}
- */
-const getDevices = () => ({
-  type: ACTION_TYPES.GET_DEVICES,
-  promise: getListOfDevices(),
-  meta: {
-    onSuccess: (response) => debug(`${ACTION_TYPES.GET_DEVICES} ${JSON.stringify(response)}`),
-    onFailure: (response) => _handleFilesError(response)
-  }
-});
-
-/**
  * action creator to fetch enpoint server list
  * @method getEndpointServerList
  * @public
@@ -119,16 +114,6 @@ const getEndpointServerList = (serverId) => {
     });
   };
 };
-/**
- * Generic handler for errors
- * @private
- */
-const _handleFilesError = (response) => {
-  return {
-    type: ACTION_TYPES.RETRIEVE_FAILURE,
-    payload: response.code
-  };
-};
 
 /**
  * Action for resetting form back to previous saved state
@@ -139,7 +124,6 @@ const resetForm = () => ({ type: ACTION_TYPES.RESET_FORM });
 export {
   setConfig,
   getConfig,
-  getDevices,
   resetForm,
   saveUIState,
   getEndpointServerList

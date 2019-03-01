@@ -60,28 +60,13 @@ const formComponent = Component.extend({
 
   isError: false,
 
-  protocolOptions: ['UDP', 'TCP', 'TLS'],
-
   className: 'power-select',
-
-  primaryDestination: '',
-
-  secondaryDestination: '',
 
   selectedFrequency: '1 Hour',
 
   invalidTableItem: '-999999',
 
-  selectedProtocol: 'TCP',
-
-  testLog: true,
-
   autoUninstall: null,
-
-  status: 'enabled',
-
-  @computed('status')
-  enabled: (status) => status !== 'disabled',
 
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
@@ -123,14 +108,6 @@ const formComponent = Component.extend({
       passwordInvalidMessage: null,
       isDriverDisplayNameError: false,
       isDriverServiceNameError: false
-    });
-  },
-
-  resetDefaultProperties() {
-    this.setProperties({
-      testLog: true,
-      selectedProtocol: 'TCP',
-      status: 'enabled'
     });
   },
 
@@ -199,35 +176,13 @@ const formComponent = Component.extend({
       }
     },
 
-    toggleProperty(property) {
-      this.toggleProperty(property);
-    },
-
     setSelect(property, selected, option) {
       this.set(selected, option);
       this.set(`configData.logCollectionConfig.${property}`, option);
     },
 
-    setPrimaryDestination(destination) {
-      this.set('configData.logCollectionConfig.primaryDestination', destination);
-      this.set('configData.logCollectionConfig.secondaryDestination', '');
-    },
-
-    setSecondaryDestination(destination) {
-      this.set('configData.logCollectionConfig.secondaryDestination', destination);
-    },
-
-    // adding an empty row to the channel filters table
-    addRowFilter() {
-      this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
-    },
-    // pass the index of the row to delete the row in the channel filters
-    deleteRow(index) {
-      this.get('configData.logCollectionConfig.channels').removeAt(index);
-    },
     reset() {
       this.resetErrorProperties();
-      this.resetDefaultProperties();
       this.send('resetForm');
     },
     onForceOverwiteChange() {

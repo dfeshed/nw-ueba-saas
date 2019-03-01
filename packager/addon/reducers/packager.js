@@ -44,13 +44,6 @@ const packagerReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.GET_DEVICES]: (state, action) => {
-    return handle(state, action, {
-      success: (s) => s.set('devices', action.payload.data),
-      failure: (s) => s.set('error', true)
-    });
-  },
-
   [ACTION_TYPES.UPDATE_FIELDS]: (state, { payload }) => state.set('defaultPackagerConfig', payload),
 
   [ACTION_TYPES.DOWNLOAD_PACKAGE]: (state, { payload }) => {

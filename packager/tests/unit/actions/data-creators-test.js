@@ -60,21 +60,6 @@ test('Test action creator for getEndpointServerList', function(assert) {
   callback(dispatchFn);
 });
 
-test('Test action creator for getting devices', function(assert) {
-  const done = assert.async();
-  assert.expect(4);
-  patchSocket((method, modelName) => {
-    assert.equal(method, 'getServices');
-    assert.equal(modelName, 'packager');
-  });
-  const action = dataCreators.getDevices();
-  action.promise.then((response) => {
-    assert.ok(response.data.length > 0, 'There should be atleast one device (Decoder/Log Collector)');
-    done();
-  });
-  assert.equal(action.type, ACTION_TYPES.GET_DEVICES);
-});
-
 test('Test action creator for Updating UI field values', function(assert) {
   const action = dataCreators.saveUIState({});
   assert.equal(action.type, ACTION_TYPES.UPDATE_FIELDS);

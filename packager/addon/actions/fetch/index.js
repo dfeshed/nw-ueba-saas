@@ -1,7 +1,6 @@
 import {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices,
   getConfiguration,
   fetchEndpointServers
 } from './packager';
@@ -9,7 +8,6 @@ import {
 export {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices,
   getConfiguration,
   fetchEndpointServers
 };

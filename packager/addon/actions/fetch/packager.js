@@ -19,14 +19,6 @@ const setPackagerConfig = (model) => {
     }
   });
 };
-const getListOfDevices = () => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'getServices',
-    modelName: 'packager',
-    query: {}
-  });
-};
 
 const getConfiguration = (model) => {
   const request = lookup('service:request');
@@ -51,7 +43,6 @@ export const fetchEndpointServers = () => {
 export {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices,
   getConfiguration
 };
 
