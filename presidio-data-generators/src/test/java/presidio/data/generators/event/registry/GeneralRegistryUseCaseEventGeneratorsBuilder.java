@@ -6,6 +6,8 @@ import presidio.data.generators.common.IStringListGenerator;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
+import presidio.data.generators.processentity.ProcessCategoriesGenerator;
+import presidio.data.generators.processentity.ProcessDirectoryGroupsGenerator;
 import presidio.data.generators.user.IUserGenerator;
 
 import java.util.List;
@@ -196,11 +198,11 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
 
     @Override
     protected IStringListGenerator getProcessCategoriesGenerator(IFileEntityGenerator fileEntityGenerator) {
-        return null;
+        return new ProcessCategoriesGenerator((List<String>) null);
     }
 
     @Override
     protected IStringListGenerator getProcessDirectoryGroupsGenerator(IFileEntityGenerator fileEntityGenerator) {
-        return null;
+        return new ProcessDirectoryGroupsGenerator((List<String>) null);
     }
 }

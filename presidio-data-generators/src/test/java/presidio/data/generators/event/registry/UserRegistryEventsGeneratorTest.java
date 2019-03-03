@@ -3,7 +3,7 @@ package presidio.data.generators.event.registry;
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
 import presidio.data.domain.event.Event;
-import presidio.data.domain.event.process.ProcessEvent;
+import presidio.data.domain.event.registry.RegistryEvent;
 import presidio.data.generators.common.GeneratorException;
 
 import java.time.Instant;
@@ -31,15 +31,18 @@ public class UserRegistryEventsGeneratorTest {
             events = scenario.generateEvents(EVENTS_GENERATION_CHUNK);
 
             Map<String, List<Event>> userToEvents = new HashMap<>();
-            Map<String, List<Event>> srcProcessToEvents = new HashMap<>();
-            Map<String, List<Event>> dstProcessToEvents = new HashMap<>();
+            Map<String, List<Event>> processToEvents = new HashMap<>();
+            Map<String, List<Event>> registryKeyToEvents = new HashMap<>();
+            Map<String, List<Event>> registryKeyGroupToEvents = new HashMap<>();
             for(Event event: events){
-                List<Event> userEvents = userToEvents.computeIfAbsent(((ProcessEvent)event).getUser().getUserId(), k -> new ArrayList<>());
+                List<Event> userEvents = userToEvents.computeIfAbsent(((RegistryEvent)event).getUser().getUserId(), k -> new ArrayList<>());
                 userEvents.add(event);
-                List<Event> srcProcessEvents = srcProcessToEvents.computeIfAbsent(((ProcessEvent)event).getProcessOperation().getSourceProcess().getProcessFileName(), k -> new ArrayList<>());
-                srcProcessEvents.add(event);
-                List<Event> dstProcessEvents = dstProcessToEvents.computeIfAbsent(((ProcessEvent)event).getProcessOperation().getDestinationProcess().getProcessFileName(), k -> new ArrayList<>());
-                dstProcessEvents.add(event);
+                List<Event> processEvents = processToEvents.computeIfAbsent(((RegistryEvent)event).getRegistryOperation().getProcess().getProcessFileName(), k -> new ArrayList<>());
+                processEvents.add(event);
+                List<Event> registryKeyEvents = registryKeyToEvents.computeIfAbsent(((RegistryEvent)event).getRegistryOperation().getRegistryEntry().getKey(), k -> new ArrayList<>());
+                registryKeyEvents.add(event);
+                List<Event> registryKeyGroupEvents = registryKeyGroupToEvents.computeIfAbsent(((RegistryEvent)event).getRegistryOperation().getRegistryEntry().getKeyGroup(), k -> new ArrayList<>());
+                registryKeyGroupEvents.add(event);
             }
 
             stopWatch.split();

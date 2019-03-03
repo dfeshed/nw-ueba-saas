@@ -1,9 +1,12 @@
 package presidio.data.generators.registryop;
 
+import presidio.data.domain.ProcessEntity;
+import presidio.data.domain.RegistryEntry;
+import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.registry.RegistryOperation;
-import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IOperationTypeGenerator;
 import presidio.data.generators.event.registry.CyclicOperationTypeGenerator;
+import presidio.data.generators.event.registry.ProcessRegistryEntryGenerator;
 import presidio.data.generators.processentity.IProcessEntityGenerator;
 import presidio.data.generators.processentity.WindowsProcessEntityGenerator;
 import presidio.data.generators.registryentry.IRegistryEntryGenerator;
@@ -21,7 +24,11 @@ public class RegistryOperationGenerator implements IRegistryOperationGenerator {
     }
 
     public RegistryOperation getNext(){
-        return new RegistryOperation(processEntityGenerator.getNext(), registryEntryGenerator.getNext(), operationTypeGenerator.getNext());
+        ProcessEntity processEntity = processEntityGenerator.getNext();
+        ProcessRegistryEntryGenerator.curProcess = processEntity;
+        RegistryEntry registryEntry = registryEntryGenerator.getNext();
+        OperationType operationType = operationTypeGenerator.getNext();
+        return new RegistryOperation(processEntity, registryEntry, operationType);
     }
 
     public IProcessEntityGenerator getProcessEntityGenerator() {
