@@ -6,6 +6,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.MultiEventGenerator;
+import presidio.data.generators.event.process.NonImportantProcessEventGeneratorsBuilder;
 import presidio.data.generators.fileentity.RandomFileEntityGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.MachineGeneratorRouter;
@@ -110,7 +111,24 @@ public class RegistryPerformanceStabilityScenario {
     }
 
     private void initBuilders(){
+        GeneralRegistryUseCaseEventGeneratorsBuilder generalRegistryUseCaseEventGeneratorsBuilder =
+                new GeneralRegistryUseCaseEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        machineGenerator,
+                        nonImportantProcesses,
+                        registryKeyGroupToRegistryKey,
+                        registryKeyToValuesMap
+                );
 
+        registryEventGeneratorsBuilders.add(generalRegistryUseCaseEventGeneratorsBuilder);
+        registryEventGeneratorsBuilders.forEach(registryEventGeneratorsBuilder -> registryEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier));
     }
 
     private IUserGenerator createNormalUserGenerator(){
@@ -193,6 +211,8 @@ public class RegistryPerformanceStabilityScenario {
 
 
     private void initRegistryKeys(){
+        registryKeyGroupToRegistryKey = new HashMap<>();
+        registryKeyToValuesMap = new HashMap<>();
         Random random = new Random();
         for(int i = 0; i <= 100000; i++){
             int groupIndex = random.nextInt(REGISTRY_KEY_GROUPS.length);
