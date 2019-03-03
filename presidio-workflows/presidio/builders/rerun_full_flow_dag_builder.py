@@ -163,7 +163,7 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
 
     for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
         for paused_dag in paused_dags:
-            sql = "DELETE FROM {} WHERE dag_id LIKE \'{}\'".format(t, paused_dag.dag_id)
+            sql = "DELETE FROM {} WHERE dag_id LIKE \'{}%\'".format(t, paused_dag.dag_id)
             logging.info("executing: %s", sql)
             session.execute(sql)
 
