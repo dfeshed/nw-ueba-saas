@@ -4,7 +4,7 @@
 const contextMetas = require('./contextMetas');
 
 module.exports = function(environment) {
-  let ENV = {
+  const ENV = {
     flashMessageDefaults: {
       timeout: 5000,
       iconSize: 'larger',

@@ -2,7 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getData, getSortedData } from 'context/util/context-data-modifier';
+import { getData, getSortedData } from 'context/utils/context-data-modifier';
 import { set } from '@ember/object';
 
 const stateToComputed = ({ context: { context } }) => ({

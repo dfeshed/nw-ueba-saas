@@ -56,7 +56,7 @@ const findDataSource = (dataSources, meta) => {
 const findConfiguredDatasource = (dsMeta, dataConnections) => {
   dsMeta.forEach((data) => {
     dataConnections.forEach((connection) => {
-      if (data.dataSourceConnectionId == connection.id) {
+      if (data.dataSourceConnectionId === connection.id) {
         data.enabled = connection.enabled ? data.enabled : false;
       }
     });

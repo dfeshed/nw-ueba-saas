@@ -2,7 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getErrorMessage } from 'context/util/context-data-modifier';
+import { getErrorMessage } from 'context/utils/context-data-modifier';
 import { onLiveConnectTab } from 'context/reducers/tabs/selectors';
 
 

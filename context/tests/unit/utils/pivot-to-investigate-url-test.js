@@ -1,4 +1,4 @@
-import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
+import { pivotToInvestigateUrl } from 'context/utils/context-data-modifier';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | pivot to investigate url');

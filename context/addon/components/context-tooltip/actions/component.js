@@ -4,7 +4,7 @@ import safeCallback from 'component-lib/utils/safe-callback';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
-import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/util/context-data-modifier';
+import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/utils/context-data-modifier';
 import { getSummaryData } from 'context/actions/model-summary';
 import { inject as service } from '@ember/service';
 

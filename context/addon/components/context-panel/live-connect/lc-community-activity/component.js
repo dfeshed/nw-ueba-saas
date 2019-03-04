@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
-import ContextHelper from 'context/util/util';
+import ContextHelper from 'context/utils/util';
 import layout from './template';
 
 const riskTemplate = {

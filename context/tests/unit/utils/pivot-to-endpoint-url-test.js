@@ -1,4 +1,4 @@
-import { pivotToEndpointUrl } from 'context/util/context-data-modifier';
+import { pivotToEndpointUrl } from 'context/utils/context-data-modifier';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | pivot to pivotToEndpointUrl url');

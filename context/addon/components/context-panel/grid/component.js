@@ -2,7 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getData, getOrder, getWarningInfo } from 'context/util/context-data-modifier';
+import { getData, getOrder, getWarningInfo } from 'context/utils/context-data-modifier';
 import { inject as service } from '@ember/service';
 import { next } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';

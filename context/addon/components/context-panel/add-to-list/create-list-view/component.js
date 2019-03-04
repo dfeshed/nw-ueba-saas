@@ -50,7 +50,7 @@ export default Component.extend({
 
     checkListName(name) {
       const rows = this.get('model.list');
-      const isDuplicateName = rows.find((list) => list.name.toUpperCase() == name.toUpperCase().trim());
+      const isDuplicateName = rows.find((list) => list.name.toUpperCase() === name.toUpperCase().trim());
       this.setProperties({
         isError: !!isDuplicateName,
         errorMessage: isDuplicateName ? this.get('i18n').t('context.error.listDuplicateName') : null,

@@ -1,4 +1,3 @@
-
 import { listTab } from 'dummy/helpers/list-tab';
 import { module, test } from 'qunit';
 import data from '../../data/list';

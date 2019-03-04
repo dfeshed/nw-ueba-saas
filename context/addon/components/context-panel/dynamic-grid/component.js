@@ -2,7 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getData } from 'context/util/context-data-modifier';
+import { getData } from 'context/utils/context-data-modifier';
 import { isEmpty } from 'ember-utils';
 
 const stateToComputed = ({ context: { context } }) => ({

@@ -2,7 +2,7 @@ import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
+import { pivotToInvestigateUrl } from 'context/utils/context-data-modifier';
 import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
@@ -28,8 +28,10 @@ const ActionbarComponent = Component.extend({
 
   /*
    * @private
-   * Pivot to investigate url will be formed based on lookupKey, meta and entitiesMetas. Where entitiesMetas comes from diffferent promise and same supposed to be resolved before panel opens up.
-   * Sample Pivot to investigate url::http://localhost:4200/investigation/choosedevice/navigate/query/event.user%253D'100'%257C%257Cuser.src%253D'100'%257C%257Cuser.dst%253D'100'%257C%257Cusername%253D'100'
+   * Pivot to investigate url will be formed based on lookupKey, meta and entitiesMetas.
+   * Where entitiesMetas comes from diffferent promise and same supposed to be resolved before panel opens up.
+   * Sample Pivot to investigate url ->
+   * http://localhost:4200/investigation/choosedevice/navigate/query/event.user%253D'100'%257C%257Cuser.src%253D'100'%257C%257Cuser.dst%253D'100'%257C%257Cusername%253D'100'
    */
   @computed('lookupKey', 'meta', 'entitiesMetas')
   investigateUrl(lookupKey, meta, entitiesMetas) {

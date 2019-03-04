@@ -2,7 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getTimeWindow } from 'context/util/context-data-modifier';
+import { getTimeWindow } from 'context/utils/context-data-modifier';
 
 
 const stateToComputed = ({ context: { context: { lookupData }, tabs: { activeTabName } } }) => ({

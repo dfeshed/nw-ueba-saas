@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { getLookupData } from 'context/reducers/context/selectors';
-import { isDataSourceEnabled, getData } from 'context/util/context-data-modifier';
+import { isDataSourceEnabled, getData } from 'context/utils/context-data-modifier';
 import { isEmpty } from '@ember/utils';
 
 const _getToolTipText = (lookupData, { dataSourceType, isConfigured }) => {

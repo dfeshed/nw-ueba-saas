@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from '../../actions/types';
 import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
-import { getTabs } from 'context/util/context-data-modifier';
+import { getTabs } from 'context/utils/context-data-modifier';
 import TabList from 'context/config/dynamic-tab';
 
 const resetState = Immutable.from({

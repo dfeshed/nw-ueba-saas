@@ -1,4 +1,3 @@
-
 import { contextDataParser } from 'dummy/helpers/context-data-parser';
 import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
