@@ -1,5 +1,5 @@
-ln -s -f ../../scripts/hooks/pre-commit .git/hooks/pre-commit
 #!/bin/sh
+ln -s -f ../../scripts/hooks/pre-commit .git/hooks/pre-commit
 files=$(git diff --name-only --no-renames --staged)
 scriptDir="$(dirname "$0")"
 isPackageWithNoYarn=$(node $scriptDir/../../scripts/node/package-with-no-yarn-check.js $files)

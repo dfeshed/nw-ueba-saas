@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import { patchFetch } from '../../helpers/patch-fetch';
@@ -127,7 +127,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     getAlertsForGivenTimeInterval()(dispatch, getState);
   });
 
-  test('it can updateDateRangeFilter for relative date', (assert) => {
+  skip('it can updateDateRangeFilter for relative date', (assert) => {
     assert.expect(2);
     const done = assert.async();
     const filterValue = {
