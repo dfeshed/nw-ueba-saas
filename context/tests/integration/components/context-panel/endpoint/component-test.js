@@ -1,8 +1,13 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { findAll, render } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Immutable from 'seamless-immutable';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import { revertPatch } from '../../../../helpers/patch-reducer';
 import endpointData from '../../../../data/endpoint';
-import * as ACTION_TYPES from 'context/actions/types';
-import EmberObject from '@ember/object';
 import machineDetails from 'context/config/machines';
 import modulesDetails from 'context/config/endpoint-modules';
 import IOCdetails from 'context/config/endpoint-ioc';
@@ -47,48 +52,37 @@ const dataSource = {
   title: 'context.header.endpoint'
 };
 
-moduleForComponent('context-panel/endpoint', 'Integration | Component | context panel/endpoint', {
-  integration: true,
-  beforeEach() {
-    this.inject.service('redux');
-    this.registry.injection('component', 'i18n', 'service:i18n');
-  }
-});
+let setState;
+module('Integration | Component | context panel/endpoint', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('Test to display endpoint', function(assert) {
-
-  const contextData = EmberObject.create({});
-  contextData.set('Machines', endpointData);
-  this.set('contextData', contextData);
-  this.set('dSDetails', endpointDetails.Machines);
-
-
-  this.set('i18n', this.get('i18n'));
-  this.get('redux').dispatch({
-    type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
-    payload: {
-      lookupKey: '1.1.1.1',
-      meta: 'IP'
-    }
-  });
-  this.get('redux').dispatch({
-    type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
-    payload: 'Endpoint'
-  });
-  this.get('redux').dispatch({
-    type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
-    payload: 'Endpoint'
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, Immutable.from(state));
+    };
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  this.set('dataSource', dataSource);
-  this.get('redux').dispatch({
-    type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
-    payload: [dataSource]
+  hooks.afterEach(function() {
+    revertPatch();
   });
-  this.get('redux').dispatch({
-    type: ACTION_TYPES.GET_LOOKUP_DATA,
-    payload: [endpointData]
+
+  test('Test to display endpoint', async function(assert) {
+
+    this.set('details', dataSource.details);
+
+    new ReduxDataHelper(setState)
+      .initializeContextPanel({ lookupKey: '1.1.1.1',
+        meta: 'IP' })
+      .setActiveTabName('Endpoint')
+      .setDataSources([dataSource])
+      .setLookupData([endpointData])
+      .build();
+
+    await render(hbs `{{context-panel/endpoint dataSource=details}}`);
+
+    assert.equal(findAll('.rsa-context-panel__endpoint').length, 1, 'Testing number of datasource displayed');
   });
-  this.render(hbs `{{context-panel/endpoint dataSource=dataSource.details contextData=contextData i18n=i18n}}`);
-  assert.equal(this.$('.rsa-context-panel__endpoint').length, 1, 'Testing number of datasource displayed');
+
 });

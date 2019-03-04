@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { waitUntil, render, findAll } from '@ember/test-helpers';
+import { waitUntil, render, find, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
 import rsvp from 'rsvp';
@@ -48,6 +48,8 @@ module('Integration | Component | context-panel/pivotToArcher', function(hooks) 
     }, { timeout });
 
     assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for MAC_ADDRESS');
+
+    await click(find('div.rsa-context-panel__linkButton'));
   });
 
 });
