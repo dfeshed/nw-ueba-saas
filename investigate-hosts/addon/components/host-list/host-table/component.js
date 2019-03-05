@@ -8,7 +8,10 @@ import {
   serviceList,
   hostTotalLabel,
   nextLoadCount,
-  isScanStartButtonDisabled
+  isScanStartButtonDisabled,
+  isAllHostSelected,
+  isSortDescending,
+  sortField
 } from 'investigate-hosts/reducers/hosts/selectors';
 import _ from 'lodash';
 import { next } from '@ember/runloop';
@@ -17,7 +20,9 @@ import {
   toggleMachineSelected,
   toggleIconVisibility,
   setSelectedHost,
-  deSelectAllHosts
+  deSelectAllHosts,
+  selectAllHosts
+
 } from 'investigate-hosts/actions/ui-state-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -38,7 +43,10 @@ const stateToComputed = (state) => ({
   focusedHostIndex: state.endpoint.machines.focusedHostIndex,
   selections: state.endpoint.machines.selectedHostList || [],
   nextLoadCount: nextLoadCount(state),
-  isScanStartButtonDisabled: isScanStartButtonDisabled(state)
+  isScanStartButtonDisabled: isScanStartButtonDisabled(state),
+  isAllHostSelected: isAllHostSelected(state),
+  isSortDescending: isSortDescending(state),
+  sortField: sortField(state)
 });
 
 const dispatchToActions = {
@@ -50,7 +58,8 @@ const dispatchToActions = {
   fetchHostContext,
   onHostSelection,
   setFocusedHostIndex,
-  deSelectAllHosts
+  deSelectAllHosts,
+  selectAllHosts
 };
 
 const HostTable = Component.extend({
@@ -136,6 +145,19 @@ const HostTable = Component.extend({
           this.send('toggleMachineSelected', item);
         }
       }
+    },
+    toggleAllSelection() {
+      if (!this.get('isAllHostSelected')) {
+        this.send('selectAllHosts');
+      } else {
+        this.send('deSelectAllHosts');
+      }
+    },
+    sort(columnSort) {
+      if (this.closeProperties) {
+        this.closeProperties();
+      }
+      this.send('setHostColumnSort', columnSort);
     }
   }
 });

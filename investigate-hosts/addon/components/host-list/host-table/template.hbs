@@ -5,7 +5,29 @@
     items=hostList
     columnsConfig=columns
     onRowClick=(action 'toggleSelectedRow')}}
-    {{host-list/host-table/host-table-header closeProperties=closeProperties}}
+    {{#rsa-data-table/header
+      closeProperties=closeProperties
+      translateTitles=true enableColumnSelector=true as |column|}}
+      {{#if (eq column.dataType "checkbox")}}
+        <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllHostSelected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=isAllHostSelected
+            change=(action 'toggleAllSelection')}}
+        </label>
+      {{else}}
+        <span class='js-move-handle'>
+          {{t column.title}}
+        </span>
+      {{/if}}
+      {{#unless column.disableSort}}
+        {{host-list/host-table/sort-button
+          sortField=sortField
+          column=column
+          isSortDescending=isSortDescending
+          sortBy=(action 'sort')}}
+      {{/unless}}
+    {{/rsa-data-table/header}}
+  
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>
         {{rsa-loader size='larger'}}

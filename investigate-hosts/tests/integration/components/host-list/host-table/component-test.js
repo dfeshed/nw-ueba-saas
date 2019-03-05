@@ -71,7 +71,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     await render(hbs`{{host-list/host-table}}`);
     await click('.rsa-icon-cog-filled');
     assert.equal(endpoint.schema.length, 6, '6 columns are passed to the table');
-    assert.equal(findAll('.column-chooser-lists li').length, 56, '56 fields present in columns chooser (excluding score and machine name)');
+    assert.equal(findAll('.rsa-data-table-column-selector-panel section ul li').length, 58, '58 fields present in columns chooser (excluding score and machine name)');
   });
 
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
@@ -165,7 +165,30 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('i').classList.contains('rsa-icon-arrow-down-7-filled'), true, 'Arrow down icon appears after sorting');
     });
   });
+  test('Select all and deselect all rows using header checkbox', async function(assert) {
 
+    this.set('closeProperties', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openProperties', () => {});
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
+    await click(findAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 10, 'All 10 rows selected');
+    await click(findAll('.rsa-data-table-header-cell .rsa-form-checkbox')[0]);
+    assert.equal(findAll('.rsa-data-table-body-row.is-row-checked').length, 0, 'All 10 rows deelected');
+  });
   test('selecting an already check-boxed row, opens the risk panel', async function(assert) {
     this.set('closeProperties', () => {});
     this.set('openProperties', function() {
