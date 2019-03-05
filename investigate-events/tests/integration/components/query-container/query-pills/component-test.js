@@ -2045,4 +2045,31 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptions), 'Should be no Advanced Options in value component');
 
   });
+
+  test('editing a guided pill to complex and hitting enter should still make it guided', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+
+    // Open a pill for edit
+    await doubleClick(PILL_SELECTORS.queryPill, true);
+    await settled();
+
+    const pills = findAll(PILL_SELECTORS.queryPill);
+
+    const inputId = `#${pills[0].id} input`;
+    const newValue = 'x && sessionid exists';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+    assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'There should be no complex pill from a guided pill edit');
+  });
 });

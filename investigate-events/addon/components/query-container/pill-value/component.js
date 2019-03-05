@@ -188,10 +188,15 @@ export default Component.extend({
      */
     onInput(input, powerSelectAPI) {
       this.set('_searchString', input);
-      const match = complexOperators.find((d) => input.includes(d));
-      this.set('_isComplex', !!match);
-      const option = (match) ? FREE_FORM_PILL : QUERY_PILL;
-      next(this, () => powerSelectAPI.actions.highlight(option));
+
+      // Need to make a decision about highlight and marking it as complex
+      // only for the first time while creating a pill.
+      if (!this.get('isEditing')) {
+        const match = complexOperators.find((d) => input.includes(d));
+        this.set('_isComplex', !!match);
+        const option = (match) ? FREE_FORM_PILL : QUERY_PILL;
+        next(this, () => powerSelectAPI.actions.highlight(option));
+      }
     },
 
     /**
