@@ -8,13 +8,16 @@ const SERVICES = Object.keys(aliases.service).map(Number);
 const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
 const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']).map(Number);
 const IP_PROTOS = Object.keys(aliases['ip.proto']);
+const DEVICE_TYPES = [ 'ciscoace', 'celerra' ];
+const CATEGORY = [ 'Process', 'Machine', 'Service' ];
 
 const randInt = function(min, max) {
   return parseInt(min + (max - min) * Math.random(), 10);
 };
 
 const logAndNetworkMetas = function() {
-  return [
+  const medium = faker.random.arrayElement([1, 32]);
+  const metas = [
     [ 'service', faker.random.arrayElement(SERVICES) ],
     [ 'size', randInt(15, 2000) ],
     [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
@@ -22,18 +25,23 @@ const logAndNetworkMetas = function() {
     [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
     [ 'ip.dst', faker.internet.ip() ],
     [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ],
-    [ 'medium', faker.random.arrayElement([1, 32]) ]
+    [ 'medium', medium ]
   ];
+  if (medium === 32) {
+    metas.push(['device.type', faker.random.arrayElement(DEVICE_TYPES)]);
+  }
+  return metas;
 };
 
 const endpointMetas = [
   [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
-  [ 'medium', faker.random.number({ min: 2, max: 31 }) ],
+  [ 'medium', 32 ],
   [ 'ip.src', faker.internet.ip() ],
   [ 'ip.dst', faker.internet.ip() ],
   [ 'param.dst', faker.internet.userAgent() ],
   [ 'param.src', faker.internet.userAgent() ],
-  [ 'nwe.callback_id', randInt(15, 2000) ]
+  [ 'nwe.callback_id', randInt(15, 2000) ],
+  [ 'category', faker.random.arrayElement(CATEGORY) ]
 ];
 
 const oneDayAgo = (now) => {

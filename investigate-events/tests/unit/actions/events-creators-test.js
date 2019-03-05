@@ -194,7 +194,7 @@ module('Unit | Actions | event-creators', function(hooks) {
   });
 
   test('Retrieves oldest data when does not hit limit', function(assert) {
-    assert.expect(9);
+    assert.expect(10);
     const done = assert.async();
     const getState = () => {
       return new ReduxDataHelper()
@@ -221,6 +221,8 @@ module('Unit | Actions | event-creators', function(hooks) {
     const asserts = () => {
       assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
       assert.equal(queryResults.length, 500, 'total results accumulated');
+      const selectedEvent = queryResults.objectAt(2);
+      assert.ok(selectedEvent.hasOwnProperty('nwe.callback_id') === selectedEvent.hasOwnProperty('category'), 'event has category if it is an enpoint event');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
       assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
