@@ -58,9 +58,11 @@ const ConsolePanel = Component.extend({
     return percentageOfEventsDataReturned === 100;
   },
 
-  @computed('description', 'isQueryComplete', 'retrievalComplete', 'i18n', 'isCanceled')
-  progressLabel: (description, isQueryComplete, retrievalComplete, i18n, isCanceled) => {
-    if (isCanceled) {
+  @computed('description', 'isQueryComplete', 'retrievalComplete', 'i18n', 'isCanceled', 'hasError')
+  progressLabel: (description, isQueryComplete, retrievalComplete, i18n, isCanceled, hasError) => {
+    if (hasError) {
+      return i18n.t('investigate.queryStats.error');
+    } else if (isCanceled) {
       return i18n.t('investigate.queryStats.canceled');
     } else if (!isQueryComplete) {
       if (description) {

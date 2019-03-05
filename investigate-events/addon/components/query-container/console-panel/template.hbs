@@ -52,7 +52,9 @@
     </div>
 
     {{#if isRetrieving}}
-      {{query-container/console-panel/progress-bar}}
+      {{#unless hasError}}
+        {{query-container/console-panel/progress-bar}}
+      {{/unless}}
     {{/if}}
 
     {{#if hasError}}
