@@ -74,9 +74,7 @@ const _getHostDetails = (forceRefresh, serviceId) => {
         promise: HostDetails.getHostDetails({ agentId, scanTime }),
         meta: {
           onSuccess: (response) => {
-            const { data } = response;
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
-            dispatch(setFocusedHost(data));
             dispatch(_fetchDataForSelectedTab());
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
@@ -288,6 +286,7 @@ const _getMachineSearchForAgent = (agentId) => {
             request.registerPersistentStreamOptions({ socketUrlPostfix: item.serviceId, requiredSocketUrl: 'endpoint/socket' });
             dispatch(_fetchPolicyDetails(agentId));
             dispatch(setSelectedHost(item));
+            dispatch(setFocusedHost(item));
             dispatch(getAllServices());
             dispatch(getServiceId('MACHINE'));
             dispatch(fetchHostContext(item.machineIdentity.machineName));

@@ -45,6 +45,14 @@ export const assertRelatedLinks = (assert, { column, row, values, urls }) => {
   });
 };
 
+export const assertProcessAnalysisLink = (assert, { value }) => {
+
+  const selector = `${selectors.column} ${selectors.row}:nth-of-type(3) ${selectors.relatedLink}`;
+
+  assert.equal(find(selector).textContent.trim(), value);
+  assert.ok(find(selector).getAttribute('href'));
+};
+
 export const assertDetailRowParent = (assert, { column, row, label, value }) => {
   const element = getContextElement(column, row);
   assert.equal(element.querySelector(selectors.key).textContent.trim(), label);
