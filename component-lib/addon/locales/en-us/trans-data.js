@@ -640,7 +640,6 @@ export default {
       copy: 'Click to copy query filters:',
       disabledCopy: 'Click to copy will become available when filters are present.',
       warning: 'Warning',
-      error: 'Error',
       percentCompleted: 'Query {{progress}}% completed'
     },
     generic: {
