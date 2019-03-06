@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializerForFileDetailsAndAnalysis } from 'investigate-files/actions/data-creators';
-import { next } from '@ember/runloop';
 
 export default Route.extend({
   redux: service(),
@@ -47,11 +46,9 @@ export default Route.extend({
     const redux = this.get('redux');
     const { checksum, sid, tabName, fileFormat = '' } = params;
 
-    next(() => {
-      if (sid) {
-        redux.dispatch(initializerForFileDetailsAndAnalysis(checksum, sid, tabName, fileFormat));
-      }
-    });
+    if (sid) {
+      redux.dispatch(initializerForFileDetailsAndAnalysis(checksum, sid, tabName, fileFormat));
+    }
   },
 
   deactivate() {

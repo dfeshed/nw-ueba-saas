@@ -425,17 +425,14 @@ const _getSelectedFileProperties = (checksum) => {
 const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_INDEX, payload: index });
 
 const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const request = lookup('service:request');
     dispatch({ type: ACTION_TYPES.RESET_INPUT_DATA });
     dispatch(resetRiskContext());
 
-    const { files: { fileList: { selectedDetailFile } } } = getState();
     request.registerPersistentStreamOptions({ socketUrlPostfix: sid, requiredSocketUrl: 'endpoint/socket' });
 
-    if (!selectedDetailFile) {
-      dispatch(_getSelectedFileProperties(checksum));
-    }
+    dispatch(_getSelectedFileProperties(checksum));
 
     dispatch(getAllServices());
     dispatch(getServiceId('FILE', () => {
