@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { maybeValidate } from 'configure/validations/maybe';
 import { localizeMessage } from 'configure/validations/localize';
 import { validateNumber, validatePresence } from 'ember-changeset-validations/validators';
@@ -9,8 +8,8 @@ const context = 'configure.incidentRules.riskScoring.validations';
 
 const enabled = (value) => ![null, undefined].includes(value);
 const isEnabled = function(changes, content) {
-  const newValue = get(changes, this);
-  const oldValue = get(content, this);
+  const newValue = changes[this];
+  const oldValue = content[this];
   return enabled(newValue) ? newValue : oldValue;
 };
 

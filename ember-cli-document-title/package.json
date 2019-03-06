@@ -31,7 +31,7 @@
     "@ember/optional-features": "0.7.0",
     "ember-cli-babel": "^6.17.2",
     "broccoli-asset-rev": "^2.4.5",
-    "ember-cli": "3.5.1",
+    "ember-cli": "3.8.0",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "5.0.0",
     "ember-cli-htmlbars": "^2.0.1",
@@ -45,7 +45,7 @@
     "ember-load-initializers": "^1.0.0",
     "ember-qunit": "^3.4.1",
     "ember-resolver": "4.3.0",
-    "ember-source": "3.5.1",
+    "ember-source": "3.8.0",
     "loader.js": "^4.2.3",
     "qunit-dom": "^0.8.0"
   },
