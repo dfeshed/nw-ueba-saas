@@ -68,7 +68,15 @@ const filesReducer = handleActions({
   },
 
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => {
-    return state.set('files', payload);
+    const filteredPayload = payload.map((file) => {
+      if (file.query) {
+        // This regex removes any `\` before equals `=` operator
+        // ex: action\=foo -> action=foo
+        file.query = file.query.replace(/\\=/g, '=');
+      }
+      return file;
+    });
+    return state.set('files', filteredPayload);
   },
 
   [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {

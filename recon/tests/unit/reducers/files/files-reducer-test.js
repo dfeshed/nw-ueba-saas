@@ -94,3 +94,18 @@ test('test REHYDRATE', function(assert) {
   const result = reducer(initialState, action);
   assert.equal(result.isAutoDownloadFile, false);
 });
+
+test('test FILES_RETRIEVE_SUCCESS removes backslash before operators for a given query filter', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
+    payload: [
+      { type: 'foo',
+        fileName: 'bar',
+        query: 'ip.src\=10.20.57.214&&tcp.dstport\=57337' // eslint-disable-line no-useless-escape
+      }
+    ]
+  };
+
+  const result = reducer(initialState, action);
+  assert.equal(result.files[0].query, 'ip.src=10.20.57.214&&tcp.dstport=57337', 'Should only remove backslash if there is one before operator');
+});
