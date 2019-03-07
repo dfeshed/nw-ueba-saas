@@ -27,7 +27,7 @@
     "ember-cli-babel": "^6.17.2",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-moment": "7.8.0",
-    "ember-redux": "4.0.2",
+    "ember-redux": "4.0.3",
     "flexi": "2.0.1",
     "ember-cli-seamless-immutable-shim": "1.0.0",
     "ember-fetch": "^5.1.3"
