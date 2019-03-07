@@ -334,25 +334,6 @@ test('hasError', function(assert) {
     }
   }), false);
 
-  assert.equal(hasError({
-    investigate: {
-      queryStats: {
-        devices: [{
-          on: false
-        }]
-      }
-    }
-  }), true);
-
-  assert.equal(hasError({
-    investigate: {
-      queryStats: {
-        devices: [{
-          on: true
-        }]
-      }
-    }
-  }), false);
 });
 
 test('hasWarning', function(assert) {

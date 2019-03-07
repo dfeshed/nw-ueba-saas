@@ -189,7 +189,8 @@
       }
     }
 
-    &.console-has-error {
+    &.console-has-error,
+    &.has-offline-services {
       .query-bar-options {
         @include border(1px, solid, accentOne);
       }
@@ -442,7 +443,8 @@
           }
         }
 
-        &.has-error {
+        &.has-error,
+        &.has-offline-services {
           .console-content {
             @include border(1px, solid, accentOne);
             @include border-top(1px, solid, primary, dark);
@@ -605,7 +607,8 @@
           }
         }
 
-        &.has-error {
+        &.has-error,
+        &.has-offline-services {
           top: rsa-whitespace(less);
           color: text-color(accentOne);
           &:hover:not(.is-disabled) {

@@ -10,7 +10,8 @@ import {
   decoratedDevices,
   warningsWithServiceName,
   errorsWithServiceName,
-  isMixedMode
+  isMixedMode,
+  hasOfflineServices
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { isCanceled, percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
@@ -20,6 +21,7 @@ const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
   endTime: state.investigate.queryNode.previousQueryParams.endTime,
   description: state.investigate.queryStats.description,
+  hasOfflineServices: hasOfflineServices(state),
   warnings: warningsWithServiceName(state),
   errors: errorsWithServiceName(state),
   isCanceled: isCanceled(state),
@@ -40,7 +42,8 @@ const ConsolePanel = Component.extend({
   classNameBindings: [
     'isMixedMode',
     'hasError',
-    'hasWarning'
+    'hasWarning',
+    'hasOfflineServices'
   ],
 
   format: '"YYYY-MM-DD HH:mm:ss"',

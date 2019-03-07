@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 
 import { setQueryView } from 'investigate-events/actions/interaction-creators';
 import { isOnFreeForm, isOnGuided } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { hasError, hasWarning } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { hasError, hasWarning, hasOfflineServices } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 const dispatchToActions = {
   setQueryView
@@ -14,13 +14,14 @@ const stateToComputed = (state) => ({
   isOnGuided: isOnGuided(state),
   queryView: state.investigate.queryNode.queryView,
   isConsoleOpen: state.investigate.queryStats.isConsoleOpen,
+  hasOfflineServices: hasOfflineServices(state),
   consoleHasError: hasError(state),
   consoleHasWarning: hasWarning(state)
 });
 
 const QueryBar = Component.extend({
   classNames: ['query-bar-selection'],
-  classNameBindings: ['queryView', 'isConsoleOpen', 'consoleHasError', 'consoleHasWarning'],
+  classNameBindings: ['queryView', 'isConsoleOpen', 'consoleHasError', 'consoleHasWarning', 'hasOfflineServices'],
 
   // Whether or not child views should take
   // focus when they are rendered

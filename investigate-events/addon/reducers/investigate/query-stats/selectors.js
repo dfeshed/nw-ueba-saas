@@ -105,9 +105,9 @@ export const hasWarning = createSelector(
 );
 
 export const hasError = createSelector(
-  [_errors, hasOfflineServices],
-  (errors, offline) => {
-    return (errors && errors.length > 0) || offline;
+  [_errors],
+  (errors) => {
+    return errors && errors.length > 0;
   }
 );
 

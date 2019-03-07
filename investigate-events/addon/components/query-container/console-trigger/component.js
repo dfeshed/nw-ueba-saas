@@ -7,7 +7,8 @@ import {
   isConsoleEmpty,
   hasError,
   hasWarning,
-  isQueryComplete
+  isQueryComplete,
+  hasOfflineServices
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 const dispatchToActions = {
@@ -16,6 +17,7 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   description: state.investigate.queryStats.description,
+  hasOfflineServices: hasOfflineServices(state),
   isDisabled: isConsoleEmpty(state),
   isOpen: state.investigate.queryStats.isConsoleOpen,
   hasError: hasError(state),
@@ -29,7 +31,8 @@ const ConsoleTrigger = Component.extend({
     'isDisabled',
     'isOpen',
     'hasError',
-    'hasWarning'
+    'hasWarning',
+    'hasOfflineServices'
   ],
 
   @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isQueryComplete', 'i18n')

@@ -104,7 +104,7 @@ module('Integration | Component | console-devices', function(hooks) {
   });
 
   test('renders when hasError', async function(assert) {
-    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsWithOffline().build();
+    new ReduxDataHelper(setState).hasSummaryData(true, '1').queryStats().queryStatsIsRetrieving().eventCount(10).queryStatsHasError().build();
     await render(hbs`
       {{query-container/console-panel/devices}}
     `);
