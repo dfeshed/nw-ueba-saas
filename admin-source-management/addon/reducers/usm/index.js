@@ -4,7 +4,6 @@ import filters from './filters/filters-reducers';
 import groups from './groups-reducers';
 import groupWizard from './group-wizard-reducers';
 import policies from './policies-reducers';
-import policy from './policy-reducers'; // TODO delete
 import policyWizard from './policy-wizard/policy-wizard-reducers';
 
 const reducerPredicate = (type) => {
@@ -18,7 +17,6 @@ export default combineReducers({
   groupsFilter: createFilteredReducer(filters, reducerPredicate('GROUPS')),
   policies,
   policiesFilter: createFilteredReducer(filters, reducerPredicate('POLICIES')),
-  policy,
   policyWizard,
   groupWizard
 });
