@@ -1,6 +1,6 @@
 {{#rsa-form-button
   class='prev-button'
-  defaultAction='transitionToPrevStep'
+  defaultAction=(action 'transitionToPrevStep')
   isDisabled=step.prevButtonDisabled
 }}
   {{t 'adminUsm.groupWizard.previous'}}
@@ -9,7 +9,7 @@
 {{#rsa-form-button
   class='next-button'
   style='primary'
-  defaultAction='transitionToNextStep'
+  defaultAction=(action 'transitionToNextStep')
   isDisabled=step.nextButtonDisabled
 }}
   {{t 'adminUsm.groupWizard.next'}}
@@ -33,7 +33,7 @@
 
 {{#rsa-form-button
   class='cancel-button'
-  defaultAction='cancel'
+  defaultAction=(action 'cancel')
   isStepValid=isStepValid
 }}
   {{t 'adminUsm.groupWizard.cancel'}}
@@ -50,7 +50,7 @@
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button defaultAction='continueEditing'}}
+        {{#rsa-form-button defaultAction=(action 'continueEditing')}}
           {{t 'adminUsm.groupWizard.modals.discardChanges.continueEditing'}}
         {{/rsa-form-button}}
         {{#rsa-form-button style='primary' click=(action 'discardChanges')}}

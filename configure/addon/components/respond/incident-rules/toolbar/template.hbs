@@ -10,7 +10,8 @@
     <div class="action-control clone-rule-button">
       {{#rsa-form-button
         isDisabled=(not hasSelectedRule)
-        defaultAction='clone'}}
+        defaultAction=(action 'clone')
+      }}
         {{t 'configure.incidentRules.cloneRule'}}
       {{/rsa-form-button}}
     </div>
@@ -18,7 +19,8 @@
       {{#rsa-form-button
         style='danger'
         isDisabled=(not hasSelectedRule)
-        defaultAction='delete'}}
+        defaultAction=(action 'delete')
+      }}
         {{t 'configure.incidentRules.deleteRule'}}
       {{/rsa-form-button}}
     </div>
@@ -31,10 +33,10 @@
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
           {{t 'forms.cancel'}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='primary' class='confirm-button' defaultAction='confirm'}}
+        {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'confirm')}}
           {{t 'forms.ok'}}
         {{/rsa-form-button}}
       </hbox>

@@ -208,7 +208,9 @@ export default Component.extend(SelectionTooltip, {
     const whenToSignalDone = (i - 2) * TIME_BETWEEN_CHUNKS;
     later(() => {
       this.set('renderedAll', true);
-      this.sendAction('showMoreFinished', firstPacketId);
+      if (this.showMoreFinished) {
+        this.showMoreFinished(firstPacketId);
+      }
     }, whenToSignalDone);
   },
 
@@ -225,7 +227,7 @@ export default Component.extend(SelectionTooltip, {
       // this calculation isn't exact, doesn't need to be, so don't show 100+
       percentRendered = (percentRendered > 99) ? 99 : percentRendered;
       this.set('percentRendered', percentRendered);
-      this.sendAction('updatePercentRendered', { id: firstPacketId, percentRendered });
+      this.updatePercentRendered({ id: firstPacketId, percentRendered });
     });
   },
 

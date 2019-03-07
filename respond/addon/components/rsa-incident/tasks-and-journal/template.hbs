@@ -40,7 +40,7 @@
         {{#rsa-form-button
           title=(t 'respond.remediationTasks.addNewTask')
           isFullWidth=true
-          defaultAction='addNewTask'
+          defaultAction=(action 'addNewTask')
           isDisabled=isIncidentClosed
         }}
           {{t 'respond.remediationTasks.addNewTask'}}
@@ -74,5 +74,11 @@
   {{/liquid-bind}}
 {{/if}}
 <div class="close-panel">
-  {{#rsa-form-button isIconOnly=true title=(t 'respond.close') defaultAction='toggleTasksAndJournalPanel'}}{{rsa-icon name='close'}}{{/rsa-form-button}}
+  {{#rsa-form-button
+    isIconOnly=true
+    title=(t 'respond.close')
+    defaultAction=(action 'toggleTasksAndJournalPanel')
+  }}
+    {{rsa-icon name='close'}}
+  {{/rsa-form-button}}
 </div>

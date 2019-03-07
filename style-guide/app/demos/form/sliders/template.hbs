@@ -9,12 +9,12 @@
       {{range-slider
         start=model.start
         step=1
-        on-change="onSliderChange"}}
+        on-change=(action "onSliderChange")}}
       {{!-- BEGIN-SNIPPET slider1
         {{range-slider
           start=model.start
           step=1
-          on-change="onSliderChange"}}
+          on-change=(action "onSliderChange")}}
       END-SNIPPET --}}
       {{code-snippet name="slider1.hbs"}}
     {{/spec-member}}
@@ -25,14 +25,14 @@
         step=1
         isReadOnly=true
         disabled=true
-        on-change="onSliderChange"}}
+        on-change=(action "onSliderChange")}}
       {{!-- BEGIN-SNIPPET slider2
         {{range-slider
           start=model.start
           step=1
           isReadOnly=true
           disabled=true
-          on-change="onSliderChange"}}
+          on-change=(action "onSliderChange")}}
       END-SNIPPET --}}
       {{code-snippet name="slider2.hbs"}}
     {{/spec-member}}
@@ -43,14 +43,14 @@
         step=1
         tooltips=false
         disabled=true
-        on-change="onSliderChange"}}
+        on-change=(action "onSliderChange")}}
       {{!-- BEGIN-SNIPPET slider3
         {{range-slider
           start=model.start
           step=1
           tooltips=false
           disabled=true
-          on-change="onSliderChange"}}
+          on-change=(action "onSliderChange")}}
       END-SNIPPET --}}
       {{code-snippet name="slider3.hbs"}}
     {{/spec-member}}
@@ -60,13 +60,13 @@
         start=model.start
         step=1
         isError=true
-        on-change="onSliderChange"}}
+        on-change=(action "onSliderChange")}}
       {{!-- BEGIN-SNIPPET slider4
         {{range-slider
           start=model.start
           step=1
           isError=true
-          on-change="onSliderChange"}}
+          on-change=(action "onSliderChange")}}
       END-SNIPPET --}}
       {{code-snippet name="slider4.hbs"}}
     {{/spec-member}}
@@ -76,13 +76,13 @@
         start=model.singleStart
         step=1
         connect=false
-        on-change="onSliderChange"}}
+        on-change=(action "onSliderChange")}}
       {{!-- BEGIN-SNIPPET slider5
         {{range-slider
           start=model.singleStart
           step=1
           connect=false
-          on-change="onSliderChange"}}
+          on-change=(action "onSliderChange")}}
       END-SNIPPET --}}
       {{code-snippet name="slider5.hbs"}}
     {{/spec-member}}

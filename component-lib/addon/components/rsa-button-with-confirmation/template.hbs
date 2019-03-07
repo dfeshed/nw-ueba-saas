@@ -22,7 +22,7 @@
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button defaultAction='closeConfirmModal'}}
+        {{#rsa-form-button defaultAction=(action 'closeConfirmModal')}}
           {{#if cancelButtonLabel}}
             {{cancelButtonLabel}}
           {{else}}

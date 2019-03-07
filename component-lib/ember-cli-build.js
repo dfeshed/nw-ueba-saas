@@ -3,6 +3,10 @@ const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 const { commonBuildOptions } = require('../common');
 
 module.exports = function(defaults) {
-  const app = new EmberAddon(defaults, commonBuildOptions(__dirname));
+  const commonBuildOpts = commonBuildOptions(__dirname);
+  commonBuildOpts.flatpickr = {
+    locales: ['ar', 'at', 'be', 'bg', 'bn', 'cat', 'cs', 'cy', 'da', 'de', 'eo', 'es', 'et', 'fa', 'fi', 'fr', 'gr', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'lv', 'mk', 'mn', 'ms', 'my', 'nl', 'no', 'pa', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr', 'sv', 'th', 'tr', 'uk', 'vn', 'zh']
+  };
+  const app = new EmberAddon(defaults, commonBuildOpts);
   return app.toTree();
 };

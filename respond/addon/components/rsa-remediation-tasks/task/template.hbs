@@ -124,10 +124,10 @@
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button defaultAction='cancel'}}
+        {{#rsa-form-button defaultAction=(action 'cancel')}}
           {{t 'forms.cancel'}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='primary' defaultAction='confirm'}}
+        {{#rsa-form-button style='primary' defaultAction=(action 'confirm')}}
           {{t 'forms.ok'}}
         {{/rsa-form-button}}
       </hbox>

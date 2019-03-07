@@ -92,7 +92,7 @@ const AddLogParser = Component.extend(Notifications, {
         cloneFrom: cloneFrom && cloneFrom.name || null
       }, {
         onSuccess: () => {
-          this.sendAction('onLogParserAdded');
+          this.onLogParserAdded();
           this.send('success', 'configure.logsParser.addParser.addParserSuccessful');
         },
         onFailure: () => {

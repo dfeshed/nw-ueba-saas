@@ -11,7 +11,7 @@
   <box class="add-condition">
     {{#rsa-form-button
       isDisabled=hasInvalidConditions
-      defaultAction='addCondition'}}
+      defaultAction=(action 'addCondition')}}
       {{t 'configure.incidentRules.ruleBuilder.addCondition'}}
     {{/rsa-form-button}}
   </box>
@@ -19,7 +19,7 @@
   <box class="remove-group">
     {{#if (not isRootGroup)}}
       {{#rsa-form-button
-        defaultAction='removeGroup'}}
+        defaultAction=(action 'removeGroup')}}
         {{t 'configure.incidentRules.ruleBuilder.removeConditionGroup'}}
       {{/rsa-form-button}}
     {{/if}}

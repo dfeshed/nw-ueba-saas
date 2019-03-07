@@ -35,7 +35,7 @@
                 </span>
                 <span class="input-value">
                   {{!--go to input field/s and validation. criteriaPath is needed for updating state--}}
-                  {{component (concat 'usm-groups/group/group-attributes/attribute-inputs/' operator.[1])               
+                  {{component (concat 'usm-groups/group/group-attributes/attribute-inputs/' operator.[1])
                     selectedAttribute=criteria.[0]
                     selectedOperator=criteria.[1]
                     inputField=operator.[1]
@@ -46,7 +46,7 @@
                 <span class="remove-criteria" {{action 'removeCriteria' (concat criteriaPath ',' index)}}>
                   {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
                 </span>
-              </hbox> 
+              </hbox>
             {{/if}}
           {{/each}}
         {{/if}}
@@ -64,7 +64,7 @@
   class='add-criteria-button'
   style='standard'
   isDisabled=maxTenCriteria
-  defaultAction='handleAddCriteria'
+  defaultAction=(action 'handleAddCriteria')
 }}
   {{t 'adminUsm.groupWizard.addCondition'}}
 {{/rsa-form-button}}
@@ -72,5 +72,5 @@
   <span class='maxTenCriteria'>{{t 'adminUsm.groupWizard.maxTenCriteria'}}</span>
 {{/if}}
 
-    
-    
+
+

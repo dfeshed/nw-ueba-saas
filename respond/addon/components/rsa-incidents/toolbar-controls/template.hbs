@@ -58,7 +58,7 @@
     {{#rsa-form-button
       style='danger'
       isDisabled=hasNoSelections
-      defaultAction='deleteIncident'}}
+      defaultAction=(action 'deleteIncident')}}
       {{t 'forms.delete'}}
     {{/rsa-form-button}}
   </div>

@@ -47,8 +47,14 @@ module('Integration | Component | RSA Button with Confirmation', function(hooks)
       assert.ok(false);
     });
     await render(hbs`
-    {{#rsa-button-with-confirmation confirmationMessage='Click OK to confirm.' onConfirm=(action onConfirm)}}Push Me{{/rsa-button-with-confirmation}}
-    <div id="modalDestination"></div>`);
+      {{#rsa-button-with-confirmation
+        confirmationMessage='Click OK to confirm.'
+        onConfirm=(action onConfirm)
+      }}
+        Push Me
+      {{/rsa-button-with-confirmation}}
+      <div id="modalDestination"></div>
+    `);
     assert.equal(findAll(selectors.confirmationContent).length, 0, 'The confirmation modal is not shown');
     await click('button');
     assert.equal(findAll(selectors.confirmationContent).length, 1, 'Clicking button shows confirmation modal');

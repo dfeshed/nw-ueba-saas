@@ -155,6 +155,10 @@ export default Controller.extend({
   actions: {
     controllerLogout() {
       this.send('logout');
+    },
+
+    controllerClearFatalErrorQueue() {
+      this.send('clearFatalErrorQueue');
     }
   }
 });

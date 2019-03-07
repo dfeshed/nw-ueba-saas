@@ -45,14 +45,15 @@
 </div>
 <footer>
   <hbox class="modal-footer-buttons">
-    {{#rsa-form-button defaultAction='handleCancel' class='cancel'}}
+    {{#rsa-form-button defaultAction=(action 'handleCancel') class='cancel'}}
       {{t 'forms.cancel'}}
     {{/rsa-form-button}}
     {{#rsa-form-button
       class="apply"
       isDisabled=isInvalid
       style='primary'
-      defaultAction='create'}}
+      defaultAction=(action 'create')
+    }}
       {{t 'forms.ok'}}
     {{/rsa-form-button}}
   </hbox>

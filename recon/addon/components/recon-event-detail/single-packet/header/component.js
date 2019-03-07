@@ -43,7 +43,9 @@ const singlePacketHeader = Component.extend({
   actions: {
     togglePacketExpansion() {
       const isPacketExpanded = this.toggleProperty('isPacketExpanded');
-      this.sendAction('togglePacketExpansion', isPacketExpanded);
+      if (this.togglePacketExpansion) {
+        this.togglePacketExpansion(isPacketExpanded);
+      }
     }
   }
 });

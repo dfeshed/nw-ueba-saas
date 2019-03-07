@@ -111,7 +111,7 @@
       {{#rsa-form-button class='cancel-button' defaultAction=transitionToRules}}
         {{t 'forms.cancel'}}
       {{/rsa-form-button}}
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
+      {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'save') isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
         {{t 'forms.save'}}
       {{/rsa-form-button}}
     </hbox>
@@ -135,10 +135,10 @@
     </div>
     <footer>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
           {{t 'forms.cancel'}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='danger' class='confirm-button' defaultAction='confirm'}}
+        {{#rsa-form-button style='danger' class='confirm-button' defaultAction=(action 'confirm')}}
           {{t 'forms.ok'}}
         {{/rsa-form-button}}
       </hbox>

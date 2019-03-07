@@ -51,10 +51,8 @@ export default Component.extend({
     defaultAction() {
       if (!this.get('isDisabled')) {
         const defaultAction = get(this, 'defaultAction');
-        if (typeof defaultAction === 'function') {
+        if (defaultAction) {
           defaultAction();
-        } else {
-          this.sendAction('defaultAction');
         }
       }
     }

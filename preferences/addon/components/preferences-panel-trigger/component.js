@@ -23,8 +23,8 @@ const PreferencesTrigger = Component.extend({
   listenToPreferences: observer('preferences', function() {
     const preferences = this.get('preferences');
     const changedField = this.get('changedField');
-    if (preferences && changedField && this.get('shouldPublishPreferences')) {
-      this.sendAction('publishPreferences', _.pick(preferences, [changedField]));
+    if (this.publishPreferences && preferences && changedField && this.get('shouldPublishPreferences')) {
+      this.publishPreferences(_.pick(preferences, [changedField]));
     }
   })
 });

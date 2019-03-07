@@ -10,12 +10,12 @@
     }}
   {{/if}}
   <span class="action confirm-changes">
-    {{#rsa-form-button isDisabled=isInvalid isIconOnly=true title='Confirm edit' defaultAction='confirm'}}
+    {{#rsa-form-button isDisabled=isInvalid isIconOnly=true title='Confirm edit' defaultAction=(action 'confirm')}}
       {{rsa-icon name='check-2'}}
     {{/rsa-form-button}}
   </span>
   <span class="action cancel-changes">
-    {{#rsa-form-button isIconOnly=true title='Cancel edit' defaultAction='cancel'}}
+    {{#rsa-form-button isIconOnly=true title='Cancel edit' defaultAction=(action 'cancel')}}
       {{rsa-icon name='close'}}
     {{/rsa-form-button}}
   </span>
@@ -23,7 +23,7 @@
   <span class="editable-field__value {{unless text 'placeholder'}}" {{action 'edit'}} title="{{text}}">{{or text placeholder}}</span>
   <span class="action edit-field">
     {{#unless isDisabled}}
-      {{#rsa-form-button isIconOnly=true isDisabled=isDisabled title='Edit Field' defaultAction='edit'}}
+      {{#rsa-form-button isIconOnly=true isDisabled=isDisabled title='Edit Field' defaultAction=(action 'edit')}}
         {{rsa-icon name='pencil-1'}}
       {{/rsa-form-button}}
     {{/unless}}

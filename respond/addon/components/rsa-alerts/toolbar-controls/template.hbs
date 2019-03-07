@@ -2,14 +2,14 @@
   <div class="action-control create-incident-button">
     {{#rsa-form-button
       isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
-      defaultAction='createIncident'}}
+      defaultAction=(action 'createIncident')}}
       {{t 'respond.alerts.createIncident'}}
     {{/rsa-form-button}}
   </div>
   <div class="action-control add-to-incident-button">
     {{#rsa-form-button
       isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
-      defaultAction='addToIncident'}}
+      defaultAction=(action 'addToIncident')}}
       {{t 'respond.alerts.addToIncident'}}
     {{/rsa-form-button}}
   </div>
@@ -19,7 +19,7 @@
     {{#rsa-form-button
       style='danger'
       isDisabled=hasNoSelections
-      defaultAction='deleteAlerts'}}
+      defaultAction=(action 'deleteAlerts')}}
       {{t 'forms.delete'}}
     {{/rsa-form-button}}
   </div>

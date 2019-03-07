@@ -8,7 +8,7 @@
       {{range-slider
         start=filterRange
         step=1
-        on-change='updateFilter'}}
+        on-change=(action 'updateFilter')}}
     </section>
     <box>
       {{#unless filteredData.completed}}

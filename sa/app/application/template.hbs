@@ -73,7 +73,7 @@
   label="Critical Error"
   style='error'
   eventId='fatalError'
-  modalDidClose='clearFatalErrorQueue'}}
+  modalDidClose=(action 'controllerClearFatalErrorQueue')}}
   <div class='modal-content'>
     {{#each fatalErrors.queue as |error|}}
       <p>{{error}}</p>

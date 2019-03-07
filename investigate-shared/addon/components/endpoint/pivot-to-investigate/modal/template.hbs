@@ -3,7 +3,7 @@
   modalTitle=(t 'investigateHosts.pivotToInvestigate.title')
   serviceList=serviceList as |selectedService isDisabled|}}
 
-  {{#rsa-form-button defaultAction='onCancel'}}
+  {{#rsa-form-button defaultAction=(action 'onCancel')}}
     {{t 'forms.cancel'}}
   {{/rsa-form-button}}
 

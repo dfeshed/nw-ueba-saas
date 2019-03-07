@@ -204,7 +204,9 @@ const ContextComponent = Component.extend({
 
   _closeContextPanel() {
     if (!this.get('isClicked')) {
-      this.sendAction('closePanel');
+      if (this.closePanel) {
+        this.closePanel();
+      }
       this.send('restoreDefault');
       this.get('eventBus').off('rsa-application-click', this, this._closeContextPanel);
       this.get('eventBus').off('rsa-application-header-click', this, this._closeContextPanel);

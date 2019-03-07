@@ -10,12 +10,12 @@
       style='primary'
       class='confirm-button'
       tabIndex="3"
-      defaultAction="save"
+      defaultAction=(action "save")
       isDisabled=hasMissingRequiredData
     }}
       {{t 'adminUsm.button.save'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+    {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
       {{t 'adminUsm.button.cancel'}}
     {{/rsa-form-button}}
   </hbox>

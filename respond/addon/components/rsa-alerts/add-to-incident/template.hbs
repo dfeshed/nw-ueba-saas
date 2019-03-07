@@ -60,14 +60,15 @@
 {{/rsa-data-table}}
 <footer>
   <hbox class="modal-footer-buttons">
-    {{#rsa-form-button defaultAction='handleCancel' class='cancel'}}
+    {{#rsa-form-button defaultAction=(action 'handleCancel') class='cancel'}}
       {{t 'forms.cancel'}}
     {{/rsa-form-button}}
     {{#rsa-form-button
       class="apply"
       isDisabled=isAddToAlertsUnavailable
       style='primary'
-      defaultAction='handleSubmit'}}
+      defaultAction=(action 'handleSubmit')
+    }}
       {{t 'forms.ok'}}
     {{/rsa-form-button}}
   </hbox>

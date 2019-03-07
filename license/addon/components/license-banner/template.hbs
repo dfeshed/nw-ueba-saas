@@ -11,7 +11,7 @@
   {{/rsa-form-button}}
   {{#if (is-equal level 'warning')}}
     <span class="dismiss-btn">
-      {{#rsa-form-button defaultAction="dismiss"}}
+      {{#rsa-form-button defaultAction=(action "dismiss")}}
         {{t 'license.banner.dismiss'}}
       {{/rsa-form-button}}
     </span>

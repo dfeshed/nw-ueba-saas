@@ -1,7 +1,7 @@
 {{#if step.prevStepId}}
   {{#rsa-form-button
     class='prev-button'
-    defaultAction='transitionToPrevStep'
+    defaultAction=(action 'transitionToPrevStep')
   }}
     Previous
   {{/rsa-form-button}}
@@ -11,7 +11,7 @@
   {{#rsa-form-button
     class='next-button'
     style='primary'
-    defaultAction='transitionToNextStep'
+    defaultAction=(action 'transitionToNextStep')
   }}
     Next
   {{/rsa-form-button}}
@@ -19,7 +19,7 @@
 
 {{#rsa-form-button
   class='cancel-button'
-  defaultAction='cancel'
+  defaultAction=(action 'cancel')
 }}
   Cancel
 {{/rsa-form-button}}

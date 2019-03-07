@@ -11,8 +11,12 @@ export default Component.extend({
   attributeBindings: ['xs'],
   actions: {
     closeAction() {
-      this.sendAction('closePanel');
-      this.sendAction('restoreDefault');
+      if (this.closePanel) {
+        this.closePanel();
+      }
+      if (this.restoreDefault) {
+        this.restoreDefault();
+      }
       this.get('eventBus').trigger('rsa-application-click');
     }
   }

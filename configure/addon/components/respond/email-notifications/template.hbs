@@ -41,7 +41,7 @@
       </ul>
       <div class="soc-email-controls">
         {{rsa-form-input value=emailToAdd placeholder=(t 'configure.notifications.emailAddressPlaceholder')}}
-        {{#rsa-form-button isDisabled=isEmailInvalid defaultAction='addEmail'}}{{t 'configure.notifications.addEmail'}}{{/rsa-form-button}}
+        {{#rsa-form-button isDisabled=isEmailInvalid defaultAction=(action 'addEmail')}}{{t 'configure.notifications.addEmail'}}{{/rsa-form-button}}
       </div>
     </div>
 
@@ -96,7 +96,7 @@
       {{/if}}
     </span>
     <hbox class="form-save-controls">
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=isApplyUnavailable}}
+      {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'save') isDisabled=isApplyUnavailable}}
         {{t 'forms.apply'}}
       {{/rsa-form-button}}
     </hbox>

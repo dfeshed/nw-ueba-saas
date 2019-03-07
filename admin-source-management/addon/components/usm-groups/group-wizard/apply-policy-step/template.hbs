@@ -24,7 +24,7 @@
     {{#rsa-form-button
       class='add-source-type-button'
       style='standard'
-      defaultAction='addSourceType'
+      defaultAction=(action 'addSourceType')
       isDisabled=(not hasSourceTypesAvailable)
     }}
       {{t 'adminUsm.groupWizard.applyPolicy.addSourceType'}}

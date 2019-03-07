@@ -17,14 +17,14 @@
   {{#rsa-form-button
     style='primary'
     isDisabled=cannotSave
-    defaultAction='saveParserRule'}}
+    defaultAction=(action 'saveParserRule')}}
     {{t 'configure.logsParser.buttons.save'}}
   {{/rsa-form-button}}
 </hbox>
 <hbox class="rsa-button resetRule">
   {{#rsa-form-button
     isDisabled=cannotDiscardChanges
-    defaultAction='discardRuleChanges'
+    defaultAction=(action 'discardRuleChanges')
   }}
     {{t 'configure.logsParser.buttons.discardChanges'}}
   {{/rsa-form-button}}

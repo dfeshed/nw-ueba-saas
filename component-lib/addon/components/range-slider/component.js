@@ -57,12 +57,12 @@ export default RangeSlider.extend({
         // left arrow
         if (e.which === 37) {
           this.slider.set(value - 1);
-          this.sendAction('on-change', value - 1);
+          this['on-change'](value - 1);
         }
         // right arrow
         if (e.which === 39) {
           this.slider.set(value + 1);
-          this.sendAction('on-change', value + 1);
+          this['on-change'](value + 1);
         }
       });
     });

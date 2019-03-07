@@ -61,7 +61,9 @@ export default Component.extend({
     },
 
     confirmAction() {
-      this.sendAction('onConfirm');
+      if (this.onConfirm) {
+        this.onConfirm();
+      }
       this._closeModal();
     },
 

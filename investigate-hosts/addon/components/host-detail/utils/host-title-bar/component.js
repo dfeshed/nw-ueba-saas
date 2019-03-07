@@ -14,7 +14,7 @@ export default Component.extend({
 
   actions: {
     activate(tabName) {
-      this.sendAction('defaultAction', tabName);
+      this.defaultAction(tabName);
     }
   }
 });

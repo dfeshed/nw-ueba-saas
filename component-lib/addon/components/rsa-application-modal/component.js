@@ -78,10 +78,14 @@ export default Component.extend({
 
       if (truth) {
         this.get('eventBus').trigger('rsa-application-modal-did-open');
-        this.sendAction('modalDidOpen');
+        if (this.modalDidOpen) {
+          this.modalDidOpen();
+        }
       } else {
         this.get('eventBus').trigger('rsa-application-modal-did-close');
-        this.sendAction('modalDidClose');
+        if (this.modalDidClose) {
+          this.modalDidClose();
+        }
       }
 
       this.set('isOpen', truth);

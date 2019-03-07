@@ -43,7 +43,8 @@
   <footer>
     {{#rsa-form-button
       isFullWidth=true
-      defaultAction='reset'}}
+      defaultAction=(action 'reset')
+    }}
       {{t 'rsaExplorer.filters.reset'}}
     {{/rsa-form-button}}
   </footer>

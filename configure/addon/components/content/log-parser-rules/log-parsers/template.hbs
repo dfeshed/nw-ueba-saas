@@ -1,5 +1,5 @@
 <h1> {{t 'configure.logsParser.logParsers'}} </h1>
-{{content/log-parser-rules/log-parsers/toolbar}} 
+{{content/log-parser-rules/log-parsers/toolbar}}
 <div class='parser-table-container'>
   <table class='parserTable'>
     {{#each logParsers as |logParser index|}}
@@ -23,10 +23,10 @@
     </div>
     <footer class='unsaved-changes-footer'>
       <hbox class="modal-footer-buttons">
-        {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
           {{t 'forms.cancel'}}
         {{/rsa-form-button}}
-        {{#rsa-form-button style='primary' class='confirm-button' defaultAction='confirm'}}
+        {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'confirm')}}
           {{t 'configure.logsParser.buttons.discardChanges'}}
         {{/rsa-form-button}}
       </hbox>
