@@ -11,15 +11,18 @@ const NOOP = () => {};
  * @public
  * @returns {Promise}
  */
-const getAllSnapShots = (data, serverId) => {
+const getAllSnapShots = (data) => {
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'getAllSnapShots';
+
   return request.promiseRequest({
-    method: 'getAllSnapShots',
-    modelName: 'endpoint',
+    method,
+    modelName,
     query: { data },
-    streamOptions: {
-      socketUrlPostfix: serverId
-    }
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method })
   });
 };
 
@@ -75,7 +78,7 @@ const exportFileContext = (data) => {
 };
 
 
-const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onError = NOOP, onCompleted = NOOP }, serverId) => {
+const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onError = NOOP, onCompleted = NOOP }) => {
   const filter = [{
     field: 'keyword',
     value: filterObj.text
@@ -85,11 +88,17 @@ const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onE
     value: filterObj.agentId
   }];
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'fileContextSearch';
+  const streamConfig = { modelName, method, customOptions: { requireRequestId: false } };
+
   return request.streamRequest({
-    method: 'fileContextSearch',
-    modelName: 'endpoint',
+    method,
+    modelName,
     query: { filter },
-    streamOptions: { requireRequestId: false, requiredSocketUrl: 'endpoint/socket', socketUrlPostfix: serverId },
+    streamOptions: streamSelector.streamOptionSelector(streamConfig),
     onInit,
     onResponse,
     onError,

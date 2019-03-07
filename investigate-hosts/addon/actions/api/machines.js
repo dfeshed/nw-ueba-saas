@@ -11,14 +11,16 @@ import { addFilter } from 'investigate-shared/utils/query-util';
  */
 const getAllServices = () => {
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'investigate-service';
+  const method = 'findAll';
+
   return request.promiseRequest({
-    method: 'findAll',
-    modelName: 'investigate-service',
+    method,
+    modelName,
     query: {},
-    streamOptions: {
-      socketUrlPostfix: 'any',
-      requiredSocketUrl: 'endpoint/socket'
-    }
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method })
   });
 };
 
@@ -107,14 +109,16 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
   }
 
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'saveFilter';
 
   return request.promiseRequest({
-    method: 'saveFilter',
-    modelName: 'endpoint',
+    method,
+    modelName,
     query: { data },
-    streamOptions: {
-      socketUrlPostfix: 'any'
-    }
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method })
   });
 };
 
@@ -128,13 +132,16 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
  */
 const getAllSchemas = () => {
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'machine-schema';
+
   return request.promiseRequest({
-    method: 'machine-schema',
-    modelName: 'endpoint',
+    method,
+    modelName,
     query: {},
-    streamOptions: {
-      socketUrlPostfix: 'any'
-    }
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method })
   });
 };
 

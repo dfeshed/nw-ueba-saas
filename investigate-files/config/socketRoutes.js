@@ -51,7 +51,8 @@ const filesConfigGen = function(environment) {
       socketUrl,
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/investigate/servers',
-        requestDestination: '/ws/endpoint/investigate/servers'
+        requestDestination: '/ws/endpoint/investigate/servers',
+        endpointPreference: 'any'
       },
       serviceId: {
         subscriptionDestination: '/user/queue/endpoint/investigate/service-id',
@@ -101,7 +102,8 @@ const filesConfigGen = function(environment) {
       },
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',
-        requestDestination: '/ws/endpoint/filter/set'
+        requestDestination: '/ws/endpoint/filter/set',
+        endpointPreference: 'any'
       },
       getFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/get-all',

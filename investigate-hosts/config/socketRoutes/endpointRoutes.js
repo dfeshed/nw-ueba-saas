@@ -16,7 +16,8 @@ const hostsConfigGen = function(env) {
       socketUrl,
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/investigate/servers',
-        requestDestination: '/ws/endpoint/investigate/servers'
+        requestDestination: '/ws/endpoint/investigate/servers',
+        endpointPreference: 'any'
       },
       serviceId: {
         subscriptionDestination: '/user/queue/endpoint/investigate/service-id',
@@ -42,7 +43,8 @@ const hostsConfigGen = function(env) {
       },
       'machine-schema': {
         subscriptionDestination: '/user/queue/endpoint/machine/schema',
-        requestDestination: '/ws/endpoint/machine/schema'
+        requestDestination: '/ws/endpoint/machine/schema',
+        endpointPreference: 'any'
       },
       agentCount: {
         subscriptionDestination: '/user/queue/endpoint/machine/aggregate/group-count',
@@ -106,7 +108,8 @@ const hostsConfigGen = function(env) {
       socketUrl,
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',
-        requestDestination: '/ws/endpoint/filter/set'
+        requestDestination: '/ws/endpoint/filter/set',
+        endpointPreference: 'any'
       },
       getFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/get-all',
