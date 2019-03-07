@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum REGISTRY_OPERATION_TYPE {
     CREATE_KEY("CREATE_REGISTRY_KEY"),
-    SET_VALUE("MODIFY_REGISTRY_KEY");
+    SET_VALUE("MODIFY_REGISTRY_VALUE");
 
     public final String value;
 
