@@ -15,7 +15,7 @@ const _initialState = Immutable.from({
   data: null,
   reason: undefined,
   streamLimit: MAX_EVENTS_ALLOWED,
-  streamBatch: 3000,
+  streamBatch: 1000,
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
