@@ -545,14 +545,14 @@ export default {
         NETWORK: 'Network as {{option}}',
         META: 'Visible Meta as {{option}}',
         options: {
-          LOG: 'Log',
+          LOG: 'Text',
           CSV: 'CSV',
           TSV: 'TSV',
           TEXT: 'Text',
           XML: 'XML',
           JSON: 'JSON',
           PCAP: 'PCAP',
-          PAYLOAD: 'All Payloads',
+          PAYLOAD: 'Payloads',
           PAYLOAD1: 'Request Payload',
           PAYLOAD2: 'Response Payload'
         }
@@ -2040,9 +2040,9 @@ export default {
       triggerTip: 'Open/Hide Event Preferences',
       defaultEventView: 'Default Event Analysis View',
       defaultLogFormat: 'Default Log Format',
-      defaultPacketFormat: 'Default Packet Format',
+      defaultPacketFormat: 'Default Network Format',
       defaultMetaFormat: 'Default Meta Format',
-      LOG: 'Download Log',
+      LOG: 'Download Text',
       CSV: 'Download CSV',
       TSV: 'Download TSV',
       TEXT: 'Download Text',

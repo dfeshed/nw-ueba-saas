@@ -74,11 +74,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     const result = getDownloadOptions(state);
     // number of options in download as per the number of preferences x number of options per preference
     assert.equal(result.length, 12, '12 options for download available');
-    await assertForDownloadOptions(assert, result, 0, 'LOG', 'LOG', 'Logs as Log');
+    await assertForDownloadOptions(assert, result, 0, 'LOG', 'LOG', 'Logs as Text');
     await assertForDownloadOptions(assert, result, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
     await assertForDownloadOptions(assert, result, 2, 'META', 'TEXT', 'Visible Meta as Text');
     await assertForDownloadOptions(assert, result, 3, 'LOG', 'CSV', 'Logs as CSV');
-    await assertForDownloadOptions(assert, result, 6, 'NETWORK', 'PAYLOAD', 'Network as All Payloads');
+    await assertForDownloadOptions(assert, result, 6, 'NETWORK', 'PAYLOAD', 'Network as Payloads');
     await assertForDownloadOptions(assert, result, 9, 'META', 'CSV', 'Visible Meta as CSV');
     // preferred LOG option
     await assertForCountsAndSessionIds(assert, result, 0, '', [], false);

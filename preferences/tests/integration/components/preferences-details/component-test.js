@@ -66,7 +66,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     let str = selectedItems[0].textContent.trim();
     assert.equal(str, 'Packet Analysis');
     str = selectedItems[1].textContent.trim();
-    assert.equal(str, 'Download Log');
+    assert.equal(str, 'Download Text');
     str = selectedItems[2].textContent.trim();
     assert.equal(str, 'Download PCAP');
     str = selectedItems[3].textContent.trim();
@@ -100,7 +100,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(1)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 3);
-    assert.equal(getTextFromDOMArray(options), 'TextAnalysisPacketAnalysisFileAnalysis');
+    assert.equal(getTextFromDOMArray(options), 'FileAnalysisPacketAnalysisTextAnalysis');
   });
 
   test('Preferences panel comes with valid options for log format', async function(assert) {
@@ -108,7 +108,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(2)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadLogDownloadCSVDownloadXMLDownloadJSON');
+    assert.equal(getTextFromDOMArray(options), 'DownloadCSVDownloadJSONDownloadTextDownloadXML');
   });
 
   test('Preferences panel comes with valid options for packet format', async function(assert) {
@@ -116,7 +116,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(3)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadPCAPDownloadAllPayloadsDownloadRequestPayloadDownloadResponsePayload');
+    assert.equal(getTextFromDOMArray(options), 'DownloadAllPayloadsDownloadPCAPDownloadResponsePayloadDownloadRequestPayload');
   });
 
   test('Preferences panel comes with valid options for meta format', async function(assert) {
@@ -124,7 +124,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(4)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadTextDownloadCSVDownloadTSVDownloadJSON');
+    assert.equal(getTextFromDOMArray(options), 'DownloadCSVDownloadJSONDownloadTextDownloadTSV');
   });
 
   test('Preferences panel saves new Analysis on change', async function(assert) {
@@ -140,7 +140,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
 
   test('Preferences panel defaults the dowloadLogFormat to the user selected value', async function(assert) {
     await renderApplicationContent(this, assert);
-    await assertForPreferencesPanelSelectedOptions(assert, 2, 1, 'Download Log');
+    await assertForPreferencesPanelSelectedOptions(assert, 2, 1, 'Download Text');
   });
 
   test('Preferences panel defaults the dowloadPacketFormat to the user selected value', async function(assert) {

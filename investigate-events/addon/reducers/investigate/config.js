@@ -24,9 +24,9 @@ export default {
     name: 'preferences.investigate-events.defaultEventView',
     type: 'dropdown',
     options: [
-      'TEXT',
+      'FILE',
       'PACKET',
-      'FILE'
+      'TEXT'
     ],
     additionalFieldPrefix: 'reconView',
     field: 'eventAnalysisPreferences.currentReconView'
@@ -36,10 +36,10 @@ export default {
     type: 'dropdown',
     eventType: 'LOG',
     options: [
-      'LOG',
       'CSV',
-      'XML',
-      'JSON'
+      'JSON',
+      'LOG',
+      'XML'
     ],
     field: 'eventAnalysisPreferences.defaultLogFormat'
   },
@@ -48,10 +48,10 @@ export default {
     type: 'dropdown',
     eventType: 'NETWORK',
     options: [
-      'PCAP',
       'PAYLOAD',
-      'PAYLOAD1',
-      'PAYLOAD2'
+      'PCAP',
+      'PAYLOAD2',
+      'PAYLOAD1'
     ],
     field: 'eventAnalysisPreferences.defaultPacketFormat'
   },
@@ -60,10 +60,10 @@ export default {
     type: 'dropdown',
     eventType: 'META',
     options: [
-      'TEXT',
       'CSV',
-      'TSV',
-      'JSON'
+      'JSON',
+      'TEXT',
+      'TSV'
     ],
     field: 'eventAnalysisPreferences.defaultMetaFormat'
   },
@@ -82,8 +82,8 @@ export default {
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
-      'Descending',
-      'Ascending'
+      'Ascending',
+      'Descending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
   }, */

@@ -104,7 +104,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     const options = findAll(`${downloadOptions} li`);
     assert.equal(options.length, 12, '12 options found');
 
-    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '');
   });
@@ -121,7 +121,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '1/2');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '1/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '1/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
@@ -138,7 +138,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    await assertForDownloadOptions(assert, options, 0, 'Logs as Log', '0/2');
+    await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '0/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
