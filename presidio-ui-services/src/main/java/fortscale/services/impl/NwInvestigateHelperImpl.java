@@ -59,6 +59,8 @@ public class NwInvestigateHelperImpl implements NwInvestigateHelper {
                 .scheme(URL_SCHEMA)
                 .host(conf.getBaseLinkDestinationHostname())
                 .path(pathWithParameters)
+                .queryParam("lastCollectionDate", endTime.toEpochSecond(ZoneOffset.UTC)*1000)
+                .queryParam("startCollectionDate", startTime.toEpochSecond(ZoneOffset.UTC)*1000)
                 .queryParam(QUERY_PARAM_NAME,value).toString().replaceAll("\\+", "%20");
 
         return url;
