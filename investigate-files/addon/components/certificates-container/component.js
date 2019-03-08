@@ -19,7 +19,6 @@ import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { serviceList } from 'investigate-files/reducers/file-list/selectors';
 import { getAllServices } from 'investigate-files/actions/data-creators';
-import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   filter: state.certificate.filter,
@@ -58,14 +57,6 @@ const Certificate = Component.extend({
   pivot: service(),
 
   contextualHelp: service(),
-
-  @computed('selections')
-  pivotInvestigateDisabled(selections) {
-    if (!selections) {
-      return true;
-    }
-    return !(selections.length === 1);
-  },
 
   init() {
     this._super(...arguments);

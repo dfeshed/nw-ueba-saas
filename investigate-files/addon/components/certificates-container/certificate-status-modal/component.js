@@ -41,10 +41,6 @@ const CertificateStatus = Component.extend({
     }
   ],
 
-  @computed('selections')
-  isDisabled(selections) {
-    return selections && !selections.length;
-  },
   @computed('data.comment', 'data.certificateStatus', 'statusData')
   isSaveButtonDisabled(comment, fileStatus, currentStatusData) {
     return isEmpty(comment) || isEmpty(fileStatus) || (comment === currentStatusData.comment && fileStatus === currentStatusData.certificateStatus);

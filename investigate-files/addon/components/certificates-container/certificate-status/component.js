@@ -2,9 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { saveCertificateStatus, getSavedCertificateStatus } from 'investigate-files/actions/certificate-data-creators';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
-import { success, failure } from 'investigate-files/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,
@@ -44,25 +42,6 @@ const CertificateStatus = Component.extend({
     return selections && !selections.length;
   },
 
-  @computed('data.comment', 'data.certificateStatus')
-  isSaveButtonDisabled(comment, certificateStatus) {
-    return isEmpty(comment) || isEmpty(certificateStatus);
-  },
-
-  @computed('statusData', 'selections')
-  data(statusData, selections) {
-    const statusDataObject = {
-      certificateStatus: null,
-      category: null,
-      comment: '',
-      remediationAction: null
-    };
-    if (statusData && selections.length === 1) {
-      return { ...statusDataObject, ...statusData };
-    }
-    return statusDataObject;
-  },
-
   actions: {
     showStatusModel() {
       const selections = this.get('selections');
@@ -73,15 +52,6 @@ const CertificateStatus = Component.extend({
     },
     closeModal() {
       this.set('showModal', false);
-    },
-
-    saveStatus() {
-      const callbackOptions = {
-        onSuccess: () => success('configure.endpoint.certificates.status.success'),
-        onFailure: () => failure('configure.endpoint.certificates.status.error')
-      };
-      this.set('showModal', false);
-      this.send('saveCertificateStatus', this.get('selections').mapBy('thumbprint'), this.get('data'), callbackOptions);
     }
   }
 });

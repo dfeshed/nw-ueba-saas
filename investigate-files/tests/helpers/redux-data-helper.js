@@ -145,6 +145,10 @@ export default class DataHelper {
     _set(this.state, 'endpointServer', status);
     return this;
   }
+  coreServerId(id) {
+    _set(this.state, 'investigate', { serviceId: id, timeRange: { unit: 'Days', value: 7 } });
+    return this;
+  }
   endpointQuery(status) {
     _set(this.state, 'endpointQuery', status);
     return this;
