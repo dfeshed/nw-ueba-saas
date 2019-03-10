@@ -1,7 +1,6 @@
 package presidio.ade.domain.store.accumulator.smart;
 
 import com.mongodb.DBObject;
-import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.StoreManager;
@@ -103,7 +102,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
             distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName)
                     .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject())
                     .stream().collect(Collectors.toSet());
-        } catch (MongoCommandException e) {
+        } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;
             distinctContexts = new HashSet<>();
