@@ -39,6 +39,8 @@ public abstract class ProcessEventGeneratorsBuilder {
 
     private double probabilityMultiplier;
 
+    private double usersMultiplier;
+
 
 
     public ProcessEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
@@ -62,6 +64,7 @@ public abstract class ProcessEventGeneratorsBuilder {
         this.machineGenerator = machineGenerator;
         this.nonImportantProcesses = nonImportantProcesses;
         this.probabilityMultiplier = 1;
+        this.usersMultiplier = 1;
     }
 
     public void setProbabilityMultiplier(double probabilityMultiplier) {
@@ -70,6 +73,14 @@ public abstract class ProcessEventGeneratorsBuilder {
 
     public double getProbabilityMultiplier() {
         return probabilityMultiplier;
+    }
+
+    public double getUsersMultiplier() {
+        return usersMultiplier;
+    }
+
+    public void setUsersMultiplier(double usersMultiplier) {
+        this.usersMultiplier = usersMultiplier;
     }
 
     protected List<FileEntity> getFileEnities(Pair[] dirAndFilePair){

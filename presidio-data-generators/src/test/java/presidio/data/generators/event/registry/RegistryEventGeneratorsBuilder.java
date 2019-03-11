@@ -46,6 +46,7 @@ public abstract class RegistryEventGeneratorsBuilder {
     protected Map<String, List<String>> registryKeyToValueNamesMap;
 
     private double probabilityMultiplier;
+    private double usersMultiplier;
 
 
 
@@ -74,6 +75,7 @@ public abstract class RegistryEventGeneratorsBuilder {
         this.registryKeyGroupToRegistryKey = registryKeyGroupToRegistryKey;
         this.registryKeyToValueNamesMap = registryKeyToValueNamesMap;
         this.probabilityMultiplier = 1;
+        this.usersMultiplier = 1;
     }
 
     public void setProbabilityMultiplier(double probabilityMultiplier) {
@@ -82,6 +84,14 @@ public abstract class RegistryEventGeneratorsBuilder {
 
     public double getProbabilityMultiplier() {
         return probabilityMultiplier;
+    }
+
+    public double getUsersMultiplier() {
+        return usersMultiplier;
+    }
+
+    public void setUsersMultiplier(double usersMultiplier) {
+        this.usersMultiplier = usersMultiplier;
     }
 
     protected List<FileEntity> getFileEnities(Pair[] dirAndFilePair){

@@ -28,6 +28,7 @@ public class PerformanceStabilityScenario {
     private Instant startInstant;
     private Instant endInstant;
     private double probabilityMultiplier;
+    private double usersMultiplier;
 
     private final int ACTIVE_TIME_INTERVAL = 1000000; // nanos
 
@@ -58,10 +59,11 @@ public class PerformanceStabilityScenario {
     List<ProcessEventGeneratorsBuilder> processEventGeneratorsBuilders = new ArrayList<>();
 
 
-    public PerformanceStabilityScenario(Instant startInstant, Instant endInstant, double probabilityMultiplier) {
+    public PerformanceStabilityScenario(Instant startInstant, Instant endInstant, double probabilityMultiplier, double usersMultiplier) {
         this.startInstant = startInstant;
         this.endInstant = endInstant;
         this.probabilityMultiplier = probabilityMultiplier;
+        this.usersMultiplier = usersMultiplier;
 
         init();
     }
@@ -227,10 +229,11 @@ public class PerformanceStabilityScenario {
                 );
         processEventGeneratorsBuilders.add(windowsProcessesEventGeneratorsBuilder);
         processEventGeneratorsBuilders.forEach(processEventGeneratorsBuilder -> processEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier));
+        processEventGeneratorsBuilders.forEach(processEventGeneratorsBuilder -> processEventGeneratorsBuilder.setUsersMultiplier(usersMultiplier));
     }
 
     private IUserGenerator createNormalUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_NORMAL_USERS, 1, "normal_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_NORMAL_USERS* usersMultiplier), 1, "normal_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -248,7 +251,7 @@ public class PerformanceStabilityScenario {
     }
 
     private IUserGenerator createAdminUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_ADMIN_USERS, 1, "admin_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_ADMIN_USERS*usersMultiplier), 1, "admin_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -266,7 +269,7 @@ public class PerformanceStabilityScenario {
     }
 
     private IUserGenerator createServiceAccountUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(NUM_OF_SERVICE_ACCOUNT_USERS, 1, "sa_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_SERVICE_ACCOUNT_USERS*usersMultiplier), 1, "sa_user_", "UID", false, false);
         return userGenerator;
     }
 

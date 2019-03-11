@@ -24,7 +24,7 @@ public class UserRegistryEventsGeneratorTest {
         Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
         Instant endInstant      = Instant.parse("2010-01-01T06:01:00.00Z");
 
-        RegistryPerformanceStabilityScenario scenario = new RegistryPerformanceStabilityScenario(startInstant, endInstant, 1);
+        RegistryPerformanceStabilityScenario scenario = new RegistryPerformanceStabilityScenario(startInstant, endInstant, 1, 1);
 
         List<Event> events;
         do {
