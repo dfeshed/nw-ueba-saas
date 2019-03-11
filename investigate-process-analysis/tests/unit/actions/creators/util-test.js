@@ -30,6 +30,23 @@ module('Unit | Selectors | process-tree', function() {
 
   });
 
+  test('hasherizeEventMeta returns empty if no events', function(assert) {
+
+    const event = null;
+    hasherizeEventMeta(event);
+    assert.equal(event, null);
+  });
+
+  test('hasherizeEventMeta returns empty if no metas', function(assert) {
+
+    const event = { metas: null };
+    hasherizeEventMeta(event);
+
+    assert.deepEqual(event, { metas: null });
+
+  });
+
+
   test('getMetaFilterFor returns correct conditions for parent and child', function(assert) {
     const { conditions } = getMetaFilterFor('PARENT_CHILD', '1', '2');
     assert.equal(conditions[4].value, '(process.vid.src = \'2\' || process.vid.dst = \'2\')');

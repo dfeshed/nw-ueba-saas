@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import Immutable from 'seamless-immutable';
@@ -44,6 +44,48 @@ module('Integration | Component | process-details', function(hooks) {
 
     await render(hbs`{{process-details}}`);
     assert.equal(findAll('.rsa-nav-tab').length, 2, 'Expected to 2 tabs');
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
 
+  });
+
+  test('it toggles the panel on click of expand button', async function(assert) {
+    new ReduxDataHelper(setState)
+      .processProperties(processProperties)
+      .queryInput(queryInput)
+      .build();
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.set('myAction', function(val) { ... });
+
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
+    await click('.rsa-icon-expand-diagonal-4-filled');
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-icon-shrink-diagonal-2-filled').length, 1, 'Panel shrinks');
+    });
+  });
+
+  test('close details button will set the state correctly', async function(assert) {
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
+    const redux = this.owner.lookup('service:redux');
+    const state = redux.getState();
+    assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, true, 'visible');
+    await click('.rsa-icon-close-filled');
+    return settled().then(() => {
+      const state = redux.getState();
+      assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');
+    });
+  });
+
+
+  test('sets the tab correctly', async function(assert) {
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
+    const redux = this.owner.lookup('service:redux');
+    await click(findAll('.rsa-nav-tab')[1]); // Properties Tab, default tab is Events
+    return settled().then(() => {
+      const state = redux.getState();
+      assert.equal(state.processAnalysis.processVisuals.detailsTabSelected, 'Properties', 'not visible');
+    });
   });
 });

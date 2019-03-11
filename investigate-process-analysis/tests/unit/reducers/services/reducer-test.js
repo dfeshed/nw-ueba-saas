@@ -42,6 +42,21 @@ module('Unit | Reducers | Services', function() {
     assert.equal(newEndState.isServicesLoading, false);
   });
 
+
+  test('SERVICES_RETRIEVE sets Error', function(assert) {
+    const previous = Immutable.from({
+      serviceData: undefined,
+      isServicesLoading: undefined,
+      isServicesRetrieveError: undefined
+    });
+
+    const startAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.SERVICES_RETRIEVE });
+    const endState = reducer(previous, startAction);
+
+    assert.equal(endState.isServicesRetrieveError, true);
+  });
+
+
   test('SUMMARY_RETRIEVE set the selected service', function(assert) {
     const previous = Immutable.from({
       summaryData: undefined,
@@ -60,5 +75,20 @@ module('Unit | Reducers | Services', function() {
     const newEndState = reducer(previous, successAction);
     assert.equal(newEndState.summaryData.startTime, 1);
     assert.equal(newEndState.isSummaryLoading, false);
+  });
+
+  test('SUMMARY_RETRIEVE sets the error', function(assert) {
+    const previous = Immutable.from({
+      summaryData: undefined,
+      isSummaryLoading: undefined,
+      isSummaryRetrieveError: undefined
+    });
+
+    const startAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.SUMMARY_RETRIEVE, payload: { meta: 'test' } });
+    const endState = reducer(previous, startAction);
+
+    assert.equal(endState.isSummaryRetrieveError, true);
+
+
   });
 });

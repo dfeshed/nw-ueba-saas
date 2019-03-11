@@ -75,4 +75,19 @@ export default class DataHelper {
     _set(this.state, 'processTree.selectedProcess', process);
     return this;
   }
+
+  serviceId(id) {
+    _set(this.state, 'query.serviceId', id);
+    return this;
+  }
+
+  startTime(time) {
+    _set(this.state, 'query.startTime', time);
+    return this;
+  }
+
+  endTime(time) {
+    _set(this.state, 'query.endTime', time);
+    return this;
+  }
 }

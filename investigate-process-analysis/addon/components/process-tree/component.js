@@ -490,6 +490,7 @@ const TreeComponent = Component.extend({
 
         this.send('setSelectedProcess', defaultSelectedProcess);
         if (children && children.length) {
+
           const rootNode = this._prepareTreeData(children, selectedProcessId, path); // Only initial load
 
           const root = hierarchy(rootNode[0], (d) => {
