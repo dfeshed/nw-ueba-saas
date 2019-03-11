@@ -135,7 +135,7 @@ public class RegistryPerformanceStabilityScenario {
     }
 
     private IUserGenerator createNormalUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_NORMAL_USERS*usersMultiplier), 1, "normal_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(NUM_OF_NORMAL_USERS*usersMultiplier)), 1, "normal_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -153,7 +153,7 @@ public class RegistryPerformanceStabilityScenario {
     }
 
     private IUserGenerator createAdminUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_ADMIN_USERS*usersMultiplier), 1, "admin_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(NUM_OF_ADMIN_USERS*usersMultiplier)), 1, "admin_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -171,7 +171,7 @@ public class RegistryPerformanceStabilityScenario {
     }
 
     private IUserGenerator createServiceAccountUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(NUM_OF_SERVICE_ACCOUNT_USERS*usersMultiplier), 1, "sa_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(NUM_OF_SERVICE_ACCOUNT_USERS*usersMultiplier)), 1, "sa_user_", "UID", false, false);
         return userGenerator;
     }
 

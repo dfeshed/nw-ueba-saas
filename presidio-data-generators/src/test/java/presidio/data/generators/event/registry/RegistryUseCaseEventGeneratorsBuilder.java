@@ -122,9 +122,9 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private void createGenerators(){
         //users generators
-        allNormalUsers = new LimitNumOfUsersGenerator((int)(getNumOfNormalUsers()*getUsersMultiplier()), normalUserGenerator);
-        allAdminUsers = new LimitNumOfUsersGenerator((int)(getNumOfAdminUsers()*getUsersMultiplier()), adminUserGenerator);
-        allServiceAccountUsers = new LimitNumOfUsersGenerator((int)(getNumOfServiceAccountUsers()*getUsersMultiplier()), serviceAccountUserGenerator);
+        allNormalUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsers()*getUsersMultiplier())), normalUserGenerator);
+        allAdminUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsers()*getUsersMultiplier())), adminUserGenerator);
+        allServiceAccountUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsers()*getUsersMultiplier())), serviceAccountUserGenerator);
 
         /** GENERATORS: PROCESS **/
 
@@ -247,7 +247,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createNormalUsersRandomEventGenerator(Instant startInstant,
                                                                             Instant endInstant){
-        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfNormalUsersDaily()*getUsersMultiplier()), allNormalUsers);
+        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDaily()*getUsersMultiplier())), allNormalUsers);
         normalUsersEventGenerator.setUserGenerator(normalUsersDailyGenerator);
         return createRandomEventGenerator(normalUsersEventGenerator,
                 normalUserActivityRange,
@@ -260,7 +260,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createNormalUsersRandomAbnormalEventGenerator(Instant startInstant,
                                                                                     Instant endInstant){
-        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfNormalUsersDailyForNonActiveWorkingHours()*getUsersMultiplier()), allNormalUsers);
+        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allNormalUsers);
         normalUsersAbnormalEventGenerator.setUserGenerator(normalUsersDailyGenerator);
         return createRandomEventGenerator(normalUsersAbnormalEventGenerator,
                 normalUserAbnormalActivityRange,
@@ -273,7 +273,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createAdminUsersEventGenerator(Instant startInstant,
                                                                      Instant endInstant){
-        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfAdminUsersDaily()*getUsersMultiplier()), allAdminUsers);
+        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDaily()*getUsersMultiplier())), allAdminUsers);
         adminUsersEventGenerator.setUserGenerator(adminUsersDailyGenerator);
         return createRandomEventGenerator(adminUsersEventGenerator,
                 adminUserActivityRange,
@@ -286,7 +286,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createAdminUsersAbnormalEventGenerator(Instant startInstant,
                                                                              Instant endInstant){
-        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfAdminUsersDailyForNonActiveWorkingHours()*getUsersMultiplier()), allAdminUsers);
+        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allAdminUsers);
         adminUsersAbnormalEventGenerator.setUserGenerator(adminUsersDailyGenerator);
         return createRandomEventGenerator(adminUsersAbnormalEventGenerator,
                 adminUserAbnormalActivityRange,
@@ -299,7 +299,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createServiceAccountUsersEventGenerator(Instant startInstant,
                                                                               Instant endInstant){
-        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfServiceAccountUsersDaily()*getUsersMultiplier()), allServiceAccountUsers);
+        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDaily()*getUsersMultiplier())), allServiceAccountUsers);
         serviceAccountUsersEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
         return createRandomEventGenerator(serviceAccountUsersEventGenerator,
                 serviceAcountUserActivityRange,
@@ -312,7 +312,7 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     private RandomMultiEventGenerator createServiceAccountUsersAbnormalEventGenerator(Instant startInstant,
                                                                                       Instant endInstant){
-        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(getNumOfServiceAccountUsersDailyForAbnormalEvents()*getUsersMultiplier()), allServiceAccountUsers);
+        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDailyForAbnormalEvents()*getUsersMultiplier())), allServiceAccountUsers);
         serviceAccountUsersAbnormalEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
         return createRandomEventGenerator(serviceAccountUsersAbnormalEventGenerator,
                 serviceAcountUserActivityRange,
