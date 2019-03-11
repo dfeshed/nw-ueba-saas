@@ -51,7 +51,6 @@ class RawModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
-        task_sensor_service = TaskSensorService()
 
         def feature_aggregation_buckets_condition(context): return is_execution_date_valid(context['execution_date'],
                                                                      self._feature_aggregation_buckets_interval,
@@ -81,8 +80,7 @@ class RawModelDagBuilder(PresidioDagBuilder):
                                               dag=raw_model_dag,
                                               condition=raw_model_condition)
 
-        sensor = task_sensor_service.add_task_sequential_sensor(raw_model_operator)
         # defining the dependencies between the operators
-        raw_model_feature_aggregation_buckets_operator.set_downstream(sensor)
+        raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_operator)
 
         return raw_model_dag
