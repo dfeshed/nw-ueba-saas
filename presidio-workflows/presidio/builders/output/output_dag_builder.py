@@ -94,19 +94,17 @@ class OutputDagBuilder(PresidioDagBuilder):
             dag=output_dag,
             condition=output_daily_condition)
 
-        sensor = task_sensor_service.add_task_sequential_sensor(user_score_operator)
-
-        self._push_forwarding(hourly_output_operator, output_condition, sensor, output_dag)
+        self._push_forwarding(hourly_output_operator, output_condition, user_score_operator, output_dag)
 
         return output_dag
 
-    def _push_forwarding(self, hourly_output_operator, output_condition, sensor, output_dag):
+    def _push_forwarding(self, hourly_output_operator, output_condition, user_score_operator, output_dag):
         default_args = output_dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
             push_forwarding_task = PushForwarderTaskBuilder(output_condition).build(output_dag)
-            hourly_output_operator >> push_forwarding_task >> sensor
+            hourly_output_operator >> push_forwarding_task >> user_score_operator
         else:
-            hourly_output_operator >> sensor
+            hourly_output_operator >> user_score_operator
 

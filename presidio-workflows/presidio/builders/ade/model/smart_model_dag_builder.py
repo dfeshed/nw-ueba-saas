@@ -77,7 +77,6 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
-        task_sensor_service = TaskSensorService()
 
         def smart_accumulate_condition(context): return is_execution_date_valid(context['execution_date'],
                                                                      self._accumulate_interval,
@@ -112,10 +111,8 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                                 dag=smart_model_dag,
                                                 condition=smart_model_condition)
 
-        sensor = task_sensor_service.add_task_sequential_sensor(smart_model_operator)
-
         # defining the dependencies between the operators
-        smart_model_accumulate_operator.set_downstream(sensor)
+        smart_model_accumulate_operator.set_downstream(smart_model_operator)
 
         # the following line is a workaround for bug in Airflow AIRFLOW-585 : Fix race condition in backfill execution loop
         t2 = BashOperator(

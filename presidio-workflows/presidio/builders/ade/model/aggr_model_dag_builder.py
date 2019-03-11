@@ -60,12 +60,10 @@ class AggrModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
-        task_sensor_service = TaskSensorService()
 
         def aggr_accumulate_condition(context): return is_execution_date_valid(context['execution_date'],
                                                                      self._accumulate_interval,
                                                                      aggr_model_dag.schedule_interval)
-
 
         # defining the Accumulate operator
         aggr_model_accumulate_aggregations_operator = AggrModelAccumulateAggregationsOperator(
@@ -91,9 +89,7 @@ class AggrModelDagBuilder(PresidioDagBuilder):
                                               dag=aggr_model_dag,
                                               condition=aggr_accumulate_condition)
 
-        sensor = task_sensor_service.add_task_sequential_sensor(aggr_model_operator)
-
         # defining the dependencies between the operators
-        aggr_model_accumulate_aggregations_operator.set_downstream(sensor)
+        aggr_model_accumulate_aggregations_operator.set_downstream(aggr_model_operator)
 
         return aggr_model_dag
