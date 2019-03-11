@@ -37,6 +37,7 @@ export default {
   pillOpenForEdit: '.pill-open-for-edit',
   pillTriggerOpenForAdd: '.pill-trigger-open-for-add',
   powerSelectOption: '.js-test-power-select-option',
+  powerSelectOptionHighlight: '.ember-power-select-after-option[aria-current="true"]',
   triggerMetaPowerSelect,
   triggerOperatorPowerSelect,
   triggerValuePowerSelect,

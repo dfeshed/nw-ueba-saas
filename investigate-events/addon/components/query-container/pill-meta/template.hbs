@@ -2,6 +2,7 @@
   {{#power-select-typeahead
     afterOptionsComponent=(
       component optionsComponent
+      options=(readonly _afterOptionsMenu.list)
       sendMessage=(action 'handleMessage')
     )
     allowClear=false
@@ -21,6 +22,7 @@
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
+      onmouseenter=(action 'onOptionMouseEnter')
     )
     placeholder=placeholder
     preventScroll=true

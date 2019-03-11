@@ -1,11 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, findAll, render, triggerEvent } from '@ember/test-helpers';
+import { click, find, findAll, render, settled, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from '../pill-selectors';
+
+const { log } = console; // eslint-disable-line no-unused-vars
 
 // These labels and options should match what's defined in the component
 const OPTION_A_LABEL = 'Free-Form Filter';
@@ -14,9 +16,14 @@ const MENU_OPTIONS = [
   { label: OPTION_A_LABEL, disabled: false, highlighted: false },
   { label: OPTION_B_LABEL, disabled: false, highlighted: false }
 ];
+const MENU_OPTIONS_WITH_HIGHLIGHT = [
+  { label: OPTION_A_LABEL, disabled: false, highlighted: true },
+  { label: OPTION_B_LABEL, disabled: false, highlighted: false }
+];
 
 const EPS_API = {
   results: MENU_OPTIONS,
+  resultsCount: null,
   actions: {
     search: () => {}
   }
@@ -83,8 +90,8 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     this.set('options', MENU_OPTIONS);
     this.set('select', EPS_API);
     this.set('handleMessage', (type, data) => {
-      if (type === MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION) {
-        assert.equal(data, OPTION_A_LABEL, 'correct data passed');
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT) {
+        assert.equal(data, 0, 'correct data passed');
         done();
       }
     });
@@ -97,7 +104,7 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     `);
     // mouse over first option
     const firstOption = find(PILL_SELECTORS.powerSelectAfterOption);
-    await triggerEvent(firstOption, 'mouseover');
+    await triggerEvent(firstOption, 'mouseenter');
   });
 
   test('When highlighted, clicking option will dispatch a CREATE_FREE_FORM_PILL event', async function(assert) {
@@ -108,9 +115,9 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     };
     this.set('options', [highlightedOption]);
     this.set('select', EPS_API);
-    this.set('handleMessage', (type) => {
-      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.ok('message called');
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_SELECTED) {
+        assert.equal(data, highlightedOption.label, 'correct data');
         done();
       }
     });
@@ -127,25 +134,32 @@ module('Integration | Component | Power Select After Options', function(hooks) {
   test('First item in list is automatically highlighted if EPS search result has 0 items', async function(assert) {
     const apiWithNoResults = {
       ...EPS_API,
-      results: []
+      results: [],
+      resultsCount: 0
     };
     this.set('options', MENU_OPTIONS);
     this.set('select', EPS_API);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT) {
+        assert.equal(data, 0, 'correct data');
+        this.set('options', MENU_OPTIONS_WITH_HIGHLIGHT);
+      }
+    });
     await render(hbs`
       {{query-container/power-select-after-options
+        _previouslyHighlightedIndex=null
         options=(readonly options)
         select=(readonly select)
+        sendMessage=(action handleMessage)
       }}
     `);
-    this.set('select', apiWithNoResults);
     const _options = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    assert.equal(_options.length, 1, 'Correct number of options');
-    // Use the below when we enable Text Filter
-    // assert.equal(_options.length, MENU_OPTIONS.length, 'Correct number of options');
-    assert.equal(_options[0].getAttribute('aria-current'), 'true', 'First option is highlighted');
-    // drop first item as it's the one that should be highlighted
-    _options.shift();
-    const hasHighlightedOptions = _options.some((d) => d.getAttribute('aria-current') === 'true');
-    assert.notOk(hasHighlightedOptions, 'Other options are NOT highlighted');
+    const hasHighlight = _options.some((d) => d.getAttribute('aria-current') === 'true');
+    assert.notOk(hasHighlight, 'no item should be highlighted');
+    this.set('select', apiWithNoResults);
+    await settled();
+    const _options2 = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const hasHighlight2 = _options2.some((d) => d.getAttribute('aria-current') === 'true');
+    assert.ok(hasHighlight2, 'an item should be highlighted');
   });
 });

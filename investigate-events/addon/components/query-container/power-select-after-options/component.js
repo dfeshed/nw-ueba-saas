@@ -1,11 +1,8 @@
 import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
+import { next } from '@ember/runloop';
 
 const { log } = console; // eslint-disable-line no-unused-vars
-
-const MENU_OPTIONS = [
-  { label: 'Free-Form Filter', disabled: false, highlighted: false }
-];
 
 export default Component.extend({
   tagName: 'ul',
@@ -25,34 +22,54 @@ export default Component.extend({
    * @type {Array}
    * @public
    */
-  options: MENU_OPTIONS,
+  options: [],
 
-  /**
-   * Index of the item that is currently highlighted.
-   * @type {Number}
-   * @default undefined
-   * @private
-   */
-  _highlightIndex: undefined,
+  _previouslyHighlightedIndex: null,
+
+  _prevResultCount: null,
 
   didUpdateAttrs() {
-    const { results } = this.get('select');
-    if (results.length === 0) {
-      // No results, auto highlight first item in options list
-      this._highlightByIndex(0);
-    } else if (this.get('_highlightIndex') !== undefined) {
-      // Something was highlighted, so clear it out
-      this._removeAllHighlights();
+    this._super(...arguments);
+    const { resultsCount } = this.get('select');
+    // Since this is a power-select scoped component, the API that's passed to
+    // power-select sub-components (named `select` in this case), get's a new
+    // API every time power-select updates itself. For our concerns, this
+    // happens when the list get's down-selected as the user types.
+    // If the user types something that filters out all options, the
+    // `resultsCount` will be 0. This is how we know we should automatically
+    // highlight the first item. If the `resultsCount` was more than 0, we send
+    // a "remove highlight" message. Both of these are done on the next runloop
+    // because this API update happens before power-select visually reacts to
+    // the change. If we didn't delay our intent, it would get overwritten by
+    // power-selects default behavior.
+    if (this._prevResultCount !== resultsCount) {
+      if (resultsCount === 0) {
+        // No results, auto highlight first item in options list
+        next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, 0);
+      } else {
+        // Something was highlighted in main list, so remove any highlighting of
+        // these options
+        next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
+      }
+      this._prevResultCount = resultsCount;
     }
   },
 
   actions: {
-    onMouseOver(e) {
+    onMouseEnter(e) {
       const el = e.target.closest('[data-option-index]');
       if (el) {
         const index = parseInt(el.getAttribute('data-option-index'), 10);
-        this._highlightByIndex(index);
+        const prevIndex = this.get('_previouslyHighlightedIndex');
+        if (index !== prevIndex) {
+          this.set('_previouslyHighlightedIndex', index);
+          this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, index);
+        }
       }
+    },
+    onMouseLeave() {
+      this.set('_previouslyHighlightedIndex', null);
+      this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
     },
     onMouseUp(e) {
       this._chooseByElement(e.currentTarget);
@@ -73,48 +90,10 @@ export default Component.extend({
   },
 
   _chooseByElement(el) {
-    const description = el.querySelector('.description');
-    switch (description.textContent.trim()) {
-      case MENU_OPTIONS[0].label:
-        this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL);
-        break;
-    }
-    // Clear the search and remove any highlighting
+    const description = el.querySelector('.description').textContent.trim();
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_SELECTED, description);
+    // Clear the search
     const { actions } = this.get('select');
-    this._removeAllHighlights();
     actions.search('');
-  },
-
-  _highlightByIndex(index) {
-    const _highlightIndex = this.get('_highlightIndex');
-    if (index === _highlightIndex) {
-      return;
-    } else {
-      const newOptions = MENU_OPTIONS.map((d, i) => {
-        return {
-          ...d,
-          highlighted: i === index
-        };
-      });
-      this.setProperties({
-        options: newOptions,
-        _highlightIndex: index
-      });
-      this._broadcast(MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION, MENU_OPTIONS[index].label);
-    }
-  },
-
-  _removeAllHighlights() {
-    const newOptions = MENU_OPTIONS.map((d) => {
-      return {
-        ...d,
-        highlighted: false
-      };
-    });
-    this.setProperties({
-      options: newOptions,
-      _highlightIndex: undefined
-    });
-    this._broadcast(MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION, null);
   }
 });

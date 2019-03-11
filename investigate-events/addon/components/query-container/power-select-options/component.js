@@ -72,6 +72,20 @@ export default Component.extend({
     }
   },
 
+  // GTB, I ADDED THIS TO ORIGINAL CODE
+  // Event handlers
+  mouseEnter(e) {
+    const optionMouseEnterCallback = this.get('onmouseenter');
+    if (optionMouseEnterCallback) {
+      optionMouseEnterCallback(e);
+    }
+  },
+  mouseLeave() {
+    const select = this.get('select');
+    select.actions.highlight(null);
+  },
+  // GTB, END ADDED TO ORIGINAL CODE
+
   // CPs
   'aria-controls': computed('select.uniqueId', function() {
     return `ember-power-select-trigger-${this.get('select.uniqueId')}`;

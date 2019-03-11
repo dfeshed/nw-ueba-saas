@@ -1,15 +1,28 @@
 import Component from '@ember/component';
-import { next, scheduleOnce } from '@ember/runloop';
+import { cancel, later, next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
-import { isArrowLeft, isArrowRight, isEnter, isEscape } from 'investigate-events/util/keys';
+import {
+  isArrowDown,
+  isArrowLeft,
+  isArrowRight,
+  isArrowUp,
+  isEnter,
+  isEscape
+} from 'investigate-events/util/keys';
+import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const leadingSpaces = /^[\s\uFEFF\xA0]+/;
+const FREE_FORM_FILTER = 'Free-Form Filter';
+const AFTER_OPTIONS_MENU = [
+  { label: FREE_FORM_FILTER, disabled: false, highlighted: false }
+];
 
-const dropFocus = () => {
+const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
+
+const _dropFocus = () => {
   const el = document.querySelector('.pill-meta input');
   if (el && el === document.activeElement) {
     el.blur();
@@ -90,6 +103,8 @@ export default Component.extend({
 
   i18n: service(),
 
+  _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
+
   @computed('isActive', 'metaOptions')
   isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
 
@@ -111,8 +126,9 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: () => this._createFreeFormPill(),
-      [MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION]: (d) => this.set('_highlightedAfterOption', d)
+      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromSelection(d),
+      [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
+      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
     });
   },
 
@@ -161,7 +177,19 @@ export default Component.extend({
     },
 
     onChange(selection /* powerSelectAPI, event */) {
+      const timer = this.get('metaSelectedTimer');
+      if (timer) {
+        // When editing a pill and selecting a new meta, the `onKeyDown()`
+        // function is called before this function, which causes the previously
+        // selected meta to be re-selected. To stop this, we put the
+        // META_SELECTED dispatching into a `later` runloop and save off the
+        // timer info. If the user actually changed the meta, we'll land
+        // here, see if we have an outstanding timer, and cancel it if we do.
+        // This will prevent the users' meta selection from being reversed.
+        cancel(timer);
+      }
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+      this._afterOptionsMenu.clearHighlight();
     },
 
     onFocus(powerSelectAPI, event) {
@@ -192,20 +220,21 @@ export default Component.extend({
 
     /**
      * This function is called on every `input` event from the power-select's
-     * trigger element. It's looking for an input string that ends with a space.
-     * If it finds one and the power-select has been down-selected to one
-     * result, or the full `metaName` has been typed, then trigger a `select`
-     * event on the power-select.
-     * If the input string is empty, it resets the `selection`. We do this to
+     * trigger element. It happens before power-select has reacted to what was
+     * typed. What this function does:
+     * 1) It looks for an input string that ends with a space. If it finds one
+     * and the power-select has been down-selected to one result it trigger a
+     * `select` event.
+     * 2) If the input string is empty, it resets the `selection`. We do this to
      * prevent the previously highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
-      const { results } = powerSelectAPI;
-      if (isSpace && results.length === 1) {
+      const { results, resultsCount } = powerSelectAPI;
+      if (isSpace && resultsCount === 1) {
         this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
-      } else if (isSpace && results.length > 1) {
+      } else if (isSpace && resultsCount > 1) {
         const match = this._hasExactMatch(input.trim(), results);
         if (match) {
           this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
@@ -233,14 +262,14 @@ export default Component.extend({
         // Close dropdown
         powerSelectAPI.actions.close();
         // If we have focus, drop it like it's hot, drop it like it's hot.
-        dropFocus();
+        _dropFocus();
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
-        const _highlightedAfterOption = this.get('_highlightedAfterOption');
-        if (_highlightedAfterOption === 'Free-Form Filter') {
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+        if (afterOptionsMenuItem && afterOptionsMenuItem.label === 'Free-Form Filter') {
           // If the user presses ENTER while the "after option" is set, the
           // assumption is that they want to create a free-form filter. We check
           // this first because it's possible to have a `selection` and a
@@ -249,14 +278,17 @@ export default Component.extend({
           // We'll also perform some cleanup.
           this._createFreeFormPill();
           powerSelectAPI.actions.search('');
-          this.set('_highlightedAfterOption', null);
         } else if (selection && selected && selection === selected) {
           // If the user presses ENTER, selecting a meta that was already
           // selected, power-select does nothing. We want the focus to move onto
           // the pill operator.
-          this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+          // GTB    this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+          this.set('metaSelectedTimer', later(this, this._broadcast, {
+            type: MESSAGE_TYPES.META_SELECTED,
+            data: selection
+          }, 50));
         } else {
-          dropFocus();
+          _dropFocus();
           next(this, () => {
             // We need to run this check in the next runloop so EPS has time to
             // react to the ENTER press in the first place. For example, to
@@ -293,6 +325,34 @@ export default Component.extend({
             powerSelectAPI.actions.close();
           }
         });
+      } else if (isArrowDown(event)) {
+        const { highlighted, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+          // CTRL/META was pressed or at bottom of meta list
+          // Jump to advanced options
+          powerSelectAPI.actions.highlight(null);
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+          // In after options, move to next item
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        }
+      } else if (isArrowUp(event)) {
+        if (this._afterOptionsMenu.highlightedIndex > 0) {
+          // In after options, move to previous item
+          this._afterOptionsMenu.highlightPreviousIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+          // At top of advanced options, move back to meta
+          const { actions, results } = powerSelectAPI;
+          const lastItem = results[results.length - 1];
+          this._afterOptionsMenu.clearHighlight();
+          actions.scrollTo(lastItem);
+          actions.highlight(lastItem);
+          return false;
+        }
       }
     },
 
@@ -303,6 +363,10 @@ export default Component.extend({
       // component because control returns to it, so set
       // a flag to make sure the next focus out doesn't escape.
       this.set('swallowNextFocusOut', true);
+    },
+
+    onOptionMouseEnter() {
+      this._afterOptionsMenu.clearHighlight();
     }
   },
 
@@ -323,15 +387,22 @@ export default Component.extend({
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
     const { value } = el;
-    // cleanup (close dropdown, etc)
+    // cleanup
     el.value = '';
     this._focusOnPowerSelectTrigger();
+    this._afterOptionsMenu.clearHighlight();
     // send value up to create a complex pill
     if (value && value.length > 0) {
       // _debugContainerKey is a private Ember property that returns the full
       // component name (component:query-container/pill-meta).
       const [ , source ] = this._debugContainerKey.split('/');
       this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+    }
+  },
+
+  _createPillFromSelection(selection) {
+    if (selection === FREE_FORM_FILTER) {
+      this._createFreeFormPill();
     }
   },
 
@@ -373,7 +444,7 @@ export default Component.extend({
    * @private
    */
   _matcher: (meta, input) => {
-    const _input = input.toLowerCase().replace(leadingSpaces, '');
+    const _input = input.toLowerCase().replace(LEADING_SPACES, '');
     const _metaName = meta.metaName.toLowerCase();
     const _displayName = meta.displayName.toLowerCase();
     return _metaName.indexOf(_input) & _displayName.indexOf(_input);

@@ -4,11 +4,25 @@ import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
-import { isArrowLeft, isArrowRight, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
+import {
+  isArrowDown,
+  isArrowLeft,
+  isArrowRight,
+  isArrowUp,
+  isBackspace,
+  isEnter,
+  isEscape
+} from 'investigate-events/util/keys';
+import BoundedList from 'investigate-events/util/bounded-list';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const leadingSpaces = /^[\s\uFEFF\xA0]+/;
+const FREE_FORM_FILTER = 'Free-Form Filter';
+const AFTER_OPTIONS_MENU = [
+  { label: FREE_FORM_FILTER, disabled: false, highlighted: false }
+];
+
+const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 
 const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 
@@ -66,6 +80,8 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
+  _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
+
   // Indicates if something is being rendered by this template
   // and that it isn't empty. Controls whether padding/spacing is
   // required
@@ -91,8 +107,9 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: () => this._createFreeFormPill(),
-      [MESSAGE_TYPES.HIGHLIGHTED_AFTER_OPTION]: (d) => this.set('_highlightedAfterOption', d)
+      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromSelection(d),
+      [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
+      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
     });
   },
 
@@ -130,6 +147,7 @@ export default Component.extend({
         this._broadcast(type, data);
       }
     },
+
     onChange(selection /* powerSelectAPI, event */) {
       const timer = this.get('operationSelectedTimer');
       if (timer) {
@@ -143,7 +161,9 @@ export default Component.extend({
         cancel(timer);
       }
       this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+      this._afterOptionsMenu.clearHighlight();
     },
+
     onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
       const targetValue = event.target.value;
@@ -205,23 +225,22 @@ export default Component.extend({
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
-        const _highlightedAfterOption = this.get('_highlightedAfterOption');
-        if (selection && selected && selection === selected) {
-          // This is called before the change event. We need to delay
-          // performing this action to see if a change event occures. If it
-          // does, we should ignore this event. See `onChange()`.
-          this.set('operationSelectedTimer', later(this, this._broadcast, {
-            type: MESSAGE_TYPES.OPERATOR_SELECTED,
-            data: selection
-          }, 100));
-        } else if (selected === null && _highlightedAfterOption === 'Free-Form Filter') {
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+        if (afterOptionsMenuItem && afterOptionsMenuItem.label === 'Free-Form Filter') {
           // If the user presses ENTER while all the operators are filtered out,
           // the assumption is that they want to create a free-form filter.
           // Since we have access to the power-select API, we'll perform an
           // empty search to restore all the options in the dropdown.
           this._createFreeFormPill();
           powerSelectAPI.actions.search('');
-          this.set('_highlightedAfterOption', null);
+        } else if (selection && selected && selection === selected) {
+          // This is called before the change event. We need to delay
+          // performing this action to see if a change event occures. If it
+          // does, we should ignore this event. See `onChange()`.
+          this.set('operationSelectedTimer', later(this, this._broadcast, {
+            type: MESSAGE_TYPES.OPERATOR_SELECTED,
+            data: selection
+          }, 50));
         }
       } else if (isBackspace(event) && event.target.value === '') {
         next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
@@ -231,6 +250,34 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         if (selected && event.target.selectionStart === selected.displayName.length) {
           next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY));
+        }
+      } else if (isArrowDown(event)) {
+        const { highlighted, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+          // CTRL/META was pressed or at bottom of meta list
+          // Jump to advanced options
+          powerSelectAPI.actions.highlight(null);
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+          // In after options, move to next item
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        }
+      } else if (isArrowUp(event)) {
+        if (this._afterOptionsMenu.highlightedIndex > 0) {
+          // In after options, move to previous item
+          this._afterOptionsMenu.highlightPreviousIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+          // At top of advanced options, move back to meta
+          const { actions, results } = powerSelectAPI;
+          const lastItem = results[results.length - 1];
+          this._afterOptionsMenu.clearHighlight();
+          actions.scrollTo(lastItem);
+          actions.highlight(lastItem);
+          return false;
         }
       }
     },
@@ -246,6 +293,10 @@ export default Component.extend({
         // method.
         this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
       }
+    },
+
+    onOptionMouseEnter() {
+      this._afterOptionsMenu.clearHighlight();
     }
   },
 
@@ -288,14 +339,21 @@ export default Component.extend({
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
     const { value } = el;
-    // cleanup (close dropdown, etc)
+    // cleanup
     el.value = '';
     this._focusOnPowerSelectTrigger();
+    this._afterOptionsMenu.clearHighlight();
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-operator).
     const [ , source ] = this._debugContainerKey.split('/');
     // send value up to create a complex pill
     this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+  },
+
+  _createPillFromSelection(selection) {
+    if (selection === FREE_FORM_FILTER) {
+      this._createFreeFormPill();
+    }
   },
 
   _focusOnPowerSelectTrigger() {
@@ -323,7 +381,7 @@ export default Component.extend({
    * @private
    */
   _matcher: (operator, input) => {
-    const _input = input.toLowerCase().replace(leadingSpaces, '');
+    const _input = input.toLowerCase().replace(LEADING_SPACES, '');
     const _displayName = operator.displayName.toLowerCase();
     return _displayName.indexOf(_input) === 0 ? 0 : -1;
   },

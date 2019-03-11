@@ -917,6 +917,11 @@ input::-ms-clear {
   .ember-power-select-group-name {
     padding: 0 rsa-whitespace();
   }
+  .ember-power-select-group-name-hint {
+    position: absolute;
+    right: rsa-whitespace(less);
+    font-weight: 100;
+  }
   .ember-power-select-option {
     min-width: 300px;
     max-width: 600px;

@@ -18,14 +18,16 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const ARROW_RIGHT = KEY_MAP.arrowRight.code;
+const ARROW_DOWN = KEY_MAP.arrowDown.code;
 const ARROW_LEFT = KEY_MAP.arrowLeft.code;
+const ARROW_RIGHT = KEY_MAP.arrowRight.code;
+const ARROW_UP = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
 
 // This trim also removes extra spaces inbetween words
-const trim = (text) => text.replace(/\s+/g, '').trim();
+const trim = (text) => text.replace(/\s+/g, ' ').trim();
 
 let setState;
 
@@ -442,5 +444,43 @@ module('Integration | Component | Pill Meta', function(hooks) {
     `);
     const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
     assert.ok(placeholder.length === 0, 'appears to be missing a placeholder');
+  });
+
+  test('it selects Free-Form Filter via CTRL + ↓', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
+  });
+
+  test('Highlight will move from operator list to Advanced Options list and back', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    // Reduce options to those that have an "a"
+    await typeInSearch('alias.i');
+    // Arrow down two places
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
+    // Should be in Advanced Options now
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent), 'alias.i Free-Form Filter', 'first Advanced Option was not highlighted');
+    // Arrow up
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // Should be back in meta options list
+    assert.notOk(find(PILL_SELECTORS.powerSelectOptionHighlight), 'no Advanced Options should be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectOption), 'meta option should be highlighted');
   });
 });

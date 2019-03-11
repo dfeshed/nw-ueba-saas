@@ -1,10 +1,12 @@
 <span class="ember-power-select-group-name">Advanced Options</span>
+<span class="ember-power-select-group-name-hint">CTRL + ↓</span>
 {{#each options as |opt index|}}
   <li class="ember-power-select-option ember-power-select-after-option"
     aria-disabled="{{opt.disabled}}"
     aria-current="{{opt.highlighted}}"
     data-option-index="{{index}}"
-    onmouseover={{action 'onMouseOver'}}
+    onmouseenter={{action 'onMouseEnter'}}
+    onmouseleave={{action 'onMouseLeave'}}
     onmouseup={{action 'onMouseUp'}}
     role="option">
     <span class="value">{{select.searchText}}</span>

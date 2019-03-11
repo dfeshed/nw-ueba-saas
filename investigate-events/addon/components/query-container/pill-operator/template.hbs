@@ -7,6 +7,7 @@
   {{#power-select-typeahead
     afterOptionsComponent=(
       component optionsComponent
+      options=(readonly _afterOptionsMenu.list)
       sendMessage=(action 'handleMessage')
     )
     dropdownClass='investigate-query-dropdown'
@@ -26,6 +27,7 @@
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
+      onmouseenter=(action 'onOptionMouseEnter')
     )
     preventScroll=true
     selected=selection
