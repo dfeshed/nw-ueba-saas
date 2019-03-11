@@ -317,6 +317,9 @@
                         anomalyTypeFieldName: 'user_account_disabled'
                     },
                     {
+                        anomalyTypeFieldName: 'abnormal_file_permision_change_operation_type'
+                    },
+                    {
                         anomalyTypeFieldName: 'user_account_unlocked'
                     },
                     {
