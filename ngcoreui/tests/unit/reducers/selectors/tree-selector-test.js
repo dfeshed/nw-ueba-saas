@@ -10,6 +10,8 @@ import {
   filteredOperationNames,
   selectedOperation,
   selectedOperationHelp,
+  selectedOperationRoles,
+  selectedOperationHasPermission,
   description,
   liveSelectedNode,
   configSetResult,
@@ -111,6 +113,49 @@ module('Unit | Selectors | Tree', (hooks) => {
       .treeSelectedOperationIndex(0)
       .build();
     assert.strictEqual(selectedOperationHelp(state), 'Test operation help text');
+  });
+
+  test('selectedOperationRoles should return the roles required to execute the selected operation', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationRoles()
+      .treeSelectedOperationIndex(0)
+      .build();
+    assert.deepEqual(selectedOperationRoles(state), ['sys.manage']);
+  });
+
+  test('selectedOperationRoles should return the roles required to execute the selected operation ("everyone" role)', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationRoles()
+      .treeSelectedOperationIndex(1)
+      .build();
+    assert.deepEqual(selectedOperationRoles(state), []);
+    assert.strictEqual(selectedOperation(state).description, 'Test operation help text\nsecurity.roles: everyone\n');
+  });
+
+  test('selectedOperationRoles should return the roles required to execute the selected operation (more than one role)', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationRoles()
+      .treeSelectedOperationIndex(3)
+      .build();
+    assert.deepEqual(selectedOperationRoles(state), ['sys.manage', 'logs.manage']);
+  });
+
+  test('selectedOperationHasPermission should return false when a user does not have permission to execute the selected operation', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationHasPermission()
+      .treeSelectedOperationIndex(0)
+      .availablePermissions(['sdk.meta', 'sdk.content', 'sdk.packets'])
+      .build();
+    assert.strictEqual(selectedOperationHasPermission(state), false);
+  });
+
+  test('selectedOperationHasPermission should return true when a user does have permission to execute the selected operation', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationHasPermission()
+      .treeSelectedOperationIndex(0)
+      .availablePermissions(['sdk.meta', 'sdk.content', 'sys.manage', 'sdk.packets'])
+      .build();
+    assert.strictEqual(selectedOperationHasPermission(state), true);
   });
 
   test('description should return the description of the current path', (assert) => {

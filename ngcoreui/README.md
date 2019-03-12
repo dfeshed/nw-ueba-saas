@@ -37,8 +37,8 @@
   - [x] it be broke
   - [x] show latest only applies filter to initial pull
   - match/regex
-    - [ ] filter does not apply until control loses focus
-    - [ ] filter not applied to new logs when `Show Latest` selected
+    - [x] filter does not apply until control loses focus
+    - [x] filter not applied to new logs when `Show Latest` selected
   - [ ] change message wrap so that it does not wrap to begining of next line (wrap toggle?)
 - [x] tree operation results panel only displays last message received
 - [x] The popout menu on the left should have a “Shutdown” option

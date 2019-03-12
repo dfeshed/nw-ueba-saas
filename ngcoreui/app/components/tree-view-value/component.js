@@ -21,5 +21,10 @@ export default Component.extend({
   },
 
   @computed('node')
+  hasNoGetPermission: (node) => {
+    return isFlag(node.nodeType, FLAGS.NODE_GET_ROLE_MISSING);
+  },
+
+  @computed('node')
   hasValue: (node) => 'value' in node
 });

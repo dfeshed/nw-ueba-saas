@@ -75,6 +75,7 @@ export default class DataHelper {
     _set(this.state, 'treeOperationParams', {});
     _set(this.state, 'deviceInfo', {});
     _set(this.state, 'username', null);
+    _set(this.state, 'availablePermissions', null);
     _set(this.state, 'operationResponse', null);
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);
@@ -108,6 +109,11 @@ export default class DataHelper {
 
   treeSelectedOperationIndex(index) {
     _set(this.state, 'treeSelectedOperationIndex', index);
+    return this;
+  }
+
+  availablePermissions(permissions) {
+    _set(this.state, 'availablePermissions', permissions);
     return this;
   }
 
@@ -190,6 +196,14 @@ export default class DataHelper {
   }
 
   selectedOperationHelp() {
+    return this._connectAndFillTree();
+  }
+
+  selectedOperationRoles() {
+    return this._connectAndFillTree();
+  }
+
+  selectedOperationHasPermission() {
     return this._connectAndFillTree();
   }
 

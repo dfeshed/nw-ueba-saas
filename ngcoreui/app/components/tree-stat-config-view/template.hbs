@@ -9,6 +9,8 @@
     <div class="thin-horizontal-scroll">
       {{#if liveSelectedNode.value}}
         <p class="top-margin large">{{tree-view-value node=liveSelectedNode}}</p>
+      {{else if hasNoGetPermission}}
+        <p class="top-margin large description-nonexistent">Permission denied</p>
       {{else}}
         <p class="top-margin large description-nonexistent">No value</p>
       {{/if}}
@@ -19,10 +21,10 @@
       {{/if}}
       <div class="border-panel">
         <box fill class="bottom-padding">
-          {{rsa-form-input value=configValue placeholder="New value" isSuccess=configSetSuccess isError=configSetError errorMessage=configSetResult}}
+          {{rsa-form-input value=configValue placeholder="New value" isDisabled=hasNoGetPermission isSuccess=configSetSuccess isError=configSetError errorMessage=configSetResult}}
         </box>
         <box fit class="bottom-padding">
-          {{#rsa-form-button style='primary' defaultAction=(action 'setConfigValue' configValue)}}Set{{/rsa-form-button}}
+          {{#rsa-form-button style='primary' isDisabled=hasNoGetPermission defaultAction=(action 'setConfigValue' configValue)}}Set{{/rsa-form-button}}
         </box>
       </div>
     {{/if}}

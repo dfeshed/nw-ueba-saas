@@ -23,7 +23,7 @@ const STANDARD = {
           optional: true
         }
       ],
-      description: 'Test operation help text'
+      description: 'Test operation help text\nsecurity.roles: sys.manage\n'
     },
     {
       name: 'mon',
@@ -34,7 +34,8 @@ const STANDARD = {
           type: 'number',
           optional: true
         }
-      ]
+      ],
+      description: 'Test operation help text\nsecurity.roles: everyone\n'
     },
     {
       name: 'info',
@@ -78,7 +79,8 @@ const STANDARD = {
           ],
           description: 'The format of the response, default returns in a human friendly format'
         }
-      ]
+      ],
+      description: 'Test operation help text\nsecurity.roles: sys.manage,logs.manage\n'
     },
     {
       name: 'count',

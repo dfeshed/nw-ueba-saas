@@ -28,20 +28,10 @@ module('Unit | Reducers | App', (hooks) => {
   });
 
   test('APP_GET_USER stores the username', (assert) => {
-    const action = makePackAction(LIFECYCLE.SUCCESS, {
+    const action = {
       type: ACTION_TYPES.APP_GET_USER,
-      payload: {
-        params: {
-          authType: 'netwitness',
-          username: 'admin',
-          permissions: 'admin.owner,aggregate,concentrator.manage,connections.manage,database.manage,everyone,index.manage,logs.manage,rules.manage,sdk.content,sdk.manage,sdk.meta,sdk.packets,services.manage,storedproc.execute,storedproc.manage,sys.manage,users.manage',
-          groups: 'Administrators',
-          queryPrefix: '',
-          queryTimeout: '60',
-          threshold: '0'
-        }
-      }
-    });
+      payload: 'admin'
+    };
     const state = new ReduxDataHelper()
       .connected()
       .build();
@@ -51,5 +41,21 @@ module('Unit | Reducers | App', (hooks) => {
     const result = reducer(state, action);
 
     assert.strictEqual(result.username, 'admin');
+  });
+
+  test('APP_GET_AVAILABLE_PERMISSIONS stores permissions available to the logged in user', (assert) => {
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.APP_GET_AVAILABLE_PERMISSIONS,
+      payload: ['sdk.meta', 'sdk.content', 'sdk.packets', 'storedproc.execute']
+    });
+    const state = new ReduxDataHelper()
+      .connected()
+      .build();
+
+    assert.notOk(state.availablePermissions);
+
+    const result = reducer(state, action);
+
+    assert.deepEqual(result.availablePermissions, ['sdk.meta', 'sdk.content', 'sdk.packets', 'storedproc.execute']);
   });
 });

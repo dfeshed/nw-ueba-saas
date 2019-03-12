@@ -8,6 +8,7 @@ const _treePathContents = (state) => state.treePathContents;
 const _treeSelectedOperationIndex = (state) => state.treeSelectedOperationIndex;
 const _selectedNode = (state) => state.selectedNode;
 const _deviceInfo = (state) => state.deviceInfo;
+const _availablePermissions = (state) => state.availablePermissions;
 
 const filterOut = ['ls', 'mon', 'stopMon', 'count', 'help', 'info'];
 
@@ -86,7 +87,7 @@ const selectedOperation = createSelector(
   }
 );
 
-const selectedOperationHelp = createSelector(
+const _selectedOperationDescription = createSelector(
   [ selectedOperation ],
   (selectedOperation) => {
     if (selectedOperation && selectedOperation.description) {
@@ -94,11 +95,46 @@ const selectedOperationHelp = createSelector(
       // Leverage the HTML escaping functionality of the textarea element
       escape.textContent = description;
       description = escape.innerHTML;
-      // Only the first line is the actual description
-      [ description ] = description.split('\n');
       return description;
     }
     return '';
+  }
+);
+
+const selectedOperationHelp = createSelector(
+  [ _selectedOperationDescription ],
+  (_selectedOperationDescription) => {
+    return _selectedOperationDescription.split('\n')[0];
+  }
+);
+
+const selectedOperationRoles = createSelector(
+  [ _selectedOperationDescription ],
+  (_selectedOperationDescription) => {
+    if (_selectedOperationDescription.length > 0) {
+      const [, roleString ] = _selectedOperationDescription.split('\n');
+      if (!roleString) {
+        return [];
+      }
+      const getRoles = new RegExp('security.roles: (.*)');
+      let results = getRoles.exec(roleString);
+      // There shouldn't be more than one security role but we handle it just in case
+      results = results[1] ? results[1].split(',') : [];
+      return results.filter((role) => {
+        return role !== 'everyone';
+      });
+    } else {
+      return [];
+    }
+  }
+);
+
+const selectedOperationHasPermission = createSelector(
+  [ selectedOperationRoles, _availablePermissions ],
+  (selectedOperationRoles, _availablePermissions) => {
+    return selectedOperationRoles.every((role) => {
+      return _availablePermissions.indexOf(role) >= 0;
+    });
   }
 );
 
@@ -207,6 +243,8 @@ export {
   filteredOperationNames,
   selectedOperation,
   selectedOperationHelp,
+  selectedOperationRoles,
+  selectedOperationHasPermission,
   description,
   liveSelectedNode,
   configSetResult,

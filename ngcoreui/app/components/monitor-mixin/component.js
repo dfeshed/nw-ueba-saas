@@ -151,7 +151,7 @@ export default Mixin.create({
       }
     }).then((history) => {
       // initialize result set
-      const data = Array(monitorSeries.length).fill().map(() => []);
+      const data = (new Array(monitorSeries.length)).map(() => []);
 
       // Cut off everything but the last 60 entries
       const params = history.params.slice(-60);

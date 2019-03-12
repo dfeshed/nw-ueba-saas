@@ -4,11 +4,13 @@ import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import { sendOperation, cancelOperation, updateOperationParams, updateCustomParameter } from 'ngcoreui/actions/actions';
-import { selectedOperation, selectedOperationHelp } from 'ngcoreui/reducers/selectors';
+import { selectedOperation, selectedOperationHelp, selectedOperationRoles, selectedOperationHasPermission } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   selectedOperation: selectedOperation(state),
   operationHelp: selectedOperationHelp(state),
+  operationRoles: selectedOperationRoles(state),
+  operationHasPermission: selectedOperationHasPermission(state),
   params: state.treeOperationParams,
   operationResponse: state.operationResponse
 });
@@ -25,6 +27,16 @@ const treeViewOperationPanel = Component.extend({
   operationTypes: [
     'text', 'boolean', 'date-time'
   ],
+
+  @computed('operationHasPermission')
+  doesNotHavePermission(operationHasPermission) {
+    return !operationHasPermission;
+  },
+
+  @computed('operationRoles')
+  operationRoleText(operationRoles) {
+    return operationRoles.length === 1 ? `Required permission: ${operationRoles}` : `Required permissions: ${operationRoles}`;
+  },
 
   @computed('operationHelp')
   operationHelpText(helpText) {

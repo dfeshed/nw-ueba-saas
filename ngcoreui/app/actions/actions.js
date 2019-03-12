@@ -348,11 +348,54 @@ const _getDeviceInfo = () => {
 
 const _getUserInfo = () => {
   const transport = lookup('service:transport');
-  return {
-    type: ACTION_TYPES.APP_GET_USER,
-    promise: transport.send('/users', {
+  return (dispatch) => {
+    transport.send('/users', {
       message: 'whoAmI'
-    })
+    }).then((message) => {
+      const { username } = message.params;
+      dispatch({
+        type: ACTION_TYPES.APP_GET_USER,
+        payload: username
+      });
+      dispatch(_getUserPermissions(username));
+    });
+  };
+};
+
+const _getUserPermissions = (user) => {
+  const transport = lookup('service:transport');
+  const userGroups = transport.send(`/users/accounts/${user}/config/groups`, {
+    message: 'get'
+  }).then((message) => {
+    return message.string.split(',');
+  });
+  const groups = transport.send('/users/groups', {
+    message: 'ls'
+  }).then((message) => {
+    const result = {};
+    message.nodes.forEach((node) => {
+      result[node.name] = node.value.split(',');
+    });
+    return result;
+  });
+
+  const permissionsPromise = Promise.all([ userGroups, groups ]).then(([ userGroups, groups ]) => {
+    const seen = {};
+    return userGroups
+      .map((group) => {
+        return groups[group];
+      })
+      .flat()
+      .filter((permission) => {
+        // Keeping track of seen keys in `seen` reduces time from
+        // O(n^2) to O(n)
+        return seen.hasOwnProperty(permission) ? false : (seen[permission] = true);
+      });
+  });
+
+  return {
+    type: ACTION_TYPES.APP_GET_AVAILABLE_PERMISSIONS,
+    promise: permissionsPromise
   };
 };
 

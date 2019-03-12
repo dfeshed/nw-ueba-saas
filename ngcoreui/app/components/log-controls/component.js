@@ -16,6 +16,7 @@ const dispatchToActions = {
 
 const logControls = Component.extend({
   transport: service(),
+  permissions: service(),
 
   tagName: 'hbox',
   classNames: ['bottom-padding', 'log-controls'],
@@ -90,7 +91,9 @@ const logControls = Component.extend({
   },
 
   willDestroyElement() {
-    this.send('stopUpdates');
+    this.get('permissions').require('logs.manage', () => {
+      this.send('stopUpdates');
+    });
   },
 
   actions: {
@@ -103,10 +106,12 @@ const logControls = Component.extend({
     },
 
     updateParams() {
-      this.send('stopUpdates');
       this.send('logsFilterChangeDone');
-      this.send('loadLogs', this.get('params'), (intervalHandle) => {
-        this.set('intervalHandle', intervalHandle);
+      this.get('permissions').require('logs.manage', () => {
+        this.send('stopUpdates');
+        this.send('loadLogs', this.get('params'), (intervalHandle) => {
+          this.set('intervalHandle', intervalHandle);
+        });
       });
     },
 
@@ -159,8 +164,10 @@ const logControls = Component.extend({
   init() {
     this._super(...arguments);
 
-    this.get('transport').one('close', () => {
-      this.get('intervalHandle').stop();
+    this.get('permissions').require('logs.manage', () => {
+      this.get('transport').one('close', () => {
+        this.get('intervalHandle').stop();
+      });
     });
   },
 

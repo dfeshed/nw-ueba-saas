@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
+  availablePermissions: state.availablePermissions,
   logs: state.logs,
   logsLoading: state.logsLoading
 });
@@ -14,6 +15,9 @@ const logList = Component.extend({
 
   @computed('logs')
   noLogs: (logs) => logs ? logs.length === 0 : false,
+
+  @computed('availablePermissions')
+  logsPermissionDenied: (availablePermissions) => availablePermissions ? availablePermissions.indexOf('logs.manage') === -1 : false,
 
   willUpdate() {
     const [ container ] = document.getElementsByClassName('log-container');

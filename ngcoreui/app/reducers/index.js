@@ -16,6 +16,7 @@ const initialState = Immutable.from({
   treePathContents: null,
   deviceInfo: {},
   username: null,
+  availablePermissions: null,
   treeSelectedOperationIndex: -1,
   treeOperationParams: {},
   operationResponse: null,
@@ -301,10 +302,15 @@ const reducer = handleActions({
   },
 
   [ACTION_TYPES.APP_GET_USER]: (state, action) => {
+    const username = action.payload;
+    return state.set('username', username);
+  },
+
+  [ACTION_TYPES.APP_GET_AVAILABLE_PERMISSIONS]: (state, action) => {
     return handle(state, action, {
       finish: (prevState) => {
-        const { params } = action.payload;
-        return prevState.set('username', params.username);
+        const permissions = action.payload;
+        return prevState.set('availablePermissions', permissions);
       }
     });
   },

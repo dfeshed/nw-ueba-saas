@@ -1,4 +1,6 @@
-{{#if isSizeValue}}
+{{#if hasNoGetPermission}}
+  Permission denied
+{{else if isSizeValue}}
   {{ngcoreui-memsize size=node.value}}
 {{else if hasValue}}
   {{node.value}}

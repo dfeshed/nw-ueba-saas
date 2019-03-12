@@ -39,7 +39,13 @@
       {{/if}}
     </div>
     <hbox class="bottom-margin flex-space-between">
-      {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) style='primary'}}Send{{/rsa-form-button}}
+      {{#if doesNotHavePermission}}
+        <box title={{operationRoleText}}>
+          {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) isDisabled=true style='primary'}}Send{{/rsa-form-button}}        
+        </box>
+      {{else}}
+        {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) style='primary'}}Send{{/rsa-form-button}}        
+      {{/if}}
       {{#rsa-form-button defaultAction=(action 'cancelOperation') isDisabled=(if hasPendingOperation false true)}}Cancel{{/rsa-form-button}}
     </hbox>
     {{#if operationHelp}}
