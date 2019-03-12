@@ -7,6 +7,7 @@ import makePackAction from '../../helpers/make-pack-action';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import _ from 'lodash';
+import CONFIG from 'investigate-events/reducers/investigate/config';
 
 module('Unit | Reducers | data-reducer');
 
@@ -135,6 +136,22 @@ test('SET_PREFERENCES when columnGroup is not present in the payload and current
   };
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.columnGroup, 'SOME_GROUP');
+});
+
+test('SET_PREFERENCES when an eventAnalysis preference is updated', function(assert) {
+  const previous = Immutable.from({
+    eventAnalysisPreferences: CONFIG.defaultPreferences.eventAnalysisPreferences
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: { defaultPacketFormat: 'PAYLOAD1' }
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.eventAnalysisPreferences.defaultPacketFormat, 'PAYLOAD1');
+  assert.equal(Object.keys(newEndState.eventAnalysisPreferences).length, 7, 'Total number of eventAnalysisPreferences in state');
 });
 
 test('SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG should set isQueryExecutedByColumnGroup flag', function(assert) {

@@ -31,9 +31,7 @@ module('Unit | Actions | preferences creators', function(hooks) {
       } else {
 
         if (actionOrThunk && actionOrThunk.type === ACTION_TYPES.SET_PREFERENCES) {
-          const currentEventAnalysisPreferences = getState().investigate.data.eventAnalysisPreferences;
-          assert.equal(Object.keys(currentEventAnalysisPreferences).length, Object.keys(actionOrThunk.payload).length, 'All the eventAnalysis preferences updated in Investigate state');
-          assert.equal(actionOrThunk.payload.defaultLogFormat, preferences.eventAnalysisPreferences.defaultLogFormat, 'Correct eventAnalysis preference updated in Investigate state');
+          assert.equal(actionOrThunk.payload.eventAnalysisPreferences.defaultLogFormat, preferences.eventAnalysisPreferences.defaultLogFormat, 'Correct eventAnalysis preference updated in Investigate state');
         }
       }
     };

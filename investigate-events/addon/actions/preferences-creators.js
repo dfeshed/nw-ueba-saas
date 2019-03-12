@@ -16,20 +16,9 @@ import { fetchInvestigateData } from './data-creators';
 export const preferencesUpdated = (preferences) => {
   return (dispatch, getState) => {
     const currentTimeFormat = getState().investigate.queryNode.queryTimeFormat;
-    const currentEventAnalysisPreferences = getState().investigate.data.eventAnalysisPreferences;
-    let newEventAnalysisPreferences = {
-      ...currentEventAnalysisPreferences
-    };
-    if (preferences.eventAnalysisPreferences) {
-      newEventAnalysisPreferences = {
-        ...currentEventAnalysisPreferences,
-        ...preferences.eventAnalysisPreferences
-      };
-    }
-
     dispatch({
       type: ACTION_TYPES.SET_PREFERENCES,
-      payload: newEventAnalysisPreferences
+      payload: preferences
     });
     if (preferences.queryTimeFormat && preferences.queryTimeFormat !== currentTimeFormat) {
       const range = selectedTimeRange(getState());

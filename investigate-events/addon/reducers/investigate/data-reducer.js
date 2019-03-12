@@ -28,7 +28,7 @@ const _initialState = Immutable.from({
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
-    const eventAnalysisPreferences = _.get(payload, 'eventAnalysisPreferences', state.eventAnalysisPreferences);
+    const eventAnalysisPreferences = _.assign({}, state.eventAnalysisPreferences, payload.eventAnalysisPreferences);
     const columnGroup = _.get(payload, 'eventPreferences.columnGroup', state.columnGroup);
     return state.merge({
       eventAnalysisPreferences,
