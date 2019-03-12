@@ -17,11 +17,9 @@ export const preferencesUpdated = (preferences) => {
   return (dispatch, getState) => {
     const currentTimeFormat = getState().investigate.queryNode.queryTimeFormat;
     const currentEventAnalysisPreferences = getState().investigate.data.eventAnalysisPreferences;
-
     let newEventAnalysisPreferences = {
       ...currentEventAnalysisPreferences
     };
-
     if (preferences.eventAnalysisPreferences) {
       newEventAnalysisPreferences = {
         ...currentEventAnalysisPreferences,
@@ -29,11 +27,9 @@ export const preferencesUpdated = (preferences) => {
       };
     }
 
-    preferences.eventAnalysisPreferences = newEventAnalysisPreferences;
-
     dispatch({
       type: ACTION_TYPES.SET_PREFERENCES,
-      payload: preferences
+      payload: newEventAnalysisPreferences
     });
     if (preferences.queryTimeFormat && preferences.queryTimeFormat !== currentTimeFormat) {
       const range = selectedTimeRange(getState());
