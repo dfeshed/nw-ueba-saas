@@ -28,6 +28,7 @@ nukeNode mock-server
 nukeNode component-lib
 nukeNode streaming-data
 nukeNode packager
+nukeNode endpoint-rar
 nukeNode rsa-dashboard
 nukeNode license
 nukeNode recon
