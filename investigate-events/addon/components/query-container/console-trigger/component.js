@@ -35,10 +35,18 @@ const ConsoleTrigger = Component.extend({
     'hasOfflineServices'
   ],
 
-  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isQueryComplete', 'i18n')
-  label: (description, isDisabled, isOpen, hasError, hasWarning, isQueryComplete, i18n) => {
+
+  @computed('hasOfflineServices', 'hasError', 'hasWarning')
+  displayErrorIcon: (offline, error, warning) => {
+    return offline || error || warning;
+  },
+
+  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'isQueryComplete', 'hasOfflineServices', 'i18n')
+  label: (description, isDisabled, isOpen, hasError, hasWarning, isQueryComplete, hasOfflineServices, i18n) => {
     let label;
-    if (isDisabled) {
+    if (hasOfflineServices) {
+      label = i18n.t('investigate.queryStats.hasOffline');
+    } else if (isDisabled) {
       label = i18n.t('investigate.queryStats.disabledLabel');
     } else if (hasError) {
       label = i18n.t('investigate.queryStats.hasError');

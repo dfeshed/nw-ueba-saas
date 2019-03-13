@@ -633,6 +633,7 @@ export default {
       nestedElapsedTime: '({{time}}s)',
       nestedNoElapsedTime: '(<1s)',
       slowest: 'This is the slowest service in the query.',
+      hasOffline: 'This query includes offline services.',
       hasError: 'This query returned an error.',
       hasWarning: 'This query returned a warning.',
       openCloseLabel: 'Click to open or close the query console.',

@@ -39,6 +39,15 @@ module('Integration | Component | console-trigger', function(hooks) {
     assert.equal(findAll('.console-trigger.has-warning .rsa-icon-report-problem-triangle-filled').length, 1);
   });
 
+  test('renders the correct dom hasOfflineServices', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsWithOffline().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+    assert.equal(findAll('.console-trigger.has-offline-services .rsa-icon-report-problem-triangle-filled').length, 1);
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'This query includes offline services.');
+  });
+
   test('renders the correct dom hasError', async function(assert) {
     new ReduxDataHelper(setState).queryStats().queryStatsHasError().build();
     await render(hbs`
